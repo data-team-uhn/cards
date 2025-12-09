@@ -130,16 +130,16 @@ function FormView(props) {
         title={
           <>
             <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
-            { tabs.map((value, index) => {
-              return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
-            })}
+              { tabs.map((value, index) => {
+                return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
+              })}
             </Tabs>
           </>
         }
         action={
           !expanded && isActionEnabled("expand") &&
           <Tooltip title="Expand">
-            <Link to={baseURL + "/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()} underline="hover">
+            <Link to={baseURL + "/Forms#" + new URLSearchParams({ "forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || "" }).toString()} underline="hover">
               <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
@@ -150,29 +150,29 @@ function FormView(props) {
       }
       <Divider />
       <CardContent>
-      { typeof(qFilter) == "undefined" ? <LinearProgress /> :
-        <LiveTable
-          columns={props.columns || columns}
-          customUrl={`/Forms.paginate?descending=true${qFilter}${tabFilter[tabs[activeTab]]}`}
-          defaultLimit={10}
-          filters
-          questionnaire={questionnaire}
-          entryType="Form"
-          actions={enabledActions.length > 0 ? enabledActions : undefined}
-          disableTopPagination={!topPagination}
-          onFiltersChange={(str) => { setFiltersJsonString(str); }}
-          filtersJsonString={filtersJsonString}
-          extensionURL={extensionURL}
-        />
-      }
-      { expanded && isActionEnabled("create") &&
+        { typeof(qFilter) == "undefined" ? <LinearProgress /> :
+          <LiveTable
+            columns={props.columns || columns}
+            customUrl={`/Forms.paginate?descending=true${qFilter}${tabFilter[tabs[activeTab]]}`}
+            defaultLimit={10}
+            filters
+            questionnaire={questionnaire}
+            entryType="Form"
+            actions={enabledActions.length > 0 ? enabledActions : undefined}
+            disableTopPagination={!topPagination}
+            onFiltersChange={(str) => { setFiltersJsonString(str); }}
+            filtersJsonString={filtersJsonString}
+            extensionURL={extensionURL}
+          />
+        }
+        { expanded && isActionEnabled("create") &&
         <NewFormDialog
           presetPath={questionnaire}
           withButton
           buttonTitle="New questionnaire"
           extensionURL={extensionURL}
         />
-      }
+        }
       </CardContent>
     </Card>
   );

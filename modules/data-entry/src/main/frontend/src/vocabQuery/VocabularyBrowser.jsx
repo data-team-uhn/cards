@@ -80,7 +80,7 @@ function VocabularyBrowser(props) {
     setBrowserOpened(browserOpen);
   }, [browserOpen])
 
-   // Event handler for clicking away from the info box
+  // Event handler for clicking away from the info box
   let clickAwayInfo = (event) => {
     if (!infoAboveBackground && browserRef?.current?.contains(event.target)
          || infoboxRef?.current?.contains(event.target)) {
@@ -115,17 +115,17 @@ function VocabularyBrowser(props) {
     }
 
     var url = new URL(path + ".info.json", window.location.origin);
-    MakeRequest(url, showInfo, {parentInfoId : parentId});
+    MakeRequest(url, showInfo, { parentInfoId : parentId });
   }
 
   let parseVocabInfo = (status, data) => {
     if (status === null) {
       setVocab( { acronym: data["identifier"] || "",
-                  name: data["name"],
-                  url: data["website"] || "",
-                  description: data["description"] || "",
-                  path: data["@path"]
-                } );
+        name: data["name"],
+        url: data["website"] || "",
+        description: data["description"] || "",
+        path: data["@path"]
+      } );
     } else {
       logError("Failed to search vocabulary details");
     }
@@ -134,14 +134,14 @@ function VocabularyBrowser(props) {
   // callback for getInfo to populate info box
   let showInfo = (status, data, params) => {
     if (status === null && data) {
-      setTerm({name: data["label"],
-               id: data["identifier"],
-               definition: data["def"] || data["description"] || data["definition"],
-               alsoKnownAs: data["synonym"] || data["has_exact_synonym"] || [],
-               typeOf: data["parents"]?.filter(p => typeof p === 'object').map(p => p["label"] || p["name"] || p["identifier"] || p["id"]) || [],
-               path: data["@path"],
-               infoAnchor: browserOpened ? buttonRefs[data["identifier"] + params.parentInfoId] : infoButtonRefs[data["@path"]]
-             });
+      setTerm({ name: data["label"],
+        id: data["identifier"],
+        definition: data["def"] || data["description"] || data["definition"],
+        alsoKnownAs: data["synonym"] || data["has_exact_synonym"] || [],
+        typeOf: data["parents"]?.filter(p => typeof p === 'object').map(p => p["label"] || p["name"] || p["identifier"] || p["id"]) || [],
+        path: data["@path"],
+        infoAnchor: browserOpened ? buttonRefs[data["identifier"] + params.parentInfoId] : infoButtonRefs[data["@path"]]
+      });
       setTermInfoVisible(true);
       setInfoAboveBackground(browserOpened);
     } else {
@@ -156,9 +156,9 @@ function VocabularyBrowser(props) {
     }
 
     setCloseupTimer(setTimeout(() => {setTermInfoVisible(false);
-    setTerm({});
-    setInfoAboveBackground(false);
-    onCloseInfo?.();}, 300));
+      setTerm({});
+      setInfoAboveBackground(false);
+      onCloseInfo?.();}, 300));
   }
 
   let openBrowser = () => {
@@ -190,56 +190,56 @@ function VocabularyBrowser(props) {
   }
 
   return (
-      <>
-        {/* Info box using Popper */}
-        <InfoBox
-          infoboxRef={infoboxRef}
-          open={termInfoVisible}
-          vocabulary={vocab}
-          onClose={closeInfo}
-          term={term}
-          onActionClick={openBrowser}
-          browserOpened={browserOpened || false}
-          infoAboveBackground={browseRoots || infoAboveBackground || false}
-          onClickAway={clickAwayInfo}
+    <>
+      {/* Info box using Popper */}
+      <InfoBox
+        infoboxRef={infoboxRef}
+        open={termInfoVisible}
+        vocabulary={vocab}
+        onClose={closeInfo}
+        term={term}
+        onActionClick={openBrowser}
+        browserOpened={browserOpened || false}
+        infoAboveBackground={browseRoots || infoAboveBackground || false}
+        onClickAway={clickAwayInfo}
+      />
+      { /* Browse dialog box */}
+      {browserOpened && <VocabularyTree
+        browserRef={browserRef}
+        open={browserOpened || false}
+        infoAboveBackground={infoAboveBackground}
+        vocabulary={vocab}
+        path={browsePath}
+        onTermClick={!browseRoots ? focusTerm : null}
+        onClose={closeBrowser}
+        onCloseInfoBox={closeInfo}
+        onError={logError}
+        registerInfo={registerInfoButton}
+        getInfo={getInfo}
+        browseRoots={browseRoots}
+        enableSelection={enableSelection}
+        initialSelection={initialSelection}
+        questionDefinition={questionDefinition}
+      />}
+      { /* Error snackbar */}
+      <Snackbar
+        open={snackbarVisible}
+        onClose={() => {setSnackbarVisible(false); setSnackbarMessage("");}}
+        autoHideDuration={6000}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        variant="error"
+      >
+        <SnackbarContent
+          className={classes.errorSnack}
+          role="alertdialog"
+          message={snackbarMessage}
         />
-        { /* Browse dialog box */}
-        {browserOpened && <VocabularyTree
-          browserRef={browserRef}
-          open={browserOpened || false}
-          infoAboveBackground={infoAboveBackground}
-          vocabulary={vocab}
-          path={browsePath}
-          onTermClick={!browseRoots ? focusTerm : null}
-          onClose={closeBrowser}
-          onCloseInfoBox={closeInfo}
-          onError={logError}
-          registerInfo={registerInfoButton}
-          getInfo={getInfo}
-          browseRoots={browseRoots}
-          enableSelection={enableSelection}
-          initialSelection={initialSelection}
-          questionDefinition={questionDefinition}
-        />}
-        { /* Error snackbar */}
-        <Snackbar
-          open={snackbarVisible}
-          onClose={() => {setSnackbarVisible(false); setSnackbarMessage("");}}
-          autoHideDuration={6000}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          variant="error"
-          >
-            <SnackbarContent
-              className={classes.errorSnack}
-              role="alertdialog"
-              message={snackbarMessage}
-            />
-          </Snackbar>
-      </>
-    );
+      </Snackbar>
+    </>
+  );
 }
 
 VocabularyBrowser.propTypes = {

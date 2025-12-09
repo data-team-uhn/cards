@@ -111,7 +111,7 @@ function Answer (props) {
         if (JSON.stringify(currentValue) === JSON.stringify(answers)) {
           return oldContext; // Return same reference if values are equal
         }
-        return {...oldContext, [questionName]: answers};
+        return { ...oldContext, [questionName]: answers };
       });
       prevAnswersRef.current = answers;
     }
@@ -131,7 +131,7 @@ function Answer (props) {
           {answers.map( (element, index) => {
             return (
               <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS] + "" + index} value={element[VALUE_POS] ?? undefined}></input>
-              );
+            );
           })}
           {
             answerMetadata &&
@@ -146,10 +146,10 @@ function Answer (props) {
               })
           }
         </React.Fragment>)
-      :
+        :
         <>
-        <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
-        { Object.entries(answerMetadata || {}).map(([key, value], index) => (
+          <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
+          { Object.entries(answerMetadata || {}).map(([key, value], index) => (
             <input
               type="hidden"
               name={`${answerPath}/${key}@Delete`}
@@ -157,7 +157,7 @@ function Answer (props) {
               value={0}
             />
           ))
-        }
+          }
         </>
       }
       {enableNotes &&
@@ -168,10 +168,10 @@ function Answer (props) {
           onAddSuggestion={onAddSuggestion}
           pageActive={pageActive}
           {...noteProps}
-          />
+        />
       }
     </React.Fragment>
-    );
+  );
 }
 
 Answer.propTypes = {

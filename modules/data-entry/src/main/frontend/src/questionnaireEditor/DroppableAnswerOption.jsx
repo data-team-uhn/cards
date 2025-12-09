@@ -77,89 +77,89 @@ function DroppableAnswerOption(props) {
       draggable({
         element,
         getInitialData() {
-            return data;
+          return data;
         },
         onGenerateDragPreview({ nativeSetDragImage }) {
-            setCustomNativeDragPreview({
-                nativeSetDragImage,
-                getOffset: pointerOutsideOfPreview({
-                    x: '4px',
-                    y: '4px',
-                }),
-                render({ container }) {
-                    setDraggableState({ type: 'preview', container });
-                },
-            });
+          setCustomNativeDragPreview({
+            nativeSetDragImage,
+            getOffset: pointerOutsideOfPreview({
+              x: '4px',
+              y: '4px',
+            }),
+            render({ container }) {
+              setDraggableState({ type: 'preview', container });
+            },
+          });
         },
         onDragStart() {
-            setDraggableState({ type: "dragging" });
+          setDraggableState({ type: "dragging" });
         },
         onDrop() {
-            setDraggableState({ type: 'idle' });
+          setDraggableState({ type: 'idle' });
         },
       }),
       dropTargetForElements({
         element,
         canDrop({ source }) {
-            // not allowing dropping on yourself
-            if (source.element === element) {
-                return false;
-            }
-            // only allowing options to be dropped on me
-            return isOptionData(source.data);
+          // not allowing dropping on yourself
+          if (source.element === element) {
+            return false;
+          }
+          // only allowing options to be dropped on me
+          return isOptionData(source.data);
         },
         getData({ input }) {
-            return attachClosestEdge(data, {
-                element,
-                input,
-                allowedEdges: ['top', 'bottom'],
-            });
+          return attachClosestEdge(data, {
+            element,
+            input,
+            allowedEdges: ['top', 'bottom'],
+          });
         },
         getIsSticky() {
-            return true;
+          return true;
         },
         onDragEnter({ self }) {
-            const closestEdge = extractClosestEdge(self.data);
-            setDraggableState({ type: 'dragging-over', closestEdge });
+          const closestEdge = extractClosestEdge(self.data);
+          setDraggableState({ type: 'dragging-over', closestEdge });
         },
         onDrag({ self }) {
-            const closestEdge = extractClosestEdge(self.data);
-            // Only need to update react state if nothing has changed.
-            // Prevents re-rendering.
-            setDraggableState((current) => {
-               if (current.type === 'dragging-over' && current.closestEdge === closestEdge) {
-                  return current;
-               }
-               return { type: 'dragging-over', closestEdge };
-            });
+          const closestEdge = extractClosestEdge(self.data);
+          // Only need to update react state if nothing has changed.
+          // Prevents re-rendering.
+          setDraggableState((current) => {
+            if (current.type === 'dragging-over' && current.closestEdge === closestEdge) {
+              return current;
+            }
+            return { type: 'dragging-over', closestEdge };
+          });
         },
         onDragLeave() {
-            setDraggableState({ type: 'idle' });
+          setDraggableState({ type: 'idle' });
         },
         onDrop() {
-            setDraggableState({ type: 'idle' });
+          setDraggableState({ type: 'idle' });
         },
-    }));
+      }));
   }, [value]);
 
   let generateOption = (isPerview) => {
     return (
       <Grid container
-          data-option-id={value.value}
-          justifyContent="space-between"
-          alignItems="stretch"
-          className={classes.answerOption + ' ' + (!isPerview && draggableState.type === "dragging" ? classes.optionDisabled : "")}
-          ref={ref}
-        >
-          <Grid size={1}>
-            <Tooltip title={!isPerview ? "Drag to reorder" : ""}>
-              <IconButton className={classes.optionsDragIndicator}>
-                <DragIndicatorIcon />
-              </IconButton>
-            </Tooltip>
-          </Grid>
-          <Grid size={8}>
-            {!isPerview && <span>
+        data-option-id={value.value}
+        justifyContent="space-between"
+        alignItems="stretch"
+        className={classes.answerOption + ' ' + (!isPerview && draggableState.type === "dragging" ? classes.optionDisabled : "")}
+        ref={ref}
+      >
+        <Grid size={1}>
+          <Tooltip title={!isPerview ? "Drag to reorder" : ""}>
+            <IconButton className={classes.optionsDragIndicator}>
+              <DragIndicatorIcon />
+            </IconButton>
+          </Tooltip>
+        </Grid>
+        <Grid size={8}>
+          {!isPerview && <span>
             <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value='cards:AnswerOption' />
             <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
             <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
@@ -167,40 +167,40 @@ function DroppableAnswerOption(props) {
             <input type="hidden" name={`${value['@path']}/description`} value={value.description || ''} />
             <input type="hidden" name={`${value['@path']}/isDefault`} value={value.isDefault || false} />
             <input type="hidden" name={`${value['@path']}/isDefault@TypeHint`} value="Boolean" />
-            </span>}
-            <Tooltip title="Selected by default">
-              <Checkbox
-                color="secondary"
-                checked={value.isDefault}
-                onChange={(event) => {
-                  setOptions(old => {
-                    var _new = old.slice();
-                    _new[index].isDefault = !!(event?.target?.checked);
-                    return _new;
-                  });
-                }}/>
-            </Tooltip>
-            <TextField
-              variant="standard"
-              slotProps={{
-                input: {
-                  readOnly: true,
-                },
-              }}
-              className={classes.answerOptionReadonly}
-              defaultValue={value.label? value.value + " = " + value.label : value.value}
-              multiline
-            />
-          </Grid>
-          <Grid size={3} className={classes.answerOptionActions}>
-            {generateDescriptionIcon(value, index, false)}
-            <Tooltip title="Delete option">
-              <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
-                <CloseIcon/>
-              </IconButton>
-            </Tooltip>
-          </Grid>
+          </span>}
+          <Tooltip title="Selected by default">
+            <Checkbox
+              color="secondary"
+              checked={value.isDefault}
+              onChange={(event) => {
+                setOptions(old => {
+                  var _new = old.slice();
+                  _new[index].isDefault = !!(event?.target?.checked);
+                  return _new;
+                });
+              }}/>
+          </Tooltip>
+          <TextField
+            variant="standard"
+            slotProps={{
+              input: {
+                readOnly: true,
+              },
+            }}
+            className={classes.answerOptionReadonly}
+            defaultValue={value.label? value.value + " = " + value.label : value.value}
+            multiline
+          />
         </Grid>
+        <Grid size={3} className={classes.answerOptionActions}>
+          {generateDescriptionIcon(value, index, false)}
+          <Tooltip title="Delete option">
+            <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
+              <CloseIcon/>
+            </IconButton>
+          </Tooltip>
+        </Grid>
+      </Grid>
     )
   }
 
@@ -213,7 +213,7 @@ function DroppableAnswerOption(props) {
       </div>
       { draggableState.type === "preview" &&
         createPortal(
-           generateOption(true),
+          generateOption(true),
           draggableState.container
         )}
     </React.Fragment>

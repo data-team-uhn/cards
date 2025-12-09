@@ -59,26 +59,26 @@ function Questionnaires(props) {
 
   let makeActions = ({ row }) => {
     return (
-            <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right'}}>
-              <EditButton
-                entryType={entryType}
-                entryPath={row.original["@path"]}
-                extensionURL="admin"
-              />
-              <ExportButton
-                entryPath={row.original["@path"]}
-                entryName={row.original.title}
-                entryType={entryType}
-                size="medium"
-              />
-              <DeleteButton
-                entryPath={row.original["@path"]}
-                entryName={row.original.title}
-                onComplete={dialogSuccess}
-                entryType={entryType}
-              />
-            </Box>
-          )
+      <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
+        <EditButton
+          entryType={entryType}
+          entryPath={row.original["@path"]}
+          extensionURL="admin"
+        />
+        <ExportButton
+          entryPath={row.original["@path"]}
+          entryName={row.original.title}
+          entryType={entryType}
+          size="medium"
+        />
+        <DeleteButton
+          entryPath={row.original["@path"]}
+          entryName={row.original.title}
+          onComplete={dialogSuccess}
+          entryType={entryType}
+        />
+      </Box>
+    )
   }
 
   let customFilterFn = (row, id, filterValue) => {

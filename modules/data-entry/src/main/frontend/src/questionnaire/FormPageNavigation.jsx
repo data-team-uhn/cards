@@ -70,8 +70,8 @@ function FormPageNavigation (props) {
   // Previous pages that are enabled are marked with a checkmark if completed, and with a warning sign if incomplete
   let pageIcon = (page, index) => (
     index < activePage && page.canBeVisible && isPageCompleted
-    ? (isPageCompleted(page.keys) ? <CheckIcon sx={{fontSize: "medium"}} /> : <WarningIcon sx={{fontSize: "medium"}} />)
-    : (index + 1)
+      ? (isPageCompleted(page.keys) ? <CheckIcon sx={{ fontSize: "medium" }} /> : <WarningIcon sx={{ fontSize: "medium" }} />)
+      : (index + 1)
   )
 
   // Format the title
@@ -94,17 +94,17 @@ function FormPageNavigation (props) {
   // List of page buttons
   let pageList = () => (
     <Grid container spacing={2} justifyContent="space-evenly">
-    { pages.map((p, index) => (
-      <Grid key={index}>
-      { p.canBeVisible ?
-          <Tooltip title={pageTitle(p, index)}>
-          { pageButton(p, index) }
-          </Tooltip>
-        :
-          pageButton(p, index)
-      }
-      </Grid>
-    ))}
+      { pages.map((p, index) => (
+        <Grid key={index}>
+          { p.canBeVisible ?
+            <Tooltip title={pageTitle(p, index)}>
+              { pageButton(p, index) }
+            </Tooltip>
+            :
+            pageButton(p, index)
+          }
+        </Grid>
+      ))}
     </Grid>
   );
 
@@ -129,7 +129,7 @@ function FormPageNavigation (props) {
             component="button"
             type="submit"
             key={index}
-            sx={{width: "100%", textAlign: "inherit"}}
+            sx={{ width: "100%", textAlign: "inherit" }}
             disabled={!p.canBeVisible}
             selected={index == activePage}
             onClick={() => {setPageSelectorAnchorEl(null); navigateTo(index) }}

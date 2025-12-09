@@ -19,14 +19,14 @@
 import React, { useState } from 'react';
 
 import {
-    Checkbox,
-    FormControlLabel,
-    FormGroup,
-    FormLabel,
-    InputAdornment,
-    List,
-    ListItem,
-    TextField
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  InputAdornment,
+  List,
+  ListItem,
+  TextField
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
@@ -34,10 +34,10 @@ import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
 export const PATIENT_ACCESS_CONFIG_PATH = "/Survey/PatientAccess";
 export const DEFAULT_PATIENT_ACCESS_CONFIG = {
-    tokenlessAuthEnabled: false,
-    PIIAuthRequired: false,
-    daysRelativeToEventWhileSurveyIsValid: "0",
-    draftLifetime: "-1"
+  tokenlessAuthEnabled: false,
+  PIIAuthRequired: false,
+  daysRelativeToEventWhileSurveyIsValid: "0",
+  draftLifetime: "-1"
 };
 
 const useStyles = makeStyles()(theme => ({
@@ -80,7 +80,7 @@ function PatientAccessConfiguration() {
   };
 
   const LIMITS = {
-    draftLifetime: {min: -1}
+    draftLifetime: { min: -1 }
   }
 
   let buildConfigData = (formData) => {
@@ -90,70 +90,70 @@ function PatientAccessConfiguration() {
   }
 
   let renderConfigCheckbox = (key, valueOverride) => (
-      <ListItem>
-        <FormControlLabel control={
-          <Checkbox
-            name={key}
-            checked={valueOverride || patientAccessConfig?.[key] || DEFAULT_PATIENT_ACCESS_CONFIG[key]}
-            disabled={valueOverride}
-            onChange={event => {
-              setPatientAccessConfig({...patientAccessConfig, [key]: valueOverride || event.target.checked});
-              setHasChanges(true);
-            }}
-          />}
-          label={LABELS[key]}
-        />
-      </ListItem>
-    );
+    <ListItem>
+      <FormControlLabel control={
+        <Checkbox
+          name={key}
+          checked={valueOverride || patientAccessConfig?.[key] || DEFAULT_PATIENT_ACCESS_CONFIG[key]}
+          disabled={valueOverride}
+          onChange={event => {
+            setPatientAccessConfig({ ...patientAccessConfig, [key]: valueOverride || event.target.checked });
+            setHasChanges(true);
+          }}
+        />}
+      label={LABELS[key]}
+      />
+    </ListItem>
+  );
 
   let onInputValueChanged = (key, value) => {
-    setPatientAccessConfig(config => ({...config, [key]: (value || "")}));
+    setPatientAccessConfig(config => ({ ...config, [key]: (value || "") }));
     setHasChanges(true);
-    setError(err => ({...err, [key]: (LIMITS[key]?.min > value || LIMITS[key]?.max < value)}));
+    setError(err => ({ ...err, [key]: (LIMITS[key]?.min > value || LIMITS[key]?.max < value) }));
   }
 
   let renderConfigInput = (key, unit) => (
-      <ListItem>
-        <FormGroup className={classes.textField}>
-          <FormLabel>{LABELS[key][0]}</FormLabel>
-          <TextField
-            variant="standard"
-            type="number"
-            onChange={event => onInputValueChanged(key, event.target.value)}
-            onBlur={event => onInputValueChanged(key, event.target.value)}
-            placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
-            value={patientAccessConfig?.[key] || ""}
-            error={error[key]}
-            helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
-            slotProps={{
-              input: {
-                endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
-              },
-              htmlInput: LIMITS[key],
-            }}
-          />
-        </FormGroup>
-      </ListItem>
-    );
+    <ListItem>
+      <FormGroup className={classes.textField}>
+        <FormLabel>{LABELS[key][0]}</FormLabel>
+        <TextField
+          variant="standard"
+          type="number"
+          onChange={event => onInputValueChanged(key, event.target.value)}
+          onBlur={event => onInputValueChanged(key, event.target.value)}
+          placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
+          value={patientAccessConfig?.[key] || ""}
+          error={error[key]}
+          helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
+          slotProps={{
+            input: {
+              endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
+            },
+            htmlInput: LIMITS[key],
+          }}
+        />
+      </FormGroup>
+    </ListItem>
+  );
 
   return (
-      <AdminConfigScreen
-          title="Patient Access"
-          configPath={PATIENT_ACCESS_CONFIG_PATH}
-          configTemplate={Object.keys(DEFAULT_PATIENT_ACCESS_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
-          onConfigFetched={setPatientAccessConfig}
-          hasChanges={hasChanges}
-          buildConfigData={buildConfigData}
-          onConfigSaved={() => setHasChanges(false)}
-          >
-          <List>
-            { renderConfigCheckbox("tokenlessAuthEnabled") }
-            { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
-            { renderConfigInput("daysRelativeToEventWhileSurveyIsValid", "days") }
-            { renderConfigInput("daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted", "days") }
-            { renderConfigInput("draftLifetime", "days") }
-          </List>
-      </AdminConfigScreen>
+    <AdminConfigScreen
+      title="Patient Access"
+      configPath={PATIENT_ACCESS_CONFIG_PATH}
+      configTemplate={Object.keys(DEFAULT_PATIENT_ACCESS_CONFIG).reduce((t, k) => ({ ...t, [k] : "" }), {})}
+      onConfigFetched={setPatientAccessConfig}
+      hasChanges={hasChanges}
+      buildConfigData={buildConfigData}
+      onConfigSaved={() => setHasChanges(false)}
+    >
+      <List>
+        { renderConfigCheckbox("tokenlessAuthEnabled") }
+        { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
+        { renderConfigInput("daysRelativeToEventWhileSurveyIsValid", "days") }
+        { renderConfigInput("daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted", "days") }
+        { renderConfigInput("draftLifetime", "days") }
+      </List>
+    </AdminConfigScreen>
   );
 }
 

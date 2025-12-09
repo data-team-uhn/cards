@@ -96,12 +96,12 @@ function SearchBar(props) {
   // Fetch saved admin config settings
   useEffect(() => {
     fetchWithReLogin(globalLoginDisplay, '/apps/cards/config/QuickSearch.json')
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then((json) => {
-      setLimit(json["limit"] || DEFAULT_MAX_RESULTS);
-      setAllowedResourceTypes(json["allowedResourceTypes"]);
-      setShowTotalRows(json["showTotalRows"]  == 'true');
-    });
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setLimit(json["limit"] || DEFAULT_MAX_RESULTS);
+        setAllowedResourceTypes(json["allowedResourceTypes"]);
+        setShowTotalRows(json["showTotalRows"]  == 'true');
+      });
   }, []);
 
   // Callback to update the value of the search bar. Sends off a delayed fulltext request
@@ -178,10 +178,10 @@ function SearchBar(props) {
     return resultData["jcr:primaryType"] && (
       <ResultConstructor resultData={resultData} disableLink={disableLink} classes={classes}/>
     ) || (
-       <ListItemText
-          primary={resultData.name || ''}
-          className={classes.dropdownItem}
-        />
+      <ListItemText
+        primary={resultData.name || ''}
+        className={classes.dropdownItem}
+      />
     )
   }
 
@@ -212,20 +212,20 @@ function SearchBar(props) {
             {disableButton
               ? <Search/>
               : <IconButton
-                  size="small"
-                  sx={{mr: -0.5}}
-                  className={invertColors ? classes.invertedColors : ""}
-                  onClick={(event) => input?.current?.focus()}
-                >
-                  <Search />
-                </IconButton>
+                size="small"
+                sx={{ mr: -0.5 }}
+                className={invertColors ? classes.invertedColors : ""}
+                onClick={(event) => input?.current?.focus()}
+              >
+                <Search />
+              </IconButton>
             }
           </InputAdornment>
         }
         className={(invertColors ? classes.invertedColors + " " : "") + className}
         inputRef={input}
         {...rest}
-        />
+      />
       {/* Suggestions list using Popper */}
       <Popper
         open={popperOpen}
@@ -241,11 +241,11 @@ function SearchBar(props) {
         placement = "bottom-start"
         transition
         keepMounted
-        >
+      >
         {({ TransitionProps }) => (
           <Grow
             {...TransitionProps}
-            style={{transformOrigin: "top"}}
+            style={{ transformOrigin: "top" }}
           >
             <Paper square className={classes.suggestionContainer}>
               <ClickAwayListener onClickAway={(event) => {
@@ -260,7 +260,7 @@ function SearchBar(props) {
                     <MenuItem
                       className={classes.dropdownItem}
                       disabled
-                      >
+                    >
                       { /* Handle either a fetch error (which uses error.message/error.name)
                            or an HTTP error (error.status/error.statusText) */}
                       <ListItemText
@@ -273,26 +273,26 @@ function SearchBar(props) {
                         }}
                       />
                     </MenuItem>
-                  : results.map( (result, i) => (
+                    : results.map( (result, i) => (
                     /* Results if no errors occurred */
-                    <MenuItem
-                      className={classes.dropdownItem}
-                      key={i}
-                      disabled={result["disabled"]}
-                      onClick={(e) => {
-                        disableDropdownItemLink && setSearch(result.entityIdentifier);
-                        onSelect(e, result, props);
-                        onSelectFinish?.();
-                        setPopperOpen(false);
+                      <MenuItem
+                        className={classes.dropdownItem}
+                        key={i}
+                        disabled={result["disabled"]}
+                        onClick={(e) => {
+                          disableDropdownItemLink && setSearch(result.entityIdentifier);
+                          onSelect(e, result, props);
+                          onSelectFinish?.();
+                          setPopperOpen(false);
                         }}
                       >
-                      <QuickSearchResult resultData={result} disableLink={disableDropdownItemLink}/>
-                    </MenuItem>
-                  ))}
+                        <QuickSearchResult resultData={result} disableLink={disableDropdownItemLink}/>
+                      </MenuItem>
+                    ))}
                   { !results[0]?.disabled && showAllResultsLink &&
                   <Link to={"../content.html/QuickSearchResults?query=" + encodeURIComponent(search)
                               + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
-                          underline="hover">
+                  underline="hover">
                     <MenuItem
                       className={classes.dropdownItem}
                       onClick={() => setPopperOpen(false)}

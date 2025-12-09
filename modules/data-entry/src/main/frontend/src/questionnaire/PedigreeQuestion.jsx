@@ -51,8 +51,8 @@ function PedigreeQuestion(props) {
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in CARDS:
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
-                                        ? {"image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value}
-                                        : {});
+    ? { "image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value }
+    : {});
 
   // FIXME: hardcoded value
   const PEDIGREE_THUMBNAIL_WIDTH = 300;
@@ -78,13 +78,13 @@ function PedigreeQuestion(props) {
   }
 
   let [ outputAnswers, setOutputAnswers ] = useState(pedigreeJSON ? [["value", pedigreeJSON]] : []);
-  let answerMetadata = {image:  pedigreeSVG};
+  let answerMetadata = { image:  pedigreeSVG };
 
   useEffect(() => {
     setOutputAnswers(pedigreeJSON ? [["value", pedigreeJSON]] : []);
   }, [pedigreeJSON]);
 
-  var image_div = <div className={classes.thumbnail} dangerouslySetInnerHTML={{__html: displayedImage}}/>;
+  var image_div = <div className={classes.thumbnail} dangerouslySetInnerHTML={{ __html: displayedImage }}/>;
 
   var closeDialog = function () {
     setExpanded(false);
@@ -107,7 +107,7 @@ function PedigreeQuestion(props) {
 
   var onUpdatedPedigree = function (pedigreeJSON, pedigreeSVG) {
     // state change will trigger re-render
-    setPedigree({"image": pedigreeSVG, "pedigreeJSON": pedigreeJSON});
+    setPedigree({ "image": pedigreeSVG, "pedigreeJSON": pedigreeJSON });
   };
 
   let defaultDisplayFormatter = function(label, idx) {
@@ -119,30 +119,30 @@ function PedigreeQuestion(props) {
       defaultDisplayFormatter={defaultDisplayFormatter}
       currentAnswers={outputAnswers.length}
       {...props}
-      >
+    >
       {
         pageActive && <>
           <div className={classes.answerField}>
-          { pedigreeData.image ?
-            <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
-              <Grid>
-                <Tooltip title="Edit Pedigree">
-                  <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}} underline="hover">
-                    {image_div}
-                  </Link>
-                </Tooltip>
+            { pedigreeData.image ?
+              <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
+                <Grid>
+                  <Tooltip title="Edit Pedigree">
+                    <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}} underline="hover">
+                      {image_div}
+                    </Link>
+                  </Tooltip>
+                </Grid>
+                <Grid>
+                  <DeleteButton
+                    entryName="pedigree"
+                    entryType="Pedigree"
+                    onComplete={() => {setPedigree({});}}
+                  />
+                </Grid>
               </Grid>
-              <Grid>
-                <DeleteButton
-                  entryName="pedigree"
-                  entryType="Pedigree"
-                  onComplete={() => {setPedigree({});}}
-                />
-              </Grid>
-            </Grid>
-            :
-            <Button variant="outlined" onClick={() => {setExpanded(true);}}>Draw</Button>
-          }
+              :
+              <Button variant="outlined" onClick={() => {setExpanded(true);}}>Draw</Button>
+            }
           </div>
           <Dialog fullScreen open={expanded}
             onClose={() => { setExpanded(false); }}

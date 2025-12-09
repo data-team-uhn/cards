@@ -19,12 +19,12 @@
 import React, { useState } from 'react';
 
 import {
-    Checkbox,
-    FormControlLabel,
-    List,
-    ListItem,
-    TextField,
-    Typography
+  Checkbox,
+  FormControlLabel,
+  List,
+  ListItem,
+  TextField,
+  Typography
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
@@ -71,71 +71,71 @@ function SurveyInstructionsConfiguration() {
   let getUnsetValue = (key) => (key?.startsWith("enable") ? false : "");
 
   return (
-      <AdminConfigScreen
-        title="Patient Portal Survey Instructions"
-        configPath={SURVEY_INSTRUCTIONS_PATH}
-        configTemplate={Object.values(labels).flat().reduce((t, k) => ({...t, [k]: getUnsetValue(k)}), {})}
-        onConfigFetched={setSurveyInstructions}
-        hasChanges={hasChanges}
-        buildConfigData={buildConfigData}
-        onConfigSaved={() => setHasChanges(false)}
-        >
-          <List className={classes.formEntries}>
-            { Object.keys(labels).map(category => { return (<React.Fragment key={category + "Wrapper"}>
-              <ListItem key={category}>
-                <Typography variant="h6">{camelCaseToWords(category)}</Typography>
-              </ListItem>
-              { labels[category].map(key => { return (
-                <ListItem key={key+category}>
-                  { key == "welcomeMessage" ?
-                      <WelcomeMessageConfiguration
-                        welcomeMessage={surveyInstructions?.[key]}
-                        onChange={(text) => {
-                          setSurveyInstructions({...surveyInstructions, [key]: text});
-                          setHasChanges(true);
-                        }}
-                      />
-                    :
-                    key.startsWith("enable") ?
-                      <FormControlLabel control={
-                        <Checkbox
-                          checked={!!(surveyInstructions?.[key])}
-                          onChange={event => {
-                            setSurveyInstructions({...surveyInstructions, [key]: !!event.target.checked});
-                            setHasChanges(true);
-                          }}
-                        />}
-                        label={camelCaseToWords(key)}
-                      />
-                    :
-                      <TextField
-                        multiline
-                        minRows={3}
-                        slotProps={{
-                          inputLabel: {
-                            shrink: true,
-                          },
-                        }}
-                        variant="outlined"
-                        id={key}
-                        name={key}
-                        type="text"
-                        label={camelCaseToWords(key)}
-                        value={surveyInstructions?.[key] || ""}
-                        placeholder={DEFAULT_INSTRUCTIONS[key] || ""}
-                        onChange={(event) => {
-                           setSurveyInstructions({...surveyInstructions, [key]: event.target.value});
-                           setHasChanges(true);
-                        }}
-                        fullWidth
-                      />
-                  }
-                </ListItem>)
-              })}
-            </React.Fragment>)
+    <AdminConfigScreen
+      title="Patient Portal Survey Instructions"
+      configPath={SURVEY_INSTRUCTIONS_PATH}
+      configTemplate={Object.values(labels).flat().reduce((t, k) => ({ ...t, [k]: getUnsetValue(k) }), {})}
+      onConfigFetched={setSurveyInstructions}
+      hasChanges={hasChanges}
+      buildConfigData={buildConfigData}
+      onConfigSaved={() => setHasChanges(false)}
+    >
+      <List className={classes.formEntries}>
+        { Object.keys(labels).map(category => { return (<React.Fragment key={category + "Wrapper"}>
+          <ListItem key={category}>
+            <Typography variant="h6">{camelCaseToWords(category)}</Typography>
+          </ListItem>
+          { labels[category].map(key => { return (
+            <ListItem key={key+category}>
+              { key == "welcomeMessage" ?
+                <WelcomeMessageConfiguration
+                  welcomeMessage={surveyInstructions?.[key]}
+                  onChange={(text) => {
+                    setSurveyInstructions({ ...surveyInstructions, [key]: text });
+                    setHasChanges(true);
+                  }}
+                />
+                :
+                key.startsWith("enable") ?
+                  <FormControlLabel control={
+                    <Checkbox
+                      checked={!!(surveyInstructions?.[key])}
+                      onChange={event => {
+                        setSurveyInstructions({ ...surveyInstructions, [key]: !!event.target.checked });
+                        setHasChanges(true);
+                      }}
+                    />}
+                  label={camelCaseToWords(key)}
+                  />
+                  :
+                  <TextField
+                    multiline
+                    minRows={3}
+                    slotProps={{
+                      inputLabel: {
+                        shrink: true,
+                      },
+                    }}
+                    variant="outlined"
+                    id={key}
+                    name={key}
+                    type="text"
+                    label={camelCaseToWords(key)}
+                    value={surveyInstructions?.[key] || ""}
+                    placeholder={DEFAULT_INSTRUCTIONS[key] || ""}
+                    onChange={(event) => {
+                      setSurveyInstructions({ ...surveyInstructions, [key]: event.target.value });
+                      setHasChanges(true);
+                    }}
+                    fullWidth
+                  />
+              }
+            </ListItem>)
           })}
-        </List>
-      </AdminConfigScreen>
+        </React.Fragment>)
+        })}
+      </List>
+    </AdminConfigScreen>
   );
 }
 

@@ -73,29 +73,29 @@ function LoginForm(props) {
         }
       }
     )
-    .then((response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      setFailedLogin(undefined);
-      handleLogin?.(true);
-      if (redirectOnLogin) {
-        window.location = loginRedirectPath();
-      }
-    })
-    .catch((error) => {
-      setFailedLogin("Invalid username or password");
-      handleLogin?.(false);
-    });
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        setFailedLogin(undefined);
+        handleLogin?.(true);
+        if (redirectOnLogin) {
+          window.location = loginRedirectPath();
+        }
+      })
+      .catch((error) => {
+        setFailedLogin("Invalid username or password");
+        handleLogin?.(false);
+      });
   }
  
   let nextButtonCallback = () => {
-      if (username.split("@").length - 1 == 0) {
-        setPhase("PASSWORD_ENTRY");
-      } else if (username.split("@").length - 1 == 1) {
-        let remoteDomain = username.split("@")[1];
-        // Do a fetch() to see if we have a SAML configuration for this domain
-        fetch(window.location.origin + "/apps/cards/SAMLDomains/" + remoteDomain + ".json")
+    if (username.split("@").length - 1 == 0) {
+      setPhase("PASSWORD_ENTRY");
+    } else if (username.split("@").length - 1 == 1) {
+      let remoteDomain = username.split("@")[1];
+      // Do a fetch() to see if we have a SAML configuration for this domain
+      fetch(window.location.origin + "/apps/cards/SAMLDomains/" + remoteDomain + ".json")
         .then((resp) => {
           if (resp.ok) {
             setFailedLogin(undefined);
@@ -132,9 +132,9 @@ function LoginForm(props) {
           }
         })
         .catch((err) => setFailedLogin("An error occurred while handling the third-party identity provider."));
-      } else {
-        setFailedLogin("Invalid email address");
-      }
+    } else {
+      setFailedLogin("Invalid email address");
+    }
   }
 
   if (singleStepEntry === undefined) {
@@ -143,21 +143,21 @@ function LoginForm(props) {
 
   return (
     <div className={classes.main}>
-        {failedLogin && <Alert severity="error">{failedLogin}</Alert>}
+      {failedLogin && <Alert severity="error">{failedLogin}</Alert>}
 
-        <form
-          method="post"
-          className={classes.form}
-          onSubmit={(event)=> {
-            event.preventDefault();
-            if (phase == "PASSWORD_ENTRY" || singleStepEntry === true) {
-              submitLogin();
-            } else if (phase == "USERNAME_ENTRY" && singleStepEntry === false) {
-              nextButtonCallback();
-            }
-          }}
-        >
-          { (phase == "USERNAME_ENTRY" || singleStepEntry) &&
+      <form
+        method="post"
+        className={classes.form}
+        onSubmit={(event)=> {
+          event.preventDefault();
+          if (phase == "PASSWORD_ENTRY" || singleStepEntry === true) {
+            submitLogin();
+          } else if (phase == "USERNAME_ENTRY" && singleStepEntry === false) {
+            nextButtonCallback();
+          }
+        }}
+      >
+        { (phase == "USERNAME_ENTRY" || singleStepEntry) &&
             <React.Fragment>
               <FormControl variant="standard" margin="normal" required fullWidth>
                 <InputLabel htmlFor="j_username">Username{singleStepEntry ? "" : " or email address"}</InputLabel>
@@ -181,9 +181,9 @@ function LoginForm(props) {
                 </Button>
               }
             </React.Fragment>
-          }
+        }
 
-          { (phase == "PASSWORD_ENTRY" || singleStepEntry) &&
+        { (phase == "PASSWORD_ENTRY" || singleStepEntry) &&
             <React.Fragment>
               <FormControl variant="standard" margin="normal" required fullWidth>
                 <InputLabel htmlFor="j_password">Password{singleStepEntry ? "" : (" for " + username)}</InputLabel>
@@ -217,11 +217,11 @@ function LoginForm(props) {
                       variant="outlined"
                       className={classes.submit}
                       onClick={() => {
-                          setFailedLogin(undefined),
-                          setUsername(""),
-                          setPassword("");
-                          setPhase("USERNAME_ENTRY");
-                        }
+                        setFailedLogin(undefined),
+                        setUsername(""),
+                        setPassword("");
+                        setPhase("USERNAME_ENTRY");
+                      }
                       }
                     >
                       Back
@@ -240,8 +240,8 @@ function LoginForm(props) {
                 </Grid>
               </Grid>
             </React.Fragment>
-          }
-        </form>
+        }
+      </form>
     </div>
   );
 }

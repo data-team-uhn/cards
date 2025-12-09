@@ -34,12 +34,12 @@ import {
   Select,
   TextField,
   Typography
-  } from "@mui/material";
+} from "@mui/material";
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
+import Answer, { LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS } from "./Answer";
 import AnswerInstructions from "./AnswerInstructions.jsx";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
@@ -50,7 +50,7 @@ import UserInputAssistant from "../components/UserInputAssistant.jsx";
 // Sentinel value used for the user-controlled input
 const GHOST_SENTINEL = "custom-input";
 
- /**
+/**
   * Component that displays a Multiple Choice question.
   *
   * @param {Object} existingAnswer form data that may include answers already submitted for this component
@@ -70,8 +70,8 @@ const GHOST_SENTINEL = "custom-input";
 function MultipleChoice(props) {
   checkPropTypes(MultipleChoice, props);
   let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
-  let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
-  let { validate, validationErrorText, liveValidation, softValidation } = {...props.questionDefinition, ...props};
+  let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = { ...props.questionDefinition, ...props };
+  let { validate, validationErrorText, liveValidation, softValidation } = { ...props.questionDefinition, ...props };
   // pageActive and answerNodeType should be passed to the Answer component, so we make sure to include them in the `rest` variable above
   let { instanceId, pageActive, answerNodeType } = props;
 
@@ -97,14 +97,14 @@ function MultipleChoice(props) {
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
     // The value can either be a single value or an array of values; force it into an array
-    Array.of(existingAnswer[1].value).flat()
-    // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
-    .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
+      Array.of(existingAnswer[1].value).flat()
+      // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
+        .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
   // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
   // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
   if (!existingAnswer) {
     initialSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
-       // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
+    // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
       .slice(0, maxAnswers || defaults.length)
       .map(item => [item[LABEL_POS], item[VALUE_POS]]);
   }
@@ -113,7 +113,7 @@ function MultipleChoice(props) {
     // If the question is a radio, just display the defaults as duplicates
     isRadio ? defaults.slice() :
     // Otherwise, display as options the union of all defaults + existing answers, without duplicates
-    defaults.slice().concat(initialSelection.filter( (selectedAnswer) => default_values.indexOf(String(selectedAnswer[VALUE_POS])) < 0));
+      defaults.slice().concat(initialSelection.filter( (selectedAnswer) => default_values.indexOf(String(selectedAnswer[VALUE_POS])) < 0));
 
   // If the field allows for multiple inputs (eg. maxAnswers !== 1),
   // No user input (aka. an empty input) takes the place of an empty string
@@ -359,7 +359,7 @@ function MultipleChoice(props) {
 
     // Remove written data so we don't somehow double-add details
     writer((old) => {
-      let newData = {...old};
+      let newData = { ...old };
       delete newData[questionName];
       return newData;
     })
@@ -398,54 +398,54 @@ function MultipleChoice(props) {
   // Hold the input box for either multiple choice type
   let CustomInput = customInput;
   let ghostInput = (input || textbox || customInput) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
-      {
-        customInput ?
-          <CustomInput
-            initialSelection={selection.filter(option => option[VALUE_POS])}
-            onRemoveOption={removeOption}
-            onClick={acceptOptionFromWidget}
-            onChange = {ghostUpdateEvent}
-            value={ghostSelected ? ghostName : undefined}
-            disabled={disabled}
-            {...customInputProps}
-            />
+    {
+      customInput ?
+        <CustomInput
+          initialSelection={selection.filter(option => option[VALUE_POS])}
+          onRemoveOption={removeOption}
+          onClick={acceptOptionFromWidget}
+          onChange = {ghostUpdateEvent}
+          value={ghostSelected ? ghostName : undefined}
+          disabled={disabled}
+          {...customInputProps}
+        />
         :
-          <TextField
-            variant={textbox ? "outlined" : "standard"}
-            error={error || inputError}
-            helperText={
-              inputError
+        <TextField
+          variant={textbox ? "outlined" : "standard"}
+          error={error || inputError}
+          helperText={
+            inputError
               ? <FormattedText variant="caption">{ validationErrorText }</FormattedText>
               : maxAnswers !== 1 && !error && "Press ENTER to add a new value"
-            }
-            className={(textbox ? classes.textBox : classes.textField) + (isRadio ? (' ' + classes.nestedInput) : '')}
-            onChange={ghostUpdateEvent}
-            disabled={disabled}
-            onFocus={() => {maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}}
-            onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
-            slotProps={{
-              htmlInput: Object.assign({
-                onKeyDown: (event) => {
-                  if (event.key == 'Enter') {
-                    // We need to stop the event so that it doesn't trigger a form submission
-                    event.preventDefault();
-                    event.stopPropagation();
-                    acceptEnteredOption(!softValidation);
-                    handleFormDataChange?.();
-                  }
-                },
-                tabIndex: isRadio ? -1 : undefined
-              }, additionalInputProps),
-              input: muiInputProps,
-              formHelperText: {component: "div"},
-            }}
-            value={ghostName ?? ''}
-            multiline={textbox}
-            minRows={textbox ? 4 : undefined}
-            inputRef={ref => {inputEl = ref}}
-          />
-      }
-      { maxAnswers !== 1 && separatorDetectionEnabled &&
+          }
+          className={(textbox ? classes.textBox : classes.textField) + (isRadio ? (' ' + classes.nestedInput) : '')}
+          onChange={ghostUpdateEvent}
+          disabled={disabled}
+          onFocus={() => {maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}}
+          onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
+          slotProps={{
+            htmlInput: Object.assign({
+              onKeyDown: (event) => {
+                if (event.key == 'Enter') {
+                  // We need to stop the event so that it doesn't trigger a form submission
+                  event.preventDefault();
+                  event.stopPropagation();
+                  acceptEnteredOption(!softValidation);
+                  handleFormDataChange?.();
+                }
+              },
+              tabIndex: isRadio ? -1 : undefined
+            }, additionalInputProps),
+            input: muiInputProps,
+            formHelperText: { component: "div" },
+          }}
+          value={ghostName ?? ''}
+          multiline={textbox}
+          minRows={textbox ? 4 : undefined}
+          inputRef={ref => {inputEl = ref}}
+        />
+    }
+    { maxAnswers !== 1 && separatorDetectionEnabled &&
         <UserInputAssistant
           title="Separator detected"
           anchorEl={assistantAnchor}
@@ -456,12 +456,12 @@ function MultipleChoice(props) {
             (document.activeElement != assistantAnchor) && acceptEnteredOption();
             checkForSeparators(null);
           }}
-          >
+        >
           Using separators such as comma or semicolon will not create separate entries.
           If you wish to enter multiple values, press ENTER to add each one.
         </UserInputAssistant>
-      }
-    </div>);
+    }
+  </div>);
 
   let selectNonGhostOption = (...args) => {
     // Clear the ghost input
@@ -485,15 +485,15 @@ function MultipleChoice(props) {
     return (
       <React.Fragment>
         {
-          pageActive && <FormControl sx={{width: 300}}>
+          pageActive && <FormControl sx={{ width: 300 }}>
             {instructions}
             <Select
               variant="standard"
               multiple={maxAnswers != 1}
               value={
                 maxAnswers == 1
-                ? (selection?.[0]?.[VALUE_POS] || '')
-                : (selection?.map(s => s[VALUE_POS]) || [])
+                  ? (selection?.[0]?.[VALUE_POS] || '')
+                  : (selection?.map(s => s[VALUE_POS]) || [])
               }
               className={classes.textField}
               onChange={(event) => {
@@ -506,16 +506,16 @@ function MultipleChoice(props) {
               }}
               renderValue={
                 maxAnswers == 1 ? undefined
-                : (value) => (<div className={classes.selectMultiValues}>
-                  { value.map((v, i) => (
-                    <Chip key={v + i} label={defaults.find(e => e[VALUE_POS] == v)?.[LABEL_POS] || v}/>
-                  ))}
-                </div>)
+                  : (value) => (<div className={classes.selectMultiValues}>
+                    { value.map((v, i) => (
+                      <Chip key={v + i} label={defaults.find(e => e[VALUE_POS] == v)?.[LABEL_POS] || v}/>
+                    ))}
+                  </div>)
               }
             >
-            {defaults.map(function([name, key], index) {
+              {defaults.map(function([name, key], index) {
                 return <MenuItem value={key} key={key}>{name}</MenuItem>;
-            })}
+              })}
             </Select>
           </FormControl>
         }
@@ -525,7 +525,7 @@ function MultipleChoice(props) {
           questionName={questionName}
           onAddSuggestion={acceptOptionFromWidget}
           {...rest}
-          />
+        />
       </React.Fragment>
     )
   } else if (isBare) {
@@ -543,7 +543,7 @@ function MultipleChoice(props) {
           questionName={questionName}
           onAddSuggestion={acceptOptionFromWidget}
           {...rest}
-          />
+        />
       </React.Fragment>
     )
   } else if (isRadio) {
@@ -559,36 +559,36 @@ function MultipleChoice(props) {
               value={selection.length > 0 && String(selection[0][VALUE_POS])}
             >
               <List className={classes.optionsList}>
-              {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption, validate, validationErrorText)}
-              {/* Ghost radio for the text input */}
-              {
-              ghostInput && <ListItem className={classes.ghostListItem}>
-                <FormControlLabel
-                  control={
-                  <Radio
-                    color="secondary"
-                    checked={ghostSelected}
-                    onChange={() => {
-                      selectOption(ghostValue, ghostName);
-                      onUpdate?.(ghostSelected ? undefined : ghostName);
-                      handleFormDataChange?.();
-                    }}
-                    onClick={() => {inputEl && inputEl.select();}}
-                    disabled={!ghostSelected && disabled}
-                    className={classes.ghostRadiobox}
-                  />
-                  }
-                  label="&nbsp;"
-                  value={ghostValue}
-                  key={ghostValue}
-                  className={classes.ghostFormControl + " " + classes.childFormControl}
-                  classes={{
-                    label: classes.inputLabel
-                  }}
-                />
-                {ghostInput}
-              </ListItem>
-              }
+                { generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption, validate, validationErrorText) }
+                {/* Ghost radio for the text input */}
+                {
+                  ghostInput && <ListItem className={classes.ghostListItem}>
+                    <FormControlLabel
+                      control={
+                        <Radio
+                          color="secondary"
+                          checked={ghostSelected}
+                          onChange={() => {
+                            selectOption(ghostValue, ghostName);
+                            onUpdate?.(ghostSelected ? undefined : ghostName);
+                            handleFormDataChange?.();
+                          }}
+                          onClick={() => {inputEl && inputEl.select();}}
+                          disabled={!ghostSelected && disabled}
+                          className={classes.ghostRadiobox}
+                        />
+                      }
+                      label="&nbsp;"
+                      value={ghostValue}
+                      key={ghostValue}
+                      className={classes.ghostFormControl + " " + classes.childFormControl}
+                      classes={{
+                        label: classes.inputLabel
+                      }}
+                    />
+                    {ghostInput}
+                  </ListItem>
+                }
               </List>
             </RadioGroup>
           </>
@@ -599,7 +599,7 @@ function MultipleChoice(props) {
           questionName={questionName}
           onAddSuggestion={acceptOptionFromWidget}
           {...rest}
-          />
+        />
       </React.Fragment>
     );
   } else {
@@ -621,7 +621,7 @@ function MultipleChoice(props) {
           isMultivalued={true}
           onAddSuggestion={acceptOptionFromWidget}
           {...rest}
-          />
+        />
       </React.Fragment>
     )
   }
@@ -653,7 +653,7 @@ var StyledResponseChild = withStyles(ResponseChild, QuestionnaireStyle);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
-  const {classes, checked, name, id, isDefaultOption, onClick, disabled, isRadio, isInvalid, onDelete, description} = props;
+  const { classes, checked, name, id, isDefaultOption, onClick, disabled, isRadio, isInvalid, onDelete, description } = props;
   const formContext = useFormReaderContext();
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
@@ -662,34 +662,34 @@ function ResponseChild(props) {
       <ListItem
         key={name}
         className={isDefaultOption ? classes.selectionChild : undefined}
-        sx={isDefaultOption ? undefined : {alignItems: "start", flexWrap: "nowrap"}}
+        sx={isDefaultOption ? undefined : { alignItems: "start", flexWrap: "nowrap" }}
         onClick={evt => {
           evt.preventDefault();
           onClick(id, name, checked);
           handleFormDataChange?.();
         }}
       >
-          { /* This is either a Checkbox/Radiobox if this is a default suggestion, or a delete button otherwise */
+        { /* This is either a Checkbox/Radiobox if this is a default suggestion, or a delete button otherwise */
           isDefaultOption ?
             (<>
               <FormControlLabel
                 control={
                   isRadio ?
-                  (
-                    <Radio
-                      color="secondary"
-                      disabled={!checked && disabled}
-                      className={classes.checkbox}
-                    />
-                  ) :
-                  (
-                    <Checkbox
-                      checked={checked}
-                      disabled={!checked && disabled}
-                      className={classes.checkbox}
-                      color="secondary"
-                    />
-                  )
+                    (
+                      <Radio
+                        color="secondary"
+                        disabled={!checked && disabled}
+                        className={classes.checkbox}
+                      />
+                    ) :
+                    (
+                      <Checkbox
+                        checked={checked}
+                        disabled={!checked && disabled}
+                        className={classes.checkbox}
+                        color="secondary"
+                      />
+                    )
                 }
                 label={name}
                 value={id}
@@ -701,31 +701,31 @@ function ResponseChild(props) {
               <FormattedText className={classes.selectionDescription} variant="caption" color="textSecondary">
                 {description}
               </FormattedText>
-             </>
+            </>
             ) : ((name !== "") && (
-            <React.Fragment>
-              <IconButton
-                onClick={() => {onDelete(id, name)}}
-                className={classes.deleteButton}
-                color="secondary"
-                title="Delete"
-                size="large"
-              >
-                <Close color="action" className={classes.deleteIcon}/>
-              </IconButton>
-              <div className={classes.inputLabel}>
-                <Typography color={isInvalid ? "error" : ""}>
-                  {name}
-                </Typography>
-              </div>
-              { description &&
+              <React.Fragment>
+                <IconButton
+                  onClick={() => {onDelete(id, name)}}
+                  className={classes.deleteButton}
+                  color="secondary"
+                  title="Delete"
+                  size="large"
+                >
+                  <Close color="action" className={classes.deleteIcon}/>
+                </IconButton>
+                <div className={classes.inputLabel}>
+                  <Typography color={isInvalid ? "error" : ""}>
+                    {name}
+                  </Typography>
+                </div>
+                { description &&
                 <FormattedText className={classes.selectionDescription} variant="caption" color={isInvalid ? "error" : "textSecondary"}>
                   {description}
                 </FormattedText>
-              }
-            </React.Fragment>
-          ))
-          }
+                }
+              </React.Fragment>
+            ))
+        }
       </ListItem>
     </React.Fragment>
   );

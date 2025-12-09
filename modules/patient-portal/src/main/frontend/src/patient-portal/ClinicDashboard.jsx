@@ -191,21 +191,21 @@ function ClinicDashboard(props) {
       { description && <Typography variant="overline">{description}</Typography>}
       <Grid container spacing={4} className={classes.dashboardContainer}>
         {/* Appointments view */}
-        <Grid size={{xs:12, xl:6}} key={`view-appointments-${clinicId}`} className={classes.dashboardEntry}>
+        <Grid size={{ xs:12, xl:6 }} key={`view-appointments-${clinicId}`} className={classes.dashboardEntry}>
           <ClinicVisits color={getColor(0)} visitInfo={visitInfo} clinicId={clinicId} dashboardConfig={dashboardConfig}/>
         </Grid>
         {/* Survey views */}
         { surveys?.map((s, index) => (
-            <Grid size={{xs:12, xl:6}} key={`view-survey-${clinicId}-${s["@name"]}`} className={classes.dashboardEntry}>
-              <ClinicForms data={s} color={getColor(index + 1)} visitInfo={visitInfo} clinicId={clinicId} dashboardConfig={dashboardConfig}/>
-            </Grid>
-          ))
+          <Grid size={{ xs:12, xl:6 }} key={`view-survey-${clinicId}-${s["@name"]}`} className={classes.dashboardEntry}>
+            <ClinicForms data={s} color={getColor(index + 1)} visitInfo={visitInfo} clinicId={clinicId} dashboardConfig={dashboardConfig}/>
+          </Grid>
+        ))
         }
         {/* Extensions */}
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
-            return <Grid size={{xs:12, xl:6}} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
+            return <Grid size={{ xs:12, xl:6 }} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
               <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} clinicId={clinicId} dashboardConfig={dashboardConfig} extension={extension} />
             </Grid>
           })

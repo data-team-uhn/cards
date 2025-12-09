@@ -32,7 +32,7 @@ import { deepPurple, indigo } from '@mui/material/colors';
 import palette from "google-palette";
 import { useNavigate } from 'react-router';
 import {
-   BarChart, Bar, CartesianGrid, Line, LineChart, Label, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
+  BarChart, Bar, CartesianGrid, Line, LineChart, Label, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from "recharts";
 import { withStyles } from 'tss-react/mui';
 
@@ -70,7 +70,7 @@ function Statistic(props) {
     } else {
       // Integers represent a single point
       keys[label] = 1;
-      return {[label]: data};
+      return { [label]: data };
     }
   }
 
@@ -78,7 +78,7 @@ function Statistic(props) {
   let rechartsData = [];
   let allFieldsDict = {};
   for (const [key, value] of Object.entries(definition["data"])) {
-    rechartsData.push({"x": key, ...expandData(definition["y-label"], value, allFieldsDict)});
+    rechartsData.push({ "x": key, ...expandData(definition["y-label"], value, allFieldsDict) });
   }
 
   // Sort the data we provide to recharts according to its x value
@@ -128,14 +128,14 @@ function Statistic(props) {
         && field["label"] in allFieldsDict)
       // Sort according to defaultOrder (if they exist)
       .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
-      .map((field) => ({value: field["value"], label: field["label"]}))
+      .map((field) => ({ value: field["value"], label: field["label"] }))
     // If there are any fields in our data that aren't in the splitVar's answerOptions, include
     // them at the end
     allFields = allFields.concat(
       Object.keys(allFieldsDict)
         .filter((field) => !allFields.some(f => (f.label == field)))
-        .map(field => ({value : field == "Not specified" ? undefined : field, label: field}))
-      );
+        .map(field => ({ value : field == "Not specified" ? undefined : field, label: field }))
+    );
   }
   groupNullAndFalseAnswersForXVar && allFields.push("Not specified");
 
@@ -199,87 +199,87 @@ function Statistic(props) {
     };
   }
 
-  let customStyle = disableClick ? {} : {cursor: "pointer"};
+  let customStyle = disableClick ? {} : { cursor: "pointer" };
 
   let CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (<>
-            <div className={classes.customTooltip}>
-              <ul className={classes.label}>
-                { payload.map(item =>
-                  <li style={{color: item.color}} key={item.name}>
-                    { item.name == "Not specified" ?
-                      `${item.name} - ${definition["y-label"]}: ${item.payload[item.name]}`
-                      :
-                      `${item.payload.x} - ${item.name}: ${item.payload[item.name]}`
-                    }
-                  </li>
-                )}
-              </ul>
-            </div>
-          </>
+        <div className={classes.customTooltip}>
+          <ul className={classes.label}>
+            { payload.map(item =>
+              <li style={{ color: item.color }} key={item.name}>
+                { item.name == "Not specified" ?
+                  `${item.name} - ${definition["y-label"]}: ${item.payload[item.name]}`
+                  :
+                  `${item.payload.x} - ${item.name}: ${item.payload[item.name]}`
+                }
+              </li>
+            )}
+          </ul>
+        </div>
+      </>
       );
     }
 
     return null;
   };
 
-  return <Grid size={{xs:12, lg:6}}>
+  return <Grid size={{ xs:12, lg:6 }}>
     <Card className={classes.statsCard}>
       <CardHeader
         disableTypography
-        avatar={<Avatar style={{background: iconColor }}>{icon}</Avatar>}
+        avatar={<Avatar style={{ background: iconColor }}>{icon}</Avatar>}
         title={<Typography variant="h6">{definition["name"]}</Typography>}
-        />
+      />
       <CardContent>
-      { allFields.length == 0 ?
-        <Grid container justifyContent="center" alignItems="center" style={{height: widgetHeight}}>
-          <Grid>
-            <Typography color="textSecondary" variant="caption">No data available for this statistic</Typography>
+        { allFields.length == 0 ?
+          <Grid container justifyContent="center" alignItems="center" style={{ height: widgetHeight }}>
+            <Grid>
+              <Typography color="textSecondary" variant="caption">No data available for this statistic</Typography>
+            </Grid>
           </Grid>
-        </Grid>
-        :
-        <ResponsiveContainer width="100%" height={widgetHeight}>
-          <ChartType
-            data={rechartsData}
-            margin={{
-              top: 20 + (isSplit ? 0 : legendHeight),
-              right: 80,
-              bottom: 20,
-              left: 20
-          }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="x">
-              <Label value={definition["x-label"]} offset={-10} position="insideBottom" />
-            </XAxis>
-            <YAxis allowDecimals={false} label={{ value: definition["y-label"], angle: -90, position: 'insideLeft', offset: 10 }} />
-            <Tooltip content={<CustomTooltip />} />
-            {isSplit && <Legend align="right" verticalAlign="top" height={legendHeight} />}
-            {allFields.map((field, idx) =>
-              isBar ? (groupNullAndFalseAnswersForXVar ?
-                <Bar
-                  dataKey={field.label || field}
-                  stackId="a"
-                  fill={chartColours[idx]}
-                  key={idx}
-                  onClick={(data, index) => handleClick(data, field)}
-                  style={customStyle}
-                />
-                :
-                <Bar
-                  dataKey={field.label || field}
-                  fill={chartColours[idx]}
-                  key={idx}
-                  onClick={(data, index) => handleClick(data, field)}
-                  style={customStyle}
-                />
+          :
+          <ResponsiveContainer width="100%" height={widgetHeight}>
+            <ChartType
+              data={rechartsData}
+              margin={{
+                top: 20 + (isSplit ? 0 : legendHeight),
+                right: 80,
+                bottom: 20,
+                left: 20
+              }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="x">
+                <Label value={definition["x-label"]} offset={-10} position="insideBottom" />
+              </XAxis>
+              <YAxis allowDecimals={false} label={{ value: definition["y-label"], angle: -90, position: 'insideLeft', offset: 10 }} />
+              <Tooltip content={<CustomTooltip />} />
+              {isSplit && <Legend align="right" verticalAlign="top" height={legendHeight} />}
+              {allFields.map((field, idx) =>
+                isBar ? (groupNullAndFalseAnswersForXVar ?
+                  <Bar
+                    dataKey={field.label || field}
+                    stackId="a"
+                    fill={chartColours[idx]}
+                    key={idx}
+                    onClick={(data, index) => handleClick(data, field)}
+                    style={customStyle}
+                  />
+                  :
+                  <Bar
+                    dataKey={field.label || field}
+                    fill={chartColours[idx]}
+                    key={idx}
+                    onClick={(data, index) => handleClick(data, field)}
+                    style={customStyle}
+                  />
                 )
-              :
-                <Line dataKey={field.label || field} type="monotone" stroke={chartColours[idx]} key={idx} />
-            )}
-          </ChartType>
-        </ResponsiveContainer>
-      }
+                  :
+                  <Line dataKey={field.label || field} type="monotone" stroke={chartColours[idx]} key={idx} />
+              )}
+            </ChartType>
+          </ResponsiveContainer>
+        }
       </CardContent>
     </Card>
   </Grid>

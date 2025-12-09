@@ -64,7 +64,7 @@ let MarkdownTextValue = (props) => {
 };
 
 ValueComponentManager.registerValueComponent((definition) => {
-    if (definition == "markdown") {
-      return [MarkdownTextValue, 50];
-    }
+  if (definition == "markdown") {
+    return [MarkdownTextValue, 50];
+  }
 });

@@ -22,17 +22,17 @@ import React from "react";
 import { Link } from 'react-router';
 
 function defaultCreator (node) {
-  return {to: "../content.html" + node["@path"]}
+  return { to: "../content.html" + node["@path"] }
 }
 
 function extensionCreator(node, extensionURL) {
-  return extensionURL ? {to: "../content.html/" + extensionURL + node["@path"]} : defaultCreator(node)
+  return extensionURL ? { to: "../content.html/" + extensionURL + node["@path"] } : defaultCreator(node)
 }
 
 // Extract the subject id from the subject path
 // returns null if the parameter is not a valid subject path (expected format: Subjects/<id>)
 export function getHomepageLink (subjectNode, extensionURL="") {
-  let props = extensionCreator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`}, extensionURL);
+  let props = extensionCreator({ "@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}` }, extensionURL);
   return (<Link {...props} underline="hover">{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
 }
 

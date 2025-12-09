@@ -36,7 +36,7 @@ export function QuestionnaireProvider(props) {
     <QuestionnaireReaderContext.Provider value={questions}>
       <QuestionnaireWriterContext.Provider value={setQuestions} {...props}/>
     </QuestionnaireReaderContext.Provider>
-    );
+  );
 }
 
 /**

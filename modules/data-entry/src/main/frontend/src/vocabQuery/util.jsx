@@ -22,38 +22,38 @@ export const REST_URL = window.location.origin + "/Vocabularies/";
 
 // Make a request for a json file, calling callback with parameters (xhr status, json data)
 export function MakeRequest(URL, callback, params) {
-    var xhr = window.Sling.getXHR();
-    xhr.open('GET', URL, true);
-    xhr.responseType = 'json';
-    xhr.onload = () => {
-        var status = (xhr.status === 200 ? null : xhr.status);
-        callback(status, xhr.response, params);
-    }
-    xhr.onerror = () => {
-        callback(xhr.status, xhr.response, params);
-    }
-    xhr.send();
+  var xhr = window.Sling.getXHR();
+  xhr.open('GET', URL, true);
+  xhr.responseType = 'json';
+  xhr.onload = () => {
+    var status = (xhr.status === 200 ? null : xhr.status);
+    callback(status, xhr.response, params);
+  }
+  xhr.onerror = () => {
+    callback(xhr.status, xhr.response, params);
+  }
+  xhr.send();
 }
 
 // Find children of a node by id, calling callback with parameters (xhr status, json data)
 export function MakeChildrenFindingRequest(vocabulary, requestOpt, callback) {
-    const CHILDREN_FINDING_REQUEST_DEFAULTS = {
-        'sort': 'nameSort asc',
-        'limit': '10000',
-        'customFilter': 'is_a:' + requestOpt['input']
-    };
+  const CHILDREN_FINDING_REQUEST_DEFAULTS = {
+    'sort': 'nameSort asc',
+    'limit': '10000',
+    'customFilter': 'is_a:' + requestOpt['input']
+  };
 
-    // Start with the suggest URL
-    var url = new URL(`./${vocabulary}.search.json`, REST_URL);
-    var requestObj = {...CHILDREN_FINDING_REQUEST_DEFAULTS, ...requestOpt};
+  // Start with the suggest URL
+  var url = new URL(`./${vocabulary}.search.json`, REST_URL);
+  var requestObj = { ...CHILDREN_FINDING_REQUEST_DEFAULTS, ...requestOpt };
 
-    // Construct URL
-    for (let request in requestObj) {
-        if (request === "") {
-            continue;
-        }
-        url.searchParams.set(request, requestObj[request]);
+  // Construct URL
+  for (let request in requestObj) {
+    if (request === "") {
+      continue;
     }
+    url.searchParams.set(request, requestObj[request]);
+  }
 
-    MakeRequest(url, callback);
+  MakeRequest(url, callback);
 }

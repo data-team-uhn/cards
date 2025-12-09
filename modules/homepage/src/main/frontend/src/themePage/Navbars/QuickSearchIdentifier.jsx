@@ -41,70 +41,70 @@ const CARDS_QUERY_MATCH_NOTES_KEY = "inNotes";
 
 // Display how the query matched the result
 export function QuickSearchMatch(props) {
-    const { matchData, classes } = props;
-    if (!matchData) { return null; }
-    // Adjust the question text to reflect the notes, if the match was on the notes
-    let questionText = matchData[CARDS_QUERY_QUESTION_KEY] + (matchData[CARDS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
-    return (
-      <React.Fragment>
-        <span className={classes.queryMatchKey}>{questionText}</span>
-        <span className={classes.queryMatchSeparator}>: </span>
-        <span className={classes.queryMatchBefore}>{matchData[CARDS_QUERY_MATCH_BEFORE_KEY]}</span>
-        <span className={classes.highlightedText}>{matchData[CARDS_QUERY_MATCH_TEXT_KEY]}</span>
-        <span className={classes.queryMatchAfter}>{matchData[CARDS_QUERY_MATCH_AFTER_KEY]}</span>
-      </React.Fragment>
-    )
+  const { matchData, classes } = props;
+  if (!matchData) { return null; }
+  // Adjust the question text to reflect the notes, if the match was on the notes
+  let questionText = matchData[CARDS_QUERY_QUESTION_KEY] + (matchData[CARDS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
+  return (
+    <React.Fragment>
+      <span className={classes.queryMatchKey}>{questionText}</span>
+      <span className={classes.queryMatchSeparator}>: </span>
+      <span className={classes.queryMatchBefore}>{matchData[CARDS_QUERY_MATCH_BEFORE_KEY]}</span>
+      <span className={classes.highlightedText}>{matchData[CARDS_QUERY_MATCH_TEXT_KEY]}</span>
+      <span className={classes.queryMatchAfter}>{matchData[CARDS_QUERY_MATCH_AFTER_KEY]}</span>
+    </React.Fragment>
+  )
 }
 
 function MatchAvatar(props) {
-    const { matchData, classes } = props;
-    const theme = useTheme();
-    let icon = <DescriptionIcon />;
-    let style = '';
-    switch (matchData["jcr:primaryType"]) {
-      case "cards:Subject":
-        icon = <AssignmentIndIcon />;
-        style = { backgroundColor: theme.palette.secondary.main };
-        break;
-      case "cards:Questionnaire":
-        icon = <AssignmentIcon  />;
-        style = { backgroundColor: theme.palette.text.secondary };
-        break;
+  const { matchData, classes } = props;
+  const theme = useTheme();
+  let icon = <DescriptionIcon />;
+  let style = '';
+  switch (matchData["jcr:primaryType"]) {
+    case "cards:Subject":
+      icon = <AssignmentIndIcon />;
+      style = { backgroundColor: theme.palette.secondary.main };
+      break;
+    case "cards:Questionnaire":
+      icon = <AssignmentIcon  />;
+      style = { backgroundColor: theme.palette.text.secondary };
+      break;
       // default covers other cases
-      case "cards:Form":
-        icon = <DescriptionIcon />;
-        style = { backgroundColor: theme.palette.primary.main };
-        break;
+    case "cards:Form":
+      icon = <DescriptionIcon />;
+      style = { backgroundColor: theme.palette.primary.main };
+      break;
       // default covers other cases
-      default:
-        icon = <OtherIcon />;
-        style = { backgroundColor: theme.palette.text.primary };
-        break;
-    }
-    return <Avatar className={classes.searchResultAvatar} style={style}>{icon}</Avatar>;
+    default:
+      icon = <OtherIcon />;
+      style = { backgroundColor: theme.palette.text.primary };
+      break;
+  }
+  return <Avatar className={classes.searchResultAvatar} style={style}>{icon}</Avatar>;
 }
 
 function ListItemLink(props) {
   return <ListItemButton alignItems="center" component={Link} {...props} />;
 }
 
-  // Display a quick search result identifier with link to result section
+// Display a quick search result identifier with link to result section
 export function QuickSearchIdentifier(props) {
-    let { resultData, hideMatchInfo, disableLink, classes } = props;
-    let anchorPath = resultData[CARDS_QUERY_MATCH_KEY] ? resultData[CARDS_QUERY_MATCH_KEY][CARDS_QUERY_MATCH_PATH_KEY] : '';
-    let fullPath = `/content.html${resultData["@path"]}#${encodeURIComponent(anchorPath)}`;
-    if (resultData["jcr:primaryType"] == "cards:Questionnaire") {
-      fullPath = `/content.html/admin${resultData["@path"]}#${encodeURIComponent(anchorPath)}`;
-    }
-    let showMatchInfo = !hideMatchInfo && resultData[CARDS_QUERY_MATCH_KEY];
-    return (<ListItemLink to={disableLink ? '#' : fullPath}>
-              <ListItemAvatar>
-                <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={resultData.entityIdentifier || getEntityIdentifier(resultData)}
-                secondary={showMatchInfo && (<QuickSearchMatch matchData={resultData[CARDS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
-                className={classes.dropdownItem}
-              />
-           </ListItemLink>)
+  let { resultData, hideMatchInfo, disableLink, classes } = props;
+  let anchorPath = resultData[CARDS_QUERY_MATCH_KEY] ? resultData[CARDS_QUERY_MATCH_KEY][CARDS_QUERY_MATCH_PATH_KEY] : '';
+  let fullPath = `/content.html${resultData["@path"]}#${encodeURIComponent(anchorPath)}`;
+  if (resultData["jcr:primaryType"] == "cards:Questionnaire") {
+    fullPath = `/content.html/admin${resultData["@path"]}#${encodeURIComponent(anchorPath)}`;
+  }
+  let showMatchInfo = !hideMatchInfo && resultData[CARDS_QUERY_MATCH_KEY];
+  return (<ListItemLink to={disableLink ? '#' : fullPath}>
+    <ListItemAvatar>
+      <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
+    </ListItemAvatar>
+    <ListItemText
+      primary={resultData.entityIdentifier || getEntityIdentifier(resultData)}
+      secondary={showMatchInfo && (<QuickSearchMatch matchData={resultData[CARDS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
+      className={classes.dropdownItem}
+    />
+  </ListItemLink>)
 }

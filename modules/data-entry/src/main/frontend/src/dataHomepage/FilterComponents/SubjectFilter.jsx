@@ -90,17 +90,17 @@ const SubjectFilter = forwardRef((props, ref) => {
       disableDropdownItemLink={true}
       error={!!error /* Turn into a boolean to prevent PropTypes warnings */}
       className={classNames(classes.answerField,
-                            {[classes.subjectFilter]: hasSelectedValidSubject,
-                            [classes.invalidSubjectText]: !hasSelectedValidSubject,}
-                           )}
+        { [classes.subjectFilter]: hasSelectedValidSubject,
+          [classes.invalidSubjectText]: !hasSelectedValidSubject, }
+      )}
       startAdornment={
         error && <InputAdornment position="end">
           <Tooltip title={error}>
             <ErrorIcon />
           </Tooltip>
         </InputAdornment> || undefined
-        }
-      />
+      }
+    />
   )
 });
 

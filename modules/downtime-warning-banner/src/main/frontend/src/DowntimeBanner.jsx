@@ -62,15 +62,15 @@ export default function DowntimeWarning(props) {
   }, []);
 
   if (!enabled || !fromDate || !toDate) {
-      return null;
+    return null;
   }
 
   return (
     <AppBar position="fixed" style={props.style} ref={props.onRender}>
       { error &&
-        <Alert variant="filled" square severity="error" sx={{justifyContent: "center"}}>{error}</Alert>
+        <Alert variant="filled" square severity="error" sx={{ justifyContent: "center" }}>{error}</Alert>
       }
-      <Alert variant="filled" square severity="info" icon={<BuildIcon/>} sx={{justifyContent: "center"}}>
+      <Alert variant="filled" square severity="info" icon={<BuildIcon/>} sx={{ justifyContent: "center" }}>
         Scheduled Maintenance: {fromDate} - {toDate}
       </Alert>
     </AppBar>

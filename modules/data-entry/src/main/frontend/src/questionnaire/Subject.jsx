@@ -154,26 +154,26 @@ function Subject(props) {
             })}
           </Tabs>
           <Card variant="outlined"><CardContent>
-          <Grid container spacing={4} direction="column" wrap="nowrap">
-          { activeTab === tabs.indexOf("Chart")
-          ? <SubjectContainer
-              id={currentSubjectId}
-              key={currentSubjectId}
-              classes={classes}
-              maxDisplayed={maxDisplayed}
-              pageSize={pageSize}
-              subject={currentSubject}
-              fetchSubjectData={fetchRelatedRef.current}
-              baseURL={baseURL}
-              extensionURL={extensionURL}
-            />
-          : <Grid>
-            <SubjectTimeline
-              classes={classes}
-              subject={currentSubject}
-            />
-            </Grid> }
-          </Grid>
+            <Grid container spacing={4} direction="column" wrap="nowrap">
+              { activeTab === tabs.indexOf("Chart")
+                ? <SubjectContainer
+                  id={currentSubjectId}
+                  key={currentSubjectId}
+                  classes={classes}
+                  maxDisplayed={maxDisplayed}
+                  pageSize={pageSize}
+                  subject={currentSubject}
+                  fetchSubjectData={fetchRelatedRef.current}
+                  baseURL={baseURL}
+                  extensionURL={extensionURL}
+                />
+                : <Grid>
+                  <SubjectTimeline
+                    classes={classes}
+                    subject={currentSubject}
+                  />
+                </Grid> }
+            </Grid>
           </CardContent></Card>
         </Grid>
       </Grid>
@@ -207,9 +207,9 @@ function SubjectContainer(props) {
   let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created' OPTION (index tag property)`, "cards:Subject");
   let fetchRelated = () => {
     fetchWithReLogin(globalLoginDisplay, check_url)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then((json) => {setRelatedSubjects(json.rows);})
-    .catch(handleError);
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {setRelatedSubjects(json.rows);})
+      .catch(handleError);
   }
 
   // Fetch this Subject's data
@@ -293,7 +293,7 @@ function SubjectHeader(props) {
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
   let handleSubjectResponse = (json) => {
     getSubject(json);
-    setSubject({data: json});
+    setSubject({ data: json });
     setStatusFlags(json.statusFlags);
   };
 
@@ -337,26 +337,26 @@ function SubjectHeader(props) {
   let title = `${label || "Subject"} ${identifier}`;
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let subjectMenu = (
-            <div className={classes.actionsMenu}>
-              <SubjectActions
-                subject={subject?.data}
-                reloadSubject={fetchSubjectData}
-              />
-              <PrintButton
-                resourcePath={path}
-                resourceData={subject?.data}
-                breadcrumb={pageTitle}
-                date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-              />
-              <DeleteButton
-                entryPath={path}
-                entryName={getEntityIdentifier(subject?.data)}
-                entryType="Subject"
-                entryLabel={label}
-                onComplete={handleDeletion}
-                size="large"
-              />
-            </div>
+    <div className={classes.actionsMenu}>
+      <SubjectActions
+        subject={subject?.data}
+        reloadSubject={fetchSubjectData}
+      />
+      <PrintButton
+        resourcePath={path}
+        resourceData={subject?.data}
+        breadcrumb={pageTitle}
+        date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+      />
+      <DeleteButton
+        entryPath={path}
+        entryName={getEntityIdentifier(subject?.data)}
+        entryType="Subject"
+        entryLabel={label}
+        onComplete={handleDeletion}
+        size="large"
+      />
+    </div>
   );
   let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true, extensionURL) || [getHomepageLink(subject?.data, extensionURL)]);;
 
@@ -375,17 +375,17 @@ function SubjectHeader(props) {
             size="small"
           />
         ))}
-        >
-      {
-        subject?.data?.['jcr:created'] ?
-        <Typography variant="overline"  color="textSecondary">
-          {"Entered by " + subject.data['jcr:createdBy'] + " on "}
-          <Tooltip title={subject.data['jcr:created']}>
-            <span>{DateTime.fromISO(subject.data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
-          </Tooltip>
-        </Typography>
-        : ""
-      }
+      >
+        {
+          subject?.data?.['jcr:created'] ?
+            <Typography variant="overline"  color="textSecondary">
+              {"Entered by " + subject.data['jcr:createdBy'] + " on "}
+              <Tooltip title={subject.data['jcr:created']}>
+                <span>{DateTime.fromISO(subject.data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
+              </Tooltip>
+            </Typography>
+            : ""
+        }
       </ResourceHeader>
   );
 }
@@ -410,9 +410,9 @@ function SubjectMemberInternal (props) {
   // It will be stored in the `tableData` state variable
   let fetchTableData = () => {
     fetchWithReLogin(globalLoginDisplay, customUrl)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then(handleTableResponse)
-    .catch(handleTableError);
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(handleTableResponse)
+      .catch(handleTableError);
   };
 
   let handleTableResponse = (json) => {
@@ -470,57 +470,57 @@ function SubjectMemberInternal (props) {
   let expandAction = (
     <Tooltip title={`Data for ${title}`}>
       <IconButton onClick={()=> setExpanded(!expanded)}>
-      { expanded ? <ExpandedIcon/> : <CollapsedIcon /> }
+        { expanded ? <ExpandedIcon/> : <CollapsedIcon /> }
       </IconButton>
     </Tooltip>
   )
   let action = <>
-                <SubjectActions
-                  subject={data}
-                  reloadSubject={fetchSubjectData}
-                  className={classes.childSubjectHeaderButton}
-                />
-                <PrintButton
-                  resourcePath={path}
-                  resourceData={data}
-                  breadcrumb={getTextHierarchy(data, true)}
-                  date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-                  className={classes.childSubjectHeaderButton}
-                  disableShortcut
-                />
-                <DeleteButton
-                  entryPath={path}
-                  entryName={getEntityIdentifier(data)}
-                  entryType="Subject"
-                  entryLabel={label}
-                  onComplete={onDelete}
-                  className={classes.childSubjectHeaderButton}
-                />
-              </>
+    <SubjectActions
+      subject={data}
+      reloadSubject={fetchSubjectData}
+      className={classes.childSubjectHeaderButton}
+    />
+    <PrintButton
+      resourcePath={path}
+      resourceData={data}
+      breadcrumb={getTextHierarchy(data, true)}
+      date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+      className={classes.childSubjectHeaderButton}
+      disableShortcut
+    />
+    <DeleteButton
+      entryPath={path}
+      entryName={getEntityIdentifier(data)}
+      entryType="Subject"
+      entryLabel={label}
+      onComplete={onDelete}
+      className={classes.childSubjectHeaderButton}
+    />
+  </>
 
   let tags = statusFlags?.map( item => (
-      <Chip
-        label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
-        variant="outlined"
-        className={`${[classes[item + "Flag"] || classes.DefaultFlag, classes.childSubjectFlag].join(" ")}`}
-        size="small"
-      />
-    ))
+    <Chip
+      label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
+      variant="outlined"
+      className={`${[classes[item + "Flag"] || classes.DefaultFlag, classes.childSubjectFlag].join(" ")}`}
+      size="small"
+    />
+  ))
 
   return ( data &&
     <>
-    {
-      level > 0 &&
+      {
+        level > 0 &&
         <Grid className={classes.childSubjectHeader}>
           <Grid container spacing={1} justifyContent="flex-start">
             <Grid size="auto">{expandAction}</Grid>
             <Grid size="auto">{avatar}</Grid>
             <Grid size="grow">
               <Typography variant="overline">
-                 {label} <Link to={baseURL + path} underline="hover">{identifier}</Link>
+                {label} <Link to={baseURL + path} underline="hover">{identifier}</Link>
               </Typography>
             </Grid>
-            <Grid size={{xs: 3.5}}>{tags}</Grid>
+            <Grid size={{ xs: 3.5 }}>{tags}</Grid>
             <Grid className={classes.childSubjectActions}>{action}</Grid>
           </Grid>
         </Grid>
@@ -606,23 +606,23 @@ function SubjectMemberInternal (props) {
                       },
                     },
                     Cell: ({ row }) => (
-                                   <Grid container spacing={1} justifyContent="flex-start" wrap="nowrap">
-                                     <Grid size="auto">
-                                       <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
-                                     </Grid>
-                                     <Grid size="auto">
-                                       <Link to={baseURL + row.original["@path"]} underline="hover">
-                                         {questionnaireTitle}
-                                       </Link>
-                                       <Typography variant="caption" component="div" color="textSecondary">
+                      <Grid container spacing={1} justifyContent="flex-start" wrap="nowrap">
+                        <Grid size="auto">
+                          <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
+                        </Grid>
+                        <Grid size="auto">
+                          <Link to={baseURL + row.original["@path"]} underline="hover">
+                            {questionnaireTitle}
+                          </Link>
+                          <Typography variant="caption" component="div" color="textSecondary">
                                          Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
-                                       </Typography>
-                                       <Typography variant="caption" component="div" color="textSecondary">
+                          </Typography>
+                          <Typography variant="caption" component="div" color="textSecondary">
                                          Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
-                                       </Typography>
-                                     </Grid>
-                                   </Grid>
-                                 ) },
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    ) },
                   { id: 'Status',
                     muiTableBodyCellProps: {
                       sx: (theme) => ({
@@ -632,21 +632,21 @@ function SubjectMemberInternal (props) {
                       }),
                     },
                     Cell: ({ row }) => (<Box className={classes.formFlagBox}>
-                                         { row.original["statusFlags"].map((status) => {
-                                           return <Chip
-                                             key={status}
-                                             label={wordToTitleCase(status)}
-                                             variant="outlined"
-                                             className={`${classes.childFormFlag} ${classes[status + "Flag"] || classes.DefaultFlag}`}
-                                             size="small"
-                                           />
-                                         })}
-                                       </Box>) },
+                      { row.original["statusFlags"].map((status) => {
+                        return <Chip
+                          key={status}
+                          label={wordToTitleCase(status)}
+                          variant="outlined"
+                          className={`${classes.childFormFlag} ${classes[status + "Flag"] || classes.DefaultFlag}`}
+                          size="small"
+                        />
+                      })}
+                    </Box>) },
                 ]}
                 enableRowActions
                 positionActionsColumn="last"
                 renderRowActions={({ row }) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
+                  <Box sx={{ display: 'flex', flexWrap: 'nowrap' }}>
                     <EditButton
                       entryPath={row.original["@path"]}
                       entryType="Form"
@@ -664,7 +664,7 @@ function SubjectMemberInternal (props) {
             </Grid>
           ))
         }
-        </>
+      </>
       }
       { /* Render child subjects at the bottom when the current subject is expanded */ }
       { expanded && childSubjects?.length ?
@@ -711,9 +711,9 @@ function FormData(props) {
   // It will be stored in the `data` state variable
   let getFormData = (formID) => {
     fetchWithReLogin(globalLoginDisplay, `/Forms/${formID}.deep.json`)
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => setData(json))
-        .catch(handleFormError)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => setData(json))
+      .catch(handleFormError)
   }
 
   let handleFormError = (response) => {
@@ -756,8 +756,8 @@ function FormData(props) {
       <div className={classes.formPreview}>
         {
           Object.entries(data.questionnaire)
-          .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-          .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key, handleDisplayQuestion))
+            .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+            .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key, handleDisplayQuestion))
         }
         { !displayed && <Typography variant="caption" color="textSecondary">There is no data in this form</Typography> }
       </div>
@@ -792,18 +792,18 @@ export function displayQuestion(entryDefinition, data, key, classes) {
             // Encode the filename to ensure special charactars don't result in a broken link
             let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
             return (
-                <Tooltip key={answerValue} title={"Download " + answerValue}>
-                  <Chip
-                    icon={<FileIcon />}
-                    label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
-                    color="primary"
-                    variant="outlined"
-                    size="small"
-                  />
-                </Tooltip>
+              <Tooltip key={answerValue} title={"Download " + answerValue}>
+                <Chip
+                  icon={<FileIcon />}
+                  label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
+                  color="primary"
+                  variant="outlined"
+                  size="small"
+                />
+              </Tooltip>
             );
           })}
-          </>
+        </>
         break;
       case "pedigree":
         if (!prettyPrintedAnswers) {
@@ -836,11 +836,11 @@ export function displayQuestion(entryDefinition, data, key, classes) {
     }
     return (
       isHidden ? null :
-      <Typography variant="body2" component="div" className={classes.formPreviewQuestion} key={key}>
-        {questionTitle}
-        <span className={classes.formPreviewSeparator}>–</span>
-        <div className={classes.formPreviewAnswer}>{content}</div>
-      </Typography>
+        <Typography variant="body2" component="div" className={classes.formPreviewQuestion} key={key}>
+          {questionTitle}
+          <span className={classes.formPreviewSeparator}>–</span>
+          <div className={classes.formPreviewAnswer}>{content}</div>
+        </Typography>
     );
   }
   else return null;
@@ -848,25 +848,25 @@ export function displayQuestion(entryDefinition, data, key, classes) {
 
 // Handle questions and sections differently
 export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion) {
-    if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-      return handleDisplayQuestion(entryDefinition, data, key);
-    } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-      // If a section is found, filter questions inside the section
-      let currentSection = entryDefinition;
-      if (data.questionnaire) {
-        currentSection = Object.entries(data.questionnaire)
-          .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType'])
+  if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+    return handleDisplayQuestion(entryDefinition, data, key);
+  } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+    // If a section is found, filter questions inside the section
+    let currentSection = entryDefinition;
+    if (data.questionnaire) {
+      currentSection = Object.entries(data.questionnaire)
+        .filter(([key, value]) => SECTION_TYPES.includes(value['jcr:primaryType'])
                                && value["@name"] == entryDefinition["@name"])[0]
-        currentSection = currentSection ? currentSection[1] : "";
-      }
+      currentSection = currentSection ? currentSection[1] : "";
+    }
 
-      let currentAnswers = Object.entries(data)
-        .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
+    let currentAnswers = Object.entries(data)
+      .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
                                && value["section"]["@name"] == entryDefinition["@name"])[0];
-      currentAnswers = currentAnswers ? currentAnswers[1] : "";
-      return Object.entries(currentSection)
-        .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']) || SECTION_TYPES.includes(value['jcr:primaryType']))
-        .map(([key, entryDefinition]) => handleDisplay(entryDefinition, currentAnswers, key, handleDisplayQuestion))
+    currentAnswers = currentAnswers ? currentAnswers[1] : "";
+    return Object.entries(currentSection)
+      .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']) || SECTION_TYPES.includes(value['jcr:primaryType']))
+      .map(([key, entryDefinition]) => handleDisplay(entryDefinition, currentAnswers, key, handleDisplayQuestion))
   }
 }
 

@@ -19,11 +19,11 @@
 import React, { useState } from 'react';
 
 import {
-    Checkbox,
-    FormControlLabel,
-    List,
-    ListItem,
-    TextField,
+  Checkbox,
+  FormControlLabel,
+  List,
+  ListItem,
+  TextField,
 } from '@mui/material';
 
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
@@ -67,18 +67,18 @@ function DashboardSettingsConfiguration() {
   }
 
   return (
-      <AdminConfigScreen
-        title="Clinic dashboard"
-        configPath="/Survey/DashboardSettings"
-        configTemplate={fields.reduce((t, k) => ({...t, [k.key] : ""}), {})}
-        onConfigFetched={readDashboardSettings}
-        hasChanges={hasChanges}
-        buildConfigData={buildConfigData}
-        onConfigSaved={() => setHasChanges(false)}
-        >
-          <List>
-          { fields.map(field => { return (
-            <ListItem key={field.key}>
+    <AdminConfigScreen
+      title="Clinic dashboard"
+      configPath="/Survey/DashboardSettings"
+      configTemplate={fields.reduce((t, k) => ({ ...t, [k.key] : "" }), {})}
+      onConfigFetched={readDashboardSettings}
+      hasChanges={hasChanges}
+      buildConfigData={buildConfigData}
+      onConfigSaved={() => setHasChanges(false)}
+    >
+      <List>
+        { fields.map(field => { return (
+          <ListItem key={field.key}>
             { field.type != "boolean" ?
               <TextField
                 slotProps={{
@@ -107,11 +107,11 @@ function DashboardSettingsConfiguration() {
                 label={camelCaseToWords(field.key)}
               />
             }
-            </ListItem>)
-            })
-          }
-          </List>
-      </AdminConfigScreen>
+          </ListItem>)
+        })
+        }
+      </List>
+    </AdminConfigScreen>
   );
 }
 

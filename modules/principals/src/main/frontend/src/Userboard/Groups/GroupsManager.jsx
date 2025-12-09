@@ -164,9 +164,9 @@ function GroupsManager(props) {
   let getGroupUsers = (groupName) => {
     //Get groups filtering all users by group name
     let groupUsers = users.filter( (user) => {
-            let memberOf = user.memberOf.map((group) => group.name);
-            return memberOf.indexOf(groupName) > -1;
-        });
+      let memberOf = user.memberOf.map((group) => group.name);
+      return memberOf.indexOf(groupName) > -1;
+    });
     return groupUsers;
   }
 
@@ -208,98 +208,98 @@ function GroupsManager(props) {
   }
 
   return (
-      <AdminScreen
-        title="Groups"
-        action={
-          <NewItemButton
-            title="Create new group"
-            onClick={(event) => setDeployCreateGroup(true)}
-          />
-        }>
-        <CreateGroupDialog
-          isOpen={deployCreateGroup}
-          handleClose={() => setDeployCreateGroup(false)}
-          reload={() => handleReload(true)}
+    <AdminScreen
+      title="Groups"
+      action={
+        <NewItemButton
+          title="Create new group"
+          onClick={(event) => setDeployCreateGroup(true)}
         />
-        <DeletePrincipalDialog
-          isOpen={deployDeleteGroup}
-          handleClose={() => setDeployDeleteGroup(false)}
-          name={currentGroupName}
-          reload={() => handleReload(true)}
-          url={GROUP_URL}
-          type="group"
-        />
-        <AddUserToGroupDialog
-          isOpen={deployAddGroupUsers}
-          handleClose={() => setDeployAddGroupUsers(false)}
-          name={currentGroupName}
-          groupUsers={currentGroupUsers}
-          allUsers={users}
-          reload={handleReload}
-        />
-        <div className={classes.root}>
-          <MaterialReactTable
-            enableColumnActions={false}
-            enableColumnFilters={false}
-            enableSorting={false}
-            enableToolbarInternalActions={false}
-            initialState={{ showGlobalFilter: true }}
-            muiTableHeadCellProps={{
-              sx: (theme) => ({
-                background: theme.palette.grey['200'],
-              }),
-            }}
-            displayColumnDefOptions={{
-              'mrt-row-actions': {
-                size: 10,
-                muiTableHeadCellProps: {align: 'right'},
-                muiTableBodyCellProps: {
-                  sx: {
-                    padding: '0',
-                  },
+      }>
+      <CreateGroupDialog
+        isOpen={deployCreateGroup}
+        handleClose={() => setDeployCreateGroup(false)}
+        reload={() => handleReload(true)}
+      />
+      <DeletePrincipalDialog
+        isOpen={deployDeleteGroup}
+        handleClose={() => setDeployDeleteGroup(false)}
+        name={currentGroupName}
+        reload={() => handleReload(true)}
+        url={GROUP_URL}
+        type="group"
+      />
+      <AddUserToGroupDialog
+        isOpen={deployAddGroupUsers}
+        handleClose={() => setDeployAddGroupUsers(false)}
+        name={currentGroupName}
+        groupUsers={currentGroupUsers}
+        allUsers={users}
+        reload={handleReload}
+      />
+      <div className={classes.root}>
+        <MaterialReactTable
+          enableColumnActions={false}
+          enableColumnFilters={false}
+          enableSorting={false}
+          enableToolbarInternalActions={false}
+          initialState={{ showGlobalFilter: true }}
+          muiTableHeadCellProps={{
+            sx: (theme) => ({
+              background: theme.palette.grey['200'],
+            }),
+          }}
+          displayColumnDefOptions={{
+            'mrt-row-actions': {
+              size: 10,
+              muiTableHeadCellProps: { align: 'right' },
+              muiTableBodyCellProps: {
+                sx: {
+                  padding: '0',
                 },
               },
-              'mrt-row-expand': {
-                size: 4,
-              },
-            }}
-            columns={[
-              { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-                Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar>)
-              },
-              { header: 'Name', accessorKey: 'name', size: 300, },
-              { header: 'Members', accessorKey: 'members', size: 10, },
-              { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
-            ]}
-            data={groups}
-            enableRowActions
-            positionActionsColumn="last"
-            renderRowActions={({ row }) => (
-              <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
-                <Tooltip title="Delete Group">
-                  <IconButton
-                    onClick={() => { setCurrentGroupName(row.original.name);
-                                     setDeployDeleteGroup(true);}}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
-            renderDetailPanel={({ row }) =>
-              <GroupUsersTable
-                group={row.original}
-                classes={classes}
-                error={error}
-                addUserToGroup={addUserToGroup}
-                getGroupUsers={getGroupUsers}
-                handleRemoveUsers={handleRemoveUsers}
-              />
-            }
-          />
-        </div>
-      </AdminScreen>
-    );
+            },
+            'mrt-row-expand': {
+              size: 4,
+            },
+          }}
+          columns={[
+            { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
+              Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar>)
+            },
+            { header: 'Name', accessorKey: 'name', size: 300, },
+            { header: 'Members', accessorKey: 'members', size: 10, },
+            { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
+          ]}
+          data={groups}
+          enableRowActions
+          positionActionsColumn="last"
+          renderRowActions={({ row }) => (
+            <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
+              <Tooltip title="Delete Group">
+                <IconButton
+                  onClick={() => { setCurrentGroupName(row.original.name);
+                    setDeployDeleteGroup(true);}}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
+          renderDetailPanel={({ row }) =>
+            <GroupUsersTable
+              group={row.original}
+              classes={classes}
+              error={error}
+              addUserToGroup={addUserToGroup}
+              getGroupUsers={getGroupUsers}
+              handleRemoveUsers={handleRemoveUsers}
+            />
+          }
+        />
+      </div>
+    </AdminScreen>
+  );
 }
 
 GroupsManager.propTypes = {

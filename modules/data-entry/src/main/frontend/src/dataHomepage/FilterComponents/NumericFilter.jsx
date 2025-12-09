@@ -63,7 +63,7 @@ const NumericFilter = forwardRef((props, ref) => {
       onChange={(event) => {onChangeInput(event.target.value)}}
       placeholder="empty"
       inputRef={ref}
-      />
+    />
   )
 });
 

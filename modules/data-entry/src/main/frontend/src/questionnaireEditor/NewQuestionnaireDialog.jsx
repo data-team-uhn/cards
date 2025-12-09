@@ -72,12 +72,12 @@ function NewQuestionnaireDialog(props) {
 
   return (
     <React.Fragment>
-       <Dialog open={open} onClose={onClose} autoFocus={false}>
+      <Dialog open={open} onClose={onClose} autoFocus={false}>
         <DialogTitle id="new-questionnaire-title">
           Create a new questionnaire
         </DialogTitle>
         <DialogContent>
-        {error && <Typography color='error'>{error}</Typography>}
+          {error && <Typography color='error'>{error}</Typography>}
           <TextField
             variant="standard"
             autoFocus
@@ -97,20 +97,20 @@ function NewQuestionnaireDialog(props) {
             error={duplicateTitle}
             helperText={duplicateTitle ? "A questionnaire with this name already exists" : " "}
           >  
-        </TextField>
+          </TextField>
         </DialogContent>
         <DialogActions>
           <Button
             variant="outlined"
             onClick={onClose}
-            >
+          >
             Cancel
           </Button>
           <Button
             variant="contained"
             onClick={createQuestionnaire}
             disabled={!title}
-            >
+          >
             Create
           </Button>
         </DialogActions>

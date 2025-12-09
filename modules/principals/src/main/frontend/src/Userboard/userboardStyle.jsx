@@ -18,30 +18,30 @@
 // Taken from https://www.creative-tim.com/product/material-dashboard-react
 
 const userboardStyle = theme => ({
-    root: {
-      "& .MuiPaper-root" : {
-        backgroundColor: "transparent",
-      },
+  root: {
+    "& .MuiPaper-root" : {
+      backgroundColor: "transparent",
     },
-    containerButton: {
-      marginRight: theme.spacing(1),
-    },
-    cardActions: {
-      justifyContent: "flex-end",
-      marginTop: theme.spacing(2)
-    },
-    info: {
-      backgroundColor: theme.palette.info.main
-    },
-    addIcon: {
-      backgroundColor: theme.palette.primary.main
-    },
-    dialogTitle: {
-      padding: theme.spacing(2,0,2,3)
-    },
-    dialogActions: {
-      padding: theme.spacing(2, 3)
-    }
+  },
+  containerButton: {
+    marginRight: theme.spacing(1),
+  },
+  cardActions: {
+    justifyContent: "flex-end",
+    marginTop: theme.spacing(2)
+  },
+  info: {
+    backgroundColor: theme.palette.info.main
+  },
+  addIcon: {
+    backgroundColor: theme.palette.primary.main
+  },
+  dialogTitle: {
+    padding: theme.spacing(2,0,2,3)
+  },
+  dialogActions: {
+    padding: theme.spacing(2, 3)
+  }
 });
 
 export default userboardStyle;

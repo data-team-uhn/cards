@@ -95,10 +95,10 @@ export default function VocabularySearch(props) {
             setLoading(false);
             props.setLoading(false);
           });
-        },
-        () => {
-            setError(true);
-        }
+      },
+      () => {
+        setError(true);
+      }
       );
     }
   }
@@ -132,19 +132,19 @@ export default function VocabularySearch(props) {
           slotProps={{
             input: {
               endAdornment: <InputAdornment position="end">
-                            { keywords &&
+                { keywords &&
                               <IconButton onClick={reset} size="small">
                                 <CloseIcon/>
                               </IconButton>
-                            }
-                            <div className={classes.searchAdornmentWrapper}>
-                              <IconButton onClick={keywords === "" ? reset: search} size="large">
-                                <SearchIcon/>
-                              </IconButton>
-                              {loading && <CircularProgress className={classes.searchProgress} />}
-                            </div>
-                          </InputAdornment>,
-             },
+                }
+                <div className={classes.searchAdornmentWrapper}>
+                  <IconButton onClick={keywords === "" ? reset: search} size="large">
+                    <SearchIcon/>
+                  </IconButton>
+                  {loading && <CircularProgress className={classes.searchProgress} />}
+                </div>
+              </InputAdornment>,
+            },
           }}
           label="Search BioPortal by keywords"
           onChange={(event) => setKeywords(event.target.value)}

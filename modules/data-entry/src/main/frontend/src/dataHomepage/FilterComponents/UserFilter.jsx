@@ -63,23 +63,23 @@ const UserFilter = forwardRef((props, ref) => {
 
   return (
     <Autocomplete
-        value={selection && users?.find(item => item.name == selection) || null}
-        filterOptions={filterUserOptions}
-        onChange={(event, value) => {
-          setSelection(value?.name);
-          onChangeInput(value?.name);
-        }}
-        getOptionLabel={(option) => option?.name}
-        options={users || []}
-        renderInput={(params) =>
-          <TextField
-            ref={ref}
-            variant="standard"
-            placeholder="Select user"
-            {...params}
-          />
-        }
-      />
+      value={selection && users?.find(item => item.name == selection) || null}
+      filterOptions={filterUserOptions}
+      onChange={(event, value) => {
+        setSelection(value?.name);
+        onChangeInput(value?.name);
+      }}
+      getOptionLabel={(option) => option?.name}
+      options={users || []}
+      renderInput={(params) =>
+        <TextField
+          ref={ref}
+          variant="standard"
+          placeholder="Select user"
+          {...params}
+        />
+      }
+    />
   );
 });
 

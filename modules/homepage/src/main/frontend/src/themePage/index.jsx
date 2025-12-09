@@ -77,7 +77,7 @@ function Main(props) {
       <Page title={title} pageDefaultName={route["cards:extensionName"]}>
         <ThisComponent contentOffset={contentOffset} extension={route} />
       </Page>
-      );
+    );
   };
 
   let switchRoutes = () => {
@@ -98,7 +98,7 @@ function Main(props) {
     setMobileOpen(prevState => !prevState);
   };
 
- return (
+  return (
     <React.Fragment>
       <GlobalLoginContext.Provider
         value={{
@@ -116,10 +116,10 @@ function Main(props) {
       >
         <PageStart
           setTotalHeight={(th) => {
-              if (contentOffset != th) {
-                setContentOffset(th);
-              }
+            if (contentOffset != th) {
+              setContentOffset(th);
             }
+          }
           }
         />
         <ReLoginDialog
@@ -158,8 +158,8 @@ function Main(props) {
           </Suspense>
         </div>
       </GlobalLoginContext.Provider>
-      </React.Fragment>
-    );
+    </React.Fragment>
+  );
 }
 
 const MainComponent = withStyles(Main, IndexStyle);
@@ -171,7 +171,7 @@ const cache = createCache({
 });
 
 const hist = createBrowserHistory();
-hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
+hist.listen(({ action, location }) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#main-container'));
 root.render(
   <CacheProvider value={cache}>

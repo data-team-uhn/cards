@@ -58,124 +58,124 @@ function UsersManager(props) {
   }
 
   return (
-      <AdminScreen
-        title="Users"
-        action={
-          <NewItemButton
-            title="Create new user"
-            onClick={() => setDeployCreateUser(true)}
-          />
-        }>
-        <CreateUserDialog
-          isOpen={deployCreateUser}
-          handleClose={() => setDeployCreateUser(false)}
-          reload={() => handleReload()}
+    <AdminScreen
+      title="Users"
+      action={
+        <NewItemButton
+          title="Create new user"
+          onClick={() => setDeployCreateUser(true)}
         />
-        <DeletePrincipalDialog
-          isOpen={deployDeleteUser}
-          handleClose={() => setDeployDeleteUser(false)}
-          name={currentUserName}
-          reload={() => handleReload()}
-          url={USER_URL}
-          type="user"
-        />
-        <ChangeUserPasswordDialog 
-          isOpen={deployChangeUserPassword}
-          handleClose={() => setDeployChangeUserPassword(false)}
-          name={currentUserName}
-        />
+      }>
+      <CreateUserDialog
+        isOpen={deployCreateUser}
+        handleClose={() => setDeployCreateUser(false)}
+        reload={() => handleReload()}
+      />
+      <DeletePrincipalDialog
+        isOpen={deployDeleteUser}
+        handleClose={() => setDeployDeleteUser(false)}
+        name={currentUserName}
+        reload={() => handleReload()}
+        url={USER_URL}
+        type="user"
+      />
+      <ChangeUserPasswordDialog 
+        isOpen={deployChangeUserPassword}
+        handleClose={() => setDeployChangeUserPassword(false)}
+        name={currentUserName}
+      />
 
-        <div className={classes.root}>
-          <MaterialReactTable
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableSorting={false}
-              enableToolbarInternalActions={false}
-              initialState={{ showGlobalFilter: true }}
-              muiTableHeadCellProps={{
-                sx: (theme) => ({
-                  background: theme.palette.grey['200'],
-                }),
-              }}
-              columns={[
-                { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-                  Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
+      <div className={classes.root}>
+        <MaterialReactTable
+          enableColumnActions={false}
+          enableColumnFilters={false}
+          enableSorting={false}
+          enableToolbarInternalActions={false}
+          initialState={{ showGlobalFilter: true }}
+          muiTableHeadCellProps={{
+            sx: (theme) => ({
+              background: theme.palette.grey['200'],
+            }),
+          }}
+          columns={[
+            { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
+              Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
+            },
+            { header: 'User Name', accessorKey: 'name', size: 300, },
+            { header: 'Admin', accessorKey: 'isAdmin', size: 10,
+              Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+            },
+            { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
+              Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+            },
+          ]}
+          displayColumnDefOptions={{
+            'mrt-row-actions': {
+              size: 10,
+              muiTableHeadCellProps: { align: 'right' },
+              muiTableBodyCellProps: {
+                sx: {
+                  padding: '0',
                 },
-                { header: 'User Name', accessorKey: 'name', size: 300, },
-                { header: 'Admin', accessorKey: 'isAdmin', size: 10,
-                  Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
-                },
-                { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
-                  Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
-                },
-              ]}
-              displayColumnDefOptions={{
-                'mrt-row-actions': {
-                  size: 10,
-                  muiTableHeadCellProps: {align: 'right'},
-                  muiTableBodyCellProps: {
-                    sx: {
-                      padding: '0',
-                    },
-                  },
-                },
-                'mrt-row-expand': {
-                  size: 4,
-                },
-              }}
-              data={users}
-              enableRowActions
-              positionActionsColumn="last"
-              renderRowActions={({ row }) => (
-                <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
-                  <Tooltip title="Change Password">
-                    <IconButton onClick={ () => { setCurrentUserName(row.original.name); setDeployChangeUserPassword(true); } } >
-                      <LockIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete User">
-                    <IconButton onClick={ () => { setCurrentUserName(row.original.name); setDeployDeleteUser(true); } } >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              )}
-              renderDetailPanel={({ row }) => {
-                const user = row.original;
-                const currentUserGroups = user.memberOf.length > 0 ? getUserGroups(user.memberOf) : [];
-                const tableTitle = "User " + user.name + " Groups";
+              },
+            },
+            'mrt-row-expand': {
+              size: 4,
+            },
+          }}
+          data={users}
+          enableRowActions
+          positionActionsColumn="last"
+          renderRowActions={({ row }) => (
+            <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
+              <Tooltip title="Change Password">
+                <IconButton onClick={ () => { setCurrentUserName(row.original.name); setDeployChangeUserPassword(true); } } >
+                  <LockIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete User">
+                <IconButton onClick={ () => { setCurrentUserName(row.original.name); setDeployDeleteUser(true); } } >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
+          renderDetailPanel={({ row }) => {
+            const user = row.original;
+            const currentUserGroups = user.memberOf.length > 0 ? getUserGroups(user.memberOf) : [];
+            const tableTitle = "User " + user.name + " Groups";
 
-                return currentUserGroups.length > 0 && (
-                    <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
-                      <Grid size={1}></Grid>
-                      <Grid size={11}>
-                          <MaterialReactTable
-                              enableColumnActions={false}
-                              enableColumnFilters={false}
-                              enableSorting={false}
-                              enableTopToolbar={false}
-                              columns={[{
-                                id: tableTitle,
-                                header: tableTitle,
-                                columns: [
-                                  { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-                                    Cell: ({ row }) => ( <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar> )
-                                  },
-                                  { header: 'Name', accessorKey: 'name', size: 300, },
-                                  { header: 'Members', accessorKey: 'members', size: 10, },
-                                  { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
-                                ]
-                              }]}
-                              data={currentUserGroups}
-                          />
-                    </Grid>
-                  </Grid>
-                ) || (<div>User is not in any group</div>)
-              }}
-          />
-        </div>
-      </AdminScreen>
-    );
+            return currentUserGroups.length > 0 && (
+              <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
+                <Grid size={1}></Grid>
+                <Grid size={11}>
+                  <MaterialReactTable
+                    enableColumnActions={false}
+                    enableColumnFilters={false}
+                    enableSorting={false}
+                    enableTopToolbar={false}
+                    columns={[{
+                      id: tableTitle,
+                      header: tableTitle,
+                      columns: [
+                        { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
+                          Cell: ({ row }) => ( <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar> )
+                        },
+                        { header: 'Name', accessorKey: 'name', size: 300, },
+                        { header: 'Members', accessorKey: 'members', size: 10, },
+                        { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
+                      ]
+                    }]}
+                    data={currentUserGroups}
+                  />
+                </Grid>
+              </Grid>
+            ) || (<div>User is not in any group</div>)
+          }}
+        />
+      </div>
+    </AdminScreen>
+  );
 }
 
 UsersManager.propTypes = {

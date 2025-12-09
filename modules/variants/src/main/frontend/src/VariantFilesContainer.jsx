@@ -96,10 +96,10 @@ const useStyles = makeStyles()(theme => ({
     minWidth: "500px"
   },
   closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500]
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500]
   },
   variantFileCard: {
     "& .MuiCardHeader-root" : {
@@ -223,49 +223,49 @@ export default function VariantFilesContainer() {
     // as a result - using function passing itself as resolution-callback
     let allErroneousFiles = [];
     (function loop(i) {
-        if (i < chosenFiles.length) {
-          new Promise((resolve, reject) => {
-            let file = chosenFiles[i];
+      if (i < chosenFiles.length) {
+        new Promise((resolve, reject) => {
+          let file = chosenFiles[i];
 
-            let parsed = file.name.split('.csv')[0].split('_');
-            if (parsed.length < 2 || parsed[0] == "" || parsed[1] == "") {
-              allErroneousFiles.push(file.name);
-              resolve();
-              return;
-            }
-            file.subject  = {"id" : parsed[0]};
-            file.tumor    = {"id" : parsed[1]};
-            if (parsed.length > 2) {
-              file.region = {"id" : parsed.slice(2).join("_")};
-            } else {
-              file.region = {};
-            }
-            file.sent = false;
-            file.uploading = false;
+          let parsed = file.name.split('.csv')[0].split('_');
+          if (parsed.length < 2 || parsed[0] == "" || parsed[1] == "") {
+            allErroneousFiles.push(file.name);
+            resolve();
+            return;
+          }
+          file.subject  = { "id" : parsed[0] };
+          file.tumor    = { "id" : parsed[1] };
+          if (parsed.length > 2) {
+            file.region = { "id" : parsed.slice(2).join("_") };
+          } else {
+            file.region = {};
+          }
+          file.sent = false;
+          file.uploading = false;
 
-            setSingleFileSubjectData(file, files)
-              .then((processedFile) => updateFileExistsStatus(processedFile, file.name))
-              .then((processedFile) => {
-                files = files.slice();
-                files.push(processedFile);
-                setSelectedFiles(files);
-              })
-              .catch((err) => {setError("Internal server error while fetching file versions"); console.log(err);})
-              .finally(() => resolve());
-          })
+          setSingleFileSubjectData(file, files)
+            .then((processedFile) => updateFileExistsStatus(processedFile, file.name))
+            .then((processedFile) => {
+              files = files.slice();
+              files.push(processedFile);
+              setSelectedFiles(files);
+            })
+            .catch((err) => {setError("Internal server error while fetching file versions"); console.log(err);})
+            .finally(() => resolve());
+        })
           .then(loop.bind(null, i+1))
-        } else if (allErroneousFiles.length > 0) {
-          // Display an error for each incorrect filename
-          // There are three cases for pluralizing a list of strings
-          // 1: there is no plural
-          let fileString = allErroneousFiles.length == 1 ? allErroneousFiles[0]
+      } else if (allErroneousFiles.length > 0) {
+        // Display an error for each incorrect filename
+        // There are three cases for pluralizing a list of strings
+        // 1: there is no plural
+        let fileString = allErroneousFiles.length == 1 ? allErroneousFiles[0]
           // 2: it is a list of two (no oxford comma)
-            : allErroneousFiles.length == 2 ? allErroneousFiles.join(" and ")
+          : allErroneousFiles.length == 2 ? allErroneousFiles.join(" and ")
           // 3: it is a list of three or more (with oxford comma)
             : allErroneousFiles.splice(0, allErroneousFiles.length-1).join(", ") + ", and " + allErroneousFiles[allErroneousFiles.length-1];
-          let plural = allErroneousFiles.length > 1;
-          setError(`File name${plural ? "s" : ""} ${fileString} do${plural ? "" : "es"} not follow the name convention <subject>_<tumour nb>***.csv`);
-        };
+        let plural = allErroneousFiles.length > 1;
+        setError(`File name${plural ? "s" : ""} ${fileString} do${plural ? "" : "es"} not follow the name convention <subject>_<tumour nb>***.csv`);
+      };
     })(0);
   };
 
@@ -307,83 +307,22 @@ export default function VariantFilesContainer() {
     //  Fetch other missing subjects data - subject, tumor, region links
     return new Promise((resolve, reject) => {
 
-        if (!file.subject.path) {
+      if (!file.subject.path) {
 
-          // Fire a fetch request for the patient subject
-          fetchWithReLogin(globalLoginDisplay, checkSubjectExistsURL)
-            .then((response) => response.ok ? response.json() : reject(response))
-            .then((json) => {
-              // If a patient subject is found
-              if (json.rows?.length > 0) {
-                let subject = json.rows[0];
-                // get the path
-                file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"], subject.type);
-                file.subject.type = subject["type"];
-                checkTumorExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
+        // Fire a fetch request for the patient subject
+        fetchWithReLogin(globalLoginDisplay, checkSubjectExistsURL)
+          .then((response) => response.ok ? response.json() : reject(response))
+          .then((json) => {
+            // If a patient subject is found
+            if (json.rows?.length > 0) {
+              let subject = json.rows[0];
+              // get the path
+              file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"], subject.type);
+              file.subject.type = subject["type"];
+              checkTumorExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
-                // Fire a fetch request for a tumor subject with the patient subject as its parent
-                fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
-                    .then((response) => response.ok ? response.json() : reject(response))
-                    .then((json) => {
-                      // If a tumor subject is found and region subject is defined
-                      if (json.rows?.length > 0) {
-                        let subject = json.rows[0];
-                        // get the path
-                        file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
-
-                        // If a region subject is defined
-                        if (file.region?.id) {
-                          checkRegionExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
-
-                          // Fire a fetch request for a region subject with the tumor subject as its parent
-                          fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
-                            .then((response) => response.ok ? response.json() : reject(response))
-                            .then((json) => {
-                              // If a region subject is found
-                              if (json.rows?.length > 0) {
-                                let subject = json.rows[0];
-                                // get the path
-                                file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
-                              } else {
-                                // if a region subject is not found
-                                // record in variables that a region didn’t exist and generate a new random uuid as its path
-                                file.region = generateSubject(file.region);
-                              }
-                              resolve(file);
-                            })
-                            .catch((err) => {console.log(err); reject(err);})
-                        } else {
-                          resolve(file);
-                        }
-
-                      } else {
-                        // if a tumor subject is not found
-                        // record in variables that a tumor and a region didn’t exist and generate a new random uuid as their path
-                        file.tumor  = generateSubject(file.tumor);
-                        file.region = generateSubject(file.region);
-                        resolve(file);
-                      }
-                    })
-                    .catch((err) => {console.log(err); reject(err);})
-
-              } else {
-                // If a patient subject is not found:
-                // fetch existing or record in variables that it didn’t exist, and generate a new random uuid as its path
-                file.subject = generateSubject(file.subject);
-                file.tumor   = generateSubject(file.tumor);
-                file.region = generateSubject(file.region);
-                resolve(file);
-              }
-            })
-            .catch((err) => {console.log(err); reject(err);})
-
-
-        } else {
-          if (!file.tumor.path) {
-            checkTumorExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${file.subject.uuid}'`);
-
-            // Fire a fetch request for a tumor subject with the patient subject as its parent
-            fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
+              // Fire a fetch request for a tumor subject with the patient subject as its parent
+              fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
                 .then((response) => response.ok ? response.json() : reject(response))
                 .then((json) => {
                   // If a tumor subject is found and region subject is defined
@@ -407,7 +346,7 @@ export default function VariantFilesContainer() {
                             file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
                           } else {
                             // if a region subject is not found
-                            // record in variables that a region didn’t exist, and generate a new random uuid as its path
+                            // record in variables that a region didn’t exist and generate a new random uuid as its path
                             file.region = generateSubject(file.region);
                           }
                           resolve(file);
@@ -419,7 +358,7 @@ export default function VariantFilesContainer() {
 
                   } else {
                     // if a tumor subject is not found
-                    // record in variables that a tumor and a region didn’t exist, and generate a new random uuid as their path
+                    // record in variables that a tumor and a region didn’t exist and generate a new random uuid as their path
                     file.tumor  = generateSubject(file.tumor);
                     file.region = generateSubject(file.region);
                     resolve(file);
@@ -427,32 +366,93 @@ export default function VariantFilesContainer() {
                 })
                 .catch((err) => {console.log(err); reject(err);})
 
-          } else {
-            if (file.region?.id && !file.region.path) {
-              checkRegionExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${file.tumor.uuid}'`);
-
-              // Fire a fetch request for a region subject with the tumor subject as its parent
-              fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
-                .then((response) => response.ok ? response.json() : reject(response))
-                .then((json) => {
-                  // If a region subject is found
-                  if (json.rows?.length > 0) {
-                    let subject = json.rows[0];
-                    // get the path
-                    file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
-                  } else {
-                    // if a region subject is not found
-                    // record in variables that a region didn’t exist, and generate a new random uuid as its path
-                    file.region = generateSubject(file.region);
-                  }
-                  resolve(file);
-                })
-                .catch((err) => {console.log(err); reject(err);})
             } else {
+              // If a patient subject is not found:
+              // fetch existing or record in variables that it didn’t exist, and generate a new random uuid as its path
+              file.subject = generateSubject(file.subject);
+              file.tumor   = generateSubject(file.tumor);
+              file.region = generateSubject(file.region);
               resolve(file);
             }
+          })
+          .catch((err) => {console.log(err); reject(err);})
+
+
+      } else {
+        if (!file.tumor.path) {
+          checkTumorExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${file.subject.uuid}'`);
+
+          // Fire a fetch request for a tumor subject with the patient subject as its parent
+          fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
+            .then((response) => response.ok ? response.json() : reject(response))
+            .then((json) => {
+              // If a tumor subject is found and region subject is defined
+              if (json.rows?.length > 0) {
+                let subject = json.rows[0];
+                // get the path
+                file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
+
+                // If a region subject is defined
+                if (file.region?.id) {
+                  checkRegionExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
+
+                  // Fire a fetch request for a region subject with the tumor subject as its parent
+                  fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
+                    .then((response) => response.ok ? response.json() : reject(response))
+                    .then((json) => {
+                      // If a region subject is found
+                      if (json.rows?.length > 0) {
+                        let subject = json.rows[0];
+                        // get the path
+                        file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
+                      } else {
+                        // if a region subject is not found
+                        // record in variables that a region didn’t exist, and generate a new random uuid as its path
+                        file.region = generateSubject(file.region);
+                      }
+                      resolve(file);
+                    })
+                    .catch((err) => {console.log(err); reject(err);})
+                } else {
+                  resolve(file);
+                }
+
+              } else {
+                // if a tumor subject is not found
+                // record in variables that a tumor and a region didn’t exist, and generate a new random uuid as their path
+                file.tumor  = generateSubject(file.tumor);
+                file.region = generateSubject(file.region);
+                resolve(file);
+              }
+            })
+            .catch((err) => {console.log(err); reject(err);})
+
+        } else {
+          if (file.region?.id && !file.region.path) {
+            checkRegionExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${file.tumor.uuid}'`);
+
+            // Fire a fetch request for a region subject with the tumor subject as its parent
+            fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
+              .then((response) => response.ok ? response.json() : reject(response))
+              .then((json) => {
+                // If a region subject is found
+                if (json.rows?.length > 0) {
+                  let subject = json.rows[0];
+                  // get the path
+                  file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
+                } else {
+                  // if a region subject is not found
+                  // record in variables that a region didn’t exist, and generate a new random uuid as its path
+                  file.region = generateSubject(file.region);
+                }
+                resolve(file);
+              })
+              .catch((err) => {console.log(err); reject(err);})
+          } else {
+            resolve(file);
           }
         }
+      }
 
     });
   };
@@ -487,9 +487,9 @@ export default function VariantFilesContainer() {
     setSingleFileSubjectData(newFiles[index], selectedFiles)
       .then((file) => updateFileExistsStatus(file, fileName))
       .then((file) => {
-          // find all files with this name
-          newFiles[index] = file;
-          setSelectedFiles(newFiles);
+        // find all files with this name
+        newFiles[index] = file;
+        setSelectedFiles(newFiles);
       })
       .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
   };
@@ -506,10 +506,10 @@ export default function VariantFilesContainer() {
     setSingleFileSubjectData(newFiles[index], selectedFiles)
       .then((file) => updateFileExistsStatus(file, fileName))
       .then((file) => {
-          // find all files with this name
-          newFiles[index] = file;
-          setSelectedFiles(newFiles);
-        })
+        // find all files with this name
+        newFiles[index] = file;
+        setSelectedFiles(newFiles);
+      })
       .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
   };
 
@@ -525,10 +525,10 @@ export default function VariantFilesContainer() {
     setSingleFileSubjectData(newFiles[index], selectedFiles)
       .then((file) => updateFileExistsStatus(file, fileName))
       .then((file) => {
-          // find all files with this name
-          newFiles[index] = file;
-          setSelectedFiles(newFiles);
-        })
+        // find all files with this name
+        newFiles[index] = file;
+        setSelectedFiles(newFiles);
+      })
       .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
   };
 
@@ -588,7 +588,7 @@ export default function VariantFilesContainer() {
     return uploadJSON(newSubjects);
   }
 
-   // Find the icon and load them
+  // Find the icon and load them
   let uploadAllFiles = () => {
     return uploadSubjectsFirst(selectedFiles).then(() => {
       let promises = [];
@@ -608,7 +608,7 @@ export default function VariantFilesContainer() {
 
     setUploadInProgress(true);
     setUploadProgress((old) => {
-      let progressCopy = {...old};
+      let progressCopy = { ...old };
       selectedFiles.forEach((file) => {
         if (!file.sent && !file.uploading) {
           progressCopy[file.name] = { state: "pending", percentage: 0 };
@@ -626,7 +626,7 @@ export default function VariantFilesContainer() {
 
         handleError(error);
         setUploadInProgress(false);
-    });
+      });
   };
 
   /**
@@ -774,23 +774,23 @@ export default function VariantFilesContainer() {
   let uploadAllComplete = !selectedFiles.some((file) => !file.sent);
 
   return (
-  <React.Fragment>
-    <Typography variant="h2">Variants Upload</Typography>
+    <React.Fragment>
+      <Typography variant="h2">Variants Upload</Typography>
       <form method="POST"
-            encType="multipart/form-data"
-            onSubmit={upload}
-            key="file-upload"
-            id="variantForm">
+        encType="multipart/form-data"
+        onSubmit={upload}
+        key="file-upload"
+        id="variantForm">
         <Grid container direction="row-reverse" justifyContent="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
-          <Grid size={{xs:12, lg:6}}>
+          <Grid size={{ xs:12, lg:6 }}>
             <Alert severity="info">
               <AlertTitle>Expected file name format:</AlertTitle>
               <div>Patient_Tumor.csv (e.g. AB12345_1.csv)</div>
               <div>Patient_Tumor_TumorRegion.csv (e.g. AB12345_1_a.csv)</div>
             </Alert>
           </Grid>
-          <Grid size={{xs:12, lg:6}}>
-          { uploadInProgress && (
+          <Grid size={{ xs:12, lg:6 }}>
+            { uploadInProgress && (
               <Grid className={classes.root}>
                 <LinearProgress />
               </Grid>
@@ -812,33 +812,33 @@ export default function VariantFilesContainer() {
 
       { selectedFiles?.length > 0 && <Grid container direction="column" spacing={4} className={classes.fileList}>
         { selectedFiles.map( (file, i) => {
-            const upprogress = uploadProgress ? uploadProgress[file.name] : null;
-            let subjectPath = file.subject.path?.replace("/Subjects", "Subjects");
-            let tumorPath = file.tumor.path && `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
-            let regionPath = file.region.path && `${tumorPath}/${file.region.path?.replace(new RegExp(".+/"), "")}`;
-            let isDataValid = subjectPath && tumorPath;
+          const upprogress = uploadProgress ? uploadProgress[file.name] : null;
+          let subjectPath = file.subject.path?.replace("/Subjects", "Subjects");
+          let tumorPath = file.tumor.path && `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
+          let regionPath = file.region.path && `${tumorPath}/${file.region.path?.replace(new RegExp(".+/"), "")}`;
+          let isDataValid = subjectPath && tumorPath;
 
-            return (
-              <Grid key={file.name}>
-                <Typography variant="h6">{file.name}</Typography>
-                { upprogress?.state != "error" &&
-                  <Box display="flex" alignItems="center" className={classes.fileProgress}>
-                    <Box width="100%" mr={1}>
-                      <LinearProgress variant="determinate" value={upprogress.percentage} />
-                    </Box>
-                    <Box minWidth={35}>
-                      <Typography variant="body2" color="textSecondary">{upprogress.percentage + "%"}</Typography>
-                    </Box>
+          return (
+            <Grid key={file.name}>
+              <Typography variant="h6">{file.name}</Typography>
+              { upprogress?.state != "error" &&
+                <Box display="flex" alignItems="center" className={classes.fileProgress}>
+                  <Box width="100%" mr={1}>
+                    <LinearProgress variant="determinate" value={upprogress.percentage} />
                   </Box>
-                }
-                { upprogress?.state == "error" && <Typography color='error'>Error uploading file</Typography> }
-                { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
-                  <Typography variant="overline" component="div">
-                    {patientSubjectLabel} <Link href={subjectPath} target="_blank" underline="hover"> {file.subject.id} </Link> /&nbsp;
-                    {tumorSubjectLabel} <Link href={tumorPath} target="_blank" underline="hover"> {file.tumor.id} </Link>
-                    { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank" underline="hover"> {file.region.id} </Link> </> }
-                    { file.formPath && <> : <Link href={file.formPath} target="_blank" underline="hover">{somaticVariantsTitle}</Link> </>}
-                  </Typography>
+                  <Box minWidth={35}>
+                    <Typography variant="body2" color="textSecondary">{upprogress.percentage + "%"}</Typography>
+                  </Box>
+                </Box>
+              }
+              { upprogress?.state == "error" && <Typography color='error'>Error uploading file</Typography> }
+              { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
+                <Typography variant="overline" component="div">
+                  {patientSubjectLabel} <Link href={subjectPath} target="_blank" underline="hover"> {file.subject.id} </Link> /&nbsp;
+                  {tumorSubjectLabel} <Link href={tumorPath} target="_blank" underline="hover"> {file.tumor.id} </Link>
+                  { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank" underline="hover"> {file.region.id} </Link> </> }
+                  { file.formPath && <> : <Link href={file.formPath} target="_blank" underline="hover">{somaticVariantsTitle}</Link> </>}
+                </Typography>
                 : <div className={classes.fileFormSection}>
                   <TextField
                     variant="standard"
@@ -871,110 +871,110 @@ export default function VariantFilesContainer() {
                   <label htmlFor="contained-button-file">
                     <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file, true)}>
                       <span><BackupIcon className={classes.buttonIcon}/>
-                        {file.uploading ? 'Uploading' : 'Upload'}
+                        { file.uploading ? 'Uploading' : 'Upload' }
                       </span>
                     </Button>
                   </label>
-                  </div>
-                }
-                {(!file.sameFiles || file.sameFiles.length == 0)
-                  ?
-                    <Typography variant="caption" component="p">There are no versions of this file.</Typography>
-                  :
-                    <Link
-                      variant="caption"
-                      underline="none"
-                      href="#"
-                      onClick={() => {
-                        setShowVersionsDialog(true);
-                        setFileSelected(file);
-                      }}>
-                        There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
-                        of this file
-                      </Link>
-                }
-              </Grid>
+                </div>
+              }
+              {(!file.sameFiles || file.sameFiles.length == 0)
+                ?
+                <Typography variant="caption" component="p">There are no versions of this file.</Typography>
+                :
+                <Link
+                  variant="caption"
+                  underline="none"
+                  href="#"
+                  onClick={() => {
+                    setShowVersionsDialog(true);
+                    setFileSelected(file);
+                  }}>
+                    There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
+                    of this file
+                </Link>
+              }
+            </Grid>
           ) } ) }
-      { showUploadAllButton ?
-      <Grid>
-      <Button type="submit" variant="contained" disabled={showUploadDisabled} form="variantForm">
-        <span><BackupIcon className={classes.buttonIcon}/>
-          {uploadAllComplete ? 'Uploaded' :
-           uploadInProgress ? 'Uploading' : 'Upload all'}
-        </span>
-      </Button>
-      </Grid>
-      : <></>}
-    </Grid>}
-    <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
-      <DialogTitle>
-        <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
-        <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
-        <MaterialReactTable
-          data={fileSelected?.sameFiles}
-          enableColumnActions={false}
-          enableColumnFilters={false}
-          enableSorting={false}
-          enableTopToolbar={false}
-          muiTablePaperProps={{ elevation: 0 }}
-          muiTableBodyRowProps={{
-            sx: {
-              verticalAlign: 'top',
-            },
-          }}
-          columns={[
-            { header: 'Created', size: 10,
-              muiTableBodyCellProps: {
-                sx: (theme) => ({
-                  paddingLeft: theme.spacing(2),
-                  fontWeight: "bold",
-                  whiteSpace: 'nowrap',
-                })
+        { showUploadAllButton ?
+          <Grid>
+            <Button type="submit" variant="contained" disabled={showUploadDisabled} form="variantForm">
+              <span><BackupIcon className={classes.buttonIcon}/>
+                {uploadAllComplete ? 'Uploaded' :
+                  uploadInProgress ? 'Uploading' : 'Upload all'}
+              </span>
+            </Button>
+          </Grid>
+          : <></>}
+      </Grid>}
+      <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
+        <DialogTitle>
+          <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
+          <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton} size="large">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent className={classes.dialogContent}>
+          <MaterialReactTable
+            data={fileSelected?.sameFiles}
+            enableColumnActions={false}
+            enableColumnFilters={false}
+            enableSorting={false}
+            enableTopToolbar={false}
+            muiTablePaperProps={{ elevation: 0 }}
+            muiTableBodyRowProps={{
+              sx: {
+                verticalAlign: 'top',
               },
-              Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
-                                  {DateTime.fromISO(row.original['jcr:created']).toFormat(DateTimeUtilities.VIEW_DATE_FORMAT)}
-                                 </Link>
-            },
-            { header: 'Uploaded By',
-              muiTableBodyCellProps: {
-                sx: {
-                  whiteSpace: 'pre-wrap',
-                  paddingBottom: "8px",
-                }
+            }}
+            columns={[
+              { header: 'Created', size: 10,
+                muiTableBodyCellProps: {
+                  sx: (theme) => ({
+                    paddingLeft: theme.spacing(2),
+                    fontWeight: "bold",
+                    whiteSpace: 'nowrap',
+                  })
+                },
+                Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
+                  {DateTime.fromISO(row.original['jcr:created']).toFormat(DateTimeUtilities.VIEW_DATE_FORMAT)}
+                </Link>
               },
-              Cell: ({ row }) => row.original["jcr:createdBy"] }
-          ]}
-           displayColumnDefOptions={{
-            'mrt-row-actions': {
-              header: 'Actions',
-              size: 10,
-              muiTableHeadCellProps: {align: 'right'},
-              muiTableBodyCellProps: {
-                sx: {
-                  padding: '0',
-                  textAlign: 'right'
+              { header: 'Uploaded By',
+                muiTableBodyCellProps: {
+                  sx: {
+                    whiteSpace: 'pre-wrap',
+                    paddingBottom: "8px",
+                  }
+                },
+                Cell: ({ row }) => row.original["jcr:createdBy"] }
+            ]}
+            displayColumnDefOptions={{
+              'mrt-row-actions': {
+                header: 'Actions',
+                size: 10,
+                muiTableHeadCellProps: { align: 'right' },
+                muiTableBodyCellProps: {
+                  sx: {
+                    padding: '0',
+                    textAlign: 'right'
+                  },
                 },
               },
-            },
-          }}
-          enableRowActions
-          positionActionsColumn="last"
-          renderRowActions={({ row }) => (
-            <Tooltip title="Download">
-              <IconButton size="large">
-                <Link underline="none" color="inherit" href={row.original["@path"]} download>
-                  <GetApp />
-                </Link>
-              </IconButton>
-            </Tooltip>
-          )}
-        />
-      </DialogContent>
-    </Dialog>
-  </React.Fragment>
+            }}
+            enableRowActions
+            positionActionsColumn="last"
+            renderRowActions={({ row }) => (
+              <Tooltip title="Download">
+                <IconButton size="large">
+                  <Link underline="none" color="inherit" href={row.original["@path"]} download>
+                    <GetApp />
+                  </Link>
+                </IconButton>
+              </Tooltip>
+            )}
+          />
+        </DialogContent>
+      </Dialog>
+    </React.Fragment>
   );
 }

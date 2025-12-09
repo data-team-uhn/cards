@@ -240,26 +240,26 @@ function ExportButton(props) {
   // see https://mui.com/x/react-date-pickers/date-time-range-picker/
   let getDatePicker = (value, setter, rangeIsInvalid) => {
     return (<LocalizationProvider dateAdapter={AdapterLuxon}>
-              <DateTimePicker
-                label="Any date"
-                format={DATE_FORMAT}
-                value={value}
-                onChange={(value) => {
-                  setter(value);
-                }}
-                slotProps={{ textField: {
-                               variant: 'standard',
-                               error: rangeIsInvalid,
-                               helperText: rangeIsInvalid ? " " : DATE_FORMAT,
-                             },
-                             field: {
-                               clearable: true,
-                               onClear: () => setter(""),
-                             },
-                }}
-              />
-            </LocalizationProvider>
-          );
+      <DateTimePicker
+        label="Any date"
+        format={DATE_FORMAT}
+        value={value}
+        onChange={(value) => {
+          setter(value);
+        }}
+        slotProps={{ textField: {
+          variant: 'standard',
+          error: rangeIsInvalid,
+          helperText: rangeIsInvalid ? " " : DATE_FORMAT,
+        },
+        field: {
+          clearable: true,
+          onClear: () => setter(""),
+        },
+        }}
+      />
+    </LocalizationProvider>
+    );
   }
 
   let getDateRange = (valueA, setterA, valueB, setterB, rangeIsInvalid) => {
@@ -278,29 +278,29 @@ function ExportButton(props) {
 
   let getUserSelector = (label, value, setter) => {
     return (
-          <Grid container alignItems='center' className={classes.container + ' ' + classes.withSelect}>
-            <Grid size={4}><Typography variant="subtitle2">{label}</Typography></Grid>
-            <Grid size={8}>
-                <FormControl variant="standard" fullWidth>
-                  <Autocomplete
-                    value={value && users.find(item => item.name == value) || null}
-                    filterOptions={filterUserOptions}
-                    onChange={(event, value) => {
-                      setter(value?.name);
-                    }}
-                    getOptionLabel={(option) => option?.name}
-                    options={users || []}
-                    renderInput={(params) =>
-                      <TextField
-                        variant="standard"
-                        placeholder="Select user"
-                        {...params}
-                      />
-                    }
-                  />
-                </FormControl>
-            </Grid>
-          </Grid>);
+      <Grid container alignItems='center' className={classes.container + ' ' + classes.withSelect}>
+        <Grid size={4}><Typography variant="subtitle2">{label}</Typography></Grid>
+        <Grid size={8}>
+          <FormControl variant="standard" fullWidth>
+            <Autocomplete
+              value={value && users.find(item => item.name == value) || null}
+              filterOptions={filterUserOptions}
+              onChange={(event, value) => {
+                setter(value?.name);
+              }}
+              getOptionLabel={(option) => option?.name}
+              options={users || []}
+              renderInput={(params) =>
+                <TextField
+                  variant="standard"
+                  placeholder="Select user"
+                  {...params}
+                />
+              }
+            />
+          </FormControl>
+        </Grid>
+      </Grid>);
   }
 
   return(
@@ -450,18 +450,18 @@ function ExportButton(props) {
           </Grid>
 
           <Grid container alignItems='center' className={classes.container}>
-              <Grid size={4}><Typography variant="subtitle2">Status flag selection mode:</Typography></Grid>
-              <Grid size={8}>
-                <RadioGroup
-                  row
-                  name="statusSelectionMode"
-                  value={statusSelectionMode}
-                  onChange={(event) => setStatusSelectionMode(event.target.value)}
-                >
-                  <FormControlLabel value="status" control={<Radio />} label="Include" />
-                  <FormControlLabel value="statusNot" control={<Radio />} label="Exclude" />
-                </RadioGroup>
-              </Grid>
+            <Grid size={4}><Typography variant="subtitle2">Status flag selection mode:</Typography></Grid>
+            <Grid size={8}>
+              <RadioGroup
+                row
+                name="statusSelectionMode"
+                value={statusSelectionMode}
+                onChange={(event) => setStatusSelectionMode(event.target.value)}
+              >
+                <FormControlLabel value="status" control={<Radio />} label="Include" />
+                <FormControlLabel value="statusNot" control={<Radio />} label="Exclude" />
+              </RadioGroup>
+            </Grid>
           </Grid>
 
           <Grid container alignItems='center' className={classes.container + ' ' + classes.withSelect}>
@@ -471,30 +471,30 @@ function ExportButton(props) {
             <Grid size={8}>
               <FormControl variant="standard" fullWidth>
                 <Autocomplete
-                    value={status}
-                    onChange={(event, value) => { setStatus(value); }}
-                    options={statuses || []}
-                    renderInput={(params) =>
-                      <TextField
-                        variant="standard"
-                        placeholder="Select a status flag"
-                        {...params}
-                      />
-                    }
+                  value={status}
+                  onChange={(event, value) => { setStatus(value); }}
+                  options={statuses || []}
+                  renderInput={(params) =>
+                    <TextField
+                      variant="standard"
+                      placeholder="Select a status flag"
+                      {...params}
+                    />
+                  }
                 />
               </FormControl>
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-            <Button variant="outlined" onClick={closeDialog}>Cancel</Button>
-            <Button
-              variant="contained"
-              disabled={createdRangeIsInvalid || modifiedRangeIsInvalid}
-              onClick={handleExport}
-            >
+          <Button variant="outlined" onClick={closeDialog}>Cancel</Button>
+          <Button
+            variant="contained"
+            disabled={createdRangeIsInvalid || modifiedRangeIsInvalid}
+            onClick={handleExport}
+          >
               Export
-            </Button>
+          </Button>
         </DialogActions>
       </ResponsiveDialog>
       {variant == "icon" ?

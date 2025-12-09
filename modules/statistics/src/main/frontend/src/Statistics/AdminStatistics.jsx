@@ -109,19 +109,19 @@ function AdminStatistics(props) {
   ]
 
   let makeActions = ({ row }) => (
-          <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right'}}>
-            <EditButton
-              entryType={entryType}
-              onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(row.original["@name"]);}}
-            />
-            <DeleteButton
-              entryPath={row.original["@path"]}
-              entryName={row.original.name}
-              onComplete={dialogSuccess}
-              entryType={entryType}
-            />
-          </Box>
-        )
+    <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
+      <EditButton
+        entryType={entryType}
+        onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(row.original["@name"]);}}
+      />
+      <DeleteButton
+        entryPath={row.original["@path"]}
+        entryName={row.original.name}
+        onComplete={dialogSuccess}
+        entryType={entryType}
+      />
+    </Box>
+  )
 
   let dialogClose = () => {
     setDialogOpen(false);
@@ -250,34 +250,34 @@ function StatisticDialog(props) {
   return (
     <form action='/Statistics' method='POST' onSubmit={saveData}>
       <ResponsiveDialog disablePortal open={open} onClose={onClose}>
-      <DialogTitle>{isNewStatistic ? "Create New Statistic" : "Edit Statistic"}</DialogTitle>
-      <DialogContent>
-        { error && <Typography color="error">{error}</Typography>}
-        <Grid container direction="column" spacing={2}>
-          {
+        <DialogTitle>{isNewStatistic ? "Create New Statistic" : "Edit Statistic"}</DialogTitle>
+        <DialogContent>
+          { error && <Typography color="error">{error}</Typography>}
+          <Grid container direction="column" spacing={2}>
+            {
             // We don't want to load the Fields component until we are fully initialized
             // since otherwise the default values will be empty and cannot be assigned
-            initialized && <Fields data={existingData || {}} JSON={statisticsSpecs} edit />
-          }
-        </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Button
+              initialized && <Fields data={existingData || {}} JSON={statisticsSpecs} edit />
+            }
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button
             onClick={onClose}
             variant="outlined"
-            >
+          >
             Cancel
           </Button>
           <Button
             type="submit"
             variant="contained"
             disabled={saveInProgress}
-            >
+          >
             {isNewStatistic ? "Create" : "Save"}
           </Button>
-      </DialogActions>
-    </ResponsiveDialog>
-  </form>
+        </DialogActions>
+      </ResponsiveDialog>
+    </form>
   )
 }
 

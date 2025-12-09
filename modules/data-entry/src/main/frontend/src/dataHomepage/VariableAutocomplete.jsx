@@ -30,7 +30,7 @@ import { checkPropTypes } from "../propTypes";
 const useStyles = makeStyles()(theme => ({
   autocompleteRoot: {
     "& .MuiFormHelperText-root" : {
-        wordBreak: "break-word",
+      wordBreak: "break-word",
     },
   },
   autocompletePopper: {
@@ -111,8 +111,8 @@ let VariableAutocomplete = (props) => {
       className={classNames.join(' ')}
       slots={{
         popper: groupBy ?
-        (props) => <Popper {...props} className={classes.autocompletePopper} placement="bottom" />
-        : undefined
+          (props) => <Popper {...props} className={classes.autocompletePopper} placement="bottom" />
+          : undefined
       }}
       value={selectedValue && options.find(o => getOptionValue(o) == selectedValue) || null}
       options={options}
@@ -128,7 +128,7 @@ let VariableAutocomplete = (props) => {
           dense
         >
           <ListItemText
-            sx={groupBy ? {marginLeft: !!groupBy(option) ? 1 : -1} : undefined}
+            sx={groupBy ? { marginLeft: !!groupBy(option) ? 1 : -1 } : undefined}
             disableTypography
             primary={<FormattedText>{ getOptionLabel(option) }</FormattedText>}
             secondary={<FormattedText variant="body2" color="textSecondary">{ getOptionSecondaryLabel(option) }</FormattedText>}

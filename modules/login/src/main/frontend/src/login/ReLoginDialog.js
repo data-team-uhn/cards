@@ -27,22 +27,22 @@ import { checkPropTypes } from "../propTypes";
 export const GlobalLoginContext = React.createContext();
 
 export function fetchWithReLogin(displayLoginCtx, url, fetchArgs, discardOnFailure) {
-    return new Promise(function(resolve, reject) {
-      function fetchFunc() {
-        fetch(url, fetchArgs)
+  return new Promise(function(resolve, reject) {
+    function fetchFunc() {
+      fetch(url, fetchArgs)
         .then((response) => {
           if (response.status == 401 || response.status == 500) {
-              displayLoginCtx.dialogOpen(fetchFunc, discardOnFailure);
+            displayLoginCtx.dialogOpen(fetchFunc, discardOnFailure);
           } else if (response.ok && response.url.startsWith(window.location.origin + "/login")) {
-              displayLoginCtx.dialogOpen(fetchFunc, discardOnFailure);
+            displayLoginCtx.dialogOpen(fetchFunc, discardOnFailure);
           } else {
-              resolve(response);
+            resolve(response);
           }
         })
         .catch((err) => {reject(err)});
-      }
-      fetchFunc();
-    });
+    }
+    fetchFunc();
+  });
 }
 
 function ReLoginDialog(props) {

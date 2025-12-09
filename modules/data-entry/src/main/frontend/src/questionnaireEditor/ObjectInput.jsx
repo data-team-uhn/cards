@@ -46,40 +46,40 @@ let ObjectInput = (props) => {
 
   return (
     <>
-    { isBoolean ?
-      <BooleanInput
-        objectKey={objectKey}
-        data={data}
-        hint={hint}
-        onChange={(value) => {
-          setSelectedValue(`${value}`);
-          onChange?.(`${value}`);
-        }}
-      />
-      :
-      <EditorInput name={objectKey} hint={hint}>
-        <Select
-          variant="standard"
-          id={objectKey}
-          name={objectKey}
-          defaultValue={defaultValue}
-          onChange={(event) => {
-            setSelectedValue(event.target.value);
-            onChange?.(event.target.value);
-           }}>
-          { typeof(value) === 'object' && Object.keys(value).map((name, val) =>
-            <MenuItem key={val} name={name} id={name} value={name}>
-              <Typography>{name}</Typography>
-            </MenuItem>
-          )}
-        </Select>
-      </EditorInput>
-    }
-    { typeof(value) === 'object' && selectedValue != '' && typeof (value[selectedValue]) === 'object' ?
+      { isBoolean ?
+        <BooleanInput
+          objectKey={objectKey}
+          data={data}
+          hint={hint}
+          onChange={(value) => {
+            setSelectedValue(`${value}`);
+            onChange?.(`${value}`);
+          }}
+        />
+        :
+        <EditorInput name={objectKey} hint={hint}>
+          <Select
+            variant="standard"
+            id={objectKey}
+            name={objectKey}
+            defaultValue={defaultValue}
+            onChange={(event) => {
+              setSelectedValue(event.target.value);
+              onChange?.(event.target.value);
+            }}>
+            { typeof(value) === 'object' && Object.keys(value).map((name, val) =>
+              <MenuItem key={val} name={name} id={name} value={name}>
+                <Typography>{name}</Typography>
+              </MenuItem>
+            )}
+          </Select>
+        </EditorInput>
+      }
+      { typeof(value) === 'object' && selectedValue != '' && typeof (value[selectedValue]) === 'object' ?
         <Fields data={data} JSON={value[selectedValue]} edit={true} hints={hints} {...rest} />
-      :
-      (selectedValue != '') && <Typography color="secondary" variant="subtitle2">Unsupported: {selectedValue}</Typography>
-    }
+        :
+        (selectedValue != '') && <Typography color="secondary" variant="subtitle2">Unsupported: {selectedValue}</Typography>
+      }
     </>
   )
 }

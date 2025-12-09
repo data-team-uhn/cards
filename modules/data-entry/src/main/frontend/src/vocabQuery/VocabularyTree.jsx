@@ -154,10 +154,10 @@ function VocabularyTree(props) {
     });
     // This event is needed to pass on to all branches so they check selected term
     var addedEvent = new CustomEvent('term-selected', {
-          bubbles: true,
-          cancelable: true,
-          detail: [name, path]
-        });
+      bubbles: true,
+      cancelable: true,
+      detail: [name, path]
+    });
     document.dispatchEvent(addedEvent);
   }
 
@@ -175,10 +175,10 @@ function VocabularyTree(props) {
     }
     // This event is needed to pass on to all branches so they un-check selected term
     var removedEvent = new CustomEvent('term-unselected', {
-          bubbles: true,
-          cancelable: true,
-          detail: [name, path]
-        });
+      bubbles: true,
+      cancelable: true,
+      detail: [name, path]
+    });
     document.dispatchEvent(removedEvent);
   }
 
@@ -241,17 +241,17 @@ function VocabularyTree(props) {
         <div className={classes.selectionContainer}>
           <Typography variant="body2" component="span">{questionDefinition?.text}:</Typography>
           { selectedTerms?.filter(i => i[LABEL_POS]).map(s =>
-             <Chip
-               key={s[VALUE_POS]}
-               variant="outlined"
-               size="small"
-               color="primary"
-               label={s[LABEL_POS]}
-               onClick={() => onTermClick(s[VALUE_POS])}
-               onDelete={() => removeOption(...s)}
-               className={classes.selectionChips}
-             />
-           )}
+            <Chip
+              key={s[VALUE_POS]}
+              variant="outlined"
+              size="small"
+              color="primary"
+              label={s[LABEL_POS]}
+              onClick={() => onTermClick(s[VALUE_POS])}
+              onDelete={() => removeOption(...s)}
+              className={classes.selectionChips}
+            />
+          )}
         </div>
         <div className={classes.browserAnswerInstrustions}>
           <AnswerInstructions
@@ -264,10 +264,10 @@ function VocabularyTree(props) {
       }
       <DialogContent className={classes.treeContainer} dividers>
         {parentNode?.length ?
-        <div className={classes.treeRoot}>
-          {parentNode}
-        </div>
-        : ""}
+          <div className={classes.treeRoot}>
+            {parentNode}
+          </div>
+          : ""}
         <div className={parentNode?.length ? classes.treeNode : undefined}>
           {currentNode}
         </div>
@@ -275,14 +275,14 @@ function VocabularyTree(props) {
       { enableSelection &&
         <DialogActions>
           <Button onClick={onDone}
-                  variant="contained"
-                  disabled={!selectionChanged || maxAnswers > 0 && selectedTerms.length > maxAnswers}
-                  className={classes.browseAction} >
+            variant="contained"
+            disabled={!selectionChanged || maxAnswers > 0 && selectedTerms.length > maxAnswers}
+            className={classes.browseAction} >
               Done
           </Button>
           <Button onClick={onCancel}
-                  variant="outlined"
-                  className={classes.browseAction} >
+            variant="outlined"
+            className={classes.browseAction} >
             Cancel
           </Button>
         </DialogActions>

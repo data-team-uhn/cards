@@ -161,7 +161,7 @@ function Form (props) {
     if (incompleteQuestionEl) {
       // focus and hightlight the first unfinished mandatory question box
       incompleteQuestionEl.classList.add(classes.questionnaireItemWithError);
-      incompleteQuestionEl.scrollIntoView({block: "center"});
+      incompleteQuestionEl.scrollIntoView({ block: "center" });
     } else {
       !saveInProgress && lastSaveStatus && endReached && onDone?.();
     }
@@ -297,7 +297,7 @@ function Form (props) {
     setSaveInProgress(true);
     setIncompleteQuestionEl(null);
     if (performCheckin) {
-        data.append(":checkin", "true");
+      data.append(":checkin", "true");
     }
     return fetchWithReLogin(globalLoginDisplay, formURL, {
       method: "POST",
@@ -306,7 +306,7 @@ function Form (props) {
         Accept: "application/json"
       }
     }).then((response) => {
-       if (!(formNode?.current)) {
+      if (!(formNode?.current)) {
         // component no longer mounted
         // nothing to do
         return;
@@ -323,64 +323,64 @@ function Form (props) {
         // in nagivable pagination, re-fetch it after save to check the updated status flags
         // However, skip any completion checks if this is an autosave
         if ((requireCompletion || paginationVariant == 'navigable') && !(event?.type == "autosave")) {
-            // Disable progress until we figure out if it's ok to proceed
-            requireCompletion && setDisableProgress(true);
-            fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
-              .then((response) => response.ok ? response.json() : Promise.reject(response))
-              .then(json => {
-                  setData(json);
-                  if (!requireCompletion) return;
-                  let incompleteEl = getFirstIncompleteQuestionEl(json);
-                  if (!!incompleteEl) {
-                    setIncompleteQuestionEl(incompleteEl);
-                  } else {
-                    setDisableProgress(false);
-                  }
-              })
-              .catch(handleFetchError)
-              .finally(() => {
-                setLastSaveStatus(true);
-                setLastSaveTimestamp(new Date());
-              });
+          // Disable progress until we figure out if it's ok to proceed
+          requireCompletion && setDisableProgress(true);
+          fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
+            .then((response) => response.ok ? response.json() : Promise.reject(response))
+            .then(json => {
+              setData(json);
+              if (!requireCompletion) return;
+              let incompleteEl = getFirstIncompleteQuestionEl(json);
+              if (!!incompleteEl) {
+                setIncompleteQuestionEl(incompleteEl);
+              } else {
+                setDisableProgress(false);
+              }
+            })
+            .catch(handleFetchError)
+            .finally(() => {
+              setLastSaveStatus(true);
+              setLastSaveTimestamp(new Date());
+            });
         } else {
           setLastSaveStatus(true);
           setLastSaveTimestamp(new Date());
         }
       } else if (response.status === 409) {
         response.json().then((json) => {
-            setErrorCode(response.status);
-            setErrorMessage(json["status.message"]);
-            // We remove the "are you sure you want to leave" and autosave handlers
-            // since we know the data is stale and won't be able to be saved
-            removeWindowHandlers?.();
-            openErrorDialog();
+          setErrorCode(response.status);
+          setErrorMessage(json["status.message"]);
+          // We remove the "are you sure you want to leave" and autosave handlers
+          // since we know the data is stale and won't be able to be saved
+          removeWindowHandlers?.();
+          openErrorDialog();
         })
         setLastSaveStatus(undefined);
       } else if (response.status >= 400 || response.status < 100) {
         response.json().then((json) => {
-            setErrorCode(response.status);
-            setErrorMessage(json["status.message"]);
-            openErrorDialog();
+          setErrorCode(response.status);
+          setErrorMessage(json["status.message"]);
+          openErrorDialog();
         })
         setLastSaveStatus(undefined);
       }
     }).catch((err) => {
-        setErrorCode(0);
-        setErrorMessage(err?.message);
-        openErrorDialog();
-        setLastSaveStatus(undefined);
+      setErrorCode(0);
+      setErrorMessage(err?.message);
+      openErrorDialog();
+      setLastSaveStatus(undefined);
     })
-    .finally(() => {formNode?.current && setSaveInProgress(false)});
+      .finally(() => {formNode?.current && setSaveInProgress(false)});
   }
 
   let saveDataWithCheckin = (event, onSuccess) => {
-      return saveData(event, true, onSuccess);
+    return saveData(event, true, onSuccess);
   }
 
   // Handle when the subject of the form changes
   let changeSubject = (subject) => {
     setData( (old) => {
-      let updated = {...old}
+      let updated = { ...old }
       updated.subject = subject;
       return(updated);
     })
@@ -413,8 +413,8 @@ function Form (props) {
     // Redirect the user to the view form mode
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
-        removeWindowHandlers?.();
-        navigate(baseURL + formURL);
+      removeWindowHandlers?.();
+      navigate(baseURL + formURL);
     });
   }
 
@@ -461,86 +461,86 @@ function Form (props) {
   }
 
   let dropdownList = (
-                  <List>
-                    { isEdit ?
-                    <ListItem className={classes.actionsMenuItem}>
-                      <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
+    <List>
+      { isEdit ?
+        <ListItem className={classes.actionsMenuItem}>
+          <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
                         Change subject
-                      </Button>
-                    </ListItem>
-                    : <>
-                    <ListItem className={classes.actionsMenuItem}>
-                      <PrintButton
-                         variant="text"
-                         size="medium"
-                         resourcePath={formURL}
-                         resourceData={data}
-                         breadcrumb={getTextHierarchy(data?.subject, true)}
-                         date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-                         onClose={() => { setActionsMenu(null); }}
-                       />
-                    </ListItem>
-                    <ListItem className={classes.actionsMenuItem}>
-                      <Button
-                         size="medium"
-                         onClick={() => {
-                         window.open(formURL + ".txt");
-                         setActionsMenu(null);
-                        }}>
+          </Button>
+        </ListItem>
+        : <>
+          <ListItem className={classes.actionsMenuItem}>
+            <PrintButton
+              variant="text"
+              size="medium"
+              resourcePath={formURL}
+              resourceData={data}
+              breadcrumb={getTextHierarchy(data?.subject, true)}
+              date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+              onClose={() => { setActionsMenu(null); }}
+            />
+          </ListItem>
+          <ListItem className={classes.actionsMenuItem}>
+            <Button
+              size="medium"
+              onClick={() => {
+                window.open(formURL + ".txt");
+                setActionsMenu(null);
+              }}>
                         Export as text
-                      </Button>
-                    </ListItem>
-                    </> }
-                    <ListItem className={classes.actionsMenuItem}>
-                      <DeleteButton
-                          entryPath={data ? data["@path"] : formURL}
-                          entryName={getEntityIdentifier(data)}
-                          entryType="Form"
-                          onComplete={onDelete}
-                          variant="text"
-                          size="medium"
-                        />
-                    </ListItem>
-                  </List>
+            </Button>
+          </ListItem>
+        </> }
+      <ListItem className={classes.actionsMenuItem}>
+        <DeleteButton
+          entryPath={data ? data["@path"] : formURL}
+          entryName={getEntityIdentifier(data)}
+          entryType="Form"
+          onComplete={onDelete}
+          variant="text"
+          size="medium"
+        />
+      </ListItem>
+    </List>
   )
 
   let formMenu = (
-            <div className={classes.actionsMenu}>
-                {isEdit ?
-                  <Tooltip title="Save and view" onClick={onClose}>
-                    <IconButton color="primary" size="large">
-                      <DoneIcon />
-                    </IconButton>
-                  </Tooltip>
-                  :
-                  <Tooltip title="Edit">
-                    <IconButton color="primary" onClick={onEdit} size="large">
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                }
-                <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-                  <IconButton size="large">
-                    <MoreIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                { !actionsMenu && <div style={{display: "none"}}>{ dropdownList }</div> }
-                <Popover
-                    open={Boolean(actionsMenu)}
-                    anchorEl={actionsMenu}
-                    onClose={() => {setActionsMenu(null)}}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                >
-                  { dropdownList }
-                </Popover>
-            </div>
+    <div className={classes.actionsMenu}>
+      {isEdit ?
+        <Tooltip title="Save and view" onClick={onClose}>
+          <IconButton color="primary" size="large">
+            <DoneIcon />
+          </IconButton>
+        </Tooltip>
+        :
+        <Tooltip title="Edit">
+          <IconButton color="primary" onClick={onEdit} size="large">
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+      }
+      <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+        <IconButton size="large">
+          <MoreIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      { !actionsMenu && <div style={{ display: "none" }}>{ dropdownList }</div> }
+      <Popover
+        open={Boolean(actionsMenu)}
+        anchorEl={actionsMenu}
+        onClose={() => {setActionsMenu(null)}}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        { dropdownList }
+      </Popover>
+    </div>
   )
 
   let getTimestampString  = (timestamp) => {
@@ -550,29 +550,29 @@ function Form (props) {
 
   let validLinks = data?.["cards:links"]?.filter(link => link["to"]?.startsWith("/"));
   let links = validLinks?.length > 0 ?
-      (
-        <Typography variant="overline">
-          {"Related: "}
-          {validLinks.length == 1 ?
-              validLinks.map(link => <Link key={link["@name"]} to={".." + baseURL + link["to"]}>{link["resourceLabel"]}</Link>)
-              :
-              <List dense disablePadding>
-              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={".." + baseURL + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
-              </List>
-          }
-        </Typography>
-      )
-      : <></>
+    (
+      <Typography variant="overline">
+        {"Related: "}
+        {validLinks.length == 1 ?
+          validLinks.map(link => <Link key={link["@name"]} to={".." + baseURL + link["to"]}>{link["resourceLabel"]}</Link>)
+          :
+          <List dense disablePadding>
+            {validLinks.map(link => <ListItem key={link["@name"]}><Link to={".." + baseURL + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
+          </List>
+        }
+      </Typography>
+    )
+    : <></>
 
   return (
     <form action={data?.["@path"]}
-          method="POST"
-          onSubmit={handleSubmit}
-          onChange={handleFormDataChange}
-          key={id}
-          ref={formNode}
-          className={classNames?.join(' ')}
-      >
+      method="POST"
+      onSubmit={handleSubmit}
+      onChange={handleFormDataChange}
+      key={id}
+      ref={formNode}
+      className={classNames?.join(' ')}
+    >
       <input type="hidden" name=":baseVersion" value={baseVersion} />
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
@@ -595,45 +595,45 @@ function Form (props) {
             {data?.questionnaire?.description}
           </FormattedText>
           <Breadcrumbs separator="·">
-          {
-            data && data['jcr:createdBy'] && data['jcr:created'] ?
-            <Typography variant="overline">
-              {"Entered by " + data['jcr:createdBy'] + " on "}
-              <Tooltip title={data['jcr:created']}>
-                <span>{DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
-              </Tooltip>
-            </Typography>
-            : ""
-          }
-          {
-            wasCheckedOut ?
-            <Typography variant="overline" className={classes.warningStatus}>Another user is editing</Typography>
-            : ""
-          }
-          {
-            lastSaveTimestamp ?
-            <Typography variant="overline">
-              {saveInProgress ?
-              "Saving ... "
-              :
-              <span>
-                {"Saved "}
-                <Tooltip title={lastSaveTimestamp.toISOString()}>
-                  <span>{getTimestampString(lastSaveTimestamp.toISOString())}</span>
-                </Tooltip>
-              </span>
-              }
-            </Typography>
-            :
-            data && data['jcr:lastModified'] ?
-            <Typography variant="overline">
-                {"Last modified "}
-                <Tooltip title={data['jcr:lastModified']}>
-                  <span>{getTimestampString(data['jcr:lastModified'])}</span>
-                </Tooltip>
-            </Typography>
-            : ""
-          }
+            {
+              data && data['jcr:createdBy'] && data['jcr:created'] ?
+                <Typography variant="overline">
+                  {"Entered by " + data['jcr:createdBy'] + " on "}
+                  <Tooltip title={data['jcr:created']}>
+                    <span>{DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
+                  </Tooltip>
+                </Typography>
+                : ""
+            }
+            {
+              wasCheckedOut ?
+                <Typography variant="overline" className={classes.warningStatus}>Another user is editing</Typography>
+                : ""
+            }
+            {
+              lastSaveTimestamp ?
+                <Typography variant="overline">
+                  {saveInProgress ?
+                    "Saving ... "
+                    :
+                    <span>
+                      {"Saved "}
+                      <Tooltip title={lastSaveTimestamp.toISOString()}>
+                        <span>{getTimestampString(lastSaveTimestamp.toISOString())}</span>
+                      </Tooltip>
+                    </span>
+                  }
+                </Typography>
+                :
+                data && data['jcr:lastModified'] ?
+                  <Typography variant="overline">
+                    {"Last modified "}
+                    <Tooltip title={data['jcr:lastModified']}>
+                      <span>{getTimestampString(data['jcr:lastModified'])}</span>
+                    </Tooltip>
+                  </Typography>
+                  : ""
+            }
           </Breadcrumbs>
           {links}
         </ResourceHeader>
@@ -644,7 +644,7 @@ function Form (props) {
           ['/Save']: saveData,
           ['/URL']: formURL,
           ['/OnFormDataChanged']: handleFormDataChange
-          }}>
+        }}>
           <FormUpdateProvider>
             {!disableHeader &&
               <SelectorDialog
@@ -661,15 +661,15 @@ function Form (props) {
             }
             {fetchInProgress &&
               <Backdrop
-               open={fetchInProgress}
-               sx={(theme) => ({
-                 backgroundColor: alpha(theme.palette.background.paper, .5),
-                 marginLeft: {md : "260px"},
-                 zIndex: theme.zIndex.drawer + 1
-               })}
-             >
-               <CircularProgress />
-             </Backdrop>
+                open={fetchInProgress}
+                sx={(theme) => ({
+                  backgroundColor: alpha(theme.palette.background.paper, .5),
+                  marginLeft: { md : "260px" },
+                  zIndex: theme.zIndex.drawer + 1
+                })}
+              >
+                <CircularProgress />
+              </Backdrop>
             }
             {changedSubject &&
               <React.Fragment>
@@ -695,7 +695,7 @@ function Form (props) {
                     pageActive={pageResult.page.visible}
                     isEdit={isEdit}
                     isSummary={isSummary}
-                    contentOffset={{top: formContentOffsetTop, bottom: formContentOffsetBottom}}
+                    contentOffset={{ top: formContentOffsetTop, bottom: formContentOffsetBottom }}
                   />
                 })
             }
@@ -706,24 +706,24 @@ function Form (props) {
             However, it should only be displayed to the user in edit mode when paginationEnabled is true. */}
         <Grid size={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           {data && <FormPagination
-              saveInProgress={saveInProgress}
-              disableProgress={disableProgress}
-              lastSaveStatus={lastSaveStatus}
-              enabled={paginationEnabled}
-              variant={paginationVariant}
-              navMode={paginationNavMode}
-              questionnaireData={data.questionnaire}
-              setPagesCallback={setPages}
-              isPageCompleted={keys => (
-               Object.values(data)
-                 .filter(e => Object.values(e).find(val => ENTRY_TYPES.includes(val["jcr:primaryType"])))
-                 .filter(e => keys.includes((e.section || e.question)?.["@name"] || ""))
-                 .every(p => !hasWarningFlags(p))
-              )}
-              onDone={() => { setEndReached(true); }}
-              onPageChange={() => { setDisableProgress(requireCompletion); setIncompleteQuestionEl(null); }}
-              doneLabel={doneLabel}
-              doneIcon={doneIcon}
+            saveInProgress={saveInProgress}
+            disableProgress={disableProgress}
+            lastSaveStatus={lastSaveStatus}
+            enabled={paginationEnabled}
+            variant={paginationVariant}
+            navMode={paginationNavMode}
+            questionnaireData={data.questionnaire}
+            setPagesCallback={setPages}
+            isPageCompleted={keys => (
+              Object.values(data)
+                .filter(e => Object.values(e).find(val => ENTRY_TYPES.includes(val["jcr:primaryType"])))
+                .filter(e => keys.includes((e.section || e.question)?.["@name"] || ""))
+                .every(p => !hasWarningFlags(p))
+            )}
+            onDone={() => { setEndReached(true); }}
+            onPageChange={() => { setDisableProgress(requireCompletion); setIncompleteQuestionEl(null); }}
+            doneLabel={doneLabel}
+            doneIcon={doneIcon}
           />}
         </Grid>
         { !paginationEnabled && !disableButton &&
@@ -760,7 +760,7 @@ function Form (props) {
           lastActivityTimestamp={lastSaveTimestamp}
           onStay={() => setAutosaveOptions({})}
           onExit={() => props.history.push("/")}
-          onExpired={() => { removeWindowHandlers(); setAutosaveOptions({performCheckin: true}); } }
+          onExpired={() => { removeWindowHandlers(); setAutosaveOptions({ performCheckin: true }); } }
         />
       }
     </form>

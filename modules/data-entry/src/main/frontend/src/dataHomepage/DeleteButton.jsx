@@ -183,19 +183,19 @@ function DeleteButton(props) {
           Delete {entryLabel ? entryLabel.concat(' ') : entryType.concat(' ')}{deleteRecursive ? " and dependent items": null }
         </DialogTitle>
         <DialogContent>
-            <Typography>{dialogMessage}</Typography>
-            <Typography>{dialogAction}</Typography>
+          <Typography>{dialogMessage}</Typography>
+          <Typography>{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="outlined" onClick={closeDialog}>Cancel</Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleDelete}
-              disabled={deletionInProgress}
-            >
-              { deletionInProgress ? "Deleting..." : deleteRecursive ? "Delete All" : "Delete" }
-            </Button>
+          <Button variant="outlined" onClick={closeDialog}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleDelete}
+            disabled={deletionInProgress}
+          >
+            { deletionInProgress ? "Deleting..." : deleteRecursive ? "Delete All" : "Delete" }
+          </Button>
         </DialogActions>
       </Dialog>
       {variant == "icon" ?

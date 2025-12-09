@@ -99,29 +99,29 @@ function AdminResourceListing(props) {
         data={data}
         muiTablePaperProps={{ elevation: 0 }}
         muiTableHeadCellProps={{
-            sx: (theme) => ({
-              background: theme.palette.grey['200'],
-            }),
-          }}
+          sx: (theme) => ({
+            background: theme.palette.grey['200'],
+          }),
+        }}
         displayColumnDefOptions={{
-            'mrt-row-actions': {
-              muiTableHeadCellProps: {align: 'right'},
-              muiTableBodyCellProps: {
-                sx: {
-                  padding: '0',
-                },
+          'mrt-row-actions': {
+            muiTableHeadCellProps: { align: 'right' },
+            muiTableBodyCellProps: {
+              sx: {
+                padding: '0',
               },
             },
-            'mrt-row-expand': {
-              size: 8,
-            },
-          }}
+          },
+          'mrt-row-expand': {
+            size: 8,
+          },
+        }}
         enableRowActions={tableActions}
         positionActionsColumn="last"
         renderRowActions={tableActions}
         filterFns={{
-            myCustomFilterFn: customFilter,
-          }}
+          myCustomFilterFn: customFilter,
+        }}
         globalFilterFn={customFilter ? "myCustomFilterFn" : "contains"}
       />
     </AdminScreen>

@@ -35,7 +35,7 @@ const QuestionnaireStyleNotesContain = theme => ({
   textField: {
     // The default min-width is 250 px, which is too wide when the comparator is "notes contain"
     minWidth: "155px !important",
-}});
+  } });
 
 /**
  * Display a filter on a numeric answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
@@ -71,7 +71,7 @@ const TextFilter = forwardRef((props, ref) => {
       value={input}
       inputRef={ref}
       placeholder="empty"
-      />
+    />
   );
 });
 

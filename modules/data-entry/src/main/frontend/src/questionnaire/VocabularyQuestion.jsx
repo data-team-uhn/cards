@@ -55,7 +55,7 @@ function VocabularyQuestion(props) {
     <Question
       disableInstructions
       {...props}
-      >
+    >
       <MultipleChoice
         customInput = {VocabularyQuery}
         customInputProps = {{
@@ -72,7 +72,7 @@ function VocabularyQuestion(props) {
           vocabulary: questionDefinition.sourceVocabularies
         }}
         {...props}
-        />
+      />
     </Question>);
 }
 

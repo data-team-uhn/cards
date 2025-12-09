@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 
 import {
   Grid,
@@ -151,7 +151,7 @@ export default function VocabulariesAdminPage() {
       if (installedIndex > -1) {
         tempLocalVocabList[installedIndex] = vocab;
       } else {
-        tempLocalVocabList.push(Object.assign(vocab, {installed : new Date()}));
+        tempLocalVocabList.push(Object.assign(vocab, { installed : new Date() }));
       }
       setLocalVocabList(tempLocalVocabList);
 
@@ -192,58 +192,58 @@ export default function VocabulariesAdminPage() {
 
   return (
     <AdminScreen title="Vocabularies">
-    <Grid container direction="column" spacing={6} justifyContent="space-around">
+      <Grid container direction="column" spacing={6} justifyContent="space-around">
 
-      {wrapSection(<>
-      <Grid>
-        <Typography variant="h6">
+        {wrapSection(<>
+          <Grid>
+            <Typography variant="h6">
           Installed
-        </Typography>
-      </Grid>
-      { localLoaded && localVocabList.length == 0 &&
+            </Typography>
+          </Grid>
+          { localLoaded && localVocabList.length == 0 &&
           <Grid>
             <Typography color="textSecondary">No vocabularies have been installed yet.</Typography>
           </Grid>
-      }
-      <VocabularyDirectory 
-        type="local"
-        link={localLink}
-        vocabList={localVocabList}
-        setVocabList={processLocalVocabList}
-        acronymPhaseObject={acronymPhaseObject}
-        updateLocalList={updateLocalList}
-        addSetter={addSetter}
-        setPhase={setPhase}
-        apiKey={bioPortalApiKey}
-        loaded={localLoaded}
-      />
-      </>)}
+          }
+          <VocabularyDirectory 
+            type="local"
+            link={localLink}
+            vocabList={localVocabList}
+            setVocabList={processLocalVocabList}
+            acronymPhaseObject={acronymPhaseObject}
+            updateLocalList={updateLocalList}
+            addSetter={addSetter}
+            setPhase={setPhase}
+            apiKey={bioPortalApiKey}
+            loaded={localLoaded}
+          />
+        </>)}
 
-      {wrapSection(
-      <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
-      )}
+        {wrapSection(
+          <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
+        )}
 
-      {wrapSection(<>
-      <BioPortalApiKey
-        bioPortalApiKey={bioPortalApiKey}
-        updateKey={updateBioPortalApiKey}
-      />
+        {wrapSection(<>
+          <BioPortalApiKey
+            bioPortalApiKey={bioPortalApiKey}
+            updateKey={updateBioPortalApiKey}
+          />
 
-      { bioPortalApiKey && <VocabularyDirectory
-        type="remote"
-        link={generateRemoteLink(bioPortalApiKey, "remote")}
-        listLink={generateRemoteLink(bioPortalApiKey, "remote-list")}
-        vocabList={remoteVocabList}
-        setVocabList={processRemoteVocabList}
-        acronymPhaseObject={acronymPhaseObject}
-        setPhase={setPhase}
-        updateLocalList={updateLocalList}
-        addSetter={addSetter}
-        apiKey={bioPortalApiKey}
-        loaded={remoteLoaded}
-      /> }
-      </>)}
-    </Grid>
+          { bioPortalApiKey && <VocabularyDirectory
+            type="remote"
+            link={generateRemoteLink(bioPortalApiKey, "remote")}
+            listLink={generateRemoteLink(bioPortalApiKey, "remote-list")}
+            vocabList={remoteVocabList}
+            setVocabList={processRemoteVocabList}
+            acronymPhaseObject={acronymPhaseObject}
+            setPhase={setPhase}
+            updateLocalList={updateLocalList}
+            addSetter={addSetter}
+            apiKey={bioPortalApiKey}
+            loaded={remoteLoaded}
+          /> }
+        </>)}
+      </Grid>
     </AdminScreen>
   );
 }

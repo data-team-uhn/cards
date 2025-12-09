@@ -34,29 +34,29 @@ import { checkPropTypes } from "../propTypes";
 import { GRID_SPACE_UNIT } from "./QuestionnaireStyle";
 
 const useStyles = makeStyles()(theme => ({
-    resourceHeader: {
-      position: "sticky",
-      top: 0,
-      padding: `${theme.spacing(GRID_SPACE_UNIT, GRID_SPACE_UNIT, GRID_SPACE_UNIT)} !important`,
-      margin: theme.spacing(GRID_SPACE_UNIT, 0, 0, 0),
-      backgroundColor: grey[100],
-      zIndex: "1010",
-      "& .MuiBreadcrumbs-root" : {
-        width: "fit-content",
-      },
-      "& .MuiBreadcrumbs-li" : {
-        color: theme.palette.text.primary,
-      },
+  resourceHeader: {
+    position: "sticky",
+    top: 0,
+    padding: `${theme.spacing(GRID_SPACE_UNIT, GRID_SPACE_UNIT, GRID_SPACE_UNIT)} !important`,
+    margin: theme.spacing(GRID_SPACE_UNIT, 0, 0, 0),
+    backgroundColor: grey[100],
+    zIndex: "1010",
+    "& .MuiBreadcrumbs-root" : {
+      width: "fit-content",
     },
-    breadcrumbAction: {
-      margin: theme.spacing(-1.25, 0, -2.25),
+    "& .MuiBreadcrumbs-li" : {
+      color: theme.palette.text.primary,
     },
-    resourceTitle: {
-      backgroundColor: grey[100],
-      padding: `${theme.spacing(GRID_SPACE_UNIT, GRID_SPACE_UNIT, GRID_SPACE_UNIT)} !important`,
-      marginTop: theme.spacing(-3*GRID_SPACE_UNIT),
-      zIndex: 2,
-    }
+  },
+  breadcrumbAction: {
+    margin: theme.spacing(-1.25, 0, -2.25),
+  },
+  resourceTitle: {
+    backgroundColor: grey[100],
+    padding: `${theme.spacing(GRID_SPACE_UNIT, GRID_SPACE_UNIT, GRID_SPACE_UNIT)} !important`,
+    marginTop: theme.spacing(-3*GRID_SPACE_UNIT),
+    zIndex: 2,
+  }
 }))
 
 /**
@@ -118,23 +118,23 @@ function ResourceHeader (props) {
 
   return (
     <>
-    <Grid size={12} className={classes.resourceHeader} style={{top: contentOffset}} id="cards-resource-header">
-      <Grid container justifyContent="space-between" alignItems="center" wrap="nowrap">
-        <Grid>
-          <Breadcrumbs separator={separator}>
-            {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
-            <Collapse in={fullBreadcrumbTrigger}>
-              <Typography variant="subtitle2">{title}</Typography>
-            </Collapse>
-          </Breadcrumbs>
+      <Grid size={12} className={classes.resourceHeader} style={{ top: contentOffset }} id="cards-resource-header">
+        <Grid container justifyContent="space-between" alignItems="center" wrap="nowrap">
+          <Grid>
+            <Breadcrumbs separator={separator}>
+              {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
+              <Collapse in={fullBreadcrumbTrigger}>
+                <Typography variant="subtitle2">{title}</Typography>
+              </Collapse>
+            </Breadcrumbs>
+          </Grid>
+          <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid}>
+            { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }
+          </Collapse>
         </Grid>
-        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid}>
-          { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }
-        </Collapse>
       </Grid>
-    </Grid>
-    <Grid size={12} className={classes.resourceTitle}>
-       <Grid container justifyContent="space-between" alignItems="start" spacing={1}>
+      <Grid size={12} className={classes.resourceTitle}>
+        <Grid container justifyContent="space-between" alignItems="start" spacing={1}>
           <Grid>
             <Grid container spacing={1} alignItems="center">
               <Grid><Typography component="h2" variant="h4">{title}</Typography></Grid>
@@ -142,9 +142,9 @@ function ResourceHeader (props) {
             </Grid>
           </Grid>
           {action && !fullBreadcrumbTrigger && <Grid>{action}</Grid>}
-       </Grid>
-       {children}
-    </Grid>
+        </Grid>
+        {children}
+      </Grid>
     </>
   )
 };

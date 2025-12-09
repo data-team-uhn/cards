@@ -49,7 +49,7 @@ function MainLoginContainer(props) {
             <LoginForm handleLogin={handleLogin} redirectOnLogin={redirectOnLogin}/>
             :
             <RegistrationForm loginOnSuccess={true} handleLogin={handleLogin} />
-           }
+          }
         </Grid>
         { isLongForm && (!signInShown || signUpEnabled) &&
           <Grid>

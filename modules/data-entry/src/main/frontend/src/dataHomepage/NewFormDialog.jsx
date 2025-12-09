@@ -218,10 +218,10 @@ function NewFormDialog(props) {
   // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
     fetchWithReLogin(globalLoginDisplay, `/query?rawResults=true&query=SELECT f.questionnaire FROM [cards:Form] as f where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}' OPTION (index tag property)&limit=1000`)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then((response) => {
-      setRelatedForms(response.rows);
-    })
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((response) => {
+        setRelatedForms(response.rows);
+      })
   }
 
   useEffect(() => {
@@ -380,11 +380,11 @@ function NewFormDialog(props) {
     columns: [
       { accessorKey: 'title',
         Cell: ({ row }) => (<>
-                      <Typography component="div">{row.original.title}</Typography>
-                      <FormattedText variant="caption" color="textSecondary">
-                        {row.original.description}
-                      </FormattedText>
-                    </>)
+          <Typography component="div">{row.original.title}</Typography>
+          <FormattedText variant="caption" color="textSecondary">
+            {row.original.description}
+          </FormattedText>
+        </>)
       },
       { accessorKey: 'description' }
     ],
@@ -425,10 +425,10 @@ function NewFormDialog(props) {
         <DialogContent dividers className={classes.dialogContentWithTable}>
           {error && (!newSubjectPopperOpen) && <Alert severity="error">{error}</Alert>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
-          <React.Fragment>
-            {relatedForms && <>
-              <MaterialReactTable table={table}/>
-              <TablePagination
+            <React.Fragment>
+              {relatedForms && <>
+                <MaterialReactTable table={table}/>
+                <TablePagination
                   component="div"
                   rowsPerPageOptions={[5, 10, 15, 20, 25, 30, 50, 100, 1000]}
                   count={totalIsApproximate ? -1 : rowCount}
@@ -436,28 +436,28 @@ function NewFormDialog(props) {
                   page={pagination.pageIndex}
                   onPageChange={handleChangePage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
-                  labelDisplayedRows={({from, to, count}) =>
-                      `${from}-${to} of ${totalIsApproximate ? `more than ${rowCount}` : count}`
+                  labelDisplayedRows={({ from, to, count }) =>
+                    `${from}-${to} of ${totalIsApproximate ? `more than ${rowCount}` : count}`
                   }
                 />
               </>
-            }
-          </React.Fragment>
-          :
-          <React.Fragment>
-            { /* We need selectedQuestionnaire to be filled out before this renders, or it will try grabbing the wrong subjects */
-            selectedQuestionnaire && <SubjectSelectorList
-              allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
-              disabled={isFetching}
-              onDelete={unselectSubject}
-              onError={setError}
-              onSelect={selectSubject}
-              selectedSubject={selectedSubject}
-              currentSubject={currentSubject}
-              selectedQuestionnaire={selectedQuestionnaire}
-              disableProgress={setDisableProgress}
-              />}
-          </React.Fragment>}
+              }
+            </React.Fragment>
+            :
+            <React.Fragment>
+              { /* We need selectedQuestionnaire to be filled out before this renders, or it will try grabbing the wrong subjects */
+                selectedQuestionnaire && <SubjectSelectorList
+                  allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
+                  disabled={isFetching}
+                  onDelete={unselectSubject}
+                  onError={setError}
+                  onSelect={selectSubject}
+                  selectedSubject={selectedSubject}
+                  currentSubject={currentSubject}
+                  selectedQuestionnaire={selectedQuestionnaire}
+                  disableProgress={setDisableProgress}
+                />}
+            </React.Fragment>}
         </DialogContent>
         <DialogActions>
           {progress === PROGRESS_SELECT_SUBJECT &&
@@ -466,27 +466,27 @@ function NewFormDialog(props) {
               color="success"
               onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
               className={classes.createNewSubjectButton}
-              >
+            >
               New subject
             </Button>
           }
           <Button
             variant="outlined"
             onClick={goBack}
-            >
+          >
             { (progress == PROGRESS_SELECT_QUESTIONNAIRE || presetPath) ?
               "Cancel"
-            :
+              :
               "Back"
             }
           </Button>
           <Button
             variant="contained"
             onClick={progressThroughDialog}
-            >
+          >
             { progress == PROGRESS_SELECT_QUESTIONNAIRE ?
               "Continue"
-            :
+              :
               "Create Form"
             }
           </Button>
@@ -504,7 +504,7 @@ function NewFormDialog(props) {
         onSubmit={createForm}
         open={newSubjectPopperOpen}
         disableRedirect
-        />
+      />
       {
         withButton &&
           <NewItemButton

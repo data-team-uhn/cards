@@ -18,59 +18,59 @@
 //
 
 const liveTableStyle = theme => ({
-    tableHeader: {
-        fontWeight: "300"
+  tableHeader: {
+    fontWeight: "300"
+  },
+  tableActionsHeader: {
+    "textAlign": "right"
+  },
+  filterLabel: {
+    margin: theme.spacing(0, 1, 0, 0)
+  },
+  filterContainer: {
+    padding: theme.spacing(0, 2),
+  },
+  addFilterButton: {
+    minWidth: 0,
+    padding: 0,
+    borderRadius: "50%",
+    height: "24px",
+    width: "24px",
+    margin: theme.spacing(0.5, 0)
+  },
+  filterChips: {
+    marginRight: theme.spacing(0.5),
+    marginTop: theme.spacing(0.5),
+    marginBottom: theme.spacing(0.5),
+    "& .MuiChip-label > span": {
+      maxWidth: "15em",
+      textOverflow: "ellipsis",
+      overflow: "hidden",
+      float: "left",
+      padding: theme.spacing(0.25),
     },
-    tableActionsHeader: {
-        "textAlign": "right"
-    },
-    filterLabel: {
-        margin: theme.spacing(0, 1, 0, 0)
-    },
-    filterContainer: {
-        padding: theme.spacing(0, 2),
-    },
-    addFilterButton: {
-        minWidth: 0,
-        padding: 0,
-        borderRadius: "50%",
-        height: "24px",
-        width: "24px",
-        margin: theme.spacing(0.5, 0)
-    },
-    filterChips: {
-        marginRight: theme.spacing(0.5),
-        marginTop: theme.spacing(0.5),
-        marginBottom: theme.spacing(0.5),
-        "& .MuiChip-label > span": {
-            maxWidth: "15em",
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            float: "left",
-            padding: theme.spacing(0.25),
-        },
-    },
-    saveButton: {
-        position: 'absolute',
-        right: theme.spacing(2)
-    },
-    answerField: {
-        width: "100%",
-    },
-    hidden: {
-        visibility: "hidden"
-    },
-    tableActions: {
-        "& .MuiIconButton-root": {
-            float : "right",
-            padding: theme.spacing(1),
-            marginTop: theme.spacing(0.5),
-            marginBottom: theme.spacing(0.5),
-        }
-    },
-    dataRow: {
-        height: "3em"
-    },
+  },
+  saveButton: {
+    position: 'absolute',
+    right: theme.spacing(2)
+  },
+  answerField: {
+    width: "100%",
+  },
+  hidden: {
+    visibility: "hidden"
+  },
+  tableActions: {
+    "& .MuiIconButton-root": {
+      float : "right",
+      padding: theme.spacing(1),
+      marginTop: theme.spacing(0.5),
+      marginBottom: theme.spacing(0.5),
+    }
+  },
+  dataRow: {
+    height: "3em"
+  },
 });
 
 export default liveTableStyle;

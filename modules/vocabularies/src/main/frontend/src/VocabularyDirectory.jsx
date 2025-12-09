@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 
 import { 
   Button,
@@ -36,18 +36,18 @@ const Status = require("./statusCodes.json");
 function reformat(data, type) {
   let vocabs = [];
   data.map(vocab =>  vocabs.push({
-          status: vocab.status,
-          acronym: type == "remote" ? vocab.ontology.acronym : vocab.identifier,
-          name: type == "remote" ? vocab.ontology.name : vocab.name,
-          source: vocab.source,
-          description: vocab.description,
-          released: vocab.released,
-          installed: vocab["jcr:created"],
-          version: vocab.version,
-          path: vocab["@path"],
-          roots: vocab.roots
-   }));
-   return vocabs;
+    status: vocab.status,
+    acronym: type == "remote" ? vocab.ontology.acronym : vocab.identifier,
+    name: type == "remote" ? vocab.ontology.name : vocab.name,
+    source: vocab.source,
+    description: vocab.description,
+    released: vocab.released,
+    installed: vocab["jcr:created"],
+    version: vocab.version,
+    path: vocab["@path"],
+    roots: vocab.roots
+  }));
+  return vocabs;
 }
 
 // Requests list of Vocabularies from Bioontology API. Currently only renders a table to display items if they are form the remote source
@@ -65,15 +65,15 @@ export default function VocabularyDirectory(props) {
     let filteredVocabs = null;
     setCurStatus(Status["Loading"]);
     fetch(props.listLink)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then(function(data) {
-      if (data?.length > 0) {
-        filteredVocabs = data.map( item => item.acronym );
-      }
-    })
-    .finally(() =>{
-      getFullVocabList(filteredVocabs);
-    });
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(function(data) {
+        if (data?.length > 0) {
+          filteredVocabs = data.map( item => item.acronym );
+        }
+      })
+      .finally(() =>{
+        getFullVocabList(filteredVocabs);
+      });
   }
 
   // Function that fetches list of Vocabularies with meta info from Bioontology API
@@ -81,30 +81,30 @@ export default function VocabularyDirectory(props) {
     setCurStatus(Status["Loading"]);
     var badResponse = false;
     fetch(props.link)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then(function(data) {
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(function(data) {
 
-      if (props.type === "remote") {
-        let filteredVocabs = data;
-        // Filter out every vocabulary that is not in `/ontologies`
-        if (existingVocabList && existingVocabList.length > 0) {
-          filteredVocabs = data.filter((vocab) => { return existingVocabList.includes(vocab.ontology.acronym) });
+        if (props.type === "remote") {
+          let filteredVocabs = data;
+          // Filter out every vocabulary that is not in `/ontologies`
+          if (existingVocabList && existingVocabList.length > 0) {
+            filteredVocabs = data.filter((vocab) => { return existingVocabList.includes(vocab.ontology.acronym) });
+          }
+
+          props.setVocabList(reformat(filteredVocabs, props.type));
+        } else if (props.type === "local") {
+          props.setVocabList(reformat(data.rows, props.type));
         }
-
-        props.setVocabList(reformat(filteredVocabs, props.type));
-      } else if (props.type === "local") {
-        props.setVocabList(reformat(data.rows, props.type));
-      }
-    })
-    .catch((error) => {
-      setCurStatus(Status["Error"]);
-      badResponse = true;
-    })
-    .finally(() =>{
-      if (!badResponse) {
-        setCurStatus(Status["Loaded"]);
-      }
-    });
+      })
+      .catch((error) => {
+        setCurStatus(Status["Error"]);
+        badResponse = true;
+      })
+      .finally(() =>{
+        if (!badResponse) {
+          setCurStatus(Status["Loaded"]);
+        }
+      });
   }
 
   useEffect(() => {
@@ -113,38 +113,38 @@ export default function VocabularyDirectory(props) {
 
   return(
     <React.Fragment>
-    {(curStatus == Status["Loading"]) && (
-      <Grid>
-        <LinearProgress color={(props.type === "remote" ? "primary" : "secondary" )} />
-      </Grid>
-    )}
-    {(curStatus == Status["Error"]) && (
-      <React.Fragment>
+      {(curStatus == Status["Loading"]) && (
         <Grid>
-          <Typography color="error">
+          <LinearProgress color={(props.type === "remote" ? "primary" : "secondary" )} />
+        </Grid>
+      )}
+      {(curStatus == Status["Error"]) && (
+        <React.Fragment>
+          <Grid>
+            <Typography color="error">
             The list of Bioportal vocabularies is currently inaccessible.
-          </Typography>
-          { props.apiKey && <Typography color="error">
+            </Typography>
+            { props.apiKey && <Typography color="error">
             Could not access Bioportal services. The API Key {props.apiKey} appears to be invalid.
-          </Typography>}
-        </Grid>
-        <Grid>
-          <Button variant="contained" onClick={getVocabList}>
-            <Typography variant="button">Retry</Typography>
-          </Button>
-        </Grid>
-      </React.Fragment>
-    )}
-    {(curStatus == Status["Loaded"] && props.acronymPhaseObject) && (
-      <VocabularyTable
-        type={props.type}
-        vocabList={props.vocabList}
-        acronymPhaseObject={props.acronymPhaseObject}
-        updateLocalList={props.updateLocalList}
-        setPhase={props.setPhase}
-        addSetter={props.addSetter}
-      />
-    )}
+            </Typography>}
+          </Grid>
+          <Grid>
+            <Button variant="contained" onClick={getVocabList}>
+              <Typography variant="button">Retry</Typography>
+            </Button>
+          </Grid>
+        </React.Fragment>
+      )}
+      {(curStatus == Status["Loaded"] && props.acronymPhaseObject) && (
+        <VocabularyTable
+          type={props.type}
+          vocabList={props.vocabList}
+          acronymPhaseObject={props.acronymPhaseObject}
+          updateLocalList={props.updateLocalList}
+          setPhase={props.setPhase}
+          addSetter={props.addSetter}
+        />
+      )}
     </React.Fragment>
   );
 }

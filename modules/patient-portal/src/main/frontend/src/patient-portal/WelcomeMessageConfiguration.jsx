@@ -19,12 +19,12 @@
 import React from 'react';
 
 import {
-    Alert,
-    Box,
-    Card,
-    CardContent,
-    CardHeader,
-    Grid,
+  Alert,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
@@ -59,13 +59,13 @@ function WelcomeMessageConfiguration(props) {
   const appName = document.querySelector('meta[name="title"]')?.content;
 
   return (
-      <Box>
-        <Alert severity="info">
+    <Box>
+      <Alert severity="info">
           Use APP_NAME to refer to the name configured for the application.
           On the Patient identification screen, all occurrences of APP_NAME will appear as {appName}.
-        </Alert>
-        { /* Wait for the welcomeMessage state to be set before displaying anything, as MDEditor sometimes gets stuck with an empty value */ }
-        { typeof(welcomeMessage) != 'undefined' &&
+      </Alert>
+      { /* Wait for the welcomeMessage state to be set before displaying anything, as MDEditor sometimes gets stuck with an empty value */ }
+      { typeof(welcomeMessage) != 'undefined' &&
           <Grid
             container
             spacing={2}
@@ -73,15 +73,15 @@ function WelcomeMessageConfiguration(props) {
             alignItems="stretch"
             className={classes.editorContainer}
           >
-            <Grid size={{xs:12, md:6}} key="markdown-text">
+            <Grid size={{ xs:12, md:6 }} key="markdown-text">
               <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={onChange} />
             </Grid>
-            <Grid size={{xs:12, md:6}} key="formatted-text">
+            <Grid size={{ xs:12, md:6 }} key="formatted-text">
               <Card>
                 <CardHeader
                   className={classes.previewHeader}
                   title="Preview"
-                  slotProps={{ title: {variant: "overline"} }}
+                  slotProps={{ title: { variant: "overline" } }}
                 />
                 <CardContent>
                   <FormattedText variant="body2">
@@ -91,8 +91,8 @@ function WelcomeMessageConfiguration(props) {
               </Card>
             </Grid>
           </Grid>
-        }
-      </Box>
+      }
+    </Box>
   );
 }
 

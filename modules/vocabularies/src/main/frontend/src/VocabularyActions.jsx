@@ -63,70 +63,70 @@ export default function VocabularyActions(props) {
       Object.keys(vocabLinks["install"]["params"]).map(
         key => ("&" + key + "=" + vocabLinks["install"]["params"][key])
       ).join(""),
-      {method: "POST"}
+      { method: "POST" }
     )
-    .then((resp) => resp.json())
-    .then((resp) => {
-      if(resp["isSuccessful"]) {
-        props.setPhase(Phase["Latest"]);
-        updateLocalList("add", vocabulary);
-      } else {
-        throw new Error(resp["error"]);
-      }
-    })
-    .catch(function(error) {
-      setPhase(oldPhase);
-      props.setPhase(oldPhase);
-      setAction("Install");
-      setErrorMessage(error.message || "Server Error");
-      setError(true);
-    });
+      .then((resp) => resp.json())
+      .then((resp) => {
+        if(resp["isSuccessful"]) {
+          props.setPhase(Phase["Latest"]);
+          updateLocalList("add", vocabulary);
+        } else {
+          throw new Error(resp["error"]);
+        }
+      })
+      .catch(function(error) {
+        setPhase(oldPhase);
+        props.setPhase(oldPhase);
+        setAction("Install");
+        setErrorMessage(error.message || "Server Error");
+        setError(true);
+      });
   }
 
   function uninstall() {
     const oldPhase = phase;
     props.setPhase(Phase["Uninstalling"]);
 
-    fetchWithReLogin(globalLoginDisplay, vocabLinks["uninstall"]["base"] + vocabulary.acronym, {method: "DELETE"})
-    .then((resp) => resp.ok ? resp : Promise.reject(resp))
-    .then((resp) => {
-      props.setPhase(Phase["Not Installed"]);
-      updateLocalList("remove", vocabulary);
-    })
-    .catch(function(error) {
-      let statusText = error.statusText;
-      error.json().then((json) => {
-        const code = json["status.code"];
-        const errorText = (statusText || ("Error " + code)) + ": ";
-        props.setPhase(oldPhase);
-        setAction("Uninstall");
-        setErrorMessage(errorText + json["status.message"]);
-        setError(true);
+    fetchWithReLogin(globalLoginDisplay, vocabLinks["uninstall"]["base"] + vocabulary.acronym, { method: "DELETE" })
+      .then((resp) => resp.ok ? resp : Promise.reject(resp))
+      .then((resp) => {
+        props.setPhase(Phase["Not Installed"]);
+        updateLocalList("remove", vocabulary);
+      })
+      .catch(function(error) {
+        let statusText = error.statusText;
+        error.json().then((json) => {
+          const code = json["status.code"];
+          const errorText = (statusText || ("Error " + code)) + ": ";
+          props.setPhase(oldPhase);
+          setAction("Uninstall");
+          setErrorMessage(errorText + json["status.message"]);
+          setError(true);
+        });
       });
-    });
   }
   React.useEffect(() => {props.addSetter(setPhase);},[0]);
 
   return(
-      <React.Fragment>
-        <VocabularyAction
-          install={install}
-          uninstall={uninstall}
-          phase={phase}
-          vocabulary={vocabulary}
-        />
-        <VocabularyDetails
-          install={install}
-          uninstall={uninstall}
-          phase={phase}
-          vocabulary={vocabulary}
-          type={props.type}
-        />
-        {error && <ErrorDialog title={`Failed to ${action}`} open={error} onClose={handleClose}>
-          <Typography variant="h6">{vocabulary.name}</Typography>
-          <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
-          <Typography component="p" color="error">{errorMessage}</Typography>
-        </ErrorDialog>}
-      </React.Fragment>
+    <React.Fragment>
+      <VocabularyAction
+        install={install}
+        uninstall={uninstall}
+        phase={phase}
+        vocabulary={vocabulary}
+      />
+      <VocabularyDetails
+        install={install}
+        uninstall={uninstall}
+        phase={phase}
+        vocabulary={vocabulary}
+        type={props.type}
+      />
+      {error && <ErrorDialog title={`Failed to ${action}`} open={error} onClose={handleClose}>
+        <Typography variant="h6">{vocabulary.name}</Typography>
+        <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
+        <Typography component="p" color="error">{errorMessage}</Typography>
+      </ErrorDialog>}
+    </React.Fragment>
   );
 }

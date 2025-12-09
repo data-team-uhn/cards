@@ -62,27 +62,27 @@ function AdminDashboard(props) {
     <AdminScreen disableBreadcrumb>
       <Grid container spacing={2}>
         { adminRoutes.map((route) => {
-            const EntryIcon = route["cards:icon"];
-            return (
-              <Grid
-                key={route["cards:targetURL"]}
-                size={{xs:12, md:6, xl:4}}
-                alignContent="center"
+          const EntryIcon = route["cards:icon"];
+          return (
+            <Grid
+              key={route["cards:targetURL"]}
+              size={{ xs:12, md:6, xl:4 }}
+              alignContent="center"
+            >
+              <ListItemButton
+                onClick={() => navigate(route["cards:targetURL"])}
               >
-                <ListItemButton
-                  onClick={() => navigate(route["cards:targetURL"])}
-                >
-                    <ListItemIcon>
-                      <EntryIcon fontSize="large"/>
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={route["cards:extensionName"]}
-                      secondary={route["cards:hint"]}
-                    />
-                </ListItemButton>
-              </Grid>
-            )
-          })
+                <ListItemIcon>
+                  <EntryIcon fontSize="large"/>
+                </ListItemIcon>
+                <ListItemText
+                  primary={route["cards:extensionName"]}
+                  secondary={route["cards:hint"]}
+                />
+              </ListItemButton>
+            </Grid>
+          )
+        })
         }
       </Grid>
     </AdminScreen>

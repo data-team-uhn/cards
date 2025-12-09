@@ -94,7 +94,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
         sectionAnswersState={sectionAnswersState}
         isEdit={isEdit}
         instanceId={instanceId || ''}
-        />
+      />
     </Grid>
   );
 };
@@ -140,7 +140,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
       instanceId={instanceId || ''}
       contentOffset={contentOffset}
       gridProps={gridProps}
-      />
+    />
   );
 }
 
@@ -184,8 +184,8 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
   // View mode should display all mandatory questions whether or not they have an answer
   const hasAnswers = existingAnswers?.filter(answer => answer[1]["displayedValue"]).length > 0;
   if (!isEdit && !isFlagged && !hasAnswers) {
-      // Do not show anything if not mandatory, in view mode and no value is recorded yet
-      return null;
+    // Do not show anything if not mandatory, in view mode and no value is recorded yet
+    return null;
   }
 
   let gridClasses = [];
@@ -219,8 +219,8 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
  * @param {Object} classes style classes
  * @returns a React component that renders the section
  */
- export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps} = props;
+export default function FormEntry(props) {
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps } = props;
   gridProps = gridProps || {};
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager

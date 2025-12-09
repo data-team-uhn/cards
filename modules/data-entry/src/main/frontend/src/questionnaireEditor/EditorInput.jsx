@@ -43,32 +43,32 @@ let EditorInput = (props) => {
       paddingTop: theme.spacing(1.75) + " !important",
       /* Align the optional hint icon within the label */
       "& .MuiTypography-root" : {
-         display: "flex",
-         alignItems: "flex-end",
+        display: "flex",
+        alignItems: "flex-end",
       },
     },
   }))();
 
   return (
-  <Grid>
-    <Grid container alignItems="flex-start" spacing={2}>
-      <Grid size={4} className={classes.labelContainer}>
-        <Typography variant="subtitle2">
-          {camelCaseToWords(name?.concat(':')) || ''}
-          { name && hint &&
+    <Grid>
+      <Grid container alignItems="flex-start" spacing={2}>
+        <Grid size={4} className={classes.labelContainer}>
+          <Typography variant="subtitle2">
+            {camelCaseToWords(name?.concat(':')) || ''}
+            { name && hint &&
             <Tooltip enterTouchDelay={200} title={
               <FormattedText variant="caption">{hint}</FormattedText>
             }>
               <Info color="primary" />
             </Tooltip>
-          }
-        </Typography>
-      </Grid>
-      <Grid size={8}>
-        {children}
+            }
+          </Typography>
+        </Grid>
+        <Grid size={8}>
+          {children}
+        </Grid>
       </Grid>
     </Grid>
-  </Grid>
   );
 }
 

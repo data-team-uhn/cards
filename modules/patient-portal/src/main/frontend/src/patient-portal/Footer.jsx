@@ -60,12 +60,12 @@ export default function Footer (props) {
 
   return (
     <Toolbar className={classes.footer}>
-    {
-      footerExtensions.map((extension, index) => {
-        let Extension = extension["cards:extensionRender"];
-        return <Extension key={index} extension={extension} />
-      })
-    }
+      {
+        footerExtensions.map((extension, index) => {
+          let Extension = extension["cards:extensionRender"];
+          return <Extension key={index} extension={extension} />
+        })
+      }
     </Toolbar>
   );
 }

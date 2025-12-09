@@ -54,7 +54,7 @@ const VocabularyFilter = forwardRef((props, ref) => {
       inputRef={ref}
       value={initial?.label}
       className={classes.answerField}
-      />
+    />
   )
 });
 

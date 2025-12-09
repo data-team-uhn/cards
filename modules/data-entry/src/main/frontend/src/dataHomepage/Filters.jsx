@@ -227,7 +227,7 @@ function Filters(props) {
     // Load up the output value for this index, if not already loaded
     setEditingFilters(oldfilters => {
       let newFilters = oldfilters.slice();
-      let newFilter = {...newFilters[index], comparator: newValue};
+      let newFilter = { ...newFilters[index], comparator: newValue };
       newFilters.splice(index, 1, newFilter);
       return(newFilters);
     });
@@ -236,7 +236,7 @@ function Filters(props) {
   let handleChangeOutput = (index, newValue, newLabel, dataType) => {
     setEditingFilters( oldfilters => {
       let newFilters = oldfilters.slice();
-      let newFilter =  {...newFilters[index], value: newValue, type: dataType};
+      let newFilter =  { ...newFilters[index], value: newValue, type: dataType };
       if (newLabel != null) {
         newFilter.label = newLabel;
       }
@@ -278,7 +278,7 @@ function Filters(props) {
       .map( (toCheck) => ((toCheck.value || UNARY_COMPARATORS.includes(toCheck.comparator)) ?
         toCheck
         :
-        {...toCheck, comparator: (toCheck.comparator == "=" ? "is empty" : "is not empty")}));
+        { ...toCheck, comparator: (toCheck.comparator == "=" ? "is empty" : "is not empty") }));
     setActiveFilters(newFilters);
     onChangeFilters?.(newFilters);
     setDialogOpen(false);
@@ -313,11 +313,11 @@ function Filters(props) {
         ref={focusRef}
         questionDefinition={questionDefinitions[filterDatum.name]}
         initial={{
-                  value: editingFilters[index].value,
-                  label: editingFilters[index].label
-                }}
+          value: editingFilters[index].value,
+          label: editingFilters[index].label
+        }}
         onChangeInput={(newValue, label) => {handleChangeOutput(index, newValue, label, dataType);}}
-        />);
+      />);
   }
 
   return(
@@ -330,34 +330,34 @@ function Filters(props) {
         let filterValue = activeFilter.label || activeFilter.value;
 
         return(
-            <Chip
-              key={`${activeFilter.title}-${index}`}
-              size="small"
-              label={<>
-                       <Tooltip title={activeFilter.title}><span>{activeFilter.title}</span></Tooltip>
-                       <span>{activeFilter.comparator}</span>
-                       { !UNARY_COMPARATORS.includes(activeFilter.comparator) &&
+          <Chip
+            key={`${activeFilter.title}-${index}`}
+            size="small"
+            label={<>
+              <Tooltip title={activeFilter.title}><span>{activeFilter.title}</span></Tooltip>
+              <span>{activeFilter.comparator}</span>
+              { !UNARY_COMPARATORS.includes(activeFilter.comparator) &&
                          <Tooltip title={filterValue}><span>{filterValue}</span></Tooltip>
-                       }
-                     </>}
-              disabled={disabled}
-              variant="outlined"
-              color="primary"
-              onDelete={()=>{
-                const newFilters = activeFilters.slice();
-                newFilters.splice(index, 1);
-                setActiveFilters(newFilters);
-                onChangeFilters?.(newFilters);
-                }
               }
-              onClick={() => {
-                openDialogAndAdd();
-                setFocusRow(index);
-              }}
-              className={classes.filterChips}
-              />
-          );
-        })
+            </>}
+            disabled={disabled}
+            variant="outlined"
+            color="primary"
+            onDelete={()=>{
+              const newFilters = activeFilters.slice();
+              newFilters.splice(index, 1);
+              setActiveFilters(newFilters);
+              onChangeFilters?.(newFilters);
+            }
+            }
+            onClick={() => {
+              openDialogAndAdd();
+              setFocusRow(index);
+            }}
+            className={classes.filterChips}
+          />
+        );
+      })
       }
       <Button
         size="small"
@@ -367,7 +367,7 @@ function Filters(props) {
           openDialogAndAdd();
           setFocusRow(activeFilters.length);
         }}
-        >
+      >
         <Add fontSize="small" />
       </Button>
       {/* Dialog for setting up filters */}
@@ -378,14 +378,14 @@ function Filters(props) {
         width="md"
         disableEnforceFocus
         title="Modify filters"
-        >
+      >
         <DialogContent dividers>
           {error &&
             <Typography color="error" className={classes.filterLabel}>
               Error obtaining filter data: {error.status} {error.statusText}
             </Typography>}
           { /* If there is no error but also no data, show a progress circle */
-          !error && autoselectOptions.length == 0 &&
+            !error && autoselectOptions.length == 0 &&
             <CircularProgress />}
           <Grid container alignItems="flex-start" spacing={2} className={classes.filterTable}>
             {editingFilters.map( (filterDatum, index) => {
@@ -396,7 +396,7 @@ function Filters(props) {
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
-                  <Grid size={{xs:12, sm:6}}>
+                  <Grid size={{ xs:12, sm:6 }}>
                     <VariableAutocomplete
                       disableClearable
                       selectedValue={filterDatum.name}
@@ -410,28 +410,28 @@ function Filters(props) {
                       getOptionValue={option => option?.path}
                       getOptionSecondaryLabel={option => option?.breadcrumbs}
                       getHelperText={option => [option?.category, option?.breadcrumbs].filter(t=>t).join(": ")}
-                      textFieldProps={{placeholder: "Add new filter..."}}
+                      textFieldProps={{ placeholder: "Add new filter..." }}
                     />
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
-                  <Grid size={{xs: isUnary ? 11 : isNotesContain || isContain ? 3 : 1, sm: isUnary ? 5 : (isNotesContain ? 3 : (isContain ? 2 : 1))}} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid size={{ xs: isUnary ? 11 : isNotesContain || isContain ? 3 : 1, sm: isUnary ? 5 : (isNotesContain ? 3 : (isContain ? 2 : 1)) }} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       variant="standard"
                       value={filterDatum.comparator || ""}
                       onChange={(event) => {handleChangeComparator(index, event.target.value);}}
-                      >
+                    >
                       {(filterComparators[filterDatum.name]?.map( (name) => {
                         return(
-                            <MenuItem value={name} key={name}>{name}</MenuItem>
+                          <MenuItem value={name} key={name}>{name}</MenuItem>
                         );
                       }))}
                     </Select>
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid size={{ xs: isNotesContain || isContain ? 8 : 10, sm: isNotesContain ? 2 : (isContain ? 3 : 4)}} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                    <Grid size={{ xs: isNotesContain || isContain ? 8 : 10, sm: isNotesContain ? 2 : (isContain ? 3 : 4) }} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
-                          getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
+                        getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField variant="standard" disabled className={classes.answerField}></TextField>
                       }
                     </Grid>}
@@ -446,8 +446,8 @@ function Filters(props) {
                             newData.splice(index, 1);
                             return(newData);
                           });
-                        }}
-                      >
+                      }}
+                    >
                       <CloseIcon />
                     </IconButton>
                   </Grid>
@@ -460,13 +460,13 @@ function Filters(props) {
           <Button
             variant="outlined"
             onClick={closeDialog}
-            >
+          >
             Cancel
           </Button>
           <Button
             variant="contained"
             onClick={saveFilters}
-            >
+          >
             Apply
           </Button>
         </DialogActions>

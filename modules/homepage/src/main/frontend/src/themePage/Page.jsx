@@ -56,7 +56,7 @@ function Page (props) {
     <PageNameWriterContext.Provider value={setOverrideNameState}>
       {children}
     </PageNameWriterContext.Provider>
-    );
+  );
 }
 
 export default Page;

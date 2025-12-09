@@ -69,8 +69,8 @@ const Sidebar = ({ ...props }) => {
       >
         <ListItemButton className={classes.itemLink + listBackground}>
           <EntryIcon
-              className={classNames(classes.itemIcon, listItemFont)}
-            />
+            className={classNames(classes.itemIcon, listItemFont)}
+          />
           <ListItemText
             primary={entry["cards:extensionName"]}
             className={classNames(classes.itemText, listItemFont)}
@@ -86,13 +86,13 @@ const Sidebar = ({ ...props }) => {
       {loading ?
         /* Add some skeleton UI of varying heights */
         [...Array(5)].map((_, index) => (
-        <ListItemButton className={classNames(classes.itemLink, classes.skeletonItem)} key={index}>
-          <div className={classNames(classes.itemIcon, classes.skeletonButton)}></div>
-          {/* The primary text here is a random amount of spaces between 1 and 30*/}
-          <ListItemText primary="&nbsp;" className={classNames(classes.itemText, classes.skeletonText)}/>
-        </ListItemButton>
+          <ListItemButton className={classNames(classes.itemLink, classes.skeletonItem)} key={index}>
+            <div className={classNames(classes.itemIcon, classes.skeletonButton)}></div>
+            {/* The primary text here is a random amount of spaces between 1 and 30*/}
+            <ListItemText primary="&nbsp;" className={classNames(classes.itemText, classes.skeletonText)}/>
+          </ListItemButton>
         ))
-      : entries.filter(entry => !_isAdministrativeButton(entry["cards:defaultOrder"]))
+        : entries.filter(entry => !_isAdministrativeButton(entry["cards:defaultOrder"]))
           .map((entry, key) => {
             return(generateListItem(entry, key, isRouteActive(entry["cards:targetURL"])));
           })}
@@ -102,7 +102,7 @@ const Sidebar = ({ ...props }) => {
   var adminLinks = (
     <List className={classes.adminSidebar}>
       {loading ? <></>
-      : entries.filter(entry => _isAdministrativeButton(entry["cards:defaultOrder"]))
+        : entries.filter(entry => _isAdministrativeButton(entry["cards:defaultOrder"]))
           .map((entry, key) => {
             const isActive = isRouteActive(entry["cards:targetURL"]);
             return(generateListItem(entry, key, isActive));
@@ -132,50 +132,50 @@ const Sidebar = ({ ...props }) => {
     <div>
       {/* Render ourselves at the top right of the content page */}
       <Drawer
-          sx={{ display: { md: 'none', xs: 'block' } }}
-          variant="temporary"
-          anchor="right"
-          open={props.open}
-          classes={{paper: classes.drawerPaper}}
-          onClose={props.handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true // Better open performance on mobile.
-          }}
-          slotProps={{ paper: { style: { top: contentOffset + 'px', height: 'calc(100% - ' + contentOffset + 'px)' } } }}
-        >
-          {brand}
-          <div className={classes.sidebarWrapper}>
-            <AdminNavbarLinks closeSidebar={props.handleDrawerToggle}/>
-            {links}
-            {adminLinks}
-          </div>
-          {image !== undefined ? (
-            <div
-              className={classes.background}
-              style={{ backgroundImage: "url(" + image + ")" }}
-            />
-          ) : null}
+        sx={{ display: { md: 'none', xs: 'block' } }}
+        variant="temporary"
+        anchor="right"
+        open={props.open}
+        classes={{ paper: classes.drawerPaper }}
+        onClose={props.handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true // Better open performance on mobile.
+        }}
+        slotProps={{ paper: { style: { top: contentOffset + 'px', height: 'calc(100% - ' + contentOffset + 'px)' } } }}
+      >
+        {brand}
+        <div className={classes.sidebarWrapper}>
+          <AdminNavbarLinks closeSidebar={props.handleDrawerToggle}/>
+          {links}
+          {adminLinks}
+        </div>
+        {image !== undefined ? (
+          <div
+            className={classes.background}
+            style={{ backgroundImage: "url(" + image + ")" }}
+          />
+        ) : null}
       </Drawer>
       {/* Render ourselves at the top of the sidebar */}
       <Drawer
-          sx={{ display: { xs: 'none', md: 'block' } }}
-          anchor="left"
-          variant="permanent"
-          open
-          classes={{paper: classes.drawerPaper}}
-          slotProps={{ paper: { style: { top: contentOffset + 'px', height: 'calc(100vh - ' + contentOffset + 'px)' } } }}
-        >
-          {brand}
-          <div className={classes.sidebarWrapper}>
-            {links}
-            {adminLinks}
-          </div>
-          {image !== undefined ? (
-            <div
-              className={classes.background}
-              style={{ backgroundImage: "url(" + image + ")" }}
-            />
-          ) : null}
+        sx={{ display: { xs: 'none', md: 'block' } }}
+        anchor="left"
+        variant="permanent"
+        open
+        classes={{ paper: classes.drawerPaper }}
+        slotProps={{ paper: { style: { top: contentOffset + 'px', height: 'calc(100vh - ' + contentOffset + 'px)' } } }}
+      >
+        {brand}
+        <div className={classes.sidebarWrapper}>
+          {links}
+          {adminLinks}
+        </div>
+        {image !== undefined ? (
+          <div
+            className={classes.background}
+            style={{ backgroundImage: "url(" + image + ")" }}
+          />
+        ) : null}
       </Drawer>
     </div>
   );

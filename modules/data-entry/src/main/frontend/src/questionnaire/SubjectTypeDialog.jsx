@@ -111,10 +111,10 @@ function SubjectTypeDialog(props) {
     }
 
     fetch(isEdit ? currentSubjectType["@path"] : parent, {
-        method: 'POST',
-        body: formData
+      method: 'POST',
+      body: formData
     })
-    .then((response) => {
+      .then((response) => {
         if (!response.ok) {
           setError(response.statusText);
           return;
@@ -133,7 +133,7 @@ function SubjectTypeDialog(props) {
           }
           close();
         }
-    });
+      });
   }
 
   let moveSubjectType = () => {
@@ -143,10 +143,10 @@ function SubjectTypeDialog(props) {
     formData.append(':replace', true);
 
     fetch(currentSubjectType["@path"], {
-        method: 'POST',
-        body: formData
+      method: 'POST',
+      body: formData
     })
-    .then((response) => {
+      .then((response) => {
         if (!response.ok) {
           setError(response.statusText);
           return;
@@ -154,7 +154,7 @@ function SubjectTypeDialog(props) {
 
         onSuccess();
         close();
-    });
+      });
   }
 
   let close = () => {
@@ -213,10 +213,10 @@ function SubjectTypeDialog(props) {
                     <em>None</em>
                   </MenuItem>
                   { subjectTypes.map((option) =>
-                      <MenuItem key={option["jcr:uuid"]} value={option["@path"]}>
-                        {option.label}
-                      </MenuItem>
-                    )
+                    <MenuItem key={option["jcr:uuid"]} value={option["@path"]}>
+                      {option.label}
+                    </MenuItem>
+                  )
                   }
                 </Select>
                 <FormHelperText>{isEdit && currentSubjectType.instanceCount > 0 && "There are already subjects of this type. The parent can no longer be changed"}</FormHelperText>
@@ -294,11 +294,11 @@ function SubjectTypeDialog(props) {
                                 currentSubjectType["subjectListLabel"] == subjectListLabel &&
                                 currentSubjectType?.["idPattern"] == idPattern &&
                                 currentSubjectType?.["idPatternHint"] == idPatternHint
-                                )
+                  )
           }
           variant="contained"
           onClick={(event) => { event.preventDefault(); handleSubjectType(); }}
-         >
+        >
           { isEdit ? "Save" : "Create" }
         </Button>
       </DialogActions>

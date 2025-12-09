@@ -159,16 +159,16 @@ function PrintPreview(props) {
 
   let header = (
     headerExtensions?.length ? <>{ headerExtensions.map((extension, index) => {
-            let Extension = extension["cards:extensionRender"];
-            return <Extension key={`extension-${index}`} resourceData={resourceData} />;
-          })}</>
-    :
-    (breadcrumb || date) ?
-      <div className={classes.header}>
-        <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography>
-        <Typography variant="overline" color="textSecondary">{date}</Typography>
-      </div>
-    : ""
+      let Extension = extension["cards:extensionRender"];
+      return <Extension key={`extension-${index}`} resourceData={resourceData} />;
+    })}</>
+      :
+      (breadcrumb || date) ?
+        <div className={classes.header}>
+          <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography>
+          <Typography variant="overline" color="textSecondary">{date}</Typography>
+        </div>
+        : ""
   );
 
   return (<>
@@ -177,7 +177,7 @@ function PrintPreview(props) {
         ref={contentRef}
         elevation={0}
         className={classes.printPreview + " " + classes.printTarget}
-        >
+      >
         <CardContent>
           <table>
             <thead>
@@ -211,17 +211,17 @@ function PrintPreview(props) {
         </DialogTitle>
         }
         <DialogContent dividers>
-        { content ?
-          <>
-            { header }
-            <FormattedText>{content}</FormattedText>
-          </>
-          :
-          error ?
-          <Typography color="error">Print preview cannot be loaded</Typography>
-          :
-          <CircularProgress />
-        }
+          { content ?
+            <>
+              { header }
+              <FormattedText>{content}</FormattedText>
+            </>
+            :
+            error ?
+              <Typography color="error">Print preview cannot be loaded</Typography>
+              :
+              <CircularProgress />
+          }
         </DialogContent>
         <DialogActions>
           { onClose && <Button variant="outlined" onClick={onClose}>Close</Button> }

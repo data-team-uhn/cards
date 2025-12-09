@@ -75,12 +75,12 @@ function QuestionnairePreview (props) {
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
       { /* Added dummy save functionality for mocking file and pedigree questions functionality. */ }
       <FormProvider additionalFormData={{
-          ['/Save']: () => { return new Promise((resolve, reject) => {return;})},
-          ['/URL']: data ? data["@path"] : '',
-          ['/DisableUploads'] : true
-          }}>
+        ['/Save']: () => { return new Promise((resolve, reject) => {return;})},
+        ['/URL']: data ? data["@path"] : '',
+        ['/DisableUploads'] : true
+      }}>
         <FormUpdateProvider>
-        { pages &&
+          { pages &&
           Object.entries(data)
             .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
             .map(([key, entryDefinition]) => {
@@ -97,10 +97,10 @@ function QuestionnairePreview (props) {
                 visibleCallback={pageResult.callback}
                 pageActive={pageResult.page.visible}
                 isEdit={true}
-                contentOffset={{top: contentOffsetTop, bottom: contentOffsetBottom}}
+                contentOffset={{ top: contentOffsetTop, bottom: contentOffsetBottom }}
               />
             })
-        }
+          }
         </FormUpdateProvider>
       </FormProvider>
       <Grid size={12} className={classes.formFooter} id="cards-resource-footer">

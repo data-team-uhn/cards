@@ -63,8 +63,8 @@ const useStyles = makeStyles()(theme => ({
       margin: "-4rem 140px 0",
     },
     "& > .MuiBreadcrumbs-root" : {
-       width: "fit-content",
-       margin: "auto",
+      width: "fit-content",
+      margin: "auto",
     }
   },
   logo : {
@@ -132,29 +132,29 @@ function Header (props) {
 
   return (
     <>
-    <AppBar position="sticky" className={classes.appbar} id="patient-portal-header">
-      <Collapse in={!subtitle || !(scrollTrigger)}>
-        <Toolbar variant="dense" className={toolbarClassNames.join(' ')}>
-          <Logo className={classes.logo} maxWidth="160px" />
-          { title && <Typography variant="overline" color="textPrimary" component="div" className="cards-patientPortal-surveyTitle">{ title }</Typography>}
-          { (greeting || withSignout) &&
+      <AppBar position="sticky" className={classes.appbar} id="patient-portal-header">
+        <Collapse in={!subtitle || !(scrollTrigger)}>
+          <Toolbar variant="dense" className={toolbarClassNames.join(' ')}>
+            <Logo className={classes.logo} maxWidth="160px" />
+            { title && <Typography variant="overline" color="textPrimary" component="div" className="cards-patientPortal-surveyTitle">{ title }</Typography>}
+            { (greeting || withSignout) &&
             <Breadcrumbs separator="·" className={!withAffiliation ? classes.sideMenu : undefined}>
-            { greeting && <span className={classes.greeting}>{ greeting }</span>}
-            { withSignout &&
+              { greeting && <span className={classes.greeting}>{ greeting }</span>}
+              { withSignout &&
               <Link href="/system/sling/logout" underline="hover" onClick={(event) => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
-            }
+              }
             </Breadcrumbs>
-          }
-        </Toolbar>
-      </Collapse>
-      { subtitle && <Collapse in={scrollTrigger}>{subtitleBar}</Collapse> }
-      <LinearProgress variant="determinate" value={progress} />
-      { subtitle && <Fade in={!scrollTrigger} className={(scrollTrigger ? classes.collapsed : '') + ' ' + classes.fullSize + ' ' + classes.toolbar}>{subtitleBar}</Fade> }
-    </AppBar>
-    {/* We render another copy of the full size subtitle to maintain the same content height when the first one
+            }
+          </Toolbar>
+        </Collapse>
+        { subtitle && <Collapse in={scrollTrigger}>{subtitleBar}</Collapse> }
+        <LinearProgress variant="determinate" value={progress} />
+        { subtitle && <Fade in={!scrollTrigger} className={(scrollTrigger ? classes.collapsed : '') + ' ' + classes.fullSize + ' ' + classes.toolbar}>{subtitleBar}</Fade> }
+      </AppBar>
+      {/* We render another copy of the full size subtitle to maintain the same content height when the first one
         disappears and thus prevent the subtitle from "jumping" between full size and compact when scrollTrigger
         becomes true. */}
-    { subtitle && scrollTrigger && <div className={classes.fullSize + ' ' + classes.toolbar}>{subtitleBar}</div> }
+      { subtitle && scrollTrigger && <div className={classes.fullSize + ' ' + classes.toolbar}>{subtitleBar}</div> }
     </>
   );
 }

@@ -55,17 +55,17 @@ function PrintHeader (props) {
 
   return (
     hasData ?
-    <div className={classes.container}>
-      <div>
-        {(resourceData.last_name || resourceData.first_name) && <Typography variant="overline">{[resourceData.last_name || '-', resourceData.first_name || '-'].join(", ")}</Typography>}
-        {resourceData.date_of_birth && <Typography variant="overline">DOB: {DateTime.fromISO(resourceData.date_of_birth).toLocaleString(DateTime.DATE_MED)}</Typography>}
+      <div className={classes.container}>
+        <div>
+          {(resourceData.last_name || resourceData.first_name) && <Typography variant="overline">{[resourceData.last_name || '-', resourceData.first_name || '-'].join(", ")}</Typography>}
+          {resourceData.date_of_birth && <Typography variant="overline">DOB: {DateTime.fromISO(resourceData.date_of_birth).toLocaleString(DateTime.DATE_MED)}</Typography>}
+        </div>
+        <div>
+          {resourceData.mrn && <Typography variant="overline">MRN: {resourceData.mrn}</Typography>}
+          {resourceData.time && <Typography variant="overline">Appt: {DateTime.fromISO(resourceData.time).toLocaleString(DateTime.DATETIME_MED)}</Typography>}
+        </div>
       </div>
-      <div>
-        {resourceData.mrn && <Typography variant="overline">MRN: {resourceData.mrn}</Typography>}
-        {resourceData.time && <Typography variant="overline">Appt: {DateTime.fromISO(resourceData.time).toLocaleString(DateTime.DATETIME_MED)}</Typography>}
-      </div>
-    </div>
-    : null
+      : null
   );
 }
 

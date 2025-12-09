@@ -46,18 +46,18 @@ function AddUserToGroupDialog(props) {
     }
 
     fetchWithReLogin(globalLoginDisplay, GROUP_URL + name + ".update.html",
-        {
-            method: 'POST',
-            credentials: 'include',
-            body: formData
-        })
-        .then(() => {
-            reload(false, table);
-            handleClose();
-        })
-        .catch((error) => {
-            console.log(error?.statusText ?? error);
-        });
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      })
+      .then(() => {
+        reload(false, table);
+        handleClose();
+      })
+      .catch((error) => {
+        console.log(error?.statusText ?? error);
+      });
   }
 
   let handleEntering = () => {
@@ -90,7 +90,7 @@ function AddUserToGroupDialog(props) {
     }),
     columns: [
       { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
-        Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
+        Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar> },
       { header: 'User Name', accessorKey: 'name' },
       { header: 'Admin', accessorKey: 'isAdmin', size: 10,
         Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
@@ -111,8 +111,8 @@ function AddUserToGroupDialog(props) {
         handleClose();
       }}
       slotProps={{ transition: {
-                     onEntering: () => handleEntering(),
-                   },
+        onEntering: () => handleEntering(),
+      },
       }}
     >
       <DialogTitle>

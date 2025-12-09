@@ -67,7 +67,7 @@ let TextValue = (props) => {
   return (
     Array.isArray(data[objectKey]) ?
       data[objectKey].map(item => <div>{item}</div>)
-    : <div>{data[objectKey]}</div>
+      : <div>{data[objectKey]}</div>
   );
 };
 

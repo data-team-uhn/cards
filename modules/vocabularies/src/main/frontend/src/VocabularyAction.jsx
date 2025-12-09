@@ -148,87 +148,87 @@ export default function VocabularyAction(props) {
           vocQuestions.push(value);
         }
         if (value["jcr:primaryType"] == "cards:Section") {
-            vocQuestions = vocQuestions.concat(getVocabularyQuestions(value, title));
+          vocQuestions = vocQuestions.concat(getVocabularyQuestions(value, title));
         }
       });
 
-      return vocQuestions;
+    return vocQuestions;
   }
 
   return(
     <React.Fragment>
-    {exit && (
-      <Tooltip title="Close">
-        <Button onClick={exit} variant="outlined" className={classes.vocabularyAction}>Close</Button>
-      </Tooltip>
-    )}
-    {(phase == Phase["Not Installed"]) && (
-      <Tooltip title="Install this vocabulary">
-        <Button onClick={install} variant="contained" className={classes.vocabularyAction + " " + classes.install}>Install</Button>
-      </Tooltip>
-    )}
-    {(phase == Phase["Installing"]) && (
-      <span className={classes.wrapper}>
-        <Button disabled variant="contained" className={classes.vocabularyAction}>Installing</Button>
-        <CircularProgress size={24} className={classes.buttonProgress + " " + classes.installingColor} />
-      </span>
-    )}
-    {(phase == Phase["Update Available"]) && (
-      <React.Fragment>
-        <Tooltip title="Update this vocabulary">
-          <Button onClick={install} variant="contained" className={classes.vocabularyAction + " " + classes.update}>Update</Button>
+      {exit && (
+        <Tooltip title="Close">
+          <Button onClick={exit} variant="outlined" className={classes.vocabularyAction}>Close</Button>
         </Tooltip>
+      )}
+      {(phase == Phase["Not Installed"]) && (
+        <Tooltip title="Install this vocabulary">
+          <Button onClick={install} variant="contained" className={classes.vocabularyAction + " " + classes.install}>Install</Button>
+        </Tooltip>
+      )}
+      {(phase == Phase["Installing"]) && (
+        <span className={classes.wrapper}>
+          <Button disabled variant="contained" className={classes.vocabularyAction}>Installing</Button>
+          <CircularProgress size={24} className={classes.buttonProgress + " " + classes.installingColor} />
+        </span>
+      )}
+      {(phase == Phase["Update Available"]) && (
+        <React.Fragment>
+          <Tooltip title="Update this vocabulary">
+            <Button onClick={install} variant="contained" className={classes.vocabularyAction + " " + classes.update}>Update</Button>
+          </Tooltip>
+          <Tooltip title="Remove this vocabulary">
+            <Button onClick={uninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
+          </Tooltip>
+        </React.Fragment>
+      )}
+      {(phase == Phase["Uninstalling"]) && (
+        <span className={classes.wrapper}>
+          <Button disabled variant="contained" className={classes.vocabularyAction}>Uninstalling</Button>
+          <CircularProgress size={24} className={classes.buttonProgress + " " + classes.uninstallingColor} />
+        </span>
+      )}
+      {(phase == Phase["Latest"]) && (
         <Tooltip title="Remove this vocabulary">
-          <Button onClick={uninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
+          <Button onClick={handleOpen} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
         </Tooltip>
-      </React.Fragment>
-    )}
-    {(phase == Phase["Uninstalling"]) && (
-      <span className={classes.wrapper}>
-        <Button disabled variant="contained" className={classes.vocabularyAction}>Uninstalling</Button>
-        <CircularProgress size={24} className={classes.buttonProgress + " " + classes.uninstallingColor} />
-      </span>
-    )}
-    {(phase == Phase["Latest"]) && (
-      <Tooltip title="Remove this vocabulary">
-        <Button onClick={handleOpen} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
-      </Tooltip>
-    )}
-    <Dialog onClose={handleClose} open={displayPopup}>
+      )}
+      <Dialog onClose={handleClose} open={displayPopup}>
 
-      <DialogTitle>
-        {vocabulary.name} ({vocabulary.acronym})
-      </DialogTitle>
+        <DialogTitle>
+          {vocabulary.name} ({vocabulary.acronym})
+        </DialogTitle>
 
-      <DialogContent dividers>
-        {(linkedQuestions.length > 0) && (
-          <span className={classes.wrapper}>
-          <Typography>The following variables are linked to this vocabulary:</Typography>
-          <ul>
-            {linkedQuestions.map((question, index) => {
-              return (
-                <li key={index}>
-                  <ListItemText primary={question.text + " (" + question.questionnaireName + ")"}>
-                  </ListItemText>
-                </li>
-              );
-            })}
-          </ul>
-          </span>
-        )}
-        {(linkedQuestions.length == 0) && (
-          <Typography>No variables are linked to this vocabulary.</Typography>
-        )}
+        <DialogContent dividers>
+          {(linkedQuestions.length > 0) && (
+            <span className={classes.wrapper}>
+              <Typography>The following variables are linked to this vocabulary:</Typography>
+              <ul>
+                {linkedQuestions.map((question, index) => {
+                  return (
+                    <li key={index}>
+                      <ListItemText primary={question.text + " (" + question.questionnaireName + ")"}>
+                      </ListItemText>
+                    </li>
+                  );
+                })}
+              </ul>
+            </span>
+          )}
+          {(linkedQuestions.length == 0) && (
+            <Typography>No variables are linked to this vocabulary.</Typography>
+          )}
 
-        <Typography>Uninstalling this vocabulary may result in data not being properly standardized. Proceed?</Typography>
-      </DialogContent>
+          <Typography>Uninstalling this vocabulary may result in data not being properly standardized. Proceed?</Typography>
+        </DialogContent>
 
-      <DialogActions>
-        <Button onClick={handleClose} variant="outlined" className={classes.vocabularyAction}>Cancel</Button>
-        <Button onClick={handleUninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
-      </DialogActions>
+        <DialogActions>
+          <Button onClick={handleClose} variant="outlined" className={classes.vocabularyAction}>Cancel</Button>
+          <Button onClick={handleUninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
+        </DialogActions>
 
-    </Dialog>
+      </Dialog>
     </React.Fragment>
   );
 }

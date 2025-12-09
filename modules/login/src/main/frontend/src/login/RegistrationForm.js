@@ -36,7 +36,7 @@ import styles from "../styling/styles";
 
 function FormFields(props) {
   const {
-	classes,
+    classes,
     values: { username, email, password, confirmPassword, loginOnSuccess, closeButtonText, submitButtonText },
     errors,
     touched,
@@ -54,79 +54,79 @@ function FormFields(props) {
   };
 
   let getButton = () => <Button
-                          type="submit"
-                          variant="contained"
-                          disabled={!isValid}
-                          className={`${classes.submit}${!loginOnSuccess ? ' ' + classes.closeButton : ''}`}
-                          fullWidth={loginOnSuccess}
-                        >
-                          {submitButtonText}
-                        </Button>;
+    type="submit"
+    variant="contained"
+    disabled={!isValid}
+    className={`${classes.submit}${!loginOnSuccess ? ' ' + classes.closeButton : ''}`}
+    fullWidth={loginOnSuccess}
+  >
+    {submitButtonText}
+  </Button>;
 
   return (
-      <form
-        onSubmit={handleSubmit}
+    <form
+      onSubmit={handleSubmit}
+      className={classes.form}
+    >
+      <TextField
+        variant="standard"
+        id="email"
+        name="email"
+        helperText={touched.email ? errors.email : ""}
+        error={touched.email && Boolean(errors.email)}
+        label="Email"
+        fullWidth
+        value={email}
+        onChange={change.bind(null, "email")}
         className={classes.form}
-      >
-        <TextField
-          variant="standard"
-          id="email"
-          name="email"
-          helperText={touched.email ? errors.email : ""}
-          error={touched.email && Boolean(errors.email)}
-          label="Email"
-          fullWidth
-          value={email}
-          onChange={change.bind(null, "email")}
-          className={classes.form}
-          required
-          autoFocus
-        />
-        <TextField
-          variant="standard"
-          id="username"
-          name="username"
-          helperText={touched.username ? errors.username : ""}
-          error={touched.username && Boolean(errors.username)}
-          label="Username"
-          value={username}
-          onChange={change.bind(null, "username")}
-          fullWidth
-          className={classes.form}
-          required
-        />
-        <TextField
-          variant="standard"
-          id="password"
-          name="password"
-          helperText={touched.password ? errors.password : ""}
-          error={touched.password && Boolean(errors.password)}
-          label="Password"
-          fullWidth
-          type="password"
-          value={password}
-          onChange={change.bind(null, "password")}
-          className={classes.form}
-          required
+        required
+        autoFocus
+      />
+      <TextField
+        variant="standard"
+        id="username"
+        name="username"
+        helperText={touched.username ? errors.username : ""}
+        error={touched.username && Boolean(errors.username)}
+        label="Username"
+        value={username}
+        onChange={change.bind(null, "username")}
+        fullWidth
+        className={classes.form}
+        required
+      />
+      <TextField
+        variant="standard"
+        id="password"
+        name="password"
+        helperText={touched.password ? errors.password : ""}
+        error={touched.password && Boolean(errors.password)}
+        label="Password"
+        fullWidth
+        type="password"
+        value={password}
+        onChange={change.bind(null, "password")}
+        className={classes.form}
+        required
 
-        />
-        <TextField
-          variant="standard"
-          id="confirmPassword"
-          name="confirmPassword"
-          helperText={touched.confirmPassword ? errors.confirmPassword : ""}
-          error={touched.confirmPassword && Boolean(errors.confirmPassword)}
-          label="Confirm Password"
-          fullWidth
-          type="password"
-          value={confirmPassword}
-          onChange={change.bind(null, "confirmPassword")}
-          className={classes.form}
-          required
+      />
+      <TextField
+        variant="standard"
+        id="confirmPassword"
+        name="confirmPassword"
+        helperText={touched.confirmPassword ? errors.confirmPassword : ""}
+        error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+        label="Confirm Password"
+        fullWidth
+        type="password"
+        value={confirmPassword}
+        onChange={change.bind(null, "confirmPassword")}
+        className={classes.form}
+        required
 
-        />
-        <Grid container justifyContent="flex-end" alignItems="center" className={classes.actions}>
-          { !loginOnSuccess &&
+      />
+      <Grid container justifyContent="flex-end" alignItems="center" className={classes.actions}>
+        { !loginOnSuccess &&
             <Grid>
               <Button
                 variant="outlined"
@@ -136,8 +136,8 @@ function FormFields(props) {
                 {closeButtonText}
               </Button>
             </Grid>
-          }
-          <Grid>
+        }
+        <Grid>
           {!isValid ?
             // Render tooltip and button
             <Tooltip title="You must fill in all fields.">
@@ -149,10 +149,10 @@ function FormFields(props) {
             // Else just render the button
             getButton()
           }
-          </Grid>
         </Grid>
-      </form>
-    );
+      </Grid>
+    </form>
+  );
 }
 
 const FormFieldsComponent = withStyles(FormFields, styles);
@@ -224,11 +224,11 @@ function RegistrationForm(props) {
             setErrorMsg(errMsg);
             form.current.setFieldError("username", errMsg);
           })
-          .catch(error => {
-            setErrorOpen(true);
-            setErrorMsg("Unknown Error (JSON Parsing Failed)");
-            form.current.setFieldError("username", "Unknown Error (JSON Parsing Failed)");
-          });
+            .catch(error => {
+              setErrorOpen(true);
+              setErrorMsg("Unknown Error (JSON Parsing Failed)");
+              form.current.setFieldError("username", "Unknown Error (JSON Parsing Failed)");
+            });
           throw Error(response.statusText);
         }
 
@@ -242,46 +242,46 @@ function RegistrationForm(props) {
   }
 
   const values = {
-      username: "",
-      email: "",
-      confirmPassword: "",
-      password: "",
-      loginOnSuccess: loginOnSuccess,
-      closeButtonText: closeButtonText || "Close",
-      submitButtonText: submitButtonText || "Submit"
+    username: "",
+    email: "",
+    confirmPassword: "",
+    password: "",
+    loginOnSuccess: loginOnSuccess,
+    closeButtonText: closeButtonText || "Close",
+    submitButtonText: submitButtonText || "Submit"
   };
 
   const validationSchema = Yup.object({
-      email: Yup.string("Enter your email")
-        .email("Enter a valid email")
-        .required("Email is required"),
-      username: Yup.string("Enter a username")
-        .required("The username is required"),
-      password: Yup.string("")
-        .min(8, "Password must contain at least 8 characters")
-        .required("Enter your password"),
-      confirmPassword: Yup.string("Enter your password")
-        .required("Confirm your password")
-        .oneOf([Yup.ref("password")], "Password does not match"),
-    });
+    email: Yup.string("Enter your email")
+      .email("Enter a valid email")
+      .required("Email is required"),
+    username: Yup.string("Enter a username")
+      .required("The username is required"),
+    password: Yup.string("")
+      .min(8, "Password must contain at least 8 characters")
+      .required("Enter your password"),
+    confirmPassword: Yup.string("Enter your password")
+      .required("Confirm your password")
+      .oneOf([Yup.ref("password")], "Password does not match"),
+  });
 
   return (
-      <React.Fragment>
-        <ErrorDialog open={errorOpen} onClose={() => setErrorOpen(false)}>
-          <Typography>{errorMsg}</Typography>
-        </ErrorDialog>
-        <div className={classes.main}>
-          <Formik
-            initialValues={values}
-            validationSchema={validationSchema}
-            onSubmit={submitValues}
-            onReset={handleExit}
-            innerRef={el => (form = el)}
-          >
-            {props => <FormFieldsComponent {...props} />}
-          </Formik>
-        </div>
-      </React.Fragment>
+    <React.Fragment>
+      <ErrorDialog open={errorOpen} onClose={() => setErrorOpen(false)}>
+        <Typography>{errorMsg}</Typography>
+      </ErrorDialog>
+      <div className={classes.main}>
+        <Formik
+          initialValues={values}
+          validationSchema={validationSchema}
+          onSubmit={submitValues}
+          onReset={handleExit}
+          innerRef={el => (form = el)}
+        >
+          {props => <FormFieldsComponent {...props} />}
+        </Formik>
+      </div>
+    </React.Fragment>
   );
 }
 

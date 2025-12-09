@@ -87,94 +87,94 @@ function UserDashboard(props) {
 
   return (
     <React.Fragment>
-    { dashboardExtensions.length > 0 &&
+      { dashboardExtensions.length > 0 &&
       <Grid container spacing={4} className={classes.dashboardContainer}>
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
-            return <Grid size={{ xs: 12, xl: dashboardExtensions.length > 1 ? 6 : 12}} key={"extension-" + index} className={classes.dashboardEntry}>
+            return <Grid size={{ xs: 12, xl: dashboardExtensions.length > 1 ? 6 : 12 }} key={"extension-" + index} className={classes.dashboardEntry}>
               <Extension
                 extension={extension}
-                />
+              />
             </Grid>
           })
         }
       </Grid>
-    }
-    { creationExtensions.length > 0 && <>
-      <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
-        <DialogContent dividers className={classes.dialogContentWithTable}>
-          <MaterialReactTable
-            enableToolbarInternalActions={false}
-            enableTableHead={false}
-            enableTableFooter={creationExtensions.length > 5}
-            enableTopToolbar={creationExtensions.length > 5}
-            enableBottomToolbar={creationExtensions.length > 5}
-            enablePagination={creationExtensions.length > 5}
-            getRowId={ (row) => row["jcr:uuid"] }
-            state={{ rowSelection: { [selectedRow?.["jcr:uuid"]]: true } }}
-            initialState={{ showGlobalFilter: (creationExtensions.length > 5),
-                            pagination: { pageSize: 10, pageIndex: 0 }
-                         }}
-            columns={[
-              { accessorKey: 'cards:extensionName' },
-            ]}
-            data={creationExtensions}
-            muiTableHeadProps={{
-              sx: {
-                display: creationExtensions.length < 5 ? 'none' : 'contents',
-              },
-            }}
-            muiTableBodyRowProps={({ row }) => ({
-              sx: {
-                cursor: 'pointer',
-              },
-              onClick: () => { setSelectedRow(row?.original); },
-            })}
-            muiTableBodyCellProps={{
-              sx: {
-                fontSize: '1rem'
-              },
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="outlined"
-            onClick={onClose}
-          >
+      }
+      { creationExtensions.length > 0 && <>
+        <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
+          <DialogContent dividers className={classes.dialogContentWithTable}>
+            <MaterialReactTable
+              enableToolbarInternalActions={false}
+              enableTableHead={false}
+              enableTableFooter={creationExtensions.length > 5}
+              enableTopToolbar={creationExtensions.length > 5}
+              enableBottomToolbar={creationExtensions.length > 5}
+              enablePagination={creationExtensions.length > 5}
+              getRowId={ (row) => row["jcr:uuid"] }
+              state={{ rowSelection: { [selectedRow?.["jcr:uuid"]]: true } }}
+              initialState={{ showGlobalFilter: (creationExtensions.length > 5),
+                pagination: { pageSize: 10, pageIndex: 0 }
+              }}
+              columns={[
+                { accessorKey: 'cards:extensionName' },
+              ]}
+              data={creationExtensions}
+              muiTableHeadProps={{
+                sx: {
+                  display: creationExtensions.length < 5 ? 'none' : 'contents',
+                },
+              }}
+              muiTableBodyRowProps={({ row }) => ({
+                sx: {
+                  cursor: 'pointer',
+                },
+                onClick: () => { setSelectedRow(row?.original); },
+              })}
+              muiTableBodyCellProps={{
+                sx: {
+                  fontSize: '1rem'
+                },
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="outlined"
+              onClick={onClose}
+            >
             Cancel
-          </Button>
-          <Button
-            variant="contained"
-            onClick={ () => {
-              setOpen(false);
-              setSelectedCreation(creationExtensions.indexOf(selectedRow));
-            }}
-            disabled={typeof(selectedRow) === "undefined"}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={ () => {
+                setOpen(false);
+                setSelectedCreation(creationExtensions.indexOf(selectedRow));
+              }}
+              disabled={typeof(selectedRow) === "undefined"}
             >
             Next
-          </Button>
-        </DialogActions>
-      </ResponsiveDialog>
-      <NewItemButton
-        title="New..."
-        onClick={() => setOpen(true)}
-        inProgress={creationLoading}
-      />
-      {
-        creationExtensions.map((extension, index) => {
-          let Extension = extension["cards:extensionRender"];
-          return <Extension
-            open={index === selectedCreation}
-            onClose={onClose}
-            onSubmit={onClose}
-            key={"extensionDialog-" + index}
-            extension={extension}
+            </Button>
+          </DialogActions>
+        </ResponsiveDialog>
+        <NewItemButton
+          title="New..."
+          onClick={() => setOpen(true)}
+          inProgress={creationLoading}
+        />
+        {
+          creationExtensions.map((extension, index) => {
+            let Extension = extension["cards:extensionRender"];
+            return <Extension
+              open={index === selectedCreation}
+              onClose={onClose}
+              onSubmit={onClose}
+              key={"extensionDialog-" + index}
+              extension={extension}
             />
-        })
-      }
-    </>}
+          })
+        }
+      </>}
     </React.Fragment>
   );
 }

@@ -42,7 +42,7 @@ let BooleanInput = (props) => {
         id={objectKey}
         onChange={(event) => {setChecked(event.target.checked); onChange?.(event.target.checked)}}
         checked={checked}
-        />
+      />
       <input type="hidden" name={objectKey} value={String(checked)} />
       <input type="hidden" name={objectKey + "@TypeHint"} value="Boolean" />
     </EditorInput>

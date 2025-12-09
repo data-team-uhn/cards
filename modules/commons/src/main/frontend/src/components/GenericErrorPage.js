@@ -28,11 +28,11 @@ const root = createRoot(document.getElementById('main-error-container'));
 root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
-    <ErrorPage
-      errorCode={document.querySelector('meta[name="statusCode"]')?.content}
-      title={document.querySelector('meta[name="statusMessage"]')?.content}
-      message=""
-    />
+      <ErrorPage
+        errorCode={document.querySelector('meta[name="statusCode"]')?.content}
+        title={document.querySelector('meta[name="statusMessage"]')?.content}
+        message=""
+      />
     </ThemeProvider>
   </StyledEngineProvider>
 );

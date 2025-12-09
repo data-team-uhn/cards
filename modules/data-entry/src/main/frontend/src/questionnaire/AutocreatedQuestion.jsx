@@ -45,7 +45,7 @@ let AutocreatedQuestion = (props) => {
     ...rest
   } = props;
   const { existingAnswer, questionName } = rest;
-  const { displayMode, enableNotes } = {...props.questionDefinition, ...rest};
+  const { displayMode, enableNotes } = { ...props.questionDefinition, ...rest };
 
   const [isFormatted, changeIsFormatted] = useState(false);
 
@@ -64,7 +64,7 @@ let AutocreatedQuestion = (props) => {
       let value = existingAnswer?.[1].value;
       if (typeof(value) != "undefined" && value != "") {
         let answer = Array.of(value).flat().map(v => [v, v]);
-        changeFormContext((oldContext) => ({...oldContext, [questionName]: answer}));
+        changeFormContext((oldContext) => ({ ...oldContext, [questionName]: answer }));
       }
     }
   }, []);
@@ -86,12 +86,12 @@ let AutocreatedQuestion = (props) => {
       {...props}
     >
       { typeof(existingAnswer?.[1].value) != 'undefined' &&
-        <List sx={{p: 0}}>
-        { Array.of(existingAnswer[1].displayedValue).flat().map(v => (
-          <ListItem key={existingAnswer[0]+v} sx={{py: 0}}>
-          { isFormatted ? <FormattedText>{`${v}`}</FormattedText> : v }
-          </ListItem>
-        ))}
+        <List sx={{ p: 0 }}>
+          { Array.of(existingAnswer[1].displayedValue).flat().map(v => (
+            <ListItem key={existingAnswer[0]+v} sx={{ py: 0 }}>
+              { isFormatted ? <FormattedText>{`${v}`}</FormattedText> : v }
+            </ListItem>
+          ))}
         </List>
       }
       { isEdit && enableNotes &&
@@ -102,7 +102,7 @@ let AutocreatedQuestion = (props) => {
           onAddSuggestion={onAddSuggestion}
           pageActive={pageActive}
           {...noteProps}
-          />
+        />
       }
     </Question>
   )
