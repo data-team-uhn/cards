@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import {
   Button,
@@ -61,7 +61,7 @@ const useStyles = makeStyles()(theme => ({
 export default function VocabularyDetails(props) {
   const { install, uninstall, phase, vocabulary } = props;
 
-  const [displayPopup, setDisplayPopup] = React.useState(false);
+  const [displayPopup, setDisplayPopup] = useState(false);
   const handleOpen = () => {setDisplayPopup(true);}
   const handleClose = () => {setDisplayPopup(false);}
 
@@ -77,7 +77,7 @@ export default function VocabularyDetails(props) {
   };
 
   return(
-    <React.Fragment>
+    <>
 
       <Tooltip title="About this vocabulary" slots={{ transition: Zoom }}>
         <Button onClick={handleOpen} variant="contained" className={classes.button + " " + classes.about} >About</Button>
@@ -118,6 +118,6 @@ export default function VocabularyDetails(props) {
           onCloseBrowser={closeBrowser}
         />
       }
-    </React.Fragment>
+    </>
   );
 }

@@ -16,8 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
 

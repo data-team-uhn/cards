@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import {
   Alert,

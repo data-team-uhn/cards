@@ -17,12 +17,12 @@
 //  under the License.
 //
 
-import React from "react";
+import { createContext, useContext, useState } from "react";
 
 const DEFAULT_STATE = {};
 
-const FormReaderContext = React.createContext(DEFAULT_STATE);
-const FormWriterContext = React.createContext();
+const FormReaderContext = createContext(DEFAULT_STATE);
+const FormWriterContext = createContext();
 
 /**
  * A context provider for a form, which contains answers and a way to set them
@@ -30,7 +30,7 @@ const FormWriterContext = React.createContext();
  * @returns {Object} a React component with the form provider
  */
 export function FormProvider(props) {
-  const [answers, setAnswers] = React.useState(DEFAULT_STATE);
+  const [answers, setAnswers] = useState(DEFAULT_STATE);
   const { additionalFormData, ...rest } = props
 
   return (
@@ -46,7 +46,7 @@ export function FormProvider(props) {
  * @throws an error if it is not within a FormProvider
  */
 export function useFormReaderContext() {
-  const context = React.useContext(FormReaderContext);
+  const context = useContext(FormReaderContext);
 
   if (context == undefined) {
     throw new Error("useFormReaderContext must be used within a FormProvider")
@@ -61,7 +61,7 @@ export function useFormReaderContext() {
  * @throws an error if it is not within a FormProvider
  */
 export function useFormWriterContext() {
-  const context = React.useContext(FormWriterContext);
+  const context = useContext(FormWriterContext);
 
   if (context == undefined) {
     throw new Error("useFormWriterContext must be used within a FormProvider")

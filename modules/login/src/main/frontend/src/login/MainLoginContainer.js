@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
 import { withStyles } from 'tss-react/mui';

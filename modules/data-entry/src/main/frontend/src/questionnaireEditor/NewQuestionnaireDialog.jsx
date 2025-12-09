@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import { useState } from "react";
 
 import {
   Button,
@@ -79,7 +79,7 @@ function NewQuestionnaireDialog(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Dialog open={open} onClose={onClose} autoFocus={false}>
         <DialogTitle id="new-questionnaire-title">
           Create a new questionnaire
@@ -123,7 +123,7 @@ function NewQuestionnaireDialog(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </>
   )
 }
 

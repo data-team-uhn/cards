@@ -16,8 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
 import EventIcon from '@mui/icons-material/Event';
 import { Link } from 'react-router';
 import { makeStyles } from 'tss-react/mui';

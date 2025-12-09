@@ -16,8 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
 import { Grid } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 

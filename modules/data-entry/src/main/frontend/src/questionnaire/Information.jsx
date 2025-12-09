@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import React from "react";
-
 import { Alert, Card, CardContent } from "@mui/material";
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';

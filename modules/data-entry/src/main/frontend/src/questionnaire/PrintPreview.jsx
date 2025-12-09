@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, {
+import {
   useRef,
   useState,
   useEffect,

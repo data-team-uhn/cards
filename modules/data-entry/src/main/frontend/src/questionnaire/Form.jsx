@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState, useContext } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
 
 
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -167,7 +167,7 @@ function Form (props) {
     }
   }, [lastSaveStatus, endReached, incompleteQuestionEl, saveInProgress]);
 
-  let formNode = React.useRef();
+  let formNode = useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
   const baseURL = "/content.html" + (extensionURL ? "/" + extensionURL : "");
@@ -672,10 +672,10 @@ function Form (props) {
               </Backdrop>
             }
             {changedSubject &&
-              <React.Fragment>
+              <>
                 <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
                 <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
-              </React.Fragment>
+              </>
             }
             {pages && !fetchInProgress &&
               Object.entries(data.questionnaire)

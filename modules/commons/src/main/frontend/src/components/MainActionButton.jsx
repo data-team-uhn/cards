@@ -15,8 +15,6 @@
   under the License.
 */
 
-import React from "react";
-
 import { CircularProgress, Fab, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';

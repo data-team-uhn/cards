@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 
 import {
   Grid,
@@ -123,13 +123,13 @@ function UserStatistics(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Grid container spacing={3} className={classes.statsContainer}>
         {sortedStats.map((stat, i) => {
           return <Statistic definition={stat} key={i} />
         })}
       </Grid>
-    </React.Fragment>
+    </>
   );
 }
 

@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import React from "react";
-
 import { checkPropTypes } from "../propTypes";
 import AnswerComponentManager from "./AnswerComponentManager";
 import NumberQuestion from "./NumberQuestion";

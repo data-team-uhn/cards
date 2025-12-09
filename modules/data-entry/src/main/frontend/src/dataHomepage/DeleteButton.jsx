@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 
 import { Delete } from "@mui/icons-material";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
@@ -172,7 +172,7 @@ function DeleteButton(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       {errorOpen &&
         <ErrorDialog open={errorOpen} onClose={closeError}>
           <Typography>{errorMessage}</Typography>
@@ -214,7 +214,7 @@ function DeleteButton(props) {
           {buttonText}
         </Button>
       }
-    </React.Fragment>
+    </>
   );
 }
 

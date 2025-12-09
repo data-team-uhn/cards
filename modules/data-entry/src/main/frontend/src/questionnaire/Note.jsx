@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 import UnfoldLess from "@mui/icons-material/UnfoldLess";
@@ -65,7 +65,7 @@ function Note (props) {
     return <></>;
   }
 
-  return (<React.Fragment>
+  return (<>
     <div className = {classes.notesContainer}>
       <Tooltip
         title = {visible ? "Hide notes" : (noteIsEmpty ? "Add notes" : "Show notes")}
@@ -110,7 +110,7 @@ function Note (props) {
     {noteIsEmpty ?
       <input type="hidden" name={`${answerPath}/note@Delete`} value="0" />
       : <input type="hidden" name={`${answerPath}/note`} value={note} />}
-  </React.Fragment>);
+  </>);
 }
 
 Note.propTypes = {

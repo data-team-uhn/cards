@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import { Typography } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -289,10 +289,10 @@ function DateQuestion(props) {
           { getDateField(false, displayedDate, formatError) }
           { /* If this is an interval, allow the user to select a second date */
             isRange &&
-          <React.Fragment>
+          <>
             <span className="separator">&mdash;</span>
             { getDateField(true, displayedEndDate, endFormatError) }
-          </React.Fragment>
+          </>
           }
         </div>
       }

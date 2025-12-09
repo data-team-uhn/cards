@@ -16,8 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LineChartIcon from '@mui/icons-material/ShowChart';
 import {

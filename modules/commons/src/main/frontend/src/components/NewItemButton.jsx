@@ -15,8 +15,6 @@
   under the License.
 */
 
-import React from "react";
-
 import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
 

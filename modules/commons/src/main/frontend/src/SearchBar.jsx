@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useContext, useEffect } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 
 import DescriptionIcon from "@mui/icons-material/Description";
 import Search from "@mui/icons-material/Search";
@@ -99,9 +99,9 @@ function SearchBar(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  let input = React.useRef();
-  let suggestionMenu = React.useRef();
-  let searchBar = React.useRef();
+  let input = useRef();
+  let suggestionMenu = useRef();
+  let searchBar = useRef();
 
   // Fetch saved admin config settings
   useEffect(() => {
@@ -196,7 +196,7 @@ function SearchBar(props) {
   }
 
   return(
-    <React.Fragment>
+    <>
       <Input
         type="text"
         placeholder="Search"
@@ -317,7 +317,7 @@ function SearchBar(props) {
           </Grow>
         )}
       </Popper>
-    </React.Fragment>
+    </>
   );
 }
 
@@ -333,13 +333,13 @@ let defaultQueryConstructor = (query, requestID, showTotalRows, allowedResourceT
 }
 
 let defaultResultConstructor = (props) => (
-  <React.Fragment>
+  <>
     <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
     <ListItemText
       primary={(props.resultData["jcr:uuid"])}
       className={classes.dropdownItem}
     />
-  </React.Fragment>
+  </>
 );
 
 let defaultRedirect = (event, row, props) => {

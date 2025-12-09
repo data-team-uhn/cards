@@ -16,13 +16,11 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import DescriptionIcon from "@mui/icons-material/Description";
 import OtherIcon from '@mui/icons-material/Reorder';
-import { Avatar, ListItemButton, ListItemText, ListItemAvatar }  from "@mui/material";
+import { Avatar, ListItemButton, ListItemText, ListItemAvatar } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { Link } from "react-router";
 
@@ -46,13 +44,13 @@ export function QuickSearchMatch(props) {
   // Adjust the question text to reflect the notes, if the match was on the notes
   let questionText = matchData[CARDS_QUERY_QUESTION_KEY] + (matchData[CARDS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
   return (
-    <React.Fragment>
+    <>
       <span className={classes.queryMatchKey}>{questionText}</span>
       <span className={classes.queryMatchSeparator}>: </span>
       <span className={classes.queryMatchBefore}>{matchData[CARDS_QUERY_MATCH_BEFORE_KEY]}</span>
       <span className={classes.highlightedText}>{matchData[CARDS_QUERY_MATCH_TEXT_KEY]}</span>
       <span className={classes.queryMatchAfter}>{matchData[CARDS_QUERY_MATCH_AFTER_KEY]}</span>
-    </React.Fragment>
+    </>
   )
 }
 

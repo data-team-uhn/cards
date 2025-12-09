@@ -150,7 +150,7 @@ function UnstyledNewSubjectDialog (props) {
   ]);
 
   return(
-    <React.Fragment>
+    <>
       <ResponsiveDialog title="Create new subject" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
           { error && <Alert severity="error">{error}</Alert>}
@@ -228,7 +228,7 @@ function UnstyledNewSubjectDialog (props) {
           </Button>
         </DialogActions>
       </ResponsiveDialog>
-    </React.Fragment>
+    </>
   )
 }
 
@@ -671,7 +671,7 @@ export function NewSubjectDialog (props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       <NewSubjectDialogChild
         allowedTypes={newSubjectIndex == 0 ? allowedTypes : newSubjectAllowedTypes[newSubjectIndex-1]}
         continueDisabled={!(newSubjectName[newSubjectIndex] && newSubjectType[newSubjectIndex])}
@@ -707,7 +707,7 @@ export function NewSubjectDialog (props) {
         parentType={newSubjectTypeParent}
         value={newSubjectParent[newSubjectIndex]}
       /> }
-    </React.Fragment>)
+    </>)
 }
 
 /**
@@ -781,7 +781,7 @@ function UnstyledSelectorDialog (props) {
 
   let disabled_controls = isPosting || disabled;
 
-  return (<React.Fragment>
+  return (<>
     <NewSubjectDialog
       allowedTypes={allowedTypes}
       currentSubject={currentSubject}
@@ -833,7 +833,7 @@ function UnstyledSelectorDialog (props) {
         </Button>
       </DialogActions>
     </ResponsiveDialog>
-  </React.Fragment>);
+  </>);
 }
 
 export const SelectorDialog = withStyles(UnstyledSelectorDialog, QuestionnaireStyle)
@@ -1049,7 +1049,7 @@ function SubjectSelectorList(props) {
   ]);
 
   return(
-    <React.Fragment>
+    <>
       <MaterialReactTable
         enableColumnActions={false}
         enableColumnFilters={false}
@@ -1092,7 +1092,7 @@ function SubjectSelectorList(props) {
           }),
         })}
       />
-    </React.Fragment>
+    </>
   )
 };
 

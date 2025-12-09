@@ -24,15 +24,16 @@ import { Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from 
 import { DialogActions, DialogContent, Grid, Select, MenuItem, TextField } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 
-import BooleanFilter from "./FilterComponents/BooleanFilter.jsx";
 import LiveTableStyle from "./tableStyle.jsx";
 import VariableAutocomplete from "./VariableAutocomplete";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-// We have to import each filter dependency here to load them properly into the FilterComponentManager
-import DateFilter from "./FilterComponents/DateFilter.jsx";
 import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
+// We have to import each filter dependency here to load them properly into the FilterComponentManager
+/* eslint-disable unused-imports/no-unused-imports, import/order */
+import BooleanFilter from "./FilterComponents/BooleanFilter.jsx";
+import DateFilter from "./FilterComponents/DateFilter.jsx";
 import ListFilter from "./FilterComponents/ListFilter.jsx";
 import NumericFilter from "./FilterComponents/NumericFilter.jsx";
 import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
@@ -41,6 +42,7 @@ import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import TextFilter from "./FilterComponents/TextFilter.jsx";
 import UserFilter from "./FilterComponents/UserFilter.jsx";
 import VocabularyFilter from "./FilterComponents/VocabularyFilter.jsx";
+/* eslint-enable unused-imports/no-unused-imports, import/order */
 
 const FILTER_URL = "/Questionnaires.filters";
 

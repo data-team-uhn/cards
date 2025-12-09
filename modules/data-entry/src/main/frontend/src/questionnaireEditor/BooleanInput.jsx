@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Switch } from "@mui/material";
 import PropTypes from 'prop-types';

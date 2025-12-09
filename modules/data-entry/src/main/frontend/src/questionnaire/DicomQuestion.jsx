@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
@@ -277,7 +277,7 @@ function DicomQuestion(props) {
 
   // Render a customized FileQuestion
   return (
-    <React.Fragment>
+    <>
       <ResponsiveDialog
         size="xs"
         open={Boolean(errorDialogText)}
@@ -319,7 +319,7 @@ function DicomQuestion(props) {
           value: dicomMetadataNote
         }}
       />
-    </React.Fragment>
+    </>
   );
 }
 

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 
 import BackupIcon from '@mui/icons-material/Backup';
 import CloseIcon from '@mui/icons-material/Close';
@@ -774,7 +774,7 @@ export default function VariantFilesContainer() {
   let uploadAllComplete = !selectedFiles.some((file) => !file.sent);
 
   return (
-    <React.Fragment>
+    <>
       <Typography variant="h2">Variants Upload</Typography>
       <form method="POST"
         encType="multipart/form-data"
@@ -975,6 +975,6 @@ export default function VariantFilesContainer() {
           />
         </DialogContent>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 }

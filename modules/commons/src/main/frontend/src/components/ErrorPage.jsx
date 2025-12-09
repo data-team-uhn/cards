@@ -16,8 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
-
 import NavigationIcon from '@mui/icons-material/Navigation';
 import { Fab, Grid, Paper, Typography } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';

@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import React from 'react';
-
 import Info from "@mui/icons-material/Info";
 import {
   Grid,

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import EditIcon from '@mui/icons-material/Edit';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
@@ -38,7 +38,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import EditDialog from "./EditDialog";
-import { camelCaseToWords }  from "./LabeledField";
+import { camelCaseToWords } from "./LabeledField";
 import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 

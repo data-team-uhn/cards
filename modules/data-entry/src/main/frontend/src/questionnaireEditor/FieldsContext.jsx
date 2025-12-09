@@ -16,13 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-
-import React from "react";
+import { createContext, useContext, useState } from "react";
 
 const DEFAULT_STATE = {};
 
-const FieldsReaderContext = React.createContext(DEFAULT_STATE);
-const FieldsWriterContext = React.createContext();
+const FieldsReaderContext = createContext(DEFAULT_STATE);
+const FieldsWriterContext = createContext();
 
 /**
  * A context provider for a set of fields, which contains answers and a way to set them
@@ -30,7 +29,7 @@ const FieldsWriterContext = React.createContext();
  * @returns {Object} a React component with the fields provider
  */
 export function FieldsProvider(props) {
-  const [answers, setAnswers] = React.useState(DEFAULT_STATE);
+  const [answers, setAnswers] = useState(DEFAULT_STATE);
   const { additionalFieldData, ...rest } = props
 
   return (
@@ -46,7 +45,7 @@ export function FieldsProvider(props) {
  * @throws an error if it is not within a FieldsProvider
  */
 export function useFieldsReaderContext() {
-  const context = React.useContext(FieldsReaderContext);
+  const context = useContext(FieldsReaderContext);
 
   if (context == undefined) {
     throw new Error("useFieldsReaderContext must be used within a FieldsProvider")
@@ -61,7 +60,7 @@ export function useFieldsReaderContext() {
  * @throws an error if it is not within a FieldsProvider
  */
 export function useFieldsWriterContext() {
-  const context = React.useContext(FieldsWriterContext);
+  const context = useContext(FieldsWriterContext);
 
   if (context == undefined) {
     throw new Error("useFieldsWriterContext must be used within a FieldsProvider")

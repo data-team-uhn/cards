@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 
 import Add from "@mui/icons-material/Add";
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
@@ -30,8 +30,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
 // FIXME In order for the conditionals to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
+/* eslint-disable unused-imports/no-unused-imports */
 import ConditionalGroup from "./ConditionalGroup";
 import ConditionalSingle from "./ConditionalSingle";
+/* eslint-enable unused-imports/no-unused-imports */
 import { useFormReaderContext, useFormWriterContext } from "./FormContext";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { hasWarningFlags } from "./FormUtilities";
@@ -193,7 +195,7 @@ function Section(props) {
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
-    <React.Fragment>
+    <>
       {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
       { isDisplayed
@@ -340,7 +342,7 @@ function Section(props) {
           <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
         )
       }
-    </React.Fragment>
+    </>
     , [conditionIsMet, instanceLabels, labelsToHide, selectedUUID, removableAnswers[ID_STATE_KEY], pageActive, isEdit]);
 }
 

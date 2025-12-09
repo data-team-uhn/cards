@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 
 import {
   Button,
@@ -85,7 +85,7 @@ const useStyles = makeStyles()(theme => ({
 export default function VocabularyAction(props) {
   const { install, uninstall, phase, vocabulary, exit } = props;
   const { classes } = useStyles();
-  const [displayPopup, setDisplayPopup] = React.useState(false);
+  const [displayPopup, setDisplayPopup] = useState(false);
   const [linkedQuestions, setLinkedQuestions] = useState([]);
   const [questionnaires, setQuestionnaires] = useState([]);
   const handleOpen = () => {fetchQuestionnaires();}
@@ -156,7 +156,7 @@ export default function VocabularyAction(props) {
   }
 
   return(
-    <React.Fragment>
+    <>
       {exit && (
         <Tooltip title="Close">
           <Button onClick={exit} variant="outlined" className={classes.vocabularyAction}>Close</Button>
@@ -174,14 +174,14 @@ export default function VocabularyAction(props) {
         </span>
       )}
       {(phase == Phase["Update Available"]) && (
-        <React.Fragment>
+        <>
           <Tooltip title="Update this vocabulary">
             <Button onClick={install} variant="contained" className={classes.vocabularyAction + " " + classes.update}>Update</Button>
           </Tooltip>
           <Tooltip title="Remove this vocabulary">
             <Button onClick={uninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
           </Tooltip>
-        </React.Fragment>
+        </>
       )}
       {(phase == Phase["Uninstalling"]) && (
         <span className={classes.wrapper}>
@@ -229,6 +229,6 @@ export default function VocabularyAction(props) {
         </DialogActions>
 
       </Dialog>
-    </React.Fragment>
+    </>
   );
 }

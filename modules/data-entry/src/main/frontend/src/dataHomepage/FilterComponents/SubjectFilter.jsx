@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { forwardRef, useState } from "react";
+import { forwardRef, useState } from "react";
 
 import ErrorIcon from "@mui/icons-material/Error";
 import { InputAdornment, Tooltip } from "@mui/material";

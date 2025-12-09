@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 
 import CheckIcon from '@mui/icons-material/Check';

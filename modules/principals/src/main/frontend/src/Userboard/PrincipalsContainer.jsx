@@ -18,7 +18,7 @@
 //
 
 
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import GroupsManager from './Groups/GroupsManager.jsx';
 import UsersManager from './Users/UsersManager.jsx';

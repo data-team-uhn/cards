@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { 
   Button,
@@ -52,7 +52,7 @@ function reformat(data, type) {
 
 // Requests list of Vocabularies from Bioontology API. Currently only renders a table to display items if they are form the remote source
 export default function VocabularyDirectory(props) {
-  const [curStatus, setCurStatus] = React.useState(Status["Init"]);
+  const [curStatus, setCurStatus] = useState(Status["Init"]);
 
   // Function that fetches list of existing Vocabularies from Bioontology API
   function getVocabList() {
@@ -112,14 +112,14 @@ export default function VocabularyDirectory(props) {
   }, [props.loaded, props.link])
 
   return(
-    <React.Fragment>
+    <>
       {(curStatus == Status["Loading"]) && (
         <Grid>
           <LinearProgress color={(props.type === "remote" ? "primary" : "secondary" )} />
         </Grid>
       )}
       {(curStatus == Status["Error"]) && (
-        <React.Fragment>
+        <>
           <Grid>
             <Typography color="error">
             The list of Bioportal vocabularies is currently inaccessible.
@@ -133,7 +133,7 @@ export default function VocabularyDirectory(props) {
               <Typography variant="button">Retry</Typography>
             </Button>
           </Grid>
-        </React.Fragment>
+        </>
       )}
       {(curStatus == Status["Loaded"] && props.acronymPhaseObject) && (
         <VocabularyTable
@@ -145,6 +145,6 @@ export default function VocabularyDirectory(props) {
           addSetter={props.addSetter}
         />
       )}
-    </React.Fragment>
+    </>
   );
 }

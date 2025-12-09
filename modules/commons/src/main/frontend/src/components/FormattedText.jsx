@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import React from 'react';
-
 import { Typography } from "@mui/material";
 import MDEditor from '@uiw/react-md-editor';
 import PropTypes from 'prop-types';

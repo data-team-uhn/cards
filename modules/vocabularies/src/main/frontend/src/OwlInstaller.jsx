@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 
 import {
   Button,
@@ -107,7 +107,7 @@ export default function OwlInstaller(props) {
   }
 
   return(
-    <React.Fragment>
+    <>
       <Grid>
         <Typography variant="h6">
           Install from local file
@@ -220,6 +220,6 @@ export default function OwlInstaller(props) {
           </Grid>
         </form>
       </Grid>
-    </React.Fragment>
+    </>
   );
 }

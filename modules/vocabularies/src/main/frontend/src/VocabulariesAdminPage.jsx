@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Grid,
@@ -55,9 +55,9 @@ function generateRemoteLink(apiKey, linkKey) {
 
 export default function VocabulariesAdminPage() {
   /* All remote vocabularies */
-  const [remoteVocabList, setRemoteVocabList] = React.useState([]);
+  const [remoteVocabList, setRemoteVocabList] = useState([]);
   /* Installed vocabularies */
-  const [localVocabList, setLocalVocabList] = React.useState([]);
+  const [localVocabList, setLocalVocabList] = useState([]);
 
   /*
     The Phase represents the state of Vocabulary. It can be 1 of:
@@ -67,14 +67,14 @@ export default function VocabulariesAdminPage() {
       4) Latest
       5) Uninstalling
   */
-  const [acronymPhaseObject, setAcronymPhaseObject] = React.useState(null);
-  const [acronymPhaseSettersObject, setAcronymPhaseSettersObject] = React.useState({});
-  const [remoteLoaded, setRemoteLoaded] = React.useState(false);
-  const [localLoaded, setLocalLoaded] = React.useState(false);
+  const [acronymPhaseObject, setAcronymPhaseObject] = useState(null);
+  const [acronymPhaseSettersObject, setAcronymPhaseSettersObject] = useState({});
+  const [remoteLoaded, setRemoteLoaded] = useState(false);
+  const [localLoaded, setLocalLoaded] = useState(false);
   /*
     Initially the key will be fetched from a script service.
   */
-  const [bioPortalApiKey, setBioPortalApiKey] = React.useState(null);
+  const [bioPortalApiKey, setBioPortalApiKey] = useState(null);
 
   const localLink = '/query?query=' + encodeURIComponent(`select * from [cards:Vocabulary]`);
 

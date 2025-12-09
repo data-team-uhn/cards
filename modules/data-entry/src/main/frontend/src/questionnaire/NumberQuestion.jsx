@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { forwardRef, useState } from "react";
+import { forwardRef, useState, useEffect } from "react";
 
 import {
   InputAdornment,
@@ -234,7 +234,7 @@ function NumberQuestion(props) {
     return null;
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isRange) return;
     // Check for invalid range limits
     setMinMaxError(
@@ -247,7 +247,7 @@ function NumberQuestion(props) {
     );
   }, [lowerLimit, upperLimit]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isRange) return;
     setMinMaxError(
       getMinMaxValueError(sliderValue)

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import PropTypes from 'prop-types';
 

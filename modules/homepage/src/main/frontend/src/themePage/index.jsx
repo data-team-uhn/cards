@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { useState, useEffect } from "react";
 
 import createCache from "@emotion/cache";
@@ -99,7 +99,7 @@ function Main(props) {
   };
 
   return (
-    <React.Fragment>
+    <>
       <GlobalLoginContext.Provider
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {
@@ -158,7 +158,7 @@ function Main(props) {
           </Suspense>
         </div>
       </GlobalLoginContext.Provider>
-    </React.Fragment>
+    </>
   );
 }
 

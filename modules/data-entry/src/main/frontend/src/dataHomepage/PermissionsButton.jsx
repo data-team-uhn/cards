@@ -16,8 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
 import { Lock } from "@mui/icons-material"
 import { IconButton, Tooltip } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
@@ -31,13 +29,13 @@ function PermissionsButton(props) {
   const { classes, size } = props;
 
   return (
-    <React.Fragment>
+    <>
       <Tooltip title="Set Permissions">
         <IconButton component="span" className={classes.titleButton} size="large">
           <Lock fontSize={size || "default"}/>
         </IconButton>
       </Tooltip>
-    </React.Fragment>
+    </>
   );
 }
 

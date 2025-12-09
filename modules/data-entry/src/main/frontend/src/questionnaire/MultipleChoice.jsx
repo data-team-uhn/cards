@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import Close from "@mui/icons-material/Close";
 import {
@@ -483,7 +483,7 @@ function MultipleChoice(props) {
 
   if (isSelect) {
     return (
-      <React.Fragment>
+      <>
         {
           pageActive && <FormControl sx={{ width: 300 }}>
             {instructions}
@@ -526,11 +526,11 @@ function MultipleChoice(props) {
           onAddSuggestion={acceptOptionFromWidget}
           {...rest}
         />
-      </React.Fragment>
+      </>
     )
   } else if (isBare) {
     return(
-      <React.Fragment>
+      <>
         {
           pageActive && <>
             {instructions}
@@ -544,11 +544,11 @@ function MultipleChoice(props) {
           onAddSuggestion={acceptOptionFromWidget}
           {...rest}
         />
-      </React.Fragment>
+      </>
     )
   } else if (isRadio) {
     return (
-      <React.Fragment>
+      <>
         {
           pageActive && <>
             {instructions}
@@ -600,11 +600,11 @@ function MultipleChoice(props) {
           onAddSuggestion={acceptOptionFromWidget}
           {...rest}
         />
-      </React.Fragment>
+      </>
     );
   } else {
     return (
-      <React.Fragment>
+      <>
         {
           pageActive && <>
             {instructions}
@@ -622,7 +622,7 @@ function MultipleChoice(props) {
           onAddSuggestion={acceptOptionFromWidget}
           {...rest}
         />
-      </React.Fragment>
+      </>
     )
   }
 }
@@ -658,7 +658,7 @@ function ResponseChild(props) {
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
   return (
-    <React.Fragment>
+    <>
       <ListItem
         key={name}
         className={isDefaultOption ? classes.selectionChild : undefined}
@@ -703,7 +703,7 @@ function ResponseChild(props) {
               </FormattedText>
             </>
             ) : ((name !== "") && (
-              <React.Fragment>
+              <>
                 <IconButton
                   onClick={() => {onDelete(id, name)}}
                   className={classes.deleteButton}
@@ -723,11 +723,11 @@ function ResponseChild(props) {
                   {description}
                 </FormattedText>
                 }
-              </React.Fragment>
+              </>
             ))
         }
       </ListItem>
-    </React.Fragment>
+    </>
   );
 }
 
