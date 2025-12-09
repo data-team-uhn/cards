@@ -73,6 +73,7 @@ const whitespaceRules = {
 
 const commonRules = {
   "import/order": importOrderRule,
+  "react/jsx-no-undef": ["error", { allowGlobals: true }],
   ...whitespaceRules,
 };
 
@@ -91,6 +92,7 @@ const commonConfigs = {
   rules: commonRules,
   linterOptions: commonLinterOptions,
 };
+
 
 // --- Main config ---
 export default defineConfig([

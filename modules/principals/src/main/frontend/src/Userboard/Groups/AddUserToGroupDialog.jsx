@@ -18,7 +18,15 @@
 import React, { useState, useContext } from "react";
 
 import CheckIcon from '@mui/icons-material/Check';
-import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  Grid
+} from "@mui/material";
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
