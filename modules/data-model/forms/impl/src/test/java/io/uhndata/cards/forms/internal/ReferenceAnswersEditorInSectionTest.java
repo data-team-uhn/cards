@@ -285,9 +285,9 @@ public class ReferenceAnswersEditorInSectionTest
         when(propertyState.getValue(Type.REFERENCE)).thenReturn(referenceQuestionnaireUuid);
 
         // mock QuestionTree getUnansweredMatchingQuestions(final Node currentNode)
-        when(this.questionnaireUtils.isReferenceQuestion(Mockito.any())).thenReturn(false, false, true);
+        when(this.questionnaireUtils.isReferenceQuestion(Mockito.any())).thenReturn(false, false, false, true);
         when(this.questionnaireUtils.isQuestionnaire(Mockito.any())).thenReturn(true, false);
-        when(this.questionnaireUtils.isSection(Mockito.any())).thenReturn(true, false);
+        when(this.questionnaireUtils.isSection(Mockito.any())).thenReturn(false, true, false);
 
         // mock Map<String, List<NodeBuilder>> getChildNodesByReference(final NodeBuilder nodeBuilder)
         when(this.formUtils.isAnswerSection(Mockito.any(NodeBuilder.class))).thenReturn(true, false);
