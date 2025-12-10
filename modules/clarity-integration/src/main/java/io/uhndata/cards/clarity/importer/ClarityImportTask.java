@@ -486,7 +486,6 @@ public class ClarityImportTask implements Runnable
                     this.discardedVisits++;
                     return;
                 }
-                this.importedVisits++;
             } catch (Exception e) {
                 LOGGER.error("Unhandled exception while processing data: {}", e.getMessage(), e);
             }
@@ -615,7 +614,6 @@ public class ClarityImportTask implements Runnable
             final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
                 ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
             final String incrementMetricOnCreation = subjectMapping.incrementMetricOnCreation;
-
 
             Resource parentResource = parent;
             if (parentResource == null) {
