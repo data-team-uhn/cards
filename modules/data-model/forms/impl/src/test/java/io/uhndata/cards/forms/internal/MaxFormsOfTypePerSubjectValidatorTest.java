@@ -122,7 +122,7 @@ public class MaxFormsOfTypePerSubjectValidatorTest
                 .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
 
         String getFormsQuery = "SELECT f.* FROM [cards:Form] AS f WHERE f.'subject'='" + subject.getIdentifier() + "'"
-                + " AND f.'questionnaire'='" + questionnaire.getIdentifier() + "'";
+                + " AND f.'questionnaire'='" + questionnaire.getIdentifier() + "' OPTION (index tag property)";
         when(serviceResolver.findResources(
                 Mockito.eq(getFormsQuery),
                 Mockito.anyString())).thenReturn(resourceResolver.findResources(getFormsQuery, "JCR-SQL2"));
@@ -180,7 +180,7 @@ public class MaxFormsOfTypePerSubjectValidatorTest
                 .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
 
         String getFormsQuery = "SELECT f.* FROM [cards:Form] AS f WHERE f.'subject'='" + subject.getIdentifier() + "'"
-                + " AND f.'questionnaire'='" + questionnaire.getIdentifier() + "'";
+                + " AND f.'questionnaire'='" + questionnaire.getIdentifier() + "' OPTION (index tag property)";
         when(serviceResolver.findResources(Mockito.eq(getFormsQuery), Mockito.anyString()))
                 .thenReturn(resourceResolver.findResources(getFormsQuery, "JCR-SQL2"));
 

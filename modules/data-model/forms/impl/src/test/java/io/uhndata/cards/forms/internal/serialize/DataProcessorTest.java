@@ -47,10 +47,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.serialize.DataFilters;
 import io.uhndata.cards.serialize.DataFiltersParser;
+import io.uhndata.cards.serialize.spi.DataFilter;
 
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link DataProcessor}.
@@ -260,7 +261,20 @@ public class DataProcessorTest
         DataFilters mockFilters = mock(DataFilters.class);
         when(mockFilters.getExtraQuerySelectors()).thenReturn("");
         when(mockFilters.getExtraQueryConditions()).thenReturn("");
-        when(mockFilters.getFilters()).thenReturn(java.util.Collections.emptyList());
+        when(mockFilters.getFilters()).thenReturn(List.of(new DataFilter()
+        {
+            @Override
+            public String getName()
+            {
+                return "testFilter";
+            }
+
+            @Override
+            public String getExtraQueryConditions(String arg0)
+            {
+                return "";
+            }
+        }));
         filters.set(mockFilters);
 
         ThreadLocal<Map<String, String>> optionsActual = (ThreadLocal<Map<String, String>>) getAccessedField("options");
@@ -276,7 +290,7 @@ public class DataProcessorTest
         Assert.assertTrue(jsonObject.containsKey("exportDate"));
         Assert.assertTrue(jsonObject.containsKey("Test Questionnaire"));
         Assert.assertTrue(jsonObject.containsKey("dataFilters"));
-        Assert.assertEquals(8, jsonObject.getJsonObject("dataFilters").size());
+        Assert.assertEquals(1, jsonObject.getJsonArray("dataFilters").size());
         Assert.assertTrue(jsonObject.containsKey("dataOptions"));
         Assert.assertEquals(1, jsonObject.getJsonObject("dataOptions").size());
     }
@@ -355,6 +369,7 @@ public class DataProcessorTest
                 .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
                         this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
                 .commit();
+        this.context.registerAdapter(Resource.class, JsonObject.class, Json.createObjectBuilder().build());
 
         // Mock filtersParser to return a mock DataFilters object
         when(this.filtersParser.parseFilters(anyString())).thenReturn(mock(DataFilters.class));
