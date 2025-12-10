@@ -61,19 +61,53 @@ function Unsubscribe (props) {
   const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
   const { classes } = useStyles();
 
+  const params = new URLSearchParams(window.location.search);
+  const patient = params.get("patient");
+  const authToken = params.get("auth_token");
+  if (!(patient || authToken)) {
+    return (
+      <ErrorPage
+        title="Invalid access"
+        message="This page can only be accessed by opening an invitation to fill in a survey"
+      />
+    );
+  }
+
   useEffect(() => {
-    fetch("/Survey.unsubscribe", { method: 'GET' })
-      .then( (response) => response.ok ? response.json() : Promise.reject(response) )
-      .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
-      .catch((response) => {
+    fetch("/Survey.unsubscribe" + (patient ? `?patient=${patient}` : ""), { method: 'GET' })
+      .then(async (response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          // Try to read JSON error body
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch (e) {
+            // Fallback if body is not JSON
+            errorData = { error: response.statusText };
+          }
+          return Promise.reject(errorData);
+        }
+      })
+      .then(json => {
+        if (json.status === "success") {
+          setAlreadyUnsubscribed(json.unsubscribed);
+        } else {
+          return Promise.reject(json.error);
+        }
+      })
+      .catch(error => {
+        // error now has access to a custom backend error data
         let errMsg = "Cannot unsubscribe: ";
-        setError(errMsg + (response.status ? response.statusText : response));
+        setError(errMsg + (error.error || error));
       });
   }, []);
 
   let unsubscribe = (value) => {
     let request_data = new FormData();
     request_data.append("unsubscribe", value);
+    patient && request_data.append("patient", patient);
     fetch("/Survey.unsubscribe", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? (setConfirmed(json.unsubscribed), setAlreadyUnsubscribed(null)) : Promise.reject(json.error))
@@ -81,18 +115,6 @@ function Unsubscribe (props) {
         let errMsg = "Unsubscribing failed";
         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
       });
-  }
-
-  if (!("hasSessionSubject" in document.getElementById("patient-portal-unsubscribe-container").dataset)) {
-    return (
-      <ErrorPage
-        title="Invalid access"
-        message="This page can only be accessed by opening an invitation to fill in a survey"
-        buttonLink="/content.html/Questionnaires/User"
-        buttonLabel="Go to the dashboard"
-        textAlign="left"
-      />
-    );
   }
 
   let appName = document.querySelector('meta[name="title"]')?.content;

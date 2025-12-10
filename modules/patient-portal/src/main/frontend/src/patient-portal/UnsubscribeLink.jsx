@@ -20,15 +20,20 @@ import { FooterLink } from "./Footer";
 
 function UnsubscribeLink (props) {
 
-  let auth_token = new URLSearchParams(window.location.search).get("auth_token");
+  const params = new URLSearchParams(window.location.search);
+  const patient = params.get("patient");
+  const authToken = params.get("auth_token");
 
-  return (auth_token ?
-    <FooterLink
-      href={`/Survey.unsubscribe.html?auth_token=${auth_token}`}
-    >
+  const value = patient || authToken;
+  const paramName = patient ? "patient" : "auth_token";
+
+  if (!value) return null;
+
+  return (
+    <FooterLink href={`/Survey.unsubscribe.html?${paramName}=${value}`}>
       Unsubscribe
     </FooterLink>
-    : null);
+  );
 }
 
 export default UnsubscribeLink;
