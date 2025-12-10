@@ -108,7 +108,7 @@ abstract class AbstractEmailNotification
      * @param notificationType
      * @return the number of notification emails that have been sent
      */
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
+    @SuppressWarnings({ "checkstyle:ExecutableStatementCount" })
     public long sendNotification(final int differenceInDays, final EmailTemplate template, final String clinicId,
         String notificationType)
     {
@@ -234,7 +234,7 @@ abstract class AbstractEmailNotification
             final Node form = properties.nextProperty().getParent();
             if (patientInformationQuestionnaire.getIdentifier()
                 .equals(this.formUtils.getQuestionnaireIdentifier(form))) {
-                return form.getProperty("jcr:uuid").getString();
+                return form.getIdentifier();
             }
         }
         return null;
