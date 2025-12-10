@@ -69,9 +69,6 @@ function Unsubscribe (props) {
       <ErrorPage
         title="Invalid access"
         message="This page can only be accessed by opening an invitation to fill in a survey"
-        buttonLink="/content.html/Questionnaires/User"
-        buttonLabel="Go to the dashboard"
-        textAlign="left"
       />
     );
   }
