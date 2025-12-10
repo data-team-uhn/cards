@@ -64,10 +64,10 @@ function PatientPortalHomepage (props) {
       });
   }, []);
 
-  let displayText = (key, Component, props) => (
+  let displayText = (key, Component, { key: propKey, ...rest } = {}) => (
     surveyInstructions?.[key] ?
       Component ?
-        <Component {...props}>{surveyInstructions[key]}</Component>
+        <Component key={propKey} {...rest}>{surveyInstructions[key]}</Component>
         : surveyInstructions[key]
       : null
   );

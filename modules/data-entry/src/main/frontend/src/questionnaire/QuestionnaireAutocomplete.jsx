@@ -168,12 +168,12 @@ function QuestionnaireAutocomplete(props) {
         renderTags={() => null}
         getOptionLabel={(option) => option?.name}
         options={entities || []}
-        renderOption={(props, option) =>
+        renderOption={({ key: propKey, ...rest } = {}, option) =>
           <ListItemButton
             value={getOptionValue(option)}
             key={option.path}
             dense
-            {...props}
+            {...rest}
           >
             { getAvatar(option.type, selection.includes(getOptionValue(option))) }
             { getQuestionnaireEntryText(option) }
