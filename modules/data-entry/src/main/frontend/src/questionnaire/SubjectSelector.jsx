@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState, useContext } from "react";
+import { Fragment, useEffect, useState, useContext } from "react";
 
 import {
   Alert,
@@ -302,7 +302,7 @@ function UnstyledSelectParentDialog (props) {
       const json = await response.json();
 
       setData(json["rows"].map((row) => ({
-        hierarchy: getHierarchy(row, React.Fragment, ()=>({})),
+        hierarchy: getHierarchy(row, Fragment, ()=>({})),
         ...row })));
       setRowCount(json.totalrows);
 
@@ -1034,7 +1034,7 @@ function SubjectSelectorList(props) {
       }
 
       setData(filteredData.map((row) => ({
-        hierarchy: getHierarchy(row, React.Fragment, () => ({})),
+        hierarchy: getHierarchy(row, Fragment, () => ({})),
         ...row })));
       setRowCount(json.totalrows);
 

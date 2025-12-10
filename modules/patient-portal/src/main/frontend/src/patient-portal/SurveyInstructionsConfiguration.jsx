@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import {
   Checkbox,
@@ -81,7 +81,7 @@ function SurveyInstructionsConfiguration() {
       onConfigSaved={() => setHasChanges(false)}
     >
       <List className={classes.formEntries}>
-        { Object.keys(labels).map(category => { return (<React.Fragment key={category + "Wrapper"}>
+        { Object.keys(labels).map(category => { return (<Fragment key={category + "Wrapper"}>
           <ListItem key={category}>
             <Typography variant="h6">{camelCaseToWords(category)}</Typography>
           </ListItem>
@@ -132,7 +132,7 @@ function SurveyInstructionsConfiguration() {
               }
             </ListItem>)
           })}
-        </React.Fragment>)
+        </Fragment>)
         })}
       </List>
     </AdminConfigScreen>

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
+import { Fragment, useCallback, useRef, useState, useContext, useEffect } from "react";
 
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
@@ -396,7 +396,7 @@ function Filters(props) {
               let isNotesContain = filterDatum.comparator && (filterDatum.comparator === notesComparator);
               let isContain = filterDatum.comparator && (filterDatum.comparator.includes(TEXT_COMPARATORS));
               return(
-                <React.Fragment key={index}>
+                <Fragment key={index}>
                   {/* Select the field to filter */}
                   <Grid size={{ xs:12, sm:6 }}>
                     <VariableAutocomplete
@@ -453,7 +453,7 @@ function Filters(props) {
                       <CloseIcon />
                     </IconButton>
                   </Grid>
-                </React.Fragment>
+                </Fragment>
               );
             })}
           </Grid>
