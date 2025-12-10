@@ -59,10 +59,10 @@ BEGIN
 END
 
 -- Remove the table if it already exists
-IF OBJECT_ID('path.V_PatientExperienceSurveySamplingTest', 'U') IS NOT NULL
-    DROP TABLE [path].[V_PatientExperienceSurveySamplingTest];
+IF OBJECT_ID('path.V_PatientExperienceSurveySampling', 'U') IS NOT NULL
+    DROP TABLE [path].[V_PatientExperienceSurveySampling];
 
-CREATE TABLE [path].[V_PatientExperienceSurveySamplingTest] (
+CREATE TABLE [path].[V_PatientExperienceSurveySampling] (
     PAT_MRN varchar(102) NULL,
     PAT_FIRST_NAME varchar(200) NULL,
     PAT_LAST_NAME varchar(200) NULL,
@@ -157,7 +157,7 @@ def convertToSqlType(insertion_values):
 # Insert test data
 for i in range(args.n):
     if i % 100 == 0:
-        args.file.write("INSERT INTO [path].[V_PatientExperienceSurveySamplingTest]")
+        args.file.write("INSERT INTO [path].[V_PatientExperienceSurveySampling]")
         args.file.write("\t(PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, APPT_TIME, DEPARTMENT_NAME, LOCATION_NAME, EMAIL_CONSENT_YN, [MYCHART_STATUS], DEATH_DATE, APPT_STATUS)\n")
         args.file.write("\tVALUES\n")
     insertion_values = {}
