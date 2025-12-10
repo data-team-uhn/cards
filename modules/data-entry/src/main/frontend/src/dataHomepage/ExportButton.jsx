@@ -374,7 +374,7 @@ function ExportButton(props) {
                 placeholder="@=#"
                 value={csvReplaceColumnLabels}
                 onChange={(event) => setCsvReplaceColumnLabels(event.target.value)}
-                fullwidth
+                fullWidth
                 multiline
               />
             </Grid>
@@ -388,7 +388,7 @@ function ExportButton(props) {
                 placeholder="@=#"
                 value={csvReplaceColumnIds}
                 onChange={(event) => setCsvReplaceColumnIds(event.target.value)}
-                fullwidth
+                fullWidth
                 multiline
               />
             </Grid>
