@@ -73,36 +73,13 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
     {
-        // This only works for a uuid-authenticated session; refuse requests if this is not the case
-        final String sessionPatientIdentifier = request.getParameter("patient");
-        String sessionSubjectIdentifier = null;
-        if (sessionPatientIdentifier == null) {
-            // fall back to the previous version of unsuscribing params
-            sessionSubjectIdentifier =
-                (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
-            if (sessionSubjectIdentifier == null) {
-                writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
-                return;
-            }
-        }
-
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "unsubscribe"))) {
             final Session session = rr.adaptTo(Session.class);
-            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
-            final Node patientInformationForm;
-            if (sessionPatientIdentifier != null) {
-                patientInformationForm = session.getNodeByIdentifier(sessionPatientIdentifier);
-            } else {
-                final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
-                patientInformationForm =
-                    getPatientInformationForm(visitSubject, patientInformationQuestionnaire, session);
-            }
 
-            if (patientInformationForm == null) {
-                writeError(response, SlingHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
-                return;
-            }
+            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
+            final Node patientInformationForm =
+                getPatientInformationForm(request, session, patientInformationQuestionnaire);
 
             final Node unsubscribeQuestion =
                 this.questionnaireUtils.getQuestion(patientInformationQuestionnaire, UNSUBSCRIBE);
@@ -113,6 +90,8 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
             writeSuccess(response, unsubscribed);
         } catch (final LoginException e) {
             LOGGER.error("Service authorization not granted: {}", e.getMessage());
+        } catch (final IllegalAccessException e) {
+            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
         } catch (final ItemNotFoundException e) {
             writeError(response, SlingHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
         } catch (final RepositoryException e) {
@@ -121,40 +100,16 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
     }
 
     @Override
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
     {
-        // This only works for a uuid-authenticated session; refuse requests if this is not the case
-        final String sessionPatientIdentifier = request.getParameter("patient");
-        String sessionSubjectIdentifier = null;
-        if (sessionPatientIdentifier == null) {
-            // fall back to the previous version of unsuscribing params
-            sessionSubjectIdentifier =
-                (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
-            if (sessionSubjectIdentifier == null) {
-                writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
-                return;
-            }
-        }
-
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "unsubscribe"))) {
             final Session session = rr.adaptTo(Session.class);
-            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
-            final Node patientInformationForm;
-            if (sessionPatientIdentifier != null) {
-                patientInformationForm = session.getNodeByIdentifier(sessionPatientIdentifier);
-            } else {
-                final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
-                patientInformationForm =
-                    getPatientInformationForm(visitSubject, patientInformationQuestionnaire, session);
-            }
 
-            if (patientInformationForm == null) {
-                writeError(response, SlingHttpServletResponse.SC_CONFLICT, "Sorry, cannot record your answer");
-                return;
-            }
+            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
+            final Node patientInformationForm =
+                getPatientInformationForm(request, session, patientInformationQuestionnaire);
 
             final VersionManager versionManager = session.getWorkspace().getVersionManager();
             final boolean checkin = !versionManager.isCheckedOut(patientInformationForm.getPath());
@@ -176,6 +131,10 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
             writeSuccess(response, value == 1);
         } catch (final LoginException e) {
             LOGGER.error("Service authorization not granted: {}", e.getMessage());
+        } catch (final IllegalAccessException e) {
+            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
+        } catch (final ItemNotFoundException e) {
+            writeError(response, SlingHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
         } catch (final RepositoryException e) {
             LOGGER.warn("Exception validating patient authentication: {}", e.getMessage(), e);
         }
@@ -186,7 +145,41 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
         return session.getNode("/Questionnaires/Patient information");
     }
 
-    private Node getPatientInformationForm(final Node visitSubject, final Node patientInformationQuestionnaire,
+    private Node getPatientInformationForm(final SlingHttpServletRequest request, final Session session,
+        final Node patientInformationQuestionnaire)
+        throws IllegalAccessException, ItemNotFoundException, RepositoryException
+    {
+        // This only works for a uuid-authenticated session; refuse requests if this is not the case
+        final String sessionPatientIdentifier = request.getParameter("patient");
+        String sessionSubjectIdentifier = null;
+        if (sessionPatientIdentifier == null) {
+            // Fall back to the previous version of unsubscribing params
+            sessionSubjectIdentifier =
+                (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
+        } else {
+            // Check that this is indeed a patient profile
+            final Node patient = session.getNodeByIdentifier(sessionPatientIdentifier);
+            if (!patient.isNodeType("cards:Form")
+                || !this.formUtils.getQuestionnaire(patient).isSame(patientInformationQuestionnaire)) {
+                throw new IllegalAccessException();
+            }
+        }
+
+        final Node patientInformationForm;
+        if (sessionPatientIdentifier != null) {
+            patientInformationForm = session.getNodeByIdentifier(sessionPatientIdentifier);
+        } else {
+            final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
+            patientInformationForm =
+                getPatientInformationFormFromVisit(visitSubject, patientInformationQuestionnaire, session);
+        }
+        if (patientInformationForm == null) {
+            throw new ItemNotFoundException();
+        }
+        return patientInformationForm;
+    }
+
+    private Node getPatientInformationFormFromVisit(final Node visitSubject, final Node patientInformationQuestionnaire,
         final Session session) throws RepositoryException
     {
         // Look for the patient's information in the repository
