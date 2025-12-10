@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useRef } from 'react';
+import { Fragment, useState, useRef } from 'react';
 
 import {
   Button,
@@ -266,7 +266,7 @@ function RegistrationForm(props) {
   });
 
   return (
-    <React.Fragment>
+    <Fragment>
       <ErrorDialog open={errorOpen} onClose={() => setErrorOpen(false)}>
         <Typography>{errorMsg}</Typography>
       </ErrorDialog>
@@ -281,7 +281,7 @@ function RegistrationForm(props) {
           {props => <FormFieldsComponent {...props} />}
         </Formik>
       </div>
-    </React.Fragment>
+    </Fragment>
   );
 }
 

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -158,7 +158,7 @@ function LoginForm(props) {
         }}
       >
         { (phase == "USERNAME_ENTRY" || singleStepEntry) &&
-            <React.Fragment>
+            <Fragment>
               <FormControl variant="standard" margin="normal" required fullWidth>
                 <InputLabel htmlFor="j_username">Username{singleStepEntry ? "" : " or email address"}</InputLabel>
                 <Input
@@ -180,11 +180,11 @@ function LoginForm(props) {
                   Next
                 </Button>
               }
-            </React.Fragment>
+            </Fragment>
         }
 
         { (phase == "PASSWORD_ENTRY" || singleStepEntry) &&
-            <React.Fragment>
+            <Fragment>
               <FormControl variant="standard" margin="normal" required fullWidth>
                 <InputLabel htmlFor="j_password">Password{singleStepEntry ? "" : (" for " + username)}</InputLabel>
                 <Input
@@ -239,7 +239,7 @@ function LoginForm(props) {
                   </Button>
                 </Grid>
               </Grid>
-            </React.Fragment>
+            </Fragment>
         }
       </form>
     </div>

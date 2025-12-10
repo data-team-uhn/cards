@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import { Fragment } from "react";
 
 import ClearIcon from '@mui/icons-material/Clear';
 import {
@@ -192,7 +192,7 @@ function QuestionnaireAutocomplete(props) {
     {/* List the entered values */}
     <List dense className={classes.selectionList}>
       { entities?.filter(v => selection.includes(getOptionValue(v))).map((value, index) =>
-        <React.Fragment key={`selection-list-item-${index}`}>
+        <Fragment key={`selection-list-item-${index}`}>
           { !!index && <Divider key={`divider-${index}`} variant="inset" component="li" /> }
           <ListItem
             key={`${value.name}-${index}`}
@@ -207,7 +207,7 @@ function QuestionnaireAutocomplete(props) {
             { getAvatar(value.type) }
             { getQuestionnaireEntryText(value, multiple) }
           </ListItem>
-        </React.Fragment>
+        </Fragment>
       )}
     </List>
   </>);

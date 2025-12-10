@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import { Fragment } from "react";
 
 import PropTypes from 'prop-types';
 
@@ -80,7 +80,7 @@ let Fields = (props) => {
 
     if (!hasValueToDisplay(key, value)) return '';
 
-    return (<React.Fragment key={key}>
+    return (<Fragment key={key}>
       <LabeledField condensed={condensed} name={key}>
         <ValueDisplay key={key} objectKey={key} value={value} data={data} />
       </LabeledField>
@@ -90,7 +90,7 @@ let Fields = (props) => {
             .map(([k, v]) => displayStaticField(k, v))
           : ""
       }
-    </React.Fragment>);
+    </Fragment>);
   };
 
   // Note that we remove the meta fields, starting with `//`, such as `//REQUIRED which indicates which fields are mandatory
