@@ -84,6 +84,10 @@ public class ClarityImportTask implements Runnable
 
     private final int dayToQuery;
 
+    private int discardedVisits;
+
+    private int importedVisits;
+
     private final ThreadLocal<Map<String, String>> sqlColumnToDataType = ThreadLocal.withInitial(HashMap::new);
 
     private final ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
@@ -266,9 +270,12 @@ public class ClarityImportTask implements Runnable
     // The entry point for running an import
 
     @Override
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     public void run()
     {
-        LOGGER.info("Running ClarityImportTask");
+        LOGGER.info("Running ClarityImportTask: " + this.config.name());
+        this.discardedVisits = 0;
+        this.importedVisits = 0;
 
         String connectionUrl =
             String.format("jdbc:sqlserver://%s;user=%s;password=%s;encrypt=%s;", env(this.config.server()),
@@ -313,6 +320,9 @@ public class ClarityImportTask implements Runnable
 
             checkinNodes();
             updatePerformanceCounters();
+
+            LOGGER.info("Number of importeded visits: " + this.importedVisits);
+            LOGGER.info("Number of discarded visits: " + this.discardedVisits);
 
         } catch (SQLException e) {
             LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
@@ -473,6 +483,7 @@ public class ClarityImportTask implements Runnable
             try {
                 row = processor.processEntry(row);
                 if (row == null) {
+                    this.discardedVisits++;
                     return;
                 }
             } catch (Exception e) {
@@ -480,8 +491,13 @@ public class ClarityImportTask implements Runnable
             }
         }
         // Recursively move down the local Clarity Import configuration tree
-        walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
+        final boolean imported = walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
             resolver.resolve("/Subjects"));
+        if (imported) {
+            this.importedVisits++;
+        } else {
+            this.discardedVisits++;
+        }
     }
 
     private void addSubjectIdentifiersToData(final Map<String, String> row, final ClaritySubjectMapping subjectMapping)
@@ -490,17 +506,18 @@ public class ClarityImportTask implements Runnable
         subjectMapping.childSubjects.forEach(child -> addSubjectIdentifiersToData(row, child));
     }
 
-    private void walkThroughLocalConfig(ResourceResolver resolver, Map<String, String> row,
+    private boolean walkThroughLocalConfig(ResourceResolver resolver, Map<String, String> row,
         ClaritySubjectMapping subjectMapping, Resource subjectParent)
         throws ParseException, PersistenceException, RepositoryException, SQLException
     {
+        boolean imported = false;
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
             // Get or create the subject
             Resource newSubjectParent = childSubjectMapping.shouldCreateSubjectIfAbsent()
                 ? getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent)
                 : getSubject(resolver, row, childSubjectMapping);
             if (newSubjectParent == null) {
-                return;
+                continue;
             }
 
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
@@ -512,6 +529,7 @@ public class ClarityImportTask implements Runnable
                     if (updatePolicy == UpdatePolicy.updateExisting || updatePolicy == UpdatePolicy.onlyExisting) {
                         // Update the answers to an existing Form
                         updateExistingForm(resolver, formNode, questionnaireMapping, row);
+                        imported = true;
                     }
                 } else {
                     if (updatePolicy != UpdatePolicy.onlyExisting) {
@@ -527,11 +545,14 @@ public class ClarityImportTask implements Runnable
 
                         // Perform a JCR check-in to this cards:Form node once the import is completed
                         this.nodesToCheckin.get().add(formNode.getPath());
+
+                        imported = true;
                     }
                 }
             }
-            walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
+            imported |= walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
         }
+        return imported;
     }
 
     // Methods for storing subjects
@@ -593,7 +614,6 @@ public class ClarityImportTask implements Runnable
             final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
                 ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
             final String incrementMetricOnCreation = subjectMapping.incrementMetricOnCreation;
-
 
             Resource parentResource = parent;
             if (parentResource == null) {
