@@ -491,9 +491,9 @@ public class ClarityImportTask implements Runnable
             }
         }
         // Recursively move down the local Clarity Import configuration tree
-        final boolean result = walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
+        final boolean imported = walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
             resolver.resolve("/Subjects"));
-        if (result) {
+        if (imported) {
             this.importedVisits++;
         } else {
             this.discardedVisits++;
@@ -510,16 +510,16 @@ public class ClarityImportTask implements Runnable
         ClaritySubjectMapping subjectMapping, Resource subjectParent)
         throws ParseException, PersistenceException, RepositoryException, SQLException
     {
+        boolean imported = false;
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
             // Get or create the subject
             Resource newSubjectParent = childSubjectMapping.shouldCreateSubjectIfAbsent()
                 ? getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent)
                 : getSubject(resolver, row, childSubjectMapping);
             if (newSubjectParent == null) {
-                return false;
+                continue;
             }
 
-            boolean result = true;
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
                 UpdatePolicy updatePolicy = questionnaireMapping.updatePolicy;
                 Resource formNode = getFormForSubject(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
@@ -529,8 +529,7 @@ public class ClarityImportTask implements Runnable
                     if (updatePolicy == UpdatePolicy.updateExisting || updatePolicy == UpdatePolicy.onlyExisting) {
                         // Update the answers to an existing Form
                         updateExistingForm(resolver, formNode, questionnaireMapping, row);
-                    } else {
-                        return false;
+                        imported = true;
                     }
                 } else {
                     if (updatePolicy != UpdatePolicy.onlyExisting) {
@@ -546,13 +545,14 @@ public class ClarityImportTask implements Runnable
 
                         // Perform a JCR check-in to this cards:Form node once the import is completed
                         this.nodesToCheckin.get().add(formNode.getPath());
+
+                        imported = true;
                     }
                 }
             }
-            result &= walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
-            return result;
+            imported |= walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
         }
-        return true;
+        return imported;
     }
 
     // Methods for storing subjects
