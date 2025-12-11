@@ -51,18 +51,28 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class FormRelatedSubjectsEditorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
+
     private static final String TEST_COMPUTED_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+
     private static final String TEST_LONG_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+
     private static final String TEST_SECTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String TEST_SUBJECT_CHILD_PATH = "/Subjects/Test/TestTumor";
 
     @Rule
@@ -104,7 +114,7 @@ public class FormRelatedSubjectsEditorTest
     {
         String name = this.currentNodeBuilder.getProperty("jcr:uuid").getValue(Type.STRING);
         Editor editor = this.formRelatedSubjectsEditor.childNodeChanged(name, Mockito.mock(NodeState.class),
-                Mockito.mock(NodeState.class));
+            Mockito.mock(NodeState.class));
         Assert.assertNull(editor);
 
     }
@@ -116,7 +126,7 @@ public class FormRelatedSubjectsEditorTest
         this.formRelatedSubjectsEditor = new FormRelatedSubjectsEditor(this.currentNodeBuilder, this.session);
         String name = this.currentNodeBuilder.getProperty("jcr:uuid").getValue(Type.STRING);
         Editor editor = this.formRelatedSubjectsEditor.childNodeChanged(name, Mockito.mock(NodeState.class),
-                Mockito.mock(NodeState.class));
+            Mockito.mock(NodeState.class));
         Assert.assertNotNull(editor);
         Assert.assertTrue(editor instanceof FormRelatedSubjectsEditor);
     }
@@ -126,7 +136,7 @@ public class FormRelatedSubjectsEditorTest
     {
         this.formRelatedSubjectsEditor.leave(Mockito.mock(NodeState.class), Mockito.mock(NodeState.class));
         Iterator<String> relatedSubjects = this.currentNodeBuilder.getProperty("relatedSubjects")
-                .getValue(Type.WEAKREFERENCES).iterator();
+            .getValue(Type.WEAKREFERENCES).iterator();
         Assert.assertTrue(relatedSubjects.hasNext());
         Assert.assertEquals(this.session.getNode(TEST_SUBJECT_CHILD_PATH).getIdentifier(), relatedSubjects.next());
         Assert.assertTrue(relatedSubjects.hasNext());
@@ -148,22 +158,22 @@ public class FormRelatedSubjectsEditorTest
         this.session = this.context.resourceResolver().adaptTo(Session.class);
 
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/ComputedQuestionnairesPlain.json", TEST_COMPUTED_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                    this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
         this.context.build()
-                .resource(TEST_SUBJECT_CHILD_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                    this.context.resourceResolver().getResource("/SubjectTypes/Root/Branch").adaptTo(Node.class),
-                    "parents", this.session.getNode(TEST_SUBJECT_PATH))
-                .commit();
+            .resource(TEST_SUBJECT_CHILD_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root/Branch").adaptTo(Node.class),
+                "parents", this.session.getNode(TEST_SUBJECT_PATH))
+            .commit();
 
         String subjectChildUuid = this.session.getNode(TEST_SUBJECT_CHILD_PATH).getIdentifier();
         String questionnaireUuid = this.session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH).getIdentifier();
@@ -184,18 +194,18 @@ public class FormRelatedSubjectsEditorTest
 
         String answerSectionUuid = UUID.randomUUID().toString();
         NodeBuilder answerSectionBuilder =
-                createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
-                        computedQuestionUuid, computedAnswerBuilder.getNodeState());
+            createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
+                computedQuestionUuid, computedAnswerBuilder.getNodeState());
 
         String formUuid = UUID.randomUUID().toString();
         this.currentNodeBuilder = createTestForm(formUuid, questionnaireUuid, subjectChildUuid, answerSectionUuid,
-                answerSectionBuilder.getNodeState());
+            answerSectionBuilder.getNodeState());
         this.formRelatedSubjectsEditor = new FormRelatedSubjectsEditor(this.currentNodeBuilder, this.session);
 
     }
 
     private NodeBuilder createTestForm(String uuid, String questionnaireUuid, String subjectUuid,
-                                       String answerSectionUuid, NodeState answerSection)
+        String answerSectionUuid, NodeState answerSection)
     {
         NodeBuilder formBuilder = EmptyNodeState.EMPTY_NODE.builder();
         formBuilder.setProperty(NODE_TYPE, FORM_TYPE);
@@ -226,7 +236,7 @@ public class FormRelatedSubjectsEditorTest
     }
 
     private NodeBuilder createTestAnswerSection(String uuid, String sectionUuid, String answerUuid, NodeState answer,
-                                                String computedAnswerUuid, NodeState computedAnswer)
+        String computedAnswerUuid, NodeState computedAnswer)
     {
         NodeBuilder answerSectionBuilder = EmptyNodeState.EMPTY_NODE.builder();
         answerSectionBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
@@ -242,11 +252,10 @@ public class FormRelatedSubjectsEditorTest
         for (String name : this.currentNodeBuilder.getChildNodeNames()) {
             NodeState child = this.currentNodeBuilder.getChildNode(name).getNodeState();
             if (child.hasProperty(NODE_TYPE)
-                    && ANSWER_SECTION_TYPE.equals(child.getProperty(NODE_TYPE).getValue(Type.STRING))) {
+                && ANSWER_SECTION_TYPE.equals(child.getProperty(NODE_TYPE).getValue(Type.STRING))) {
                 return child.builder();
             }
         }
         return null;
     }
-
 }

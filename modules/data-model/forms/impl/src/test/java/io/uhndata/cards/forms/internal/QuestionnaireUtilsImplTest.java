@@ -46,10 +46,15 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 public class QuestionnaireUtilsImplTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String QUESTION_TYPE = "cards:Question";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
+
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_1";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
 
     @Rule
@@ -299,5 +304,4 @@ public class QuestionnaireUtilsImplTest
                 this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
             .commit();
     }
-
 }

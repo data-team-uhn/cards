@@ -52,7 +52,6 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 import static org.mockito.Mockito.when;
 
-
 /**
  * Unit tests for {@link ComputedAnswersEditor}.
  *
@@ -62,23 +61,33 @@ import static org.mockito.Mockito.when;
 public class ComputedAnswersEditorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
+
     private static final String TEST_COMPUTED_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+
     private static final String TEST_LONG_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+
     private static final String TEST_SECTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
 
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     private ComputedAnswersEditor computedAnswersEditor;
+
     private NodeState after;
 
     private Session currentSession;
@@ -113,9 +122,9 @@ public class ComputedAnswersEditorTest
         Node computedQuestion = session.getNode(TEST_COMPUTED_QUESTION_PATH);
         String computedQuestionUuid = computedQuestion.getIdentifier();
         when(this.computedAnswersEditor.questionnaireUtils.getQuestion(computedQuestionUuid))
-                .thenReturn(computedQuestion);
+            .thenReturn(computedQuestion);
         Assert.assertTrue(this.computedAnswersEditor.answerChangeTracker
-                .isMatchedAnswerNode(answers.get("computed"), computedQuestionUuid));
+            .isMatchedAnswerNode(answers.get("computed"), computedQuestionUuid));
     }
 
     @Test
@@ -128,7 +137,7 @@ public class ComputedAnswersEditorTest
         String questionUuid = question.getIdentifier();
         when(this.computedAnswersEditor.questionnaireUtils.getQuestion(questionUuid)).thenReturn(question);
         Assert.assertFalse(this.computedAnswersEditor.answerChangeTracker
-                .isMatchedAnswerNode(answers.get("not_computed"), questionUuid));
+            .isMatchedAnswerNode(answers.get("not_computed"), questionUuid));
     }
 
     @Test
@@ -143,7 +152,7 @@ public class ComputedAnswersEditorTest
         // for not form type current node builder
         when(this.formUtils.isForm(this.nodeBuilder)).thenReturn(false);
         this.computedAnswersEditor = new ComputedAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
-                this.questionnaireUtils, this.formUtils, this.expressionUtils);
+            this.questionnaireUtils, this.formUtils, this.expressionUtils);
 
         PropertyState typeProperty = Mockito.mock(PropertyState.class);
         NodeState formNodeState = Mockito.mock(NodeState.class);
@@ -172,17 +181,17 @@ public class ComputedAnswersEditorTest
         initializeEditorForFormNodeBuilder();
 
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/ComputedQuestionnairesPlain.json", TEST_COMPUTED_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
 
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         String questionnaireUuid = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH).getIdentifier();
@@ -203,12 +212,12 @@ public class ComputedAnswersEditorTest
 
         String answerSectionUuid = UUID.randomUUID().toString();
         NodeBuilder answerSectionBuilder =
-                createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
-                        computedQuestionUuid, computedAnswerBuilder.getNodeState());
+            createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
+                computedQuestionUuid, computedAnswerBuilder.getNodeState());
 
         String formUuid = UUID.randomUUID().toString();
         NodeBuilder formBuilder = createTestForm(formUuid, questionnaireUuid, answerSectionUuid,
-                answerSectionBuilder.getNodeState());
+            answerSectionBuilder.getNodeState());
 
         this.after = formBuilder.getNodeState();
 
@@ -230,7 +239,7 @@ public class ComputedAnswersEditorTest
         // for computed answer
         when(this.formUtils.getQuestion(computedAnswerSection)).thenReturn(computedQuestionNode);
         when(this.questionnaireUtils.getQuestionName(AdditionalMatchers.not(Mockito.eq(questionNode))))
-                .thenReturn("computed_question");
+            .thenReturn("computed_question");
         when(this.formUtils.getValue(computedAnswerSection)).thenReturn(null);
 
         // mock Node getQuestionnaire()
@@ -244,22 +253,22 @@ public class ComputedAnswersEditorTest
         when(this.questionnaireUtils.isSection(Mockito.any())).thenReturn(true, false);
 
         // mock Map<QuestionTree, NodeBuilder> createMissingNodes(
-        //        final QuestionTree questionTree, final NodeBuilder currentNode)
+        // final QuestionTree questionTree, final NodeBuilder currentNode)
         when(this.nodeBuilder.hasProperty("jcr:primaryType")).thenReturn(true);
         // mock Map<String, List<NodeBuilder>> getChildNodesByReference(final NodeBuilder nodeBuilder)
         when(this.nodeBuilder.getChildNodeNames()).thenReturn(List.of("from_long_to_computed_section"));
         when(this.nodeBuilder.getChildNode(Mockito.eq("from_long_to_computed_section")))
-                .thenReturn(answerSectionBuilder);
+            .thenReturn(answerSectionBuilder);
         when(this.formUtils.isAnswerSection(answerSectionBuilder)).thenReturn(true);
         when(this.formUtils.getSectionIdentifier(answerSectionBuilder)).thenReturn(sectionUuid);
 
         // mock void computeAnswer(final Map.Entry<QuestionTree, NodeBuilder> entry,
-        //        final Map<String, Object> answersByQuestionName)
+        // final Map<String, Object> answersByQuestionName)
         when(this.expressionUtils.getDependencies(Mockito.any(Node.class)))
-                .thenReturn(new HashSet<>(Set.of("long_question")));
-        when(this.expressionUtils.evaluate(Mockito.any(Node.class), Mockito.<String, Object>anyMap(), 
-                Mockito.eq(Type.LONG), Mockito.any(Set.class)))
-            .thenReturn(new ExpressionUtils.ExpressionResult(false, false, 200L, 1));
+            .thenReturn(new HashSet<>(Set.of("long_question")));
+        when(this.expressionUtils.evaluate(Mockito.any(Node.class), Mockito.<String, Object>anyMap(),
+            Mockito.eq(Type.LONG), Mockito.any(Set.class)))
+                .thenReturn(new ExpressionUtils.ExpressionResult(false, false, 200L, 1));
     }
 
     private void initializeEditorForFormNodeBuilder()
@@ -267,11 +276,11 @@ public class ComputedAnswersEditorTest
         when(this.formUtils.isForm(this.nodeBuilder)).thenReturn(true);
         this.currentSession = this.context.resourceResolver().adaptTo(Session.class);
         this.computedAnswersEditor = new ComputedAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
-                this.questionnaireUtils, this.formUtils, this.expressionUtils);
+            this.questionnaireUtils, this.formUtils, this.expressionUtils);
     }
 
     private NodeBuilder createTestForm(String uuid, String questionnaireUuid, String answerSectionUuid,
-                                       NodeState answerSection)
+        NodeState answerSection)
     {
         NodeBuilder formBuilder = EmptyNodeState.EMPTY_NODE.builder();
         formBuilder.setProperty(NODE_TYPE, FORM_TYPE);
@@ -301,7 +310,7 @@ public class ComputedAnswersEditorTest
     }
 
     private NodeBuilder createTestAnswerSection(String uuid, String sectionUuid, String answerUuid, NodeState answer,
-                                                String computedAnswerUuid, NodeState computedAnswer)
+        String computedAnswerUuid, NodeState computedAnswer)
     {
         NodeBuilder answerSectionBuilder = EmptyNodeState.EMPTY_NODE.builder();
         answerSectionBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);

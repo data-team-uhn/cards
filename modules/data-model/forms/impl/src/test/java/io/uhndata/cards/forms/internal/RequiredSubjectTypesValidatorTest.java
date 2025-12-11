@@ -59,21 +59,34 @@ import static org.mockito.Mockito.when;
 public class RequiredSubjectTypesValidatorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String NODE_IDENTIFIER = "jcr:uuid";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
+
     private static final String TEST_COMPUTED_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+
     private static final String TEST_LONG_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+
     private static final String TEST_SECTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String SUBJECT_PROPERTY = "subject";
 
     @Rule
@@ -86,15 +99,14 @@ public class RequiredSubjectTypesValidatorTest
     private FormUtils formUtils;
 
     private RequiredSubjectTypesValidator requiredSubjectTypesValidator;
-    private NodeState form;
 
+    private NodeState form;
 
     @Test
     public void constructorTest()
     {
         Assert.assertNotNull(this.requiredSubjectTypesValidator);
     }
-
 
     @Test
     public void childNodeAddedForSectionNodeReturnsThisValidator() throws CommitFailedException
@@ -107,7 +119,7 @@ public class RequiredSubjectTypesValidatorTest
 
     @Test
     public void childNodeAddedForFormNodePassesValidation() throws CommitFailedException, LoginException,
-            RepositoryException
+        RepositoryException
     {
         ResourceResolver resourceResolver = this.context.resourceResolver();
         Session session = resourceResolver.adaptTo(Session.class);
@@ -118,15 +130,15 @@ public class RequiredSubjectTypesValidatorTest
 
         ResourceResolver serviceResolver = Mockito.mock(ResourceResolver.class);
         String getQuestionnaireQuery = "SELECT * FROM [cards:Questionnaire] AS q WHERE q.'jcr:uuid'='"
-                + questionnaire.getIdentifier() + "'";
+            + questionnaire.getIdentifier() + "'";
         when(this.rrf.getServiceResourceResolver(Mockito.anyMap())).thenReturn(serviceResolver);
         when(serviceResolver.findResources(Mockito.eq(getQuestionnaireQuery), Mockito.anyString()))
-                .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
+            .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
 
         String getSubjectQuery = "SELECT * FROM [cards:Subject] AS q WHERE q.'jcr:uuid'='" + subject.getIdentifier()
-                + "'";
+            + "'";
         when(serviceResolver.findResources(
-                Mockito.eq(getSubjectQuery), Mockito.anyString()))
+            Mockito.eq(getSubjectQuery), Mockito.anyString()))
                 .thenReturn(resourceResolver.findResources(getSubjectQuery, "JCR-SQL2"));
 
         Assert.assertNull(this.requiredSubjectTypesValidator.childNodeAdded(name, this.form));
@@ -134,7 +146,7 @@ public class RequiredSubjectTypesValidatorTest
 
     @Test
     public void childNodeAddedForNullQuestionAndSubjectResourcesReturnNull() throws LoginException, RepositoryException,
-            CommitFailedException
+        CommitFailedException
     {
         ResourceResolver resourceResolver = this.context.resourceResolver();
         Session session = resourceResolver.adaptTo(Session.class);
@@ -145,15 +157,15 @@ public class RequiredSubjectTypesValidatorTest
 
         ResourceResolver serviceResolver = Mockito.mock(ResourceResolver.class);
         String getQuestionnaireQuery = "SELECT * FROM [cards:Questionnaire] AS q WHERE q.'jcr:uuid'='"
-                + questionnaire.getIdentifier() + "'";
+            + questionnaire.getIdentifier() + "'";
         when(this.rrf.getServiceResourceResolver(Mockito.anyMap())).thenReturn(serviceResolver);
         when(serviceResolver.findResources(Mockito.eq(getQuestionnaireQuery), Mockito.anyString()))
-                .thenReturn(Collections.emptyIterator());
+            .thenReturn(Collections.emptyIterator());
 
         String getSubjectQuery = "SELECT * FROM [cards:Subject] AS q WHERE q.'jcr:uuid'='" + subject.getIdentifier()
-                + "'";
+            + "'";
         when(serviceResolver.findResources(Mockito.eq(getSubjectQuery), Mockito.anyString()))
-                .thenReturn(Collections.emptyIterator());
+            .thenReturn(Collections.emptyIterator());
 
         Assert.assertNull(this.requiredSubjectTypesValidator.childNodeAdded(name, this.form));
     }
@@ -163,7 +175,7 @@ public class RequiredSubjectTypesValidatorTest
     {
         String name = this.form.getProperty(NODE_IDENTIFIER).getValue(Type.STRING);
         Validator validator = this.requiredSubjectTypesValidator.childNodeChanged(name, Mockito.mock(NodeState.class),
-                getFormSection(this.form));
+            getFormSection(this.form));
         Assert.assertNotNull(validator);
         Assert.assertTrue(validator instanceof RequiredSubjectTypesValidator);
     }
@@ -179,15 +191,15 @@ public class RequiredSubjectTypesValidatorTest
 
         ResourceResolver serviceResolver = Mockito.mock(ResourceResolver.class);
         String getQuestionnaireQuery = "SELECT * FROM [cards:Questionnaire] AS q WHERE q.'jcr:uuid'='"
-                + questionnaire.getIdentifier() + "'";
+            + questionnaire.getIdentifier() + "'";
         when(this.rrf.getServiceResourceResolver(Mockito.anyMap())).thenReturn(serviceResolver);
         when(serviceResolver.findResources(Mockito.eq(getQuestionnaireQuery), Mockito.anyString()))
-                .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
+            .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
 
         String getSubjectQuery = "SELECT * FROM [cards:Subject] AS q WHERE q.'jcr:uuid'='" + subject.getIdentifier()
-                + "'";
+            + "'";
         when(serviceResolver.findResources(
-                Mockito.eq(getSubjectQuery), Mockito.anyString()))
+            Mockito.eq(getSubjectQuery), Mockito.anyString()))
                 .thenReturn(resourceResolver.findResources(getSubjectQuery, "JCR-SQL2"));
 
         PropertyState after = Mockito.mock(PropertyState.class);
@@ -202,17 +214,17 @@ public class RequiredSubjectTypesValidatorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/ComputedQuestionnairesPlain.json", TEST_COMPUTED_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
 
         String subjectUuid = session.getNode(TEST_SUBJECT_PATH).getIdentifier();
         String questionnaireUuid = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH).getIdentifier();
@@ -233,20 +245,19 @@ public class RequiredSubjectTypesValidatorTest
 
         String answerSectionUuid = UUID.randomUUID().toString();
         NodeBuilder answerSectionBuilder =
-                createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
-                        computedQuestionUuid, computedAnswerBuilder.getNodeState());
+            createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
+                computedQuestionUuid, computedAnswerBuilder.getNodeState());
 
         String formUuid = UUID.randomUUID().toString();
         this.form = createTestForm(formUuid, questionnaireUuid, subjectUuid, answerSectionUuid,
-                answerSectionBuilder.getNodeState()).getNodeState();
+            answerSectionBuilder.getNodeState()).getNodeState();
 
         this.requiredSubjectTypesValidator = new RequiredSubjectTypesValidator(this.rrf, this.formUtils, this.form);
 
     }
 
-
     private NodeBuilder createTestForm(String uuid, String questionnaireUuid, String subjectUuid,
-                                       String answerSectionUuid, NodeState answerSection)
+        String answerSectionUuid, NodeState answerSection)
     {
         NodeBuilder formBuilder = EmptyNodeState.EMPTY_NODE.builder();
         formBuilder.setProperty(NODE_TYPE, FORM_TYPE, Type.NAME);
@@ -277,7 +288,7 @@ public class RequiredSubjectTypesValidatorTest
     }
 
     private NodeBuilder createTestAnswerSection(String uuid, String sectionUuid, String answerUuid, NodeState answer,
-                                                String computedAnswerUuid, NodeState computedAnswer)
+        String computedAnswerUuid, NodeState computedAnswer)
     {
         NodeBuilder answerSectionBuilder = EmptyNodeState.EMPTY_NODE.builder();
         answerSectionBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
@@ -293,11 +304,10 @@ public class RequiredSubjectTypesValidatorTest
         for (String name : currentNode.getChildNodeNames()) {
             NodeState child = currentNode.getChildNode(name);
             if (child.hasProperty(NODE_TYPE)
-                    && ANSWER_SECTION_TYPE.equals(child.getProperty(NODE_TYPE).getValue(Type.STRING))) {
+                && ANSWER_SECTION_TYPE.equals(child.getProperty(NODE_TYPE).getValue(Type.STRING))) {
                 return child;
             }
         }
         return null;
     }
-
 }

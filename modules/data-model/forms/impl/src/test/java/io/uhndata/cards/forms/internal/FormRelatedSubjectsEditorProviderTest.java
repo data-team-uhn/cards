@@ -48,7 +48,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class FormRelatedSubjectsEditorProviderTest
 {
-
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
@@ -65,8 +64,8 @@ public class FormRelatedSubjectsEditorProviderTest
 
         when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
         Editor editor = this.formRelatedSubjectsEditorProvider.getRootEditor(Mockito.mock(NodeState.class),
-                Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
-                        session.getUserID()));
+            Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
+                session.getUserID()));
         Assert.assertNotNull(editor);
         Assert.assertTrue(editor instanceof FormRelatedSubjectsEditor);
     }
@@ -77,8 +76,8 @@ public class FormRelatedSubjectsEditorProviderTest
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         Editor editor = this.formRelatedSubjectsEditorProvider.getRootEditor(Mockito.mock(NodeState.class),
-                Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
-                        session.getUserID()));
+            Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
+                session.getUserID()));
         Assert.assertNull(editor);
     }
 }
