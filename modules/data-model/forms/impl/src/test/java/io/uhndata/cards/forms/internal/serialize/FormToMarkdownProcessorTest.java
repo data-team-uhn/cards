@@ -64,18 +64,31 @@ import static org.mockito.Mockito.when;
 public class FormToMarkdownProcessorTest
 {
     private static final String NEXT_LINE = "\n";
+
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestSerializableQuestionnaire";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String TEST_FORM_PATH = "/Forms/f1";
+
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String SECTION_PROPERTY = "section";
+
     private static final String SUBJECT_PROPERTY = "subject";
+
     private static final String DISPLAYED_VALUE_PROPERTY = "displayedValue";
 
     @Rule
@@ -83,7 +96,6 @@ public class FormToMarkdownProcessorTest
 
     @InjectMocks
     private FormToMarkdownProcessor formToMarkdownProcessor;
-
 
     @Test
     public void canProcessForFormReturnsTrue()
@@ -106,24 +118,24 @@ public class FormToMarkdownProcessorTest
         String markdown = this.formToMarkdownProcessor.serialize(form);
         assertNotNull(markdown);
         assertEquals("# Test Serializable Questionnaire" + NEXT_LINE
-                + NEXT_LINE
-                + "----" + NEXT_LINE
-                + NEXT_LINE
-                + "### Section 2" + NEXT_LINE
-                + NEXT_LINE
-                + "**Long Question**  " + NEXT_LINE
-                + "100" + NEXT_LINE
-                + NEXT_LINE
-                + "### Section 1" + NEXT_LINE
-                + NEXT_LINE
-                + "**Date Question**  " + NEXT_LINE
-                + "—" + NEXT_LINE
-                + NEXT_LINE
-                + "**Pedigree Question**  <div style='display: inline-block; width: 90%; height: calc(100vw * 0.9);"
-                + "overflow: hidden;'><svg style='width: 100%' greeDisplayedValue</div>" + NEXT_LINE
-                + NEXT_LINE
-                + "**Notes**  " + NEXT_LINE
-                + "Pedigree note", markdown);
+            + NEXT_LINE
+            + "----" + NEXT_LINE
+            + NEXT_LINE
+            + "### Section 2" + NEXT_LINE
+            + NEXT_LINE
+            + "**Long Question**  " + NEXT_LINE
+            + "100" + NEXT_LINE
+            + NEXT_LINE
+            + "### Section 1" + NEXT_LINE
+            + NEXT_LINE
+            + "**Date Question**  " + NEXT_LINE
+            + "—" + NEXT_LINE
+            + NEXT_LINE
+            + "**Pedigree Question**  <div style='display: inline-block; width: 90%; height: calc(100vw * 0.9);"
+            + "overflow: hidden;'><svg style='width: 100%' greeDisplayedValue</div>" + NEXT_LINE
+            + NEXT_LINE
+            + "**Notes**  " + NEXT_LINE
+            + "Pedigree note", markdown);
     }
 
     @Test
@@ -134,13 +146,13 @@ public class FormToMarkdownProcessorTest
         String markdown = this.formToMarkdownProcessor.serialize(form);
         assertNotNull(markdown);
         assertEquals("# Test Serializable Questionnaire" + NEXT_LINE
-                + NEXT_LINE
-                + "### Section 3" + NEXT_LINE
-                + NEXT_LINE
-                + "**Boolean Question**  " + NEXT_LINE
-                + "true" + NEXT_LINE
-                + NEXT_LINE
-                + "----", markdown);
+            + NEXT_LINE
+            + "### Section 3" + NEXT_LINE
+            + NEXT_LINE
+            + "**Boolean Question**  " + NEXT_LINE
+            + "true" + NEXT_LINE
+            + NEXT_LINE
+            + "----", markdown);
     }
 
     @Test
@@ -151,18 +163,18 @@ public class FormToMarkdownProcessorTest
         String markdown = this.formToMarkdownProcessor.serialize(form);
         assertNotNull(markdown);
         assertEquals("# Test Serializable Questionnaire" + NEXT_LINE
-                + NEXT_LINE
-                + "### Section 3" + NEXT_LINE
-                + NEXT_LINE
-                + "### Section 4 #1" + NEXT_LINE
-                + NEXT_LINE
-                + "**Text Question**  " + NEXT_LINE
-                + "some text" + NEXT_LINE
-                + NEXT_LINE
-                + "**Boolean Question**  " + NEXT_LINE
-                + "true" + NEXT_LINE
-                + NEXT_LINE
-                + "----", markdown);
+            + NEXT_LINE
+            + "### Section 3" + NEXT_LINE
+            + NEXT_LINE
+            + "### Section 4 #1" + NEXT_LINE
+            + NEXT_LINE
+            + "**Text Question**  " + NEXT_LINE
+            + "some text" + NEXT_LINE
+            + NEXT_LINE
+            + "**Boolean Question**  " + NEXT_LINE
+            + "true" + NEXT_LINE
+            + NEXT_LINE
+            + "----", markdown);
     }
 
     @Test
@@ -186,17 +198,17 @@ public class FormToMarkdownProcessorTest
     public void setupRepo() throws RepositoryException
     {
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/SerializableQuestionnaire.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
 
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
@@ -205,64 +217,64 @@ public class FormToMarkdownProcessorTest
         Node questionnaire = session.getNode(TEST_QUESTIONNAIRE_PATH);
 
         this.context.build()
-                .resource(TEST_FORM_PATH,
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource(TEST_FORM_PATH + "/s1",
-                        NODE_TYPE, ANSWER_SECTION_TYPE,
-                        SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_1"))
-                .resource(TEST_FORM_PATH + "/s1/a1",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_1"),
-                        "value", "2023-01-01")
-                .resource(TEST_FORM_PATH + "/s1/a2",
-                        NODE_TYPE, "cards:PedigreeAnswer",
-                        QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_2"),
-                        DISPLAYED_VALUE_PROPERTY, "pedigreeDisplayedValue",
-                        "note", "Pedigree note")
-                .resource(TEST_FORM_PATH + "/s2",
-                        NODE_TYPE, ANSWER_SECTION_TYPE,
-                        SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_2"))
-                .resource(TEST_FORM_PATH + "/s2/a3",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_2/question_3"),
-                        DISPLAYED_VALUE_PROPERTY, "100")
+            .resource(TEST_FORM_PATH,
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, subject,
+                "relatedSubjects", List.of(subject).toArray())
+            .resource(TEST_FORM_PATH + "/s1",
+                NODE_TYPE, ANSWER_SECTION_TYPE,
+                SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_1"))
+            .resource(TEST_FORM_PATH + "/s1/a1",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_1"),
+                "value", "2023-01-01")
+            .resource(TEST_FORM_PATH + "/s1/a2",
+                NODE_TYPE, "cards:PedigreeAnswer",
+                QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_2"),
+                DISPLAYED_VALUE_PROPERTY, "pedigreeDisplayedValue",
+                "note", "Pedigree note")
+            .resource(TEST_FORM_PATH + "/s2",
+                NODE_TYPE, ANSWER_SECTION_TYPE,
+                SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_2"))
+            .resource(TEST_FORM_PATH + "/s2/a3",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_2/question_3"),
+                DISPLAYED_VALUE_PROPERTY, "100")
 
-                .resource("/Forms/f2",
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource("/Forms/f2/s3",
-                        NODE_TYPE, ANSWER_SECTION_TYPE,
-                        SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3"))
-                .resource("/Forms/f2/s3/a4",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/question_4"),
-                        DISPLAYED_VALUE_PROPERTY, "true")
+            .resource("/Forms/f2",
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, subject,
+                "relatedSubjects", List.of(subject).toArray())
+            .resource("/Forms/f2/s3",
+                NODE_TYPE, ANSWER_SECTION_TYPE,
+                SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3"))
+            .resource("/Forms/f2/s3/a4",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/question_4"),
+                DISPLAYED_VALUE_PROPERTY, "true")
 
-                .resource("/Forms/f3",
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource("/Forms/f3/s3",
-                        NODE_TYPE, ANSWER_SECTION_TYPE,
-                        SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3"))
-                .resource("/Forms/f3/s3/a4",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/question_4"),
-                        DISPLAYED_VALUE_PROPERTY, "true")
-                .resource("/Forms/f3/s3/s4",
-                        NODE_TYPE, ANSWER_SECTION_TYPE,
-                        SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/section_4"))
-                .resource("/Forms/f3/s3/s4/a5",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/section_4/question_5"),
-                        DISPLAYED_VALUE_PROPERTY, "some text")
-                .commit();
+            .resource("/Forms/f3",
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, subject,
+                "relatedSubjects", List.of(subject).toArray())
+            .resource("/Forms/f3/s3",
+                NODE_TYPE, ANSWER_SECTION_TYPE,
+                SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3"))
+            .resource("/Forms/f3/s3/a4",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/question_4"),
+                DISPLAYED_VALUE_PROPERTY, "true")
+            .resource("/Forms/f3/s3/s4",
+                NODE_TYPE, ANSWER_SECTION_TYPE,
+                SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/section_4"))
+            .resource("/Forms/f3/s3/s4/a5",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/section_4/question_5"),
+                DISPLAYED_VALUE_PROPERTY, "some text")
+            .commit();
 
         this.context.registerAdapter(Resource.class, JsonObject.class, (Function<Resource, JsonObject>) resource -> {
             JsonObjectBuilder jsonObject = null;
@@ -282,14 +294,14 @@ public class FormToMarkdownProcessorTest
         // process properties of resource
         ValueMap valueMap = originalResource.getValueMap();
         List<String> objectTypeProperties = List.of(QUESTIONNAIRE_PROPERTY, SUBJECT_PROPERTY, SECTION_PROPERTY,
-                QUESTION_PROPERTY);
+            QUESTION_PROPERTY);
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         for (Map.Entry<String, Object> property : valueMap.entrySet()) {
             String key = property.getKey();
             Object value = property.getValue();
             if (objectTypeProperties.contains(key)) {
                 Resource reference =
-                        this.context.resourceResolver().getResource(getResourcePathByItsIdentifier((String) value));
+                    this.context.resourceResolver().getResource(getResourcePathByItsIdentifier((String) value));
                 JsonObjectBuilder referenceJson = Json.createObjectBuilder(createPropertiesAndChildrenMap(reference));
                 propertiesAndChildrenMap.put(key, referenceJson.build());
             } else {
@@ -298,7 +310,7 @@ public class FormToMarkdownProcessorTest
                     for (Object valueUnit : (Object[]) value) {
                         if (valueUnit instanceof Resource) {
                             arrayBuilder.add(Json.createObjectBuilder(
-                                    createPropertiesAndChildrenMap((Resource) valueUnit)).build());
+                                createPropertiesAndChildrenMap((Resource) valueUnit)).build());
                         } else {
                             arrayBuilder.add((String) valueUnit);
                         }

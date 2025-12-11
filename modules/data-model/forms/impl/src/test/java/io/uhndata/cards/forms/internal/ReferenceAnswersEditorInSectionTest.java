@@ -57,29 +57,49 @@ import static org.mockito.Mockito.when;
 public class ReferenceAnswersEditorInSectionTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String REFERENCE_ANSWER_TYPE = "cards:ReferenceAnswer";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
+
     private static final String TEST_SECTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+
     private static final String TEST_LONG_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+
     private static final String TEST_REFERENCE_QUESTIONNAIRE_PATH = "/Questionnaires/TestReferenceQuestionnaire";
+
     private static final String TEST_REFERENCE_SECTION_PATH =
-            "/Questionnaires/TestReferenceQuestionnaire/reference_section";
+        "/Questionnaires/TestReferenceQuestionnaire/reference_section";
+
     private static final String TEST_REFERENCE_QUESTION_PATH =
-            "/Questionnaires/TestReferenceQuestionnaire/reference_section/reference_question";
+        "/Questionnaires/TestReferenceQuestionnaire/reference_section/reference_question";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String UUID_PROPERTY = "jcr:uuid";
+
     private static final String VALUE_PROPERTY = "value";
+
     private static final String COPIED_FROM_PROPERTY = "copiedFrom";
+
     private static final String SUBJECT_PROPERTY = "subject";
+
     private static final String SECTION_PROPERTY = "section";
+
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String SERVICE_NAME = "referenceAnswers";
 
     @Rule
@@ -124,13 +144,13 @@ public class ReferenceAnswersEditorInSectionTest
         Node referenceQuestion = session.getNode(TEST_REFERENCE_QUESTION_PATH);
         String referenceQuestionUuid = referenceQuestion.getIdentifier();
         when(this.referenceAnswersEditor.questionnaireUtils.getQuestion(referenceQuestionUuid))
-                .thenReturn(referenceQuestion);
+            .thenReturn(referenceQuestion);
         Assert.assertTrue(this.referenceAnswersEditor.answerChangeTracker.isMatchedAnswerNode(
-                referenceAnswer.getNodeState(), referenceQuestionUuid));
+            referenceAnswer.getNodeState(), referenceQuestionUuid));
 
         referenceAnswer.setProperty(NODE_TYPE, REFERENCE_ANSWER_TYPE, Type.NAME);
         Assert.assertTrue(this.referenceAnswersEditor.answerChangeTracker.isMatchedAnswerNode(
-                referenceAnswer.getNodeState(), referenceQuestionUuid));
+            referenceAnswer.getNodeState(), referenceQuestionUuid));
 
     }
 
@@ -141,16 +161,16 @@ public class ReferenceAnswersEditorInSectionTest
 
         NodeBuilder section = getFormSection(this.nodeBuilder);
         Assert.assertFalse(this.referenceAnswersEditor.answerChangeTracker.isMatchedAnswerNode(
-                section.getNodeState(), null));
+            section.getNodeState(), null));
 
         NodeBuilder referenceAnswer = getReferenceAnswer(this.nodeBuilder);
         Node referenceQuestion = Mockito.mock(Node.class);
         String referenceQuestionUuid = session.getNode(TEST_REFERENCE_QUESTION_PATH).getIdentifier();
         when(this.referenceAnswersEditor.questionnaireUtils.getQuestion(referenceQuestionUuid))
-                .thenReturn(referenceQuestion);
+            .thenReturn(referenceQuestion);
         when(referenceQuestion.hasProperty(Mockito.anyString())).thenThrow(new RepositoryException());
         Assert.assertFalse(this.referenceAnswersEditor.answerChangeTracker.isMatchedAnswerNode(
-                referenceAnswer.getNodeState(), referenceQuestionUuid));
+            referenceAnswer.getNodeState(), referenceQuestionUuid));
 
     }
 
@@ -167,7 +187,7 @@ public class ReferenceAnswersEditorInSectionTest
         // for not form type current node builder
         this.nodeBuilder = getFormSection(this.nodeBuilder);
         this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
-                this.questionnaireUtils, this.formUtils, this.subjectUtils);
+            this.questionnaireUtils, this.formUtils, this.subjectUtils);
         Assert.assertFalse(this.referenceAnswersEditor.shouldRunOnLeave);
         this.referenceAnswersEditor.propertyAdded(Mockito.mock(PropertyState.class));
         Assert.assertFalse(this.referenceAnswersEditor.shouldRunOnLeave);
@@ -187,12 +207,11 @@ public class ReferenceAnswersEditorInSectionTest
         // for not form type current node builder
         this.nodeBuilder = getFormSection(this.nodeBuilder);
         this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
-                this.questionnaireUtils, this.formUtils, this.subjectUtils);
+            this.questionnaireUtils, this.formUtils, this.subjectUtils);
 
         editor = this.referenceAnswersEditor.childNodeAdded(referenceAnswerUuid, Mockito.mock(NodeState.class));
         Assert.assertTrue(editor instanceof ReferenceAnswersEditor);
     }
-
 
     @Test
     public void handleLeaveChangesReferenceValue()
@@ -202,7 +221,7 @@ public class ReferenceAnswersEditorInSectionTest
 
         Assert.assertTrue(getReferenceAnswer(this.nodeBuilder).hasProperty(VALUE_PROPERTY));
         Assert.assertEquals(Long.valueOf(200),
-                getReferenceAnswer(this.nodeBuilder).getProperty(VALUE_PROPERTY).getValue(Type.LONG));
+            getReferenceAnswer(this.nodeBuilder).getProperty(VALUE_PROPERTY).getValue(Type.LONG));
     }
 
     @Test
@@ -210,7 +229,7 @@ public class ReferenceAnswersEditorInSectionTest
     {
         this.referenceAnswersEditor.serviceSession = this.context.resourceResolver().adaptTo(Session.class);
         when(this.formUtils.findAllSubjectRelatedAnswers(Mockito.any(Node.class), Mockito.any(), Mockito.any()))
-                .thenReturn(List.of());
+            .thenReturn(List.of());
         this.referenceAnswersEditor.handleLeave(this.nodeBuilder.getNodeState());
         Assert.assertFalse(getReferenceAnswer(this.nodeBuilder).hasProperty(VALUE_PROPERTY));
     }
@@ -219,18 +238,18 @@ public class ReferenceAnswersEditorInSectionTest
     public void setupRepo() throws RepositoryException
     {
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/ComputedQuestionnairesPlain.json", TEST_COMPUTED_QUESTIONNAIRE_PATH);
         this.context.load().json("/ReferenceQuestionnaires.json", TEST_REFERENCE_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
 
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         String referenceQuestionnaireUuid = session.getNode(TEST_REFERENCE_QUESTIONNAIRE_PATH).getIdentifier();
@@ -245,40 +264,40 @@ public class ReferenceAnswersEditorInSectionTest
         String referenceQuestionUuid = referenceQuestionNode.getIdentifier();
 
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .resource("/Forms/f1",
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, sourceQuestionnaire,
-                        SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource("/Forms/f1/s1",
-                        NODE_TYPE, ANSWER_SECTION_TYPE,
-                        SECTION_PROPERTY, section)
-                .resource("/Forms/f1/s1/a1",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, sourceQuestionNode,
-                        VALUE_PROPERTY, 200L)
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .resource("/Forms/f1",
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, sourceQuestionnaire,
+                SUBJECT_PROPERTY, subject,
+                "relatedSubjects", List.of(subject).toArray())
+            .resource("/Forms/f1/s1",
+                NODE_TYPE, ANSWER_SECTION_TYPE,
+                SECTION_PROPERTY, section)
+            .resource("/Forms/f1/s1/a1",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, sourceQuestionNode,
+                VALUE_PROPERTY, 200L)
+            .commit();
 
         // Create NodeBuilder/NodeState instances of New Test Source Form
         String referenceAnswerUuid = UUID.randomUUID().toString();
         NodeBuilder referenceAnswerBuilder = createTestAnswer(referenceAnswerUuid, referenceQuestionUuid,
-                Map.of(COPIED_FROM_PROPERTY, "/Forms/f1/s1/a1"));
+            Map.of(COPIED_FROM_PROPERTY, "/Forms/f1/s1/a1"));
         String referenceAnswerSectionUuid = UUID.randomUUID().toString();
         NodeBuilder referenceAnswerSectionBuilder = createTestAnswerSection(referenceAnswerSectionUuid,
-                referenceSectionUuid, Map.of(referenceAnswerUuid, referenceAnswerBuilder.getNodeState()));
+            referenceSectionUuid, Map.of(referenceAnswerUuid, referenceAnswerBuilder.getNodeState()));
 
         String formUuid = UUID.randomUUID().toString();
         NodeBuilder formBuilder = createTestForm(formUuid, referenceQuestionnaireUuid,
-                Map.of(referenceAnswerSectionUuid, referenceAnswerSectionBuilder.getNodeState()));
+            Map.of(referenceAnswerSectionUuid, referenceAnswerSectionBuilder.getNodeState()));
 
         this.nodeBuilder = formBuilder;
 
         when(this.formUtils.isForm(this.nodeBuilder)).thenReturn(true);
         this.currentSession = this.context.resourceResolver().adaptTo(Session.class);
         this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
-                this.questionnaireUtils, this.formUtils, this.subjectUtils);
+            this.questionnaireUtils, this.formUtils, this.subjectUtils);
 
         // mock Node getQuestionnaire()
         PropertyState propertyState = Mockito.mock(PropertyState.class);
@@ -293,18 +312,17 @@ public class ReferenceAnswersEditorInSectionTest
         when(this.formUtils.isAnswerSection(Mockito.any(NodeBuilder.class))).thenReturn(true, false);
         when(this.formUtils.isAnswer(Mockito.any(NodeBuilder.class))).thenReturn(true);
         when(this.formUtils.getSectionIdentifier(Mockito.any(NodeBuilder.class)))
-                .thenReturn(session.getNode(TEST_REFERENCE_SECTION_PATH).getIdentifier());
+            .thenReturn(session.getNode(TEST_REFERENCE_SECTION_PATH).getIdentifier());
         when(this.formUtils.getQuestionIdentifier(Mockito.any(NodeBuilder.class)))
-                .thenReturn(session.getNode(TEST_REFERENCE_QUESTION_PATH).getIdentifier());
+            .thenReturn(session.getNode(TEST_REFERENCE_QUESTION_PATH).getIdentifier());
 
         // mock Object getAnswer(NodeState form, String questionPath)
         when(this.formUtils.getSubject(formBuilder.getNodeState())).thenReturn(subject);
         when(this.formUtils.findAllSubjectRelatedAnswers(Mockito.eq(subject), Mockito.any(), Mockito.any()))
-                .thenReturn(List.of(session.getNode("/Forms/f1/s1/a1")));
+            .thenReturn(List.of(session.getNode("/Forms/f1/s1/a1")));
         when(this.formUtils.getValue(Mockito.any(Node.class))).thenReturn(200L);
 
     }
-
 
     private NodeBuilder createTestForm(String uuid, String questionnaireUuid, Map<String, NodeState> children)
     {
@@ -349,7 +367,7 @@ public class ReferenceAnswersEditorInSectionTest
             if (ANSWER_SECTION_TYPE.equals(child.getName(NODE_TYPE))) {
                 return getReferenceAnswer(child);
             } else if (ANSWER_TYPE.equals(child.getName(NODE_TYPE))
-                    && child.hasProperty(COPIED_FROM_PROPERTY)) {
+                && child.hasProperty(COPIED_FROM_PROPERTY)) {
                 return child;
             }
         }
@@ -361,11 +379,10 @@ public class ReferenceAnswersEditorInSectionTest
         for (String name : currentNode.getChildNodeNames()) {
             NodeBuilder child = currentNode.getChildNode(name);
             if (child.hasProperty(NODE_TYPE)
-                    && ANSWER_SECTION_TYPE.equals(child.getProperty(NODE_TYPE).getValue(Type.STRING))) {
+                && ANSWER_SECTION_TYPE.equals(child.getProperty(NODE_TYPE).getValue(Type.STRING))) {
                 return child;
             }
         }
         return null;
     }
-
 }

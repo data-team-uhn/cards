@@ -52,24 +52,43 @@ import static org.mockito.Mockito.when;
 public class AnswerOptionsLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_OPTION_TYPE = "cards:AnswerOption";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
+
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/question_7";
+
     private static final String TEST_QUESTION_OPTION_1_PATH = "/Questionnaires/TestQuestionnaire/question_7/o1";
+
     private static final String TEST_QUESTION_OPTION_2_PATH = "/Questionnaires/TestQuestionnaire/question_7/o2";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String TEST_FORM_PATH = "/Forms/f1";
+
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String SUBJECT_PROPERTY = "subject";
+
     private static final String VALUE_PROPERTY = "value";
+
     private static final String LABEL_PROPERTY = "label";
+
     private static final String DISPLAYED_VALUE_PROPERTY = "displayedValue";
+
     private static final String NAME = "labels";
+
     private static final int PRIORITY = 75;
+
     private static final boolean ENABLED = true;
 
     @Rule
@@ -77,7 +96,6 @@ public class AnswerOptionsLabelProcessorTest
 
     @InjectMocks
     private AnswerOptionsLabelProcessor answerOptionsLabelProcessor;
-
 
     @Test
     public void getNameTest()
@@ -133,7 +151,7 @@ public class AnswerOptionsLabelProcessorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, new String[]{
+        node.setProperty(VALUE_PROPERTY, new String[] {
             "/Vocabularies/Option1", "/Vocabularies/Option2"
         });
 
@@ -260,18 +278,18 @@ public class AnswerOptionsLabelProcessorTest
     public void setupRepo() throws RepositoryException
     {
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .resource("/Vocabularies", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .resource("/Vocabularies", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
 
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
@@ -280,21 +298,20 @@ public class AnswerOptionsLabelProcessorTest
         Node question = session.getNode(TEST_QUESTION_PATH);
 
         this.context.build()
-                .resource("/Vocabularies/Option1",
-                        NODE_TYPE, ANSWER_OPTION_TYPE,
-                        VALUE_PROPERTY, "O1")
-                .resource("/Vocabularies/Option2",
-                        NODE_TYPE, ANSWER_OPTION_TYPE,
-                        VALUE_PROPERTY, "O2")
-                .resource(TEST_FORM_PATH,
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource("/Forms/f1/a1",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, question)
-                .commit();
+            .resource("/Vocabularies/Option1",
+                NODE_TYPE, ANSWER_OPTION_TYPE,
+                VALUE_PROPERTY, "O1")
+            .resource("/Vocabularies/Option2",
+                NODE_TYPE, ANSWER_OPTION_TYPE,
+                VALUE_PROPERTY, "O2")
+            .resource(TEST_FORM_PATH,
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, subject,
+                "relatedSubjects", List.of(subject).toArray())
+            .resource("/Forms/f1/a1",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, question)
+            .commit();
     }
-
 }
