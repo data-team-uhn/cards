@@ -43,7 +43,6 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
 @RunWith(MockitoJUnitRunner.class)
 public class SubjectHierarchyValidatorProviderTest
 {
-
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
@@ -62,7 +61,7 @@ public class SubjectHierarchyValidatorProviderTest
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         Validator validator = this.subjectHierarchyValidatorProvider.getRootValidator(Mockito.mock(NodeState.class),
-                Mockito.mock(NodeState.class), new CommitInfo(session.toString(), session.getUserID()));
+            Mockito.mock(NodeState.class), new CommitInfo(session.toString(), session.getUserID()));
         Assert.assertNotNull(validator);
         Assert.assertTrue(validator instanceof SubjectHierarchyValidator);
     }

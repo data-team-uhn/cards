@@ -53,23 +53,38 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class BareFormProcessorTest
 {
-
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
+
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_1";
+
     private static final String TEST_QUESTION_2_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_2";
+
     private static final String TEST_SECTION_PATH = "/Questionnaires/TestQuestionnaire/section_1";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String TEST_FORM_PATH = "/Forms/f1";
+
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String SECTION_PROPERTY = "section";
+
     private static final String SUBJECT_PROPERTY = "subject";
+
     private static final String NAME = "bare";
+
     private static final int PRIORITY = 95;
 
     @Rule
@@ -94,14 +109,14 @@ public class BareFormProcessorTest
     public void canProcessReturnTrue()
     {
         Assert.assertTrue(this.bareFormProcessor.canProcess(
-                this.context.resourceResolver().getResource(TEST_FORM_PATH)));
+            this.context.resourceResolver().getResource(TEST_FORM_PATH)));
     }
 
     @Test
     public void canProcessReturnFalse()
     {
         Assert.assertFalse(this.bareFormProcessor.canProcess(
-                this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH)));
+            this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH)));
     }
 
     @Test
@@ -112,7 +127,7 @@ public class BareFormProcessorTest
         Property property = node.getProperty("questionnaire");
         JsonValue input = Json.createValue(node.getProperty(NODE_TYPE).getString());
         JsonValue jsonValueActual =
-                this.bareFormProcessor.processProperty(node, property, input, Mockito.mock(Function.class));
+            this.bareFormProcessor.processProperty(node, property, input, Mockito.mock(Function.class));
         Assert.assertEquals(Json.createValue("Test Questionnaire"), jsonValueActual);
     }
 
@@ -124,7 +139,7 @@ public class BareFormProcessorTest
         Property property = node.getProperty("subject");
         JsonValue input = Json.createValue(node.getProperty(NODE_TYPE).getString());
         JsonValue jsonValueActual =
-                this.bareFormProcessor.processProperty(node, property, input, Mockito.mock(Function.class));
+            this.bareFormProcessor.processProperty(node, property, input, Mockito.mock(Function.class));
         Assert.assertEquals(Json.createValue("Test"), jsonValueActual);
     }
 
@@ -136,7 +151,7 @@ public class BareFormProcessorTest
         Property property = node.getProperty(SECTION_PROPERTY);
         JsonValue input = Json.createValue(node.getProperty(NODE_TYPE).getString());
         JsonValue jsonValueActual =
-                this.bareFormProcessor.processProperty(node, property, input, Mockito.mock(Function.class));
+            this.bareFormProcessor.processProperty(node, property, input, Mockito.mock(Function.class));
         Assert.assertEquals(Json.createValue("Section 1"), jsonValueActual);
     }
 
@@ -148,7 +163,7 @@ public class BareFormProcessorTest
         Property property = node.getProperty("question");
         JsonValue input = Json.createValue(node.getProperty(NODE_TYPE).getString());
         JsonValue jsonValueActual =
-                this.bareFormProcessor.processProperty(node, property, input, Mockito.mock(Function.class));
+            this.bareFormProcessor.processProperty(node, property, input, Mockito.mock(Function.class));
         Assert.assertEquals(Json.createValue("Date Question"), jsonValueActual);
     }
 
@@ -223,7 +238,7 @@ public class BareFormProcessorTest
 
     @Test
     public void leaveTestForFormWithNotRecurrentSection() throws RepositoryException, NoSuchFieldException,
-            IllegalAccessException
+        IllegalAccessException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node form = session.getNode(TEST_FORM_PATH);
@@ -233,13 +248,13 @@ public class BareFormProcessorTest
         Field childrenJsonsField = this.bareFormProcessor.getClass().getDeclaredField("childrenJsons");
         childrenJsonsField.setAccessible(true);
         ThreadLocal<Map<String, JsonObject>> childrenJsons =
-                (ThreadLocal<Map<String, JsonObject>>) childrenJsonsField.get(this.bareFormProcessor);
+            (ThreadLocal<Map<String, JsonObject>>) childrenJsonsField.get(this.bareFormProcessor);
 
         childrenJsons.get().put(
-                answerSection.getIdentifier(), Json.createObjectBuilder()
-                    .add(SECTION_PROPERTY,
-                        Json.createValue(session.getNode(TEST_SECTION_PATH).getIdentifier()))
-                    .add(NODE_TYPE, ANSWER_SECTION_TYPE).build());
+            answerSection.getIdentifier(), Json.createObjectBuilder()
+                .add(SECTION_PROPERTY,
+                    Json.createValue(session.getNode(TEST_SECTION_PATH).getIdentifier()))
+                .add(NODE_TYPE, ANSWER_SECTION_TYPE).build());
 
         this.bareFormProcessor.leave(form, json, Mockito.mock(Function.class));
         Assert.assertEquals(1, json.build().size());
@@ -248,7 +263,7 @@ public class BareFormProcessorTest
 
     @Test
     public void leaveTestForFormWithRecurrentSection() throws RepositoryException, NoSuchFieldException,
-            IllegalAccessException
+        IllegalAccessException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node form = session.getNode(TEST_FORM_PATH);
@@ -259,12 +274,12 @@ public class BareFormProcessorTest
         Field childrenJsonsField = this.bareFormProcessor.getClass().getDeclaredField("childrenJsons");
         childrenJsonsField.setAccessible(true);
         ThreadLocal<Map<String, JsonObject>> childrenJsons =
-                (ThreadLocal<Map<String, JsonObject>>) childrenJsonsField.get(this.bareFormProcessor);
+            (ThreadLocal<Map<String, JsonObject>>) childrenJsonsField.get(this.bareFormProcessor);
 
         childrenJsons.get().put(
-                answerSection.getIdentifier(), Json.createObjectBuilder()
-                    .add(SECTION_PROPERTY, Json.createValue(session.getNode(TEST_SECTION_PATH).getIdentifier()))
-                    .add(NODE_TYPE, ANSWER_SECTION_TYPE).build());
+            answerSection.getIdentifier(), Json.createObjectBuilder()
+                .add(SECTION_PROPERTY, Json.createValue(session.getNode(TEST_SECTION_PATH).getIdentifier()))
+                .add(NODE_TYPE, ANSWER_SECTION_TYPE).build());
 
         this.bareFormProcessor.leave(form, json, Mockito.mock(Function.class));
         Assert.assertEquals(1, json.build().size());
@@ -281,17 +296,17 @@ public class BareFormProcessorTest
         Field childrenJsonsField = this.bareFormProcessor.getClass().getDeclaredField("childrenJsons");
         childrenJsonsField.setAccessible(true);
         ThreadLocal<Map<String, JsonObject>> childrenJsons =
-                (ThreadLocal<Map<String, JsonObject>>) childrenJsonsField.get(this.bareFormProcessor);
+            (ThreadLocal<Map<String, JsonObject>>) childrenJsonsField.get(this.bareFormProcessor);
 
         Field questionNamesField = this.bareFormProcessor.getClass().getDeclaredField("questionNames");
         questionNamesField.setAccessible(true);
         ThreadLocal<Map<String, String>> questionNames =
-                (ThreadLocal<Map<String, String>>) questionNamesField.get(this.bareFormProcessor);
+            (ThreadLocal<Map<String, String>>) questionNamesField.get(this.bareFormProcessor);
 
         childrenJsons.get().put(
-                answerIdentifier, Json.createObjectBuilder()
-                        .add(QUESTION_PROPERTY, Json.createValue(questionIdentifier))
-                        .add(NODE_TYPE, ANSWER_TYPE).build());
+            answerIdentifier, Json.createObjectBuilder()
+                .add(QUESTION_PROPERTY, Json.createValue(questionIdentifier))
+                .add(NODE_TYPE, ANSWER_TYPE).build());
 
         questionNames.get().put(answerIdentifier, "question_1");
 
@@ -312,15 +327,15 @@ public class BareFormProcessorTest
         Field questionNamesField = this.bareFormProcessor.getClass().getDeclaredField("questionNames");
         childrenJsonsField.setAccessible(true);
         ThreadLocal<Map<String, JsonObject>> childrenJsons =
-                (ThreadLocal<Map<String, JsonObject>>) childrenJsonsField.get(this.bareFormProcessor);
+            (ThreadLocal<Map<String, JsonObject>>) childrenJsonsField.get(this.bareFormProcessor);
         questionNamesField.setAccessible(true);
         ThreadLocal<Map<String, String>> questionNames =
-                (ThreadLocal<Map<String, String>>) questionNamesField.get(this.bareFormProcessor);
+            (ThreadLocal<Map<String, String>>) questionNamesField.get(this.bareFormProcessor);
 
         childrenJsons.get().put(answerIdentifier,
-                Json.createObjectBuilder()
-                        .add(QUESTION_PROPERTY, Json.createValue(questionIdentifier))
-                        .add(NODE_TYPE, ANSWER_TYPE).build());
+            Json.createObjectBuilder()
+                .add(QUESTION_PROPERTY, Json.createValue(questionIdentifier))
+                .add(NODE_TYPE, ANSWER_TYPE).build());
         questionNames.get().put(answerIdentifier, "question_1");
 
         this.bareFormProcessor.leave(section, json, Mockito.mock(Function.class));
@@ -335,18 +350,18 @@ public class BareFormProcessorTest
     public void setupRepo() throws RepositoryException
     {
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH,
-                        NODE_TYPE, SUBJECT_TYPE,
-                        "type", this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH,
+                NODE_TYPE, SUBJECT_TYPE,
+                "type", this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         Node subject = session.getNode(TEST_SUBJECT_PATH);
@@ -356,19 +371,19 @@ public class BareFormProcessorTest
         Node question2 = session.getNode(TEST_QUESTION_2_PATH);
 
         this.context.build()
-                .resource(TEST_FORM_PATH,
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, subject)
-                .resource("/Forms/f1/s1",
-                        NODE_TYPE, ANSWER_SECTION_TYPE,
-                        SECTION_PROPERTY, section)
-                .resource("/Forms/f1/s1/a1",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, question)
-                .resource("/Forms/f1/s1/a2",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, question2)
-                .commit();
+            .resource(TEST_FORM_PATH,
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, subject)
+            .resource("/Forms/f1/s1",
+                NODE_TYPE, ANSWER_SECTION_TYPE,
+                SECTION_PROPERTY, section)
+            .resource("/Forms/f1/s1/a1",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, question)
+            .resource("/Forms/f1/s1/a2",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, question2)
+            .commit();
     }
 }

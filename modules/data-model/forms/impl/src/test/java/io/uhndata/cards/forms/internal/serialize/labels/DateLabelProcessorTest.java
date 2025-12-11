@@ -44,8 +44,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link DateLabelProcessor}.
@@ -56,23 +56,41 @@ import static org.mockito.Mockito.mock;
 public class DateLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String ANSWER_DATE_TYPE = "cards:DateAnswer";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
+
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_1";
+
     private static final String TEST_SECTION_PATH = "/Questionnaires/TestQuestionnaire/section_1";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String TEST_FORM_PATH = "/Forms/f1";
+
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String SECTION_PROPERTY = "section";
+
     private static final String SUBJECT_PROPERTY = "subject";
+
     private static final String VALUE_PROPERTY = "value";
+
     private static final String DISPLAYED_VALUE_PROPERTY = "displayedValue";
+
     private static final String NAME = "labels";
+
     private static final int PRIORITY = 75;
+
     private static final boolean ENABLED = true;
 
     @Rule
@@ -80,7 +98,6 @@ public class DateLabelProcessorTest
 
     @InjectMocks
     private DateLabelProcessor dateLabelProcessor;
-
 
     @Test
     public void getNameTest()
@@ -202,9 +219,9 @@ public class DateLabelProcessorTest
 
         Assert.assertEquals(2, jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).size());
         Assert.assertEquals(format.format(date.getTime()),
-                jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
+            jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
         Assert.assertEquals(format.format(datePlusOne.getTime()),
-                jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
+            jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
     }
 
     @Test
@@ -236,21 +253,22 @@ public class DateLabelProcessorTest
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
+
     @Before
     public void setupRepo() throws RepositoryException
     {
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
 
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
@@ -260,16 +278,15 @@ public class DateLabelProcessorTest
         Node question = session.getNode(TEST_QUESTION_PATH);
 
         this.context.build()
-                .resource(TEST_FORM_PATH,
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource("/Forms/f1/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, section)
-                .resource("/Forms/f1/s1/a1",
-                        NODE_TYPE, ANSWER_DATE_TYPE,
-                        QUESTION_PROPERTY, question)
-                .commit();
+            .resource(TEST_FORM_PATH,
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, subject,
+                "relatedSubjects", List.of(subject).toArray())
+            .resource("/Forms/f1/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, section)
+            .resource("/Forms/f1/s1/a1",
+                NODE_TYPE, ANSWER_DATE_TYPE,
+                QUESTION_PROPERTY, question)
+            .commit();
     }
-
 }

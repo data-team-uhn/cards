@@ -50,13 +50,20 @@ import io.uhndata.cards.spi.SearchParametersFactory;
 public class QuestionnaireQuickSearchEngineTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String QUESTIONNAIRE_TYPE = "cards:Questionnaire";
+
     private static final String TEST_MATRIX_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionMatrixQuestionnaire";
+
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
+
     private static final String TEST_REFERENCE_CALENDAR_QUESTIONNAIRE_PATH =
-            "/Questionnaires/TestCalendarReferenceQuestionnaire";
+        "/Questionnaires/TestCalendarReferenceQuestionnaire";
+
     private static final String TEST_REFERENCE_QUESTIONNAIRE_PATH = "/Questionnaires/TestReferenceQuestionnaire";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
+
     private static final String QUICK_SEARCH_PARAMETER_TYPE = "quick";
 
     @Rule
@@ -77,12 +84,12 @@ public class QuestionnaireQuickSearchEngineTest
     public void quickSearchForOptionValue()
     {
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
-                .withQuery("O1")
-                .withType(QUICK_SEARCH_PARAMETER_TYPE)
-                .build();
+            .withQuery("O1")
+            .withType(QUICK_SEARCH_PARAMETER_TYPE)
+            .build();
 
         QuickSearchEngine.Results output =
-                this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver());
+            this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver());
         for (int numberOfFoundMatches = 0; numberOfFoundMatches < 4; numberOfFoundMatches++) {
             Assert.assertTrue(output.hasNext());
             Assert.assertNotNull(output.next());
@@ -94,12 +101,12 @@ public class QuestionnaireQuickSearchEngineTest
     public void quickSearchForQuestionText()
     {
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
-                .withQuery("Long Question")
-                .withType(QUICK_SEARCH_PARAMETER_TYPE)
-                .build();
+            .withQuery("Long Question")
+            .withType(QUICK_SEARCH_PARAMETER_TYPE)
+            .build();
 
         QuickSearchEngine.Results output =
-                this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver());
+            this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver());
         for (int numberOfFoundMatches = 0; numberOfFoundMatches < 3; numberOfFoundMatches++) {
             Assert.assertTrue(output.hasNext());
             Assert.assertNotNull(output.next());
@@ -111,12 +118,12 @@ public class QuestionnaireQuickSearchEngineTest
     public void quickSearchForQuestionnaireTitle()
     {
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
-                .withQuery("Reference Questionnaire")
-                .withType(QUICK_SEARCH_PARAMETER_TYPE)
-                .build();
+            .withQuery("Reference Questionnaire")
+            .withType(QUICK_SEARCH_PARAMETER_TYPE)
+            .build();
 
         QuickSearchEngine.Results output =
-                this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver());
+            this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver());
         for (int numberOfFoundMatches = 0; numberOfFoundMatches < 2; numberOfFoundMatches++) {
             Assert.assertTrue(output.hasNext());
             Assert.assertNotNull(output.next());
@@ -128,16 +135,15 @@ public class QuestionnaireQuickSearchEngineTest
     public void setupRepo() throws RepositoryException
     {
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .commit();
         this.context.load().json("/MatrixQuestionnaires.json", TEST_MATRIX_QUESTIONNAIRE_PATH);
         this.context.load().json("/ComputedQuestionnairesPlain.json", TEST_COMPUTED_QUESTIONNAIRE_PATH);
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/ReferenceQuestionnaires.json", TEST_REFERENCE_QUESTIONNAIRE_PATH);
         this.context.load()
-                .json("/reference/ReferenceCalendarQuestionnaires.json", TEST_REFERENCE_CALENDAR_QUESTIONNAIRE_PATH);
+            .json("/reference/ReferenceCalendarQuestionnaires.json", TEST_REFERENCE_CALENDAR_QUESTIONNAIRE_PATH);
         this.context.registerService(AdapterFactory.class, new ResourceToJsonAdapterFactory());
         this.context.registerAdapter(Resource.class, JsonObject.class, Json.createObjectBuilder().build());
     }
-
 }

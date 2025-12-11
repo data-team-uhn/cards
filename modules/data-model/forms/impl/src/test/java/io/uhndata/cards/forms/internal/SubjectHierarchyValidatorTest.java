@@ -55,11 +55,17 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
 public class SubjectHierarchyValidatorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String TEST_ROOT_SUBJECT_TYPE_PATH = "/SubjectTypes/Root";
+
     private static final String TEST_BRANCH_SUBJECT_TYPE_PATH = "/SubjectTypes/Root/Branch";
+
     private static final String TEST_LEAF_SUBJECT_TYPE_PATH = "/SubjectTypes/Root/Branch/Leaf";
+
     private static final String TYPE_PROPERTY = "type";
+
     private static final String PARENTS_PROPERTY = "parents";
 
     @Rule
@@ -103,7 +109,7 @@ public class SubjectHierarchyValidatorTest
     public void childNodeChangedReturnsThisValidator() throws CommitFailedException
     {
         Validator validator = this.subjectHierarchyValidator.childNodeChanged(UUID.randomUUID().toString(),
-                Mockito.mock(NodeState.class), Mockito.mock(NodeState.class));
+            Mockito.mock(NodeState.class), Mockito.mock(NodeState.class));
         Assert.assertNotNull(validator);
         Assert.assertTrue(validator instanceof SubjectHierarchyValidator);
         Assert.assertEquals(this.subjectHierarchyValidator, validator);
@@ -116,7 +122,7 @@ public class SubjectHierarchyValidatorTest
         NodeState subject = createSubjectNodeState(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH).getIdentifier());
         Mockito.when(this.subjectUtils.isSubject(Mockito.any(NodeState.class))).thenReturn(true);
         Mockito.when(this.subjectTypeUtils.getSubjectType(subject.getProperty(TYPE_PROPERTY).getValue(Type.REFERENCE)))
-                .thenReturn(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH));
+            .thenReturn(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH));
         Mockito.when(this.subjectTypeUtils.isSubjectType(Mockito.any(Node.class))).thenReturn(true);
 
         Validator validator = this.subjectHierarchyValidator.childNodeAdded(UUID.randomUUID().toString(), subject);
@@ -131,7 +137,7 @@ public class SubjectHierarchyValidatorTest
         Mockito.when(this.subjectUtils.isSubject(Mockito.any(NodeState.class))).thenReturn(false);
 
         Validator validator = this.subjectHierarchyValidator.childNodeAdded(UUID.randomUUID().toString(),
-                Mockito.mock(NodeState.class));
+            Mockito.mock(NodeState.class));
         Assert.assertNotNull(validator);
         Assert.assertTrue(validator instanceof SubjectHierarchyValidator);
         Assert.assertEquals(this.subjectHierarchyValidator, validator);
@@ -144,7 +150,7 @@ public class SubjectHierarchyValidatorTest
         NodeState subject = createSubjectNodeState(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH).getIdentifier());
         Mockito.when(this.subjectUtils.isSubject(Mockito.any(NodeState.class))).thenReturn(true);
         Mockito.when(this.subjectTypeUtils.getSubjectType(subject.getProperty(TYPE_PROPERTY).getValue(Type.REFERENCE)))
-                .thenReturn(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH));
+            .thenReturn(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH));
         Mockito.when(this.subjectTypeUtils.isSubjectType(Mockito.any(Node.class))).thenReturn(true);
 
         this.parentNodes.removeLast();
@@ -159,9 +165,9 @@ public class SubjectHierarchyValidatorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         this.context.build()
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .commit();
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .commit();
         this.context.load().json("/SubjectTypes.json", TEST_ROOT_SUBJECT_TYPE_PATH);
 
         Node root = session.getNode(TEST_ROOT_SUBJECT_TYPE_PATH);

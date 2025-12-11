@@ -47,6 +47,7 @@ import io.uhndata.cards.serialize.CSVString;
 public class QuestionnaireCSVServletTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
     @Rule
@@ -67,7 +68,7 @@ public class QuestionnaireCSVServletTest
         Assert.assertTrue(response.containsHeader("Content-disposition"));
         String header = response.getHeader("Content-disposition");
         Assert.assertTrue(header
-                .startsWith("attachment; filename=TestQuestionnaire_"));
+            .startsWith("attachment; filename=TestQuestionnaire_"));
         Assert.assertTrue(header.endsWith(".csv"));
     }
 
@@ -75,10 +76,9 @@ public class QuestionnaireCSVServletTest
     public void setupRepo() throws RepositoryException
     {
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
         this.context.registerAdapter(Resource.class, CSVString.class, Mockito.mock(CSVString.class));
     }
-
 }

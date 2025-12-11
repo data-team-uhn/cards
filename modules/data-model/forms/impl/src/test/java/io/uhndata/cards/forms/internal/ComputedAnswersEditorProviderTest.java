@@ -52,7 +52,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ComputedAnswersEditorProviderTest
 {
-
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
@@ -81,8 +80,8 @@ public class ComputedAnswersEditorProviderTest
 
         when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
         Editor editor = this.computedAnswersEditorProvider.getRootEditor(Mockito.mock(NodeState.class),
-                Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
-                        session.getUserID()));
+            Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
+                session.getUserID()));
         Assert.assertNotNull(editor);
         Assert.assertTrue(editor instanceof ComputedAnswersEditor);
     }
@@ -93,9 +92,8 @@ public class ComputedAnswersEditorProviderTest
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         Editor editor = this.computedAnswersEditorProvider.getRootEditor(Mockito.mock(NodeState.class),
-                Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
-                        session.getUserID()));
+            Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
+                session.getUserID()));
         Assert.assertNull(editor);
     }
-
 }

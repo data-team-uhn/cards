@@ -58,21 +58,34 @@ import static org.mockito.Mockito.when;
 public class MaxFormsOfTypePerSubjectValidatorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String NODE_IDENTIFIER = "jcr:uuid";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
+
     private static final String TEST_COMPUTED_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+
     private static final String TEST_LONG_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+
     private static final String TEST_SECTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String SUBJECT_PROPERTY = "subject";
 
     @Rule
@@ -104,7 +117,7 @@ public class MaxFormsOfTypePerSubjectValidatorTest
 
     @Test
     public void childNodeAddedForFormNodePassesValidation() throws CommitFailedException, LoginException,
-            RepositoryException
+        RepositoryException
     {
         ResourceResolver resourceResolver = this.context.resourceResolver();
         Session session = resourceResolver.adaptTo(Session.class);
@@ -116,16 +129,16 @@ public class MaxFormsOfTypePerSubjectValidatorTest
 
         ResourceResolver serviceResolver = Mockito.mock(ResourceResolver.class);
         String getQuestionnaireQuery = "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='"
-                + questionnaire.getIdentifier() + "'";
+            + questionnaire.getIdentifier() + "'";
         when(this.rrf.getServiceResourceResolver(Mockito.anyMap())).thenReturn(serviceResolver);
         when(serviceResolver.findResources(Mockito.eq(getQuestionnaireQuery), Mockito.anyString()))
-                .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
+            .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
 
         String getFormsQuery = "SELECT f.* FROM [cards:Form] AS f WHERE f.'subject'='" + subject.getIdentifier() + "'"
-                + " AND f.'questionnaire'='" + questionnaire.getIdentifier() + "' OPTION (index tag property)";
+            + " AND f.'questionnaire'='" + questionnaire.getIdentifier() + "' OPTION (index tag property)";
         when(serviceResolver.findResources(
-                Mockito.eq(getFormsQuery),
-                Mockito.anyString())).thenReturn(resourceResolver.findResources(getFormsQuery, "JCR-SQL2"));
+            Mockito.eq(getFormsQuery),
+            Mockito.anyString())).thenReturn(resourceResolver.findResources(getFormsQuery, "JCR-SQL2"));
 
         Validator validator = this.maxFormsOfTypePerSubjectValidator.childNodeAdded(name, this.form);
         Assert.assertNotNull(validator);
@@ -134,7 +147,7 @@ public class MaxFormsOfTypePerSubjectValidatorTest
 
     @Test
     public void childNodeAddedTestForFormNodeWithNotExistingQuestionnaireReturnsThisValidator()
-            throws CommitFailedException, LoginException, RepositoryException
+        throws CommitFailedException, LoginException, RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node questionnaire = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH);
@@ -144,10 +157,10 @@ public class MaxFormsOfTypePerSubjectValidatorTest
 
         ResourceResolver serviceResolver = Mockito.mock(ResourceResolver.class);
         String getQuestionnaireQuery = "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='"
-                + questionnaire.getIdentifier() + "'";
+            + questionnaire.getIdentifier() + "'";
         when(this.rrf.getServiceResourceResolver(Mockito.anyMap())).thenReturn(serviceResolver);
         when(serviceResolver.findResources(Mockito.eq(getQuestionnaireQuery), Mockito.anyString()))
-                .thenReturn(Collections.emptyIterator());
+            .thenReturn(Collections.emptyIterator());
 
         Validator validator = this.maxFormsOfTypePerSubjectValidator.childNodeAdded(name, this.form);
         Assert.assertNotNull(validator);
@@ -166,26 +179,26 @@ public class MaxFormsOfTypePerSubjectValidatorTest
         String name = uuidProperty.getValue(Type.STRING);
 
         this.context.build()
-                .resource("/Forms/f1",
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, subject)
-                .commit();
+            .resource("/Forms/f1",
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, subject)
+            .commit();
 
         ResourceResolver serviceResolver = Mockito.mock(ResourceResolver.class);
         String getQuestionnaireQuery = "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='"
-                + questionnaire.getIdentifier() + "'";
+            + questionnaire.getIdentifier() + "'";
         when(this.rrf.getServiceResourceResolver(Mockito.anyMap())).thenReturn(serviceResolver);
         when(serviceResolver.findResources(Mockito.eq(getQuestionnaireQuery), Mockito.anyString()))
-                .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
+            .thenReturn(resourceResolver.findResources(getQuestionnaireQuery, "JCR-SQL2"));
 
         String getFormsQuery = "SELECT f.* FROM [cards:Form] AS f WHERE f.'subject'='" + subject.getIdentifier() + "'"
-                + " AND f.'questionnaire'='" + questionnaire.getIdentifier() + "' OPTION (index tag property)";
+            + " AND f.'questionnaire'='" + questionnaire.getIdentifier() + "' OPTION (index tag property)";
         when(serviceResolver.findResources(Mockito.eq(getFormsQuery), Mockito.anyString()))
-                .thenReturn(resourceResolver.findResources(getFormsQuery, "JCR-SQL2"));
+            .thenReturn(resourceResolver.findResources(getFormsQuery, "JCR-SQL2"));
 
-        Assert.assertThrows(CommitFailedException.class, () ->
-            this.maxFormsOfTypePerSubjectValidator.childNodeAdded(name, this.form));
+        Assert.assertThrows(CommitFailedException.class,
+            () -> this.maxFormsOfTypePerSubjectValidator.childNodeAdded(name, this.form));
     }
 
     @Test
@@ -195,7 +208,7 @@ public class MaxFormsOfTypePerSubjectValidatorTest
         Assert.assertNotNull("Form should have UUID property", uuidProperty);
         String name = uuidProperty.getValue(Type.STRING);
         Validator validator = this.maxFormsOfTypePerSubjectValidator.childNodeChanged(name,
-                Mockito.mock(NodeState.class), Mockito.mock(NodeState.class));
+            Mockito.mock(NodeState.class), Mockito.mock(NodeState.class));
         Assert.assertNotNull(validator);
         Assert.assertEquals(this.maxFormsOfTypePerSubjectValidator, validator);
     }
@@ -207,17 +220,17 @@ public class MaxFormsOfTypePerSubjectValidatorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/ComputedQuestionnairesPlain.json", TEST_COMPUTED_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
 
         String subjectUuid = session.getNode(TEST_SUBJECT_PATH).getIdentifier();
         String questionnaireUuid = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH).getIdentifier();
@@ -238,17 +251,16 @@ public class MaxFormsOfTypePerSubjectValidatorTest
 
         String answerSectionUuid = UUID.randomUUID().toString();
         NodeBuilder answerSectionBuilder =
-                createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
-                        computedQuestionUuid, computedAnswerBuilder.getNodeState());
+            createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
+                computedQuestionUuid, computedAnswerBuilder.getNodeState());
 
         String formUuid = UUID.randomUUID().toString();
         this.form = createTestForm(formUuid, questionnaireUuid, subjectUuid, answerSectionUuid,
-                answerSectionBuilder.getNodeState()).getNodeState();
+            answerSectionBuilder.getNodeState()).getNodeState();
     }
 
-
     private NodeBuilder createTestForm(String uuid, String questionnaireUuid, String subjectUuid,
-                                       String answerSectionUuid, NodeState answerSection)
+        String answerSectionUuid, NodeState answerSection)
     {
         NodeBuilder formBuilder = EmptyNodeState.EMPTY_NODE.builder();
         formBuilder.setProperty(NODE_TYPE, FORM_TYPE, Type.NAME);
@@ -279,7 +291,7 @@ public class MaxFormsOfTypePerSubjectValidatorTest
     }
 
     private NodeBuilder createTestAnswerSection(String uuid, String sectionUuid, String answerUuid, NodeState answer,
-                                                String computedAnswerUuid, NodeState computedAnswer)
+        String computedAnswerUuid, NodeState computedAnswer)
     {
         NodeBuilder answerSectionBuilder = EmptyNodeState.EMPTY_NODE.builder();
         answerSectionBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
@@ -295,7 +307,7 @@ public class MaxFormsOfTypePerSubjectValidatorTest
         for (String name : this.form.getChildNodeNames()) {
             NodeState child = this.form.getChildNode(name);
             if (child.hasProperty(NODE_TYPE)
-                    && ANSWER_SECTION_TYPE.equals(child.getProperty(NODE_TYPE).getValue(Type.STRING))) {
+                && ANSWER_SECTION_TYPE.equals(child.getProperty(NODE_TYPE).getValue(Type.STRING))) {
                 return child;
             }
         }

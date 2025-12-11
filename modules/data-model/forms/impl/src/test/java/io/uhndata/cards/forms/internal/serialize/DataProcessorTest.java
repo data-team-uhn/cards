@@ -58,32 +58,53 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
+@SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
 public class DataProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
+
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_1";
+
     private static final String TEST_QUESTION_2_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_2";
+
     private static final String TEST_SECTION_PATH = "/Questionnaires/TestQuestionnaire/section_1";
+
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
+
     private static final String TEST_COMPUTED_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+
     private static final String TEST_LONG_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
+
     private static final String TEST_COMPUTED_SECTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String TEST_FORM_PATH = "/Forms/f1";
+
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String SECTION_PROPERTY = "section";
+
     private static final String SUBJECT_PROPERTY = "subject";
+
     private static final String NAME = "data";
+
     private static final int PRIORITY = 90;
 
     @Rule
@@ -163,13 +184,13 @@ public class DataProcessorTest
         Assert.assertEquals("true", optionsActual.get().get("descendantData"));
 
         ThreadLocal<Object> displayLevelActual =
-                (ThreadLocal<Object>) getAccessedField("displayLevel");
+            (ThreadLocal<Object>) getAccessedField("displayLevel");
         Assert.assertEquals("true", displayLevelActual.get().toString());
     }
 
     @Test
     public void startForSubjectResourceWithNumericDescendantDataOptions() throws RepositoryException,
-            NoSuchFieldException, IllegalAccessException
+        NoSuchFieldException, IllegalAccessException
     {
         ResourceResolver resourceResolver = this.context.resourceResolver();
         Session session = resourceResolver.adaptTo(Session.class);
@@ -191,7 +212,7 @@ public class DataProcessorTest
         Assert.assertEquals("2", optionsActual.get().get("descendantData"));
 
         ThreadLocal<Object> displayLevelActual =
-                (ThreadLocal<Object>) getAccessedField("displayLevel");
+            (ThreadLocal<Object>) getAccessedField("displayLevel");
         Assert.assertEquals("2", displayLevelActual.get().toString());
     }
 
@@ -211,6 +232,7 @@ public class DataProcessorTest
         Assert.assertTrue(json.build().isEmpty());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void leaveForBranchSubjectNode() throws RepositoryException, NoSuchFieldException, IllegalAccessException
     {
@@ -225,7 +247,7 @@ public class DataProcessorTest
         displayLevelActual.set(true);
 
         ThreadLocal<Map<String, String>> uuidsWithEntityFilterActual =
-                (ThreadLocal<Map<String, String>>) getAccessedField("uuidsWithEntityFilter");
+            (ThreadLocal<Map<String, String>>) getAccessedField("uuidsWithEntityFilter");
 
         Node currentNode = session.getNode("/Subjects/Test/TestTumor");
         JsonObjectBuilder json = Json.createObjectBuilder();
@@ -235,6 +257,7 @@ public class DataProcessorTest
         Assert.assertTrue(json.build().isEmpty());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void leaveForRootSubjectNode() throws RepositoryException, NoSuchFieldException, IllegalAccessException
     {
@@ -252,7 +275,7 @@ public class DataProcessorTest
         displayLevelActual.set(0);
 
         ThreadLocal<Map<String, String>> uuidsWithEntityFilterActual =
-                (ThreadLocal<Map<String, String>>) getAccessedField("uuidsWithEntityFilter");
+            (ThreadLocal<Map<String, String>>) getAccessedField("uuidsWithEntityFilter");
 
         ThreadLocal<String> selectorsActual = (ThreadLocal<String>) getAccessedField("selectors");
         selectorsActual.set(generateResolutionPathInfo());
@@ -295,9 +318,10 @@ public class DataProcessorTest
         Assert.assertEquals(1, jsonObject.getJsonObject("dataOptions").size());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void leaveForRootSubjectNodeWithFormSelectorsOption() throws RepositoryException, NoSuchFieldException,
-            IllegalAccessException
+        IllegalAccessException
     {
         ResourceResolver resourceResolver = this.context.resourceResolver();
         Session session = resourceResolver.adaptTo(Session.class);
@@ -313,7 +337,7 @@ public class DataProcessorTest
         displayLevelActual.set(0);
 
         ThreadLocal<Map<String, String>> uuidsWithEntityFilterActual =
-                (ThreadLocal<Map<String, String>>) getAccessedField("uuidsWithEntityFilter");
+            (ThreadLocal<Map<String, String>>) getAccessedField("uuidsWithEntityFilter");
 
         ThreadLocal<String> selectorsActual = (ThreadLocal<String>) getAccessedField("selectors");
         selectorsActual.set(generateResolutionPathInfo());
@@ -331,7 +355,7 @@ public class DataProcessorTest
         Node currentNode = session.getNode(TEST_SUBJECT_PATH);
         JsonObjectBuilder json = Json.createObjectBuilder();
 
-        this.dataProcessor.leave(currentNode, json, mock(Function.class));
+        this.dataProcessor.leave(currentNode, json, n -> null);
         JsonObject jsonObject = json.build();
         Assert.assertFalse(uuidsWithEntityFilterActual.get().containsKey(currentNode.getIdentifier()));
         Assert.assertEquals(4, jsonObject.size());
@@ -345,7 +369,7 @@ public class DataProcessorTest
         displayLevelActual.set(true);
 
         ThreadLocal<Map<String, String>> uuidsWithEntityFilterActual =
-                (ThreadLocal<Map<String, String>>) getAccessedField("uuidsWithEntityFilter");
+            (ThreadLocal<Map<String, String>>) getAccessedField("uuidsWithEntityFilter");
         uuidsWithEntityFilterActual.set(Map.of("uuid", "subject"));
 
         this.dataProcessor.end(mock(Resource.class));
@@ -357,18 +381,18 @@ public class DataProcessorTest
     public void setupRepo() throws RepositoryException
     {
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/ComputedQuestionnairesPlain.json", TEST_COMPUTED_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
         this.context.registerAdapter(Resource.class, JsonObject.class, Json.createObjectBuilder().build());
 
         // Mock filtersParser to return a mock DataFilters object
@@ -389,47 +413,47 @@ public class DataProcessorTest
         Node computedQuestion = session.getNode(TEST_COMPUTED_QUESTION_PATH);
 
         this.context.build()
-                .resource("/Subjects/Test/TestTumor", NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root/Branch").adaptTo(Node.class))
-                .resource("/Subjects/Test/TestTumor/TestTumorRegion", NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root/Branch/Leaf")
-                                .adaptTo(Node.class))
-                .resource("/Subjects/Test_2", NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                // form1 for Subject
-                .resource(TEST_FORM_PATH,
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource("/Forms/f1/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, section)
-                .resource("/Forms/f1/s1/a1", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, question)
-                // form for subject 2
-                .resource("/Forms/f2",
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, session.getNode("/Subjects/Test_2"))
-                .resource("/Forms/f2/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, section)
-                .resource("/Forms/f2/a1", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, question)
-                .resource("/Forms/f2/a2", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, question2)
-                // form for subject/branch
-                .resource("/Forms/f3",
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, computedQuestionnaire,
-                        SUBJECT_PROPERTY, session.getNode("/Subjects/Test/TestTumor"))
-                .resource("/Forms/f3/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, computedSection)
-                .resource("/Forms/f3/s1/a1", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, longQuestion)
-                .resource("/Forms/f3/s1/a2", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, computedQuestion)
-                .resource("/Forms/f3/s1/a3", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, computedQuestion)
-                // form for subject/branch/leaf and computedQuestionnaire
-                .resource("/Forms/f4",
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, computedQuestionnaire,
-                        SUBJECT_PROPERTY, session.getNode("/Subjects/Test/TestTumor/TestTumorRegion"))
-                .resource("/Forms/f4/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, computedSection)
-                .resource("/Forms/f4/s1/a1", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, longQuestion)
-                .resource("/Forms/f4/s1/a2", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, computedQuestion)
-                .commit();
+            .resource("/Subjects/Test/TestTumor", NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root/Branch").adaptTo(Node.class))
+            .resource("/Subjects/Test/TestTumor/TestTumorRegion", NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root/Branch/Leaf")
+                    .adaptTo(Node.class))
+            .resource("/Subjects/Test_2", NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            // form1 for Subject
+            .resource(TEST_FORM_PATH,
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, subject,
+                "relatedSubjects", List.of(subject).toArray())
+            .resource("/Forms/f1/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, section)
+            .resource("/Forms/f1/s1/a1", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, question)
+            // form for subject 2
+            .resource("/Forms/f2",
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, session.getNode("/Subjects/Test_2"))
+            .resource("/Forms/f2/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, section)
+            .resource("/Forms/f2/a1", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, question)
+            .resource("/Forms/f2/a2", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, question2)
+            // form for subject/branch
+            .resource("/Forms/f3",
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, computedQuestionnaire,
+                SUBJECT_PROPERTY, session.getNode("/Subjects/Test/TestTumor"))
+            .resource("/Forms/f3/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, computedSection)
+            .resource("/Forms/f3/s1/a1", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, longQuestion)
+            .resource("/Forms/f3/s1/a2", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, computedQuestion)
+            .resource("/Forms/f3/s1/a3", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, computedQuestion)
+            // form for subject/branch/leaf and computedQuestionnaire
+            .resource("/Forms/f4",
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, computedQuestionnaire,
+                SUBJECT_PROPERTY, session.getNode("/Subjects/Test/TestTumor/TestTumorRegion"))
+            .resource("/Forms/f4/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, computedSection)
+            .resource("/Forms/f4/s1/a1", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, longQuestion)
+            .resource("/Forms/f4/s1/a2", NODE_TYPE, ANSWER_TYPE, QUESTION_PROPERTY, computedQuestion)
+            .commit();
     }
 
     private Object getAccessedField(String fieldName) throws NoSuchFieldException, IllegalAccessException
@@ -442,12 +466,12 @@ public class DataProcessorTest
     private String generateResolutionPathInfo()
     {
         return String.format(".data.dataFilter:createdAfter=%s.dataFilter:createdBefore=%s.dataFilter:createdBy=%s"
-                        + ".dataFilter:status=%s.dataFilter:statusNot=%s.dataFilter:modifiedAfter=%s"
-                        + ".dataFilter:modifiedBefore=%s.dataFilter:nonExistingFilter=%s.dataOption:descendantData=%s"
-                        + ".deep.json",
-                java.time.LocalDate.now().minusDays(1), java.time.LocalDate.now().plusDays(1),
-                "admin", "INCOMPLETE", "COMPLETE", java.time.LocalDate.now().minusDays(1),
-                java.time.LocalDate.now().plusDays(1), "nonExistingFilter", 0);
+            + ".dataFilter:status=%s.dataFilter:statusNot=%s.dataFilter:modifiedAfter=%s"
+            + ".dataFilter:modifiedBefore=%s.dataFilter:nonExistingFilter=%s.dataOption:descendantData=%s"
+            + ".deep.json",
+            java.time.LocalDate.now().minusDays(1), java.time.LocalDate.now().plusDays(1),
+            "admin", "INCOMPLETE", "COMPLETE", java.time.LocalDate.now().minusDays(1),
+            java.time.LocalDate.now().plusDays(1), "nonExistingFilter", 0);
     }
 
     private Map<String, String> generateFilters()
@@ -463,5 +487,4 @@ public class DataProcessorTest
         filters.put("nonExistingFilter", "nonExistingFilter");
         return filters;
     }
-
 }

@@ -49,8 +49,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.forms.api.FormUtils;
 
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link FormAnswerCopyProcessor}.
@@ -61,20 +61,35 @@ import static org.mockito.Mockito.mock;
 public class FormAnswerCopyProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String FORM_TYPE = "cards:Form";
+
     private static final String SUBJECT_TYPE = "cards:Subject";
+
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
+
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_1";
+
     private static final String TEST_SECTION_PATH = "/Questionnaires/TestQuestionnaire/section_1";
+
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+
     private static final String TEST_FORM_PATH = "/Forms/f1";
+
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String SECTION_PROPERTY = "section";
+
     private static final String SUBJECT_PROPERTY = "subject";
+
     private static final String NAME = "answerCopy";
+
     private static final int PRIORITY = 95;
 
     @Rule
@@ -164,7 +179,7 @@ public class FormAnswerCopyProcessorTest
         when(questionProperty.getName()).thenReturn("question_1");
         when(questionProperty.getNode()).thenReturn(session.getNode(TEST_QUESTION_PATH));
         when(this.formUtils.findAllFormRelatedAnswers(Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(List.of(session.getNode("/Forms/f1/s1/a1")));
+            .thenReturn(List.of(session.getNode("/Forms/f1/s1/a1")));
         when(this.formUtils.serializeProperty(Mockito.any())).thenReturn(Json.createValue("2023-01-01"));
         answersToCopy.set(answersToCopyNode);
 
@@ -220,7 +235,7 @@ public class FormAnswerCopyProcessorTest
         Node source = session.getNode(TEST_FORM_PATH);
         Node question = session.getNode(TEST_QUESTION_PATH);
         when(this.formUtils.findAllFormRelatedAnswers(Mockito.eq(source), Mockito.eq(question), Mockito.any()))
-                .thenReturn(List.of(expectedAnswer));
+            .thenReturn(List.of(expectedAnswer));
         Node actualAnswer = this.formAnswerCopyProcessor.getAnswer(source, question);
         Assert.assertEquals(expectedAnswer, actualAnswer);
     }
@@ -238,17 +253,17 @@ public class FormAnswerCopyProcessorTest
     public void setupRepo() throws RepositoryException
     {
         this.context.build()
-                .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
-                .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
-                .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
-                .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-                .commit();
+            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
+            .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
+            .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
+            .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
+            .commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-                .commit();
+            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .commit();
 
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
@@ -258,17 +273,17 @@ public class FormAnswerCopyProcessorTest
         Node question = session.getNode(TEST_QUESTION_PATH);
 
         this.context.build()
-                .resource(TEST_FORM_PATH,
-                        NODE_TYPE, FORM_TYPE,
-                        QUESTIONNAIRE_PROPERTY, questionnaire,
-                        SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource("/Forms/f1/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, section)
-                .resource("/Forms/f1/s1/a1",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, question,
-                        "value", "2023-01-01")
-                .commit();
+            .resource(TEST_FORM_PATH,
+                NODE_TYPE, FORM_TYPE,
+                QUESTIONNAIRE_PROPERTY, questionnaire,
+                SUBJECT_PROPERTY, subject,
+                "relatedSubjects", List.of(subject).toArray())
+            .resource("/Forms/f1/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, section)
+            .resource("/Forms/f1/s1/a1",
+                NODE_TYPE, ANSWER_TYPE,
+                QUESTION_PROPERTY, question,
+                "value", "2023-01-01")
+            .commit();
     }
 
     private Object getAccessedSuperclassField(String fieldName) throws NoSuchFieldException, IllegalAccessException
@@ -277,5 +292,4 @@ public class FormAnswerCopyProcessorTest
         field.setAccessible(true);
         return field.get(this.formAnswerCopyProcessor);
     }
-
 }

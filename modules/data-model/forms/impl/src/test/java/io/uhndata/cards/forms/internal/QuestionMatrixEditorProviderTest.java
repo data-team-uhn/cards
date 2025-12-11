@@ -43,7 +43,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class QuestionMatrixEditorProviderTest
 {
-
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
@@ -56,8 +55,8 @@ public class QuestionMatrixEditorProviderTest
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         Editor editor = this.questionMatrixEditorProvider.getRootEditor(Mockito.mock(NodeState.class),
-                Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
-                        session.getUserID()));
+            Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
+                session.getUserID()));
         Assert.assertNotNull(editor);
         Assert.assertTrue(editor instanceof QuestionMatrixEditor);
     }
