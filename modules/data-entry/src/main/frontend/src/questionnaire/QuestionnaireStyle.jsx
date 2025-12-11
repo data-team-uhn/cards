@@ -496,16 +496,6 @@ const questionnaireStyle = theme => ({
     margin: theme.spacing(1),
     minWidth: "fit-content",
   },
-  formStepperBufferBar: {
-    backgroundColor: theme.palette.primary.main,
-    opacity: "0.3",
-  },
-  formStepperBackgroundBar: {
-    backgroundColor: theme.palette.primary.light,
-    opacity: "0.2",
-    animation: "none",
-    backgroundImage: "none",
-  },
   actionsMenu: {
     border: "1px solid " + theme.palette.divider,
     borderRadius: theme.spacing(3),
