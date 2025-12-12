@@ -209,7 +209,8 @@ export default class DateTimeUtilities {
 
   static formatHasTime(dateFormat) {
     return typeof(dateFormat) === "string" &&
-      (dateFormat.toLowerCase().includes(this.hourMeridiemTag) || dateFormat.includes(this.minuteTag) || dateFormat.includes(this.secondTag));
+      (dateFormat.toLowerCase().includes(this.hourMeridiemTag) || dateFormat.includes(this.minuteTag)
+      || dateFormat.includes(this.secondTag));
   }
 
   static processRelativeDate(dateString, endOfDay = false, toFormat) {

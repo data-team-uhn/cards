@@ -214,7 +214,9 @@ function SubjectTypeDialog(props) {
               <Grid size={8}>
                 <Select
                   variant="standard"
-                  disabled={isEdit && currentSubjectType.instanceCount != undefined && currentSubjectType.instanceCount > 0}
+                  disabled={
+                    isEdit && currentSubjectType.instanceCount != undefined && currentSubjectType.instanceCount > 0
+                  }
                   labelId="parent"
                   label="optional"
                   value={parent}
@@ -231,7 +233,10 @@ function SubjectTypeDialog(props) {
                   )
                   }
                 </Select>
-                <FormHelperText>{isEdit && currentSubjectType.instanceCount > 0 && "There are already subjects of this type. The parent can no longer be changed"}</FormHelperText>
+                <FormHelperText>
+                  {isEdit && currentSubjectType.instanceCount > 0
+                    && "There are already subjects of this type. The parent can no longer be changed"}
+                </FormHelperText>
               </Grid>
             </>
           }
@@ -278,7 +283,8 @@ function SubjectTypeDialog(props) {
               onChange={(event) => { setIdPattern(event.target.value); validateRegexp(event.target.value); }}
             />
             <FormHelperText>
-              {isEdit && currentSubjectType.instanceCount > 0 && "There are already subjects of this type. Changing the pattern may cause inconsistencies with the existing subject identifiers."}
+              {isEdit && currentSubjectType.instanceCount > 0
+                && "There are already subjects of this type. Changing the pattern may cause inconsistencies with the existing subject identifiers."}
             </FormHelperText>
           </Grid>
           <Grid size={4}>

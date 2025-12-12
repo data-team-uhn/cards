@@ -91,7 +91,9 @@ function ExtensionPoint(props) {
       if (callback !== undefined) {
         response.json().then( (json) => callback(json));
       } else {
-        return(Promise.reject(`Fetching ExtensionPoint ${path} returned json data, but no callback was provided to its ExtensionPoint`));
+        return(Promise.reject(
+          `Fetching ExtensionPoint ${path} returned json data, but no callback was provided to its ExtensionPoint`
+        ));
       }
     } else if (contentType === 'text/html') {
       // html -- include it inline

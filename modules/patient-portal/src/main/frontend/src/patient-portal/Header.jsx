@@ -134,12 +134,29 @@ function Header (props) {
         <Collapse in={!subtitle || !(scrollTrigger)}>
           <Toolbar variant="dense" className={toolbarClassNames.join(' ')}>
             <Logo className={classes.logo} maxWidth="160px" />
-            { title && <Typography variant="overline" color="textPrimary" component="div" className="cards-patientPortal-surveyTitle">{ title }</Typography>}
+            { title &&
+              <Typography
+                variant="overline"
+                color="textPrimary"
+                component="div"
+                className="cards-patientPortal-surveyTitle"
+              >
+                { title }
+              </Typography>}
             { (greeting || withSignout) &&
             <Breadcrumbs separator="·" className={!withAffiliation ? classes.sideMenu : undefined}>
               { greeting && <span className={classes.greeting}>{ greeting }</span>}
               { withSignout &&
-              <Link href="/system/sling/logout" underline="hover" onClick={(event) => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
+                <Link
+                  href="/system/sling/logout"
+                  underline="hover"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);
+                  }}
+                >
+                  Sign out
+                </Link>
               }
             </Breadcrumbs>
             }
@@ -147,7 +164,14 @@ function Header (props) {
         </Collapse>
         { subtitle && <Collapse in={scrollTrigger}>{subtitleBar}</Collapse> }
         <LinearProgress variant="determinate" value={progress} />
-        { subtitle && <Fade in={!scrollTrigger} className={(scrollTrigger ? classes.collapsed : '') + ' ' + classes.fullSize + ' ' + classes.toolbar}>{subtitleBar}</Fade> }
+        { subtitle &&
+          <Fade
+            in={!scrollTrigger}
+            className={(scrollTrigger ? classes.collapsed : '') + ' ' + classes.fullSize + ' ' + classes.toolbar}
+          >
+            {subtitleBar}
+          </Fade>
+        }
       </AppBar>
       {/* We render another copy of the full size subtitle to maintain the same content height when the first one
         disappears and thus prevent the subtitle from "jumping" between full size and compact when scrollTrigger

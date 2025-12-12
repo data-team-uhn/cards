@@ -69,7 +69,21 @@ let createQueryURL = (query, type, order) => {
  * @param {string} subjectType The current type of the subject
  */
 function UnstyledNewSubjectDialog (props) {
-  const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, value, subjectType } = props;
+  const {
+    allowedTypes,
+    classes,
+    continueDisabled,
+    disabled,
+    error,
+    open,
+    onClose,
+    onChangeSubject,
+    onChangeType,
+    onSubmit,
+    requiresParents,
+    value,
+    subjectType
+  } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
 
   const [ isValid, setIsValid ] = useState(true);
@@ -252,7 +266,24 @@ const NewSubjectDialogChild = withStyles(UnstyledNewSubjectDialog, Questionnaire
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, value } = props;
+  const {
+    classes,
+    childName,
+    childType,
+    continueDisabled,
+    currentSubject,
+    disabled,
+    error,
+    isLast,
+    open,
+    onBack,
+    onChangeParent,
+    onCreateParent,
+    onClose,
+    onSubmit,
+    parentType,
+    value
+  } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -317,7 +348,12 @@ function UnstyledSelectParentDialog (props) {
   ]);
 
   return(
-    <ResponsiveDialog open={open} onClose={onClose} keepMounted title={`Select ${parentType?.['label']} for ${childType?.['label']} ${childName}`}>
+    <ResponsiveDialog
+      open={open}
+      onClose={onClose}
+      keepMounted
+      title={`Select ${parentType?.['label']} for ${childType?.['label']} ${childName}`}
+    >
       <DialogContent dividers className={classes.dialogContentWithTable}>
         { error && <Alert severity="error">{error}</Alert>}
         {
@@ -357,7 +393,8 @@ function UnstyledSelectParentDialog (props) {
                 sx: (theme) => ({
                   fontSize: '1rem',
                   // grey out subjects that already have something by this name
-                  color: (hasChildWithId(cell.row.original, childName) ? theme.palette.text.disabled : theme.palette.text.primary)
+                  color: (hasChildWithId(cell.row.original, childName) ?
+                    theme.palette.text.disabled : theme.palette.text.primary)
                 }),
               })}
             />
@@ -721,7 +758,20 @@ export function NewSubjectDialog (props) {
  * @param {string} title Title of the dialog, if any
  */
 function UnstyledSelectorDialog (props) {
-  const { allowedTypes, classes, currentSubject, disabled, open, onChange, onClose, onError, title, selectedQuestionnaire, disableRedirect, ...rest } = props;
+  const {
+    allowedTypes,
+    classes,
+    currentSubject,
+    disabled,
+    open,
+    onChange,
+    onClose,
+    onError,
+    title,
+    selectedQuestionnaire,
+    disableRedirect,
+    ...rest
+  } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
@@ -846,7 +896,15 @@ export const SelectorDialog = withStyles(UnstyledSelectorDialog, QuestionnaireSt
  * @param {func} returnCall The callback after all subjects have been created
  * @param {func} onError The callback if an error occurs during subject creation
  */
-export function createSubjects(globalLoginDisplay, newSubjects, subjectType, subjectParent, subjectToTrack, returnCall, onError) {
+export function createSubjects(
+  globalLoginDisplay,
+  newSubjects,
+  subjectType,
+  subjectParent,
+  subjectToTrack,
+  returnCall,
+  onError
+) {
   let selectedURL = subjectToTrack["@path"];
   let subjectTypeToUse = subjectType["jcr:uuid"] ? subjectType["jcr:uuid"] : subjectType;
   let lastPromise = null;
@@ -878,7 +936,9 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
       parentCheckQueryString = "ISCHILDNODE(n , '/Subjects/')";
     }
 
-    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${escapeJQL(subjectName)}' AND ${parentCheckQueryString}`, "cards:Subject");
+    let checkAlreadyExistsURL = createQueryURL(
+      ` WHERE n.'identifier'='${escapeJQL(subjectName)}' AND ${parentCheckQueryString}`, "cards:Subject"
+    );
     let newPromise = fetchWithReLogin(globalLoginDisplay, checkAlreadyExistsURL)
       .then( (response) => response.ok ? response.json() : Promise.reject(response))
       .then( (json) => {
@@ -935,8 +995,15 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
  * @param {currentSubject} object The preselected subject (e.g. on the Subject page, the subject who's page it is is the 'currentSubject')
  */
 function SubjectSelectorList(props) {
-  const { allowedTypes, onError, onSelect, selectedSubject, selectedQuestionnaire, disableProgress,
-    currentSubject } = props;
+  const {
+    allowedTypes,
+    onError,
+    onSelect,
+    selectedSubject,
+    selectedQuestionnaire,
+    disableProgress,
+    currentSubject
+  } = props;
 
   const [ relatedSubjects, setRelatedSubjects ] = useState();
   const [ data, setData ] = useState([]);
@@ -956,9 +1023,14 @@ function SubjectSelectorList(props) {
 
   // if the number of related forms of a certain questionnaire/subject is at the maxPerSubject, an error is set
   let handleSelection = (rowData) => {
-    let atMax = (relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["f.subject"] == rowData["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+    let maxPerSubject = selectedQuestionnaire?.["maxPerSubject"];
+    let atMax = (relatedSubjects?.length && selectedQuestionnaire
+      && (relatedSubjects.filter((i) => (i["f.subject"] == rowData["jcr:uuid"])).length >= (+(maxPerSubject) || undefined)));
     if (atMax) {
-      onError(`${rowData?.["type"]["@name"]} ${rowData?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
+      let title = selectedQuestionnaire?.["title"];
+      let typeName = rowData?.["type"]["@name"];
+      let identifier = rowData?.["identifier"];
+      onError(`${typeName} ${identifier} already has ${maxPerSubject} ${title} form(s) filled out.`);
       disableProgress(true);
       return false;
     }

@@ -59,7 +59,14 @@ let MarkdownText = (props) => {
   }, [props.value]);
 
   return (
-    <MDEditor className={classes.markdown} value={value} height={height} preview={preview} onChange={value => {setValue(value); onChange?.(value);}} extraCommands={cmd}/>
+    <MDEditor
+      className={classes.markdown}
+      value={value}
+      height={height}
+      preview={preview}
+      onChange={value => {setValue(value); onChange?.(value);}}
+      extraCommands={cmd}
+    />
   )
 }
 

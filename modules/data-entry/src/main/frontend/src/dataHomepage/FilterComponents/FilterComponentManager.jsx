@@ -51,6 +51,10 @@ export default class FilterComponentManager {
       .map(component => (component)(questionDefinition))
       .filter(displayer => displayer)
       .reduce(([chosenComparators, chosenDisplayer, maxPriority], [comparators, displayer, priority]) =>
-        priority > maxPriority ? [comparators, displayer, priority] : [chosenComparators, chosenDisplayer, maxPriority]).slice(0,2));
+        priority > maxPriority
+          ?
+          [comparators, displayer, priority]
+          :
+          [chosenComparators, chosenDisplayer, maxPriority]).slice(0,2));
   }
 }

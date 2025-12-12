@@ -62,8 +62,25 @@ import AnswerInstructions from "../questionnaire/AnswerInstructions.jsx";
 //
 function VocabularyTree(props) {
   checkPropTypes(VocabularyTree, props);
-  const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary,
-    browseRoots, enableSelection, initialSelection, questionDefinition, infoAboveBackground, ...rest } = props;
+  const {
+    open,
+    path,
+    onTermClick,
+    registerInfo,
+    getInfo,
+    onClose,
+    onCloseInfoBox,
+    onError,
+    browserRef,
+    classes,
+    vocabulary,
+    browseRoots,
+    enableSelection,
+    initialSelection,
+    questionDefinition,
+    infoAboveBackground,
+    ...rest
+  } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();

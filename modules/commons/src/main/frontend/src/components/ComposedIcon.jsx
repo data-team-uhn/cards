@@ -46,6 +46,14 @@ const ComposedIcon = (props) => {
     disabled,
   } = props;
 
+  const bgDefault = theme.palette.background.default;
+  const shadowOffsets = [
+    `0.75px 0px 0.5px ${bgDefault}`,
+    `0px 0.75px 0.5px ${bgDefault}`,
+    `-0.75px 0px 0.5px ${bgDefault}`,
+    `0px -0.75px 0.5px ${bgDefault}`,
+  ];
+
   return (
     <div style={{
       position: 'relative',
@@ -62,7 +70,7 @@ const ComposedIcon = (props) => {
           lineHeight: '0px',
           cursor: 'pointer',
           position: 'absolute',
-          textShadow: `0.75px 0px 0.5px ${theme.palette.background.default}, 0px 0.75px 0.5px ${theme.palette.background.default}, -0.75px 0px 0.5px ${theme.palette.background.default}, 0px -0.75px 0.5px ${theme.palette.background.default}`,
+          textShadow: shadowOffsets.join(', '),
           bottom: position.includes('bottom') ? '-4px' : null,
           top: position.includes('top') ? '-4px' : null,
           left: position.includes('start') ? '-4px' : null,

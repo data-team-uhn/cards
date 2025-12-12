@@ -198,7 +198,8 @@ function FormPagination (props) {
   }
 
   useEffect(() => {
-    if (!saveInProgress && pendingSubmission && !(disableProgress && (nextActivePage > activePage || direction === DIRECTION_NEXT))) {
+    if (!saveInProgress && pendingSubmission &&
+      !(disableProgress && (nextActivePage > activePage || direction === DIRECTION_NEXT))) {
       setPendingSubmission(false);
       if (activePage === lastValidPage() && direction === DIRECTION_NEXT) {
         setSavedLastPage(true);

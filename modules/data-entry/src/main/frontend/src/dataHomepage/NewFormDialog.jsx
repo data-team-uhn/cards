@@ -273,7 +273,8 @@ function NewFormDialog(props) {
       let url = new URL("/query", window.location.origin);
       let sql = `select * from [cards:Questionnaire] as n `;
       let conditions = [];
-      if (globalFilter ) {
+      if (globalFilter) {
+        {/* eslint-disable-next-line max-len */}
         conditions.push(`(CONTAINS(n.'title', '*${globalFilter }*') or CONTAINS(n.'description', '*${globalFilter }*'))`);
       }
       // If we're on the patient chart, only allow the current subjects whose type is:
@@ -349,7 +350,8 @@ function NewFormDialog(props) {
   let isRowDisabled = (row) => (
     relatedForms?.length
       && (selectedSubject || currentSubject)
-      && (relatedForms.filter(f => f["f.questionnaire"] == row.original["jcr:uuid"]).length >= (+(row.original?.["maxPerSubject"]) || undefined))
+      && (relatedForms.filter(f =>
+        f["f.questionnaire"] == row.original["jcr:uuid"]).length >= (+(row.original?.["maxPerSubject"]) || undefined))
   );
 
   // On click, select the questionnaire row if eligible

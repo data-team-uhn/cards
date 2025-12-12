@@ -380,7 +380,8 @@ function SelectableAreaQuestion(props) {
                   imageMap
                   :
                   <Alert severity="warning">
-                    The selectable areas cannot be displayed due to incorrect configuration: "variant" is not defined or invalid
+                    The selectable areas cannot be displayed due to incorrect configuration:
+                    "variant" is not defined or invalid
                   </Alert>
                 }
               </div>
@@ -391,7 +392,8 @@ function SelectableAreaQuestion(props) {
           : <></>
       }
       { isEdit && <Answer
-        answers={notApplicableChecked ? [[notApplicableOption.label | notApplicableOption.value, notApplicableOption.value]] : selection}
+        answers={notApplicableChecked ?
+          [[notApplicableOption.label | notApplicableOption.value, notApplicableOption.value]] : selection}
         existingAnswer={existingAnswer}
         questionName={questionName}
         questionDefinition={props.questionDefinition}

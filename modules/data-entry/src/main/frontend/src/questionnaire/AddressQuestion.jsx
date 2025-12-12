@@ -105,7 +105,10 @@ function AddressQuestion(props) {
   const countries = questionDefinition.countries?.split(/\s*,\s*/) || undefined;
   let searchPlacesAround = undefined;
   try {
-    searchPlacesAround = questionDefinition.searchPlacesAround ? JSON.parse(questionDefinition.searchPlacesAround) : undefined;
+    searchPlacesAround = questionDefinition.searchPlacesAround
+      ? JSON.parse(questionDefinition.searchPlacesAround)
+      :
+      undefined;
   } catch (e) {
     // No bounds
   }
