@@ -25,7 +25,7 @@ import { checkPropTypes } from "../propTypes";
 import { FieldsProvider } from "./FieldsContext.jsx";
 import LabeledField from "./LabeledField";
 // Unused imports required for the component manager
-/* eslint-disable unused-imports/no-unused-imports */
+/* eslint-disable unused-imports/no-unused-imports, no-unused-vars */
 import AnswerOptions from "./AnswerOptions";
 import BooleanInput from "./BooleanInput";
 import CodeInput from "./CodeInput";
@@ -36,8 +36,7 @@ import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
 import ReferenceInput from "./ReferenceInput";
 import TextInput from "./TextInput";
-/* eslint-enable unused-imports/no-unused-imports */
-/* eslint-enable import/order */
+/* eslint-enable import/order, unused-imports/no-unused-imports, no-unused-vars */
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 

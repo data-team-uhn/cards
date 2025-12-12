@@ -31,7 +31,7 @@ import FilterComponentManager from "./FilterComponents/FilterComponentManager.js
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 // We have to import each filter dependency here to load them properly into the FilterComponentManager
-/* eslint-disable unused-imports/no-unused-imports, import/order */
+/* eslint-disable unused-imports/no-unused-imports, import/order, no-unused-vars */
 import BooleanFilter from "./FilterComponents/BooleanFilter.jsx";
 import DateFilter from "./FilterComponents/DateFilter.jsx";
 import ListFilter from "./FilterComponents/ListFilter.jsx";
@@ -42,7 +42,7 @@ import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import TextFilter from "./FilterComponents/TextFilter.jsx";
 import UserFilter from "./FilterComponents/UserFilter.jsx";
 import VocabularyFilter from "./FilterComponents/VocabularyFilter.jsx";
-/* eslint-enable unused-imports/no-unused-imports, import/order */
+/* eslint-enable unused-imports/no-unused-imports, import/order, no-unused-vars */
 
 const FILTER_URL = "/Questionnaires.filters";
 
@@ -194,6 +194,7 @@ function Filters(props) {
   let handleChangeFilter = (index, path) => {
 
     // Load up the comparators for this index, if not already loaded
+    // eslint-disable-next-line no-unused-vars
     let [loadedComparators, component] = getOutputChoices(path);
 
     // Automatically add a new filter if they've edited the final filter

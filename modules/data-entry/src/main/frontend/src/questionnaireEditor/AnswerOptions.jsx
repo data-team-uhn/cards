@@ -251,7 +251,7 @@ let AnswerOptions = (props) => {
     // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
     // Issue details: https://github.com/facebook/react/issues/4210
     if (event?.relatedTarget?.type == "submit") {
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         saveButtonRef?.current?.click();
       }, 500);
     }

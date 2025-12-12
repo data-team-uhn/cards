@@ -86,7 +86,7 @@ function VocabularyBrowser(props) {
          || infoboxRef?.current?.contains(event.target)) {
       return;
     }
-
+    // eslint-disable-next-line no-unused-vars
     for (const [key, value] of Object.entries(browserOpened ? buttonRefs : infoButtonRefs)) {
       if (value.contains(event.target)) {
         return;

@@ -40,7 +40,6 @@ function Note (props) {
     pageActive,
     fullSize,
     value,
-    onAddSuggestion,
     placeholder = "Please place any additional notes here.",
     ...rest
   } = props;

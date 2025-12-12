@@ -55,11 +55,9 @@ function TimeQuestion(props) {
   checkPropTypes(TimeQuestion, props);
   let { existingAnswer, classes, pageActive, ...rest } = props;
   let {
-    text,
     lowerLimit,
     upperLimit,
     errorText,
-    minAnswers,
     dateFormat,
     saveFormat
   } = {
@@ -161,8 +159,6 @@ function TimeQuestion(props) {
 }
 
 TimeQuestion.propTypes = {
-  text: PropTypes.string,
-  minAnswers: PropTypes.number,
   lowerLimit: PropTypes.string,
   upperLimit: PropTypes.string,
   errorText: PropTypes.string,

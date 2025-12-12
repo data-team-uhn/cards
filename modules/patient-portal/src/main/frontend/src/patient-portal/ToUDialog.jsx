@@ -86,7 +86,7 @@ const TOU_ACCEPTED_VARNAME = 'tou_accepted';
 
 function ToUDialog(props) {
   checkPropTypes(ToUDialog, props);
-  const { open, actionRequired, onCleared, onDecline, onClose, ...rest } = props;
+  const { open, actionRequired, onCleared, onDecline, onClose } = props;
 
   const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);
   const [ touAcceptedVersion, setTouAcceptedVersion ] = useState();

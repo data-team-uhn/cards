@@ -53,7 +53,7 @@ import FormattedText from "../components/FormattedText.jsx";
 //    />
 function SelectableAreaQuestion(props) {
   checkPropTypes(SelectableAreaQuestion, props);
-  let { classes, errorText, existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
+  let { classes, existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
   let { variant, maxAnswers } = { ...props.questionDefinition, ...props };
 
   const [ map, setMap ] = useState(null);
