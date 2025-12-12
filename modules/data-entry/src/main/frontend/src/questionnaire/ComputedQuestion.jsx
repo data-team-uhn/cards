@@ -54,7 +54,17 @@ import { MakeRequest } from "../vocabQuery/util.jsx";
 let ComputedQuestion = (props) => {
   checkPropTypes(ComputedQuestion, props);
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest } = props;
-  const { text, expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = { ...props.questionDefinition, ...props };
+  const {
+    text,
+    expression,
+    unitOfMeasurement,
+    dataType,
+    displayMode,
+    dateFormat,
+    yesLabel,
+    noLabel,
+    unknownLabel
+  } = { ...props.questionDefinition, ...props };
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
 
@@ -105,7 +115,8 @@ let ComputedQuestion = (props) => {
           break;
       }
     } else if (dataType === "date") {
-      newDisplayedValue = DateTimeUtilities.formatDateAnswer(dateFormat, newDisplayedValue, DateTimeUtilities.slingDateFormat);
+      newDisplayedValue =
+        DateTimeUtilities.formatDateAnswer(dateFormat, newDisplayedValue, DateTimeUtilities.slingDateFormat);
     } else if (dataType === "vocabulary") {
       var url = new URL("." + newDisplayedValue + ".info.json", window.location.origin);
       let showInfo = (status, data, params) => {
@@ -262,7 +273,8 @@ let ComputedQuestion = (props) => {
 
   useEffect(() => {
     if (unitOfMeasurement) {
-      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment> }));
+      changeMuiInputProps(muiInputProps =>
+        ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment> }));
     } else {
       changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined }));
     }

@@ -127,22 +127,26 @@ let AnswerOptions = (props) => {
   let [ descriptionLabel, setDescriptionLabel ] = useState('');
   let [ isSpecialOption, setIsSpecialOption ] = useState(false);
 
-  const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
-  const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
+  const notApplicable  = Object.values(data)
+    .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
+  const noneOfTheAbove = Object.values(data)
+    .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
 
   const DEFAULT_NA_NODE_NAME = "None";
   const DEFAULT_NONEOFTHEABOVE_NODE_NAME = "NoneOfTheAbove";
 
-  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || { "value" : (value == "numberOptions" ? "-1" : "notApplicable"),
-    "label" : "None",
-    "notApplicable" : false,
-    "@name" : DEFAULT_NA_NODE_NAME,
-    "@path" : path + "/" + DEFAULT_NA_NODE_NAME });
-  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || { "value": (value == "numberOptions" ? "0" : "noneOfTheAbove"),
-    "label" : "None of the above",
-    "noneOfTheAbove" : false,
-    "@name" : DEFAULT_NONEOFTHEABOVE_NODE_NAME,
-    "@path" : path + "/" + DEFAULT_NONEOFTHEABOVE_NODE_NAME });
+  let [ notApplicableOption, setNotApplicableOption ]
+    = useState(notApplicable || { "value" : (value == "numberOptions" ? "-1" : "notApplicable"),
+      "label" : "None",
+      "notApplicable" : false,
+      "@name" : DEFAULT_NA_NODE_NAME,
+      "@path" : path + "/" + DEFAULT_NA_NODE_NAME });
+  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ]
+    = useState(noneOfTheAbove || { "value": (value == "numberOptions" ? "0" : "noneOfTheAbove"),
+      "label" : "None of the above",
+      "noneOfTheAbove" : false,
+      "@name" : DEFAULT_NONEOFTHEABOVE_NODE_NAME,
+      "@path" : path + "/" + DEFAULT_NONEOFTHEABOVE_NODE_NAME });
   // Update all options path on parent path change
   useEffect(() => {
     setNotApplicableOption({ ...notApplicableOption, "@path" : path + "/" + notApplicableOption["@name"] });
@@ -210,7 +214,8 @@ let AnswerOptions = (props) => {
       let allOptions = options.slice();
       specialOption != notApplicableOption?.notApplicable && allOptions.push(notApplicableOption);
       specialOption != noneOfTheAboveOption?.noneOfTheAbove && allOptions.push(noneOfTheAboveOption);
-      let duplicateOption = allOptions.find( option => option.value === inputs[0] || inputs[1] && (option.label === inputs[1]));
+      let duplicateOption = allOptions
+        .find( option => option.value === inputs[0] || inputs[1] && (option.label === inputs[1]));
       duplicateOption && setter(true);
       return !!duplicateOption;
     }
@@ -463,7 +468,10 @@ let AnswerOptionList = (props) => {
   let answerOptions = Object.values(data ||{}).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
     .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
   return (
-    answerOptions.map(item => <div key={item['jcr:uuid'] || item.value}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</div>)
+    answerOptions.map(item =>
+      <div key={item['jcr:uuid'] || item.value}>
+        {(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}
+      </div>)
   );
 }
 

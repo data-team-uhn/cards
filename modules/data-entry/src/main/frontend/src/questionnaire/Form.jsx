@@ -74,7 +74,19 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
  */
 function Form (props) {
   let { classes, contentOffset, extensionURL } = props;
-  let { mode, className, actionSwitches, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
+  let {
+    mode,
+    className,
+    actionSwitches,
+    disableHeader,
+    disableButton,
+    doneButtonStyle,
+    doneIcon,
+    doneLabel,
+    onDone,
+    questionnaireAddons,
+    paginationProps
+  } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
   // This holds the full form JSON, once it is received from the server

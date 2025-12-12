@@ -394,7 +394,19 @@ function SubjectHeader(props) {
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
 function SubjectMemberInternal (props) {
-  let { classes, data, id, level, maxDisplayed, onDelete, pageSize, childSubjects, fetchSubjectData, baseURL, extensionURL } = props;
+  let {
+    classes,
+    data,
+    id,
+    level,
+    maxDisplayed,
+    onDelete,
+    pageSize,
+    childSubjects,
+    fetchSubjectData,
+    baseURL,
+    extensionURL
+  } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // Whether a subject is expanded and displaying its forms

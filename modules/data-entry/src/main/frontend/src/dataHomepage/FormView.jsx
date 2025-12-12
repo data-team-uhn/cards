@@ -44,7 +44,16 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function FormView(props) {
-  const { extension, actionSwitches, questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
+  const {
+    extension,
+    actionSwitches,
+    questionnaire,
+    expanded,
+    disableHeader,
+    disableAvatar,
+    topPagination,
+    classes
+  } = props;
 
   const [ title, setTitle ] = useState(props.title);
   const [ subtitle, setSubtitle ] = useState(props.subtitle);
@@ -129,7 +138,12 @@ function FormView(props) {
         avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
         title={
           <>
-            <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
+            <Tabs
+              value={activeTab}
+              onChange={(event, value) => setActiveTab(value)}
+              indicatorColor="primary"
+              textColor="inherit"
+            >
               { tabs.map((value, index) => {
                 return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
               })}
@@ -139,7 +153,11 @@ function FormView(props) {
         action={
           !expanded && isActionEnabled("expand") &&
           <Tooltip title="Expand">
-            <Link to={baseURL + "/Forms#" + new URLSearchParams({ "forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || "" }).toString()} underline="hover">
+            <Link
+              to={baseURL + "/Forms#" + new URLSearchParams({ "forms:activeTab" : tabs?.[activeTab] || "",
+                "forms:filters" : filtersJsonString || "" }).toString()}
+              underline="hover"
+            >
               <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>

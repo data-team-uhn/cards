@@ -66,7 +66,9 @@ function ChromosomeQuestion(props) {
 
   // We override the defaults above with the questionnaire definition,
   // and then we override with explicit properties
-  const enabledChromosomes = { ...Object.entries(defaultValues).reduce((accumulator, [key, value]) => {accumulator[`enable${key}`] = value; return accumulator;}, {}), ...props.questionDefinition, ...props };
+  const enabledChromosomes = { ...Object.entries(defaultValues)
+    .reduce((accumulator, [key, value]) => {accumulator[`enable${key}`] = value; return accumulator;}, {}),
+  ...props.questionDefinition, ...props };
 
   // Whatever is left enabled, we display
   for (let chromosome of Object.keys(defaultValues)) {

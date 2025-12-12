@@ -107,7 +107,17 @@ const useStyles = makeStyles()(theme => ({
 
 function AdminConfigScreen(props) {
   checkPropTypes(AdminConfigScreen, props);
-  const { title, configPath, configTemplate, onConfigFetched, hasChanges, configError, buildConfigData, onConfigSaved, children } = props;
+  const {
+    title,
+    configPath,
+    configTemplate,
+    onConfigFetched,
+    hasChanges,
+    configError,
+    buildConfigData,
+    onConfigSaved,
+    children
+  } = props;
   const [ config, setConfig ] = useState();
   const [ configIsInitial, setConfigIsInitial ] = useState(true);
   const [ error, setError ] = useState();
@@ -232,10 +242,12 @@ function AdminConfigScreen(props) {
               </DialogTitle>
               <DialogContent>
                 <FormattedText>
-                This will revert **all** the changes made since opening this page **including the ones that you may have already saved**.
+                  {/* eslint-disable-next-line max-len */}
+                  This will revert **all** the changes made since opening this page **including the ones that you may have already saved**.
                 </FormattedText>
                 <FormattedText>
-                If you wish to keep the saved changes and discard the unsaved ones, you can simply navigate away from this page, for example by clicking on the link to Administration at the top.
+                  {/* eslint-disable-next-line max-len */}
+                  If you wish to keep the saved changes and discard the unsaved ones, you can simply navigate away from this page, for example by clicking on the link to Administration at the top.
                 </FormattedText>
                 <FormattedText>
                 **Are you sure you wish to proceed with resetting the configuration?**

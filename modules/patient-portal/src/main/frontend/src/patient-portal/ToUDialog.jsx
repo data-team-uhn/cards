@@ -149,7 +149,8 @@ function ToUDialog(props) {
       .then( json => json.status == "success" ? onCleared?.() : Promise.reject(json.error))
       .catch((response) => {
         let errMsg = "Recording acceptance of Terms of Use failed";
-        console.log(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
+        console.log(errMsg +
+          (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
         setActionError("Error: your preference could not be recorded.");
       });
   }

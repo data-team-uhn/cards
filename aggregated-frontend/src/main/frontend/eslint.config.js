@@ -81,6 +81,7 @@ const commonRules = {
   "no-trailing-spaces": "error",
   "unused-imports/no-unused-imports": "error",
   ...whitespaceRules,
+  "max-len": ["error", { "code": 120, "ignoreUrls": true, "ignoreStrings": true, "ignoreComments": true }]
 };
 
 const commonLinterOptions = {

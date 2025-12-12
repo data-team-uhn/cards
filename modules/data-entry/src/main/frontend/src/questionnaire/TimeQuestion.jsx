@@ -71,7 +71,8 @@ function TimeQuestion(props) {
   // if neither save nor date format is specified
   saveFormat = saveFormat || dateFormat || "HH:mm:ss.SSS";
   dateFormat = dateFormat || "HH:mm";
-  let currentStartValue = (existingAnswer?.[1]?.value && DateTime.fromFormat(existingAnswer[1].value, saveFormat).isValid)
+  let currentStartValue = (existingAnswer?.[1]?.value
+    && DateTime.fromFormat(existingAnswer[1].value, saveFormat).isValid)
     ? DateTime.fromFormat(existingAnswer[1].value, saveFormat) : null;
 
   const [selectedTime, changeTime] = useState(currentStartValue);

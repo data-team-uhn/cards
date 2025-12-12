@@ -51,6 +51,7 @@ function PatientPortalHomepage (props) {
         setSurveyInstructions({ ...DEFAULT_INSTRUCTIONS, ...instructions });
       })
       .catch((response) => {
+        {/* eslint-disable-next-line max-len */}
         console.error(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
       });
   }, []);

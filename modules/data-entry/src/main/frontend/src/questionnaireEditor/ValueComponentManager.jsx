@@ -37,6 +37,7 @@ export default class ValueComponentManager {
     return (_registeredComponents
       .map(component => (component)(definition))
       .filter(displayer => displayer)
-      .reduce(([chosenDisplayer, maxPriority], [displayer, priority]) => priority > maxPriority ? [displayer, priority] : [chosenDisplayer, maxPriority]))[0];
+      .reduce(([chosenDisplayer, maxPriority], [displayer, priority]) =>
+        priority > maxPriority ? [displayer, priority] : [chosenDisplayer, maxPriority]))[0];
   }
 }

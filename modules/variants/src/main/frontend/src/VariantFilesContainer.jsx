@@ -193,6 +193,7 @@ export default function VariantFilesContainer() {
     if (processedFile.tumor.existed && processedFile.tumor.id) {
       // query data about all of the already uploaded files
       let url = new URL("/query", window.location.origin);
+      {/* eslint-disable-next-line max-len */}
       let sqlquery = `select f.* from [cards:Form] as n inner join [nt:file] as f on isdescendantnode(f, n) where n.questionnaire = '${somaticVariantsUUID}' and n.subject = '${processedFile.region?.uuid || processedFile.tumor.uuid}'`;
       url.searchParams.set("query", sqlquery);
 
@@ -262,7 +263,7 @@ export default function VariantFilesContainer() {
           // 2: it is a list of two (no oxford comma)
           : allErroneousFiles.length == 2 ? allErroneousFiles.join(" and ")
           // 3: it is a list of three or more (with oxford comma)
-            : allErroneousFiles.splice(0, allErroneousFiles.length-1).join(", ") + ", and " + allErroneousFiles[allErroneousFiles.length-1];
+            : allErroneousFiles.splice(0, allErroneousFiles.length-1).join(", ") + ", and "+ allErroneousFiles[allErroneousFiles.length-1];
         let plural = allErroneousFiles.length > 1;
         setError(`File name${plural ? "s" : ""} ${fileString} do${plural ? "" : "es"} not follow the name convention <subject>_<tumour nb>***.csv`);
       };
@@ -279,16 +280,20 @@ export default function VariantFilesContainer() {
       let fileEl = files[i];
       if (file.name === fileEl.name) { continue; }
 
-      if (fileEl.subject.id === file.subject.id) {
-        file.subject = generateSubject(file.subject, fileEl.subject.path, fileEl.subject.existed, fileEl.subject.uuid, fileEl.subject.type);
+      let subject = fileEl.subject;
+      let tumor = fileEl.tumor;
+      let region = fileEl.region;
+      if (subject.id === file.subject.id) {
+        file.subject = generateSubject(file.subject, subject.path, subject.existed, subject.uuid, subject.type);
       }
 
-      if (fileEl.subject.id === file.subject.id && fileEl.tumor.id === file.tumor.id) {
-        file.tumor = generateSubject(file.tumor, fileEl.tumor.path, fileEl.tumor.existed, fileEl.tumor.uuid, fileEl.tumor.type);
+      if (subject.id === file.subject.id && tumor.id === file.tumor.id) {
+        file.tumor = generateSubject(file.tumor, tumor.path, tumor.existed, tumor.uuid, tumor.type);
       }
 
-      if (fileEl.region.id && file.region.id && fileEl.subject.id === file.subject.id && fileEl.tumor.id === file.tumor.id && fileEl.region.id === file.region.id) {
-        file.region = generateSubject(file.region, fileEl.region.path, fileEl.region.existed, fileEl.region.uuid, fileEl.region.type);
+      if (region.id && file.region.id && subject.id === file.subject.id && tumor.id === file.tumor.id
+        && region.id === file.region.id) {
+        file.region = generateSubject(file.region, region.path, region.existed, region.uuid, region.type);
       }
     }
     return file;

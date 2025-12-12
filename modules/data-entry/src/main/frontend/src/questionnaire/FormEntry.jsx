@@ -20,7 +20,9 @@
 import { Grid } from "@mui/material";
 
 /* eslint-disable import/order */
-// FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
+// FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment
+// is to explicitly invoke them here. Find a way to automatically load all question types, possibly using
+// self-declaration in a node, like the assets, or even by filtering through assets.
 /* eslint-disable unused-imports/no-unused-imports */
 import AddressQuestion from "./AddressQuestion";
 import BooleanQuestion from "./BooleanQuestion";
@@ -63,7 +65,21 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPE
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId, gridProps) => {
+let displayQuestion = (
+  questionDefinition,
+  path,
+  existingAnswer,
+  key,
+  classes,
+  onAddedAnswerPath,
+  sectionAnswersState,
+  onChange,
+  pageActive,
+  isEdit,
+  isSummary,
+  instanceId,
+  gridProps
+) => {
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
@@ -112,7 +128,21 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
  */
-let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps) => {
+let displaySection = (
+  sectionDefinition,
+  path,
+  depth,
+  existingAnswer,
+  key,
+  onChange,
+  visibleCallback,
+  pageActive,
+  isEdit,
+  isSummary,
+  instanceId,
+  contentOffset,
+  gridProps
+) => {
   if (isSummary && sectionDefinition.displayMode !== "summary") {
     return null;
   }
@@ -171,7 +201,17 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit, grid
  * @param {Object} classes style classes
  * @returns a React component that renders the matrix section
  */
-let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, pageActive, isEdit, contentOffset, gridProps) => {
+let displayMatrix = (
+  sectionDefinition,
+  path,
+  existingAnswer,
+  key,
+  classes,
+  pageActive,
+  isEdit,
+  contentOffset,
+  gridProps
+) => {
   // Find the existing AnswerSection for this section, if available
   const existingSectionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
@@ -222,19 +262,74 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
  * @returns a React component that renders the section
  */
 export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps } = props;
+  let {
+    classes,
+    entryDefinition,
+    path,
+    depth,
+    existingAnswers,
+    keyProp,
+    onAddedAnswerPath,
+    sectionAnswersState,
+    onChange,
+    visibleCallback,
+    pageActive,
+    isEdit,
+    isSummary,
+    instanceId,
+    contentOffset,
+    gridProps
+  } = props;
   gridProps = gridProps || {};
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId, gridProps);
+    return displayQuestion(
+      entryDefinition,
+      path,
+      existingAnswers,
+      keyProp,
+      classes,
+      onAddedAnswerPath,
+      sectionAnswersState,
+      onChange,
+      pageActive,
+      isEdit,
+      isSummary,
+      instanceId,
+      gridProps
+    );
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
     if ("matrix" === entryDefinition["displayMode"]) {
-      return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, contentOffset, gridProps);
+      return displayMatrix(
+        entryDefinition,
+        path,
+        existingAnswers,
+        keyProp,
+        classes,
+        pageActive,
+        isEdit,
+        contentOffset,
+        gridProps
+      );
     } else {
-      return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps);
+      return displaySection(
+        entryDefinition,
+        path,
+        depth,
+        existingAnswers,
+        keyProp,
+        onChange,
+        visibleCallback,
+        pageActive,
+        isEdit,
+        isSummary,
+        instanceId,
+        contentOffset,
+        gridProps
+      );
     }
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit, gridProps);

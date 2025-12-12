@@ -38,6 +38,7 @@ export default class AnswerComponentManager {
     return (_registeredComponents
       .map(component => (component)(questionDefinition))
       .filter(displayer => displayer)
-      .reduce(([chosenDisplayer, maxPriority], [displayer, priority]) => priority > maxPriority ? [displayer, priority] : [chosenDisplayer, maxPriority]))[0];
+      .reduce(([chosenDisplayer, maxPriority], [displayer, priority]) =>
+        priority > maxPriority ? [displayer, priority] : [chosenDisplayer, maxPriority]))[0];
   }
 }

@@ -84,7 +84,8 @@ function Questionnaires(props) {
   let customFilterFn = (row, id, filterValue) => {
     let title = row.original.title || "";
     let description = row.original.description || "";
-    return title.toLowerCase().includes(filterValue.toLowerCase()) || description.toLowerCase().includes(filterValue.toLowerCase());
+    return title.toLowerCase()
+      .includes(filterValue.toLowerCase()) || description.toLowerCase().includes(filterValue.toLowerCase());
   }
 
   let dialogClose = () => {

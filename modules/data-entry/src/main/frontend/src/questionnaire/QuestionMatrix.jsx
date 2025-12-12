@@ -39,7 +39,8 @@ import Question from "./Question";
 import QuestionnaireStyle from './QuestionnaireStyle';
 import FormattedText from "../components/FormattedText.jsx";
 
-/** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
+/** Conversion between the `dataType` setting in the question definition and the corresponding primary node type
+  of the `Answer` node for that question. */
 const DATA_TO_NODE_TYPE = {
   "long": "cards:LongAnswer",
   "decimal": "cards:DecimalAnswer",
@@ -62,7 +63,17 @@ const DATA_TO_NODE_TYPE = {
 // existingAnswer array of sub-question answers
 
 let QuestionMatrix = (props) => {
-  const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, pageActive, contentOffset, ...rest } = props;
+  const {
+    sectionDefinition,
+    existingSectionAnswer,
+    existingAnswers,
+    path,
+    isEdit,
+    classes,
+    pageActive,
+    contentOffset,
+    ...rest
+  } = props;
   const { maxAnswers, minAnswers, verticalLayout } = { ...sectionDefinition, ...props };
 
   // Use existing existingAnswer, Otherwise, create a new UUID
@@ -114,7 +125,8 @@ let QuestionMatrix = (props) => {
     subquestions.map(subquestion => { initialSelection[subquestion[0]] = defaultSelection; });
   }
 
-  // Stores the current matrix answer state in a form of object where question variable id corresponds to the array of selected [item[LABEL_POS], item[VALUE_POS]]
+  // Stores the current matrix answer state in a form of object where question variable id corresponds to the array of selected
+  // [item[LABEL_POS], item[VALUE_POS]]
   // {
   //  "question1": [ ["Male", "M"], ...],
   //  ...
@@ -125,7 +137,9 @@ let QuestionMatrix = (props) => {
     let selectionState = {};
     subquestions.map(subquestion => {
       defaults.map( option => { let name = subquestion[0] + option[VALUE_POS];
-        let isChecked = !!(selections[subquestion[0]]?.find( item => String(item[VALUE_POS]) === String(option[VALUE_POS])));
+        let isChecked = !!(selections[subquestion[0]]?.find(
+          item => String(item[VALUE_POS]) === String(option[VALUE_POS])
+        ));
         selectionState[name] = isChecked;
       } )
     });
@@ -171,7 +185,8 @@ let QuestionMatrix = (props) => {
       }
 
       // unselect naOption/noneOption
-      newSelection[id] = answer.filter(item => (!naOption || item[VALUE_POS] != naOption) && (!noneOption || item[VALUE_POS] != noneOption));
+      newSelection[id] = answer.filter(item => (!naOption || item[VALUE_POS] != naOption)
+        && (!noneOption || item[VALUE_POS] != noneOption));
       newSelection[id].push([option[LABEL_POS], option[VALUE_POS]]);
       return newSelection;
     }
@@ -184,9 +199,16 @@ let QuestionMatrix = (props) => {
 
   // Adapt the section / answerSection info to pass to the Question component
 
-  let existingAnswerMock = [sectionAnswerPath, { displayedValue: existingAnswers, statusFlags: existingSectionAnswer?.[1]?.statusFlags || null }];
+  let existingAnswerMock = [
+    sectionAnswerPath,
+    { displayedValue: existingAnswers,
+      statusFlags: existingSectionAnswer?.[1]?.statusFlags || null
+    }
+  ];
   let questionMatrixDefinition = { ...sectionDefinition, text: sectionDefinition.label };
-  let currentAnswers = subquestions.reduce((min, item) => {return Math.min(min, selection[item[0]]?.length || 0);}, minAnswers);
+  let currentAnswers = subquestions.reduce((min, item) => {
+    return Math.min(min, selection[item[0]]?.length || 0);
+  }, minAnswers);
 
 
   // Helper methods for rendering a responsive layout

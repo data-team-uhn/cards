@@ -259,7 +259,9 @@ function SubjectTimeline(props) {
           ) {
           // Append the non-date answer to the previous date answer,
           // if a previous date answer exists and hasn't met the followup question limit.
-            currentSectionData[currentSectionData.length - 1].followup.push(displayQuestion(entryDefinition, data, key, classes));
+            currentSectionData[currentSectionData.length - 1].followup.push(
+              displayQuestion(entryDefinition, data, key, classes)
+            );
           }
         }
 
@@ -277,7 +279,9 @@ function SubjectTimeline(props) {
           .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
                                   && value["section"]["@name"] == entryDefinition["@name"])[0];
         currentAnswers = currentAnswers ? currentAnswers[1] : "";
-        childSectionData = childSectionData.concat(handleDisplayNodes(Object.entries(currentSection), currentAnswers, formData));
+        childSectionData = childSectionData.concat(
+          handleDisplayNodes(Object.entries(currentSection), currentAnswers, formData)
+        );
       }
     })
     return currentSectionData.concat(childSectionData);

@@ -29,7 +29,9 @@ import { withStyles } from 'tss-react/mui';
 import { v4 as uuidv4 } from 'uuid';
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
-// FIXME In order for the conditionals to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
+// FIXME In order for the conditionals to be registered, they need to be loaded, and the only way to do that at the
+// moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using
+// self-declaration in a node, like the assets, or even by filtering through assets.
 /* eslint-disable unused-imports/no-unused-imports */
 import ConditionalGroup from "./ConditionalGroup";
 import ConditionalSingle from "./ConditionalSingle";
@@ -68,7 +70,21 @@ function createTitle(label, idx, isRecurrent) {
  */
 function Section(props) {
   checkPropTypes(Section, props);
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps } = props;
+  const {
+    classes,
+    depth,
+    existingAnswer,
+    path,
+    sectionDefinition,
+    onChange,
+    visibleCallback,
+    pageActive,
+    isEdit,
+    isSummary,
+    instanceId,
+    contentOffset,
+    gridProps
+  } = props;
   const isRecurrent = sectionDefinition['recurrent'];
   const isCompact = sectionDefinition['compact'];
   const { displayMode } = sectionDefinition;
@@ -300,7 +316,8 @@ function Section(props) {
                           isEdit={isEdit}
                           isSummary={isSummary}
                           contentOffset={contentOffset}
-                          gridProps={isCompact && sectionEntries.length > 1 ? { size : { xs: 12, sm: 12, md: 6, lg: (sectionEntries.length == 2 ? 6 : 4) } } : undefined}
+                          gridProps={isCompact && sectionEntries.length > 1 ?
+                            { size : { xs: 12, sm: 12, md: 6, lg: (sectionEntries.length == 2 ? 6 : 4) } } : undefined}
                           pageActive={pageActive}
                           sectionAnswersState={removableAnswers}
                           onAddedAnswerPath={(newAnswers) => {

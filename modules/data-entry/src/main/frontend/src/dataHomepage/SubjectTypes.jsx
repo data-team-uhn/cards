@@ -118,7 +118,8 @@ function SubjectTypes(props) {
   let customFilterFn = (row, id, filterValue) => {
     let path = row.original['@path'] || "";
     let label = row.original.subjectListLabel || "";
-    return path.toLowerCase().includes(filterValue.toLowerCase()) || label.toLowerCase().includes(filterValue.toLowerCase());
+    return path.toLowerCase()
+      .includes(filterValue.toLowerCase()) || label.toLowerCase().includes(filterValue.toLowerCase());
   }
 
   return (
