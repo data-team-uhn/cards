@@ -79,7 +79,7 @@ function UsersManager(props) {
         url={USER_URL}
         type="user"
       />
-      <ChangeUserPasswordDialog 
+      <ChangeUserPasswordDialog
         isOpen={deployChangeUserPassword}
         handleClose={() => setDeployChangeUserPassword(false)}
         name={currentUserName}

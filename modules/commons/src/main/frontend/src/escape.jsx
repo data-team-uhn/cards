@@ -25,7 +25,7 @@ export function escapeJQL(input) {
   return new String(input).replace(/'/g, "''");
 };
 
-// 
+//
 
 // Convert a string to 32bit integer
 //

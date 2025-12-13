@@ -28,7 +28,7 @@ export function hasWarningFlags (data) {
   );
 }
 
-// A helper recursive function to loop through the sections/questions data 
+// A helper recursive function to loop through the sections/questions data
 // and collect all answers that have the incomplete status flag
 // Recursively build a map answerId->questionPath of all incomplete questions
 export function getIncompleteQuestionsMap (sectionJson) {

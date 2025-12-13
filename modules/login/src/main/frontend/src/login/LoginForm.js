@@ -47,7 +47,7 @@ function LoginForm(props) {
   const [ passwordIsMasked, setPasswordIsMasked ] = useState(false);
   const [ phase, setPhase ] = useState("USERNAME_ENTRY");
   const [ singleStepEntry, setSingleStepEntry ] = useState(undefined);
- 
+
   useEffect(() => {
     // Check to see if 1 or 2 step login should be used
     fetch(window.location.origin + "/apps/cards/SAMLDomains.json")
@@ -88,7 +88,7 @@ function LoginForm(props) {
         handleLogin?.(false);
       });
   }
- 
+
   let nextButtonCallback = () => {
     if (username.split("@").length - 1 == 0) {
       setPhase("PASSWORD_ENTRY");

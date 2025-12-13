@@ -83,7 +83,7 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
   if (!initialized) {
     initialize();
   }
-  
+
   // If an error was returned, report the error
   if (error) {
     return (

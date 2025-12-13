@@ -104,7 +104,7 @@ function NCRNote (props) {
 
   // Create an NCR request
   let createNCRRequest = (event) => {
-    
+
     // Clear our current search
     setIsLoading(true);
     setParsedText("");

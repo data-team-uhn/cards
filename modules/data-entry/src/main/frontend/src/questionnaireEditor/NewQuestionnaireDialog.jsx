@@ -99,12 +99,12 @@ function NewQuestionnaireDialog(props) {
               },
             }}
             placeholder="Enter a title"
-            onChange={(event) => { 
+            onChange={(event) => {
               handleChangeTitle(event.target.value);
             }}
             error={duplicateTitle}
             helperText={duplicateTitle ? "A questionnaire with this name already exists" : " "}
-          >  
+          >
           </TextField>
         </DialogContent>
         <DialogActions>

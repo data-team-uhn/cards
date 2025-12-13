@@ -35,7 +35,7 @@ import PrintPreview from "../questionnaire/PrintPreview.jsx";
  * title: String specifying the title to associate with the rendered content
  * breadcrumb: String displayed in small fonts above the title, providing some context for the printed resource.
  *   Example usage: the formatted identifier of the subject for this resource.
- * date: String displayed with breadcrumb in the preview header above the title, providing the time context for the printed resource  
+ * date: String displayed with breadcrumb in the preview header above the title, providing the time context for the printed resource
  * variant: String defining the render component and view of the print action button, default "icon"
  * size: String regulating the size of an icon button, default "medium"
  * className: String of class name that applies to the button element if the IconButton when variant == "icon"

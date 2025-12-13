@@ -30,7 +30,7 @@ import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(TEXT_COMPARATORS);
 
-const QuestionnaireStyleNotesContain = theme => ({ 
+const QuestionnaireStyleNotesContain = theme => ({
   ...QuestionnaireStyle,
   textField: {
     // The default min-width is 250 px, which is too wide when the comparator is "notes contain"
