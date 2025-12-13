@@ -314,7 +314,7 @@ function QuestionnaireSet(props) {
   // Automatically log out the user at the end
   useEffect(() => {
     if (isSubmitted) {
-      window.addEventListener("beforeunload", (e) => { fetch('/system/sling/logout', { "redirect": "manual" }); }, true);
+      window.addEventListener("beforeunload", (e) => fetch('/system/sling/logout', { "redirect": "manual" }), true);
     }
   }, [isSubmitted]);
 
@@ -474,7 +474,7 @@ function QuestionnaireSet(props) {
   }
 
   // Advance to the next step
-  let nextStep = () => { setCrtStep(findNextStep) }
+  let nextStep = () => setCrtStep(findNextStep)
 
   let launchNextForm = () => {;
     if (subjectData?.[nextQuestionnaire['@name']]) {
@@ -737,7 +737,7 @@ function QuestionnaireSet(props) {
   ];
 
   let submitButton = (label) => (
-    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key={"review-submit"+label}>
+    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => onSubmit()} key={"review-submit"+label}>
       {submissionInProgress ? "Submitting...." : (label || "Submit")}
     </Fab>
   );
@@ -840,7 +840,7 @@ function QuestionnaireSet(props) {
             </Grid>
       }
       <Grid>
-        <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
+        <Button variant="contained" onClick={() => setCrtStep(-1)} key="incomplete-button">Update my answers</Button>
       </Grid>
     </Grid>
   ];

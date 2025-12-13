@@ -208,7 +208,7 @@ function PatientIdentification(props) {
     if (auth_token && !(config?.PIIAuthRequired)) {
       let requestData = new FormData();
       requestData.append("auth_token", auth_token);
-      validateCredentials(requestData, (error) => { window.location = "/Expired.html"; });
+      validateCredentials(requestData, (error) => window.location = "/Expired.html");
     }
 
     // The identification form should be made available whenever tokenless auth is enabled,
@@ -286,7 +286,7 @@ function PatientIdentification(props) {
       title="Where can I find my MRN?"
       withCloseButton
       open={mrnHelperOpen}
-      onClose={() => {setMrnHelperOpen(false)}}
+      onClose={() => setMrnHelperOpen(false)}
     >
       <DialogContent>
         <Typography component="p">
@@ -377,7 +377,7 @@ function PatientIdentification(props) {
                         <Link
                           variant="caption"
                           underline="hover"
-                          onClick={() => {setMrnHelperOpen(true)}}
+                          onClick={() => setMrnHelperOpen(true)}
                           className={classes.mrnHelperLink}
                         >
                     Where can I find my MRN?

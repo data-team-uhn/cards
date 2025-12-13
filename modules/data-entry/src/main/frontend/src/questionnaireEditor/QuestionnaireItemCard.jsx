@@ -200,7 +200,7 @@ let QuestionnaireItemCard = (props) => {
             {action}
             {!disableEdit &&
             <Tooltip title={`Edit ${formattedType.toLowerCase()} properties`}>
-              <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
+              <IconButton onClick={() => setEditDialogOpen(true)} size="large">
                 <EditIcon />
               </IconButton>
             </Tooltip>
@@ -232,7 +232,7 @@ let QuestionnaireItemCard = (props) => {
           model={model}
           isOpen={editDialogOpen}
           onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
-          onCancel={() => { setEditDialogOpen(false); }}
+          onCancel={() => setEditDialogOpen(false)}
         />
         }
       </CardContent>

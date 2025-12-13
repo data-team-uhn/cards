@@ -244,8 +244,7 @@ function MultipleChoice(props) {
   // Returns whether an option was added (true) or a matching option already existed (false)
   let addOption = (id, name) => {
     setOptions((oldOptions) => {
-      if ( !oldOptions.some((option) => {return option[VALUE_POS] === id}) &&
-        !defaults.some((option) => {return option[VALUE_POS] === id})) {
+      if (!oldOptions.some(option => option[VALUE_POS] === id) && !defaults.some(option => option[VALUE_POS] === id)) {
         let newOptions = oldOptions.slice();
         newOptions.push([name, id, false]);
         return newOptions;
@@ -421,7 +420,7 @@ function MultipleChoice(props) {
           className={(textbox ? classes.textBox : classes.textField) + (isRadio ? (' ' + classes.nestedInput) : '')}
           onChange={ghostUpdateEvent}
           disabled={disabled}
-          onFocus={() => {maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}}
+          onFocus={() => maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}
           onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
           slotProps={{
             htmlInput: Object.assign({
@@ -450,7 +449,7 @@ function MultipleChoice(props) {
           title="Separator detected"
           anchorEl={assistantAnchor}
           actionLabel="Separate and add"
-          onAction={() => {splitInput(assistantAnchor)}}
+          onAction={() => splitInput(assistantAnchor)}
           onIgnore={() => {setSeparatorDetectionEnabled(false); assistantAnchor?.focus(); checkForSeparators(null);}}
           onClickAway={(event) => {
             (document.activeElement != assistantAnchor) && acceptEnteredOption();
@@ -573,7 +572,7 @@ function MultipleChoice(props) {
                             onUpdate?.(ghostSelected ? undefined : ghostName);
                             handleFormDataChange?.();
                           }}
-                          onClick={() => {inputEl && inputEl.select();}}
+                          onClick={() => inputEl && inputEl.select()}
                           disabled={!ghostSelected && disabled}
                           className={classes.ghostRadiobox}
                         />
@@ -705,7 +704,7 @@ function ResponseChild(props) {
             ) : ((name !== "") && (
               <>
                 <IconButton
-                  onClick={() => {onDelete(id, name)}}
+                  onClick={() => onDelete(id, name)}
                   className={classes.deleteButton}
                   color="secondary"
                   title="Delete"

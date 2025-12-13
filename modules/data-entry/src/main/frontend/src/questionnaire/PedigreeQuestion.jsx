@@ -127,7 +127,7 @@ function PedigreeQuestion(props) {
               <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
                 <Grid>
                   <Tooltip title="Edit Pedigree">
-                    <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}} underline="hover">
+                    <Link className={classes.thumbnailLink} onClick={() => setExpanded(true)} underline="hover">
                       {image_div}
                     </Link>
                   </Tooltip>
@@ -136,16 +136,16 @@ function PedigreeQuestion(props) {
                   <DeleteButton
                     entryName="pedigree"
                     entryType="Pedigree"
-                    onComplete={() => {setPedigree({});}}
+                    onComplete={() => setPedigree({})}
                   />
                 </Grid>
               </Grid>
               :
-              <Button variant="outlined" onClick={() => {setExpanded(true);}}>Draw</Button>
+              <Button variant="outlined" onClick={() => setExpanded(true)}>Draw</Button>
             }
           </div>
           <Dialog fullScreen open={expanded}
-            onClose={() => { setExpanded(false); }}
+            onClose={() => setExpanded(false)}
             slotProps={{
               transition: {
                 onEntering: () => openPedigree(),

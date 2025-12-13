@@ -195,7 +195,7 @@ function DroppableAnswerOption(props) {
         <Grid size={3} className={classes.answerOptionActions}>
           {generateDescriptionIcon(value, index, false)}
           <Tooltip title="Delete option">
-            <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
+            <IconButton onClick={() => deleteOption(index)} className={classes.answerOptionButton}>
               <CloseIcon/>
             </IconButton>
           </Tooltip>

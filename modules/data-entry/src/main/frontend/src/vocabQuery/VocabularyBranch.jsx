@@ -318,7 +318,7 @@ function VocabularyBranch(props) {
           <IconButton
             size="small"
             color="primary"
-            ref={(node) => {registerInfo(id + parentId, node)}}
+            ref={(node) => registerInfo(id + parentId, node)}
             onClick={(event) => {event.stopPropagation(); getInfo(path, parentId)}}
             className={classes.infoButton}
           >

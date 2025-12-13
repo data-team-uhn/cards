@@ -47,7 +47,7 @@ export default function VocabularyActions(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const handleClose = () => {setError(false)};
+  const handleClose = () => setError(false);
 
   useEffect(() => {
     setPhase(initPhase);
@@ -105,7 +105,8 @@ export default function VocabularyActions(props) {
         });
       });
   }
-  useEffect(() => {props.addSetter(setPhase);},[0]);
+
+  useEffect(() => props.addSetter(setPhase), [0]);
 
   return(
     <>

@@ -351,7 +351,7 @@ function SelectableAreaQuestion(props) {
               control={
                 <Checkbox
                   checked={notApplicableChecked}
-                  onChange={() => {onNotApplicableClicked()}}
+                  onChange={() => onNotApplicableClicked()}
                   className={classes.checkbox}
                   color="secondary"
                 />}

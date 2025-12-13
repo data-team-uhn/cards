@@ -154,7 +154,7 @@ function NewFormDialog(props) {
         }
       })
       .catch(parseErrorResponse)
-      .finally(() => {setNumFetchRequests((num) => (num-1))});
+      .finally(() => setNumFetchRequests((num) => (num-1)));
   }
 
   // Parse an errored response object
@@ -396,7 +396,7 @@ function NewFormDialog(props) {
       sx: {
         cursor: isRowDisabled(row) ? 'default' : 'pointer',
       },
-      onClick: () => { onClickRow(row); },
+      onClick: () => onClickRow(row),
     }),
     muiTableBodyCellProps:({ cell }) => ({
       sx: (theme) => ({

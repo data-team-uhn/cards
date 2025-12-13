@@ -370,7 +370,7 @@ function Form (props) {
       openErrorDialog();
       setLastSaveStatus(undefined);
     })
-      .finally(() => {formNode?.current && setSaveInProgress(false)});
+      .finally(() => formNode?.current && setSaveInProgress(false));
   }
 
   let saveDataWithCheckin = (event, onSuccess) => {
@@ -477,7 +477,7 @@ function Form (props) {
               resourceData={data}
               breadcrumb={getTextHierarchy(data?.subject, true)}
               date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-              onClose={() => { setActionsMenu(null); }}
+              onClose={() => setActionsMenu(null)}
             />
           </ListItem>
           <ListItem className={classes.actionsMenuItem}>
@@ -519,7 +519,7 @@ function Form (props) {
           </IconButton>
         </Tooltip>
       }
-      <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+      <Tooltip title="More actions" onClick={(event) => setActionsMenu(event.currentTarget)}>
         <IconButton size="large">
           <MoreIcon fontSize="small" />
         </IconButton>
@@ -528,7 +528,7 @@ function Form (props) {
       <Popover
         open={Boolean(actionsMenu)}
         anchorEl={actionsMenu}
-        onClose={() => {setActionsMenu(null)}}
+        onClose={() => setActionsMenu(null)}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -652,7 +652,7 @@ function Form (props) {
                 error={selectorDialogError}
                 open={selectorDialogOpen}
                 onChange={changeSubject}
-                onClose={() => {setSelectorDialogOpen(false)}}
+                onClose={() => setSelectorDialogOpen(false)}
                 onError={setSelectorDialogError}
                 title="Set subject"
                 selectedQuestionnaire={data?.questionnaire}
@@ -720,7 +720,7 @@ function Form (props) {
                 .filter(e => keys.includes((e.section || e.question)?.["@name"] || ""))
                 .every(p => !hasWarningFlags(p))
             )}
-            onDone={() => { setEndReached(true); }}
+            onDone={() => setEndReached(true)}
             onPageChange={() => { setDisableProgress(requireCompletion); setIncompleteQuestionEl(null); }}
             doneLabel={doneLabel}
             doneIcon={doneIcon}

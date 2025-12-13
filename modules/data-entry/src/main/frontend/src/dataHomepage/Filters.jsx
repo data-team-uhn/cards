@@ -318,7 +318,7 @@ function Filters(props) {
           value: editingFilters[index].value,
           label: editingFilters[index].label
         }}
-        onChangeInput={(newValue, label) => {handleChangeOutput(index, newValue, label, dataType);}}
+        onChangeInput={(newValue, label) => handleChangeOutput(index, newValue, label, dataType)}
       />);
   }
 
@@ -420,7 +420,7 @@ function Filters(props) {
                     <Select
                       variant="standard"
                       value={filterDatum.comparator || ""}
-                      onChange={(event) => {handleChangeComparator(index, event.target.value);}}
+                      onChange={(event) => handleChangeComparator(index, event.target.value)}
                     >
                       {(filterComparators[filterDatum.name]?.map( (name) => {
                         return(

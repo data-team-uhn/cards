@@ -140,7 +140,7 @@ let Questionnaire = (props) => {
           entryType="Questionnaire"
           size="medium"
           variant="text"
-          onClose={() => { setActionsMenu(null); }}
+          onClose={() => setActionsMenu(null)}
         />
       </ListItem>
       <ListItem className={classes.actionsMenuItem}>
@@ -163,7 +163,7 @@ let Questionnaire = (props) => {
           onComplete={() => navigate(baseUrl, { replace: true })}
           size="medium"
           variant="text"
-          onClose={() => { setActionsMenu(null); }}
+          onClose={() => setActionsMenu(null)}
         />
       </ListItem>
     </List>
@@ -184,7 +184,7 @@ let Questionnaire = (props) => {
           </IconButton>
         </Tooltip>
       }
-      <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+      <Tooltip title="More actions" onClick={(event) => setActionsMenu(event.currentTarget)}>
         <IconButton size="large">
           <MoreIcon fontSize="small" />
         </IconButton>
@@ -192,7 +192,7 @@ let Questionnaire = (props) => {
       <Popover
         open={Boolean(actionsMenu)}
         anchorEl={actionsMenu}
-        onClose={() => {setActionsMenu(null)}}
+        onClose={() => setActionsMenu(null)}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',

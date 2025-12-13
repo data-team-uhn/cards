@@ -160,7 +160,7 @@ function FormView(props) {
             entryType="Form"
             actions={enabledActions.length > 0 ? enabledActions : undefined}
             disableTopPagination={!topPagination}
-            onFiltersChange={(str) => { setFiltersJsonString(str); }}
+            onFiltersChange={(str) => setFiltersJsonString(str)}
             filtersJsonString={filtersJsonString}
             extensionURL={extensionURL}
           />

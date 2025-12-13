@@ -114,7 +114,7 @@ function QuickSearchConfiguration(props) {
                   control={
                     <Checkbox
                       checked={allowedResourceTypes.indexOf(resourceName) > -1}
-                      onChange={(event) => { onSourceTypeChange(event.target.checked, resourceName); }}
+                      onChange={(event) => onSourceTypeChange(event.target.checked, resourceName)}
                       name={resourceName}
                     />
                   }

@@ -175,11 +175,11 @@ function SubjectView(props) {
       {expanded && isActionEnabled("create") &&
       <>
         <NewItemButton
-          onClick={() => {setNewSubjectPopperOpen(true)}}
+          onClick={() => setNewSubjectPopperOpen(true)}
         />
         <NewSubjectDialog
-          onClose={() => { setNewSubjectPopperOpen(false);}}
-          onSubmit={() => { setNewSubjectPopperOpen(false);}}
+          onClose={() => setNewSubjectPopperOpen(false)}
+          onSubmit={() => setNewSubjectPopperOpen(false)}
           open={newSubjectPopperOpen}
           extensionURL={extensionURL}
         />

@@ -129,7 +129,7 @@ function UserDashboard(props) {
                 sx: {
                   cursor: 'pointer',
                 },
-                onClick: () => { setSelectedRow(row?.original); },
+                onClick: () => setSelectedRow(row?.original),
               })}
               muiTableBodyCellProps={{
                 sx: {

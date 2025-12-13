@@ -491,7 +491,7 @@ export default function VariantFilesContainer() {
         newFiles[index] = file;
         setSelectedFiles(newFiles);
       })
-      .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
+      .catch((err) => setError("Internal server error while fetching file versions for " + fileName));
   };
 
   // Change of subject id implies reset tumor subject info and re-fetching all data
@@ -510,7 +510,7 @@ export default function VariantFilesContainer() {
         newFiles[index] = file;
         setSelectedFiles(newFiles);
       })
-      .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
+      .catch((err) => setError("Internal server error while fetching file versions for " + fileName));
   };
 
   // Change of subject id implies reset region subject info and re-fetching all data
@@ -529,7 +529,7 @@ export default function VariantFilesContainer() {
         newFiles[index] = file;
         setSelectedFiles(newFiles);
       })
-      .catch((err) => {setError("Internal server error while fetching file versions for " + fileName);});
+      .catch((err) => setError("Internal server error while fetching file versions for " + fileName));
   };
 
   let cleanForm = () => {

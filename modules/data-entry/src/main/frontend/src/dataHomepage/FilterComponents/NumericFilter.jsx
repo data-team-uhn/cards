@@ -58,7 +58,7 @@ const NumericFilter = (props, ref) => {
         },
       }}
       defaultValue={initial?.value}
-      onChange={(event) => {onChangeInput(event.target.value)}}
+      onChange={(event) => onChangeInput(event.target.value)}
       placeholder="empty"
       inputRef={ref}
     />

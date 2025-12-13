@@ -271,7 +271,7 @@ let QuestionMatrix = (props) => {
         checked={selectionElementStates[question + option[VALUE_POS]]}
         value={option[VALUE_POS]}
         name={"answer-" + sectionAnswerPath + question}
-        onChange={(event) => {selectOption(question, option, event);}}
+        onChange={(event) => selectOption(question, option, event)}
         className={classes.checkbox}
       />
     )

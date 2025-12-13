@@ -33,7 +33,7 @@ function ToULink (props) {
     </FooterLink>
     <ToUDialog
       open={showTou}
-      onClose={() => {setShowTou(false);}}
+      onClose={() => setShowTou(false)}
     />
   </>);
 }

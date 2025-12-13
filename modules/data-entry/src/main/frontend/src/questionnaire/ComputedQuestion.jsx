@@ -234,7 +234,7 @@ let ComputedQuestion = (props) => {
         let parsedExpression = parseResults[1];
 
         let expressionArguments = ["form", "setError"];
-        let expressionValues = [form, (errorMessage) => {expressionError = errorMessage}];
+        let expressionValues = [form, (errorMessage) => expressionError = errorMessage];
         for(const question of questions.values()) {
           expressionArguments.push(question["argument"]);
           expressionValues.push(question["value"]);

@@ -146,7 +146,7 @@ function UserInputAssistant (props) {
                 { onIgnore ?
                   <Button variant="outlined" onClick={() => {setEnabled(false); onIgnore();}}>Ignore for now</Button>
                   :
-                  <Button variant="outlined" onClick={() => {setEnabled(false)}}>Got it!</Button>
+                  <Button variant="outlined" onClick={() => setEnabled(false)}>Got it!</Button>
                 }
               </CardActions>
             </Card>

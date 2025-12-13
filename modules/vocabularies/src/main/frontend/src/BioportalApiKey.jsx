@@ -112,7 +112,7 @@ export function BioPortalApiKey(props) {
           },
         }}
         variant={enableEdit ? "outlined" : "filled" }
-        onChange={(evt) => {setCustomApiKey(evt.target.value)}}
+        onChange={(evt) => setCustomApiKey(evt.target.value)}
         value={customApiKey}
         name="customApiKey"
         label={ enableEdit ? "Enter new Bioportal API key:" : "Bioportal API key:" }
@@ -128,7 +128,7 @@ export function BioPortalApiKey(props) {
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
           { bioPortalApiKey &&
             <Tooltip title="Change BioPortal API key">
-              <IconButton onClick={() => {setDisplayPopup(true)}} className={classes.settingIcon} size="large">
+              <IconButton onClick={() => setDisplayPopup(true)} className={classes.settingIcon} size="large">
                 <SettingsIcon/>
               </IconButton>
             </Tooltip>
@@ -152,13 +152,13 @@ export function BioPortalApiKey(props) {
               { getBioportalKeyInfo(!bioPortalApiKey) }
             </Grid>
             <Grid size={2}>
-              <Button variant="contained" onClick={() => {addNewKey()}}>Submit</Button>
+              <Button variant="contained" onClick={() => addNewKey()}>Submit</Button>
             </Grid>
           </Grid>
         </Grid>
       </> }
 
-      <Dialog onClose={() => {setDisplayPopup(false)}} open={displayPopup} maxWidth="xs" fullWidth>
+      <Dialog onClose={() => setDisplayPopup(false)} open={displayPopup} maxWidth="xs" fullWidth>
         <DialogTitle>
            Change BioPortal API key
         </DialogTitle>
@@ -166,8 +166,8 @@ export function BioPortalApiKey(props) {
           { getBioportalKeyInfo(true) }
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" className={classes.vocabularyAction} onClick={() => {setDisplayPopup(false)}}>Cancel</Button>
-          <Button variant="contained" className={classes.vocabularyAction} onClick={() => {addNewKey()}}>Update</Button>
+          <Button variant="outlined" className={classes.vocabularyAction} onClick={() => setDisplayPopup(false)}>Cancel</Button>
+          <Button variant="contained" className={classes.vocabularyAction} onClick={() => addNewKey()}>Update</Button>
         </DialogActions>
       </Dialog>
     </>
