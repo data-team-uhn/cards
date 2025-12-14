@@ -248,7 +248,7 @@ let ComputedQuestion = (props) => {
         for(const question of questions.values()) {
           expressionArguments.push(question["argument"]);
           expressionValues.push(question["value"]);
-        };
+        }
         result = new Function(expressionArguments, parsedExpression)(...expressionValues);
         if (typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
           result = "";
@@ -283,7 +283,7 @@ let ComputedQuestion = (props) => {
     let formatted = (displayMode === "formatted" || displayMode === "summary");
     if (formatted !== isFormatted) {
       changeIsFormatted(formatted);
-    };
+    }
   }, [displayMode]);
 
   // Performance improvement? Only compute if inputs have changed

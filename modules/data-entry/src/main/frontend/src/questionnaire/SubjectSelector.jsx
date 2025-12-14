@@ -1159,7 +1159,7 @@ function SubjectSelectorList(props) {
       />
     </>
   )
-};
+}
 
 const StyledSubjectSelectorList = withStyles(SubjectSelectorList, QuestionnaireStyle);
 

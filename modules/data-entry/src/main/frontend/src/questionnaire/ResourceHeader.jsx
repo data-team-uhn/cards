@@ -145,7 +145,7 @@ function ResourceHeader (props) {
       </Grid>
     </>
   )
-};
+}
 
 ResourceHeader.propTypes = {
   title: PropTypes.string.isRequired,
