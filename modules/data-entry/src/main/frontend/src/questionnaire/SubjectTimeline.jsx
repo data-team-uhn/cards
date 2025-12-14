@@ -383,7 +383,8 @@ function SubjectTimeline(props) {
 }
 
 SubjectTimeline.propTypes = {
-  id: PropTypes.string
+  classes: PropTypes.object.isRequired,
+  subject: PropTypes.object.isRequired
 }
 
 export default withStyles(SubjectTimeline, QuestionnaireStyle);
