@@ -52,6 +52,7 @@ const commonPlugins = {
   "unused-imports": unusedImports,
   import: importPlugin,
   "@stylistic": stylistic,
+  "jsx-a11y": jsxA11y,
 };
 
 const commonReactSettings = { react: { version: "detect" } };
@@ -71,7 +72,7 @@ const commonRules = {
   // extend recommended rules via spreading, custom rules below will override them
   ...js.configs.recommended.rules,
   ...react.configs.recommended.rules,
-  //...jsxA11y.configs.recommended.rules,
+  ...jsxA11y.configs.recommended.rules,
 
   "import/order": importOrderRule,
 
@@ -101,6 +102,8 @@ const commonRules = {
 
   // codestyle rules
   "@stylistic/max-len": ["error", { code: 120, ignoreUrls: true, ignoreStrings: true, ignoreComments: true }],
+
+  "jsx-a11y/no-autofocus": "off",
 };
 
 const commonLinterOptions = {

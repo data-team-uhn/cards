@@ -125,7 +125,7 @@ export default function OwlInstaller(props) {
             spacing={1}
           >
             <Grid>
-              <label htmlFor="owl-file">
+              <label htmlFor="owl-file" aria-label="Select OWL file">
                 <input
                   style={{ display: 'none' }}
                   id="owl-file"
@@ -192,7 +192,7 @@ export default function OwlInstaller(props) {
             </Grid>
 
             <Grid>
-              <label htmlFor="owl-install">
+              <label htmlFor="owl-install" aria-label="Install OWL vocabulary">
                 <input
                   style={{ display: 'none' }}
                   id="owl-install"
