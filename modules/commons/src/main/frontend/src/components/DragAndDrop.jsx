@@ -130,9 +130,20 @@ export default function DragAndDrop(props) {
     };
   });
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleClick(event);
+    }
+  };
+
   return (
-    <div style={{ display: 'inline-block', position: 'relative', opacity: disabled ? 0.5 : 1 }}
+    <div
+      style={{ display: 'inline-block', position: 'relative', opacity: disabled ? 0.5 : 1 }}
       onClick={handleClick.bind(this)}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={disabled ? -1 : 0}
       ref={dropRef}
     >
       {/* NB: value="" is used to allow the same file to be re-uploaded multiple times */}

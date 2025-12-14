@@ -874,7 +874,7 @@ export default function VariantFilesContainer() {
                     className={classes.fileDetail}
                     helperText="Optional"
                   />
-                  <label htmlFor="contained-button-file">
+                  <label htmlFor="contained-button-file" aria-label="Upload file">
                     <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file, true)}>
                       <span><BackupIcon className={classes.buttonIcon}/>
                         { file.uploading ? 'Uploading' : 'Upload' }
