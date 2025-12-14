@@ -477,7 +477,7 @@ function Form (props) {
       { isEdit ?
         <ListItem className={classes.actionsMenuItem}>
           <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
-                        Change subject
+            Change subject
           </Button>
         </ListItem>
         : <>
@@ -499,7 +499,7 @@ function Form (props) {
                 window.open(formURL + ".txt");
                 setActionsMenu(null);
               }}>
-                        Export as text
+              Export as text
             </Button>
           </ListItem>
         </> }

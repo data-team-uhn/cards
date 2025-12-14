@@ -27,6 +27,7 @@ import importPlugin from "eslint-plugin-import";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import globals from "globals";
 import unusedImports from "eslint-plugin-unused-imports";
+import stylistic from "@stylistic/eslint-plugin";
 
 // For ESLint rules specs see  https://eslint.org/docs/latest/rules/
 
@@ -46,11 +47,11 @@ const commonGlobals = {
 };
 
 const commonPlugins = {
-  js,
   react,
   "react-hooks": reactHooks,
   "unused-imports": unusedImports,
   import: importPlugin,
+  "@stylistic": stylistic,
 };
 
 const commonReactSettings = { react: { version: "detect" } };
@@ -66,29 +67,42 @@ const importOrderRule = [
   },
 ];
 
-const whitespaceRules = {
-  "indent": ["error", 2, { "SwitchCase": 1 }],
-  "no-tabs": "error",
-  "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
-  "linebreak-style": "off",
-  "object-curly-spacing": ["error", "always"],
-};
-
 const commonRules = {
+  // extend recommended rules via spreading, custom rules below will override them
+  ...js.configs.recommended.rules,
+  //...react.configs.recommended.rules,
+  //...jsxA11y.configs.recommended.rules,
+
   "import/order": importOrderRule,
+
+  // React rules
   "react/jsx-no-undef": ["error", { allowGlobals: true }],
   "react/jsx-uses-vars": "error",
   "react/jsx-uses-react": "off",
   "react/react-in-jsx-scope": "off",
   "react/prop-types": "off",
   "react-hooks/rules-of-hooks": "error",
-  "no-unused-vars": "off",
-  "no-trailing-spaces": "error",
+
+  // ununsed-related rules
+  "no-unused-vars": ["error", { args: "none", caughtErrors: "none" }],
   "no-undef": "off",
   "no-extra-boolean-cast": "off",
   "unused-imports/no-unused-imports": "error",
-  ...whitespaceRules,
-  "max-len": ["error", { "code": 120, "ignoreUrls": true, "ignoreStrings": true, "ignoreComments": true }]
+
+  // whitespace rules
+  "@stylistic/indent": ["error", 2, { SwitchCase: 1 }],
+  "no-tabs": "error",
+  "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+  "linebreak-style": "off",
+  "object-curly-spacing": ["error", "always"],
+  "@stylistic/no-trailing-spaces": "error",
+  "@stylistic/eol-last": ["error", "always"],
+
+  // complexity rules
+  "max-nested-callbacks": ["error", 3],
+
+  // codestyle rules
+  "@stylistic/max-len": ["error", { code: 120, ignoreUrls: true, ignoreStrings: true, ignoreComments: true }],
 };
 
 const commonLinterOptions = {
@@ -107,8 +121,8 @@ const commonConfigs = {
   linterOptions: commonLinterOptions,
 };
 
-
 // --- Main config ---
+
 export default defineConfig([
   // Ignore folders/files
   {
@@ -131,9 +145,7 @@ export default defineConfig([
     },
     plugins: {
       ...commonPlugins,
-      "jsx-a11y": jsxA11y,
     },
-    extends: ["js/recommended"],
     ...commonConfigs,
   },
 
@@ -150,7 +162,7 @@ export default defineConfig([
     },
     plugins: {
       ...commonPlugins,
-      "@typescript-eslint": tsPlugin,
+	  "@typescript-eslint": tsPlugin,
     },
     ...commonConfigs,
   },

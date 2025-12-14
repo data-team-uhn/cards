@@ -147,7 +147,7 @@ function Unsubscribe (props) {
                 className={classes.submit}
                 onClick={() => unsubscribe(0)}
               >
-                  Resubscribe
+                Resubscribe
               </Button>
             </>
             : confirmed !== null ?

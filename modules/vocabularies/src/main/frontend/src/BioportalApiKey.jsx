@@ -139,7 +139,7 @@ export function BioPortalApiKey(props) {
       { !bioPortalApiKey && <>
         <Grid className={classes.noKeyInfo}>
           <Typography>Your system does not have a <a href="https://www.bioontology.org/wiki/BioPortal_Help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
-          {/* eslint-disable-next-line max-len */}
+          {/* eslint-disable-next-line @stylistic/max-len */}
           <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
         </Grid>
         <Grid>
@@ -161,7 +161,7 @@ export function BioPortalApiKey(props) {
 
       <Dialog onClose={() => setDisplayPopup(false)} open={displayPopup} maxWidth="xs" fullWidth>
         <DialogTitle>
-           Change BioPortal API key
+          Change BioPortal API key
         </DialogTitle>
         <DialogContent dividers>
           { getBioportalKeyInfo(true) }

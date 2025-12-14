@@ -627,10 +627,10 @@ function SubjectMemberInternal (props) {
                             {questionnaireTitle}
                           </Link>
                           <Typography variant="caption" component="div" color="textSecondary">
-                                         Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                            Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
                           </Typography>
                           <Typography variant="caption" component="div" color="textSecondary">
-                                         Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                            Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
                           </Typography>
                         </Grid>
                       </Grid>

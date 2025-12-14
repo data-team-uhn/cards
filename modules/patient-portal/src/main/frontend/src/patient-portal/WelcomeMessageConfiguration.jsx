@@ -59,8 +59,8 @@ function WelcomeMessageConfiguration(props) {
   return (
     <Box>
       <Alert severity="info">
-          Use APP_NAME to refer to the name configured for the application.
-          On the Patient identification screen, all occurrences of APP_NAME will appear as {appName}.
+        Use APP_NAME to refer to the name configured for the application.
+        On the Patient identification screen, all occurrences of APP_NAME will appear as {appName}.
       </Alert>
       { /* Wait for the welcomeMessage state to be set before displaying anything, as MDEditor sometimes gets stuck with an empty value */ }
       { typeof(welcomeMessage) != 'undefined' &&

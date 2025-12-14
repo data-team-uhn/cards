@@ -143,7 +143,7 @@ function UserDashboard(props) {
               variant="outlined"
               onClick={onClose}
             >
-            Cancel
+              Cancel
             </Button>
             <Button
               variant="contained"
@@ -153,7 +153,7 @@ function UserDashboard(props) {
               }}
               disabled={typeof(selectedRow) === "undefined"}
             >
-            Next
+              Next
             </Button>
           </DialogActions>
         </ResponsiveDialog>

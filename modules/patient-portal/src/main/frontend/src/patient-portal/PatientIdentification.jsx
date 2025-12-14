@@ -380,7 +380,7 @@ function PatientIdentification(props) {
                           onClick={() => setMrnHelperOpen(true)}
                           className={classes.mrnHelperLink}
                         >
-                    Where can I find my MRN?
+                          Where can I find my MRN?
                         </Link>
                       </FormHelperText>
                     </FormControl>
@@ -400,7 +400,7 @@ function PatientIdentification(props) {
                   variant="contained"
                   className={classes.submit}
                 >
-              Continue
+                  Continue
                 </Button>
               </Grid>
               <Input id="j_visitSelection" name="j_visitSelection" autoComplete="off" style={{ display: "none" }} value={visit || ""}/>
@@ -433,7 +433,7 @@ function PatientIdentification(props) {
                   </Grid>
                   <Grid className={classes.description}>
                     <Typography variant="body2" color="textSecondary">
-                If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout" underline="hover">close this page</Link>.
+                      If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout" underline="hover">close this page</Link>.
                     </Typography>
                   </Grid>
                 </>
@@ -451,7 +451,7 @@ function PatientIdentification(props) {
                       className={classes.submit}
                       onClick={() => window.location = "/system/sling/logout"}
                     >
-                Close
+                      Close
                     </Button>
                   </Grid>
                 </>

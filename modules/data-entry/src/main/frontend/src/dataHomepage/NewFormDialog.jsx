@@ -274,8 +274,9 @@ function NewFormDialog(props) {
       let sql = `select * from [cards:Questionnaire] as n `;
       let conditions = [];
       if (globalFilter) {
-        {/* eslint-disable-next-line max-len */}
-        conditions.push(`(CONTAINS(n.'title', '*${globalFilter }*') or CONTAINS(n.'description', '*${globalFilter }*'))`);
+        conditions.push(
+          `(CONTAINS(n.'title', '*${globalFilter }*') or CONTAINS(n.'description', '*${globalFilter }*'))`
+        );
       }
       // If we're on the patient chart, only allow the current subjects whose type is:
       // a) the type of the current subject

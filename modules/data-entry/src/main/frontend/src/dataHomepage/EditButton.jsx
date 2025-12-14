@@ -38,9 +38,9 @@ function EditButton(props) {
   } = props;
 
   let innerButton =
-        <IconButton className={className} size={size} onClick={onClick}>
-          <EditIcon />
-        </IconButton>
+    <IconButton className={className} size={size} onClick={onClick}>
+      <EditIcon />
+    </IconButton>
 
   return (
     <Tooltip title={entryType ? "Edit " + entryType.toLowerCase() : "Edit"}>

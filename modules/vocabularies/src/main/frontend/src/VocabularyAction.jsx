@@ -97,8 +97,9 @@ export default function VocabularyAction(props) {
   let fetchQuestionnaires = () => {
     if (questionnaires.length === 0) {
       // Send a fetch request to determine the questionnaires available
-      {/* eslint-disable-next-line max-len */}
-      const query = `select n.* from [cards:Questionnaire] as n inner join [cards:Question] as q on isdescendantnode(q, n) where q.sourceVocabularies = '${vocabulary.acronym}'`;
+      const query = `select n.* from [cards:Questionnaire] as n ` +
+        `inner join [cards:Question] as q on isdescendantnode(q, n) ` +
+        `where q.sourceVocabularies = '${vocabulary.acronym}'`;
       fetchWithReLogin(globalLoginDisplay, `/query?query=${encodeURIComponent(query)}&limit=100`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
