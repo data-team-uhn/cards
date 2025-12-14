@@ -305,10 +305,10 @@ let QuestionMatrix = (props) => {
         </TableBody>
       </Table>
       { isEdit && <>
-        <input type="hidden" className="cards-answer-id" value={answerSectionID}></input>
-        <input type="hidden" name={`${sectionAnswerPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
-        <input type="hidden" name={`${sectionAnswerPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
-        <input type="hidden" name={`${sectionAnswerPath}/section@TypeHint`} value="Reference"></input>
+        <input type="hidden" className="cards-answer-id" value={answerSectionID} />
+        <input type="hidden" name={`${sectionAnswerPath}/jcr:primaryType`} value={"cards:AnswerSection"} />
+        <input type="hidden" name={`${sectionAnswerPath}/section`} value={sectionDefinition['jcr:uuid']} />
+        <input type="hidden" name={`${sectionAnswerPath}/section@TypeHint`} value="Reference" />
         { subquestions.map(question =>
           <Answer
             key={question[1]["jcr:uuid"]}

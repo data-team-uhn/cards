@@ -119,18 +119,18 @@ function Answer (props) {
 
   return (
     <>
-      <input type="hidden" className="cards-answer-id" value={answerID}></input>
-      <input type="hidden" name={`${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
-      <input type="hidden" name={`${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
-      <input type="hidden" name={`${answerPath}/question@TypeHint`} value="Reference"></input>
+      <input type="hidden" className="cards-answer-id" value={answerID} />
+      <input type="hidden" name={`${answerPath}/jcr:primaryType`} value={answerNodeType} />
+      <input type="hidden" name={`${answerPath}/question`} value={questionDefinition['jcr:uuid']} />
+      <input type="hidden" name={`${answerPath}/question@TypeHint`} value="Reference" />
 
       {/* Add the answers, if any exist, or otherwise delete them */}
       {answers?.length ?
         (<>
-          <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType + (isMultivalued ? '[]' : '')}></input>
+          <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType + (isMultivalued ? '[]' : '')} />
           {answers.map( (element, index) => {
             return (
-              <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS] + "" + index} value={element[VALUE_POS] ?? undefined}></input>
+              <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS] + "" + index} value={element[VALUE_POS] ?? undefined} />
             );
           })}
           {
@@ -141,14 +141,14 @@ function Answer (props) {
                     type="hidden"
                     name={`${answerPath}/${key}`}
                     key={value === undefined ? index + (answers ? answers.length : 0) : value}
-                    value={value ?? undefined}></input>
+                    value={value ?? undefined} />
                 );
               })
           }
         </>)
         :
         <>
-          <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
+          <input type="hidden" name={`${answerPath}/value@Delete`} value="0" />
           { Object.entries(answerMetadata || {}).map(([key, value], index) => (
             <input
               type="hidden"

@@ -673,8 +673,8 @@ function Form (props) {
             }
             {changedSubject &&
               <>
-                <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
-                <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
+                <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]} />
+                <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference" />
               </>
             }
             {pages && !fetchInProgress &&
