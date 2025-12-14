@@ -886,7 +886,10 @@ export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion)
 }
 
 Subject.propTypes = {
-  id: PropTypes.string
+  classes: PropTypes.object.isRequired,
+  maxDisplayed: PropTypes.number,
+  pageSize: PropTypes.number,
+  extensionURL: PropTypes.string
 }
 
 export default withStyles(Subject, QuestionnaireStyle);

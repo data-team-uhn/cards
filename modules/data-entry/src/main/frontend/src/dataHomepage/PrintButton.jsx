@@ -141,7 +141,6 @@ PrintButton.propTypes = {
   title: PropTypes.string,
   resourcePath: PropTypes.string.isRequired,
   resourceData: PropTypes.object,
-  buttonText: PropTypes.string,
   className: PropTypes.string,
   breadcrumb: PropTypes.string,
   fullScreen: PropTypes.bool,

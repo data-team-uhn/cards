@@ -87,6 +87,7 @@ const commonRules = {
   "no-undef": "off",
   "no-extra-boolean-cast": "off",
   "unused-imports/no-unused-imports": "error",
+  "react/no-unused-prop-types": "error",
 
   // whitespace rules
   "@stylistic/indent": ["error", 2, { SwitchCase: 1 }],
