@@ -168,7 +168,7 @@ function NumberQuestion(props) {
   // The following is only used for ranged sliders.
   // Setting a default of "" leads to an error, unlike the non-range case.
   // Instead, default to a "no data" selection of both min and max being the lowest allowed value.
-  const sliderValues = [typeof(lowerLimit) === "undefined" ? minValue : Number(lowerLimit), typeof(upperLimit) === "undefined" ? minValue : Number(upperLimit)]
+  const sliderValues = [typeof(lowerLimit) === "undefined" ? minValue : Number(lowerLimit), typeof(upperLimit) === "undefined" ? minValue : Number(upperLimit)];
 
   const isSlider = displayMode === "slider" && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined';
   const isRangeSelected = isRange && typeof(lowerLimit) != 'undefined' && !isNaN(+lowerLimit) && typeof(upperLimit) != 'undefined' && !isNaN(+upperLimit);
@@ -191,7 +191,7 @@ function NumberQuestion(props) {
   const sliderClasses = useSliderStyles();
   // Adjust the height of a vertical slider based on the slider's marks
   const customStyle = isSlider && sliderOrientation === "vertical" ?
-    { height: Math.max(100, sliderMarks.length*30) + "px" } : undefined
+    { height: Math.max(100, sliderMarks.length*30) + "px" } : undefined;
 
   // Callback function for our min/max
   let getMinMaxValueError = (text) => {
@@ -577,7 +577,7 @@ NumberQuestion.propTypes = {
   isRange: PropTypes.bool,
 };
 
-const StyledNumberQuestion = withStyles(NumberQuestion, QuestionnaireStyle)
+const StyledNumberQuestion = withStyles(NumberQuestion, QuestionnaireStyle);
 export default StyledNumberQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

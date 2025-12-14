@@ -194,7 +194,7 @@ let ReferenceInput = (props) => {
           let nodePath = json["rows"]?.[0]?.["@path"];
           nodePath || Promise.reject("Invalid reference: " + field);
           return fetch(new URL(nodePath.match(/(\/Questionnaires\/.+?)\//)[1] + ".json", window.location.origin))
-        })
+        });
     }
     fetchRequest
       .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -240,7 +240,7 @@ let ReferenceInput = (props) => {
               // Reset to default
               setCurValue([]);
             }
-          })
+          });
       })
       .catch(console.log);
   }
@@ -292,7 +292,7 @@ let ReferenceInput = (props) => {
         }}
       />
     </EditorInput>
-  )
+  );
 }
 
 ReferenceInput.propTypes = {

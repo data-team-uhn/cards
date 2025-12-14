@@ -81,7 +81,7 @@ BooleanFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledBooleanFilter = withStyles(BooleanFilter, QuestionnaireStyle)
+const StyledBooleanFilter = withStyles(BooleanFilter, QuestionnaireStyle);
 
 export default StyledBooleanFilter;
 

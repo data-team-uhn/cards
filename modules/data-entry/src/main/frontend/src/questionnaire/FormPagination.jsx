@@ -218,9 +218,9 @@ function FormPagination (props) {
       // Use some of 1 "page" worth of progression for the initial stub on the first page
       // The rest will be used for the completion buffer on the last page
       const stubSize = pageSize * INITIAL_PROGRESS_STUB;
-      setProgress(stubSize + (pageSize * activePage) + (savedLastPage ? pageSize - stubSize : 0))
+      setProgress(stubSize + (pageSize * activePage) + (savedLastPage ? pageSize - stubSize : 0));
     }
-  }, [activePage, pages, savedLastPage])
+  }, [activePage, pages, savedLastPage]);
 
   let saveButton =
     <Button

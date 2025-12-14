@@ -102,9 +102,9 @@ function UserInputAssistant (props) {
       setPlacement(window.innerWidth > 750 ? "right" : "bottom");
     }
     handleResize();
-    window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', handleResize);
     return (() => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('resize', handleResize);
     });
   }, []);
 

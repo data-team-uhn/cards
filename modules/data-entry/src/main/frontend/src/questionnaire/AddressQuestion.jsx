@@ -171,7 +171,7 @@ AddressQuestion.propTypes = {
 };
 
 
-const StyledAddressQuestion = withStyles(AddressQuestion, QuestionnaireStyle)
+const StyledAddressQuestion = withStyles(AddressQuestion, QuestionnaireStyle);
 export default StyledAddressQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

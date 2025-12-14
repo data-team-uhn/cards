@@ -61,7 +61,7 @@ function ClinicVisits(props) {
       `and visitClinic.question = '${visitInfo?.clinic?.["jcr:uuid"]}' and visitClinic.value = '/Survey/ClinicMapping/${clinicId}' ` +
       `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' and visitStatus.value <> 'entered-in-error' ` +
   "order by visitDate.value __SORT_ORDER_PLACEHOLDER__ option (index tag cards)"
-  )
+  );
 
   let columns = [
     {

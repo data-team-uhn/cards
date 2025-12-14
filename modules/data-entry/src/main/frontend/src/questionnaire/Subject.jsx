@@ -89,7 +89,7 @@ function Subject(props) {
   // TODO: These tabs should be extensible.
   // This will involve moving SubjectContainer to it's own file and moving
   // handleDisplay() to a utility file for SubjectContainer and SubjectTimeline.
-  const tabs = ["Chart", "Timeline"]
+  const tabs = ["Chart", "Timeline"];
   const location = useLocation();
   const navigate = useNavigate();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(getSubjectIdFromPath(location.pathname));

@@ -69,7 +69,7 @@ VocabularyFilter.propTypes = {
   })
 }
 
-const StyledVocabularyFilter = withStyles(VocabularyFilter, QuestionnaireStyle)
+const StyledVocabularyFilter = withStyles(VocabularyFilter, QuestionnaireStyle);
 
 export default StyledVocabularyFilter;
 

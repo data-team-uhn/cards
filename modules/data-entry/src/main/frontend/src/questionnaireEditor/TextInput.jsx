@@ -42,7 +42,7 @@ let TextInput = (props) => {
         variant={variant || "standard"}
       />
     </EditorInput>
-  )
+  );
 }
 
 TextInput.propTypes = {

@@ -374,7 +374,7 @@ FileQuestion.propTypes = {
   namePattern: PropTypes.string
 };
 
-const StyledFileQuestion = withStyles(FileQuestion, QuestionnaireStyle)
+const StyledFileQuestion = withStyles(FileQuestion, QuestionnaireStyle);
 export default StyledFileQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

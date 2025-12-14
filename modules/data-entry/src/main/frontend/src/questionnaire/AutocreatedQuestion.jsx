@@ -72,9 +72,9 @@ let AutocreatedQuestion = (props) => {
   useEffect(() => {
     let formatted = (displayMode === "formatted" || displayMode === "summary");
     if (formatted !== isFormatted) {
-      changeIsFormatted(formatted)
+      changeIsFormatted(formatted);
     };
-  }, [displayMode])
+  }, [displayMode]);
 
   // Autocreated answers are read-only and displayed the same in view and edit modes
   // Answer instructions are not displayed since there's nothing the user can do in this form to actually follow them, as the answers are read-only

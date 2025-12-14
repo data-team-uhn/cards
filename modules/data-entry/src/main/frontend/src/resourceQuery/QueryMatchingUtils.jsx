@@ -39,7 +39,7 @@ export default class QueryMatchingUtils {
     let isMatch = true;
     words.forEach(w => {
       isMatch &&= (text?.toLowerCase().indexOf(w) >= 0);
-    })
+    });
     return isMatch;
   }
 
@@ -59,8 +59,8 @@ export default class QueryMatchingUtils {
         if (item.toLowerCase().indexOf(w) >= 0) {
           matchList[item].push(w);
         }
-      })
-    })
+      });
+    });
     // Build the set cover
     let uncoveredWords = words.slice();
     let setCover = [];

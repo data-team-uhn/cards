@@ -272,7 +272,7 @@ function PatientIdentification(props) {
         setTouCleared(true);
       }}
       onDecline={() => {
-        setShowTou(false)
+        setShowTou(false);
         setPatientDetails(null);
         setTouCleared(false);
         setVisit(null);

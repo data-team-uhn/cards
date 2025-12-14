@@ -112,7 +112,7 @@ SubjectFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledSubjectFilter = withStyles(SubjectFilter, QuestionnaireStyle)
+const StyledSubjectFilter = withStyles(SubjectFilter, QuestionnaireStyle);
 
 export default StyledSubjectFilter;
 

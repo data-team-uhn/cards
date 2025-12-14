@@ -30,7 +30,7 @@ const FieldsWriterContext = createContext();
  */
 export function FieldsProvider(props) {
   const [answers, setAnswers] = useState(DEFAULT_STATE);
-  const { additionalFieldData, ...rest } = props
+  const { additionalFieldData, ...rest } = props;
 
   return (
     <FieldsReaderContext.Provider value={{ ...answers, ...additionalFieldData }}>
@@ -48,7 +48,7 @@ export function useFieldsReaderContext() {
   const context = useContext(FieldsReaderContext);
 
   if (context == undefined) {
-    throw new Error("useFieldsReaderContext must be used within a FieldsProvider")
+    throw new Error("useFieldsReaderContext must be used within a FieldsProvider");
   }
 
   return context;
@@ -63,7 +63,7 @@ export function useFieldsWriterContext() {
   const context = useContext(FieldsWriterContext);
 
   if (context == undefined) {
-    throw new Error("useFieldsWriterContext must be used within a FieldsProvider")
+    throw new Error("useFieldsWriterContext must be used within a FieldsProvider");
   }
 
   return context;

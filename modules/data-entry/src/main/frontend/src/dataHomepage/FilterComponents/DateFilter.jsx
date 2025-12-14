@@ -91,7 +91,7 @@ DateFilter.propTypes = {
   })
 }
 
-const StyledDateFilter = withStyles(DateFilter, QuestionnaireStyle)
+const StyledDateFilter = withStyles(DateFilter, QuestionnaireStyle);
 
 export default StyledDateFilter;
 

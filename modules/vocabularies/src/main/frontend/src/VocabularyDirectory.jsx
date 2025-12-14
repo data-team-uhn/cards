@@ -109,7 +109,7 @@ export default function VocabularyDirectory(props) {
 
   useEffect(() => {
     !props.loaded && props.link && getVocabList();
-  }, [props.loaded, props.link])
+  }, [props.loaded, props.link]);
 
   return(
     <>

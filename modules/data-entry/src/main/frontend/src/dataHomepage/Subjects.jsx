@@ -26,7 +26,7 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Subjects(props) {
   const { extension, classes, actionSwitches, columns } = props;
-  const extensionURL = extension?.["cards:extensionURL"]
+  const extensionURL = extension?.["cards:extensionURL"];
 
   const defaultColumns = [
     {

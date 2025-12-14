@@ -88,7 +88,7 @@ export function BioPortalApiKey(props) {
         setDisplayPopup(false);
       })
       .catch((error) => {
-        console.error("Error creating BioportalApiKey node: " + error)
+        console.error("Error creating BioportalApiKey node: " + error);
       }
       )
   }
@@ -101,7 +101,7 @@ export function BioPortalApiKey(props) {
       }, () => {
         updateKey(false);
       });
-  }, [bioPortalApiKey])
+  }, [bioPortalApiKey]);
 
   let getBioportalKeyInfo = (enableEdit) => {
     return (

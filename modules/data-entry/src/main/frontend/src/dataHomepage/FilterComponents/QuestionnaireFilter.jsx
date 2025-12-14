@@ -124,7 +124,7 @@ QuestionnaireFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledQuestionnaireFilter = withStyles(QuestionnaireFilter, QuestionnaireStyle)
+const StyledQuestionnaireFilter = withStyles(QuestionnaireFilter, QuestionnaireStyle);
 
 export default StyledQuestionnaireFilter;
 

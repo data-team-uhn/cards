@@ -444,7 +444,7 @@ function Filters(props) {
                       onClick={()=>{
                         setEditingFilters(
                           (oldData) => {
-                            let newData = oldData.slice()
+                            let newData = oldData.slice();
                             newData.splice(index, 1);
                             return(newData);
                           });

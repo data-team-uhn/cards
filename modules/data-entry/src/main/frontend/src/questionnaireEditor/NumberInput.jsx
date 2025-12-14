@@ -60,7 +60,7 @@ let NumberInput = (props) => {
       />
       <input type="hidden" name={objectKey + "@TypeHint"} value={type} />
     </EditorInput>
-  )
+  );
 }
 
 NumberInput.propTypes = {

@@ -46,7 +46,7 @@ let BooleanInput = (props) => {
       <input type="hidden" name={objectKey} value={String(checked)} />
       <input type="hidden" name={objectKey + "@TypeHint"} value="Boolean" />
     </EditorInput>
-  )
+  );
 }
 
 BooleanInput.propTypes = {

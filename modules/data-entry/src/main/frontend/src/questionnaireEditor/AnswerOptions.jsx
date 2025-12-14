@@ -156,7 +156,7 @@ let AnswerOptions = (props) => {
       });
       return newOptions;
     });
-  }, [path])
+  }, [path]);
 
   let specialOptionsInfo = [
     {
@@ -187,7 +187,7 @@ let AnswerOptions = (props) => {
     setDeletedOptions([]);
     setTempValue('');
     setIsDuplicate(false);
-  }, [data])
+  }, [data]);
 
   let deleteOption = (index) => {
     setDeletedOptions(old => {
@@ -277,7 +277,7 @@ let AnswerOptions = (props) => {
             ExtraIcon={!item.description ? AddIcon : EditIcon}/>
         </IconButton>
       </Tooltip>
-    )
+    );
   }
 
   let generateSpecialOptions = (index) => {
@@ -346,7 +346,7 @@ let AnswerOptions = (props) => {
           }
         </Grid>
       </Grid>
-    )
+    );
   }
 
   let handlePopoverClose = () => {
@@ -441,7 +441,7 @@ let AnswerOptions = (props) => {
         </Card>
       </Popover>
     </EditorInput>
-  )
+  );
 }
 
 AnswerOptions.propTypes = {

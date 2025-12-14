@@ -82,13 +82,13 @@ function SubjectLockAction(props) {
 
   useEffect(() => {
     setLocked(subject?.statusFlags && subject.statusFlags.includes("LOCKED"));
-  }, [subject['jcr:lastModified']])
+  }, [subject['jcr:lastModified']]);
 
   useEffect(() => {
     // Hide this button if this subject has a parent and the parent is locked since
     //  current subject can't be locked or unlocked
     setDisplayAction(!subject?.parents?.["cards:lock"]);
-  }, [subject?.parents?.['jcr:lastModified']])
+  }, [subject?.parents?.['jcr:lastModified']]);
 
   let openDialog = () => {
     setDialogContent(null);
@@ -185,7 +185,7 @@ function SubjectLockAction(props) {
   let fetchIncompleteForms = () => {
     setRequestInProgress(true);
 
-    let subjects = [subject["jcr:uuid"]]
+    let subjects = [subject["jcr:uuid"]];
     getChildSubjects(subject, subjects);
     fetchWithReLogin(globalLoginDisplay, `/query?limit=100&query=SELECT * FROM [cards:Form] as f where f.'subject' in ('${subjects.join("','")}') and f.'statusFlags'='INCOMPLETE'`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -312,7 +312,7 @@ function SubjectLockAction(props) {
         setActionLabel("");
         break;
     }
-  }, [nextAction])
+  }, [nextAction]);
 
   return displayAction ? (
     <>

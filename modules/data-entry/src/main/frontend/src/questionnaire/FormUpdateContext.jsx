@@ -49,7 +49,7 @@ export function useFormUpdateReaderContext() {
   const context = useContext(FormUpdateReaderContext);
 
   if (context == undefined) {
-    throw new Error("useFormUpdateReaderContext must be used within a FormUpdateProvider")
+    throw new Error("useFormUpdateReaderContext must be used within a FormUpdateProvider");
   }
 
   return context;
@@ -64,7 +64,7 @@ export function useFormUpdateWriterContext() {
   const context = useContext(FormUpdateWriterContext);
 
   if (context == undefined) {
-    throw new Error("useFormUpdateWriterContext must be used within a FormUpdateProvider")
+    throw new Error("useFormUpdateWriterContext must be used within a FormUpdateProvider");
   }
 
   return context;

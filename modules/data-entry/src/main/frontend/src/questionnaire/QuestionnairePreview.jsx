@@ -51,12 +51,12 @@ function QuestionnairePreview (props) {
   let pageNameWriter = usePageNameWriterContext();
   useEffect(() => {
     pageNameWriter(title);
-  }, [title])
+  }, [title]);
 
   useEffect(() => {
     setContentOffsetTop(props.contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
     paginationEnabled && setContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
-  }, [pages])
+  }, [pages]);
 
   let navigate = useNavigate();
   let location = useLocation();

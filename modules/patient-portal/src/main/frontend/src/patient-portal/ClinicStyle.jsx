@@ -30,6 +30,6 @@ const clinicStyle = theme => ({
       color: blackColor
     }
   }
-})
+});
 
 export default clinicStyle;

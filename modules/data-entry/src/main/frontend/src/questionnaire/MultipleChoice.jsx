@@ -320,8 +320,8 @@ function MultipleChoice(props) {
     if (entries.length > 0) {
       let newSelection = selection.slice();
       entries.forEach((item) => {
-        addOption(item, item)
-        newSelection.push([item, item])
+        addOption(item, item);
+        newSelection.push([item, item]);
       });
       setSelection(newSelection);
     }
@@ -363,7 +363,7 @@ function MultipleChoice(props) {
       delete newData[questionName];
       return newData;
     })
-  }, [updatedOptions])
+  }, [updatedOptions]);
 
   let ghostUpdateEvent = (event) => {
     setGhostName(event.target.value);

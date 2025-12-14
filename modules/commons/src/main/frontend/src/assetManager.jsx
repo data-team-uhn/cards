@@ -156,7 +156,7 @@ var loadModule = async function(assetURL) {
         return "";
       }
       return returnVal;
-    })
+    });
 };
 
 // Load a React component from a URL.

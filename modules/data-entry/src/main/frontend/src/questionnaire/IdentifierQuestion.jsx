@@ -56,7 +56,7 @@ export default function IdentifierQuestion(props) {
           break;
       }
     }
-  }, [identifierType, isEdit])
+  }, [identifierType, isEdit]);
 
   const handleClick = () => {
     navigator.clipboard.writeText(value);

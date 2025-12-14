@@ -48,7 +48,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js"
 import { checkPropTypes } from "../propTypes";
 
 const NUM_QUESTIONS = 2;
-const STRIPPING_REGEX = [/^date of +/i, / +date$/i]
+const STRIPPING_REGEX = [/^date of +/i, / +date$/i];
 
 function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
   let questionTitle = questionData.questionText;
@@ -63,14 +63,14 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
   }
 
   // Find the first '/' after "/Forms/" in the path
-  let formPath = questionData.answerPath.substring(0, questionData.answerPath.indexOf("/", "/Forms/".length+1))
+  let formPath = questionData.answerPath.substring(0, questionData.answerPath.indexOf("/", "/Forms/".length+1));
   let formTitle = `${questionData.names?.length > 0 ? questionData.names.join(" / ") + ": " : ""}${questionData.formTitle}`;
   let divClasses = [classes.timelineDateEntry];
   if (questionData.level === -1 && rootLevel !== -1) {
-    divClasses.push(classes.timelineAncestor)
+    divClasses.push(classes.timelineAncestor);
   }
   if (index === length - 1) {
-    divClasses.push(classes.timelineDateEntryFinal)
+    divClasses.push(classes.timelineDateEntryFinal);
   }
 
   return <div key={index} className={divClasses.join(",")}>
@@ -223,7 +223,7 @@ function SubjectTimeline(props) {
     }
 
     // Get forms for the subject and all it's children, recursively
-    let subjectDataPromises = getSubjectForms(rootSubject, -1, [])
+    let subjectDataPromises = getSubjectForms(rootSubject, -1, []);
     let results = await Promise.all(subjectDataPromises);
 
     // Get all the form data into a single array

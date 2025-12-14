@@ -131,7 +131,7 @@ function Section(props) {
         return newData;
       });
     }
-  }, [conditionIsMet])
+  }, [conditionIsMet]);
 
   // Determine if the section is flagged as incomplete
   const isFlagged = hasWarningFlags(existingAnswer?.[0]);

@@ -333,9 +333,9 @@ function QuestionnaireSet(props) {
   // When the user lands on a completed visit that has not been submitted, proceed to the last step
   useEffect(() => {
     if(isComplete && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
-      setCrtStep(questionnaireIds.length)
+      setCrtStep(questionnaireIds.length);
     }
-  }, [isComplete, isSubmitted])
+  }, [isComplete, isSubmitted]);
 
   // At the last step, if the configuration specifies to skip the review, automatically submit
   useEffect(() => {
@@ -450,7 +450,7 @@ function QuestionnaireSet(props) {
           return newPreviews;
         }))
         .catch(() => setError("Your responses cannot be previewed at this time. Please try again later or contact the sender of the survey for further assistance."));
-    })
+    });
   }
 
   // Find out if a questionnaire has an interpretation for the patient, i.e. a "summary" section
@@ -467,7 +467,7 @@ function QuestionnaireSet(props) {
 
   // Find the next step : Skip questionnaires that have already been filled out
   let findNextStep = (step) => {
-    let next = step + 1
+    let next = step + 1;
     // Skip if the corresponding questionnaire has already been filled out:
     while (next < questionnaireIds.length && isFormComplete(questionnaireIds[next])) ++next;
     return next;
@@ -632,7 +632,7 @@ function QuestionnaireSet(props) {
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
       </Alert>
-      : null
+      : null;
   }
 
   const diffString = (division, result, diffs) => {

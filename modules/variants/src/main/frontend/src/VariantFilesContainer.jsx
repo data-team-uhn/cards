@@ -582,7 +582,7 @@ export default function VariantFilesContainer() {
         newSubjects[subjectPath] = newJson[subjectPath];
       }
       file.subject.existed = true;
-    })
+    });
 
     // Upload each file's subject in one batch
     return uploadJSON(newSubjects);
@@ -669,7 +669,7 @@ export default function VariantFilesContainer() {
 
         if (xhr.status != 200) {
           uploadProgress[file.name] = { state: "error", percentage: 0 };
-          console.log("Error", xhr.statusText)
+          console.log("Error", xhr.statusText);
         } else {
           // state: "done" change should turn all subject inputs into the link text
           uploadProgress[file.name] = { state: "done", percentage: 100 };

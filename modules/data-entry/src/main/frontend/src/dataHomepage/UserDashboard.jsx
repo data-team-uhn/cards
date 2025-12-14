@@ -77,7 +77,7 @@ function UserDashboard(props) {
       })
       .catch(err => console.log("Something went wrong loading the user dashboard", err))
       .finally(() => setCreationLoading(false));
-  }, [])
+  }, []);
 
   if (loading) {
     return (
