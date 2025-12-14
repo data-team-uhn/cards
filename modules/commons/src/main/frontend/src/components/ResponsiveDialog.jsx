@@ -118,6 +118,7 @@ const ResponsiveDialog = (props, ref) => {
     </Dialog>
   );
 };
+ResponsiveDialog.displayName = 'ResponsiveDialog';
 
 ResponsiveDialog.propTypes = {
   title: PropTypes.string,

@@ -124,7 +124,7 @@ function LandingPage(props) {
             <Breadcrumbs separator="by" className={classes.appInfo}>
               <Typography variant="subtitle2">{appInfo}</Typography>
               <Tooltip title="DATA Team @ UHN">
-                <a href="https://uhndata.io/" target="_blank">
+                <a href="https://uhndata.io/" target="_blank" rel="noreferrer">
                   <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
                 </a>
               </Tooltip>

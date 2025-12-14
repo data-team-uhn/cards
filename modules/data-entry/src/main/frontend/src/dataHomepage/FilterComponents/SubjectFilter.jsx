@@ -103,6 +103,7 @@ const SubjectFilter = (props, ref) => {
     />
   )
 };
+SubjectFilter.displayName = 'SubjectFilter';
 
 SubjectFilter.propTypes = {
   initial: PropTypes.shape({

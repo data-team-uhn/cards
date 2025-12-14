@@ -590,9 +590,15 @@ function Form (props) {
         { !disableHeader &&
         <ResourceHeader
           title={title}
-          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject, undefined, extensionURL).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
-          tags={ statusFlags?.map( item => (
+          breadcrumbs={[
+            <Breadcrumbs separator="/" key="breadcrumbs">
+              {getHierarchyAsList(data?.subject, undefined, extensionURL)
+                .map(a => <Typography variant="overline" key={a}>{a}</Typography>)}
+            </Breadcrumbs>
+          ]}
+          tags={ statusFlags?.map( (item, index) => (
             <Chip
+              key={index}
               label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
               variant="outlined"
               className={`${classes[item + "Flag"] || classes.DefaultFlag}`}
