@@ -211,7 +211,7 @@ let Questionnaire = (props) => {
   let questionnaireHeader = (
     <ResourceHeader
       title={questionnaireTitle || ""}
-      breadcrumbs={[<Link to={".." + baseUrl} underline="hover">Questionnaires</Link>]}
+      breadcrumbs={[<Link key="questionnaires" to={".." + baseUrl} underline="hover">Questionnaires</Link>]}
       action={questionnaireMenu}
       contentOffset={props.contentOffset}
     >

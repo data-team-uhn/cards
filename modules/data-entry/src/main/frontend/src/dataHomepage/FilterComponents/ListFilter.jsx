@@ -79,6 +79,7 @@ const ListFilter = (props, ref) => {
     </Select>
   );
 };
+ListFilter.displayName = 'ListFilter';
 
 ListFilter.propTypes = {
   initial: PropTypes.shape({

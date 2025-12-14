@@ -125,7 +125,7 @@ export function BioPortalApiKey(props) {
     <>
       <Grid>
         <Typography variant="h6">
-          Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
+          Find on <a href="https://bioportal.bioontology.org/" target="_blank" rel="noreferrer">BioPortal</a>
           { bioPortalApiKey &&
             <Tooltip title="Change BioPortal API key">
               <IconButton onClick={() => setDisplayPopup(true)} className={classes.settingIcon} size="large">
@@ -138,7 +138,7 @@ export function BioPortalApiKey(props) {
 
       { !bioPortalApiKey && <>
         <Grid className={classes.noKeyInfo}>
-          <Typography>Your system does not have a <a href="https://www.bioontology.org/wiki/BioPortal_Help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
+          <Typography>Your system does not have a <a href="https://www.bioontology.org/wiki/BioPortal_Help#Getting_an_API_key" target="_blank" rel="noreferrer">Bioportal API Key</a> configured.</Typography>
           {/* eslint-disable-next-line @stylistic/max-len */}
           <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
         </Grid>

@@ -367,8 +367,9 @@ function SubjectHeader(props) {
         breadcrumbs={parentDetails}
         action={subjectMenu}
         contentOffset={props.contentOffset}
-        tags={ statusFlags?.map( item => (
+        tags={ statusFlags?.map( (item, index) => (
           <Chip
+            key={index}
             label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
             variant="outlined"
             className={`${classes[item + "Flag"] || classes.DefaultFlag}`}
@@ -510,8 +511,9 @@ function SubjectMemberInternal (props) {
     />
   </>
 
-  let tags = statusFlags?.map( item => (
+  let tags = statusFlags?.map( (item, index) => (
     <Chip
+      key={index}
       label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
       variant="outlined"
       className={`${[classes[item + "Flag"] || classes.DefaultFlag, classes.childSubjectFlag].join(" ")}`}
@@ -807,7 +809,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
               <Tooltip key={answerValue} title={"Download " + answerValue}>
                 <Chip
                   icon={<FileIcon />}
-                  label={<a href={path} target="_blank" rel="noopener" download={answerValue}>{answerValue}</a>}
+                  label={<a href={path} target="_blank" rel="noreferrer" download={answerValue}>{answerValue}</a>}
                   color="primary"
                   variant="outlined"
                   size="small"
