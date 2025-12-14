@@ -266,7 +266,7 @@ export default function VariantFilesContainer() {
             : allErroneousFiles.splice(0, allErroneousFiles.length-1).join(", ") + ", and "+ allErroneousFiles[allErroneousFiles.length-1];
         let plural = allErroneousFiles.length > 1;
         setError(`File name${plural ? "s" : ""} ${fileString} do${plural ? "" : "es"} not follow the name convention <subject>_<tumour nb>***.csv`);
-      };
+      }
     })(0);
   };
 

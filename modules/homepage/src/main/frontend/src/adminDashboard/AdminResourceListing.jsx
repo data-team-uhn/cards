@@ -58,7 +58,7 @@ function AdminResourceListing(props) {
   let addData = (event) => {
     if (event.detail) {
       const newEntry = event.detail;
-      setData([...data, newEntry]);;
+      setData([...data, newEntry]);
     }
   }
 

@@ -174,7 +174,7 @@ function Statistic(props) {
 
   let navigate = useNavigate();
 
-  let navigateToDataset = (xVal, splitVal) => {;
+  let navigateToDataset = (xVal, splitVal) => {
     navigate(
       "/content.html/Subjects#subjects:activeTab=" + definition?.meta?.yVar?.["@name"] +
       "&subjects:filters=" + window.btoa(encodeURIComponent(JSON.stringify(generateFilters(xVal, splitVal))))

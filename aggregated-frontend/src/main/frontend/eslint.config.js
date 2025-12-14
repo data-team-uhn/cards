@@ -103,6 +103,7 @@ const commonRules = {
 
   // codestyle rules
   "@stylistic/max-len": ["error", { code: 120, ignoreUrls: true, ignoreStrings: true, ignoreComments: true }],
+  "@stylistic/no-extra-semi": "error",
 
   "jsx-a11y/no-autofocus": "off",
 };

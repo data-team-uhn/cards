@@ -358,7 +358,7 @@ function SubjectHeader(props) {
       />
     </div>
   );
-  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true, extensionURL) || [getHomepageLink(subject?.data, extensionURL)]);;
+  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true, extensionURL) || [getHomepageLink(subject?.data, extensionURL)]);
 
   return (
     subject?.data &&
@@ -705,7 +705,7 @@ function SubjectMemberInternal (props) {
       }
     </>
   );
-};
+}
 
 let SubjectMember = SubjectMemberInternal;
 
@@ -859,7 +859,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
     );
   }
   else return null;
-};
+}
 
 // Handle questions and sections differently
 export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion) {

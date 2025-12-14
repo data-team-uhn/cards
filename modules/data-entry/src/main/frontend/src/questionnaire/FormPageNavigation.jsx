@@ -152,7 +152,7 @@ function FormPageNavigation (props) {
       <Grid>{saveButton}</Grid>
     </Grid>
   );
-};
+}
 
 FormPageNavigation.propTypes = {
   pages: PropTypes.array.isRequired,

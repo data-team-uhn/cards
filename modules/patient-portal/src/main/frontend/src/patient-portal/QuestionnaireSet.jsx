@@ -478,7 +478,7 @@ function QuestionnaireSet(props) {
   // Advance to the next step
   let nextStep = () => setCrtStep(findNextStep)
 
-  let launchNextForm = () => {;
+  let launchNextForm = () => {
     if (subjectData?.[nextQuestionnaire['@name']]) {
       // Form already exists and is incomplete: prepare to edit it
       setCrtFormId(subjectData[nextQuestionnaire['@name']]['@name']);

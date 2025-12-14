@@ -783,6 +783,6 @@ function Form (props) {
       }
     </form>
   );
-};
+}
 
 export default withStyles(Form, QuestionnaireStyle);

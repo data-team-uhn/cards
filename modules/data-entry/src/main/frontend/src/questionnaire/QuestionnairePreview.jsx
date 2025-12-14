@@ -123,6 +123,6 @@ function QuestionnairePreview (props) {
       />
     }
   </div>);
-};
+}
 
 export default withStyles(QuestionnairePreview, QuestionnaireStyle);
