@@ -78,10 +78,10 @@
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
-          <excludes combine.children="append">
+          <inputExcludes combine.children="append">
             <!-- These files have already been checked in their original location, there's no need to duplicate the exact ignored list -->
             <exclude>**/main/frontend/src/**</exclude>
-          </excludes>
+          </inputExcludes>
         </configuration>
       </plugin>
 

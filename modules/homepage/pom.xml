@@ -67,13 +67,13 @@
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
-          <excludes combine.children="append">
+          <inputExcludes combine.children="append">
             <!-- Ignore files from material-dashboard-react, as they're under their own license -->
             <exclude>**/Dashboard/**</exclude>
             <exclude>**/Navbars/**</exclude>
             <exclude>**/Sidebar/**</exclude>
             <exclude>**/themePage/indexStyle.jsx</exclude>
-          </excludes>
+          </inputExcludes>
         </configuration>
       </plugin>
     </plugins>

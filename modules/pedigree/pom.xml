@@ -65,12 +65,12 @@
             </licenseFamily>
           </licenseFamilies>
           <!-- Exclude a few files known to have other (open source) licenses -->
-          <excludes combine.children="append">
+          <inputExcludes combine.children="append">
             <exclude>**/pedigree/raphael.js</exclude>
             <exclude>**/pedigree/shims/prototypeShim.js</exclude>
             <exclude>**/pedigree/shims/xwikiShim.js</exclude>
             <exclude>**/pedigree/style/font-awesome.css</exclude>
-          </excludes>
+          </inputExcludes>
         </configuration>
       </plugin>
     </plugins>
