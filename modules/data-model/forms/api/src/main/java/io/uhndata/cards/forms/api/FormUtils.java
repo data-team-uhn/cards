@@ -18,6 +18,7 @@ package io.uhndata.cards.forms.api;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -87,6 +88,9 @@ public interface FormUtils
 
     /** The name of the property of an Answer node that holds the actual value. */
     String VALUE_PROPERTY = "value";
+
+    /** The name of the property of a Form, Answer and AnswerSection node that holds its status flags. */
+    String STATUS_FLAGS_PROPERTY = "statusFlags";
 
     enum SearchType
     {
@@ -526,6 +530,15 @@ public interface FormUtils
      *         Boolean, Calendar, Decimal, String); {@code null} may be returned if no value is stored in the answer
      */
     Object getValue(Value value);
+
+    /**
+     * Extract the set of status flags from a form, answer section or answer node.
+     * @param node the form, answer section or answer node to pull the status flags from
+     * @return the set of status flags for a form.
+     *         If not status flags are present, an empty set will be returned.
+     *         {@code null} may be returned if the node is not a supported type
+     */
+    Set<String> getStatusFlags(Node node);
 
     /**
      * Serialize the value(s) stored in an Answer.

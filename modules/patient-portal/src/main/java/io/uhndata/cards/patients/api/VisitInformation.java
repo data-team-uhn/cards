@@ -43,9 +43,16 @@ public interface VisitInformation
      * Check if all the mandatory information is present for this visit. At the moment, this just means a visit date and
      * a questionnaire set.
      *
-     * @return {@code true} if all required information is present, {@code false otherwise}
+     * @return {@code true} if all required information is present, {@code false} otherwise
      */
     boolean hasRequiredInformation();
+
+    /**
+     * Check if the visit's status is one that means it should not be processed going forwards.
+     *
+     * @return {@code true} if the visit should not be processed, {@code false} otherwise
+     */
+    boolean hasInactiveStatus();
 
     /**
      * Check if all the patient-facing forms for this visit are complete.

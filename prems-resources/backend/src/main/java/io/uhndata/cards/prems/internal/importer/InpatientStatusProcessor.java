@@ -149,13 +149,13 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
                 String questionnairePath = this.formUtils.getQuestionnaire(form).getPath();
                 if ("/Questionnaires/Visit information".equals(questionnairePath)) {
                     visitInformationForm = form;
-                    if (surveyEventsForm != null) {
-                        break;
-                    }
                 } else if ("/Questionnaires/Survey events".equals(questionnairePath)) {
-                    surveyEventsForm = form;
-                    if (visitInformationForm != null) {
-                        break;
+                    if (surveyEventsForm == null) {
+                        surveyEventsForm = form;
+                    } else if (form.getProperty("jcr:created").getDate().after(
+                        surveyEventsForm.getProperty("jcr:created"))
+                    ) {
+                        surveyEventsForm = form;
                     }
                 }
             }
@@ -185,7 +185,7 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
                 setVisitOnHold(session, visitInformationForm);
             } else {
                 // No emails have been sent for this visit: delete it so that the email cooldown is reset
-                deleteVisit(session, visit);
+                tryDeleteVisit(session, visit);
             }
         }
     }
@@ -262,31 +262,71 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         }
     }
 
-    private void deleteVisit(Session session, Node visit)
+    /**
+     * Delete a visit if there are not already submitted forms.
+     * If there are already submitted forms:
+     * - Delete the unsubmitted patient forms
+     * - Change the visit information form to on-hold
+     * - Keep any survey event forms with responses received, delete others
+     */
+    private void tryDeleteVisit(Session session, Node visit)
         throws RepositoryException
     {
         try {
             // Checkout the parent patient if required
             final Node patient = visit.getParent();
+            boolean skippedForm = false;
+            Node visitInformationForm = null;
+            // Remove any forms for this visit
+            for (final PropertyIterator forms = visit.getReferences("subject"); forms.hasNext();) {
+                final Node form = forms.nextProperty().getParent();
+                final String questionnairePath = this.formUtils.getQuestionnaire(form).getPath();
+                if (this.formUtils.getStatusFlags(form).contains("SUBMITTED")) {
+                    // If the form is submitted, skip it
+                    skippedForm = true;
+                } else if (questionnairePath.endsWith("Survey events")
+                    && this.formUtils.getValue(this.formUtils.getAnswer(form,
+                        session.getNode("/Questionnaires/Survey events/responses_received"))) != null
+                ) {
+                    // If the form is a survey events form with responses recieved, skip it
+                    skippedForm = true;
+                } else if (questionnairePath.endsWith("Visit information")) {
+                    // Handle visit information forms later
+                    visitInformationForm = form;
+                } else {
+                    form.remove();
+                }
+            }
+            handleDeleteVisit(session, visit, patient, skippedForm, visitInformationForm);
+        } catch (RepositoryException e) {
+            LOGGER.error("Error deleting visit {}", visit.getPath(), e);
+        }
+    }
+
+    private void handleDeleteVisit(final Session session, final Node visit, final Node patient,
+        final boolean skippedForm, final Node visitInformationForm)
+        throws RepositoryException
+    {
+        if (skippedForm) {
+            if (visitInformationForm != null) {
+                setVisitOnHold(session, visitInformationForm);
+            }
+        } else {
+            if (visitInformationForm != null) {
+                visitInformationForm.remove();
+            }
+            // Remove the visit
             boolean mustCheckout = false;
             VersionManager versionManager = session.getWorkspace().getVersionManager();
             if (!patient.isCheckedOut()) {
                 mustCheckout = true;
                 versionManager.checkout(patient.getPath());
             }
-            // Remove any forms for this visit
-            for (final PropertyIterator forms = visit.getReferences("subject"); forms.hasNext();) {
-                final Node form = forms.nextProperty().getParent();
-                form.remove();
-            }
-            // Remove the visit
             visit.remove();
             session.save();
             if (mustCheckout) {
                 versionManager.checkin(patient.getPath());
             }
-        } catch (RepositoryException e) {
-            LOGGER.error("Error deleting visit {}", visit.getPath(), e);
         }
     }
 }

@@ -170,8 +170,8 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         final VisitInformation visitInformation = this.visitAdapter.toVisitInformation(visitForm);
 
-        // Only continue with the surveys update if we have the requirements
-        if (!visitInformation.hasRequiredInformation()) {
+        // Only continue with the surveys update if we have the requirements and it has a valid status
+        if (!visitInformation.hasRequiredInformation() || visitInformation.hasInactiveStatus()) {
             return;
         }
 
