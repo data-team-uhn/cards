@@ -57,11 +57,11 @@
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
-          <excludes combine.children="append">
+          <inputExcludes combine.children="append">
             <exclude>**/headerStyle.jsx</exclude>
             <exclude>**/themeStyle.jsx</exclude>
             <exclude>**/components/ComposedIcon.jsx</exclude>
-          </excludes>
+          </inputExcludes>
         </configuration>
       </plugin>
     </plugins>
