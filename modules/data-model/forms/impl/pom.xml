@@ -97,6 +97,13 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
     </dependency>
+    <!-- This is required by commons-csv but not pulled in -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.9.8</version>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>

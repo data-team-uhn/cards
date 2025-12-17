@@ -6,7 +6,7 @@
     },
     "bundles":[
         {
-            "id":"commons-codec:commons-codec:1.15",
+            "id":"commons-codec:commons-codec:1.19.0",
               "start-order":"5"
         },
         {
@@ -134,7 +134,7 @@
             "start-order":"5"
         },
         {
-            "id":"commons-io:commons-io:2.14.0",
+            "id":"commons-io:commons-io:2.21.0",
             "start-order":"5"
         },
         {
