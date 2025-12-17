@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import { forwardRef } from "react";
-
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
@@ -39,7 +37,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabularies" and "vocabularyFilters" children.
  *
  */
-const VocabularyFilter = forwardRef((props, ref) => {
+const VocabularyFilter = (props, ref) => {
   checkPropTypes(VocabularyFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
 
@@ -56,7 +54,7 @@ const VocabularyFilter = forwardRef((props, ref) => {
       className={classes.answerField}
     />
   )
-});
+}
 
 VocabularyFilter.propTypes = {
   initial: PropTypes.shape({

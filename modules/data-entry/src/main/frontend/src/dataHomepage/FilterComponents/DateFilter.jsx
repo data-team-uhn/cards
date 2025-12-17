@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState, forwardRef } from "react";
+import { useState } from "react";
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -43,7 +43,7 @@ const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPAR
  * @param {object} questionDefinition Object containing the definition of the question. May include a dateFormat
  *
  */
-const DateFilter = forwardRef((props, ref) => {
+const DateFilter = (props, ref) => {
   checkPropTypes(DateFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
 
@@ -78,7 +78,7 @@ const DateFilter = forwardRef((props, ref) => {
       />
     </LocalizationProvider>
   )
-});
+}
 
 DateFilter.propTypes = {
   initial: PropTypes.shape({

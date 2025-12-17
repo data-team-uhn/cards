@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 
 import { Select, MenuItem } from "@mui/material";
 import PropTypes from "prop-types";
@@ -38,7 +38,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * @param {func} onChangeInput Callback for when the value select has changed
  *
  */
-const BooleanFilter = forwardRef((props, ref) => {
+const BooleanFilter = (props, ref) => {
   checkPropTypes(BooleanFilter, props);
   const { classes, initial, onChangeInput } = props;
   // Manage our own state inside here as well
@@ -71,7 +71,7 @@ const BooleanFilter = forwardRef((props, ref) => {
       }
     </Select>
   );
-});
+}
 
 BooleanFilter.propTypes = {
   initial: PropTypes.shape({

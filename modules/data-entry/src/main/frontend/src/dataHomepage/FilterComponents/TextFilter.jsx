@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 
 import { TextField } from "@mui/material";
 import PropTypes from "prop-types";
@@ -45,7 +45,7 @@ const QuestionnaireStyleNotesContain = theme => ({
  * @param {func} onChangeInput Callback for when the value select has changed
  *
  */
-const TextFilter = forwardRef((props, ref) => {
+const TextFilter = (props, ref) => {
   checkPropTypes(TextFilter, props);
   const { classes, initial, onChangeInput } = props;
   // Manage our own state inside here as well
@@ -73,7 +73,7 @@ const TextFilter = forwardRef((props, ref) => {
       placeholder="empty"
     />
   );
-});
+}
 
 TextFilter.propTypes = {
   initial: PropTypes.shape({
