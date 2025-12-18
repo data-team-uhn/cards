@@ -51,7 +51,7 @@ export default function VocabularyActions(props) {
 
   useEffect(() => {
     setPhase(initPhase);
-  }, [initPhase])
+  }, [initPhase]);
 
   function install() {
     const oldPhase = phase;

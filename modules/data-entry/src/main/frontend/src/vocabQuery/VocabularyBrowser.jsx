@@ -74,11 +74,11 @@ function VocabularyBrowser(props) {
     } else {
       closeInfo();
     }
-  }, [infoPath])
+  }, [infoPath]);
 
   useEffect(() => {
     setBrowserOpened(browserOpen);
-  }, [browserOpen])
+  }, [browserOpen]);
 
   // Event handler for clicking away from the info box
   let clickAwayInfo = (event) => {

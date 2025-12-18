@@ -48,7 +48,7 @@ function SubjectView(props) {
   const { expanded, actionSwitches, disableHeader, disableAvatar, topPagination, extension, classes } = props;
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ activeTab, setActiveTab ] = useState(0);
-  const [ subjectTypes, setSubjectTypes] = useState([])
+  const [ subjectTypes, setSubjectTypes] = useState([]);
   const [ tabsLoading, setTabsLoading ] = useState(null);
   const [ columns, setColumns ] = useState(props.columns || null);
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("subjects:filters"));
@@ -87,7 +87,7 @@ function SubjectView(props) {
   let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]()));
   useEffect(() => {
     setEnabledActions(Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1]));
-  }, [actionSwitches])
+  }, [actionSwitches]);
 
   let fetchSubjectTypes = () => {
     let url = new URL("/query", window.location.origin);

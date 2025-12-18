@@ -37,7 +37,7 @@ async function getDashboardExtensions(name) {
   return loadExtensions("DashboardViews" + name)
     .then(extensions => extensions.slice()
       .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
-    )
+    );
   // To do: also load the default dashboard if the extension point is invalid
 }
 
@@ -128,7 +128,7 @@ function ClinicDashboard(props) {
       .then(extensions => setDashboardExtensions(extensions))
       .catch(err => console.log("Something went wrong loading the clinic dashboard", err))
       .finally(() => setExtensionsLoading(false));
-  }, [clinicId])
+  }, [clinicId]);
 
   // Also load the clinic configuration...
   useEffect(() => {
@@ -140,7 +140,7 @@ function ClinicDashboard(props) {
         setDescription(json.description || "");
         setSurveysId(json.survey);
       })
-  }, [clinicId])
+  }, [clinicId]);
 
   // ... and the surveys configured for the clinic
   useEffect(() => {

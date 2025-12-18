@@ -84,15 +84,15 @@ function VocabularyTree(props) {
     } else {
       rebuildBrowser();
     }
-  }, [path, vocabulary])
+  }, [path, vocabulary]);
 
   useEffect(() => {
     rebuildBrowser();
-  }, [roots])
+  }, [roots]);
 
   useEffect(() => {
     setSelectionChanged(true);
-  }, [selectedTerms, removedTerms])
+  }, [selectedTerms, removedTerms]);
 
   let getRoots = (status, data) => {
     setRoots(data?.roots);

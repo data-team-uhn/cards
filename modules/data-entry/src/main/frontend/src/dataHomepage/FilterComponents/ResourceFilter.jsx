@@ -73,7 +73,7 @@ ResourceFilter.propTypes = {
   })
 }
 
-const StyledResourceFilter = withStyles(ResourceFilter, QuestionnaireStyle)
+const StyledResourceFilter = withStyles(ResourceFilter, QuestionnaireStyle);
 
 export default StyledResourceFilter;
 

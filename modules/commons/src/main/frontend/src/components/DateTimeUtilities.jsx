@@ -69,14 +69,14 @@ export default class DateTimeUtilities {
   }
 
   static getFieldType(dateFormat) {
-    let dateType = this.getDateType(dateFormat)
+    let dateType = this.getDateType(dateFormat);
     let result;
     switch (dateType) {
       case this.YEAR_DATE_TYPE:
         result = "long";
         break;
       default:
-        result = "string"
+        result = "string";
         break;
     }
     return result;

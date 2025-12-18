@@ -78,7 +78,7 @@ NumericFilter.propTypes = {
   })
 }
 
-const StyledNumericFilter = withStyles(NumericFilter, QuestionnaireStyle)
+const StyledNumericFilter = withStyles(NumericFilter, QuestionnaireStyle);
 
 export default StyledNumericFilter;
 

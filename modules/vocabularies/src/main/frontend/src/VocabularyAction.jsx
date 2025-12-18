@@ -88,8 +88,8 @@ export default function VocabularyAction(props) {
   const [displayPopup, setDisplayPopup] = useState(false);
   const [linkedQuestions, setLinkedQuestions] = useState([]);
   const [questionnaires, setQuestionnaires] = useState([]);
-  const handleOpen = () => {fetchQuestionnaires();}
-  const handleClose = () => {setDisplayPopup(false);}
+  const handleOpen = () => {fetchQuestionnaires();};
+  const handleClose = () => {setDisplayPopup(false);};
   const handleUninstall = () => {setDisplayPopup(false); uninstall();}
 
   const globalLoginDisplay = useContext(GlobalLoginContext);

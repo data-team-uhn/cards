@@ -90,7 +90,7 @@ function UserStatistics(props) {
           'y-label': fullJson.yVar['@path']
         }
         if (fullJson.splitVar) {
-          requestData['splitVar'] = fullJson.splitVar['@path']
+          requestData['splitVar'] = fullJson.splitVar['@path'];
         }
 
         fetchWithReLogin(globalContext, url, { method: 'POST', body: JSON.stringify(requestData) })
@@ -113,7 +113,7 @@ function UserStatistics(props) {
   }
 
   let fetchAll = (data) => {
-    data.map((stat) => fetchStat(stat))
+    data.map((stat) => fetchStat(stat));
   }
 
   let sortedStats = [];

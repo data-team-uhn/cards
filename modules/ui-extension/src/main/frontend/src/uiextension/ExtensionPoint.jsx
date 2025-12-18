@@ -77,7 +77,7 @@ function ExtensionPoint(props) {
     // Truncate the ';charset=utf-8'
     const sepPos = contentType.indexOf(";");
     if (sepPos >= 0) {
-      contentType = contentType.substring(0, sepPos)
+      contentType = contentType.substring(0, sepPos);
     }
 
     // Determine what to do depending on the value of the output
@@ -85,7 +85,7 @@ function ExtensionPoint(props) {
       // javascript -- evaluate as-is
       response.text().then( (text) => {
         return(eval(text));
-      })
+      });
     } else if (contentType === 'application/json') {
       // json -- call the provided callback
       if (callback !== undefined) {

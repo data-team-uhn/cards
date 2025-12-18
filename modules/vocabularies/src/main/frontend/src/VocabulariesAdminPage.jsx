@@ -49,7 +49,7 @@ function generateRemoteLink(apiKey, linkKey) {
         url.searchParams.set(key, params[key])
       )
     }
-  )
+  );
   return url.toString();
 }
 
@@ -138,7 +138,7 @@ export default function VocabulariesAdminPage() {
 
   useEffect(() => {
     (localLoaded || remoteLoaded) && setPhases();
-  }, [localLoaded, remoteLoaded])
+  }, [localLoaded, remoteLoaded]);
 
   function updateLocalList(action, vocab) {
     const acronym = vocab.acronym;

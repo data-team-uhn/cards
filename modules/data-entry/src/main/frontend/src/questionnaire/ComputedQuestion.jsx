@@ -62,7 +62,7 @@ let ComputedQuestion = (props) => {
   const [displayValue, changeDisplayValue] = useState(initialValue);
   const [baseValue, changeBaseValue] = useState(initialValue);
   const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
-  const [fieldType, changeFieldType] = useState("string")
+  const [fieldType, changeFieldType] = useState("string");
   const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
 
@@ -266,14 +266,14 @@ let ComputedQuestion = (props) => {
     } else {
       changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined }));
     }
-  }, [unitOfMeasurement])
+  }, [unitOfMeasurement]);
 
   useEffect(() => {
     let formatted = (displayMode === "formatted" || displayMode === "summary");
     if (formatted !== isFormatted) {
-      changeIsFormatted(formatted)
+      changeIsFormatted(formatted);
     };
-  }, [displayMode])
+  }, [displayMode]);
 
   // Performance improvement? Only compute if inputs have changed
   evaluateExpression();

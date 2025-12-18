@@ -185,7 +185,7 @@ function Statistic(props) {
     let result = [];
     let xVarDef = definition?.meta?.xVar;
     let xValueDictionary = definition?.xValueDictionary;
-    let xVarFilter = generateFilter(xVarDef, xVal && xValueDictionary ? xValueDictionary[xVal] : xVal)
+    let xVarFilter = generateFilter(xVarDef, xVal && xValueDictionary ? xValueDictionary[xVal] : xVal);
     result.push(xVarFilter);
     if (isSplit) {
       let splitDef = definition?.meta?.splitVar;

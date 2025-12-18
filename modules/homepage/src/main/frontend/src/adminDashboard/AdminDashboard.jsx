@@ -36,7 +36,7 @@ async function getAdminRoutes() {
   return loadExtensions("AdminDashboard")
     .then(extensions => extensions.slice()
       .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
-    )
+    );
 }
 
 function AdminDashboard(props) {
@@ -50,7 +50,7 @@ function AdminDashboard(props) {
       .then(routes => setAdminRoutes(routes))
       .catch(err => console.log("Something went wrong loading the admin dashboard", err))
       .finally(() => setLoading(false));
-  }, [])
+  }, []);
 
   if (loading) {
     return (

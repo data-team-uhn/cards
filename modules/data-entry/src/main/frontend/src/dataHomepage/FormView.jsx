@@ -81,7 +81,7 @@ function FormView(props) {
   let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]()));
   useEffect(() => {
     setEnabledActions(Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1]));
-  }, [actionSwitches])
+  }, [actionSwitches]);
 
   const tabFilter = {
     "Questionnaires" : '&includeallstatus=true',

@@ -131,7 +131,7 @@ function AdminConfigScreen(props) {
       })
       .catch(err => {
         setConfig(null);
-        setError("The configuration could not be loaded.")
+        setError("The configuration could not be loaded.");
       });
   }
 

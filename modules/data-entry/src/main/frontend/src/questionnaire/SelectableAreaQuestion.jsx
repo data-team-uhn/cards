@@ -88,8 +88,8 @@ function SelectableAreaQuestion(props) {
 
   const theme = useTheme();
 
-  let getUnselectedColor = (area) => getColor(area, "unselectedColor", "transparent")
-  let getSelectedColor = (area) => getColor(area, "selectedColor", alpha(theme.palette.primary.main, 0.35))
+  let getUnselectedColor = (area) => getColor(area, "unselectedColor", "transparent");
+  let getSelectedColor = (area) => getColor(area, "selectedColor", alpha(theme.palette.primary.main, 0.35));
   let getHoverColor = (area) => isAreaSelected(area) ? getSelectedHoverColor(area) : getUnselectedHoverColor(area);
   let getUnselectedHoverColor = (area) => getColor(area, "hoverColor", alpha(theme.palette.action.active, 0.4));
   let getSelectedHoverColor = (area) => getColor(area, "selectedHoverColor", alpha(theme.palette.action.active, 0.6));
@@ -135,7 +135,7 @@ function SelectableAreaQuestion(props) {
         if (answerOption[1].notApplicable) {
           // If there is an existing Answer that matches a Not Applicable AnswerOption,
           // set up the question state to match
-          setNotApplicableOption(answerOption[1])
+          setNotApplicableOption(answerOption[1]);
           if (selection.length == 1 && selection[0][VALUE_POS] == answerOption[1].value) {
             setSelection([]);
             setNotApplicableChecked(true);
@@ -157,7 +157,7 @@ function SelectableAreaQuestion(props) {
         mapEntry.hover = getHoverColor(mapEntry);
         outputMap.push(mapEntry);
       }
-    })
+    });
 
     setMap(outputMap);
     if (outputMap) {
@@ -174,9 +174,9 @@ function SelectableAreaQuestion(props) {
           updateAreaColor(entry);
           return entry;
         }))
-      )
+      );
     }
-  }, [selection])
+  }, [selection]);
 
   // List out the selected areas in text
   useEffect(() => {
@@ -186,7 +186,7 @@ function SelectableAreaQuestion(props) {
           return <li key={selection[VALUE_POS]}>{selection[LABEL_POS]}</li>
         })}
       </ul>);
-  }, [selection])
+  }, [selection]);
 
   // When an area is clicked, update the selection associated with that area.
   let onAreaClicked = (area) => {
@@ -217,7 +217,7 @@ function SelectableAreaQuestion(props) {
           if (selectionValue[VALUE_POS] === clickedEntry[VALUE_POS]) {
             entryIndex = selectionIndex;
           }
-        })
+        });
         // Toggle the clicked areas selection state
         if(entryIndex == -1) {
           newSelection.push(clickedEntry);
@@ -270,7 +270,7 @@ function SelectableAreaQuestion(props) {
     if (viewBox) {
       // Viewbox is a set of 4 space seperated numbers "<min-x> <min-y> <width> <height>".
       // These numbers must be scaled by the same factor as other coordinates then recombined.
-      viewBox = viewBox.split(" ").map(value => Number(value) * scale).join(" ")
+      viewBox = viewBox.split(" ").map(value => Number(value) * scale).join(" ");
     }
 
     setImageMap(
@@ -324,14 +324,14 @@ function SelectableAreaQuestion(props) {
           </>
         </svg>
         : <></>
-    )
-  }, [map, initialized, currentWidth, hoveredIndex])
+    );
+  }, [map, initialized, currentWidth, hoveredIndex]);
 
   // Track the current width of the question in order to ensure the image isn't too wide
   useEffect(() => {
     if (questionRef.current) {
       const observer = new ResizeObserver(entries => {
-        setCurrentWidth(entries[0].contentRect.width)
+        setCurrentWidth(entries[0].contentRect.width);
       });
       observer.observe(questionRef.current);
       return () => questionRef.current && observer.unobserve(questionRef.current);
@@ -416,7 +416,7 @@ SelectableAreaQuestion.propTypes = {
   maxAnswers: PropTypes.number
 };
 
-const StyledSelectableAreaQuestion = withStyles(SelectableAreaQuestion, QuestionnaireStyle)
+const StyledSelectableAreaQuestion = withStyles(SelectableAreaQuestion, QuestionnaireStyle);
 export default StyledSelectableAreaQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

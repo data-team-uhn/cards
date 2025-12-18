@@ -66,7 +66,7 @@ const TextFilter = forwardRef((props, ref) => {
       defaultValue={initial?.value}
       onChange={(event) => {
         setInput(event.target.value);
-        onChangeInput(event.target.value)
+        onChangeInput(event.target.value);
       }}
       value={input}
       inputRef={ref}
@@ -83,8 +83,8 @@ TextFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledTextFilter = withStyles(TextFilter, QuestionnaireStyle)
-const StyledNotesContainFilter = withStyles(TextFilter, QuestionnaireStyleNotesContain)
+const StyledTextFilter = withStyles(TextFilter, QuestionnaireStyle);
+const StyledNotesContainFilter = withStyles(TextFilter, QuestionnaireStyleNotesContain);
 export default { StyledTextFilter, StyledNotesContainFilter }
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {

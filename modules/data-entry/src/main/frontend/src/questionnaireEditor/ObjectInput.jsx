@@ -81,7 +81,7 @@ let ObjectInput = (props) => {
         (selectedValue != '') && <Typography color="secondary" variant="subtitle2">Unsupported: {selectedValue}</Typography>
       }
     </>
-  )
+  );
 }
 
 ObjectInput.propTypes = {

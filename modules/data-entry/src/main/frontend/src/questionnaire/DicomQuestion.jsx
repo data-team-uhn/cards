@@ -111,7 +111,7 @@ function DicomQuestion(props) {
         return Promise.resolve();
       })
       .catch((err) => {
-        setDicomImagePreviewURL("error:" + err)
+        setDicomImagePreviewURL("error:" + err);
         return Promise.reject(err);
       });
   }

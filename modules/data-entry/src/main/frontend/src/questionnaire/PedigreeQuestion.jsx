@@ -179,7 +179,7 @@ PedigreeQuestion.propTypes = {
   existingAnswer: PropTypes.array,
 }
 
-const StyledPedigreeQuestion = withStyles(PedigreeQuestion, QuestionnaireStyle)
+const StyledPedigreeQuestion = withStyles(PedigreeQuestion, QuestionnaireStyle);
 export default StyledPedigreeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

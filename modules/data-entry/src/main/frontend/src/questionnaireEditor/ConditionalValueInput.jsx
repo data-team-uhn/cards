@@ -142,7 +142,7 @@ let ConditionalValueInput = (props) => {
         <input type='hidden' name={`${path}/value@Delete`} value="0" />
       }
     </EditorInput>
-  )
+  );
 }
 
 ConditionalValueInput.propTypes = {

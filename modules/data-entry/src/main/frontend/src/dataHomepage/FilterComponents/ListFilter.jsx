@@ -89,7 +89,7 @@ ListFilter.propTypes = {
   questionDefinition: PropTypes.object
 }
 
-const StyledListFilter = withStyles(ListFilter, QuestionnaireStyle)
+const StyledListFilter = withStyles(ListFilter, QuestionnaireStyle);
 
 export default StyledListFilter;
 

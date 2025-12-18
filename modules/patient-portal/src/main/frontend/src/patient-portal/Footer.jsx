@@ -30,7 +30,7 @@ async function getFooterExtensions() {
   return loadExtensions("Footer")
     .then(extensions => extensions.slice()
       .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
-    )
+    );
 }
 
 const useStyles = makeStyles()(theme => ({
@@ -56,7 +56,7 @@ export default function Footer (props) {
     getFooterExtensions()
       .then(extensions => setFooterExtensions(extensions))
       .catch(err => console.log("Something went wrong loading the page footer", err))
-  }, [])
+  }, []);
 
   return (
     <Toolbar className={classes.footer}>

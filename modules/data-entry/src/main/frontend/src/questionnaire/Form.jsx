@@ -178,7 +178,7 @@ function Form (props) {
   }, [data]);
   useEffect(() => {
     paginationEnabled && setFormContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
-  }, [pages])
+  }, [pages]);
 
   useEffect(() => {
     if (isEdit) {
@@ -427,13 +427,13 @@ function Form (props) {
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
   useEffect(() => {
     typeof(pageNameWriter) == "function" && pageNameWriter((subjectName ? subjectName + ": " : "") + title);
-  }, [subjectName, title])
+  }, [subjectName, title]);
 
   useEffect(() => {
     if (!isEdit) {
       saveDataWithCheckin();
     }
-  }, [changedSubject])
+  }, [changedSubject]);
 
   // Load the Form, only once, upon initialization
   useEffect(() => {

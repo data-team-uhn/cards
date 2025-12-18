@@ -51,7 +51,7 @@ export default function googleApiKeyAdminPage() {
       .catch((error) => {
         setError("Error fetching GoogleApiKey node: " + error);
       });
-  }, [])
+  }, []);
 
   // function to create / edit node
   function updateKey() {
@@ -66,8 +66,7 @@ export default function googleApiKeyAdminPage() {
       })
       .catch((error) => {
         setError("Error creating GoogleApiKey node: " + error);
-      }
-      )
+      });
   }
 
   return (

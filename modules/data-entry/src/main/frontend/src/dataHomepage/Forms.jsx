@@ -30,7 +30,7 @@ function Forms(props) {
   const location = useLocation();
   const questionnaire = /questionnaire=([^&]+)/.exec(location.search)?.[1];
 
-  const extensionURL = extension?.["cards:extensionURL"]
+  const extensionURL = extension?.["cards:extensionURL"];
 
   const defaultColumns = [
     {

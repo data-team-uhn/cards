@@ -56,7 +56,7 @@ function Question (props) {
 
   // if autofocus is needed and specified in the url
   useEffect(() => {
-    setAnchor(decodeURIComponent(location.hash.substring(1)))
+    setAnchor(decodeURIComponent(location.hash.substring(1)));
   }, [location]);
   useEffect(() => {
     if (anchor && questionDefinition) {

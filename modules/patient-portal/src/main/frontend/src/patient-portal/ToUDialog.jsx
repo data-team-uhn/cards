@@ -111,7 +111,7 @@ function ToUDialog(props) {
     if (actionRequired && !touAcceptedVersion) {
       fetchTouAccepted();
     }
-  }, [actionRequired, touAcceptedVersion])
+  }, [actionRequired, touAcceptedVersion]);
 
   useEffect(() => {
     if (actionRequired && open && error) {
