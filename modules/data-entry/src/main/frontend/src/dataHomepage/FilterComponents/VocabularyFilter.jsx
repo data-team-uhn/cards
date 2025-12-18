@@ -54,7 +54,7 @@ const VocabularyFilter = (props, ref) => {
       className={classes.answerField}
     />
   )
-}
+};
 
 VocabularyFilter.propTypes = {
   initial: PropTypes.shape({

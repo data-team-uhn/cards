@@ -102,7 +102,7 @@ const SubjectFilter = (props, ref) => {
       }
     />
   )
-}
+};
 
 SubjectFilter.propTypes = {
   initial: PropTypes.shape({

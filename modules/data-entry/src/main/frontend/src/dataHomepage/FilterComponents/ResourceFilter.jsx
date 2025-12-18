@@ -56,7 +56,7 @@ const ResourceFilter = (props, ref) => {
       className={classes.answerField}
     />
   )
-}
+};
 
 ResourceFilter.propTypes = {
   initial: PropTypes.shape({

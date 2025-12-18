@@ -550,7 +550,7 @@ export const NumberFormatCustom = (props, ref) => {
       }}
     />
   );
-}
+};
 
 NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired

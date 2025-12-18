@@ -71,7 +71,7 @@ const BooleanFilter = (props, ref) => {
       }
     </Select>
   );
-}
+};
 
 BooleanFilter.propTypes = {
   initial: PropTypes.shape({

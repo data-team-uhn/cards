@@ -78,7 +78,7 @@ const ListFilter = (props) => {
       }
     </Select>
   );
-}
+};
 
 ListFilter.propTypes = {
   initial: PropTypes.shape({

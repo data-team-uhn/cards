@@ -81,7 +81,7 @@ const UserFilter = (props, ref) => {
       }
     />
   );
-}
+};
 
 UserFilter.propTypes = {
   initial: PropTypes.shape({

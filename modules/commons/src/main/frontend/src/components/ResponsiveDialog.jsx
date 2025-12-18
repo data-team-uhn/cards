@@ -117,7 +117,7 @@ const ResponsiveDialog = (props, ref) => {
       { children }
     </Dialog>
   );
-}
+};
 
 ResponsiveDialog.propTypes = {
   title: PropTypes.string,

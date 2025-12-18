@@ -73,7 +73,7 @@ const TextFilter = (props, ref) => {
       placeholder="empty"
     />
   );
-}
+};
 
 TextFilter.propTypes = {
   initial: PropTypes.shape({

@@ -63,7 +63,7 @@ const NumericFilter = (props, ref) => {
       inputRef={ref}
     />
   )
-}
+};
 
 NumericFilter.propTypes = {
   initial: PropTypes.shape({

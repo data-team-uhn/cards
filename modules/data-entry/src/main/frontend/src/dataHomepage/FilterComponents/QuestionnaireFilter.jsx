@@ -114,7 +114,7 @@ const QuestionnaireFilter = (props, ref) => {
       }
     </Select>
   )
-}
+};
 
 QuestionnaireFilter.propTypes = {
   initial: PropTypes.shape({

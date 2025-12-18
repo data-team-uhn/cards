@@ -78,7 +78,7 @@ const DateFilter = (props, ref) => {
       />
     </LocalizationProvider>
   )
-}
+};
 
 DateFilter.propTypes = {
   initial: PropTypes.shape({
