@@ -39,7 +39,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  *
  */
-const ListFilter = (props) => {
+const ListFilter = (props, ref) => {
   checkPropTypes(ListFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
   // Manage our own state inside here as well
