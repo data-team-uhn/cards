@@ -233,7 +233,7 @@ function VocabularyTree(props) {
 
   return (
     <ResponsiveDialog
-      title={`${vocabulary.name} (${vocabulary.acronym})` || "Related terms"}
+      title={ vocabulary.name || vocabulary.acronym ? `${vocabulary.name} (${vocabulary.acronym})` : "Related terms"}
       withCloseButton={!enableSelection}
       open={open}
       ref={browserRef}
