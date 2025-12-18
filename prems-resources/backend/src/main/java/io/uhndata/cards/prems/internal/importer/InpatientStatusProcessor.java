@@ -177,7 +177,7 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         throws RepositoryException
     {
         // Check if visit is recent enough for the survey to be valid
-        if (isSurveyValid(session, visitInformationForm)) {
+        if (isSurveyValid(session, visit)) {
             // If initial email sent, put on-hold
             if (this.formUtils.getValue(this.formUtils.getAnswer(surveyEventsForm,
                 session.getNode("/Questionnaires/Survey events/invitation_sent"))) != null)
@@ -190,44 +190,38 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         }
     }
 
-    private boolean isSurveyValid(Session session, Node visitInformationForm)
+    private boolean isSurveyValid(Session session, Node visit)
         throws RepositoryException
     {
         try {
-            // Get the clinic's configured valid period
-            String clinicMappingPath = (String) this.formUtils.getValue(this.formUtils.getAnswer(visitInformationForm,
-                session.getNode("/Questionnaires/Visit information/clinic")));
-            Integer validDays = null;
-            if (clinicMappingPath != null && clinicMappingPath.length() > 0) {
-                Node clinicMapping = session.getNode(clinicMappingPath);
-                if (clinicMapping.hasProperty("daysRelativeToEventWhileSurveyIsValid")) {
-                    validDays = (int) clinicMapping.getProperty("daysRelativeToEventWhileSurveyIsValid").getLong();
+            Node surveyEventsForm = null;
+            final PropertyIterator forms = visit.getReferences("subject");
+            while (forms.hasNext()) {
+                Node form = forms.nextProperty().getParent();
+                String questionnairePath = this.formUtils.getQuestionnaire(form).getPath();
+                if ("/Questionnaires/Survey events".equals(questionnairePath)) {
+                    if (surveyEventsForm == null) {
+                        surveyEventsForm = form;
+                    } else if (form.getProperty("jcr:created").getDate().after(
+                        surveyEventsForm.getProperty("jcr:created"))
+                    ) {
+                        surveyEventsForm = form;
+                    }
                 }
-            }
-            // No configured valid period for that clinic: get the default
-            if (validDays == null) {
-                Node patientAccessNode = session.getNode("/Survey/PatientAccess");
-                if (patientAccessNode.hasProperty("daysRelativeToEventWhileSurveyIsValid")) {
-                    validDays = (int) patientAccessNode.getProperty("daysRelativeToEventWhileSurveyIsValid").getLong();
-                }
-            }
-            if (validDays == null) {
-                LOGGER.error("Unable to determine if survey is valid: No default range or range for clinic {}",
-                    clinicMappingPath);
-                return false;
             }
 
-            Calendar visitDate = (Calendar) this.formUtils.getValue(this.formUtils.getAnswer(visitInformationForm,
-                session.getNode("/Questionnaires/Visit information/time")));
-            if (visitDate != null) {
-                visitDate.add(Calendar.DATE, validDays);
-                return Calendar.getInstance().compareTo(visitDate) <= 0;
+            if (surveyEventsForm != null) {
+                Calendar expiry = (Calendar) this.formUtils.getValue(this.formUtils.getAnswer(
+                    surveyEventsForm, session.getNode("/Questionnaires/Survey events/survey_expiry")));
+                return (expiry != null && expiry.after(Calendar.getInstance()));
+            } else {
+                return false;
             }
         } catch (RepositoryException e) {
             // Should not happen
-            LOGGER.error("Error determining if survey {} is valid", visitInformationForm.getPath(), e);
+            LOGGER.error("Error determining if survey {} is valid", visit.getPath(), e);
         }
-        return true;
+        return false;
     }
 
     private void setVisitOnHold(Session session, Node visitInformationForm)
