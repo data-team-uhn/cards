@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { forwardRef, useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { TextField } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
@@ -42,7 +42,7 @@ const filterUserOptions =  createFilterOptions({
  * Other props are forwarded to the TextField component
  *
  */
-const UserFilter = forwardRef((props, ref) => {
+const UserFilter = (props, ref) => {
   checkPropTypes(UserFilter, props);
   const { initial, onChangeInput } = props;
   // Manage our own state inside here as well
@@ -81,7 +81,7 @@ const UserFilter = forwardRef((props, ref) => {
       }
     />
   );
-});
+};
 
 UserFilter.propTypes = {
   initial: PropTypes.shape({

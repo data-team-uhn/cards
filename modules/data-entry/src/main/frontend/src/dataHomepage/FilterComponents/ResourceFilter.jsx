@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import { forwardRef } from "react";
-
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
@@ -39,7 +37,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * @param {object} questionDefinition Object containing the definition of the question. Should include "primaryType", "labelProperty", and "propertiesToSearch" children.
  *
  */
-const ResourceFilter = forwardRef((props, ref) => {
+const ResourceFilter = (props, ref) => {
   checkPropTypes(ResourceFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
   const enableUserEntry = !!!questionDefinition?.displayMode || questionDefinition?.displayMode?.includes("input");
@@ -58,7 +56,7 @@ const ResourceFilter = forwardRef((props, ref) => {
       className={classes.answerField}
     />
   )
-});
+};
 
 ResourceFilter.propTypes = {
   initial: PropTypes.shape({

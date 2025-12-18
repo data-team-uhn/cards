@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import { forwardRef } from "react";
-
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Dialog,
@@ -73,7 +71,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-const ResponsiveDialog = forwardRef((props, ref) => {
+const ResponsiveDialog = (props, ref) => {
   checkPropTypes(ResponsiveDialog, props);
   const {
     title,
@@ -119,7 +117,7 @@ const ResponsiveDialog = forwardRef((props, ref) => {
       { children }
     </Dialog>
   );
-})
+};
 
 ResponsiveDialog.propTypes = {
   title: PropTypes.string,

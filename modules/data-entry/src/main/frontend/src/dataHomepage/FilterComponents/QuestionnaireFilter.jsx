@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 
 import ErrorIcon from "@mui/icons-material/Error";
 import { Select, MenuItem, Card, CardHeader, CardContent, Typography } from "@mui/material";
@@ -38,7 +38,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  * @param {object} initial Object containing the initial value and label to place in the questionnaire filter
  * @param {func} onChangeInput Function to call when this filter has chosen a new questionnaire
  */
-const QuestionnaireFilter = forwardRef((props, ref) => {
+const QuestionnaireFilter = (props, ref) => {
   checkPropTypes(QuestionnaireFilter, props);
   const { classes, initial, onChangeInput } = props;
   const [ error, setError ] = useState();
@@ -114,7 +114,7 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
       }
     </Select>
   )
-});
+};
 
 QuestionnaireFilter.propTypes = {
   initial: PropTypes.shape({

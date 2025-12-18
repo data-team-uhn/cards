@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 
 import ErrorIcon from "@mui/icons-material/Error";
 import { InputAdornment, Tooltip } from "@mui/material";
@@ -41,7 +41,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  * @param {object} initial Object containing the initial value and label to place in the subject filter
  * @param {func} onChangeInput Function to call when this filter has chosen a new subject
  */
-const SubjectFilter = forwardRef((props, ref) => {
+const SubjectFilter = (props, ref) => {
   checkPropTypes(SubjectFilter, props);
   const { classes, initial, onChangeInput } = props;
   const [ error, setError ] = useState();
@@ -102,7 +102,7 @@ const SubjectFilter = forwardRef((props, ref) => {
       }
     />
   )
-});
+};
 
 SubjectFilter.propTypes = {
   initial: PropTypes.shape({

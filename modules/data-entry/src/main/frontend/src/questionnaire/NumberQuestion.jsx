@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { forwardRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import {
   InputAdornment,
@@ -533,7 +533,7 @@ function NumberQuestion(props) {
 }
 
 // Helper function to bridge react-number-format with @material-ui
-export const NumberFormatCustom = forwardRef((props, ref) => {
+export const NumberFormatCustom = (props, ref) => {
   checkPropTypes(NumberFormatCustom, props);
   const { onChange, ...other } = props;
 
@@ -550,7 +550,7 @@ export const NumberFormatCustom = forwardRef((props, ref) => {
       }}
     />
   );
-});
+};
 
 NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired

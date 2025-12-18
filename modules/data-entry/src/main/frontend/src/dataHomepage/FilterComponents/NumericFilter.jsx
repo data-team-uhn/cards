@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import { forwardRef } from "react";
-
 import { TextField } from "@mui/material";
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
@@ -40,7 +38,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  *
  */
-const NumericFilter = forwardRef((props, ref) => {
+const NumericFilter = (props, ref) => {
   checkPropTypes(NumericFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
   return (
@@ -65,7 +63,7 @@ const NumericFilter = forwardRef((props, ref) => {
       inputRef={ref}
     />
   )
-});
+};
 
 NumericFilter.propTypes = {
   initial: PropTypes.shape({
