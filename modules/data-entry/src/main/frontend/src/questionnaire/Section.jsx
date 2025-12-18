@@ -219,9 +219,9 @@ function Section(props) {
               key={uuid}
               className={classNames.join(" ")}
             >
-              <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
-              <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
-              <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
+              <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"cards:AnswerSection"} />
+              <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']} />
+              <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference" />
 
               <Grid
                 container
@@ -311,7 +311,7 @@ function Section(props) {
                     }
                     {
                       answersToDelete.map((delPath) =>
-                        <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath}></input>
+                        <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath} />
                       )}
                   </Grid>
                 </Collapse>
@@ -335,11 +335,11 @@ function Section(props) {
         </Grid>}
           {/* Remove any cards:AnswerSections that we have created by using an @Delete suffix */
             UUIDsToRemove.map((uuid) =>
-              <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+              <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid} />
             )}
         </Collapse>)
         : instanceLabels.map((uuid) =>
-          <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+          <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid} />
         )
       }
     </>
