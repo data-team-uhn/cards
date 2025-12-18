@@ -47,8 +47,6 @@ let AutocreatedQuestion = (props) => {
   const { existingAnswer, questionName } = rest;
   const { displayMode, enableNotes } = { ...props.questionDefinition, ...rest };
 
-  const [isFormatted, changeIsFormatted] = useState(false);
-
   // If we are in edit mode, upon loading the pre-filled answers, place them
   // in the form context where they can be accessed by computed answers
   const changeFormContext = useFormWriterContext();
@@ -69,12 +67,7 @@ let AutocreatedQuestion = (props) => {
     }
   }, []);
 
-  useEffect(() => {
-    let formatted = (displayMode === "formatted" || displayMode === "summary");
-    if (formatted !== isFormatted) {
-      changeIsFormatted(formatted);
-    }
-  }, [displayMode]);
+  const isFormatted = displayMode === "formatted" || displayMode === "summary";
 
   // Autocreated answers are read-only and displayed the same in view and edit modes
   // Answer instructions are not displayed since there's nothing the user can do in this form to actually follow them, as the answers are read-only

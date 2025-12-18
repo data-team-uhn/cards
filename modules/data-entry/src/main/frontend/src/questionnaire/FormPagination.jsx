@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import {
   Button,
@@ -75,7 +75,6 @@ function FormPagination (props) {
   let [ activePage, setActivePage ] = useState(0);
   let [ direction, setDirection ] = useState(1);
   let [ nextActivePage, setNextActivePage ] = useState();
-  let [ progress, setProgress ] = useState(0);
   const DIRECTION_NEXT = 1, DIRECTION_PREV = -1;
   // The amount of the progress bar that should be complete on page 1
   // Expressed as a multiple of a normal page size.
@@ -211,7 +210,7 @@ function FormPagination (props) {
     }
   }, [saveInProgress, pendingSubmission, disableProgress, nextActivePage, direction, activePage]);
 
-  useEffect(() => {
+  const progress = useMemo(() => {
     let lastPage = lastValidPage();
     if (activePage != null && pages != null && lastPage >= 0) {
       // The MaterialUI progress bar expects progress to be out of 100
@@ -219,7 +218,9 @@ function FormPagination (props) {
       // Use some of 1 "page" worth of progression for the initial stub on the first page
       // The rest will be used for the completion buffer on the last page
       const stubSize = pageSize * INITIAL_PROGRESS_STUB;
-      setProgress(stubSize + (pageSize * activePage) + (savedLastPage ? pageSize - stubSize : 0));
+      return stubSize + (pageSize * activePage) + (savedLastPage ? pageSize - stubSize : 0);
+    } else {
+      return 0;
     }
   }, [activePage, pages, savedLastPage]);
 

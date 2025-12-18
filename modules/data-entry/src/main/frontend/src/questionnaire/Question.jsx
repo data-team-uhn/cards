@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useMemo } from "react";
 
 import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
 import PropTypes from "prop-types";
@@ -49,22 +49,16 @@ function Question (props) {
     disableInstructions
   } = { ...questionDefinition, ...props };
 
-  const [ doHighlight, setDoHighlight ] = useState();
-  const [ anchor, setAnchor ] = useState();
-
   const location = useLocation();
 
   // if autofocus is needed and specified in the url
-  useEffect(() => {
-    setAnchor(decodeURIComponent(location.hash.substring(1)));
-  }, [location]);
-  useEffect(() => {
-    if (anchor && questionDefinition) {
-      if (questionDefinition.displayMode === "matrix") {
-        setDoHighlight(Array.of(existingAnswer?.[1]["displayedValue"]).flat().filter(answer => anchor == answer[1].question["@path"]).length > 0);
-      } else {
-        setDoHighlight(anchor == questionDefinition["@path"]);
-      }
+  const anchor = useMemo(() => decodeURIComponent(location.hash.substring(1)), [location]);
+  const doHighlight = useMemo(() => {
+    if (!anchor || !questionDefinition) return false;
+    if (questionDefinition.displayMode === "matrix") {
+      return Array.of(existingAnswer?.[1]["displayedValue"]).flat().filter(answer => anchor == answer[1].question["@path"]).length > 0;
+    } else {
+      return anchor == questionDefinition["@path"];
     }
   }, [anchor, questionDefinition]);
 

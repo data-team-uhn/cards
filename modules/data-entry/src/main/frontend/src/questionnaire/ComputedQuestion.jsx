@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { InputAdornment, TextField, Typography } from "@mui/material";
 import PropTypes from 'prop-types';
@@ -72,8 +72,6 @@ let ComputedQuestion = (props) => {
   const [baseValue, changeBaseValue] = useState(initialValue);
   const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
   const [fieldType, changeFieldType] = useState("string");
-  const [muiInputProps, changeMuiInputProps] = useState({});
-  const [isFormatted, changeIsFormatted] = useState(false);
 
   const form = useFormReaderContext();
   const startTagSingleVal = "@{";
@@ -270,21 +268,15 @@ let ComputedQuestion = (props) => {
     setValue(typeof(result) === "undefined" ? "" : result);
   }
 
-  useEffect(() => {
-    if (unitOfMeasurement) {
-      changeMuiInputProps(muiInputProps =>
-        ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment> }));
-    } else {
-      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined }));
-    }
-  }, [unitOfMeasurement]);
+  const muiInputProps = {
+    endAdornment: unitOfMeasurement ? (
+      <InputAdornment position="end">
+        {unitOfMeasurement}
+      </InputAdornment>
+    ) : undefined,
+  };
 
-  useEffect(() => {
-    let formatted = (displayMode === "formatted" || displayMode === "summary");
-    if (formatted !== isFormatted) {
-      changeIsFormatted(formatted);
-    }
-  }, [displayMode]);
+  const isFormatted = displayMode === "formatted" || displayMode === "summary";
 
   // Performance improvement? Only compute if inputs have changed
   evaluateExpression();

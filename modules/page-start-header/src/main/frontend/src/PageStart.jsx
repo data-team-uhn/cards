@@ -32,8 +32,8 @@ export default function PageStart(props) {
   const extensionsName = props.extensionsName || "PageStart";
 
   useEffect(() => {
-    props.setTotalHeight && props.setTotalHeight(pageStartHeight);
-  });
+    props.setTotalHeight?.(pageStartHeight);
+  }, [props.setTotalHeight, pageStartHeight]);
 
   const arrayEquals = (a, b) => {
     return (

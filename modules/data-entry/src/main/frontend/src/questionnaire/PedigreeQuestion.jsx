@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
@@ -77,12 +77,11 @@ function PedigreeQuestion(props) {
     displayedImage = resizeSVG(pedigreeSVG, PEDIGREE_THUMBNAIL_WIDTH);
   }
 
-  let [ outputAnswers, setOutputAnswers ] = useState(pedigreeJSON ? [["value", pedigreeJSON]] : []);
   let answerMetadata = { image:  pedigreeSVG };
 
-  useEffect(() => {
-    setOutputAnswers(pedigreeJSON ? [["value", pedigreeJSON]] : []);
-  }, [pedigreeJSON]);
+  const outputAnswers = useMemo(() =>
+    pedigreeJSON ? [["value", pedigreeJSON]] : []
+  , [pedigreeJSON]);
 
   var image_div = <div className={classes.thumbnail} dangerouslySetInnerHTML={{ __html: displayedImage }}/>;
 

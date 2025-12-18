@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
-
 import { useLocation } from "react-router";
 
 import Form from "./Form";
@@ -28,16 +26,13 @@ import Form from "./Form";
  * @returns {Object} a React Form component
  */
 export default function FormView(props) {
-  let location = useLocation();
-  let [ id, setId ] = useState(/Forms\/([^./]+)/.exec(location.pathname)[1]);
-  let [ mode, setMode ] = useState(location.pathname.lastIndexOf(".") > location.pathname.lastIndexOf("/") ? location.pathname.substring(location.pathname.lastIndexOf(".") + 1) : "view");
+  const { pathname } = useLocation();
+  const id = /Forms\/([^.\/]+)/.exec(location.pathname)?.[1] ?? "";
 
-  useEffect(() => {
-    setId(/Forms\/([^./]+)/.exec(location.pathname)[1]);
-    let dotIndex = location.pathname.lastIndexOf(".");
-    let pathIndex = location.pathname.lastIndexOf("/");
-    setMode(dotIndex > pathIndex ? location.pathname.substring(dotIndex + 1) : "view");
-  }, [location]);
+  const dotIndex = pathname.lastIndexOf(".");
+  const slashIndex = pathname.lastIndexOf("/");
+
+  const mode = dotIndex > slashIndex ? pathname.substring(dotIndex + 1) : "view";
 
   return (
     <Form id={id} mode={mode} key={id} {...props}/>

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext, useMemo } from "react";
 
 
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -63,32 +63,24 @@ function SubjectLockAction(props) {
   const ACTION_UNLOCK = "UNLOCK";
 
   const [ open, setOpen ] = useState(false);
-  const [ displayAction, setDisplayAction ] = useState(true);
   const [ dialogTitle, setDialogTitle ] = useState(null);
   const [ dialogHeader, setDialogHeader ] = useState(null);
   const [ dialogContent, setDialogContent ] = useState(null);
   const [ nextAction, setNextAction ] = useState(ACTION_CONTINUE);
   const [ errorMessage, setErrorMessage ] = useState("");
   const [ requestInProgress, setRequestInProgress ] = useState(false);
-  const [ isLocked, setLocked ] = useState(false);
   const [ actionContent, setActionContent ] = useState(null);
-  const [ actionLabel, setActionLabel ] = useState("");
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  const isLocked = subject?.statusFlags && subject.statusFlags.includes("LOCKED");
   let lockUnlockText = isLocked ? "Unlock" : "Lock";
   let entryType = subject?.type?.label || "Subject";
   let entryPath = subject?.["@path"];
 
-  useEffect(() => {
-    setLocked(subject?.statusFlags && subject.statusFlags.includes("LOCKED"));
-  }, [subject['jcr:lastModified']]);
-
-  useEffect(() => {
-    // Hide this button if this subject has a parent and the parent is locked since
-    //  current subject can't be locked or unlocked
-    setDisplayAction(!subject?.parents?.["cards:lock"]);
-  }, [subject?.parents?.['jcr:lastModified']]);
+  // Hide this button if this subject has a parent and the parent is locked since
+  //  current subject can't be locked or unlocked
+  const displayAction = !subject?.parents?.["cards:lock"];
 
   let openDialog = () => {
     setDialogContent(null);
@@ -297,20 +289,16 @@ function SubjectLockAction(props) {
 
   let buttonText = isLocked ? `Unlock ${entryType}` : "Sign off";
 
-  useEffect(() => {
+  const actionLabel = useMemo(() => {
     switch (nextAction) {
       case ACTION_CONTINUE:
-        setActionLabel("Continue");
-        break;
+        return "Continue";
       case ACTION_LOCK:
-        setActionLabel("Sign Off");
-        break;
+        return "Sign Off";
       case ACTION_UNLOCK:
-        setActionLabel("Unlock");
-        break;
+        return "Unlock";
       default:
-        setActionLabel("");
-        break;
+        return "";
     }
   }, [nextAction]);
 

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 
 import { Typography } from "@mui/material";
 import PropTypes from "prop-types";
@@ -38,7 +38,6 @@ function AnswerInstructions (props) {
   } = props;
 
   let { isEdit, existingAnswer } = props;
-  let [ answerIsAcceptable, setAnswerAcceptable] = useState();
 
   const instructionsExist = (minAnswers > 0 || maxAnswers > 1) && (isEdit || hasWarningFlags(existingAnswer));
   const isMandatory = minAnswers == 1 && !(maxAnswers > minAnswers);
@@ -54,10 +53,10 @@ function AnswerInstructions (props) {
     range = "at least " + minAnswers;
   }
 
-  useEffect(() => {
-    setAnswerAcceptable((currentAnswers >= minAnswers) &&
-      (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers) || !isEdit && !hasWarningFlags(existingAnswer))
-  }, [currentAnswers]);
+  const answerIsAcceptable  = useMemo(() => 
+    (currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers)
+      || !isEdit && !hasWarningFlags(existingAnswer)
+  , [currentAnswers]);
 
   return (instructionsExist && (
     <Typography

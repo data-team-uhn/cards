@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
 import {
@@ -53,7 +53,7 @@ function QuestionnairePreview (props) {
     pageNameWriter(title);
   }, [title]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setContentOffsetTop(props.contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
     paginationEnabled && setContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
   }, [pages]);

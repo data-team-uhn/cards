@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useEffect, useContext } from "react";
+import { useState, useMemo, useContext } from "react";
 
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -83,11 +83,11 @@ function SubjectView(props) {
   const actions = {
     "delete": DeleteWithRefreshButton
   }
-  const [ enabledActions, setEnabledActions ] = useState(actions);
+
   let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]()));
-  useEffect(() => {
-    setEnabledActions(Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1]));
-  }, [actionSwitches]);
+  const enabledActions = useMemo(() =>
+    Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1])
+  , [actionSwitches]);
 
   let fetchSubjectTypes = () => {
     let url = new URL("/query", window.location.origin);

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useRef, useEffect, useState, useContext } from "react";
+import { useRef, useEffect, useState, useContext, useLayoutEffect, useMemo } from "react";
 
 
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -114,7 +114,6 @@ function Form (props) {
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
   let [ pages, setPages ] = useState(null);
   // Avoid rendering everything at once before we get all of the questionnaire details
-  let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ paginationVariant, setPaginationVariant ] = useState(paginationProps?.variant);
   let [ paginationNavMode, setPaginationNavMode ] = useState(paginationProps?.navMode);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
@@ -140,9 +139,9 @@ function Form (props) {
 
   let navigate = useNavigate();
 
-  useEffect(() => {
-    setPaginationEnabled(isEdit && !!data?.['questionnaire']?.['paginate']);
-  }, [isEdit]);
+  const paginationEnabled = useMemo(() =>
+    (isEdit && !!data?.questionnaire?.paginate)
+  , [isEdit, data]);
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -184,10 +183,10 @@ function Form (props) {
   const baseURL = "/content.html" + (extensionURL ? "/" + extensionURL : "");
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setFormContentOffsetTop(contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
   }, [data]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     paginationEnabled && setFormContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
   }, [pages]);
 
@@ -265,7 +264,6 @@ function Form (props) {
     setStatusFlags(json.statusFlags);
 
     if (window.location.pathname.endsWith(".edit") || mode == "edit") {
-      setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
       typeof(paginationVariant) == "undefined" && setPaginationVariant(json?.questionnaire?.paginationVariant);
       typeof(paginationNavMode) == "undefined" && setPaginationNavMode(json?.questionnaire?.paginationMode);
       // If the completion requirement has not already been set via Form prop,

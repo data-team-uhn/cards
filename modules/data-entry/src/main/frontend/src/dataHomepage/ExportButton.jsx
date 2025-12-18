@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 
 
 import DownloadIcon from '@mui/icons-material/FileDownload';
@@ -115,7 +115,7 @@ function ExportButton(props) {
 
   const [ open, setOpen ] = useState(false);
   // List of questions and sections to display in dropdown select to exclude/include
-  const [ entities, setEntities] = useState();
+  const [ entities, setEntities] = useState(entityData ? findQuestionnaireEntries(entityData) : null);
 
   // Decides if the generated export URL ends in .csv or in .tsv
   const [ fileFormat, setFileFormat ] = useState(DEFAULTS.fileFormat);
@@ -144,8 +144,6 @@ function ExportButton(props) {
   const [ createdBefore, setCreatedBefore ] = useState(null);
   const [ modifiedAfter, setModifiedAfter ] = useState(null);
   const [ modifiedBefore, setModifiedBefore ] = useState(null);
-  const [ createdRangeIsInvalid, setCreatedRangeIsInvalid ] = useState(false);
-  const [ modifiedRangeIsInvalid, setModifiedRangeIsInvalid ] = useState(false);
 
   const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED" ];
   const [ statusSelectionMode, setStatusSelectionMode ] = useState(DEFAULTS.statusSelectionMode);
@@ -155,38 +153,35 @@ function ExportButton(props) {
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
-    if (entityData && !entities) {
-      setEntities(findQuestionnaireEntries(entityData));
-    }
-    if (!entityData && entryPath && !entities && open) {
+    if (open && !entities && entryPath) {
       fetchWithReLogin(globalLoginDisplay, `${entryPath}.deep.json`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
           setEntities(findQuestionnaireEntries(json));
         });
     }
-  }, [entityData, open]);
+  }, [entryPath, entities, open]);
 
   useEffect(() => {
-    if (!users && open) {
+    if (open && !users) {
       fetchWithReLogin(globalLoginDisplay, "/home/users.json")
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
           setUsers(json.rows);
         });
     }
-  }, [open]);
+  }, [users, open]);
 
   // Determine if the before date is earlier than the after date
-  useEffect(() => {
-    open && setCreatedRangeIsInvalid(!!createdAfter && !!createdBefore
-      && new Date(createdBefore).valueOf() <= new Date(createdAfter).valueOf());
-  }, [createdAfter, createdBefore]);
+  const createdRangeIsInvalid = useMemo(() =>
+    !open ? null :
+      !!createdAfter && !!createdBefore && new Date(createdBefore).valueOf() <= new Date(createdAfter).valueOf()
+  , [open, createdAfter, createdBefore]);
 
-  useEffect(() => {
-    open && setModifiedRangeIsInvalid(!!modifiedAfter && !!modifiedBefore
-      && new Date(modifiedBefore).valueOf() <= new Date(modifiedAfter).valueOf());
-  }, [modifiedAfter, modifiedBefore]);
+  const modifiedRangeIsInvalid = useMemo(() =>
+    !open ? null :
+      !!modifiedAfter && !!modifiedBefore && new Date(modifiedBefore).valueOf() <= new Date(modifiedAfter).valueOf()
+  , [open, modifiedAfter, modifiedBefore]);
 
   let openDialog = () => {
     entryPath && !open && setOpen(true);

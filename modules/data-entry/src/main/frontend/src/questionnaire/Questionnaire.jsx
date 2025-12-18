@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/FindInPage';
@@ -537,7 +537,6 @@ let QuestionnaireEntry = (props) => {
   checkPropTypes(QuestionnaireEntry, props);
   let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
-  let [ menuItems, setMenuItems ] = useState([]);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
   // --------------------------------------------------------------
@@ -606,24 +605,26 @@ let QuestionnaireEntry = (props) => {
   // `//CHILDREN` spec and whether the maximum allowed for each
   // child type was reached
 
-  useEffect(() => {
+  const menuItems = useMemo(() => {
+    if (!childModels) return [];
     // Add the child types to the menu
-    setMenuItems(Object.keys(childModels || {}).filter(k => typeof(childModels[k]) != "object"));
+    const base = Object.keys(childModels || {}).filter(k => typeof(childModels[k]) != "object");
 
     // Some child entries may be configured to have a maximum number of entries
     // (for example, only one conditional or conditional group per section)
     // Exclude from the creation menu any entries corresponding to child types
     // for which maximum of that type has been reached
-    if (childModels) {
+    const extras =
       Object.values(childModels)
-        .filter(v => {
-          if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
-          if (!Object.hasOwn(v, 'max')) return true;
+        .filter((v) => typeof v === "object" && typeof v?.entries === "object")
+        .filter((v) => {
+          if (!Object.hasOwn(v, "max")) return true;
           let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
-          return (Object.values(entryData).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
+          const currentCount = Object.values(entryData).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length;
+          return currentCount < v.max;
         })
-        .forEach(v => setMenuItems(items => [...(items || []), ...Object.keys(v.entries)]));
-    }
+        .flatMap((v) => Object.keys(v.entries));
+    return [...base, ...extras];
   }, [entryData, childModels]);
 
   // -------------------------------------------------------------
