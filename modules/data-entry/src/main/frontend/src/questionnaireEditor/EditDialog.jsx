@@ -63,7 +63,7 @@ let EditDialog = (props) => {
   } catch (e) {
     // do nothing
   }
-  
+
 
   let formattedType = camelCaseToWords(type);
 

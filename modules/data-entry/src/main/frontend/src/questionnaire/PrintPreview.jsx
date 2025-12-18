@@ -75,7 +75,7 @@ getHeaderExtensions()
 // breadcrumb: String displayed in small fonts above the title, providing some context for the printed resource.
 //   Example usage: the formatted identifier of the subject for this resource.
 // date: String displayed with breadcrumb in the header above the title, providing the time context for the printed resource
-// subtitle: String displayed in small fonts under the title, expected to be a relevant date or description 
+// subtitle: String displayed in small fonts under the title, expected to be a relevant date or description
 // fullScreen: Boolean specifying if the preview is full screen or displayed as a modal
 // onClose: Callback for closing the dialog
 //

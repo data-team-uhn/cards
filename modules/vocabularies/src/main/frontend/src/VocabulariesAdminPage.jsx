@@ -43,7 +43,7 @@ function generateRemoteLink(apiKey, linkKey) {
   let params = vocabLinks[linkKey]["params"];
   Object.keys(params).forEach(
     (key) => {
-      (key === "include" ? 
+      (key === "include" ?
         url.searchParams.set(key, params[key].join())
         :
         url.searchParams.set(key, params[key])
@@ -205,7 +205,7 @@ export default function VocabulariesAdminPage() {
             <Typography color="textSecondary">No vocabularies have been installed yet.</Typography>
           </Grid>
           }
-          <VocabularyDirectory 
+          <VocabularyDirectory
             type="local"
             link={localLink}
             vocabList={localVocabList}

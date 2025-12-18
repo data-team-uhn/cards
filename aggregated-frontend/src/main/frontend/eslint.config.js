@@ -78,6 +78,7 @@ const commonRules = {
   "react/jsx-no-undef": ["error", { allowGlobals: true }],
   "react/jsx-uses-vars": "error",
   "no-unused-vars": "off",
+  "no-trailing-spaces": "error",
   "unused-imports/no-unused-imports": "error",
   ...whitespaceRules,
 };

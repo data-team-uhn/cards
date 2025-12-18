@@ -95,7 +95,7 @@ export default function VocabularyDetails(props) {
         </DialogContent>
 
         <DialogActions>
-          {(phase == Phase["Latest"] || phase == Phase["Update Available"]) && 
+          {(phase == Phase["Latest"] || phase == Phase["Update Available"]) &&
             <Button onClick={() => {setBrowserOpened(true);}} variant="contained" className={classes.browseAction}>Browse</Button>
           }
           <VocabularyAction

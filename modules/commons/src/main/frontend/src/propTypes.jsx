@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 /**
  * A wrapper around PropTypes.checkPropTypes that provides default values for the common parameters.
  * This simplifies prop type checking by only requiring the component and props to be passed.
- * 
+ *
  * @param {React.Component} Component - The React component to check props for
  * @param {Object} props - The props object to validate
  */

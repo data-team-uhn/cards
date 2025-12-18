@@ -50,7 +50,7 @@ const CARDS_QUERY_MATCH_PATH_KEY = "@path";
 
 /**
  * A component that renders a search bar, similar to autocomplete. It will fire off a query to /query, and parse the results as a selectable list.
- * 
+ *
  * @param {bool} invertColors If true, inverts the colours of various elements
  * @param {string} defaultValue The default string to place in the search bar
  * @param {func} onChange Function to call when the input has changed. Default: redirect the user to the found node.
@@ -80,7 +80,7 @@ function SearchBar(props) {
     queryConstructor = defaultQueryConstructor,
     resultConstructor = defaultResultConstructor,
     staticContext,
-    showAllResultsLink, 
+    showAllResultsLink,
     disableDropdownItemLink,
     ...rest
   } =  props;
