@@ -88,7 +88,7 @@ BooleanQuestion.propTypes = {
   unknownLabel: PropTypes.string
 };
 
-export default BooleanQuestion = BooleanQuestion;
+export default BooleanQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "boolean") {
