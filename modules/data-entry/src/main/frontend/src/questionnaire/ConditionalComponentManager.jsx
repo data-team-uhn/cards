@@ -53,7 +53,7 @@ export default class ConditionalComponentManager {
     return (_registeredComponents
       .map(component => (component)(conditionDefinition))
       .filter(handler => handler)
-      .reduce(([chosenDisplayer, maxPriority], [displayer, priority]) => priority > maxPriority ? [displayer, priority] : [chosenDisplayer, maxPriority]))[0]
-    (conditionDefinition, context);
+      .reduce(([chosenDisplayer, maxPriority], [displayer, priority]) =>
+        priority > maxPriority ? [displayer, priority] : [chosenDisplayer, maxPriority]))[0](conditionDefinition, context);
   }
 }
