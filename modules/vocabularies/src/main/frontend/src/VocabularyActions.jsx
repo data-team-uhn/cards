@@ -106,7 +106,7 @@ export default function VocabularyActions(props) {
       });
   }
 
-  useEffect(() => props.addSetter(setPhase), [0]);
+  useEffect(() => {props.addSetter(setPhase);},[0]);
 
   return(
     <>

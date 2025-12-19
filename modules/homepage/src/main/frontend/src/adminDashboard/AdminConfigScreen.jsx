@@ -118,7 +118,7 @@ function AdminConfigScreen(props) {
   const { classes } = useStyles();
 
   useEffect(() => {getConfig()}, []);
-  useEffect(() => hasChanges && setConfigIsInitial(false), [hasChanges]);
+  useEffect(() => {hasChanges && setConfigIsInitial(false)}, [hasChanges]);
 
   // Loading the existing configuration
   const getConfig = () => {
