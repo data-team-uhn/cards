@@ -112,7 +112,7 @@ function Form (props) {
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
   let [ classNames, setClassNames ] = useState(className ? [className] : []);
 
-  let id = props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1];
+  let id = props.id || /Forms\/([^./]+)/.exec(location.pathname)[1];
   let isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
   let isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
 

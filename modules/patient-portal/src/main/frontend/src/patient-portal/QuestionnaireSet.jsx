@@ -674,7 +674,7 @@ function QuestionnaireSet(props) {
   // For example @{visit.location:-UHN} specifies that the `location` field needs to be displayed,
   // and it should default to "UHN" if the field is empty.
   const fillInVisitData = (text) => {
-    let pattern = /@\{visit\.([A-z0-9_]+)(\:\-(.+?))?\}/g;
+    let pattern = /@\{visit\.([A-z0-9_]+)(:-(.+?))?\}/g;
     let match, result = text;
     while ((match = pattern.exec(text)) !== null) {
       result = result.replace(match[0], getVisitInformation(match[1], true) || match[3] || "");
