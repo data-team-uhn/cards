@@ -144,7 +144,7 @@ function OnboardNewClinicDialog(props) {
           return response.json().then((result) => {throw result.error});
         }
       })
-      .catch((errorText) => {setError("Error: " + errorText);})
+      .catch((errorText) => setError("Error: " + errorText))
       .finally(() => {
         setSaveInProgress(false);
       });

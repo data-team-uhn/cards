@@ -208,7 +208,7 @@ function SubjectContainer(props) {
   let fetchRelated = () => {
     fetchWithReLogin(globalLoginDisplay, check_url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {setRelatedSubjects(json.rows);})
+      .then((json) => setRelatedSubjects(json.rows))
       .catch(handleError);
   }
 
@@ -251,7 +251,7 @@ function SubjectContainer(props) {
         data={subject}
         maxDisplayed={maxDisplayed}
         pageSize={pageSize}
-        onDelete={() => {setDeleted(true)}}
+        onDelete={() => setDeleted(true)}
         childSubjects={relatedSubjects}
         fetchSubjectData={fetchSubjectData}
         baseURL={baseURL}

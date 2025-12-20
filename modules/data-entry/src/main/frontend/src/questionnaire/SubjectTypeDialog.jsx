@@ -261,7 +261,7 @@ function SubjectTypeDialog(props) {
               fullWidth
               type="text"
               value={subjectListLabel}
-              onChange={(event) => { setSubjectListLabel(event.target.value); }}
+              onChange={(event) => setSubjectListLabel(event.target.value)}
             />
           </Grid>
           <Grid size={4}>
@@ -290,7 +290,7 @@ function SubjectTypeDialog(props) {
               fullWidth
               type="text"
               value={idPatternHint}
-              onChange={(event) => { setIdPatternHint(event.target.value); }}
+              onChange={(event) => setIdPatternHint(event.target.value)}
             />
           </Grid>
         </Grid>

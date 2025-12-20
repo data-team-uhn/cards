@@ -49,8 +49,8 @@ let NumberInput = (props) => {
         type='number'
         placeholder={isMax ? 'Unlimited' : ''}
         value={value}
-        onChange={(event) => { setValue(event.target.value); }}
-        onBlur={(event) => { setValue(event.target.value || defaultValue); }}
+        onChange={(event) => setValue(event.target.value)}
+        onBlur={(event) => setValue(event.target.value || defaultValue)}
         helperText={isMax ? `0 means "Unlimited"` : ''}
         slotProps={{
           htmlInput: {

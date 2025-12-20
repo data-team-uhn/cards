@@ -161,12 +161,12 @@ function LiveTable(props) {
 
     // Add the filters (if they exist)
     if (filters != null) {
-      filters["fields"].forEach((field) => {url.searchParams.append("filternames", field)});
-      filters["comparators"].forEach((comparator) => {url.searchParams.append("filtercomparators", comparator)});
-      filters["values"].forEach((value) => {url.searchParams.append("filtervalues", value)});
-      filters["types"].forEach((type) => {url.searchParams.append("filtertypes", type)});
-      filters["empties"].forEach((value) => {url.searchParams.append("filterempty", value)});
-      filters["notempties"].forEach((value) => {url.searchParams.append("filternotempty", value)});
+      filters["fields"].forEach((field) => url.searchParams.append("filternames", field));
+      filters["comparators"].forEach((comparator) => url.searchParams.append("filtercomparators", comparator));
+      filters["values"].forEach((value) => url.searchParams.append("filtervalues", value));
+      filters["types"].forEach((type) => url.searchParams.append("filtertypes", type));
+      filters["empties"].forEach((value) => url.searchParams.append("filterempty", value));
+      filters["notempties"].forEach((value) => url.searchParams.append("filternotempty", value));
     }
     let currentFetch = fetchWithReLogin(globalLoginDisplay, url);
     setFetchStatus(Object.assign({}, fetchStatus, {

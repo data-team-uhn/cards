@@ -103,7 +103,7 @@ export default function OwlInstaller(props) {
         setOwlVersion("");
         props.reloadVocabList();
       })
-      .catch((err) => { setPhase("failed") });
+      .catch((err) => setPhase("failed"));
   }
 
   return(
@@ -130,14 +130,14 @@ export default function OwlInstaller(props) {
                   style={{ display: 'none' }}
                   id="owl-file"
                   name="filename"
-                  onChange={() => {setOwlSelected("File Selected")}}
+                  onChange={() => setOwlSelected("File Selected")}
                   type={(phase == "install") ? "file" : "button"}
                 />
                 <Tooltip title={(phase == "install") ? "Select a vocabulary to install" : ""}>
                   <Button
                     disabled={(phase == "installing")}
                     variant="contained"
-                    onClick={() => {setPhase("install")}}
+                    onClick={() => setPhase("install")}
                     component="span">
                     {owlSelected}
                   </Button>

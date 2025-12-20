@@ -62,8 +62,8 @@ export default function VocabularyDetails(props) {
   const { install, uninstall, phase, vocabulary } = props;
 
   const [displayPopup, setDisplayPopup] = useState(false);
-  const handleOpen = () => {setDisplayPopup(true);}
-  const handleClose = () => {setDisplayPopup(false);}
+  const handleOpen = () => setDisplayPopup(true)
+  const handleClose = () => setDisplayPopup(false)
 
   const [browserOpened, setBrowserOpened] = useState(false);
 
@@ -96,7 +96,7 @@ export default function VocabularyDetails(props) {
 
         <DialogActions>
           {(phase == Phase["Latest"] || phase == Phase["Update Available"]) &&
-            <Button onClick={() => {setBrowserOpened(true);}} variant="contained" className={classes.browseAction}>Browse</Button>
+            <Button onClick={() => setBrowserOpened(true)} variant="contained" className={classes.browseAction}>Browse</Button>
           }
           <VocabularyAction
             install={install}

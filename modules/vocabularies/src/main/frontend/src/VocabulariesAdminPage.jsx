@@ -217,7 +217,7 @@ export default function VocabulariesAdminPage() {
         </>)}
 
         {wrapSection(
-          <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>
+          <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => setLocalLoaded(false)}/>
         )}
 
         {wrapSection(<>

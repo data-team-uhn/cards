@@ -311,7 +311,7 @@ let AnswerOptions = (props) => {
               helperText={option.isDuplicate ? 'duplicated value or label' : ''}
               className={classes.answerOptionInput}
               defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
-              onChange={(event) => { handleSpecialInputOption(option, event.target.value); }}
+              onChange={(event) => handleSpecialInputOption(option, event.target.value)}
             />
           </Tooltip>
         </Grid>
@@ -393,7 +393,7 @@ let AnswerOptions = (props) => {
         label="value OR value=label (e.g. F=Female)"
         helperText={isDuplicate ? 'Duplicated value or label' : 'Press ENTER to add a new line'}
         onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value, setIsDuplicate); }}
-        onBlur={(event) => { handleInputOption(event); }}
+        onBlur={(event) => handleInputOption(event)}
         slotProps={{
           htmlInput: Object.assign({
             onKeyDown: (event) => {

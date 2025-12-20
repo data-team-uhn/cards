@@ -119,7 +119,7 @@ function FormPagination (props) {
 
       return {
         page: page,
-        callback: (visible) => {page.addConditionalVisible(visible, questionIndex);}
+        callback: (visible) => page.addConditionalVisible(visible, questionIndex)
       }
     } else {
       if (pagesArray.length === 0) {

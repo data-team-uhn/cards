@@ -203,7 +203,7 @@ function UnstyledNewSubjectDialog (props) {
               },
             }}
             muiTableBodyRowProps={({ row }) => ({
-              onClick: () => { changeType(row.original); },
+              onClick: () => changeType(row.original),
               selected: !isLoading && row.original['label'] === (newSubjectType?.['label'] || subjectType?.['label']),
               sx: {
                 cursor: 'pointer',
@@ -350,7 +350,7 @@ function UnstyledSelectParentDialog (props) {
               positionToolbarAlertBanner="none"
               muiSearchTextFieldProps={{ autoFocus: true }}
               muiTableBodyRowProps={({ row }) => ({
-                onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent?.(row.original); },
+                onClick: () => !hasChildWithId(row.original, childName) && onChangeParent?.(row.original),
                 sx: {
                   cursor: 'pointer',
                 },
@@ -474,7 +474,7 @@ export function NewSubjectDialog (props) {
       newSubjectType[index],
       parent,
       newSubjectName[index],
-      (new_subject) => {createNewSubjectRecursive(new_subject, index-1, parentList)},
+      (new_subject) => createNewSubjectRecursive(new_subject, index-1, parentList),
       handleError);
   }
 
@@ -547,7 +547,7 @@ export function NewSubjectDialog (props) {
         .then((result) => result.ok ? result.json() : Promise.reject(result))
         .then((result) => result?.["jcr:primaryType"] == "cards:SubjectType" ? result : false);
     } else {
-      promise = new Promise((resolve) => {resolve(false);});
+      promise = new Promise((resolve) => resolve(false));
     }
 
     promise.then((result) => {
@@ -753,7 +753,7 @@ function UnstyledSelectorDialog (props) {
       .then(onChange)
       .then(() => setNewSubjectPopperOpen(false))
       .catch((err) => {console.log(err); onError(err);})
-      .finally(() => {setIsPosting(false);});
+      .finally(() => setIsPosting(false));
   }
 
   // Append the @path attribute to an object
@@ -785,7 +785,7 @@ function UnstyledSelectorDialog (props) {
     <NewSubjectDialog
       allowedTypes={allowedTypes}
       currentSubject={currentSubject}
-      onClose={() => { setNewSubjectPopperOpen(false); }}
+      onClose={() => setNewSubjectPopperOpen(false)}
       onSubmit={handleSubmitNew}
       open={open && newSubjectPopperOpen}
       disableRedirect={disableRedirect}
@@ -798,7 +798,7 @@ function UnstyledSelectorDialog (props) {
           allowedTypes={allowedTypes}
           disabled={disabled_controls}
           onError={setError}
-          onSelect={(data) => {selectSubject(data);}}
+          onSelect={(data) => selectSubject(data)}
           setSubjects={setSubjects}
           selectedSubject={selectedSubject}
           subjects={subjects}
@@ -812,7 +812,7 @@ function UnstyledSelectorDialog (props) {
           variant="contained"
           color="success"
           disabled={disabled_controls}
-          onClick={() => { setNewSubjectPopperOpen(true); }}
+          onClick={() => setNewSubjectPopperOpen(true)}
           className={classes.createNewSubjectButton}
         >
           New subject
@@ -926,7 +926,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
  * @example
  * <SubjectSelectorList
  *   disabled={false}
- *   onSelect={(subject) => {setSelectedSubject(subject)}}
+ *   onSelect={(subject) => setSelectedSubject(subject)}
  *   />
  *
  * @param {allowedTypes} array A list of allowed SubjectTypes
@@ -1076,7 +1076,7 @@ function SubjectSelectorList(props) {
         positionToolbarAlertBanner="none"
         muiSearchTextFieldProps={{ autoFocus: true }}
         muiTableBodyRowProps={({ row }) => ({
-          onClick: () => { handleSelection(row.original) && onSelect(row.original); },
+          onClick: () => handleSelection(row.original) && onSelect(row.original),
           sx: {
             cursor: 'pointer',
           },

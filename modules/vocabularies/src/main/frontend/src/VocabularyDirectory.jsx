@@ -88,7 +88,7 @@ export default function VocabularyDirectory(props) {
           let filteredVocabs = data;
           // Filter out every vocabulary that is not in `/ontologies`
           if (existingVocabList && existingVocabList.length > 0) {
-            filteredVocabs = data.filter((vocab) => { return existingVocabList.includes(vocab.ontology.acronym) });
+            filteredVocabs = data.filter(vocab => existingVocabList.includes(vocab.ontology.acronym));
           }
 
           props.setVocabList(reformat(filteredVocabs, props.type));

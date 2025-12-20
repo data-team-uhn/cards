@@ -497,7 +497,7 @@ function NumberQuestion(props) {
               { makeSlider({
                 valueLabelDisplay: (isSingleSliderSelected ? "on" : "off"),
                 value: isNaN(Number(sliderValue)) ? minValue : Number(sliderValue),
-                onChange: (event, value) => { setValue(setSliderValue, value); }
+                onChange: (event, value) => setValue(setSliderValue, value)
               })
               }
               <Answer

@@ -349,7 +349,7 @@ function ExportButton(props) {
                 control={
                   <Checkbox
                     defaultChecked={!!DEFAULTS.hasHeaderLabels}
-                    onChange={(event) => { setHeaderLabels(!!event.target.checked);}}
+                    onChange={(event) => setHeaderLabels(!!event.target.checked)}
                   />
                 }
                 label="Labels"
@@ -358,7 +358,7 @@ function ExportButton(props) {
                 control={
                   <Checkbox
                     defaultChecked={!!DEFAULTS.hasHeaderIdentifiers}
-                    onChange={(event) => { setHeaderIdentifiers(!!event.target.checked);}}
+                    onChange={(event) => setHeaderIdentifiers(!!event.target.checked)}
                   />
                 }
                 label="Identifiers"
@@ -487,7 +487,7 @@ function ExportButton(props) {
               <FormControl variant="standard" fullWidth>
                 <Autocomplete
                   value={status}
-                  onChange={(event, value) => { setStatus(value); }}
+                  onChange={(event, value) => setStatus(value)}
                   options={statuses || []}
                   renderInput={(params) =>
                     <TextField
