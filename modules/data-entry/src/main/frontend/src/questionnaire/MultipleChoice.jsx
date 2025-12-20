@@ -791,7 +791,6 @@ function ResponseChild(props) {
                   className={classes.selectionDescription}
                   variant="caption"
                   color={isInvalid ? "error" : "textSecondary"}
-                  component="div"
                 >
                   {description}
                 </FormattedText>
