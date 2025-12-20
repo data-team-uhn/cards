@@ -125,8 +125,10 @@ function DateQuestion(props) {
       if (date.invalid?.explanation) {
         // Picker does not update invalid error explanation until the state is changed
         // need to replace input with current value and question date format
-        let explanation = date.invalid?.explanation
-          .replace(/the input "([^"]*)"/, `the input "${event.currentTarget.value}"`);
+        let explanation = date.invalid.explanation;
+        if (event?.currentTarget?.value) {
+          explanation = explanation.replace(/the input "([^"]*)"/, `the input "${event.currentTarget.value}"`);
+        }
         explanation = explanation.replace(/as format .*/, `as format ${dateFormat.toLowerCase()}`);
         message = message + (explanation ? ": " + explanation : "");
       }
