@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 
 
 import SurveyIcon from '@mui/icons-material/Assignment';
@@ -112,10 +112,6 @@ const useStyles = makeStyles()(theme => ({
 function QuestionnaireSet(props) {
   const { subject, username, displayText, contentOffset, config } = props;
 
-  // Form content offset, used for sticky elements
-  // Should be the contentOffset passed as a prop + the Header height
-  const [ formContentOffset, setFormContentOffset ] = useState(contentOffset || 0);
-
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
   // Questionnaire set title, intro text, and ending text, to display to the patient user
@@ -153,10 +149,6 @@ function QuestionnaireSet(props) {
   const [ reviewMode, setReviewMode ] = useState(false);
   // Has everything been filled out?
   const [ isComplete, setComplete ] = useState();
-  // Flag for whether the user is permitted to submit incomplete forms
-  // based on configuration specifying how long in advance (if permitted)
-  // and on the event date. Defaults to false.
-  const [ canSubmitIncomplete, setCanSubmitIncomplete ] = useState(false);
   // Flag for whether the user decided to submit incomplete surveys in the current session
   const [ submittingIncomplete, setSubmittingIncomplete ] = useState(false);
   // Did the user just click on Submit and we're waiting
@@ -169,16 +161,10 @@ function QuestionnaireSet(props) {
   // Step i = 0 ... # of questionnaires-1 : filling out questionnaire #i
   // Step n = # of questionnaires: all done, exist screen
   const [ crtStep, setCrtStep ] = useState(-1);
-  // What questionnaire comes next after the current step
-  const [ nextQuestionnaire, setNextQuestionnaire] = useState(null);
   // What form we're currently displaying
   const [ crtFormId, setCrtFormId ] = useState(null);
   // When something goes wrong:
   const [ error, setError ] = useState("");
-  // Screen layout props
-  const [ screenType, setScreenType ] = useState();
-  // Subtype for non-survey screens
-  const [screenSubtype, setScreenSubtype ] = useState();
 
   const { classes } = useStyles();
 
@@ -230,8 +216,11 @@ function QuestionnaireSet(props) {
     typeof(enableReviewScreen) == "undefined" && setEnableReviewScreen(config?.enableReviewScreen);
   }, [config?.enableReviewScreen]);
 
+  // Flag for whether the user is permitted to submit incomplete forms
+  // based on configuration specifying how long in advance (if permitted)
+  // and on the event date. Defaults to false.
   // Initialize the `canSubmitIncomplete` setting based on the config and the visit date
-  useEffect(() => {
+  const canSubmitIncomplete = useMemo(() => {
     if (!Number.isNaN(+(config?.daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted)) && visitInformation) {
       let visitDate = getVisitDate();
       let dateIncompleteSubmissionEnabled = visitDate.plus({
@@ -239,24 +228,33 @@ function QuestionnaireSet(props) {
       }).endOf('day');
       const diff = dateIncompleteSubmissionEnabled.diffNow(["days"]);
       if (Math.floor(diff["days"]) <= 0) {
-        setCanSubmitIncomplete(true);
+        return true;
       }
     }
+    return false;
   }, [config?.daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted, visitInformation]);
 
   // Determine the screen type (and style) based on the step number
-  useEffect(() => {
-    setScreenType(crtStep >= 0 && crtStep < questionnaireIds?.length ? "survey" : "screen");
+  const screenType = useMemo(() => {
+    return crtStep >= 0 && crtStep < questionnaireIds?.length ? "survey" : "screen";
   }, [crtStep]);
 
+  // Screen layout props
+
+  // Form content offset, used for sticky elements
+  // Should be the contentOffset passed as a prop + the Header height
   // Once we start rendering forms, update the formContentOffset
-  useEffect(() => {
-    (crtStep == 1) &&
-      setFormContentOffset((contentOffset || 0) + (document?.getElementById('patient-portal-header')?.clientHeight || 0));
-  }, [crtStep]);
+  const formContentOffset = useMemo(() => {
+    let offset = contentOffset || 0;
+    if (crtStep == 1) {
+      return offset + (document?.getElementById('patient-portal-header')?.clientHeight || 0);
+    }
+    return offset;
+  }, [crtStep, contentOffset]);
 
-  useEffect(() => {
-    setScreenSubtype(
+  // Subtype for non-survey screens
+  const screenSubtype = useMemo(() => {
+    return (
       screenType == "screen" ?
         isComplete ?
           isSubmitted ?
@@ -265,7 +263,7 @@ function QuestionnaireSet(props) {
             "reviewScreen"
           : "incompleteScreen"
         : ""
-    )
+    );
   }, [screenType, isComplete, isSubmitted]);
 
   // Reset the crtFormId when returning to the welcome screen
@@ -273,13 +271,21 @@ function QuestionnaireSet(props) {
     crtStep == -1 && setCrtFormId(null);
   }, [crtStep]);
 
+  // Find the next step : Skip questionnaires that have already been filled out
+  let findNextStep = (step) => {
+    let next = step + 1;
+    // Skip if the corresponding questionnaire has already been filled out:
+    while (next < questionnaireIds.length && isFormComplete(questionnaireIds[next])) ++next;
+    return next;
+  }
+
   // Determine the next questionnaire that needs to be filled out
-  useEffect(() => {
-    if (!questionnaires || !subjectData) return;
+  const nextQuestionnaire = useMemo(() => {
+    if (!questionnaires || !subjectData) return null;
     // Find the next unfilled questionnaire, if any:
     let nextStep = findNextStep(crtStep);
-    setNextQuestionnaire(nextStep < questionnaireIds?.length ? questionnaires[questionnaireIds?.[nextStep]] : null);
-  }, [crtStep, subjectDataLoadCount]);
+    return nextStep < questionnaireIds?.length ? questionnaires[questionnaireIds?.[nextStep]] : null;
+  }, [crtStep, questionnaires, subjectData, questionnaireIds]);
 
   // If we're back to the start because the user was directed to add missing answers,
   // dont't show the welcome screen and skip to the next step without them pressing start
@@ -465,14 +471,6 @@ function QuestionnaireSet(props) {
       .filter(value => value['jcr:primaryType'] == 'cards:Section')
       .forEach(section => { result ||= hasInterpretation(section) });
     return result;
-  }
-
-  // Find the next step : Skip questionnaires that have already been filled out
-  let findNextStep = (step) => {
-    let next = step + 1;
-    // Skip if the corresponding questionnaire has already been filled out:
-    while (next < questionnaireIds.length && isFormComplete(questionnaireIds[next])) ++next;
-    return next;
   }
 
   // Advance to the next step
