@@ -20,7 +20,7 @@
 # JARs
 
 # Build Image
-FROM alpine:3.22
+FROM alpine:3.23
 
 ARG build_jars
 
@@ -42,14 +42,14 @@ RUN mkdir /metadata
 RUN if [[ "$build_jars" == "true" ]] ; then cp /cards/aggregated-frontend/src/main/frontend/yarn.lock /metadata/yarn.lock ; fi
 
 # Production Image: Start from a small Alpine Linux base image
-FROM alpine:3.22
+FROM alpine:3.23
 
 # Install dependency Alpine Linux packages and apply any available package upgrades
 RUN apk update
 RUN apk add --upgrade apk-tools
 RUN apk upgrade --available
 RUN apk add \
-  openjdk11-jre \
+  openjdk21-jre \
   python3 \
   tzdata \
   bash

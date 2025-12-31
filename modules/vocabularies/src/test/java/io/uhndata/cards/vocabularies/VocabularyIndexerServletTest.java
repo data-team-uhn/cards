@@ -55,8 +55,7 @@ import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
 import com.google.common.base.Function;
@@ -95,7 +94,6 @@ public class VocabularyIndexerServletTest
     @Before
     public void setup() throws LoginException
     {
-        MockitoAnnotations.initMocks(this);
         List<VocabularyIndexer> realParsers = Collections.singletonList(this.flatParser);
         Mockito.when(this.parsers.iterator()).thenReturn(realParsers.iterator());
         // BundleContext and ResourceResolver for creating resources and instantiating requests

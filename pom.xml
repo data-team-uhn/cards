@@ -75,7 +75,7 @@
     <sling.saml.version>0.2.6.cards.2</sling.saml.version>
 
     <!-- Versions to be replaced in the feature files -->
-    <asm.version>9.3</asm.version>
+    <asm.version>9.9.1</asm.version>
     <composum.nodes.version>4.1.1</composum.nodes.version>
     <jackson.version>2.17.2</jackson.version>
 
@@ -277,7 +277,7 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>1.10.19</version>
+        <version>5.21.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -312,7 +312,7 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <compilerArgument>-Xlint:all</compilerArgument>
+          <compilerArgument>-Xlint:all,-serial</compilerArgument>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
           <failOnWarning>true</failOnWarning>
@@ -421,7 +421,7 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.6.3</version>
+                  <version>3.8.7</version>
                 </requireMavenVersion>
                 <requirePluginVersions>
                   <message>Best Practice is to always define plugin versions!</message>
@@ -1606,10 +1606,10 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
           <version>3.14.1</version>
-          <!-- Java 11 is required -->
+          <!-- Java 21 is required -->
           <configuration>
-            <source>11</source>
-            <target>11</target>
+            <source>21</source>
+            <target>21</target>
           </configuration>
         </plugin>
         <!-- Compile the React code -->

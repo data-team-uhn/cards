@@ -84,6 +84,7 @@ public abstract class AnswersEditor extends DefaultEditor
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      */
+    @SuppressWarnings("this-escape")
     public AnswersEditor(final NodeBuilder nodeBuilder, final Session currentSession, final ResourceResolverFactory rrf,
         final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils)
     {

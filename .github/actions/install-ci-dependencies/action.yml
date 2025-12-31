@@ -9,10 +9,10 @@ runs:
         sudo apt-get update
         echo "::endgroup::"
       shell: bash
-    - name: Install openjdk-11-jre
+    - name: Install openjdk-21-jre
       run: |
-        echo "::group::Install openjdk-11-jre"
-        sudo apt-get -y install openjdk-11-jre
+        echo "::group::Install openjdk-21-jre"
+        sudo apt-get -y install openjdk-21-jre
         echo "::endgroup::"
       shell: bash
     - name: Install maven
