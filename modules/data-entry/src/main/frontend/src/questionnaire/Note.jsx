@@ -40,6 +40,8 @@ function Note (props) {
     pageActive,
     fullSize,
     value,
+    // eslint-disable-next-line no-unused-vars
+    onAddSuggestion,
     placeholder = "Please place any additional notes here.",
     ...rest
   } = props;

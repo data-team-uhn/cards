@@ -194,8 +194,7 @@ function Filters(props) {
   let handleChangeFilter = (index, path) => {
 
     // Load up the comparators for this index, if not already loaded
-    // eslint-disable-next-line no-unused-vars
-    let [loadedComparators, component] = getOutputChoices(path);
+    let [loadedComparators] = getOutputChoices(path);
 
     // Automatically add a new filter if they've edited the final filter
     if (index == editingFilters.length-1) {
