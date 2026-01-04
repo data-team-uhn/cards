@@ -62,22 +62,6 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.scripting.freemarker:1.0.4",
-            "start-order":"20"
-        },
-        {
-            "id": "org.freemarker:freemarker:2.3.31",
-            "start-order": "20"
-        },
-        {
-            "id":"org.apache.sling:org.apache.sling.scripting.thymeleaf:2.0.2",
-            "start-order":"20"
-        },
-        {
-            "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.thymeleaf:3.0.14.RELEASE_1",
-            "start-order":"20"
-        },
-        {
             "id":"org.attoparser:attoparser:2.0.5.RELEASE",
             "start-order":"20"
         },
@@ -103,8 +87,7 @@
         "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~scripting":{
             "user.mapping":[
                 "org.apache.sling.scripting.core=[sling-search-path-reader]",
-                "org.apache.sling.scripting.sightly.js.provider=[sling-search-path-reader]",
-                "org.apache.sling.scripting.thymeleaf=[sling-search-path-reader]"
+                "org.apache.sling.scripting.sightly.js.provider=[sling-search-path-reader]"
             ]
         }
     }
