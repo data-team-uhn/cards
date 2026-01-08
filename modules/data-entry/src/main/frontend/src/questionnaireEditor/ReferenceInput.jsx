@@ -187,7 +187,8 @@ let ReferenceInput = (props) => {
       fetchRequest = fetchWithReLogin(globalLoginDisplay, url);
     } else {
       // If this is an existing value, we will be given a jcr:uuid instead
-      let url = new URL("query?query=SELECT * FROM [nt:base] AS n WHERE n.'jcr:uuid'='" + field, window.location.origin);
+      let url = new URL(`query?query=SELECT * FROM [nt:base] AS n WHERE n.'jcr:uuid'='${field}'`,
+        window.location.origin);
       fetchRequest = fetchWithReLogin(globalLoginDisplay, url)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
