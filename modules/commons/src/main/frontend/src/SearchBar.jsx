@@ -79,6 +79,7 @@ function SearchBar(props) {
     disableButton,
     queryConstructor = defaultQueryConstructor,
     resultConstructor = defaultResultConstructor,
+    // eslint-disable-next-line no-unused-vars
     staticContext,
     showAllResultsLink,
     disableDropdownItemLink,

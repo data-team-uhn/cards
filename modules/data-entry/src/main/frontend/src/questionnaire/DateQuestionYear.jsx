@@ -37,7 +37,6 @@ import DateTimeUtilities from "../components/DateTimeUtilities";
 // Sample usage:
 //<DateQuestionYear
 //  text="Please enter a date-time in 2019"
-//  dateFormat="yyyy-MM-dd HH:mm:ss"
 //  lowerLimit="2019"
 //  upperLimit="today"
 //  type="timestamp"
@@ -46,8 +45,6 @@ function DateQuestionYear(props) {
   checkPropTypes(DateQuestionYear, props);
   let { existingAnswer, ...rest } = props;
   let {
-    text,
-    dateFormat = "yyyy",
     minAnswers = 0,
     type = DateTimeUtilities.TIMESTAMP_TYPE,
     lowerLimit,

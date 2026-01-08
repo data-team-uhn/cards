@@ -77,7 +77,7 @@ const commonRules = {
   "import/order": importOrderRule,
   "react/jsx-no-undef": ["error", { allowGlobals: true }],
   "react/jsx-uses-vars": "error",
-  "no-unused-vars": "off",
+  "no-unused-vars": ["error", { "args": "none", "caughtErrors": "none" }],
   "no-trailing-spaces": "error",
   "unused-imports/no-unused-imports": "error",
   ...whitespaceRules,

@@ -21,7 +21,7 @@ import { Grid } from "@mui/material";
 
 /* eslint-disable import/order */
 // FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
-/* eslint-disable unused-imports/no-unused-imports */
+/* eslint-disable unused-imports/no-unused-imports, no-unused-vars */
 import AddressQuestion from "./AddressQuestion";
 import BooleanQuestion from "./BooleanQuestion";
 import ChromosomeQuestion from "./ChromosomeQuestion";
@@ -40,7 +40,7 @@ import SelectableArea from "./SelectableAreaQuestion";
 import TextQuestion from "./TextQuestion";
 import TimeQuestion from "./TimeQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
-/* eslint-enable unused-imports/no-unused-imports */
+/* eslint-enable unused-imports/no-unused-imports, no-unused-vars */
 import AnswerComponentManager from "./AnswerComponentManager";
 import { hasWarningFlags } from "./FormUtilities";
 import Information from "./Information";

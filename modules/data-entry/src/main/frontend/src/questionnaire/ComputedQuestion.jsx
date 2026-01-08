@@ -54,7 +54,8 @@ import { MakeRequest } from "../vocabQuery/util.jsx";
 let ComputedQuestion = (props) => {
   checkPropTypes(ComputedQuestion, props);
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest } = props;
-  const { text, expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = { ...props.questionDefinition, ...props };
+  const { expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = { ...props.questionDefinition, ...props };
+
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
 
@@ -347,7 +348,7 @@ let ComputedQuestion = (props) => {
       }
       <Answer
         answers={answer}
-        questionDefinition={props.questionDefinition}
+        questionDefinition={questionDefinition}
         existingAnswer={existingAnswer}
         answerNodeType={answerNodeType}
         valueType={answerType}

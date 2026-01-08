@@ -72,7 +72,6 @@ function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, value, subjectType } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
 
-  const [ regexp, setRegexp ] = useState();
   const [ isValid, setIsValid ] = useState(true);
 
   const [ data, setData ] = useState([]);
@@ -104,7 +103,6 @@ function UnstyledNewSubjectDialog (props) {
   let changeType = (type) => {
     onChangeType?.(type);
     setNewSubjectType(type);
-    type?.idPattern && setRegexp(new RegExp(type.idPattern));
     validateSubjectId(type, value);
   }
 
@@ -925,15 +923,10 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
  *
  * @example
  * <SubjectSelectorList
- *   disabled={false}
  *   onSelect={(subject) => setSelectedSubject(subject)}
  *   />
  *
  * @param {allowedTypes} array A list of allowed SubjectTypes
- * @param {allowAddSubjects} bool If true, enables an "add user" button on this list
- * @param {allowDeleteSubjects} bool If true, enables an "delete user" button on this list
- * @param {disabled} bool whether selections should be disabled on this element
- * @param {onDelete} func Callback for the deletion of a subject. The only parameter is the subject deleted.
  * @param {onError} func Callback for an issue in the reading or editing of subjects. The only parameter is a response object.
  * @param {onSelect} func Callback for when the user selects a subject.
  * @param {selectedSubject} object The currently selected subject.
@@ -942,8 +935,8 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
  * @param {currentSubject} object The preselected subject (e.g. on the Subject page, the subject who's page it is is the 'currentSubject')
  */
 function SubjectSelectorList(props) {
-  const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject, selectedQuestionnaire, disableProgress,
-    currentSubject, ...rest } = props;
+  const { allowedTypes, onError, onSelect, selectedSubject, selectedQuestionnaire, disableProgress,
+    currentSubject } = props;
 
   const [ relatedSubjects, setRelatedSubjects ] = useState();
   const [ data, setData ] = useState([]);

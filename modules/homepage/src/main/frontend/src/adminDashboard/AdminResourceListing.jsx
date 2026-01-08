@@ -27,7 +27,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js"
 
 function AdminResourceListing(props) {
   const { title, columns, tableActions, buttonProps, dataUrl, entryType, resourceSelectors, updateData,
-    onDataReceived, customFilter, ...rest } = props;
+    onDataReceived, customFilter } = props;
 
   const [ data, setData ] = useState([]);
   const [ isLoading, setIsLoading ] = useState(false);
