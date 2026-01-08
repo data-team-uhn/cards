@@ -43,7 +43,8 @@ function ParsedNoteSection (props) {
 
     // The contained matter is the text inside the first match
     var containedMatches = matches.filter( (el) => (
-      el.start >= firstMatch.start && el.end <= firstMatch.end && !(el.start == firstMatch.start && el.end == firstMatch.end)
+      el.start >= firstMatch.start && el.end <= firstMatch.end
+        && !(el.start == firstMatch.start && el.end == firstMatch.end)
     ));
     var containedMatter = text.substring(firstMatch.start-offset, firstMatch.end-offset);
 

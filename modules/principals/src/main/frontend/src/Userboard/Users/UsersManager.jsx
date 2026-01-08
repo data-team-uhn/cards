@@ -99,7 +99,8 @@ function UsersManager(props) {
           }}
           columns={[
             { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-              Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
+              Cell: ({ row }) =>
+                <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>
             },
             { header: 'User Name', accessorKey: 'name', size: 300, },
             { header: 'Admin', accessorKey: 'isAdmin', size: 10,
@@ -129,7 +130,10 @@ function UsersManager(props) {
           renderRowActions={({ row }) => (
             <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
               <Tooltip title="Change Password">
-                <IconButton onClick={ () => { setCurrentUserName(row.original.name); setDeployChangeUserPassword(true); } } >
+                <IconButton onClick={ () => {
+                  setCurrentUserName(row.original.name);
+                  setDeployChangeUserPassword(true);
+                } } >
                   <LockIcon />
                 </IconButton>
               </Tooltip>
@@ -159,7 +163,10 @@ function UsersManager(props) {
                       header: tableTitle,
                       columns: [
                         { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-                          Cell: ({ row }) => ( <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar> )
+                          Cell: ({ row }) =>
+                            <Avatar src={row.original.imageUrl} className={classes.info}>
+                              {row.original.name.charAt(0)}
+                            </Avatar>
                         },
                         { header: 'Name', accessorKey: 'name', size: 300, },
                         { header: 'Members', accessorKey: 'members', size: 10, },

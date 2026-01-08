@@ -107,7 +107,17 @@ const useStyles = makeStyles()(theme => ({
 
 function AdminConfigScreen(props) {
   checkPropTypes(AdminConfigScreen, props);
-  const { title, configPath, configTemplate, onConfigFetched, hasChanges, configError, buildConfigData, onConfigSaved, children } = props;
+  const {
+    title,
+    configPath,
+    configTemplate,
+    onConfigFetched,
+    hasChanges,
+    configError,
+    buildConfigData,
+    onConfigSaved,
+    children
+  } = props;
   const [ config, setConfig ] = useState();
   const [ configIsInitial, setConfigIsInitial ] = useState(true);
   const [ error, setError ] = useState();
@@ -213,7 +223,7 @@ function AdminConfigScreen(props) {
                 variant="contained"
                 disabled={!!configError || !hasChanges}
               >
-              Save
+                Save
               </Button>
               <Button
                 variant="outlined"
@@ -221,24 +231,27 @@ function AdminConfigScreen(props) {
                 disabled={configIsInitial}
                 onClick={() => setResetConfirmationPending(true)}
               >
-              Reset to initial settings
+                Reset to initial settings
               </Button>
             </CardActions>
 
             { /* Confirmation dialog for resetting the changes */ }
             <Dialog className={classes.confirmationDialog} open={resetConfirmationPending}>
               <DialogTitle>
-              Confirm configuration reset
+                Confirm configuration reset
               </DialogTitle>
               <DialogContent>
                 <FormattedText>
-                This will revert **all** the changes made since opening this page **including the ones that you may have already saved**.
+                  This will revert **all** the changes made since opening this page
+                  **including the ones that you may have already saved**.
                 </FormattedText>
                 <FormattedText>
-                If you wish to keep the saved changes and discard the unsaved ones, you can simply navigate away from this page, for example by clicking on the link to Administration at the top.
+                  If you wish to keep the saved changes and discard the unsaved ones,
+                  you can simply navigate away from this page, for example by clicking
+                  on the link to Administration at the top.
                 </FormattedText>
                 <FormattedText>
-                **Are you sure you wish to proceed with resetting the configuration?**
+                  **Are you sure you wish to proceed with resetting the configuration?**
                 </FormattedText>
               </DialogContent>
               <DialogActions>

@@ -251,7 +251,8 @@ function QuestionnaireSet(props) {
 
   // Once we start rendering forms, update the formContentOffset
   useEffect(() => {
-    (crtStep == 1) && setFormContentOffset((contentOffset || 0) + (document?.getElementById('patient-portal-header')?.clientHeight || 0));
+    (crtStep == 1) &&
+      setFormContentOffset((contentOffset || 0) + (document?.getElementById('patient-portal-header')?.clientHeight || 0));
   }, [crtStep]);
 
   useEffect(() => {
@@ -322,7 +323,8 @@ function QuestionnaireSet(props) {
   useEffect(() => {
     let submittedQuestionUuid = visitInformation?.questionnaire?.surveys_submitted?.["jcr:uuid"] || null;
     if (!submittedQuestionUuid) return;
-    let answer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.value || 0;
+    let answer = Object.values(visitInformation)
+      .find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.value || 0;
     if (answer == 1) {
       setSubmitted(true);
     } else {
@@ -550,7 +552,8 @@ function QuestionnaireSet(props) {
 
     if (submittedQuestionUuid && url) {
       setSubmissionInProgress(true);
-      let answerUuid = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.["@name"] || uuidv4();
+      let answerUuid = Object.values(visitInformation)
+        .find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.["@name"] || uuidv4();
       let data = new FormData();
       data.append("./" + answerUuid + "/jcr:primaryType", "cards:BooleanAnswer");
       data.append("./" + answerUuid + "/question", submittedQuestionUuid);
@@ -703,7 +706,9 @@ function QuestionnaireSet(props) {
     <List key="welcome-surveys" disablePadding>
       { (questionnaireIds || []).map((q, i) => (
         <ListItem key={q+"Welcome"} disablePadding>
-          <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
+          <ListItemAvatar>
+            {isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}
+          </ListItemAvatar>
           <ListItemText
             primary={questionnaires[q]?.title}
             secondary={isFormSubmitted(q) ? "Submitted" :
@@ -713,7 +718,8 @@ function QuestionnaireSet(props) {
         </ListItem>
       ))}
     </List>,
-    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action" sx={{ px: 5 }}>Begin</Fab>,
+    nextQuestionnaire &&
+      <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action" sx={{ px: 5 }}>Begin</Fab>,
     <FormattedText key="expiry-message" color="textSecondary">
       {expiryDate()}
     </FormattedText>,
@@ -737,7 +743,13 @@ function QuestionnaireSet(props) {
   ];
 
   let submitButton = (label) => (
-    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => onSubmit()} key={"review-submit"+label}>
+    <Fab
+      variant="extended"
+      disabled={submissionInProgress}
+      color="primary"
+      onClick={() => onSubmit()}
+      key={"review-submit"+label}
+    >
       {submissionInProgress ? "Submitting...." : (label || "Submit")}
     </Fab>
   );
@@ -832,7 +844,9 @@ function QuestionnaireSet(props) {
         </ListItem>
       ))}
     </List>,
-    <Alert severity="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Alert>,
+    <Alert severity="error" key="incomplete-message">
+      Your answers are incomplete. Please update your answers by responding to all mandatory questions.
+    </Alert>,
     <Grid container spacing={2} justifyContent="flex-end" key="incomplete-actions">
       { canSubmitIncomplete &&
             <Grid>
@@ -867,7 +881,10 @@ function QuestionnaireSet(props) {
         subtitle={questionnaires[questionnaireIds[crtStep]]?.title}
         step={stepIndicator(crtStep, true)}
       />
-      <QuestionnaireSetScreen className={classes[screenType] + (screenSubtype && classes[screenSubtype] ? (" " + classes[screenSubtype]) : "")} key="screen">
+      <QuestionnaireSetScreen
+        className={classes[screenType] + (screenSubtype && classes[screenSubtype] ? (" " + classes[screenSubtype]) : "")}
+        key="screen"
+      >
         {
           crtStep == -1 ? welcomeScreen :
             crtStep < questionnaireIds.length ? formScreen :

@@ -69,7 +69,23 @@ const GHOST_SENTINEL = "custom-input";
   */
 function MultipleChoice(props) {
   checkPropTypes(MultipleChoice, props);
-  let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
+  let {
+    classes,
+    customInput,
+    customInputProps,
+    existingAnswer,
+    input,
+    textbox,
+    onUpdate,
+    onChange,
+    additionalInputProps,
+    muiInputProps,
+    naValue,
+    noneOfTheAboveValue,
+    error,
+    questionName,
+    ...rest
+  } = props;
   let { maxAnswers, displayMode, enableSeparatorDetection } = { ...props.questionDefinition, ...props };
   let { validate, validationErrorText, liveValidation, softValidation } = { ...props.questionDefinition, ...props };
   // pageActive and answerNodeType should be passed to the Answer component, so we make sure to include them in the `rest` variable above
@@ -113,7 +129,9 @@ function MultipleChoice(props) {
     // If the question is a radio, just display the defaults as duplicates
     isRadio ? defaults.slice() :
     // Otherwise, display as options the union of all defaults + existing answers, without duplicates
-      defaults.slice().concat(initialSelection.filter( (selectedAnswer) => default_values.indexOf(String(selectedAnswer[VALUE_POS])) < 0));
+      defaults.slice().concat(
+        initialSelection.filter( (selectedAnswer) => default_values.indexOf(String(selectedAnswer[VALUE_POS])) < 0)
+      );
 
   // If the field allows for multiple inputs (eg. maxAnswers !== 1),
   // No user input (aka. an empty input) takes the place of an empty string
@@ -126,10 +144,13 @@ function MultipleChoice(props) {
 
   // If this is a bare input or radio input, we need to pre-populate the blank input with the custom answer (if available)
   let inputPrefill = (isBare || (isRadio && default_values.indexOf(String(initialSelection[0]?.[VALUE_POS])) < 0)) && existingAnswer?.[1] || '';
-  // Prefill the input with the displayed value, unless the answer type is numeric, which means the displayed value may contain a unit of measurement
+  // Prefill the input with the displayed value, unless the answer type is numeric,
+  // which means the displayed value may contain a unit of measurement
   const [ghostName, setGhostName] = useState(isNumeric ? inputPrefill?.value : inputPrefill?.displayedValue);
   const [ghostValue, setGhostValue] = useState(inputPrefill?.value ?? GHOST_SENTINEL);
-  const ghostSelected = selection.some(element => {return String(element[VALUE_POS]) === String(ghostValue) || element[LABEL_POS] === ghostName});
+  const ghostSelected = selection.some(
+    element => {return String(element[VALUE_POS]) === String(ghostValue) || element[LABEL_POS] === ghostName}
+  );
   const disabled = maxAnswers > 1 && selection.length >= maxAnswers;
   let inputEl = null;
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
@@ -159,7 +180,9 @@ function MultipleChoice(props) {
     setSelection( old => {
       // Selecting a radio button option will select only that option
       if (isRadio || isBare) {
-        let defaultOption = defaults.filter((option) => {return String(option[VALUE_POS]) === name || option[LABEL_POS] === name})[0];
+        let defaultOption = defaults.filter((option) => {
+          return String(option[VALUE_POS]) === name || option[LABEL_POS] === name;
+        })[0];
         if (defaultOption) {
           // Selected the matching value, we no longer need the input
           return [[defaultOption[LABEL_POS], defaultOption[VALUE_POS]]];
@@ -182,7 +205,9 @@ function MultipleChoice(props) {
       } else if (noneOfTheAboveOption == id) {
         // If the noneOfTheAboveOption is selected, other elements are deselected but user-input options remain
         // Only keep options that are user-input
-        let defaultOptionValues = defaults.filter(option => option[IS_DEFAULT_OPTION_POS]).map((option) => String(option[VALUE_POS]));
+        let defaultOptionValues = defaults.filter(
+          option => option[IS_DEFAULT_OPTION_POS]).map((option) => String(option[VALUE_POS])
+        );
         let newSelection = old.filter((option) => !defaultOptionValues.includes(String(option[VALUE_POS])));
         newSelection.push([name, id]);
         return newSelection;
@@ -314,7 +339,9 @@ function MultipleChoice(props) {
   let splitInput = (input) => {
     let entries = input?.value?.split(/\s*[,;]\s*/);
     // Remove empty strings, duplicates, and entries that are already selected
-    entries = entries?.filter((item, index) => (item != "" && entries.indexOf(item) === index && !selection.find(option => option[VALUE_POS] == item))) || [];
+    entries = entries?.filter((item, index) => (
+      item != "" && entries.indexOf(item) === index && !selection.find(option => option[VALUE_POS] == item)
+    )) || [];
     // Add and select remaining entries
     if (entries.length > 0) {
       let newSelection = selection.slice();
@@ -396,9 +423,9 @@ function MultipleChoice(props) {
 
   // Hold the input box for either multiple choice type
   let CustomInput = customInput;
-  let ghostInput = (input || textbox || customInput) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
-    {
-      customInput ?
+  let ghostInput = (input || textbox || customInput)
+    && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
+      { customInput ?
         <CustomInput
           initialSelection={selection.filter(option => option[VALUE_POS])}
           onRemoveOption={removeOption}
@@ -443,8 +470,8 @@ function MultipleChoice(props) {
           minRows={textbox ? 4 : undefined}
           inputRef={ref => {inputEl = ref}}
         />
-    }
-    { maxAnswers !== 1 && separatorDetectionEnabled &&
+      }
+      { maxAnswers !== 1 && separatorDetectionEnabled &&
         <UserInputAssistant
           title="Separator detected"
           anchorEl={assistantAnchor}
@@ -459,8 +486,8 @@ function MultipleChoice(props) {
           Using separators such as comma or semicolon will not create separate entries.
           If you wish to enter multiple values, press ENTER to add each one.
         </UserInputAssistant>
-    }
-  </div>);
+      }
+    </div>);
 
   let selectNonGhostOption = (...args) => {
     // Clear the ghost input
@@ -478,7 +505,8 @@ function MultipleChoice(props) {
 
   // Temporarily append the input content to answers to avoid data loss while separator detection is active and preventing
   //  the contents of the ghost input from being added as selection
-  tmpGhostSelection?.[VALUE_POS] && !answers.find(item => item[VALUE_POS] == tmpGhostSelection[VALUE_POS]) && answers.push(tmpGhostSelection);
+  tmpGhostSelection?.[VALUE_POS] && !answers.find(item => item[VALUE_POS] == tmpGhostSelection[VALUE_POS])
+    && answers.push(tmpGhostSelection);
 
   if (isSelect) {
     return (
@@ -558,7 +586,16 @@ function MultipleChoice(props) {
               value={selection.length > 0 && String(selection[0][VALUE_POS])}
             >
               <List className={classes.optionsList}>
-                { generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption, validate, validationErrorText) }
+                { generateDefaultOptions(
+                  options,
+                  selection,
+                  disabled,
+                  isRadio,
+                  selectNonGhostOption,
+                  removeOption,
+                  validate,
+                  validationErrorText
+                ) }
                 {/* Ghost radio for the text input */}
                 {
                   ghostInput && <ListItem className={classes.ghostListItem}>
@@ -608,7 +645,16 @@ function MultipleChoice(props) {
           pageActive && <>
             {instructions}
             <List className={classes.optionsList}>
-              {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption, validate, validationErrorText)}
+              {generateDefaultOptions(
+                options,
+                selection,
+                disabled,
+                isRadio,
+                selectNonGhostOption,
+                removeOption,
+                validate,
+                validationErrorText
+              )}
               {ghostInput && <ListItem>{ghostInput}</ListItem>}
             </List>
           </>
@@ -627,7 +673,16 @@ function MultipleChoice(props) {
 }
 
 // Generate a list of options that are part of the default suggestions
-function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick, onDelete, validate, validationErrorText) {
+function generateDefaultOptions(
+  defaults,
+  selection,
+  disabled,
+  isRadio,
+  onClick,
+  onDelete,
+  validate,
+  validationErrorText
+) {
   return defaults.map( (childData) => {
     let isInvalid = !childData[IS_DEFAULT_OPTION_POS] && !(validate?.(childData[LABEL_POS]) ?? true);
     return (
@@ -635,7 +690,9 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
         id={childData[VALUE_POS]}
         key={"value-"+childData[VALUE_POS]}
         name={childData[LABEL_POS]}
-        checked={selection.some((sel) => {return (sel[LABEL_POS] === childData[LABEL_POS] || String(sel[VALUE_POS]) === childData[VALUE_POS])})}
+        checked={selection.some((sel) => {
+          return (sel[LABEL_POS] === childData[LABEL_POS] || String(sel[VALUE_POS]) === childData[VALUE_POS]);
+        })}
         disabled={disabled}
         onClick={onClick}
         onDelete={onDelete}
@@ -652,7 +709,19 @@ var StyledResponseChild = withStyles(ResponseChild, QuestionnaireStyle);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
-  const { classes, checked, name, id, isDefaultOption, onClick, disabled, isRadio, isInvalid, onDelete, description } = props;
+  const {
+    classes,
+    checked,
+    name,
+    id,
+    isDefaultOption,
+    onClick,
+    disabled,
+    isRadio,
+    isInvalid,
+    onDelete,
+    description
+  } = props;
   const formContext = useFormReaderContext();
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
@@ -718,7 +787,11 @@ function ResponseChild(props) {
                   </Typography>
                 </div>
                 { description &&
-                <FormattedText className={classes.selectionDescription} variant="caption" color={isInvalid ? "error" : "textSecondary"}>
+                <FormattedText
+                  className={classes.selectionDescription}
+                  variant="caption"
+                  color={isInvalid ? "error" : "textSecondary"}
+                >
                   {description}
                 </FormattedText>
                 }

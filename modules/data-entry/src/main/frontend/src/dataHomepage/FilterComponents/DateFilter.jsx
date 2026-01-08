@@ -64,7 +64,8 @@ const DateFilter = (props, ref) => {
         value={displayedDate}
         onChange={(value) => {
           setDisplayedDate(value);
-          onChangeInput(value ? DateTimeUtilities.toPrecision(value, dateFormat).toISO() : null, value ? value.toFormat(dateFormat) : null);
+          onChangeInput(value ? DateTimeUtilities.toPrecision(value, dateFormat).toISO() : null,
+            value ? value.toFormat(dateFormat) : null);
         }}
         slotProps={{ textField: {
           variant: 'standard',

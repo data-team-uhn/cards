@@ -97,6 +97,7 @@ export default function VocabularyAction(props) {
   let fetchQuestionnaires = () => {
     if (questionnaires.length === 0) {
       // Send a fetch request to determine the questionnaires available
+      {/* eslint-disable-next-line max-len */}
       const query = `select n.* from [cards:Questionnaire] as n inner join [cards:Question] as q on isdescendantnode(q, n) where q.sourceVocabularies = '${vocabulary.acronym}'`;
       fetchWithReLogin(globalLoginDisplay, `/query?query=${encodeURIComponent(query)}&limit=100`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -220,12 +221,20 @@ export default function VocabularyAction(props) {
             <Typography>No variables are linked to this vocabulary.</Typography>
           )}
 
-          <Typography>Uninstalling this vocabulary may result in data not being properly standardized. Proceed?</Typography>
+          <Typography>
+            Uninstalling this vocabulary may result in data not being properly standardized. Proceed?
+          </Typography>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={handleClose} variant="outlined" className={classes.vocabularyAction}>Cancel</Button>
-          <Button onClick={handleUninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
+          <Button
+            onClick={handleUninstall}
+            variant="contained"
+            className={classes.vocabularyAction + " " + classes.uninstall}
+          >
+            Uninstall
+          </Button>
         </DialogActions>
 
       </Dialog>

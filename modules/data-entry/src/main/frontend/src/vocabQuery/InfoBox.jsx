@@ -54,7 +54,18 @@ import BrowseTheme from "./browseStyle.jsx";
 //
 function InfoBox(props) {
   checkPropTypes(InfoBox, props);
-  const { open, infoboxRef, vocabulary, term, infoAboveBackground, browserOpened, onActionClick, onClickAway, onClose, classes } = props;
+  const {
+    open,
+    infoboxRef,
+    vocabulary,
+    term,
+    infoAboveBackground,
+    browserOpened,
+    onActionClick,
+    onClickAway,
+    onClose,
+    classes
+  } = props;
 
   if (!term?.infoAnchor) {
     return null;

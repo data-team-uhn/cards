@@ -157,7 +157,8 @@ function Filters(props) {
     } else {
       // Parse the response from examining every questionnaire
       for (let [title, thisQuestionnaire] of Object.entries(data)) {
-        (thisQuestionnaire["jcr:primaryType"] == "cards:Questionnaire") && parseFilterList(thisQuestionnaire.questions, title);
+        (thisQuestionnaire["jcr:primaryType"] == "cards:Questionnaire")
+        && parseFilterList(thisQuestionnaire.questions, title);
       }
     }
 
@@ -416,7 +417,10 @@ function Filters(props) {
                     />
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
-                  <Grid size={{ xs: isUnary ? 11 : isNotesContain || isContain ? 3 : 1, sm: isUnary ? 5 : (isNotesContain ? 3 : (isContain ? 2 : 1)) }} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid
+                    size={{ xs: isUnary ? 11 : isNotesContain || isContain ? 3 : 1,
+                      sm: isUnary ? 5 : (isNotesContain ? 3 : (isContain ? 2 : 1)) }}
+                    className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       variant="standard"
                       value={filterDatum.comparator || ""}
@@ -431,10 +435,16 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid size={{ xs: isNotesContain || isContain ? 8 : 10, sm: isNotesContain ? 2 : (isContain ? 3 : 4) }} className={index == editingFilters.length-1 ? classes.hidden : ""}>
-                      {filterDatum.comparator ?
-                        getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
-                        : <TextField variant="standard" disabled className={classes.answerField}></TextField>
+                    <Grid
+                      size={{ xs: isNotesContain || isContain ? 8 : 10, sm: isNotesContain ? 2 : (isContain ? 3 : 4) }}
+                      className={index == editingFilters.length-1 ? classes.hidden : ""}
+                    >
+                      { filterDatum.comparator
+                        ?
+                        getCachedInput(filterDatum, index,
+                          (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
+                        :
+                        <TextField variant="standard" disabled className={classes.answerField}></TextField>
                       }
                     </Grid>}
                   {/* Deletion button */}

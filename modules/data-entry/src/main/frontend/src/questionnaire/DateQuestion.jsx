@@ -125,7 +125,8 @@ function DateQuestion(props) {
       if (date.invalid?.explanation) {
         // Picker does not update invalid error explanation until the state is changed
         // need to replace input with current value and question date format
-        let explanation = date.invalid?.explanation.replace(/the input "([^"]*)"/, `the input "${event.currentTarget.value}"`);
+        let explanation = date.invalid?.explanation
+          .replace(/the input "([^"]*)"/, `the input "${event.currentTarget.value}"`);
         explanation = explanation.replace(/as format .*/, `as format ${dateFormat.toLowerCase()}`);
         message = message + (explanation ? ": " + explanation : "");
       }
@@ -317,7 +318,8 @@ export default StyledDateQuestion;
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date") {
     let dateType = DateTimeUtilities.getDateType(questionDefinition.dateFormat);
-    if ( [DateTimeUtilities.FULL_DATE_TYPE, DateTimeUtilities.DATETIME_TYPE, DateTimeUtilities.MONTH_DATE_TYPE].includes(dateType)) {
+    if ( [DateTimeUtilities.FULL_DATE_TYPE, DateTimeUtilities.DATETIME_TYPE, DateTimeUtilities.MONTH_DATE_TYPE]
+      .includes(dateType)) {
       return [StyledDateQuestion, 70];
     } else {
       // Default date handler

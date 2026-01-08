@@ -55,7 +55,8 @@ function AnswerInstructions (props) {
   }
 
   useEffect(() => {
-    setAnswerAcceptable((currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers) || !isEdit && !hasWarningFlags(existingAnswer))
+    setAnswerAcceptable((currentAnswers >= minAnswers) &&
+      (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers) || !isEdit && !hasWarningFlags(existingAnswer))
   }, [currentAnswers]);
 
   return (instructionsExist && (

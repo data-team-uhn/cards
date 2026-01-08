@@ -179,11 +179,13 @@ function ExportButton(props) {
 
   // Determine if the before date is earlier than the after date
   useEffect(() => {
-    open && setCreatedRangeIsInvalid(!!createdAfter && !!createdBefore && new Date(createdBefore).valueOf() <= new Date(createdAfter).valueOf());
+    open && setCreatedRangeIsInvalid(!!createdAfter && !!createdBefore
+      && new Date(createdBefore).valueOf() <= new Date(createdAfter).valueOf());
   }, [createdAfter, createdBefore]);
 
   useEffect(() => {
-    open && setModifiedRangeIsInvalid(!!modifiedAfter && !!modifiedBefore && new Date(modifiedBefore).valueOf() <= new Date(modifiedAfter).valueOf());
+    open && setModifiedRangeIsInvalid(!!modifiedAfter && !!modifiedBefore
+      && new Date(modifiedBefore).valueOf() <= new Date(modifiedAfter).valueOf());
   }, [modifiedAfter, modifiedBefore]);
 
   let openDialog = () => {
@@ -460,6 +462,7 @@ function ExportButton(props) {
           <Grid container alignItems='baseline' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">Last modified between:</Typography></Grid>
             <Grid size={8}>
+              {/* eslint-disable-next-line max-len */}
               { getDateRange(modifiedAfter, setModifiedAfter, modifiedBefore, setModifiedBefore, modifiedRangeIsInvalid) }
             </Grid>
           </Grid>
@@ -481,7 +484,13 @@ function ExportButton(props) {
 
           <Grid container alignItems='center' className={classes.container + ' ' + classes.withSelect}>
             <Grid size={4}>
-              <Typography variant="subtitle2">{statusSelectionMode == "status" ? "Include only forms with the status flag:" : "Exclude all forms with the status flag:"}</Typography>
+              <Typography variant="subtitle2">
+                { statusSelectionMode == "status"
+                  ?
+                  "Include only forms with the status flag:"
+                  :
+                  "Exclude all forms with the status flag:" }
+              </Typography>
             </Grid>
             <Grid size={8}>
               <FormControl variant="standard" fullWidth>

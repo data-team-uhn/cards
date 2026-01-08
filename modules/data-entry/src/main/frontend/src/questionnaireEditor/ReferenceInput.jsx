@@ -187,7 +187,8 @@ let ReferenceInput = (props) => {
       fetchRequest = fetchWithReLogin(globalLoginDisplay, url);
     } else {
       // If this is an existing value, we will be given a jcr:uuid instead
-      let url = new URL(`query?query=SELECT * FROM [nt:base] AS n WHERE n.'jcr:uuid'='${field}'`, window.location.origin);
+      let url = new URL(`query?query=SELECT * FROM [nt:base] AS n WHERE n.'jcr:uuid'='${field}'`,
+        window.location.origin);
       fetchRequest = fetchWithReLogin(globalLoginDisplay, url)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
@@ -268,7 +269,8 @@ let ReferenceInput = (props) => {
   } else if (typeof curValue == "string") {
     // If a question shows up in multiple questionnaires, it may show up as a comma delimited list of UUIDs
     // If so, we need to map it to multiple inputs
-    hiddenInput = curValue.split(",").map((thisUUID) => <input type="hidden" name={objectKey} value={thisUUID} key={thisUUID}/>);
+    hiddenInput = curValue.split(",").map((thisUUID) =>
+      <input type="hidden" name={objectKey} value={thisUUID} key={thisUUID}/>);
   }
 
   let groupBy = (value["primaryType"] == "cards:SubjectType") ? undefined : (option) => option?.category;

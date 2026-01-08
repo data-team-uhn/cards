@@ -188,13 +188,28 @@ let EditDialog = (props) => {
     if (newValue && Object.keys(data).includes(newValue) && data[newValue]["@path"]) {
       let mainType = data["sling:resourceType"].replaceAll(/^cards\//g, "");
       let label = data[newValue].label || data[newValue].text || newValue;
-      setVariableNameError(`The identifier ${newValue} is already in use in this ${mainType} for the ${formattedType} '${label}'. Please choose a different identifier.`);
+      let err = `The identifier ${newValue} is already in use in this ${mainType} for the ${formattedType} '${label}'`;
+      err += ". Please choose a different identifier.";
+      setVariableNameError(err);
     }
   }
 
   return (
-    <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
-      <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onCancel?.();} } fullWidth maxWidth='md'>
+    <form
+      action={data?.['@path']}
+      method='POST'
+      onSubmit={saveData}
+      onChange={() => setLastSaveStatus(undefined) }
+      key={id}
+    >
+      <Dialog
+        disablePortal
+        id='editDialog'
+        open={open}
+        onClose={() => { setOpen(false); onCancel?.();} }
+        fullWidth
+        maxWidth='md'
+      >
         <DialogTitle>
           { dialogTitle() }
         </DialogTitle>

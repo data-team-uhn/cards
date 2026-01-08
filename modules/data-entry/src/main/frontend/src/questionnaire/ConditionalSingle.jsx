@@ -20,7 +20,8 @@
 import { VALUE_POS } from "./Answer";
 import ConditionalComponentManager from "./ConditionalComponentManager";
 
-let transform = (values, transformerFunc) => values.map(v => Array.isArray(v) ? v.map(e => transformerFunc(e)) : transformerFunc(v));
+let transform = (values, transformerFunc) =>
+  values.map(v => Array.isArray(v) ? v.map(e => transformerFunc(e)) : transformerFunc(v));
 
 const TRANSFORMATIONS = {
   "text": (a, b) => transform([a, b], v => String(v)),
