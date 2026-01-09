@@ -122,10 +122,10 @@ export default function VocabularyDirectory(props) {
         <>
           <Grid>
             <Typography color="error">
-            The list of Bioportal vocabularies is currently inaccessible.
+              The list of Bioportal vocabularies is currently inaccessible.
             </Typography>
             { props.apiKey && <Typography color="error">
-            Could not access Bioportal services. The API Key {props.apiKey} appears to be invalid.
+              Could not access Bioportal services. The API Key {props.apiKey} appears to be invalid.
             </Typography>}
           </Grid>
           <Grid>

@@ -27,6 +27,7 @@ import importPlugin from "eslint-plugin-import";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import globals from "globals";
 import unusedImports from "eslint-plugin-unused-imports";
+import stylistic from "@stylistic/eslint-plugin";
 
 // For ESLint rules specs see  https://eslint.org/docs/latest/rules/
 
@@ -50,6 +51,8 @@ const commonPlugins = {
   "react-hooks": reactHooks,
   "unused-imports": unusedImports,
   import: importPlugin,
+  "@stylistic": stylistic,
+  "jsx-a11y": jsxA11y,
 };
 
 const commonReactSettings = { react: { version: "detect" } };
@@ -65,23 +68,40 @@ const importOrderRule = [
   },
 ];
 
-const whitespaceRules = {
-  "indent": ["error", 2, { "SwitchCase": 1 }],
+const commonRules = {
+  // extend recommended rules via spreading, custom rules below will override them
+  ...js.configs.recommended.rules,
+  ...jsxA11y.configs.recommended.rules,
+
+  "import/order": importOrderRule,
+
+  // React rules
+  "react/jsx-no-undef": ["error", { allowGlobals: true }],
+  "react/jsx-uses-vars": "error",
+
+  // ununsed-related rules
+  "no-unused-vars": ["error", { args: "none", caughtErrors: "none" }],
+  "no-undef": "off",
+  "no-extra-boolean-cast": "off",
+  "unused-imports/no-unused-imports": "error",
+
+  // whitespace rules
+  "@stylistic/indent": ["error", 2, { SwitchCase: 1 }],
   "no-tabs": "error",
   "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
   "linebreak-style": "off",
   "object-curly-spacing": ["error", "always"],
-};
+  "@stylistic/no-trailing-spaces": "error",
+  "@stylistic/eol-last": ["error", "always"],
 
-const commonRules = {
-  "import/order": importOrderRule,
-  "react/jsx-no-undef": ["error", { allowGlobals: true }],
-  "react/jsx-uses-vars": "error",
-  "no-unused-vars": ["error", { "args": "none", "caughtErrors": "none" }],
-  "no-trailing-spaces": "error",
-  "unused-imports/no-unused-imports": "error",
-  ...whitespaceRules,
-  "max-len": ["error", { "code": 120, "ignoreUrls": true, "ignoreStrings": true, "ignoreComments": true }]
+  // complexity rules
+  "max-nested-callbacks": ["error", 3],
+
+  // codestyle rules
+  "@stylistic/max-len": ["error", { code: 120, ignoreUrls: true, ignoreStrings: true, ignoreComments: true }],
+  "@stylistic/no-extra-semi": "error",
+
+  "jsx-a11y/no-autofocus": "off",
 };
 
 const commonLinterOptions = {
@@ -100,8 +120,8 @@ const commonConfigs = {
   linterOptions: commonLinterOptions,
 };
 
-
 // --- Main config ---
+
 export default defineConfig([
   // Ignore folders/files
   {
@@ -124,7 +144,6 @@ export default defineConfig([
     },
     plugins: {
       ...commonPlugins,
-      "jsx-a11y": jsxA11y,
     },
     ...commonConfigs,
   },
@@ -142,7 +161,7 @@ export default defineConfig([
     },
     plugins: {
       ...commonPlugins,
-      "@typescript-eslint": tsPlugin,
+    "@typescript-eslint": tsPlugin,
     },
     ...commonConfigs,
   },

@@ -193,8 +193,9 @@ export default function VariantFilesContainer() {
     if (processedFile.tumor.existed && processedFile.tumor.id) {
       // query data about all of the already uploaded files
       let url = new URL("/query", window.location.origin);
-      {/* eslint-disable-next-line max-len */}
-      let sqlquery = `select f.* from [cards:Form] as n inner join [nt:file] as f on isdescendantnode(f, n) where n.questionnaire = '${somaticVariantsUUID}' and n.subject = '${processedFile.region?.uuid || processedFile.tumor.uuid}'`;
+      let sqlquery = `select f.* from [cards:Form] as n inner join [nt:file] as f on isdescendantnode(f, n)` +
+        ` where n.questionnaire = '${somaticVariantsUUID}'` +
+        ` and n.subject = '${processedFile.region?.uuid || processedFile.tumor.uuid}'`;
       url.searchParams.set("query", sqlquery);
 
       return fetchWithReLogin(globalLoginDisplay, url)
@@ -266,7 +267,7 @@ export default function VariantFilesContainer() {
             : allErroneousFiles.splice(0, allErroneousFiles.length-1).join(", ") + ", and "+ allErroneousFiles[allErroneousFiles.length-1];
         let plural = allErroneousFiles.length > 1;
         setError(`File name${plural ? "s" : ""} ${fileString} do${plural ? "" : "es"} not follow the name convention <subject>_<tumour nb>***.csv`);
-      };
+      }
     })(0);
   };
 
@@ -873,7 +874,7 @@ export default function VariantFilesContainer() {
                     className={classes.fileDetail}
                     helperText="Optional"
                   />
-                  <label htmlFor="contained-button-file">
+                  <label htmlFor="contained-button-file" aria-label="Upload file">
                     <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file, true)}>
                       <span><BackupIcon className={classes.buttonIcon}/>
                         { file.uploading ? 'Uploading' : 'Upload' }
@@ -894,8 +895,8 @@ export default function VariantFilesContainer() {
                     setShowVersionsDialog(true);
                     setFileSelected(file);
                   }}>
-                    There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
-                    of this file
+                  There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
+                  of this file
                 </Link>
               }
             </Grid>

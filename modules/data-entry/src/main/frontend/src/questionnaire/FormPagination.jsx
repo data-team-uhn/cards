@@ -296,7 +296,7 @@ function FormPagination (props) {
           saveButton
       : null
   );
-};
+}
 
 FormPagination.propTypes = {
   enableSave: PropTypes.bool,

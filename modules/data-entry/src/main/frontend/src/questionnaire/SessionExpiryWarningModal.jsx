@@ -138,7 +138,7 @@ function SessionExpiryWarningModal(props) {
               onClick={() => location.reload()}
               variant="contained"
             >
-            Refresh
+              Refresh
             </Button>
             :
             <>
@@ -146,13 +146,13 @@ function SessionExpiryWarningModal(props) {
                 onClick={onExit}
                 variant="outlined"
               >
-              Save and exit
+                Save and exit
               </Button>
               <Button
                 onClick={() => {setOpen(false); onStay?.();}}
                 variant="contained"
               >
-              Save and stay on this page
+                Save and stay on this page
               </Button>
             </>
           }

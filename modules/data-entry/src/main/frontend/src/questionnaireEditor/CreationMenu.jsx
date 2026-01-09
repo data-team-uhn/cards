@@ -64,7 +64,7 @@ let CreationMenu = (props) => {
         <NewItemButton title="Add..." onClick={handleOpenMenu} />
         :
         <Button aria-controls={"simple-menu" + data['@name']} aria-haspopup="true" onClick={handleOpenMenu}>
-        Add...
+          Add...
         </Button>
       }
       <Menu

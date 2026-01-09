@@ -358,7 +358,7 @@ function SubjectHeader(props) {
       />
     </div>
   );
-  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true, extensionURL) || [getHomepageLink(subject?.data, extensionURL)]);;
+  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true, extensionURL) || [getHomepageLink(subject?.data, extensionURL)]);
 
   return (
     subject?.data &&
@@ -627,10 +627,10 @@ function SubjectMemberInternal (props) {
                             {questionnaireTitle}
                           </Link>
                           <Typography variant="caption" component="div" color="textSecondary">
-                                         Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                            Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
                           </Typography>
                           <Typography variant="caption" component="div" color="textSecondary">
-                                         Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                            Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
                           </Typography>
                         </Grid>
                       </Grid>
@@ -703,7 +703,7 @@ function SubjectMemberInternal (props) {
       }
     </>
   );
-};
+}
 
 let SubjectMember = SubjectMemberInternal;
 
@@ -857,7 +857,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
     );
   }
   else return null;
-};
+}
 
 // Handle questions and sections differently
 export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion) {

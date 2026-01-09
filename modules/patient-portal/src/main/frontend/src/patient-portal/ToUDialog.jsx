@@ -192,10 +192,10 @@ function ToUDialog(props) {
         { actionRequired && !error && !actionError ?
           <>
             <Button variant="outlined" onClick={() => setShowConfirmationTou(true)}>
-            Decline
+              Decline
             </Button>
             <Button variant="contained" onClick={() => saveTouAccepted(tou.version)}>
-            Accept
+              Accept
             </Button>
           </>
           :
@@ -204,7 +204,7 @@ function ToUDialog(props) {
             <FormattedText color="error" className={classes.actionErrorMessage}>{actionError}</FormattedText>
             }
             <Button onClick={() => onClose(!!actionError)} variant="outlined">
-            Close
+              Close
             </Button>
           </>
         }

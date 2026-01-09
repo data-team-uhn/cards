@@ -73,7 +73,7 @@ let AutocreatedQuestion = (props) => {
     let formatted = (displayMode === "formatted" || displayMode === "summary");
     if (formatted !== isFormatted) {
       changeIsFormatted(formatted);
-    };
+    }
   }, [displayMode]);
 
   // Autocreated answers are read-only and displayed the same in view and edit modes

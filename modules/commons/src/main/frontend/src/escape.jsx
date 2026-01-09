@@ -23,7 +23,7 @@
 // @return an escaped string, with any non-string input also converted to a string
 export function escapeJQL(input) {
   return new String(input).replace(/'/g, "''");
-};
+}
 
 //
 
@@ -42,4 +42,4 @@ export function stringToHash(string) {
   }
 
   return hash;
-};
+}
