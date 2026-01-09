@@ -83,7 +83,8 @@ let QuestionMatrix = (props) => {
   const answerSectionID = existingSectionAnswer ? existingSectionAnswer[0] : uuidv4();
   const [sectionAnswerPath, setSectionAnswerPath ] = useState(path + "/" + answerSectionID);
 
-  const enableVerticalLayout = verticalLayout || useMediaQuery('(max-width:600px)');
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const enableVerticalLayout = verticalLayout || isSmallScreen;
 
   useEffect(() => {
     if (existingSectionAnswer) {

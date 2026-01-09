@@ -80,6 +80,7 @@ const commonRules = {
   "react/jsx-uses-react": "off",
   "react/react-in-jsx-scope": "off",
   "react/prop-types": "off",
+  "react-hooks/rules-of-hooks": "error",
 
   // ununsed-related rules
   "no-unused-vars": ["error", { args: "none", caughtErrors: "none" }],
