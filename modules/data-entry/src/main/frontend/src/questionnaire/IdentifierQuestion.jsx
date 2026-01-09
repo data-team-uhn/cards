@@ -38,8 +38,7 @@ import Question from "./Question";
 export default function IdentifierQuestion(props) {
   const { existingAnswer, pageActive, isEdit, ...rest } = props;
   const {
-    displayMode = "plain",
-    identifierType = "uuid"
+    displayMode = "plain"
   } = { ...props.questionDefinition };
   const COPY_TO_CLIPBOARD = "Copy to clipboard";
   const [ text, setText ] = useState(COPY_TO_CLIPBOARD);

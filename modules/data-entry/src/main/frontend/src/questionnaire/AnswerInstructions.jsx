@@ -53,7 +53,7 @@ function AnswerInstructions (props) {
     range = "at least " + minAnswers;
   }
 
-  const answerIsAcceptable  = useMemo(() => 
+  const answerIsAcceptable  = useMemo(() =>
     (currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers)
       || !isEdit && !hasWarningFlags(existingAnswer)
   , [currentAnswers]);
