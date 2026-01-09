@@ -5,7 +5,7 @@
 
 ## Prerequisites:
 * Java 11
-* Maven 3.3+
+* Maven 3.8+
 * Python 2.5+ or Python 3.0+
 * psutil Python module (recommended)
 
