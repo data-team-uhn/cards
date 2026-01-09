@@ -74,6 +74,7 @@ const TextFilter = (props, ref) => {
     />
   );
 };
+TextFilter.displayName = 'TextFilter';
 
 TextFilter.propTypes = {
   initial: PropTypes.shape({

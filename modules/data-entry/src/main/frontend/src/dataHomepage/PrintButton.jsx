@@ -39,7 +39,6 @@ import PrintPreview from "../questionnaire/PrintPreview.jsx";
  * variant: String defining the render component and view of the print action button, default "icon"
  * size: String regulating the size of an icon button, default "medium"
  * className: String of class name that applies to the button element if the IconButton when variant == "icon"
- * buttonText: String specifying the text to be displayed on the button or the tooltip, default "Print preview"
  * fullScreen: Boolean specifying if the preview is full screen or displayed as a modal, default true
  * disableShortcut: Boolean specifying if Ctrl+P should activate this button or not. Default is false, meaning the shortcut is active.
  * onOpen: Callback for opening the preview dialog
@@ -141,7 +140,6 @@ PrintButton.propTypes = {
   title: PropTypes.string,
   resourcePath: PropTypes.string.isRequired,
   resourceData: PropTypes.object,
-  buttonText: PropTypes.string,
   className: PropTypes.string,
   breadcrumb: PropTypes.string,
   fullScreen: PropTypes.bool,

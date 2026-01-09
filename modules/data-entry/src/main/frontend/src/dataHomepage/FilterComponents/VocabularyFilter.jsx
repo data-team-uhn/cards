@@ -55,6 +55,7 @@ const VocabularyFilter = (props, ref) => {
     />
   )
 };
+VocabularyFilter.displayName = 'VocabularyFilter';
 
 VocabularyFilter.propTypes = {
   initial: PropTypes.shape({

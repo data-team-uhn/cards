@@ -551,6 +551,7 @@ export const NumberFormatCustom = (props, ref) => {
     />
   );
 };
+NumberFormatCustom.displayName = 'NumberFormatCustom';
 
 NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired

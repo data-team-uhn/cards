@@ -381,7 +381,7 @@ function SelectableAreaQuestion(props) {
                   :
                   <Alert severity="warning">
                     The selectable areas cannot be displayed due to incorrect configuration:
-                    "variant" is not defined or invalid
+                    &quot;variant&quot; is not defined or invalid
                   </Alert>
                 }
               </div>

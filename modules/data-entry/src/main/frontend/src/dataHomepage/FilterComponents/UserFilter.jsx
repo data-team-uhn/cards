@@ -82,6 +82,7 @@ const UserFilter = (props, ref) => {
     />
   );
 };
+UserFilter.displayName = 'UserFilter';
 
 UserFilter.propTypes = {
   initial: PropTypes.shape({

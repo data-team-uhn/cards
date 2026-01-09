@@ -38,7 +38,7 @@ function AppInfo (props) {
         <Typography variant={variant} component="div">
           by
           <Tooltip title="DATA Team @ UHN">
-            <a href="https://uhndata.io/" target="_blank">
+            <a href="https://uhndata.io/" target="_blank" rel="noreferrer">
               <img src="/libs/cards/resources/media/default/data-logo.png" width="80" alt="DATA" />
             </a>
           </Tooltip>

@@ -57,6 +57,7 @@ const ResourceFilter = (props, ref) => {
     />
   )
 };
+ResourceFilter.displayName = 'ResourceFilter';
 
 ResourceFilter.propTypes = {
   initial: PropTypes.shape({

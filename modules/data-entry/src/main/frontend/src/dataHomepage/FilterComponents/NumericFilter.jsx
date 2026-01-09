@@ -64,6 +64,7 @@ const NumericFilter = (props, ref) => {
     />
   )
 };
+NumericFilter.displayName = 'NumericFilter';
 
 NumericFilter.propTypes = {
   initial: PropTypes.shape({

@@ -72,18 +72,21 @@ const commonRules = {
   // extend recommended rules via spreading, custom rules below will override them
   ...js.configs.recommended.rules,
   ...jsxA11y.configs.recommended.rules,
+  ...react.configs.recommended.rules,
 
   "import/order": importOrderRule,
 
   // React rules
-  "react/jsx-no-undef": ["error", { allowGlobals: true }],
-  "react/jsx-uses-vars": "error",
+  "react/jsx-uses-react": "off",
+  "react/react-in-jsx-scope": "off",
+  "react/prop-types": "off",
 
   // ununsed-related rules
   "no-unused-vars": ["error", { args: "none", caughtErrors: "none" }],
   "no-undef": "off",
   "no-extra-boolean-cast": "off",
   "unused-imports/no-unused-imports": "error",
+  "react/no-unused-prop-types": "error",
 
   // whitespace rules
   "@stylistic/indent": ["error", 2, { SwitchCase: 1 }],

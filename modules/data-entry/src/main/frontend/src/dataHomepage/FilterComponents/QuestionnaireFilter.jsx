@@ -115,6 +115,7 @@ const QuestionnaireFilter = (props, ref) => {
     </Select>
   )
 };
+QuestionnaireFilter.displayName = 'QuestionnaireFilter';
 
 QuestionnaireFilter.propTypes = {
   initial: PropTypes.shape({
