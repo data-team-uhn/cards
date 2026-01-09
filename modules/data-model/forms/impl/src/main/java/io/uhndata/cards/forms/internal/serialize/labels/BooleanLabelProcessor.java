@@ -21,8 +21,11 @@ package io.uhndata.cards.forms.internal.serialize.labels;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -56,7 +59,7 @@ public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("cards:BooleanAnswer")) {
+            if (node.isNodeType("cards:BooleanAnswer") && node.hasProperty(PROP_VALUE)) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
@@ -68,27 +71,41 @@ public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            int rawValue = (int) node.getProperty(PROP_VALUE).getLong();
-            String yesLabel = "Yes";
-            String noLabel = "No";
-            String unknownLabel = "Unknown";
-
-            if (question != null) {
-                if (question.hasProperty(YES_LABEL)) {
-                    yesLabel = question.getProperty(YES_LABEL).getString();
+            final Property valueProp = node.getProperty(PROP_VALUE);
+            if (valueProp.isMultiple()) {
+                JsonArrayBuilder values = Json.createArrayBuilder();
+                for (Value v : valueProp.getValues()) {
+                    values.add(toLabel((int) v.getLong(), question));
                 }
-                if (question.hasProperty(NO_LABEL)) {
-                    noLabel = question.getProperty(NO_LABEL).getString();
-                }
-                if (question.hasProperty(UNKNOWN_LABEL)) {
-                    unknownLabel = question.getProperty(UNKNOWN_LABEL).getString();
-                }
+                return values.build();
+            } else {
+                int rawValue = (int) valueProp.getLong();
+                return toLabel(rawValue, question);
             }
-            Boolean value = BooleanUtils.toBooleanObject(rawValue, 1, 0, -1);
-            return Json.createValue(BooleanUtils.toString(value, yesLabel, noLabel, unknownLabel));
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }
         return null;
+    }
+
+    private JsonValue toLabel(final int rawValue, final Node question) throws RepositoryException
+    {
+        String yesLabel = "Yes";
+        String noLabel = "No";
+        String unknownLabel = "Unknown";
+
+        if (question != null) {
+            if (question.hasProperty(YES_LABEL)) {
+                yesLabel = question.getProperty(YES_LABEL).getString();
+            }
+            if (question.hasProperty(NO_LABEL)) {
+                noLabel = question.getProperty(NO_LABEL).getString();
+            }
+            if (question.hasProperty(UNKNOWN_LABEL)) {
+                unknownLabel = question.getProperty(UNKNOWN_LABEL).getString();
+            }
+        }
+        Boolean value = BooleanUtils.toBooleanObject(rawValue, 1, 0, -1);
+        return Json.createValue(BooleanUtils.toString(value, yesLabel, noLabel, unknownLabel));
     }
 }
