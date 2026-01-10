@@ -356,6 +356,7 @@ let QuestionnaireItemSet = (props) => {
               classes={classes}
             />
           </Grid>
+        // eslint-disable-next-line react-hooks/unsupported-syntax
         )(eval(stripCardsNamespace(value['jcr:primaryType'])))
         )
       }

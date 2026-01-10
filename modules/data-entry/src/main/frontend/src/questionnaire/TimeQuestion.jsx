@@ -96,7 +96,10 @@ function TimeQuestion(props) {
   // Provide the display formatted time to the Question component so the right formatting is displayed in view mode
   let formattedAnswer = existingAnswer;
   if (selectedTime && formattedAnswer?.[1]) {
-    formattedAnswer[1].displayedValue = selectedTime.toFormat(dateFormat);
+    formattedAnswer = [
+      formattedAnswer[0],
+      { ...formattedAnswer[1], displayedValue: selectedTime.toFormat(dateFormat) }
+    ];
   }
 
   let outputAnswers = [["time", selectedTime && selectedTime.isValid ? selectedTime.toFormat(saveFormat) : null]];

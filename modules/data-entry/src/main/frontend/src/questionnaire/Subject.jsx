@@ -300,7 +300,10 @@ function SubjectHeader(props) {
   };
 
   useEffect(() => {
-    reloadSubject.current = fetchSubjectData;
+    if (reloadSubject) {
+      // eslint-disable-next-line react-hooks/immutability
+      reloadSubject.current = fetchSubjectData;
+    }
   }, [id]);
 
   // When the top-level subject is deleted, redirect to its parent if it has one, otherwise to the Subjects page

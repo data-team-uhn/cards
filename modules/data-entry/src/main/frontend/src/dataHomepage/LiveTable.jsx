@@ -159,6 +159,7 @@ function LiveTable(props) {
     let url = new URL(urlBase);
     url.searchParams.set("offset", goToStart ? 0 : newPage.offset ?? paginationData.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
+    // eslint-disable-next-line react-hooks/immutability
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
     url.searchParams.set("showTotalRows", showTotalRows);
     resourceSelectors && url.searchParams.set("resourceSelectors", resourceSelectors);

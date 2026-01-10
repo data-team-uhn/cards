@@ -129,6 +129,7 @@ function AddressQuestion(props) {
   });
 
   // If google API authentication problem emerges due to to the invalid key or key with disabled Places service
+  // eslint-disable-next-line react-hooks/immutability
   window.gm_authFailure = () => {
     console.error("Error in Google API authentication");
     setIsValidApi(false);
