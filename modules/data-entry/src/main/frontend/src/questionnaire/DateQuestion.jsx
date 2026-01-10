@@ -95,11 +95,6 @@ function DateQuestion(props) {
   const formContext = useFormReaderContext();
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
-  useEffect(() => {
-    validateInput(null, displayedDate, false);
-    isRange && validateInput(null, displayedEndDate, true);
-  }, []);
-
   let setDate = (value, isEnd) => {
     if (isEnd) {
       setDisplayedEndDate(value);
@@ -158,6 +153,11 @@ function DateQuestion(props) {
       }
     }
   }
+
+  useEffect(() => {
+    validateInput(null, displayedDate, false);
+    isRange && validateInput(null, displayedEndDate, true);
+  }, []);
 
   let getSlingDate = (isEnd) => {
     let date = isEnd ? displayedEndDate : displayedDate;

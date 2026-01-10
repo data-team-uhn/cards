@@ -63,6 +63,7 @@ const useStyles = makeStyles()(theme => ({
 // Filepaths are placed in a series of <input type="hidden"> tags for
 // submission.
 //
+/* eslint-disable react-hooks/immutability */
 function DicomQuestion(props) {
   checkPropTypes(DicomQuestion, props);
   const { existingAnswer, questionDefinition, ...rest } = props;

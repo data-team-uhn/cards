@@ -58,17 +58,6 @@ let ReferenceInput = (props) => {
     setCurValue(newVal);
   }
 
-  useEffect(() => {
-    getRestrictions(allowOnlyApplicableFor);
-  },
-  [fieldsReader[allowOnlyApplicableFor]]);
-
-  useEffect(() => {
-    if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelsList(options, ""));
-    }
-  }, [options, titleMap]);
-
   // Obtain information about the questions that can be used as a reference
   let grabData = (urlBase, parser) => {
     let url = new URL(urlBase, window.location.origin);
@@ -167,6 +156,12 @@ let ReferenceInput = (props) => {
     }).flat();
   }
 
+  useEffect(() => {
+    if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
+      setAutoselectOptions(getFieldsLabelsList(options, ""));
+    }
+  }, [options, titleMap]);
+
   let getRestrictions = (restrictingField) => {
     let field = fieldsReader[restrictingField];
     if (Array.isArray(field)) {
@@ -245,6 +240,11 @@ let ReferenceInput = (props) => {
       })
       .catch(console.log);
   }
+
+  useEffect(() => {
+    getRestrictions(allowOnlyApplicableFor);
+  },
+  [fieldsReader[allowOnlyApplicableFor]]);
 
   useEffect(() => {
     fieldsWriter((oldContext) => ({ ...oldContext, [objectKey]: curValue }));

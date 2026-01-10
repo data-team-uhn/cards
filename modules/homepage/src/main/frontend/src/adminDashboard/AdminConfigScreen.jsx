@@ -127,9 +127,6 @@ function AdminConfigScreen(props) {
   const navigate = useNavigate();
   const { classes } = useStyles();
 
-  useEffect(() => {getConfig()}, []);
-  useEffect(() => {hasChanges && setConfigIsInitial(false)}, [hasChanges]);
-
   // Loading the existing configuration
   const getConfig = () => {
     fetchWithReLogin(globalContext, `${configPath}.json`)
@@ -144,6 +141,9 @@ function AdminConfigScreen(props) {
         setError("The configuration could not be loaded.");
       });
   }
+
+  useEffect(() => {getConfig()}, []);
+  useEffect(() => {hasChanges && setConfigIsInitial(false)}, [hasChanges]);
 
   // Submitting the form to save the new configuration
   const handleSubmit = (event) => {

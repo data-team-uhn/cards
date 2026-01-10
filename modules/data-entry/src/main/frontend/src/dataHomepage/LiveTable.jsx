@@ -106,6 +106,12 @@ function LiveTable(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  let refresh = () => {
+    setFetchStatus(Object.assign({}, fetchStatus, {
+      "currentRequestNumber": -1,
+    }));
+  }
+
   // When data is changed, trigger a new fetch in the table
   useEffect(() => {
     // subscribe event
@@ -130,19 +136,20 @@ function LiveTable(props) {
     }
   }, [customUrl]);
 
-  // Initialize the component: if there's no data loaded yet, fetch the first page
-  useEffect(() => {
-    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
-  }, [fetchStatus.currentRequestNumber]);
-
-  let refresh = () => {
-    setFetchStatus(Object.assign({}, fetchStatus, {
-      "currentRequestNumber": -1,
-    }));
-  }
-
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior
+
+  let handleError = (response) => {
+    let err = response.statusText ? response.statusText : response.toString();
+    if (response.status == 404) {
+      err = "Access to data is pending the approval of your account";
+    }
+    setFetchStatus(Object.assign({}, fetchStatus, {
+      "currentFetch": false,
+      "fetchError": err,
+    }));
+    setTableData([]);
+  };
 
   let fetchData = (newPage, goToStart) => {
     if (fetchStatus.currentFetch) {
@@ -200,17 +207,10 @@ function LiveTable(props) {
     );
   };
 
-  let handleError = (response) => {
-    let err = response.statusText ? response.statusText : response.toString();
-    if (response.status == 404) {
-      err = "Access to data is pending the approval of your account";
-    }
-    setFetchStatus(Object.assign({}, fetchStatus, {
-      "currentFetch": false,
-      "fetchError": err,
-    }));
-    setTableData([]);
-  };
+  // Initialize the component: if there's no data loaded yet, fetch the first page
+  useEffect(() => {
+    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
+  }, [fetchStatus.currentRequestNumber]);
 
   let makeRow = (entry, i) => {
     return (
