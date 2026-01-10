@@ -27,7 +27,7 @@ import Form from "./Form";
  */
 export default function FormView(props) {
   const { pathname } = useLocation();
-  const id = /Forms\/([^./]+)/.exec(location.pathname)?.[1] ?? "";
+  const id = /Forms\/([^./]+)/.exec(pathname)?.[1] ?? "";
 
   const dotIndex = pathname.lastIndexOf(".");
   const slashIndex = pathname.lastIndexOf("/");
