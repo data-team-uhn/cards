@@ -139,5 +139,10 @@
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.rhino</artifactId>
+      <version>1.7.14_2</version>
+    </dependency>
   </dependencies>
 </project>
