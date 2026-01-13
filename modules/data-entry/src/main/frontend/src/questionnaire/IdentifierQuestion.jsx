@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Button, Tooltip } from "@mui/material";
@@ -38,14 +38,25 @@ import Question from "./Question";
 export default function IdentifierQuestion(props) {
   const { existingAnswer, pageActive, isEdit, ...rest } = props;
   const {
-    displayMode = "plain"
+    displayMode = "plain",
+    identifierType = "uuid"
   } = { ...props.questionDefinition };
   const COPY_TO_CLIPBOARD = "Copy to clipboard";
   const [ text, setText ] = useState(COPY_TO_CLIPBOARD);
 
-  const existingValue = existingAnswer?.[1]?.value || "";
-  const value = (!isEdit || existingValue) ? existingValue : uuidv4();
+  const [value, setValue] = useState(existingAnswer?.[1]?.value || "");
   const answer = [[value, value]];
+
+  useEffect(() => {
+    if (isEdit && (!value || value.length == 0)) {
+      switch (identifierType) {
+        case "uuid":
+        default:
+          setValue(uuidv4());
+          break;
+      }
+    }
+  }, [identifierType, isEdit]);
 
   const handleClick = () => {
     navigator.clipboard.writeText(value);
@@ -69,7 +80,7 @@ export default function IdentifierQuestion(props) {
               endIcon={ displayMode.endsWith("+copy") ? <ContentCopyIcon /> : null}
               sx={{ padding: 0, textTransform: "none" }}
             >
-              {value}
+              { value}
             </Button>
           </Tooltip>
       }
