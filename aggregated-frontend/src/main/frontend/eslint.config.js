@@ -85,6 +85,7 @@ const commonRules = {
   "react-hooks/exhaustive-deps": "off",
   "react-hooks/set-state-in-effect": "off",
   "react-hooks/refs": "off",
+  "react-hooks/preserve-manual-memoization": "off",
 
   // ununsed-related rules
   "no-unused-vars": ["error", { args: "none", caughtErrors: "none" }],
