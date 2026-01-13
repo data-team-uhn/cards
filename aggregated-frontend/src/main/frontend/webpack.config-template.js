@@ -48,7 +48,7 @@ module_name = require("./package.json").name + ".";
 
 const isProduction = process.argv.find(arg => arg.startsWith("--mode"))?.substring(7) == 'production';
 
-module.exports = {
+module.exports = (env) => { return {
   mode: 'development',
   devtool: 'eval-cheap-module-source-map',
   cache: {
@@ -63,7 +63,7 @@ ENTRY_CONTENT
     new WebpackAssetsManifest({
       output: "assets.json"
     }),
-	new ESLintPlugin({
+    !env.quick && new ESLintPlugin({
       extensions: ['js', 'jsx', 'ts', 'tsx'],
       emitWarning: true,   // show warnings in console but don’t fail build
       failOnError: false,  // set true if you want to break build on lint error
@@ -124,5 +124,6 @@ ENTRY_CONTENT
     path: __dirname + '/dist/SLING-INF/content/libs/cards/resources/',
     publicPath: '/',
     filename: '[name].[contenthash].js',
+  }
   }
 };
