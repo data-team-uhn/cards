@@ -156,12 +156,6 @@ let ReferenceInput = (props) => {
     }).flat();
   }
 
-  useEffect(() => {
-    if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelsList(options, ""));
-    }
-  }, [options, titleMap]);
-
   let getRestrictions = (restrictingField) => {
     let field = fieldsReader[restrictingField];
     if (Array.isArray(field)) {
@@ -257,6 +251,12 @@ let ReferenceInput = (props) => {
       grabData(FILTER_URL, parseQuestionnaireData);
     }
   }, [value["primaryType"]]);
+
+  useEffect(() => {
+    if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
+      setAutoselectOptions(getFieldsLabelsList(options, ""));
+    }
+  }, [options, titleMap]);
 
   // The form of the hidden input depends on the value of curValue
   // The fallback is to just use its value as-is in a hidden input
