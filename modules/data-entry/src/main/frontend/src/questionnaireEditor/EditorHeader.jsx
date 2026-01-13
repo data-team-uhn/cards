@@ -25,12 +25,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 
 import { useQuestionnaireTreeContext } from "./QuestionnaireTreeContext.jsx";
 import { ENTRY_TITLE_FIELD_SPEC } from "./QuestionnaireTreeContext.jsx";
 import { CONDITIONAL_TYPES } from "../questionnaire/FormEntry.jsx";
 import { stripCardsNamespace } from "../questionnaire/QuestionnaireUtilities.jsx";
-import { makeStyles } from "tss-react/mui";
 
 // EntryChip component with its own useStyles
 const useEntryChipStyles = makeStyles()((theme, { color }) => ({
@@ -46,7 +46,7 @@ const useEntryChipStyles = makeStyles()((theme, { color }) => ({
 const EntryChip = memo(function EntryChip({ label, entryColor, onMouseEnter, onMouseLeave }) {
   const { classes } = useEntryChipStyles({ color: entryColor });
   return (
-    <Chip 
+    <Chip
       label={label}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -67,6 +67,18 @@ function EditorHeader() {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const missingTitlesByEntryType = useMemo(() => {
+    if (!warnings.missingTitles) return {};
+    return Object.entries(warnings.missingTitles).reduce((acc, [id, jcrData]) => {
+      const entryType = jcrData['jcr:primaryType'];
+      if (!acc[entryType]) {
+        acc[entryType] = [];
+      }
+      acc[entryType].push(jcrData);
+      return acc;
+    }, {});
+  }, [warnings]);
+
   let handlePopoverOpen = (event, entryType) => {
     if (!event.currentTarget) return;
     setAnchorEl({ element: event.currentTarget, type: entryType });
@@ -79,18 +91,6 @@ function EditorHeader() {
   if (!warnings || nodes.length === 0) {
     return null;
   }
-
-  const missingTitlesByEntryType = useMemo(() => {
-    if (!warnings.missingTitles) return {};
-    return Object.entries(warnings.missingTitles).reduce((acc, [id, jcrData]) => {
-      const entryType = jcrData['jcr:primaryType'];
-      if (!acc[entryType]) {
-        acc[entryType] = [];
-      }
-      acc[entryType].push(jcrData);
-      return acc;
-    }, {});
-  }, [warnings]);
 
   return (
     <>
@@ -107,23 +107,23 @@ function EditorHeader() {
               const { color } = entrySpec;
               const totalCount = warnings.countEntryTypes[entryType];
               const label = `${totalCount} ${stripCardsNamespace(entryType)}${totalCount > 1 ? 's' : ''}`;
-              
+
               return (
                 <React.Fragment key={entryType}>
-                  <EntryChip 
+                  <EntryChip
                     label={label}
                     entryColor={color}
                     onMouseEnter={(event) => handlePopoverOpen(event, entryType)}
                     onMouseLeave={handlePopoverClose}
                   />
-                  <Popover 
+                  <Popover
                     open={Boolean(anchorEl) && anchorEl.type === entryType}
                     anchorEl={anchorEl?.element}
                     onClose={handlePopoverClose}
                   >
                     <Typography>
-                      {missingTitlesByEntryType[entryType] && missingTitlesByEntryType[entryType].length > 0 
-                        ? `${missingTitlesByEntryType[entryType].length} missing titles` 
+                      {missingTitlesByEntryType[entryType] && missingTitlesByEntryType[entryType].length > 0
+                        ? `${missingTitlesByEntryType[entryType].length} missing titles`
                         : 'No missing titles'}
                     </Typography>
                   </Popover>
@@ -134,6 +134,6 @@ function EditorHeader() {
       </Stack>
     </>
   )
-};
+}
 
 export default EditorHeader;

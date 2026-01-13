@@ -17,12 +17,13 @@
 //  under the License.
 //
 
-import React, { useCallback, useEffect, useReducer, useContext } from "react";
-import { CONDITIONAL_TYPES, ENTRY_TYPES } from "../questionnaire/FormEntry";
+import React, { useCallback, useEffect, useReducer, useContext, createContext } from "react";
 
 import { deepPurple, orange, blueGrey, blue, purple, green } from '@mui/material/colors';
 import { makeStyles } from 'tss-react/mui';
+
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { CONDITIONAL_TYPES, ENTRY_TYPES } from "../questionnaire/FormEntry";
 
 export const ENTRY_TITLE_FIELD_SPEC = {
   'cards:Questionnaire': {
@@ -61,7 +62,8 @@ export const ENTRY_TITLE_FIELD_SPEC = {
 
 // Hook for styling nodes using ENTRY_TITLE_FIELD_SPEC
 export const useEntryStyles = makeStyles()(theme => {
-  const entryColors = Object.fromEntries(Object.entries(ENTRY_TITLE_FIELD_SPEC).map(([type, spec]) => [type, spec.color]));
+  const entryColors = Object.fromEntries(Object.entries(ENTRY_TITLE_FIELD_SPEC)
+    .map(([type, spec]) => [type, spec.color]));
   const styles = {};
   for (const [type, color] of Object.entries(entryColors)) {
     styles[type] = { color };
@@ -72,7 +74,7 @@ export const useEntryStyles = makeStyles()(theme => {
 
 /**
  * Gets the title field of a jcr node
- * 
+ *
  * @param {Object} jcrData - The jcr data object to get the title field from.
  * @returns {string} - Returns the title field of the jcr node.
  */
@@ -84,13 +86,13 @@ const getTitleField = (jcrData) => {
     return { title };
   }
 
-  const specHasTitleField = ENTRY_TITLE_FIELD_SPEC[jcrPrimaryType]?.hasOwnProperty('titleField');
+  const specHasTitleField = Object.prototype.hasOwnProperty.call(ENTRY_TITLE_FIELD_SPEC[jcrPrimaryType] || {}, 'titleField');
   if (!specHasTitleField) {
     return { title: '' };
   }
   const titleField = ENTRY_TITLE_FIELD_SPEC[jcrPrimaryType]?.['titleField'];
 
-  if (!jcrData.hasOwnProperty(titleField)) {
+  if (!Object.prototype.hasOwnProperty.call(jcrData, titleField)) {
     return { title: jcrData['@name'] };
   } else {
     return { title: jcrData[titleField] };
@@ -99,7 +101,7 @@ const getTitleField = (jcrData) => {
 
 /**
  * Gets the children of a jcr node
- * 
+ *
  * @param {Object} jcrData - The jcr data object to get children from.
  * @returns {Array} - Returns an array of children nodes.
  */
@@ -119,15 +121,15 @@ function jcrGetChildren(jcrData) {
     if (isChild) {
       children.push(jcrData[key]);
     }
-  };
+  }
   return children;
-};
+}
 
 /**
  * Traverses the jcr data object down
- * 
+ *
  * @param {*} jcrData
- * @returns 
+ * @returns
  */
 function jcrGetDescendents(jcrData, entryTypes = ENTRY_TYPES) {
   let children = [];
@@ -142,9 +144,9 @@ function jcrGetDescendents(jcrData, entryTypes = ENTRY_TYPES) {
 
 /**
  * If jcrData has no jcr:uuid, then use the path as the id
- * 
- * @param {*} jcrData 
- * @returns 
+ *
+ * @param {*} jcrData
+ * @returns {string} - Returns the unique id of the jcr data.
  */
 const jcrGetUniqueId = (jcrData) => {
   const id = jcrData['jcr:uuid'];
@@ -168,7 +170,7 @@ export const jcrGetConditionalTitle = (jcrDataTitle) => {
     } else {
       return (
         <>
-          {value.map((v, i) => { return (<span key={`${v}_${i}`}>"{v}"{i < value.length - 1 ? "," : ""}</span>) })}
+          {value.map((v, i) => { return (<span key={`${v}_${i}`}>&quot;{v}&quot;{i < value.length - 1 ? "," : ""}</span>) })}
         </>
       );
     }
@@ -183,7 +185,7 @@ export const jcrGetConditionalTitle = (jcrDataTitle) => {
 
     return (
       <>
-        <span style={{fontFamily: 'monospace'}}>
+        <span style={{ fontFamily: 'monospace' }}>
           {stringifyConditionalOperand(operandA)}
           {' '}
           {comparator}
@@ -223,12 +225,12 @@ export const jcrGetConditionalTitle = (jcrDataTitle) => {
 
 /**
  * Converts a jcr node to a node object
- *  
+ *
  * @param {Object} jcrData - The jcr data object to convert to a node.
  * @param {string} rootPath - The path of the root node.
  * @param {string} nodeParent - The ID of the parent node.
  * @returns {Object} - Returns a node object.
- * 
+ *
 */
 function jcrToNode(jcrData, rootPath, nodeParent) {
   // Note: root node has itself as null
@@ -270,12 +272,11 @@ function jcrToNode(jcrData, rootPath, nodeParent) {
 
 /**
  * Recursively finds all entries in the jcrData object that match the entryTypes
- * 
+ *
  * @param {Object} jcrData - The jcr data object to search for entries.
- * @param {Array} entryTypes - The list of entry types to search for.
  * @param {string} rootPath - The path of the root node.
  * @param {Object} nodes - The flat map representing the tree structure.
- * @returns {Object} - Returns a flat map representing the tree structure. 
+ * @returns {Object} - Returns a flat map representing the tree structure.
 */
 function jcrFindEntries(jcrData, rootPath = (jcrData['@path'] || ''), nodes) {
   if (!jcrData || typeof jcrData !== 'object' || !jcrData['jcr:primaryType']) {
@@ -294,7 +295,7 @@ function jcrFindEntries(jcrData, rootPath = (jcrData['@path'] || ''), nodes) {
 
 /**
  * Checks if the target parent node is a descendant of the node to be moved.
- * 
+ *
  * @param {Object} nodes - The flat map representing the tree structure.
  * @param {string} nodeId - The ID of the node to be moved.
  * @param {string} targetParentId - The ID of the target parent node.
@@ -342,8 +343,8 @@ export function findNodeDepth(nodes, nodeId) {
 
 /**
  * Initializes tree using cards:Questionnaire jcr data as root node
- * 
- * @param {*} jcrData 
+ *
+ * @param {*} jcrData
  * @returns {Object} - Returns a flat map representing the tree structure.
  */
 function initializeRoot(jcrData) {
@@ -358,11 +359,11 @@ function initializeRoot(jcrData) {
 
 
 /**
- * 
+ *
  * @param {Object} jcrData - The jcr data object to update the tree with.
  * @param {Object} nodes - The flat map representing the tree structure.
  * @returns {Object} - Returns a new map with the updated nodes.
- * 
+ *
  */
 function updateNodesOnData(jcrData, nodes) {
   const noData = !jcrData;
@@ -408,7 +409,7 @@ function updateNodesOnData(jcrData, nodes) {
 
 /**
  * Removes a node from the tree
- * 
+ *
  * @param {string} nodeId - The ID of the node to be removed.
  * @param {Object} nodes - The flat map representing the tree structure.
  * @returns {Object} - Returns a new map with the node removed.
@@ -422,7 +423,7 @@ function removeNode(nodeId, nodes) {
   newNodes[parentId].children = parent.children.filter(childId => childId !== nodeId);
   // Remove children of node from tree
   for (const k in newNodes) {
-    if (newNodes.hasOwnProperty(k) && newNodes[k].parent === nodeId) {
+    if (Object.prototype.hasOwnProperty.call(newNodes, k) && newNodes[k].parent === nodeId) {
       delete newNodes[k];
     }
   }
@@ -434,11 +435,11 @@ function removeNode(nodeId, nodes) {
 
 /**
  * Traverse the tree and return all nodes with matching entryTypes
- * 
+ *
  * @param {Object} nodes - The flat map representing the tree structure.
  * @param {Array} entryTypes - The list of entry types to search for.
  * @returns {Array} - Returns an array of nodes with matching entryTypes.
- *  
+ *
  */
 export function findTreeEntries(nodes, entryTypes = []) {
   if (!Object.keys(nodes).length) {
@@ -464,7 +465,7 @@ export function findTreeEntries(nodes, entryTypes = []) {
 // React context
 /**
  *  The initial state of the tree context
- * 
+ *
  *  Nodes in tree have structure (see jcrToNode):
  * @typedef {Object} Node
  * @property {string} value - The ID of the node.
@@ -475,7 +476,7 @@ export function findTreeEntries(nodes, entryTypes = []) {
  * @property {string} title - The title of the node.
  * @property {string} path - The path of the node.
  * @property {string} relativePath - The relative path of the node.
- * 
+ *
  */
 const initialState = {
   // Data from JCR used to initialize tree
@@ -584,7 +585,7 @@ const treeReducer = (state, action) => {
       const { jcrData } = action.payload;
       if (jcrData['jcr:primaryType'] !== 'cards:Questionnaire') {
         throw new Error("QuestionnaireTreeContext initialized with a node that is not a questionnaire");
-      };
+      }
 
       newState = { ...state,
         data: jcrData,
@@ -614,19 +615,23 @@ const treeReducer = (state, action) => {
       throw new Error("Invalid action type in treeReducer");
   }
   // Validate newState
-  const stateIsValid = Object.values(stateValidators).map(validator => validator(newState.nodes)).reduce((a, b) => a && b, true);
+  const stateIsValid = Object.values(stateValidators)
+    .map(validator => validator(newState.nodes)).reduce((a, b) => a && b, true);
   if (!stateIsValid) {
     throw new Error("Invalid state in treeReducer");
   }
   // Check for any warnings
-  const warnings = newState.data === null ? {} : Object.fromEntries(Object.entries(warningValidators).map(([key, validator]) => [key, validator(newState.data)]));
+  const warnings = newState.data === null
+    ? {}
+    : Object.fromEntries(Object.entries(warningValidators)
+      .map(([key, validator]) => [key, validator(newState.data)]));
   return { ...newState, warnings };
-};
+}
 
-export const QuestionnaireTreeContext = React.createContext();
+export const QuestionnaireTreeContext = createContext();
 
 export const jcrActions = {
-  checkIn: (globalLoginDisplay, {id}) => {
+  checkIn: (globalLoginDisplay, { id }) => {
     let checkinForm = new FormData();
     checkinForm.set(":operation", "checkin");
     return fetchWithReLogin(globalLoginDisplay, `/Questionnaires/${id}`, {
@@ -634,7 +639,7 @@ export const jcrActions = {
       body: checkinForm
     });
   },
-  checkOut: (globalLoginDisplay, {id}) => {
+  checkOut: (globalLoginDisplay, { id }) => {
     let checkoutForm = new FormData();
     checkoutForm.set(":operation", "checkout");
     return fetchWithReLogin(globalLoginDisplay, `/Questionnaires/${id}`, {
@@ -643,7 +648,7 @@ export const jcrActions = {
     });
   },
 
-  fetchQuestionnaireData: (globalLoginDisplay, {id}) => {
+  fetchQuestionnaireData: (globalLoginDisplay, { id }) => {
     // 'links' is an implicit processor (called by default) so we don't use it to format our 'cards:Links' children
     // '.-links' formats as an object field with 'jcr:primaryType' property
     // '.links' formats as an array
@@ -651,11 +656,13 @@ export const jcrActions = {
     return fetchWithReLogin(globalLoginDisplay, `/Questionnaires/${id}.-links.deep.json`);
   },
 
-  fetchResourceJSON: (globalLoginDisplay, {data}) => { return fetchWithReLogin(globalLoginDisplay, `${data["@path"]}.deep.json`) },
+  fetchResourceJSON: (globalLoginDisplay, { data }) => {
+    return fetchWithReLogin(globalLoginDisplay, `${data["@path"]}.deep.json`)
+  },
 
   // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
   // :order index
-  reorderEntry: (globalLoginDisplay, {reorderSourceNode, newPosition}) => {
+  reorderEntry: (globalLoginDisplay, { reorderSourceNode, newPosition }) => {
     let reorderForm = new FormData();
     const order = newPosition;
     const path = reorderSourceNode.path;
@@ -672,7 +679,7 @@ export const jcrActions = {
   // :operation=move
   // :dest=/content/newParentNode/childNode
   // :order=before siblingNodeName || index
-  moveEntryNested: (globalLoginDisplay, {reorderSourceNode, newParentNode, newPosition}) => {
+  moveEntryNested: (globalLoginDisplay, { reorderSourceNode, newParentNode, newPosition }) => {
     const reorderForm = new FormData();
     // Use numeric 'order' value to move to specific position
     // If newPosition -1, then move to top of parent's children
@@ -695,7 +702,7 @@ export const jcrActions = {
 
 /**
  * Utility function for formatting child index into ordinal string
- * 
+ *
  */
 export function getOrdinalString(number) {
   if (number < 0) return null; // Ensure the number is positive or zero
@@ -721,13 +728,13 @@ export function QuestionnaireTreeProvider(props) {
 
   const [state, dispatch] = useReducer(treeReducer, initialState);
 
-  
+
   // GlobalLoginContext for fetchWithReLogin
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Actions
   const fetchRootData = useCallback(() => {
-    return jcrActions.fetchQuestionnaireData(globalLoginDisplay, {id: questionnaireId})
+    return jcrActions.fetchQuestionnaireData(globalLoginDisplay, { id: questionnaireId })
       .then(response => response.json())
       .then(data => {
         dispatch({ type: INITIALIZE_ROOT, payload: { jcrData: data } })
@@ -735,7 +742,7 @@ export function QuestionnaireTreeProvider(props) {
   }, [globalLoginDisplay, questionnaireId]);
 
   const fetchRootNodes = useCallback(() => {
-    return jcrActions.fetchQuestionnaireData(globalLoginDisplay, {id: questionnaireId})
+    return jcrActions.fetchQuestionnaireData(globalLoginDisplay, { id: questionnaireId })
       .then(response => response.json())
       .then(data => {
         const nodes = initializeRoot(data);
@@ -749,8 +756,8 @@ export function QuestionnaireTreeProvider(props) {
 
   const refreshTree = useCallback(() => {
     clearTree();
-    fetchRootData();
-  }, []);
+    return fetchRootData();
+  }, [clearTree, fetchRootData]);
 
   const removeNode = useCallback((nodeId) => {
     dispatch({ type: REMOVE_NODE, payload: { nodeId } });
@@ -805,7 +812,8 @@ export function QuestionnaireTreeProvider(props) {
       },
     }
     // Check if any validators return strings, indicating an error
-    const validation = Object.values(reorderValidators).map(validator => validator(reorderSourceId, newParentId, newPosition));
+    const validation = Object.values(reorderValidators)
+      .map(validator => validator(reorderSourceId, newParentId, newPosition));
     const isNotValid = validation.some(result => typeof result === 'string');
     if (isNotValid) {
       const validationErrors = validation.filter(result => typeof result === 'string').join('\n');
@@ -814,9 +822,10 @@ export function QuestionnaireTreeProvider(props) {
 
     const reorderSourceParentId = nodes[reorderSourceId].parent;
     const isNewParent = newParentId != reorderSourceParentId;
-    const submit = isNewParent ?
-      jcrActions.moveEntryNested(globalLoginDisplay, {reorderSourceNode: nodes[reorderSourceId], newParentNode: nodes[newParentId], newPosition})
-      : jcrActions.reorderEntry(globalLoginDisplay, {reorderSourceNode: nodes[reorderSourceId], newPosition});
+    const submit = isNewParent
+      ? jcrActions.moveEntryNested(globalLoginDisplay,
+        { reorderSourceNode: nodes[reorderSourceId], newParentNode: nodes[newParentId], newPosition })
+      : jcrActions.reorderEntry(globalLoginDisplay, { reorderSourceNode: nodes[reorderSourceId], newPosition });
     return submit;
   }, [globalLoginDisplay, state.nodes]);
 
@@ -828,8 +837,8 @@ export function QuestionnaireTreeProvider(props) {
   }, []);
 
   const actions = {
-    checkIn(id) { jcrActions.checkIn(globalLoginDisplay, {id}) },
-    checkOut(id) { jcrActions.checkOut(globalLoginDisplay, {id}) },
+    checkIn(id) { jcrActions.checkIn(globalLoginDisplay, { id }) },
+    checkOut(id) { jcrActions.checkOut(globalLoginDisplay, { id }) },
     fetchRootData,
     clearTree,
     refreshTree,
@@ -851,7 +860,7 @@ export function QuestionnaireTreeProvider(props) {
  * @throws an error if it is not within a QuestionnaireTreeProvider
  */
 export function useQuestionnaireTreeContext() {
-  const context = React.useContext(QuestionnaireTreeContext);
+  const context = useContext(QuestionnaireTreeContext);
 
   if (context == undefined) {
     throw new Error("useQuestionnaireTreeContext must be used within a QuestionnaireTreeProvider");

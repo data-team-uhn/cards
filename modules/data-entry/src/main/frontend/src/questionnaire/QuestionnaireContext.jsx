@@ -16,23 +16,24 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+
+import { ENTRY_TYPES, EXTLINK_TYPES, QUESTION_TYPES, QUESTIONNAIRE_TYPES } from "./FormEntry";
 // For storing structure of questionnaire for reordering
 import { useQuestionnaireTreeContext, findTreeEntries } from "../questionnaireEditor/QuestionnaireTreeContext";
-import { ENTRY_TYPES, EXTLINK_TYPES, QUESTION_TYPES, QUESTIONNAIRE_TYPES } from "./FormEntry";
 
 // Custom hook to track which item is in view
 export function useInViewTracker(items, options = { threshold: 0.3 }) {
   const [activeItem, setActiveItem] = useState(null);
   const [lastIntersectingItem, setLastIntersectingItem] = useState(null);
-  
+
   // Set up Intersection Observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const id = entry.target.getAttribute('in-view-data-id');
-  
+
           if (entry.isIntersecting) {
             setActiveItem(id);
             setLastIntersectingItem(id);
@@ -60,7 +61,7 @@ export function useInViewTracker(items, options = { threshold: 0.3 }) {
     const target = document.querySelector(`[in-view-data-id='${id}']`);
     const targetPosition = target.getBoundingClientRect().top + window.scrollY;
     const offsetPosition = targetPosition - 100;
-  
+
     window.scrollTo({
       top: offsetPosition,
       behavior: 'smooth'
@@ -89,8 +90,8 @@ export function useInViewTracker(items, options = { threshold: 0.3 }) {
     isHighlighted: (id) => highlightedItems.has(id),
   }
 
-  return { activeItem, scrollToItem, highlighter,};
-};
+  return { activeItem, scrollToItem, highlighter };
+}
 
 
 const DEFAULT_STATE = [];

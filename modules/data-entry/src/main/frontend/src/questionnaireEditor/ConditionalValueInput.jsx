@@ -85,15 +85,15 @@ let ConditionalValueInput = (props) => {
       { isReference && variables ?
         <QuestionnaireAutocomplete
           entities={variables.map((node) => {
-              const { value, name, title, path, relativePath, jcrPrimaryType } = node;
-              return {
-                  value: value,
-                  name: name,
-                  text: title,
-                  path: path,
-                  relativePath: relativePath,
-                  type: stripCardsNamespace(jcrPrimaryType)
-              }
+            const { value, name, title, path, relativePath, jcrPrimaryType } = node;
+            return {
+              value: value,
+              name: name,
+              text: title,
+              path: path,
+              relativePath: relativePath,
+              type: stripCardsNamespace(jcrPrimaryType)
+            }
           })
           }
           selection={values}

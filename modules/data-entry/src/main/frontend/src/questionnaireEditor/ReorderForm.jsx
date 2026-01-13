@@ -17,7 +17,8 @@
 //  under the License.
 //
 
-import React, { useEffect, useMemo, useCallback, useReducer, useState } from 'react';
+import { useEffect, useMemo, useCallback, useReducer, useState } from 'react';
+
 import {
   Alert,
   Button,
@@ -29,10 +30,11 @@ import {
   RadioGroup,
   Radio,
 } from '@mui/material';
+
 import { useQuestionnaireTreeContext, isDescendant, getOrdinalString } from './QuestionnaireTreeContext';
+import { ENTRY_TYPES } from '../questionnaire/FormEntry';
 import QuestionnaireAutocomplete from '../questionnaire/QuestionnaireAutocomplete';
 import { stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
-import { ENTRY_TYPES } from '../questionnaire/FormEntry';
 
 // State for reorder submission
 const initialReorderState = {
@@ -90,11 +92,11 @@ export default function ReorderForm(props) {
   // If reorderSource is provided, pass into initialReorderState
   const [reorderState, reorderDispatch] =
     useReducer(reorderReducer,
-              disableReorderSourceSelect
-              ?
-              { ...initialReorderState, inputs: { ...initialReorderState.inputs, reorderSource: data['jcr:uuid'] } }
-              :
-              initialReorderState);
+      disableReorderSourceSelect
+        ?
+        { ...initialReorderState, inputs: { ...initialReorderState.inputs, reorderSource: data['jcr:uuid'] } }
+        :
+        initialReorderState);
 
   // Reorder source is the entry to be moved, array used for autocomplete
   const [reorderSourceSelection, setReorderSourceSelection] = useState([]);
@@ -136,7 +138,7 @@ export default function ReorderForm(props) {
 
   // Parent options for a given source node is any section or the root questionnaire
   const parentOptions = useMemo(() => {
-     if (!reorderSource) return [];
+    if (!reorderSource) return [];
     return Object.values(nodes)
       .filter(node => ['cards:Section', 'cards:Questionnaire'].includes(node.jcrPrimaryType));
   }, [nodes, reorderSource]);
@@ -194,9 +196,12 @@ export default function ReorderForm(props) {
 
   useEffect(() => {
     setNewPositionSelection([]);
-    // If newParent has empty children is empty of entry types (conditionals not included) then set positionRadio to first 
-    const newParentChildrenPrimaryTypes = nodes[newParent]?.children.map(child => nodes[child].jcrPrimaryType);
-    const newParentHasNoEntryChildren = newParentChildrenPrimaryTypes?.filter(primaryType => ENTRY_TYPES.includes(primaryType))?.length === 0;
+    // If newParent has empty children is empty of entry types (conditionals not included)
+    // then set positionRadio to first
+    const newParentChildrenPrimaryTypes =
+      nodes[newParent]?.children.map(child => nodes[child].jcrPrimaryType);
+    const newParentHasNoEntryChildren =
+      newParentChildrenPrimaryTypes?.filter(primaryType => ENTRY_TYPES.includes(primaryType))?.length === 0;
 
     if (newParentHasNoEntryChildren) {
       reorderDispatch({ type: 'SET_POSITIONRADIO', payload: 'first' });
@@ -283,7 +288,9 @@ export default function ReorderForm(props) {
             <Grid size={9}>
               <Typography>
                 {getOrdinalString(
-                  nodes[nodes[reorderSource].parent].children.filter(nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType)).indexOf(reorderSource)
+                  nodes[nodes[reorderSource].parent].children
+                    .filter(nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType))
+                    .indexOf(reorderSource)
                 )}
               </Typography>
             </Grid>
@@ -329,8 +336,10 @@ export default function ReorderForm(props) {
           >
             {(() => {
               const noNewParent = !newParent
-              const newParentHasNoEntryChildren = !nodes[newParent]?.children.some(child => ENTRY_TYPES.includes(nodes[child].jcrPrimaryType))
-              const filteredChildren = nodes[nodes[reorderSource]?.parent]?.children?.filter(nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType));
+              const newParentHasNoEntryChildren =
+                !nodes[newParent]?.children.some(child => ENTRY_TYPES.includes(nodes[child].jcrPrimaryType))
+              const filteredChildren = nodes[nodes[reorderSource]?.parent]?.children?.filter(
+                nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType));
               const originalPositionIndex = filteredChildren?.indexOf(reorderSource);
               const originalPositionIsFirst = originalPositionIndex === 0;
               const originalPositionIsLast = originalPositionIndex === filteredChildren?.length - 1;
@@ -340,7 +349,7 @@ export default function ReorderForm(props) {
                   { value: 'last', label: 'Last' },
                 ].map(({ value, label }) =>
                   <FormControlLabel
-				    key={value}
+                    key={value}
                     value={value}
                     label={label}
                     disabled={[
@@ -375,7 +384,7 @@ export default function ReorderForm(props) {
   }
 
   const emptyNodes = !Object.keys(nodes).length;
-  const nodeNotInTree = disableReorderSourceSelect && !nodes.hasOwnProperty(reorderSource);
+  const nodeNotInTree = disableReorderSourceSelect && !Object.prototype.hasOwnProperty.call(nodes, reorderSource);
   // Wait until nodes is loaded into context
   if (emptyNodes) {
     console.warn('No nodes, not rendering MoveEntryModal');

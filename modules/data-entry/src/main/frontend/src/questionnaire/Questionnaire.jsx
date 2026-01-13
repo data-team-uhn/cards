@@ -39,51 +39,43 @@ import {
 import {
   blue,
   blueGrey,
-  cyan,
   deepPurple,
-  indigo,
+  green,
   orange,
   purple
 } from '@mui/material/colors';
+import _ from "lodash";
 import { DateTime } from "luxon";
 import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
-import { ENTRY_TYPES, QUESTION_TYPES } from "./FormEntry";
+import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry";
 import formStyles from "./formStyles.jsx";
 import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
-import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
+import { QuestionnaireProvider } from "./QuestionnaireContext"; //This is purely computed from QuestionnaireTreeContext now
 import QuestionnairePreview from "./QuestionnairePreview";
-import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
+import { stripCardsNamespace } from "./QuestionnaireUtilities";
 import ResourceHeader from "./ResourceHeader";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import ExportButton from "../dataHomepage/ExportButton";
 import { checkPropTypes } from "../propTypes";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
-import { blue, blueGrey, deepPurple, green, orange, purple } from '@mui/material/colors';
-import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry";
+import EditorHeader from "../questionnaireEditor/EditorHeader.jsx";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
-import { usePageNameWriterContext } from "../themePage/Page.jsx";
-
-import ResourceHeader from "./ResourceHeader";
-import QuestionnairePreview from "./QuestionnairePreview";
-import { QuestionnaireProvider } from "./QuestionnaireContext"; //This is purely computed from QuestionnaireTreeContext now
-import { stripCardsNamespace } from "./QuestionnaireUtilities";
-import { ReorderModal } from "../questionnaireEditor/ReorderModal.jsx";
-import EditorHeader from "../questionnaireEditor/EditorHeader.jsx";
 import { useQuestionnaireTreeContext, QuestionnaireTreeProvider } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
-import _ from "lodash";
+import ReorderDraft from "../questionnaireEditor/ReorderDraft.jsx";
+import { ReorderModal } from "../questionnaireEditor/ReorderModal.jsx";
+import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 
 let Questionnaire = (props) => {
   let location = useLocation();
   let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
-  
+
   return (
     <QuestionnaireTreeProvider questionnaireId={id}>
       <QuestionnaireComponent {...props} />
@@ -102,6 +94,7 @@ let QuestionnaireComponent = (props) => {
   let questionnaireUrl = `${baseUrl}/${id}`;
 
   const treeContext = useQuestionnaireTreeContext();
+
   const { data } = treeContext.state;
   const questionnaireTitle = data?.title || decodeURI(id);
 
@@ -113,7 +106,7 @@ let QuestionnaireComponent = (props) => {
 
   // First, fetch the questionnaire data
   useEffect(() => {
-    treeContext.actions.refreshTree();
+    treeContext.actions.refreshTree().catch((error) => { setError(error) });
   }, [editTab]);
 
   useEffect(() => {
@@ -217,12 +210,12 @@ let QuestionnaireComponent = (props) => {
       contentOffset={props.contentOffset}
     >
       { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
-            <Typography variant="overline">
-              Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
-            </Typography>
-          }
-          <EditorHeader />
-        </ResourceHeader>
+        <Typography variant="overline">
+          Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
+        </Typography>
+      }
+      <EditorHeader />
+    </ResourceHeader>
   );
 
   return (
@@ -546,7 +539,7 @@ ConditionalGroup.propTypes = {
 
 let QuestionnaireEntry = (props) => {
   checkPropTypes(QuestionnaireEntry, props);
-  let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
+  let { onActionDone, data, type, titleField, model, classes, menuProps, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
@@ -658,34 +651,34 @@ let QuestionnaireEntry = (props) => {
 
   return (
     <QuestionnaireItemCard
-        titleField={titleField}
-        moreInfo={renderFields({condensed: true})}
-        data={entryData}
-        type={type}
-        upperClasses={classes}
-        doHighlight={doHighlight}
-        action={<>
-          { menuItems?.length > 0 &&
-            <CreationMenu
-              data={entryData}
-              onCreated={onCreated}
-              menuItems={menuItems}
-              models={childModels}
-              {...menuProps}
-            />
-          }
-          { !!menuProps?.isMainAction ?
-            // If this is the main action, render MoveEntryModal without data to select reorder source
-            // Otherwise render MoveEntryModal with data set
-            <ReorderModal />
-            :
-            [...QUESTION_TYPES, ...SECTION_TYPES].includes(entryData['jcr:primaryType']) &&
-              <ReorderModal entryData={entryData} />
-          }
-        </>}
-        onActionDone={handleDataChange}
-        model={model}
-        {...rest}
+      titleField={titleField}
+      moreInfo={renderFields({ condensed: true })}
+      data={entryData}
+      type={type}
+      upperClasses={classes}
+      doHighlight={doHighlight}
+      action={<>
+        { menuItems?.length > 0 &&
+          <CreationMenu
+            data={entryData}
+            onCreated={onCreated}
+            menuItems={menuItems}
+            models={childModels}
+            {...menuProps}
+          />
+        }
+        { !!menuProps?.isMainAction ?
+          // If this is the main action, render MoveEntryModal without data to select reorder source
+          // Otherwise render MoveEntryModal with data set
+          <ReorderModal />
+          :
+          [...QUESTION_TYPES, ...SECTION_TYPES].includes(entryData['jcr:primaryType']) &&
+            <ReorderModal entryData={entryData} />
+        }
+      </>}
+      onActionDone={handleDataChange}
+      model={model}
+      {...rest}
     >
       { childModels ?
         <QuestionnaireItemSet

@@ -197,7 +197,7 @@ function QuestionnaireAutocomplete(props) {
                   <InputAdornment position="start">
                     { getAvatar(entities.find(v => selection.includes(getOptionValue(v))).type) }
                   </InputAdornment>,
-              }}
+              } }
             }
           />
         }

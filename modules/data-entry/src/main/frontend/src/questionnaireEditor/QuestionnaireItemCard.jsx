@@ -37,12 +37,11 @@ import { makeStyles } from 'tss-react/mui';
 import { checkPropTypes } from "../propTypes";
 import EditDialog from "./EditDialog";
 import { camelCaseToWords } from "./LabeledField";
+import { useQuestionnaireTreeContext, getOrdinalString } from './QuestionnaireTreeContext.jsx';
 import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
-
-import { useQuestionnaireInViewContext } from '../questionnaire/QuestionnaireContext.jsx';
-import { useQuestionnaireTreeContext, getOrdinalString } from './QuestionnaireTreeContext.jsx';
 import { ENTRY_TYPES } from '../questionnaire/FormEntry.jsx';
+import { useQuestionnaireInViewContext } from '../questionnaire/QuestionnaireContext.jsx';
 
 const useStyles = makeStyles()(theme => ({
   root : {
@@ -105,7 +104,6 @@ let QuestionnaireItemCard = (props) => {
   checkPropTypes(QuestionnaireItemCard, props);
   let {
     children,
-    avatar,
     avatarColor,
     type,
     title,
@@ -175,10 +173,10 @@ let QuestionnaireItemCard = (props) => {
     // Get the index of the item in the parent from treeContext.state.nodes object
     const itemParent = Object.values(treeContext.state.nodes)
       .find(item => item['id'] === itemId)?.parent;
-    const itemPosition = itemParent 
+    const itemPosition = itemParent
       ? treeContext.state.nodes[itemParent].children
         .filter(childId => ENTRY_TYPES.includes(treeContext.state.nodes[childId]?.jcrPrimaryType))
-        .indexOf(itemId) 
+        .indexOf(itemId)
       : null;
     return itemPosition !== null ? getOrdinalString(itemPosition) : null;
   }, [type, treeContext?.state?.nodes, data['jcr:uuid']]);
@@ -186,10 +184,18 @@ let QuestionnaireItemCard = (props) => {
   return (
     <div
       // If Questionnaire then dont apply left border
-      style={{borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`, position: "relative"}}
+      style={{ borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`, position: "relative" }}
       onClick={() => inView.highlighter.highlight(data['jcr:uuid'])}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          inView.highlighter.highlight(data['jcr:uuid']);
+        }
+      }}
+      role="button"
+      tabIndex={0}
     >
-      { !!ordinalPosition && 
+      { !!ordinalPosition &&
         <div
           style={{
             position: "absolute",
@@ -200,88 +206,88 @@ let QuestionnaireItemCard = (props) => {
             color: "white",
             zIndex: 1
           }}
-      >
-        {ordinalPosition}
-      </div>
+        >
+          {ordinalPosition}
+        </div>
       }
       <Card
         variant="outlined"
         ref={itemRef}
         className={cardClasses.join(" ")}
       >
-          <CardHeader
-            disableTypography
-            title={
-              <>
-                <FormattedText className={titleClasses.join(" ")} variant="h6">{titleText}</FormattedText>
-                { moreInfo &&
-                  <Tooltip title="Properties">
-                    <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">
-                      <MoreIcon />
-                    </IconButton>
-                  </Tooltip>
-                }
-                { moreInfo && moreInfoAnchor &&
-                  <Popover
-                    className={classes.moreInfo}
-                    open={Boolean(moreInfoAnchor)}
-                    anchorEl={moreInfoAnchor}
-                    onClose={() => setMoreInfoAnchor(null)}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'left',
-                    }}
-                  >
-                    <Card><CardContent>{moreInfo}</CardContent></Card>
-                  </Popover>
-                }
-              </>
-            }
-            action={
-              <div>
-                {action}
-                {!disableEdit &&
-                <Tooltip title={`Edit ${formattedType.toLowerCase()} properties`}>
-                  <IconButton onClick={() => setEditDialogOpen(true)} size="large">
-                    <EditIcon />
+        <CardHeader
+          disableTypography
+          title={
+            <>
+              <FormattedText className={titleClasses.join(" ")} variant="h6">{titleText}</FormattedText>
+              { moreInfo &&
+                <Tooltip title="Properties">
+                  <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">
+                    <MoreIcon />
                   </IconButton>
                 </Tooltip>
-                }
-                {!disableDelete &&
-                <DeleteButton
-                  entryPath={data["@path"]}
-                  entryName={title || data[titleField] || data["@name"]}
-                  entryType={formattedType.toLowerCase()}
-                  onComplete={onActionDone}
-                />
-                }
-                {!disableCollapse &&
-                <Tooltip title={isCollapsed? "Expanded view" : "Collapsed view"}>
-                  <IconButton onClick={() => setCollapsed(!isCollapsed)} disabled={!Boolean(children)} size="large">
-                    { isCollapsed ? <ExpandIcon /> : <CollapseIcon /> }
-                  </IconButton>
-                </Tooltip>
-                }
-              </div>
-            }
+              }
+              { moreInfo && moreInfoAnchor &&
+                <Popover
+                  className={classes.moreInfo}
+                  open={Boolean(moreInfoAnchor)}
+                  anchorEl={moreInfoAnchor}
+                  onClose={() => setMoreInfoAnchor(null)}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                >
+                  <Card><CardContent>{moreInfo}</CardContent></Card>
+                </Popover>
+              }
+            </>
+          }
+          action={
+            <div>
+              {action}
+              {!disableEdit &&
+              <Tooltip title={`Edit ${formattedType.toLowerCase()} properties`}>
+                <IconButton onClick={() => setEditDialogOpen(true)} size="large">
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              }
+              {!disableDelete &&
+              <DeleteButton
+                entryPath={data["@path"]}
+                entryName={title || data[titleField] || data["@name"]}
+                entryType={formattedType.toLowerCase()}
+                onComplete={onActionDone}
+              />
+              }
+              {!disableCollapse &&
+              <Tooltip title={isCollapsed? "Expanded view" : "Collapsed view"}>
+                <IconButton onClick={() => setCollapsed(!isCollapsed)} disabled={!Boolean(children)} size="large">
+                  { isCollapsed ? <ExpandIcon /> : <CollapseIcon /> }
+                </IconButton>
+              </Tooltip>
+              }
+            </div>
+          }
+        />
+        <CardContent className={!plain ? classes.withAvatar : undefined}>
+          { children }
+          { editDialogOpen && <EditDialog
+            targetExists
+            data={data}
+            type={type}
+            model={model}
+            isOpen={editDialogOpen}
+            onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
+            onCancel={() => setEditDialogOpen(false)}
           />
-          <CardContent className={!plain ? classes.withAvatar : undefined}>
-            { children }
-            { editDialogOpen && <EditDialog
-              targetExists
-              data={data}
-              type={type}
-              model={model}
-              isOpen={editDialogOpen}
-              onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
-              onCancel={() => setEditDialogOpen(false)}
-            />
-            }
-          </CardContent>
+          }
+        </CardContent>
       </Card>
     </div>
   );

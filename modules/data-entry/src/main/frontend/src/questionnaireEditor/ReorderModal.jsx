@@ -16,16 +16,18 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+import MoveDownIcon from '@mui/icons-material/MoveDown';
 import {
   Dialog,
   DialogTitle,
   IconButton,
   Tooltip,
 } from '@mui/material';
-import MoveDownIcon from '@mui/icons-material/MoveDown';
-import ReorderForm from './ReorderForm';
+
 import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext';
+import ReorderForm from './ReorderForm';
 
 // If no entry data is provided then reorderSource can be selected
 export function ReorderModal(props) {

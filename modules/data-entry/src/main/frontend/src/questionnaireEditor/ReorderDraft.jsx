@@ -17,7 +17,10 @@
 //  under the License.
 //
 
-import React, { useEffect, useCallback, useContext, useReducer, useState, useRef } from 'react';
+import { useEffect, useCallback, useContext, useReducer, useState, useRef, createContext } from 'react';
+
+import CheckIcon from '@mui/icons-material/Check';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
 import {
   Alert,
   Button,
@@ -39,25 +42,17 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import CheckIcon from '@mui/icons-material/Check';
+import { alpha } from '@mui/material/styles';
+import _ from "lodash";
+import { DateTime } from 'luxon';
+import { makeStyles } from 'tss-react/mui';
 
 import { useQuestionnaireTreeContext, ENTRY_TITLE_FIELD_SPEC, jcrGetConditionalTitle } from './QuestionnaireTreeContext';
+import ErrorDialog from '../components/ErrorDialog';
+import MainActionButton from "../components/MainActionButton";
+import { QUESTIONNAIRE_TYPES, SECTION_TYPES, CONDITIONAL_TYPES, ENTRY_TYPES } from '../questionnaire/FormEntry';
 import { useQuestionnaireInViewContext } from '../questionnaire/QuestionnaireContext';
 import { stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
-
-import { makeStyles } from 'tss-react/mui';
-import { alpha, } from '@mui/material/styles';
-
-import { QUESTIONNAIRE_TYPES, SECTION_TYPES, CONDITIONAL_TYPES, ENTRY_TYPES } from '../questionnaire/FormEntry';
-
-import _ from "lodash";
-
-import MainActionButton from "../components/MainActionButton";
-import ErrorDialog from '../components/ErrorDialog';
-
-import { DateTime } from 'luxon';
 
 const useBaseStyles = makeStyles()((theme) => ({
   selectionList: {
@@ -73,7 +68,7 @@ const useBaseStyles = makeStyles()((theme) => ({
     "& .MuiDivider-root": {
       marginLeft: theme.spacing(7),
     },
-  },  
+  },
 }));
 
 const useReorderSourceStyles = makeStyles()((theme, props) => {
@@ -103,24 +98,27 @@ const useTargetPlaceholderStyles = makeStyles()((theme, props) => {
     targetPlaceholderItem: {
       height,
       border: '1px black',
-      borderLeft: hover && reorderState?.draftTree && nodeId && 
+      borderLeft: hover && reorderState?.draftTree && nodeId &&
         `3px solid ${ENTRY_TITLE_FIELD_SPEC[reorderState.draftTree[reorderState.inputs.reorderSourceId]?.jcrPrimaryType]?.color || 'transparent'}`,
-      background: hover && reorderState?.draftTree && nodeId && 
-        ENTRY_TITLE_FIELD_SPEC[reorderState.draftTree[reorderState.inputs.reorderSourceId]?.jcrPrimaryType]?.color && 
-        `repeating-linear-gradient(
-          135deg,
-          ${ENTRY_TITLE_FIELD_SPEC[reorderState.draftTree[reorderState.inputs.reorderSourceId]?.jcrPrimaryType]?.color},
-          ${ENTRY_TITLE_FIELD_SPEC[reorderState.draftTree[reorderState.inputs.reorderSourceId]?.jcrPrimaryType]?.color} 5px,
-          ${alpha(ENTRY_TITLE_FIELD_SPEC[reorderState.draftTree[reorderState.inputs.reorderSourceId]?.jcrPrimaryType]?.color, .25)} 5px,
-          ${alpha(ENTRY_TITLE_FIELD_SPEC[reorderState.draftTree[reorderState.inputs.reorderSourceId]?.jcrPrimaryType]?.color, .25)} 10px
-        )`
+      background: hover && reorderState?.draftTree && nodeId &&
+        (() => {
+          const sourceId = reorderState.inputs.reorderSourceId;
+          const sourceColor = ENTRY_TITLE_FIELD_SPEC[reorderState.draftTree[sourceId]?.jcrPrimaryType]?.color;
+          return sourceColor && `repeating-linear-gradient(
+            135deg,
+            ${sourceColor},
+            ${sourceColor} 5px,
+            ${alpha(sourceColor, .25)} 5px,
+            ${alpha(sourceColor, .25)} 10px
+          )`;
+        })()
     },
     invalidTargetPlaceholderItem: {
       height,
       border: '1px black',
-      borderLeft: hover && reorderState?.draftTree && nodeId && 
+      borderLeft: hover && reorderState?.draftTree && nodeId &&
         `3px solid ${theme.palette.error.main}`,
-      background: hover && reorderState?.draftTree && nodeId && 
+      background: hover && reorderState?.draftTree && nodeId &&
         `repeating-linear-gradient(
           135deg,
           ${theme.palette.error.main},
@@ -170,7 +168,7 @@ const reorderReducer = (state, action) => {
     case 'SET_REORDERSOURCE':
       return { ...state, inputs: { ...state.inputs, reorderSourceId: action.payload, reorderTargetId: null } };
 
-    case 'SET_TARGET_AND_MOVE':
+    case 'SET_TARGET_AND_MOVE': {
       // Check that reorder source is set
       if (!state.inputs.reorderSourceId) {
         console.warn('No reorder source set');
@@ -193,7 +191,7 @@ const reorderReducer = (state, action) => {
           targetIndex = targetIndex - 1;
         }
         return targetIndex;
-      }
+      };
       const reorderTargetIndex = getTargetPosition(sourceParent, targetParent, reorderTargetId, insert);
       // Define move and clear inputs
       const move = { reorderSourceId, reorderTargetId, reorderTargetIndex, reorderNewParentId: targetParent, insert };
@@ -215,6 +213,7 @@ const reorderReducer = (state, action) => {
 
       sourceNode.parent = targetParent;
       return { ...state, moves: newMoves, inputs: newInputs, draftTree: newDraftTree };
+    }
     case 'RESET_MOVES':
       return { ...state, moves: [] };
 
@@ -232,7 +231,7 @@ const reorderReducer = (state, action) => {
 
 
 // Define React Context with reorderState to avoid prop drilling
-const ReorderContext = React.createContext();
+const ReorderContext = createContext();
 
 function ReorderProvider(props) {
   const { children, tree } = props;
@@ -271,7 +270,6 @@ const ReorderSubmitModal = (props) => {
           const { reorderSourceId, reorderNewParentId, reorderTargetIndex } = move;
           const rootNodes = await treeContext.actions.fetchRootNodes();
           await treeContext.actions.reorderNode(reorderSourceId, reorderNewParentId, reorderTargetIndex, rootNodes);
-          
         } catch (error) {
           console.error('reorder error', error);
           throw error;
@@ -341,7 +339,7 @@ const ReorderSubmitModal = (props) => {
       <ErrorDialog title='Failed to reorder'
         open={reorderState.status == 'error'}
         onClose={() => {
-          reorderDispatch({ type: 'SET_IDLE'});
+          reorderDispatch({ type: 'SET_IDLE' });
           treeContext.actions.refreshTree();
         }}
       >
@@ -372,12 +370,6 @@ const TargetPlaceholderDivider = (props) => {
 
   const { classes } = useTargetPlaceholderStyles({ nodeId, reorderState, hover });
 
-  // If node not in tree then dont render yet
-  if (!reorderState.draftTree) {
-    console.warn('Draft tree not loaded yet, returning null');
-    return null;
-  }
-
   const reorderSourceId = reorderState.inputs.reorderSourceId;
   const sourceIsSelected = !!reorderSourceId;
 
@@ -402,7 +394,8 @@ const TargetPlaceholderDivider = (props) => {
       const node = reorderState.draftTree[nodeId];
       if (insert) {
         // Check that source is not the last child of this node
-        const sourceIsLastChild = (node.children.length > 0) && (node.children[node.children.length - 1] === reorderSourceId);
+        const sourceIsLastChild = (node.children.length > 0) &&
+          (node.children[node.children.length - 1] === reorderSourceId);
         if (sourceIsLastChild) return INVALID_REASONS['LAST_CHILD'];
       } else {
         const nodeParent = reorderState.draftTree[nodeId].parent;
@@ -438,6 +431,11 @@ const TargetPlaceholderDivider = (props) => {
     }
   }, [sourceIsSelected]);
 
+  // If node not in tree then dont render yet
+  if (!reorderState.draftTree) {
+    console.warn('Draft tree not loaded yet, returning null');
+    return null;
+  }
 
   if (!sourceIsSelected) {
     // If no source selected then target placeholder is empty
@@ -452,14 +450,14 @@ const TargetPlaceholderDivider = (props) => {
 
     // Determine if it should be hidden or show left border
     // If no reorder source selected then show border unless in between entry types
-    const previousNodeType = parentChildren[index - 1] ? reorderState.draftTree[parentChildren[index - 1]].jcrPrimaryType : null;
+    const previousNodeType = parentChildren[index - 1] ?
+      reorderState.draftTree[parentChildren[index - 1]].jcrPrimaryType : null;
     const currentNodeType = reorderState.draftTree[nodeId].jcrPrimaryType;
 
     // If no previous node then hide border
     const noPreviousNode = previousNodeType === null;
     const inBetweenSectionTypes = [previousNodeType, currentNodeType].some(type => SECTION_TYPES.includes(type));
     const currentNodeIsFirst = index === 0;
-    
     // Use the borderedEmptyTargetPlaceholderItem class if border should be shown
     if (noPreviousNode || inBetweenSectionTypes || currentNodeIsFirst || insert) {
       return <div className={classes.emptyTargetPlaceholderItem} />;
@@ -517,7 +515,8 @@ const ReorderConditionalSubheader = (props) => {
   const { reorderState } = reorderContext;
   const nodes = reorderState.draftTree;
 
-  const conditionalChildren = node.children.filter(childId => CONDITIONAL_TYPES.includes(nodes[childId].jcrPrimaryType));
+  const conditionalChildren = node.children.filter(childId =>
+    CONDITIONAL_TYPES.includes(nodes[childId].jcrPrimaryType));
 
   const type = stripCardsNamespace(node.jcrPrimaryType);
   return (
@@ -569,7 +568,9 @@ function RecursiveDragList(props) {
 
   const nodes = reorderState.draftTree;
 
-  const reorderSourceStyles = useReorderSourceStyles({ type: !nodes ? null : stripCardsNamespace(nodes[nodeId]?.jcrPrimaryType)});
+  const reorderSourceStyles = useReorderSourceStyles({
+    type: !nodes ? null : stripCardsNamespace(nodes[nodeId]?.jcrPrimaryType)
+  });
 
   // Use treeContext and inView tracker to get parent of selected node and highlight its parent
   const inView = useQuestionnaireInViewContext();
@@ -605,10 +606,11 @@ function RecursiveDragList(props) {
 
   // Logic for current node
   const nodeIsSource = reorderState.inputs.reorderSourceId === nodeId;
-  const conditionalChildren = node.children.filter(childId => CONDITIONAL_TYPES.includes(nodes[childId].jcrPrimaryType));
+  const conditionalChildren = node.children.filter(childId =>
+    CONDITIONAL_TYPES.includes(nodes[childId].jcrPrimaryType));
   const entryChildren = node.children.filter(childId => ENTRY_TYPES.includes(nodes[childId].jcrPrimaryType));
   const handleClickReorderSourceSelect = () => {
-    // Unhighlight all    
+    // Unhighlight all
     inView.highlighter.unhighlightAll();
     if (nodeId === reorderState.inputs.reorderSourceId) {
       reorderDispatch({ type: 'UNSET_REORDERSOURCE' });
@@ -635,70 +637,70 @@ function RecursiveDragList(props) {
         {   // If node has conditional children render as a banner attached aboved to the node
           !!conditionalChildren.length && <ReorderConditionalSubheader node={node} />
         }
-        {   
-          !isRootNode && 
-            <Tooltip title={nodeIsSource ? 'Unselect' : 'Select to move'} 
+        {
+          !isRootNode &&
+            <Tooltip title={nodeIsSource ? 'Unselect' : 'Select to move'}
               open={hover} // Ensure Tooltip only opens when appropriate
               onOpen={() => setHover(true)}
               onClose={() => setHover(false)}
             >
               <div>
-              <ListItem
-                dense
-                disableGutters
-                disablePadding
-                selected={nodeIsSource}
-                sx={{
-                  cursor: 'pointer',
-                  bgColor: ['Question', 'Information'].includes(type) ? 'transparent' : 'rgba(0, 0, 0, 0.04)',
-                  borderLeft: `3px solid ${ENTRY_TITLE_FIELD_SPEC[`cards:${type}`]?.color}`,
+                <ListItem
+                  dense
+                  disableGutters
+                  disablePadding
+                  selected={nodeIsSource}
+                  sx={{
+                    cursor: 'pointer',
+                    bgColor: ['Question', 'Information'].includes(type) ? 'transparent' : 'rgba(0, 0, 0, 0.04)',
+                    borderLeft: `3px solid ${ENTRY_TITLE_FIELD_SPEC[`cards:${type}`]?.color}`,
 
-                }}
-              >
-                {collapsible &&
-                  <IconButton
-                    sx={{ mr: -2 }}
-                    onClick={handleClickCollapse}
-                  >
-                    <Icon color={enableCollapse ? 'inherit' : 'disabled'}>
-                      {collapsed ? 'expand_more' : 'expand_less'}
-                    </Icon>
-                  </IconButton>
-                }
-                <ListItemText
-                  disableTypography
-                  sx={{ pl: '12px' }}
-                  onClick={() => { !isRootNode && handleClickReorderSourceSelect() }}
-                  primary={
-                    <>
-                      {!!node.title &&
-                        <Typography
-                          component="span"
-                          sx={{ mr: 2 }}
-                        >
-                          {node.title}
-                        </Typography>
-                      }
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        color="textSecondary"
-                      >
-                        {node.name}
-                      </Typography>
-                    </>
+                  }}
+                >
+                  {collapsible &&
+                    <IconButton
+                      sx={{ mr: -2 }}
+                      onClick={handleClickCollapse}
+                    >
+                      <Icon color={enableCollapse ? 'inherit' : 'disabled'}>
+                        {collapsed ? 'expand_more' : 'expand_less'}
+                      </Icon>
+                    </IconButton>
                   }
-                />
-                <ListItemSecondaryAction>
-                  {!nodeIsSource && (
-                    <Tooltip title="Select to move">
-                      <IconButton onClick={() => handleClickReorderSourceSelect()} >
-                        {hover && <SwapVertIcon />}
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </ListItemSecondaryAction>
-              </ListItem>
+                  <ListItemText
+                    disableTypography
+                    sx={{ pl: '12px' }}
+                    onClick={() => { !isRootNode && handleClickReorderSourceSelect() }}
+                    primary={
+                      <>
+                        {!!node.title &&
+                          <Typography
+                            component="span"
+                            sx={{ mr: 2 }}
+                          >
+                            {node.title}
+                          </Typography>
+                        }
+                        <Typography
+                          variant="body2"
+                          component="span"
+                          color="textSecondary"
+                        >
+                          {node.name}
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <ListItemSecondaryAction>
+                    {!nodeIsSource && (
+                      <Tooltip title="Select to move">
+                        <IconButton onClick={() => handleClickReorderSourceSelect()} >
+                          {hover && <SwapVertIcon />}
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </ListItemSecondaryAction>
+                </ListItem>
               </div>
             </Tooltip>
         }
