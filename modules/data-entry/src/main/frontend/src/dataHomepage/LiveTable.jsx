@@ -106,36 +106,6 @@ function LiveTable(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  let refresh = () => {
-    setFetchStatus(Object.assign({}, fetchStatus, {
-      "currentRequestNumber": -1,
-    }));
-  }
-
-  // When data is changed, trigger a new fetch in the table
-  useEffect(() => {
-    // subscribe event
-    window.addEventListener("LivetableRefresh",  refresh);
-    return () => {
-      // unsubscribe event
-      document.removeEventListener("LivetableRefresh",  refresh);
-    };
-  }, [entryType]);
-
-  // When new data is added, trigger a new fetch
-  useEffect(() => {
-    if (updateData){
-      refresh();
-    }
-  }, [updateData]);
-
-  // When the data path is changed, trigger a new fetch
-  useEffect(() => {
-    if (customUrl){
-      refresh();
-    }
-  }, [customUrl]);
-
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior
 
@@ -212,6 +182,36 @@ function LiveTable(props) {
   useEffect(() => {
     if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
   }, [fetchStatus.currentRequestNumber]);
+
+  let refresh = () => {
+    setFetchStatus(Object.assign({}, fetchStatus, {
+      "currentRequestNumber": -1,
+    }));
+  }
+
+  // When data is changed, trigger a new fetch in the table
+  useEffect(() => {
+    // subscribe event
+    window.addEventListener("LivetableRefresh",  refresh);
+    return () => {
+      // unsubscribe event
+      document.removeEventListener("LivetableRefresh",  refresh);
+    };
+  }, [entryType]);
+
+  // When new data is added, trigger a new fetch
+  useEffect(() => {
+    if (updateData){
+      refresh();
+    }
+  }, [updateData]);
+
+  // When the data path is changed, trigger a new fetch
+  useEffect(() => {
+    if (customUrl){
+      refresh();
+    }
+  }, [customUrl]);
 
   let makeRow = (entry, i) => {
     return (
