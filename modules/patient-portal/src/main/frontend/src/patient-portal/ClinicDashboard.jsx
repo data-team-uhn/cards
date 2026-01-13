@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 
 import {
   CircularProgress,
@@ -83,7 +83,6 @@ const useStyles = makeStyles()(theme => ({
 // Component that renders the clinic dashboard, with one LiveTable per questionnaire.
 // Each LiveTable contains all forms that use the given questionnaire.
 function ClinicDashboard(props) {
-  let [ clinicId, setClinicId ] = useState();
   let [ title, setTitle ] = useState();
   let [ description, setDescription ] = useState();
   let [ surveysId, setSurveysId ] = useState("");
@@ -112,7 +111,7 @@ function ClinicDashboard(props) {
 
   // If there's an extra path segment, we use it to obtain the extension point
   // Otherwise default to "DashboardViews" (main dashboard)
-  useEffect(() => setClinicId(location.pathname.split("/Dashboard/")?.[1] || ""), [location]);
+  const clinicId = useMemo(() => location.pathname.split("/Dashboard/")?.[1] || "", [location]);
 
   // At startup, load the visit information questionnaire to pass it to all extensions
   useEffect(() => {

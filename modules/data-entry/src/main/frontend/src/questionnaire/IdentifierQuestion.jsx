@@ -47,6 +47,7 @@ export default function IdentifierQuestion(props) {
   const [value, setValue] = useState(existingAnswer?.[1]?.value || "");
   const answer = [[value, value]];
 
+  // Currently unused code; adds support for other identifiers for future uses.
   useEffect(() => {
     if (isEdit && (!value || value.length == 0)) {
       switch (identifierType) {

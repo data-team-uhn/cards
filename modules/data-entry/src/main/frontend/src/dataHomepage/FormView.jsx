@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import DescriptionIcon from '@mui/icons-material/Description';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -86,11 +86,11 @@ function FormView(props) {
     "edit": EditButton,
     "delete": DeleteButton
   }
-  const [ enabledActions, setEnabledActions ] = useState(actions);
+
   let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]()));
-  useEffect(() => {
-    setEnabledActions(Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1]));
-  }, [actionSwitches]);
+  const enabledActions = useMemo(() =>
+    Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1])
+  , [actionSwitches]);
 
   const tabFilter = {
     "Questionnaires" : '&includeallstatus=true',

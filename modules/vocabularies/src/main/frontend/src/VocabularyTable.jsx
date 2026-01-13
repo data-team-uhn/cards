@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   Grid,
@@ -35,17 +35,13 @@ export default function VocabularyTable(props) {
   const { vocabList, type  } = props;
   const [filterTable, setFilterTable] = useState(false);
   const [acronymFilterList, setAcronymFilterList] = useState([]);
-  const [filteredVocabs, setFilteredVocabs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (filterTable) {
-      if (acronymFilterList.length == 0) {
-        setFilteredVocabs([]);
-      } else {
-        setFilteredVocabs(vocabList.slice().filter(vocab => acronymFilterList.includes(vocab.acronym)));
-      }
+  const filteredVocabs = useMemo(() => {
+    if (filterTable && acronymFilterList.length > 0) {
+      return vocabList.slice().filter(vocab => acronymFilterList.includes(vocab.acronym));
     }
+    return [];
   }, [filterTable, acronymFilterList]);
 
   return(
