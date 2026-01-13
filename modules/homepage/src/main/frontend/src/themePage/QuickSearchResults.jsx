@@ -56,7 +56,7 @@ function QuickSearchResults(props) {
 
   return (
     <div>
-      <Card>
+      <Card sx={{ mt: 2 }}>
         <CardHeader
           title={
             <Typography variant="h4">
@@ -69,6 +69,7 @@ function QuickSearchResults(props) {
             columns={columns}
             customUrl={'/query?quick='+ encodeURIComponent(anchor) + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
             defaultLimit={10}
+            disableTopPagination
           />
         </CardContent>
       </Card>
