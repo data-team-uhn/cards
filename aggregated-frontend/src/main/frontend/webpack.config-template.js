@@ -48,81 +48,83 @@ module_name = require("./package.json").name + ".";
 
 const isProduction = process.argv.find(arg => arg.startsWith("--mode"))?.substring(7) == 'production';
 
-module.exports = {
-  mode: 'development',
-  devtool: 'eval-cheap-module-source-map',
-  cache: {
-    type: 'filesystem'
-  },
-  entry: {
+module.exports = (env) => {
+  return {
+    mode: 'development',
+    devtool: 'eval-cheap-module-source-map',
+    cache: {
+      type: 'filesystem'
+    },
+    entry: {
 ENTRY_CONTENT
-  },
-  plugins: [
-    new ReturnModulePlugin(),
-    new CleanWebpackPlugin(),
-    new WebpackAssetsManifest({
-      output: "assets.json"
-    }),
-	new ESLintPlugin({
-      extensions: ['js', 'jsx', 'ts', 'tsx'],
-      emitWarning: true,   // show warnings in console but don’t fail build
-      failOnError: false,  // set true if you want to break build on lint error
-    }),
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx|ts|tsx)$/,
-        exclude: /node_modules/,
-        resolve: { fullySpecified: false }, // disable ESM fully specified
-        use: ['babel-loader']
-      },
-      {
-        test:/\.css$/,
-        use:['style-loader','css-loader']
-      }
-    ]
-  },
-  resolve: {
-    extensions: ['.*', '.js', '.jsx', '.ts', '.tsx']
-  },
-  optimization: {
-    usedExports: false,
-    minimize: isProduction,
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          mangle: {
-            reserved: ['$super']
+    },
+    plugins: [
+      new ReturnModulePlugin(),
+      new CleanWebpackPlugin(),
+      new WebpackAssetsManifest({
+        output: "assets.json"
+      }),
+      !env.quick && new ESLintPlugin({
+        extensions: ['js', 'jsx', 'ts', 'tsx'],
+        emitWarning: true,   // show warnings in console but don’t fail build
+        failOnError: false,  // set true if you want to break build on lint error
+      }),
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx|ts|tsx)$/,
+          exclude: /node_modules/,
+          resolve: { fullySpecified: false }, // disable ESM fully specified
+          use: ['babel-loader']
+        },
+        {
+          test:/\.css$/,
+          use:['style-loader','css-loader']
+        }
+      ]
+    },
+    resolve: {
+      extensions: ['.*', '.js', '.jsx', '.ts', '.tsx']
+    },
+    optimization: {
+      usedExports: false,
+      minimize: isProduction,
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            mangle: {
+              reserved: ['$super']
+            }
+          }
+        })
+      ],
+      runtimeChunk: 'single',
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          defaultVendors: {
+            minChunks: 1,
+            minSize: 200,
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendor',
+            enforce: true,
+            priority: -10
+          },
+          default: {
+            minChunks: 2,
+            minSize: 10000000,
+            name: false,
+            priority: -20,
+            reuseExistingChunk: true
           }
         }
-      })
-    ],
-    runtimeChunk: 'single',
-    splitChunks: {
-      chunks: 'all',
-      cacheGroups: {
-        defaultVendors: {
-          minChunks: 1,
-          minSize: 200,
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendor',
-          enforce: true,
-          priority: -10
-        },
-        default: {
-          minChunks: 2,
-          minSize: 10000000,
-          name: false,
-          priority: -20,
-          reuseExistingChunk: true
-        }
       }
+    },
+    output: {
+      path: __dirname + '/dist/SLING-INF/content/libs/cards/resources/',
+      publicPath: '/',
+      filename: '[name].[contenthash].js',
     }
-  },
-  output: {
-    path: __dirname + '/dist/SLING-INF/content/libs/cards/resources/',
-    publicPath: '/',
-    filename: '[name].[contenthash].js',
   }
 };

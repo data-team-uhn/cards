@@ -1825,6 +1825,7 @@
         <skipTests>true</skipTests>
         <rat.skip>true</rat.skip>
         <dependencyCheck.skip>true</dependencyCheck.skip>
+        <webpackArguments>--mode=development --env quick=true</webpackArguments>
       </properties>
     </profile>
 
