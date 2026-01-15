@@ -14,7 +14,7 @@
       ["@babel/preset-react", {
         "runtime": "automatic"
       }],
-	  "@babel/preset-typescript"
+     "@babel/preset-typescript"
     ]
   },
   "scripts": {
@@ -68,12 +68,12 @@
     "babel-loader": "10.0.0",
     "clean-webpack-plugin": "4.0.0",
     "eslint-plugin-react": "7.37.5",
-	"eslint-plugin-react-hooks": "7.0.0",
-	"eslint-plugin-import": "2.32.0",
-	"eslint-plugin-jsx-a11y": "6.10.2",
-	"eslint-plugin-unused-imports": "4.3.0",
+    "eslint-plugin-react-hooks": "7.0.0",
+    "eslint-plugin-import": "2.32.0",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-unused-imports": "4.3.0",
     "eslint": "9.24.0",
-	"eslint-webpack-plugin": "5.0.2",
+    "eslint-webpack-plugin": "5.0.2",
     "webpack": "5.99.5",
     "webpack-cli": "6.0.1",
     "webpack-assets-manifest": "6.0.1",
@@ -84,8 +84,8 @@
     "@stylistic/eslint-plugin": "5.6.1",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.0",
-	"@typescript-eslint/parser": "8.46.2",
-	"@typescript-eslint/eslint-plugin": "8.46.2"
+    "@typescript-eslint/parser": "8.46.2",
+    "@typescript-eslint/eslint-plugin": "8.46.2"
   },
   "resolutions": {
     "@babel/runtime": "^7.27.1",
