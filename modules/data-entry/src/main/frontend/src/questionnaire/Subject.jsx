@@ -275,21 +275,6 @@ function SubjectHeader(props) {
   let globalLoginDisplay = useContext(GlobalLoginContext);
   let navigate = useNavigate();
 
-  useEffect(() => {
-    reloadSubject.current = fetchSubjectData;
-  }, [id]);
-
-  // Fetch the subject's data as JSON from the server.
-  // The data will contain the subject metadata,
-  // such as authorship and versioning information.
-  // Once the data arrives from the server, it will be stored in the `data` state variable.
-  let fetchSubjectData = () => {
-    fetchWithReLogin(globalLoginDisplay, `/Subjects/${id}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(handleSubjectResponse)
-      .catch(handleError);
-  };
-
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
   let handleSubjectResponse = (json) => {
     getSubject(json);
@@ -302,6 +287,24 @@ function SubjectHeader(props) {
     setError(response);
     setSubject({});  // Prevent an infinite loop if data was not set
   };
+
+  // Fetch the subject's data as JSON from the server.
+  // The data will contain the subject metadata,
+  // such as authorship and versioning information.
+  // Once the data arrives from the server, it will be stored in the `data` state variable.
+  let fetchSubjectData = () => {
+    fetchWithReLogin(globalLoginDisplay, `/Subjects/${id}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(handleSubjectResponse)
+      .catch(handleError);
+  };
+
+  useEffect(() => {
+    if (reloadSubject) {
+      // eslint-disable-next-line react-hooks/immutability
+      reloadSubject.current = fetchSubjectData;
+    }
+  }, [id]);
 
   // When the top-level subject is deleted, redirect to its parent if it has one, otherwise to the Subjects page
   let handleDeletion = () => {

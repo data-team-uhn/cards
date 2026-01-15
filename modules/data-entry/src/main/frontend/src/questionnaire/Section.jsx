@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useCallback, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import Add from "@mui/icons-material/Add";
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
@@ -210,7 +210,7 @@ function Section(props) {
 
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
-  return useCallback(
+  return (
     <>
       {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
@@ -360,7 +360,7 @@ function Section(props) {
         )
       }
     </>
-    , [conditionIsMet, instanceLabels, labelsToHide, selectedUUID, removableAnswers[ID_STATE_KEY], pageActive, isEdit]);
+  );
 }
 
 Section.propTypes = {

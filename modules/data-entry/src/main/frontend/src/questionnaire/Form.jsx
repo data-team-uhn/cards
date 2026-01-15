@@ -150,15 +150,6 @@ function Form (props) {
     setEndReached(!paginationEnabled);
   }, [paginationEnabled]);
 
-  // Handle autosave:
-  // When autosave options are defined, trigger a background save
-  useEffect(() => {
-    if (typeof(autosaveOptions) == "object") {
-      let { performCheckin, onSuccess } = autosaveOptions;
-      saveData(new Event("autosave"), performCheckin, onSuccess);
-    }
-  }, [autosaveOptions]);
-
   // When the save is completed (successfully or not), clear the autosave options
   useEffect(() => {
     if (saveInProgress === false) setAutosaveOptions(undefined);
@@ -294,6 +285,12 @@ function Form (props) {
     setLastSaveStatus(undefined);
   }
 
+  let openErrorDialog = () => {
+    if (!errorDialogDisplayed) {
+      setErrorDialogDisplayed(true);
+    }
+  }
+
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let saveData = (event, performCheckin, onSuccess) => {
     // This stops the normal browser form submission
@@ -382,6 +379,15 @@ function Form (props) {
       .finally(() => formNode?.current && setSaveInProgress(false));
   }
 
+  // Handle autosave:
+  // When autosave options are defined, trigger a background save
+  useEffect(() => {
+    if (typeof(autosaveOptions) == "object") {
+      let { performCheckin, onSuccess } = autosaveOptions;
+      saveData(new Event("autosave"), performCheckin, onSuccess);
+    }
+  }, [autosaveOptions]);
+
   let saveDataWithCheckin = (event, onSuccess) => {
     return saveData(event, true, onSuccess);
   }
@@ -395,12 +401,6 @@ function Form (props) {
     })
     setChangedSubject(subject);
     setSelectorDialogOpen(false);
-  }
-
-  let openErrorDialog = () => {
-    if (!errorDialogDisplayed) {
-      setErrorDialogDisplayed(true);
-    }
   }
 
   let closeErrorDialog = () => {

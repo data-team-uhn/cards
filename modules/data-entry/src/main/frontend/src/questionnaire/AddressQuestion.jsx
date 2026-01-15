@@ -46,7 +46,6 @@ fetch(APIKEY_SERVLET_URL)
   .catch((error) => {
     console.error("Error fetching GoogleApiKey node: " + error);
   });
-let isValidApiKey = true;
 
 
 // Easy way to overwrite global CSS styles using theme
@@ -129,13 +128,13 @@ function AddressQuestion(props) {
   });
 
   // If google API authentication problem emerges due to to the invalid key or key with disabled Places service
+  // eslint-disable-next-line react-hooks/immutability
   window.gm_authFailure = () => {
     console.error("Error in Google API authentication");
     setIsValidApi(false);
-    isValidApiKey = false;
   };
 
-  if (!isValidApiKey || !isValidApi) {
+  if (!isValidApi) {
     return <StyledTextQuestion {...props} />
   }
 

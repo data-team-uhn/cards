@@ -73,6 +73,7 @@ const commonRules = {
   ...js.configs.recommended.rules,
   ...jsxA11y.configs.recommended.rules,
   ...react.configs.recommended.rules,
+  ...reactHooks.configs.flat.recommended.rules,
 
   "import/order": importOrderRule,
 
@@ -81,6 +82,10 @@ const commonRules = {
   "react/react-in-jsx-scope": "off",
   "react/prop-types": "off",
   "react-hooks/rules-of-hooks": "error",
+  "react-hooks/exhaustive-deps": "off",
+  "react-hooks/set-state-in-effect": "off",
+  "react-hooks/refs": "off",
+  "react-hooks/preserve-manual-memoization": "off",
 
   // ununsed-related rules
   "no-unused-vars": ["error", { args: "none", caughtErrors: "none" }],

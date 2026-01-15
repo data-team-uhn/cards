@@ -164,7 +164,7 @@ function RegistrationForm(props) {
   let [ errorOpen, setErrorOpen ] = useState(false);
   let [ errorMsg, setErrorMsg ] = useState("");
 
-  let form = useRef();
+  const formRef = useRef();
 
   let signIn = (username, password) => {
     fetch('/j_security_check',
@@ -276,7 +276,7 @@ function RegistrationForm(props) {
           validationSchema={validationSchema}
           onSubmit={submitValues}
           onReset={handleExit}
-          innerRef={el => (form = el)}
+          innerRef={formRef}
         >
           {props => <FormFieldsComponent {...props} />}
         </Formik>

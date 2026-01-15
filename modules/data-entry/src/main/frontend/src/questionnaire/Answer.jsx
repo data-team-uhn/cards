@@ -74,8 +74,8 @@ function Answer (props) {
       if (idHistory.indexOf(answerPath) < 0)
       {
         idHistory.push(answerPath);
-        sectionAnswersState[questionName] = idHistory;
-        onAddedAnswerPath(sectionAnswersState);
+        const updatedState = { ...sectionAnswersState, [questionName]: idHistory };
+        onAddedAnswerPath(updatedState);
         hasRegisteredPathRef.current = true;
       }
     }

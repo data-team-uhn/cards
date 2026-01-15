@@ -233,15 +233,15 @@ function PatientIdentification(props) {
     }
   }, [visitList, touCleared]);
 
+  let authenticate = () => {
+    onSuccess && onSuccess(Object.assign({ subject: visit }, patientDetails));
+  }
+
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
   useEffect(() => {
     visit && patientDetails && touCleared && authenticate();
   }, [visit, touCleared, !!patientDetails]);
-
-  let authenticate = () => {
-    onSuccess && onSuccess(Object.assign({ subject: visit }, patientDetails));
-  }
 
   // -----------------------------------------------------------------------------------------------------
   // Rendering

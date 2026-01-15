@@ -58,17 +58,6 @@ let ReferenceInput = (props) => {
     setCurValue(newVal);
   }
 
-  useEffect(() => {
-    getRestrictions(allowOnlyApplicableFor);
-  },
-  [fieldsReader[allowOnlyApplicableFor]]);
-
-  useEffect(() => {
-    if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelsList(options, ""));
-    }
-  }, [options, titleMap]);
-
   // Obtain information about the questions that can be used as a reference
   let grabData = (urlBase, parser) => {
     let url = new URL(urlBase, window.location.origin);
@@ -247,6 +236,11 @@ let ReferenceInput = (props) => {
   }
 
   useEffect(() => {
+    getRestrictions(allowOnlyApplicableFor);
+  },
+  [fieldsReader[allowOnlyApplicableFor]]);
+
+  useEffect(() => {
     fieldsWriter((oldContext) => ({ ...oldContext, [objectKey]: curValue }));
     if (value["primaryType"] == "cards:SubjectType") {
       grabData(SUBJECT_TYPE_URL, parseSubjectTypeData);
@@ -257,6 +251,12 @@ let ReferenceInput = (props) => {
       grabData(FILTER_URL, parseQuestionnaireData);
     }
   }, [value["primaryType"]]);
+
+  useEffect(() => {
+    if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
+      setAutoselectOptions(getFieldsLabelsList(options, ""));
+    }
+  }, [options, titleMap]);
 
   // The form of the hidden input depends on the value of curValue
   // The fallback is to just use its value as-is in a hidden input

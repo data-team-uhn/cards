@@ -84,6 +84,7 @@ function ExtensionPoint(props) {
     if (['text/javascript', 'application/javascript'].indexOf(contentType) >= 0) {
       // javascript -- evaluate as-is
       response.text().then( (text) => {
+        // eslint-disable-next-line react-hooks/unsupported-syntax
         return(eval(text));
       });
     } else if (contentType === 'application/json') {

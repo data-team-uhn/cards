@@ -261,7 +261,7 @@ function Statistic(props) {
                 <Label value={definition["x-label"]} offset={-10} position="insideBottom" />
               </XAxis>
               <YAxis allowDecimals={false} label={{ value: definition["y-label"], angle: -90, position: 'insideLeft', offset: 10 }} />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={(props) => <CustomTooltip {...props} />} />
               {isSplit && <Legend align="right" verticalAlign="top" height={legendHeight} />}
               {allFields.map((field, idx) =>
                 isBar ? (groupNullAndFalseAnswersForXVar ?

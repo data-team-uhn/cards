@@ -153,7 +153,7 @@ let QuestionMatrix = (props) => {
     let checked = !event?.target?.checked;
 
     let getNewSelection = (id, option, checked) => {
-      let newSelection = selection;
+      let newSelection = { ...selection };
       let answer = newSelection[id] || [];
 
       // If the element was already checked, remove it instead

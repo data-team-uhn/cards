@@ -74,6 +74,19 @@ function PrintButton(props) {
 
   const [ open, setOpen ] = useState(false);
 
+  let onOpenView = () => {
+    onOpen?.();
+    setOpen(true);
+  }
+
+  let handleOnPrintKeydown = (event) => {
+    if ((event.ctrlKey || event.metaKey) && (event.key == "p" || event.keyCode == 80)) {
+      event.stopPropagation();
+      event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+      onOpenView();
+    }
+  }
+
   // Prevent browser to open print dialog on user ctrl+P keydown and force to go through the custom print preview
   useEffect(() => {
     if (disableShortcut) return;
@@ -84,19 +97,6 @@ function PrintButton(props) {
       document.removeEventListener("keydown", handleOnPrintKeydown);
     };
   }, []);
-
-  let handleOnPrintKeydown = (event) => {
-    if ((event.ctrlKey || event.metaKey) && (event.key == "p" || event.keyCode == 80)) {
-      event.stopPropagation();
-      event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-      onOpenView();
-    }
-  }
-
-  let onOpenView = () => {
-    onOpen?.();
-    setOpen(true);
-  }
 
   let onCloseView = () => {
     onClose?.();

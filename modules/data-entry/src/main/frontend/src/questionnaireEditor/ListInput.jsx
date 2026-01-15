@@ -41,6 +41,10 @@ let ListInput = (props) => {
     setSelection(Array.of(val ?? []).flat().filter(v => v?.[type.identifierProperty] != ''));
   }
 
+  let handleError = () => {
+    console.log('error');
+  }
+
   useEffect(() => {
     fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -81,10 +85,6 @@ let ListInput = (props) => {
       })
       .catch(handleError);
   }, []);
-
-  let handleError = () => {
-    console.log('error');
-  }
 
   const handleChange = (event) => {
     changeValue(event.target.value);

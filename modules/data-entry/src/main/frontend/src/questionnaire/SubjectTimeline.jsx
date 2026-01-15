@@ -163,6 +163,12 @@ function SubjectTimeline(props) {
   let [ dateEntries, setDateEntries ] = useState(null);
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
+  // Callback method for the `fetchData` method, invoked when the request failed.
+  let handleError = (response) => {
+    setDateEntries([]);
+    console.log(response.statusText || response.message);
+  };
+
   // Fetch the forms and answers for a specific subject
   let fetchSubjectData = (subject, level, subjectNames) => {
     // Fetch a subject with it's forms (.data) and those forms' answers (.deep)
@@ -357,12 +363,6 @@ function SubjectTimeline(props) {
         .then(dateAnswers => getDateEntries(dateAnswers));
     }
   }, [subject]);
-
-  // Callback method for the `fetchData` method, invoked when the request failed.
-  let handleError = (response) => {
-    setDateEntries([]);
-    console.log(response.statusText || response.message);
-  };
 
   if (!dateEntries) {
     return <CircularProgress/>
