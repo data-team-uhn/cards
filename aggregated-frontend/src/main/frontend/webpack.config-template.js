@@ -22,6 +22,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { WebpackAssetsManifest } = require('webpack-assets-manifest');
 const TerserPlugin = require('terser-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const { defineReactCompilerLoaderOption, reactCompilerLoader } = require('react-compiler-webpack');
 
 /*
  * Webpack 5.25.0 changed how the code is generated to no longer return the module by default when eval-ing it.
@@ -55,6 +56,9 @@ module.exports = (env) => {
     cache: {
       type: 'filesystem'
     },
+    infrastructureLogging: {
+      level: 'error' // Mask Webpack infrastructure-level warnings to silence warning when React Compiler errors on serialisation of Webpack’s persistent cache
+    },
     entry: {
 ENTRY_CONTENT
     },
@@ -76,7 +80,20 @@ ENTRY_CONTENT
           test: /\.(js|jsx|ts|tsx)$/,
           exclude: /node_modules/,
           resolve: { fullySpecified: false }, // disable ESM fully specified
-          use: ['babel-loader']
+          use: [
+            { loader: 'babel-loader' },
+            {
+              loader: reactCompilerLoader,
+              options: defineReactCompilerLoaderOption({
+                compilationMode : 'infer',
+                logger: {
+                  logEvent(filename, event) {
+                    console.log(`[Compiler] ${event.kind}: ${filename}`);
+                  }
+                }
+              })
+            }
+          ]
         },
         {
           test:/\.css$/,
