@@ -33,7 +33,7 @@ ADD COMPLETE_SOURCE_CODE.tar /cards
 
 # Build so that we can gather all dependency JARs, if docker.buildArg.build_jars=true
 WORKDIR /cards
-RUN if [[ "$build_jars" == "true" ]] ; then /make_filled_m2.sh ; else mkdir /root/.m2 ; fi
+RUN if [[ "$build_jars" == "true" ]] ; then /make_filled_m2.sh ; else mkdir -p /root/.m2/repository ; fi
 
 # Create a directory for storing basic metadata about the built image
 RUN mkdir /metadata
