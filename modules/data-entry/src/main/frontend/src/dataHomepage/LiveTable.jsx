@@ -47,6 +47,7 @@ import DateTimeUtilities from "../components/DateTimeUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
+/* eslint-disable react-hooks/immutability */
 function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
@@ -106,20 +107,43 @@ function LiveTable(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  // When data is changed, trigger a new fetch in the table
+  useEffect(() => {
+    // subscribe event
+    window.addEventListener("LivetableRefresh",  refresh);
+    return () => {
+      // unsubscribe event
+      document.removeEventListener("LivetableRefresh",  refresh);
+    };
+  }, [entryType]);
+
+  // When new data is added, trigger a new fetch
+  useEffect(() => {
+    if (updateData){
+      refresh();
+    }
+  }, [updateData]);
+
+  // When the data path is changed, trigger a new fetch
+  useEffect(() => {
+    if (customUrl){
+      refresh();
+    }
+  }, [customUrl]);
+
+  // Initialize the component: if there's no data loaded yet, fetch the first page
+  useEffect(() => {
+    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
+  }, [fetchStatus.currentRequestNumber]);
+
+  let refresh = () => {
+    setFetchStatus(Object.assign({}, fetchStatus, {
+      "currentRequestNumber": -1,
+    }));
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's behavior
-
-  let handleError = (response) => {
-    let err = response.statusText ? response.statusText : response.toString();
-    if (response.status == 404) {
-      err = "Access to data is pending the approval of your account";
-    }
-    setFetchStatus(Object.assign({}, fetchStatus, {
-      "currentFetch": false,
-      "fetchError": err,
-    }));
-    setTableData([]);
-  };
 
   let fetchData = (newPage, goToStart) => {
     if (fetchStatus.currentFetch) {
@@ -129,7 +153,6 @@ function LiveTable(props) {
     let url = new URL(urlBase);
     url.searchParams.set("offset", goToStart ? 0 : newPage.offset ?? paginationData.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
-    // eslint-disable-next-line react-hooks/immutability
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
     url.searchParams.set("showTotalRows", showTotalRows);
     resourceSelectors && url.searchParams.set("resourceSelectors", resourceSelectors);
@@ -178,40 +201,17 @@ function LiveTable(props) {
     );
   };
 
-  // Initialize the component: if there's no data loaded yet, fetch the first page
-  useEffect(() => {
-    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
-  }, [fetchStatus.currentRequestNumber]);
-
-  let refresh = () => {
+  let handleError = (response) => {
+    let err = response.statusText ? response.statusText : response.toString();
+    if (response.status == 404) {
+      err = "Access to data is pending the approval of your account";
+    }
     setFetchStatus(Object.assign({}, fetchStatus, {
-      "currentRequestNumber": -1,
+      "currentFetch": false,
+      "fetchError": err,
     }));
-  }
-
-  // When data is changed, trigger a new fetch in the table
-  useEffect(() => {
-    // subscribe event
-    window.addEventListener("LivetableRefresh",  refresh);
-    return () => {
-      // unsubscribe event
-      document.removeEventListener("LivetableRefresh",  refresh);
-    };
-  }, [entryType]);
-
-  // When new data is added, trigger a new fetch
-  useEffect(() => {
-    if (updateData){
-      refresh();
-    }
-  }, [updateData]);
-
-  // When the data path is changed, trigger a new fetch
-  useEffect(() => {
-    if (customUrl){
-      refresh();
-    }
-  }, [customUrl]);
+    setTableData([]);
+  };
 
   let makeRow = (entry, i) => {
     return (
