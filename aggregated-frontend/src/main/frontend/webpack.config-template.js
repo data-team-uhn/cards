@@ -49,6 +49,55 @@ module_name = require("./package.json").name + ".";
 
 const isProduction = process.argv.find(arg => arg.startsWith("--mode"))?.substring(7) == 'production';
 
+/**
+ * Helper function to format and log React Compiler events
+ * @param {string} filename - The full file path
+ * @param {object} event - The compiler event object
+ */
+function logCompilerEvent(filename, event) {
+  const shortFile = filename.replace(/^.*[\\/]/, '');
+
+  const ANSI = {
+    reset: '\x1b[0m',
+    bold: '\x1b[1m',
+    red: '\x1b[31m',
+    yellow: '\x1b[33m',
+    green: '\x1b[32m',
+    cyan: '\x1b[36m',
+    gray: '\x1b[90m',
+  };
+
+  const kind = event.kind;
+
+  if (kind !== 'CompileError' && kind !== 'CompileSkip') return;
+
+  const color =
+    kind === 'CompileError' ? ANSI.red :
+    kind === 'CompileSkip'  ? ANSI.yellow :
+    ANSI.cyan;
+
+  const sep = `${ANSI.gray}${'-'.repeat(70)}${ANSI.reset}`;
+  // If it's a skip/error but has no details, still log a minimal line
+  console.log(sep);
+  console.log(`${ANSI.bold}${color}[React Compiler] ${kind} ${shortFile}${ANSI.reset}`);
+
+  const options = event.detail.options;
+  if (options) {
+    const reason = options.reason;
+    const category = options.category;
+    const desc = options.description;
+    const suggestions = options.suggestions;
+    const message = options.details?.[0]?.message;
+    const loc = options.loc ? options.loc : options.details[0].loc;
+
+    if (reason || category) console.log(`[${category || "-"}]: ${reason || "-"}`);
+    if (message) console.log(`Message: ${message}`);
+    if (desc) console.log(`Description: ${desc}`);
+    if (suggestions) console.log('Suggestions:', suggestions);
+    if (loc) console.log(`${ANSI.bold}Location: Line ${loc.start.line}, Column ${loc.start.column}, identifierName ${loc.identifierName || "-"}${ANSI.reset}`);
+  }
+}
+
 module.exports = (env) => {
   return {
     mode: 'development',
@@ -70,8 +119,8 @@ ENTRY_CONTENT
       }),
       !env.quick && new ESLintPlugin({
         extensions: ['js', 'jsx', 'ts', 'tsx'],
-        emitWarning: true,   // show warnings in console but don’t fail build
-        failOnError: false,  // set true if you want to break build on lint error
+        emitWarning: false,   // Show warnings in ESLint output, not as webpack warnings
+        failOnError: true,  // Break build on ESLint error
       }),
     ],
     module: {
@@ -88,7 +137,7 @@ ENTRY_CONTENT
                 compilationMode : 'infer',
                 logger: {
                   logEvent(filename, event) {
-                    console.log(`[Compiler] ${event.kind}: ${filename}`);
+                    logCompilerEvent(filename, event);
                   }
                 }
               })
