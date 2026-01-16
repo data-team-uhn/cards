@@ -87,13 +87,13 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
     }
 
     @Activate
-    public InpatientStatusProcessor(InpatientStatusProcessorConfigDefinition configuration)
+    public InpatientStatusProcessor(final InpatientStatusProcessorConfigDefinition configuration)
     {
         super(configuration.enabled(), configuration.supportedTypes(), configuration.priority());
     }
 
     @Override
-    public Map<String, String> processEntry(Map<String, String> input)
+    public Map<String, String> processEntry(final Map<String, String> input)
     {
         final String mrn = input.get("/SubjectTypes/Patient");
 
@@ -123,7 +123,7 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         return null;
     }
 
-    private void processSubject(ResourceResolver resolver, Node subject)
+    private void processSubject(final ResourceResolver resolver, final Node subject)
         throws RepositoryException
     {
         // Iterate through the subjects visits
@@ -138,7 +138,7 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         }
     }
 
-    private void processVisit(ResourceResolver resolver, Node visit)
+    private void processVisit(final ResourceResolver resolver, final Node visit)
         throws RepositoryException
     {
         try {
@@ -174,11 +174,12 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         }
     }
 
-    private void processVisitDetails(Session session, Node visit, Node visitInformationForm, Node surveyEventsForm)
+    private void processVisitDetails(final Session session, final Node visit, final Node visitInformationForm,
+        final Node surveyEventsForm)
         throws RepositoryException
     {
         // Check if visit is recent enough for the survey to be valid
-        if (isSurveyValid(session, visit, visitInformationForm, surveyEventsForm)) {
+        if (isSurveyValid(session, visit, surveyEventsForm)) {
             // If initial email sent, put on-hold
             if (emailAlreadySent(session, surveyEventsForm) || surveyPartiallySubmitted(session, visit)) {
                 setVisitOnHold(session, visitInformationForm);
@@ -189,7 +190,7 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         }
     }
 
-    private boolean isSurveyValid(Session session, Node visit, Node visitInformationForm, Node surveyEventsForm)
+    private boolean isSurveyValid(final Session session, final Node visit, final Node surveyEventsForm)
         throws RepositoryException
     {
         try {
@@ -233,14 +234,15 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         return false;
     }
 
-    private void setVisitOnHold(Session session, Node visitInformationForm)
+    private void setVisitOnHold(final Session session, final Node visitInformationForm)
         throws RepositoryException
     {
         try {
-            Node statusQuestion = session.getNode("/Questionnaires/Visit information/status");
+            final Node statusQuestion = session.getNode("/Questionnaires/Visit information/status");
             Node statusAnswer = this.formUtils.getAnswer(visitInformationForm, statusQuestion);
-            String status = (String) this.formUtils.getValue(statusAnswer);
-            if (status != null && List.of("cancelled", "entered-in-error", "on-hold").contains(status)) {
+            final String existingStatus = (String) this.formUtils.getValue(statusAnswer);
+            if (existingStatus != null
+                && List.of("cancelled", "entered-in-error", "on-hold").contains(existingStatus)) {
                 // Do nothing - already a status that does not receive emails
                 return;
             }
