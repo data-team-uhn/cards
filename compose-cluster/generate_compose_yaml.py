@@ -998,6 +998,7 @@ if args.mssql:
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_PMH_OO_SQL_TABLE=PatientActivity_PMCC_Outpatient_Oncology_for_PtExpSurvey')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=HOSP_DISCHARGE_DTTM')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_DEATH_STATUS_TABLE=V_PtExpYEM_Deceased_Patients')
+    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_INPATIENT_STATUS_TABLE=V_PtExpYEM_Inpatients_currently_in_hospital')
   elif args.cards_project == 'cards4datapro':
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=PatientVisitActivity_for_DATA-PRO')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=ENCOUNTER_DATE')

@@ -534,6 +534,15 @@
       "dateColumn": "",
       "mapping": "/apps/cards/clarityImport/DeathStatus"
     },
+    // Inpatient status: don't email current inpatients
+    "io.uhndata.cards.clarity.importer.ClarityImportConfig~inpatient-status": {
+      "name": "Inpatient Status",
+      "type": "inpatient-status",
+      "importSchedule": "0 5 9 * * ? *",
+      "tableName": "%ENV%CLARITY_INPATIENT_STATUS_TABLE",
+      "dateColumn": "",
+      "mapping": "/apps/cards/clarityImport/InpatientStatus"
+    },
 
     // Clarity import filters and mappers
 
@@ -932,6 +941,12 @@
       "column": "UNSUBSCRIBED",
       "value": "Yes",
       "enableLogging": false
+    },
+    // Update the visit status for any existing, non-expired visits for current inpatients:
+    "io.uhndata.cards.prems.internal.importer.InpatientStatusProcessor":{
+      "enabled": true,
+      "supportedTypes": ["inpatient-status"],
+      "priority": 35
     }
   }
 }

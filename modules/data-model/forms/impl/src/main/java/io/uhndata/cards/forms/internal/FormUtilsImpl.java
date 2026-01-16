@@ -27,6 +27,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Consumer;
 
 import javax.jcr.Node;
@@ -743,5 +745,25 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
             // return null
         }
         return JsonValue.NULL;
+    }
+
+    @Override
+    public Set<String> getStatusFlags(final Node node)
+    {
+        try {
+            if (this.isForm(node) || this.isAnswerSection(node) || this.isAnswer(node)) {
+                Set<String> statusFlags = new TreeSet<>();
+                if (node.hasProperty(STATUS_FLAGS_PROPERTY)) {
+                    for (Value value : node.getProperty(STATUS_FLAGS_PROPERTY).getValues()) {
+                        statusFlags.add(value.getString());
+                    }
+                }
+                return statusFlags;
+            } else {
+                return null;
+            }
+        } catch (RepositoryException e) {
+            return null;
+        }
     }
 }

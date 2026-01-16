@@ -36,7 +36,7 @@
         "scripts": [
           // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
           "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:SubjectsHomepage) /Subjects \n create path (sling:Folder) /apps",
-          "create service user clarity-import \n set ACL for clarity-import \n   allow jcr:read on /Questionnaires,/SubjectTypes,/apps \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms,/Subjects \n end"
+          "create service user clarity-import \n set ACL for clarity-import \n   allow jcr:read on /Questionnaires,/SubjectTypes,/apps,/Survey \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms,/Subjects \n end"
         ]
       },
       "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~clarityIntegration":{

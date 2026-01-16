@@ -330,6 +330,7 @@ public final class AppointmentUtils
                 + "  AND vstatus.'question' = '" + statusUUID + "' "
                 + "  AND vstatus.'value' <> 'cancelled'"
                 + "  AND vstatus.'value' <> 'entered-in-error'"
+                + "  AND vstatus.'value' <> 'on-hold'"
                 + "  AND has_surveys.'question' = '" + hasSurveysUUID + "' "
                 + "  AND has_surveys.'value' = 1 "
                 + ((clinicId != null)

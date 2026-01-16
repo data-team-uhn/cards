@@ -54,6 +54,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>cards-data-model-subjects-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>cards-clarity-integration</artifactId>
       <version>${project.version}</version>
     </dependency>

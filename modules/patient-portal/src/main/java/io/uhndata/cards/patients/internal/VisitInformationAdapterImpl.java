@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.patients.internal;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 import javax.jcr.Node;
@@ -138,6 +139,8 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
     {
         private final Calendar visitDate;
 
+        private final String visitStatus;
+
         private final Node questionnaire;
 
         private final Node visitInformationForm;
@@ -161,6 +164,10 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
             final Node visitDateQuestion = this.questionnaire.getNode("time");
             this.visitDate = (Calendar) VisitInformationAdapterImpl.this.formUtils
                 .getValue(VisitInformationAdapterImpl.this.formUtils.getAnswer(visitForm, visitDateQuestion));
+
+            final Node visitStatusQuestion = this.questionnaire.getNode("status");
+            this.visitStatus = (String) VisitInformationAdapterImpl.this.formUtils
+                .getValue(VisitInformationAdapterImpl.this.formUtils.getAnswer(visitForm, visitStatusQuestion));
 
             final Node clinicQuestion =
                 VisitInformationAdapterImpl.this.questionnaireUtils.getQuestion(this.questionnaire, "clinic");
@@ -190,6 +197,12 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
         public boolean hasRequiredInformation()
         {
             return this.visitDate != null && StringUtils.isNotBlank(this.questionnaireSet);
+        }
+
+        @Override
+        public boolean hasInactiveStatus()
+        {
+            return Arrays.asList("cancelled", "entered-in-error", "on-hold").contains(this.visitStatus);
         }
 
         @Override
