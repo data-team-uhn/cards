@@ -21,6 +21,7 @@ package io.uhndata.cards.prems.internal.importer;
 
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.VersionManager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Activate;
@@ -70,7 +72,7 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
 
     @ObjectClassDefinition(name = "Clarity import processor - Inpatient Status",
         description = "Configuration for the Clarity importer processor that puts on hold any active visits for a "
-        + "given MRN")
+            + "given MRN")
     public @interface InpatientStatusProcessorConfigDefinition
     {
         @AttributeDefinition(name = "Enabled")
@@ -95,14 +97,14 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
     {
         final String mrn = input.get("/SubjectTypes/Patient");
 
-        if (mrn == null || mrn.length() == 0) {
+        if (StringUtils.isBlank(mrn)) {
             LOGGER.warn("Unable to process row due to no mrn");
             return null;
         } else {
             // Get all patients with that MRN
             ResourceResolver resolver = this.rrp.getThreadResourceResolver();
             String subjectMatchQuery = String.format(
-                "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
+                "SELECT * FROM [cards:Subject] as subject WHERE subject.identifier='%s' option (index tag property)",
                 mrn);
             resolver.refresh();
             final Iterator<Resource> subjectResourceIter = resolver.findResources(subjectMatchQuery, "JCR-SQL2");
@@ -130,7 +132,7 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         while (visitResourceIter.hasNext()) {
             Node visit = visitResourceIter.nextNode();
 
-            if (SubjectUtils.SUBJECT_NODETYPE.equals(visit.getPrimaryNodeType().getName())) {
+            if (this.subjectUtils.isSubject(visit)) {
                 processVisit(resolver, visit);
             }
         }
@@ -153,8 +155,7 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
                     if (surveyEventsForm == null) {
                         surveyEventsForm = form;
                     } else if (form.getProperty("jcr:created").getDate().after(
-                        surveyEventsForm.getProperty("jcr:created"))
-                    ) {
+                        surveyEventsForm.getProperty("jcr:created").getDate())) {
                         surveyEventsForm = form;
                     }
                 }
@@ -177,56 +178,57 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
         throws RepositoryException
     {
         // Check if visit is recent enough for the survey to be valid
-        if (isSurveyValid(session, visit)) {
+        if (isSurveyValid(session, visit, visitInformationForm, surveyEventsForm)) {
             // If initial email sent, put on-hold
-            if (this.formUtils.getValue(this.formUtils.getAnswer(surveyEventsForm,
-                session.getNode("/Questionnaires/Survey events/invitation_sent"))) != null)
-            {
+            if (emailAlreadySent(session, surveyEventsForm) || surveyPartiallySubmitted(session, visit)) {
                 setVisitOnHold(session, visitInformationForm);
             } else {
                 // No emails have been sent for this visit: delete it so that the email cooldown is reset
-                tryDeleteVisit(session, visit);
+                deleteVisit(session, visit);
             }
         }
     }
 
-    private boolean isSurveyValid(Session session, Node visit)
+    private boolean isSurveyValid(Session session, Node visit, Node visitInformationForm, Node surveyEventsForm)
         throws RepositoryException
     {
         try {
-            Node surveyEventsForm = null;
-            final PropertyIterator forms = visit.getReferences("subject");
-            while (forms.hasNext()) {
-                Node form = forms.nextProperty().getParent();
-                String questionnairePath = this.formUtils.getQuestionnaire(form).getPath();
-                if ("/Questionnaires/Survey events".equals(questionnairePath)) {
-                    if (surveyEventsForm == null) {
-                        surveyEventsForm = form;
-                    } else if (form.getProperty("jcr:created").getDate().after(
-                        surveyEventsForm.getProperty("jcr:created"))
-                    ) {
-                        surveyEventsForm = form;
-                    }
-                }
-            }
-
-            if (surveyEventsForm != null) {
-                if (this.formUtils.getValue(this.formUtils.getAnswer(
-                    surveyEventsForm, session.getNode("/Questionnaires/Survey events/responses_received"))) != null)
-                {
-                    // Don't modify submitted forms
-                    return false;
-                }
-
-                Calendar expiry = (Calendar) this.formUtils.getValue(this.formUtils.getAnswer(
-                    surveyEventsForm, session.getNode("/Questionnaires/Survey events/survey_expiry")));
-                return (expiry != null && expiry.after(Calendar.getInstance()));
-            } else {
+            if (this.formUtils.getValue(this.formUtils.getAnswer(
+                surveyEventsForm, session.getNode("/Questionnaires/Survey events/responses_received"))) != null) {
+                // Survey already submitted, don't process submitted forms
                 return false;
             }
+
+            Calendar expiry = (Calendar) this.formUtils.getValue(this.formUtils.getAnswer(
+                surveyEventsForm, session.getNode("/Questionnaires/Survey events/survey_expiry")));
+            return (expiry != null && expiry.after(Calendar.getInstance()));
         } catch (RepositoryException e) {
             // Should not happen
             LOGGER.error("Error determining if survey {} is valid", visit.getPath(), e);
+        }
+        return false;
+    }
+
+    private boolean emailAlreadySent(final Session session, final Node surveyEventsForm)
+        throws RepositoryException
+    {
+        return this.formUtils.getValue(this.formUtils.getAnswer(surveyEventsForm,
+            session.getNode("/Questionnaires/Survey events/invitation_sent"))) != null;
+    }
+
+    private boolean surveyPartiallySubmitted(final Session session, final Node visit) throws RepositoryException
+    {
+        for (final PropertyIterator forms = visit.getReferences("subject"); forms.hasNext();) {
+            final Node form = forms.nextProperty().getParent();
+            final String questionnaireName = this.formUtils.getQuestionnaire(form).getName();
+            if (this.formUtils.getStatusFlags(form).contains("SUBMITTED")) {
+                // If the form is submitted, skip it
+                return true;
+            } else if ("Survey events".equals(questionnaireName) && this.formUtils.getValue(this.formUtils
+                .getAnswer(form, session.getNode("/Questionnaires/Survey events/responses_received"))) != null) {
+                // If the form is a survey events form with responses received, skip it
+                return true;
+            }
         }
         return false;
     }
@@ -238,8 +240,8 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
             Node statusQuestion = session.getNode("/Questionnaires/Visit information/status");
             Node statusAnswer = this.formUtils.getAnswer(visitInformationForm, statusQuestion);
             String status = (String) this.formUtils.getValue(statusAnswer);
-            if ("cancelled".equals(status) || "entered-in-error".equals(status)) {
-                // Do nothing - already a status that does not recieve emails
+            if (status != null && List.of("cancelled", "entered-in-error", "on-hold").contains(status)) {
+                // Do nothing - already a status that does not receive emails
                 return;
             }
 
@@ -264,59 +266,21 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
     }
 
     /**
-     * Delete a visit if there are not already submitted forms.
-     * If there are already submitted forms:
-     * - Delete the unsubmitted patient forms
-     * - Change the visit information form to on-hold
-     * - Keep any survey event forms with responses received, delete others
+     * Delete a visit with all its forms.
      */
-    private void tryDeleteVisit(Session session, Node visit)
+    private void deleteVisit(final Session session, final Node visit)
         throws RepositoryException
     {
         try {
-            // Checkout the parent patient if required
-            final Node patient = visit.getParent();
-            boolean skippedForm = false;
-            Node visitInformationForm = null;
             // Remove any forms for this visit
             for (final PropertyIterator forms = visit.getReferences("subject"); forms.hasNext();) {
                 final Node form = forms.nextProperty().getParent();
-                final String questionnairePath = this.formUtils.getQuestionnaire(form).getPath();
-                if (this.formUtils.getStatusFlags(form).contains("SUBMITTED")) {
-                    // If the form is submitted, skip it
-                    skippedForm = true;
-                } else if (questionnairePath.endsWith("Survey events")
-                    && this.formUtils.getValue(this.formUtils.getAnswer(
-                        form, session.getNode("/Questionnaires/Survey events/responses_received"))) != null
-                ) {
-                    // If the form is a survey events form with responses recieved, skip it
-                    skippedForm = true;
-                } else if (questionnairePath.endsWith("Visit information")) {
-                    // Handle visit information forms later
-                    visitInformationForm = form;
-                } else {
-                    form.remove();
-                }
+                form.remove();
             }
-            handleDeleteVisit(session, visit, patient, skippedForm, visitInformationForm);
-        } catch (RepositoryException e) {
-            LOGGER.error("Error deleting visit {}", visit.getPath(), e);
-        }
-    }
 
-    private void handleDeleteVisit(final Session session, final Node visit, final Node patient,
-        final boolean skippedForm, final Node visitInformationForm)
-        throws RepositoryException
-    {
-        if (skippedForm) {
-            if (visitInformationForm != null) {
-                setVisitOnHold(session, visitInformationForm);
-            }
-        } else {
-            if (visitInformationForm != null) {
-                visitInformationForm.remove();
-            }
-            // Remove the visit
+            // Remove the Visit subject itself
+            // Checkout the parent patient if required
+            final Node patient = visit.getParent();
             boolean mustCheckout = false;
             VersionManager versionManager = session.getWorkspace().getVersionManager();
             if (!patient.isCheckedOut()) {
@@ -328,6 +292,8 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
             if (mustCheckout) {
                 versionManager.checkin(patient.getPath());
             }
+        } catch (RepositoryException e) {
+            LOGGER.error("Error deleting visit {}", visit.getPath(), e);
         }
     }
 }

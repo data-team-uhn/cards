@@ -751,7 +751,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     public Set<String> getStatusFlags(final Node node)
     {
         try {
-            if (this.isForm(node) || !this.isAnswerSection(node) || !this.isAnswer(node)) {
+            if (this.isForm(node) || this.isAnswerSection(node) || this.isAnswer(node)) {
                 Set<String> statusFlags = new TreeSet<>();
                 if (node.hasProperty(STATUS_FLAGS_PROPERTY)) {
                     for (Value value : node.getProperty(STATUS_FLAGS_PROPERTY).getValues()) {
