@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState, useContext, useEffect, useRef } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import SubjectIcon from "@mui/icons-material/AssignmentInd";
 import CollapsedIcon from "@mui/icons-material/ChevronRight";
@@ -84,7 +84,7 @@ function Subject(props) {
   let { classes, maxDisplayed = 4, pageSize = 10, extensionURL } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ activeTab, setActiveTab ] = useState(0);
-  const fetchRelatedRef = useRef();
+  const [ fetchSubjectData, setFetchSubjectData ] = useState(null);
 
   // TODO: These tabs should be extensible.
   // This will involve moving SubjectContainer to it's own file and moving
@@ -115,6 +115,11 @@ function Subject(props) {
     pageTitle && pageNameWriter(pageTitle);
   }, [pageTitle]);
 
+  // Callback to set the fetch function from SubjectHeader
+  const handleSetFetchSubjectData = (fetchFn) => {
+    setFetchSubjectData(() => fetchFn);
+  };
+
   // the subject data, fetched in the SubjectContainer component, will be stored in the `type` state
   function handleSubject(e) {
     setCurrentSubject(e);
@@ -140,7 +145,7 @@ function Subject(props) {
           pageTitle={pageTitle}
           classes={classes}
           getSubject={handleSubject}
-          reloadSubject={fetchRelatedRef}
+          onFetchSubjectDataReady={handleSetFetchSubjectData}
           contentOffset={props.contentOffset}
           extensionURL={extensionURL}
         />
@@ -163,7 +168,7 @@ function Subject(props) {
                   maxDisplayed={maxDisplayed}
                   pageSize={pageSize}
                   subject={currentSubject}
-                  fetchSubjectData={fetchRelatedRef.current}
+                  fetchSubjectData={fetchSubjectData}
                   baseURL={baseURL}
                   extensionURL={extensionURL}
                 />
@@ -265,7 +270,7 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject, pageTitle, reloadSubject, extensionURL } = props;
+  let { id, classes, getSubject, pageTitle, onFetchSubjectDataReady, extensionURL } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
@@ -274,6 +279,7 @@ function SubjectHeader(props) {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
   let navigate = useNavigate();
+  const location = useLocation();
 
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
   let handleSubjectResponse = (json) => {
@@ -300,11 +306,10 @@ function SubjectHeader(props) {
   };
 
   useEffect(() => {
-    if (reloadSubject) {
-      // eslint-disable-next-line react-hooks/immutability
-      reloadSubject.current = fetchSubjectData;
+    if (onFetchSubjectDataReady) {
+      onFetchSubjectDataReady(fetchSubjectData);
     }
-  }, [id]);
+  }, [id, onFetchSubjectDataReady]);
 
   // When the top-level subject is deleted, redirect to its parent if it has one, otherwise to the Subjects page
   let handleDeletion = () => {

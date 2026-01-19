@@ -51,6 +51,7 @@ function HeaderLinks (props) {
   const [ pwdResetSuccessSnackbarOpen, setPwdResetSuccessSnackbarOpen ] = useState(false);
   const [ username, setUsername ] = useState("");
   const [ isRemote, setRemote ] = useState(true);
+  const [ anchorElement, setAnchorElement ] = useState(null);
 
   const avatarRef = useRef();
   const headerRef = useRef();
@@ -89,29 +90,28 @@ function HeaderLinks (props) {
   // main page)
   const expand = window.innerWidth >= appTheme.breakpoints.values.md;
 
-  // Helper component to automatically enclose any children in a ListItemIcon if necessary
-  let ExpandableIcon = (props) => {
-    return expand ?
-      <ListItemIcon {...props}>
-        {props.children}
-      </ListItemIcon>
-      : props.children
-  }
-
   const menuItems = <MenuList role="menu">
     {isRemote ? null :
       <MenuItem onClick={() => setPasswordDialogOpen(true)} className={expand ? "" : classes.itemLink}>
-        <ExpandableIcon>
-          <VpnKeyIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
-        </ExpandableIcon>
+        {expand ? (
+          <ListItemIcon>
+            <VpnKeyIcon />
+          </ListItemIcon>
+        ) : (
+          <VpnKeyIcon className={classNames(classes.itemIcon, classes.whiteFont)}/>
+        )}
         <ListItemText primary="Change password" className={expand ? "" : classes.whiteFont}/>
       </MenuItem>
     }
     {/* Use an onClick instead of a Link to remove the unremovable underline styling */}
     <MenuItem onClick={() => window.location.href = "/system/sling/logout"} className={expand ? "" : classes.itemLink}>
-      <ExpandableIcon>
-        <ExitToAppIcon className={expand ? "" : classNames(classes.itemIcon, classes.whiteFont)}/>
-      </ExpandableIcon>
+      {expand ? (
+        <ListItemIcon>
+          <ExitToAppIcon />
+        </ListItemIcon>
+      ) : (
+        <ExitToAppIcon className={classNames(classes.itemIcon, classes.whiteFont)}/>
+      )}
       <ListItemText primary="Sign out" className={expand ? "" : classes.whiteFont}/>
     </MenuItem>
   </MenuList>
@@ -136,7 +136,7 @@ function HeaderLinks (props) {
           <IconButton
             className={classes.buttonLink + " " + classes.logout}
             onClick={() => setPopperOpen((open) => !open)}
-            ref={avatarRef}
+            ref={ref => {avatarRef.current = ref; setAnchorElement(ref)}}
             size="large"
           >
             <Avatar className={classes[color]}>{initials}</Avatar>
@@ -149,7 +149,7 @@ function HeaderLinks (props) {
       </Box>
       <Popper
         open={popperOpen}
-        anchorEl={avatarRef.current}
+        anchorEl={anchorElement}
         className={popperOpen ? classes.aboveBackground : ""}
         modifiers={[{
           name: 'preventOverflow',

@@ -126,6 +126,7 @@ let AnswerOptions = (props) => {
   let [ descriptionAnchorEl, setDescriptionAnchorEl ] = useState(null);
   let [ descriptionLabel, setDescriptionLabel ] = useState('');
   let [ isSpecialOption, setIsSpecialOption ] = useState(false);
+  const [clickSaveAfterBlur, setClickSaveAfterBlur] = useState(false);
 
   const notApplicable  = Object.values(data)
     .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
@@ -161,6 +162,15 @@ let AnswerOptions = (props) => {
       return newOptions;
     });
   }, [path]);
+
+  // Have to manually invoke submit to let re-rendering of adding new answer option complete
+  // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
+  // Issue details: https://github.com/facebook/react/issues/4210
+  useEffect(() => {
+    if (!clickSaveAfterBlur) return;
+    saveButtonRef.current?.click();
+    setClickSaveAfterBlur(false);
+  }, [clickSaveAfterBlur]);
 
   let specialOptionsInfo = [
     {
@@ -252,13 +262,8 @@ let AnswerOptions = (props) => {
     tempValue && setTempValue('');
     setIsDuplicate(false);
 
-    // Have to manually invoke submit with timeout to let re-rendering of adding new answer option complete
-    // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
-    // Issue details: https://github.com/facebook/react/issues/4210
-    if (event?.relatedTarget?.type == "submit") {
-      setTimeout(() => {
-        saveButtonRef?.current?.click();
-      }, 500);
+    if (event?.relatedTarget?.type === "submit") {
+      setClickSaveAfterBlur(true);
     }
   }
 

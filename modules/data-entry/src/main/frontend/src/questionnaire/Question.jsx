@@ -60,7 +60,7 @@ function Question (props) {
     } else {
       return anchor == questionDefinition["@path"];
     }
-  }, [anchor, questionDefinition]);
+  }, [anchor, questionDefinition, existingAnswer]);
 
   const questionRef = useRef();
 

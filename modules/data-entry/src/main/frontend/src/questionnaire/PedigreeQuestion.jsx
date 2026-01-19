@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 
 import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
@@ -53,6 +53,7 @@ function PedigreeQuestion(props) {
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
     ? { "image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value }
     : {});
+  const pedigreeEditorRef = useRef(null);
 
   // FIXME: hardcoded value
   const PEDIGREE_THUMBNAIL_WIDTH = 300;
@@ -90,8 +91,7 @@ function PedigreeQuestion(props) {
   };
 
   let openPedigree = function () {
-    // eslint-disable-next-line react-hooks/immutability
-    window.pedigreeEditor = new PedigreeEditor({
+    pedigreeEditorRef.current = new PedigreeEditor({
       "pedigreeJSON": pedigreeJSON,
       "pedigreeDiv": "pedigreeEditor",  // the DIV to render entire pedigree in
       "onCloseCallback": closeDialog,
@@ -100,9 +100,11 @@ function PedigreeQuestion(props) {
   };
 
   let closePedigree = function () {
-    window.pedigreeEditor.unload();
+    if (pedigreeEditorRef.current) {
+      pedigreeEditorRef.current.unload();
+      pedigreeEditorRef.current = null;
+    }
     typeof(props.onChange) == 'function' && props.onChange();
-    delete window.pedigreeEditor;
   };
 
   let onUpdatedPedigree = function (pedigreeJSON, pedigreeSVG) {

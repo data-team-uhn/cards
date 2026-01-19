@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 import {
   Button,
@@ -81,30 +81,17 @@ function FormPagination (props) {
   // The remainder (1 - stub size) will be used as a completion buffer on the last page
   const INITIAL_PROGRESS_STUB = 0.7;
 
-  let previousEntryType;
-  let questionIndex = 0;
-  let pagesResults = {};
-  let pagesArray = [];
+  const previousEntryTypeRef = useRef(null);
+  const questionIndexRef = useRef(0);
 
-  useEffect(() => {
-    setPagesCallback(null);
-    Object.entries(questionnaireData)
-      .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-      .map(([key, entryDefinition]) => {
-        let pageResult = addPage(entryDefinition);
-        pagesResults[key] = pageResult;
-      });
-    setPages(pagesArray);
-    setPagesCallback(pagesResults);
-  }, [questionnaireData, activePage, enabled]);
-
-  let addPage = (entryDefinition) => {
+  let addPage = (entryDefinition, pagesArray) => {
     if (enabled) {
       let page;
+      const previousEntryType = previousEntryTypeRef.current;
       if (!SECTION_TYPES.includes(entryDefinition["jcr:primaryType"]) && previousEntryType && !SECTION_TYPES.includes(previousEntryType)) {
         page = pagesArray[pagesArray.length - 1];
         page.keys?.push(entryDefinition["@name"]);
-        questionIndex++;
+        questionIndexRef.current = questionIndexRef.current + 1;
       } else {
         page = new Page(
           !enabled || activePage == pagesArray.length,
@@ -112,13 +99,14 @@ function FormPagination (props) {
           entryDefinition["@name"]
         );
         pagesArray.push(page);
-        questionIndex = 0;
+        questionIndexRef.current = 0;
       }
-      previousEntryType = entryDefinition["jcr:primaryType"];
+      previousEntryTypeRef.current = entryDefinition["jcr:primaryType"];
 
+      const currentQuestionIndex = questionIndexRef.current;
       return {
         page: page,
-        callback: (visible) => page.addConditionalVisible(visible, questionIndex)
+        callback: (visible) => page.addConditionalVisible(visible, currentQuestionIndex)
       }
     } else {
       if (pagesArray.length === 0) {
@@ -127,6 +115,22 @@ function FormPagination (props) {
       return { page: pagesArray[0], callback: ()=>{} }
     }
   }
+
+  useEffect(() => {
+    questionIndexRef.current = 0;
+    previousEntryTypeRef.current = null;
+    const pagesResults = {};
+    const pagesArray = [];
+    setPagesCallback(null);
+    Object.entries(questionnaireData)
+      .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+      .map(([key, entryDefinition]) => {
+        let pageResult = addPage(entryDefinition, pagesArray);
+        pagesResults[key] = pageResult;
+      });
+    setPages(pagesArray);
+    setPagesCallback(pagesResults);
+  }, [questionnaireData, activePage, enabled]);
 
   let lastValidPage = () => {
     let result = pages.length - 1;
