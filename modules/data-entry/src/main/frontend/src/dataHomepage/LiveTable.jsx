@@ -178,11 +178,6 @@ function LiveTable(props) {
     );
   };
 
-  // Initialize the component: if there's no data loaded yet, fetch the first page
-  useEffect(() => {
-    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
-  }, [fetchStatus.currentRequestNumber]);
-
   let refresh = () => {
     setFetchStatus(Object.assign({}, fetchStatus, {
       "currentRequestNumber": -1,
@@ -212,6 +207,11 @@ function LiveTable(props) {
       refresh();
     }
   }, [customUrl]);
+
+  // Initialize the component: if there's no data loaded yet, fetch the first page
+  useEffect(() => {
+    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
+  }, [fetchStatus.currentRequestNumber]);
 
   let makeRow = (entry, i) => {
     return (
