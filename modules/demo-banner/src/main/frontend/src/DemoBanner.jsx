@@ -17,15 +17,22 @@
 //  under the License.
 //
 
+import { useRef, useEffect } from 'react';
+
 import {
   Alert,
   AppBar,
 } from '@mui/material';
 
 export default function DemoBanner(props) {
+  const appBarRef = useRef(null);
+
+  useEffect(() => {
+    props.onRender?.(appBarRef.current);
+  }, [props.onRender]);
 
   return (
-    <AppBar position="fixed" style={props.style} ref={props.onRender}>
+    <AppBar position="fixed" style={props.style} ref={appBarRef}>
       <Alert variant="filled" square severity="warning" sx={{ justifyContent: "center" }}>
         This installation is for demo purposes only.
         Do not enter any real data / patient identifiable information.

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import BuildIcon from '@mui/icons-material/Build';
 import {
@@ -32,6 +32,7 @@ export default function DowntimeWarning(props) {
   const [ toDate, setToDate ] = useState();
   // Error message set when fetching the data from the server fails
   const [ error, setError ] = useState();
+  const appBarRef = useRef(null);
 
   // Load the configurations only once, upon initialization
   useEffect(() => {
@@ -61,12 +62,16 @@ export default function DowntimeWarning(props) {
       });
   }, []);
 
+  useEffect(() => {
+    props.onRender?.(appBarRef.current);
+  }, [props.onRender]);
+
   if (!enabled || !fromDate || !toDate) {
     return null;
   }
 
   return (
-    <AppBar position="fixed" style={props.style} ref={props.onRender}>
+    <AppBar position="fixed" style={props.style} ref={appBarRef}>
       { error &&
         <Alert variant="filled" square severity="error" sx={{ justifyContent: "center" }}>{error}</Alert>
       }

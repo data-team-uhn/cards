@@ -15,7 +15,7 @@
   under the License.
 */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { Backdrop, Button, DialogActions, DialogContent, Typography } from "@mui/material";
 import PropTypes from "prop-types";
@@ -50,6 +50,7 @@ function SessionExpiryWarningModal(props) {
   let [ expired, setExpired ] = useState(false);
   let [ countdownTimer, setCountdownTimer ] = useState();
   let [ countdown, setCountdown ] = useState(countdownLength);
+  const warningTimerRef = useRef(null);
 
   const diffString = (division, result, count) => {
     if (count > 0) {
@@ -64,10 +65,12 @@ function SessionExpiryWarningModal(props) {
     // do not set timer if session is already expired
     if (expired) return;
 
-    warningTimer && clearTimeout(warningTimer);
+    if (warningTimerRef.current) {
+      clearTimeout(warningTimerRef.current);
+    }
 
     // set the timer to lauch the countdown warning
-    const warningTimer = setTimeout(() => {
+    warningTimerRef.current = setTimeout(() => {
       // Restart the countdown timer
       setCountdown(countdownLength);
       let timeLeft = countdownLength;
@@ -84,7 +87,9 @@ function SessionExpiryWarningModal(props) {
             // Session expired
             onExpired?.();
             setExpired(true);
-            clearTimeout(warningTimer);
+            if (warningTimerRef.current) {
+              clearTimeout(warningTimerRef.current);
+            }
             clearInterval(interval);
           }
         }
@@ -92,7 +97,12 @@ function SessionExpiryWarningModal(props) {
       setCountdownTimer(interval);
     }, (activeLength - countdownLength));
 
-    return () => {clearTimeout(warningTimer); countdownTimer && clearInterval(countdownTimer);}
+    return () => {
+      if (warningTimerRef.current) {
+        clearTimeout(warningTimerRef.current);
+      }
+      countdownTimer && clearInterval(countdownTimer);
+    }
   }, [lastActivityTimestamp]);
 
   useEffect(() => {

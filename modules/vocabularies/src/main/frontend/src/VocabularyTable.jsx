@@ -42,7 +42,7 @@ export default function VocabularyTable(props) {
       return vocabList.slice().filter(vocab => acronymFilterList.includes(vocab.acronym));
     }
     return [];
-  }, [filterTable, acronymFilterList]);
+  }, [filterTable, acronymFilterList, vocabList]);
 
   return(
     <>
