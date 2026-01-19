@@ -277,7 +277,7 @@ export default function VariantFilesContainer() {
   //   -- or same tuples of tumor-patient subjects where parent is patient,
   //   -- or same tuples of region-tumor subjects, where parent is tumor.
   let setExistedFileSubjectData = (file, files) => {
-    for (var i in files) {
+    for (let i in files) {
       let fileEl = files[i];
       if (file.name === fileEl.name) { continue; }
 
@@ -668,7 +668,7 @@ export default function VariantFilesContainer() {
       data.append(filePath, file);
       data.append(filePath + "/@TypeHint", "nt:file");
 
-      var xhr = new XMLHttpRequest();
+      let xhr = new XMLHttpRequest();
       xhr.open('POST', '/');
 
       xhr.onload = function() {

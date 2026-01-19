@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import Close from "@mui/icons-material/Close";
 import {
@@ -152,7 +152,7 @@ function MultipleChoice(props) {
     element => {return String(element[VALUE_POS]) === String(ghostValue) || element[LABEL_POS] === ghostName}
   );
   const disabled = maxAnswers > 1 && selection.length >= maxAnswers;
-  let inputEl = null;
+  const inputElRef = useRef(null);
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
   const [separatorDetected, setSeparatorDetected] = useState(false);
   const [assistantAnchor, setAssistantAnchor] = useState(null);
@@ -314,7 +314,7 @@ function MultipleChoice(props) {
   let acceptOption = (valToAccept, labelToAccept) => {
     if (isRadio || isBare) {
       selectOption(valToAccept, labelToAccept) && setGhostName("");
-      inputEl?.blur();
+      inputElRef.current?.blur();
     } else if (maxAnswers !== 1 && !error && valToAccept !== "") {
       // If we can select multiple and are not in error, add this option (if not already available) and ensure it's selected
       addOption(valToAccept, labelToAccept);
@@ -468,7 +468,7 @@ function MultipleChoice(props) {
           value={ghostName ?? ''}
           multiline={textbox}
           minRows={textbox ? 4 : undefined}
-          inputRef={ref => {inputEl = ref}}
+          inputRef={inputElRef}
         />
       }
       { maxAnswers !== 1 && separatorDetectionEnabled &&
@@ -496,7 +496,7 @@ function MultipleChoice(props) {
   }
 
   // Remove the ["", ""] unless there are only zero or one answer items
-  var answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
+  let answers = selection.map(item => item[VALUE_POS] === GHOST_SENTINEL ? [item[LABEL_POS], item[LABEL_POS]] : item);
   answers = ((answers.length < 2) ? answers : answers.filter(item => item[LABEL_POS] !== ''));
 
   // When counting current answers for proper highlighting of answer instructions to the user, exclude the empty one
@@ -609,7 +609,7 @@ function MultipleChoice(props) {
                             onUpdate?.(ghostSelected ? undefined : ghostName);
                             handleFormDataChange?.();
                           }}
-                          onClick={() => inputEl && inputEl.select()}
+                          onClick={() => inputElRef.current?.select()}
                           disabled={!ghostSelected && disabled}
                           className={classes.ghostRadiobox}
                         />
@@ -705,7 +705,7 @@ function generateDefaultOptions(
   });
 }
 
-var StyledResponseChild = withStyles(ResponseChild, QuestionnaireStyle);
+let StyledResponseChild = withStyles(ResponseChild, QuestionnaireStyle);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {

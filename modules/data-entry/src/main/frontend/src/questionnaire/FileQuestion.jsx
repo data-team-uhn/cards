@@ -66,12 +66,13 @@ function FileQuestion(props) {
 
   // Default value of knownAnswers is the name of every field we can find in namePattern
   let initialParsedAnswers = {};
+  let varNames = [];
   if (namePattern) {
-    var varNamesRegex = /@{(.+?)}/g;
-    var varNames = [...namePattern.matchAll(varNamesRegex)].map((match) => match[1]);
+    let varNamesRegex = /@{(.+?)}/g;
+    varNames = [...namePattern.matchAll(varNamesRegex)].map((match) => match[1]);
 
-    var clearedNamesRegex = namePattern.replaceAll(varNamesRegex, "(.+)");
-    var nameRegex = new RegExp(clearedNamesRegex);
+    let clearedNamesRegex = namePattern.replaceAll(varNamesRegex, "(.+)");
+    let nameRegex = new RegExp(clearedNamesRegex);
 
     // Match each of the values into our default initialParsedAnswers
     initialValues.forEach((filename) => {
@@ -187,7 +188,7 @@ function FileQuestion(props) {
     // Determine whether or not the filename matches the namePattern (if given)
     if (namePattern) {
       // Regex out variable names from the namePattern
-      var results = file['name'].match(nameRegex)?.slice(1);
+      let results = file['name'].match(nameRegex)?.slice(1);
 
       // At this point, results contains each match, which all correspond to their respective entry in varNames
       writer((oldCommands) => {

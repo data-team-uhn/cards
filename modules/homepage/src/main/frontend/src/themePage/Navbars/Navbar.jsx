@@ -25,8 +25,9 @@ import { checkPropTypes } from "../../propTypes";
 function Header({ ...props }) {
   checkPropTypes(Header, props);
   const { classes, color } = props;
+  const colorClass = " " + classes[color];
   const appBarClasses = classNames({
-    [" " + classes[color]]: color
+    [colorClass]: color
   });
 
   return (

@@ -36,7 +36,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 const vocabLinks = require('./vocabularyLinks.json');
 
 function extractList(data) {
-  var acronymList = [];
+  let acronymList = [];
   if(Array.isArray(data)) {
     data.map((result) => {
       result.ontologies.map((ontology) => {

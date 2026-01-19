@@ -37,6 +37,12 @@ const Sidebar = ({ ...props }) => {
   let [entries, setEntries] = useState();
   let [loading, setLoading] = useState(true);
 
+  let buildSidebar = (extensions) => {
+    let result = extensions.slice()
+      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"]);
+    setEntries(result);
+  };
+
   useEffect(() => {
     loadExtensions("SidebarEntry")
       .then(buildSidebar)
@@ -44,20 +50,16 @@ const Sidebar = ({ ...props }) => {
       .finally(() => setLoading(false));
   }, []);
 
-  var buildSidebar = (extensions) => {
-    let result = extensions.slice()
-      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"]);
-    setEntries(result);
-  };
-
   // Generate NavLinks and ListItems from the given entry
   // activeStyle is true for anything that should look "active" (e.g. the admin link, the current page)
   function generateListItem(entry, key, activeStyle) {
+    const colorClass = " " + classes[color];
+    const whiteFontClass = " " + classes.whiteFont;
     const listBackground = classNames({
-      [" " + classes[color]]: activeStyle
+      [colorClass]: activeStyle
     });
     const listItemFont = classNames({
-      [" " + classes.whiteFont]: activeStyle
+      [whiteFontClass]: activeStyle
     });
     const EntryIcon = entry["cards:icon"];
 
@@ -81,7 +83,7 @@ const Sidebar = ({ ...props }) => {
     );
   }
   // Links
-  var links = (
+  let links = (
     <List className={classes.list}>
       {loading ?
         /* Add some skeleton UI of varying heights */
@@ -99,7 +101,7 @@ const Sidebar = ({ ...props }) => {
     </List>
   );
 
-  var adminLinks = (
+  let adminLinks = (
     <List className={classes.adminSidebar}>
       {loading ? <></>
         : entries.filter(entry => _isAdministrativeButton(entry["cards:defaultOrder"]))
@@ -114,7 +116,7 @@ const Sidebar = ({ ...props }) => {
   );
 
   // Setup the div containing the logo at the top of the sidebar
-  var brand = (
+  let brand = (
     <div className={classes.logo}>
       <a
         href="/"

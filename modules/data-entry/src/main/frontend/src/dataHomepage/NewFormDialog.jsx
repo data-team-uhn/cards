@@ -107,7 +107,7 @@ function NewFormDialog(props) {
 
     // Make a POST request to create a new form, with a randomly generated UUID
     const URL = "/Forms/" + uuidv4();
-    var request_data = new FormData();
+    let request_data = new FormData();
     request_data.append('jcr:primaryType', 'cards:Form');
     request_data.append('questionnaire', selectedQuestionnaire["@path"]);
     request_data.append('questionnaire@TypeHint', 'Reference');
@@ -380,7 +380,7 @@ function NewFormDialog(props) {
     enableBottomToolbar: false,
     rowCount: rowCount,
     state: {
-      rowSelection: { [selectedQuestionnaire?.["jcr:uuid"]]: true },
+      rowSelection: selectedQuestionnaire?.["jcr:uuid"] ? { [selectedQuestionnaire["jcr:uuid"]]: true } : {},
       globalFilter,
       isLoading,
       showProgressBars: isRefetching,

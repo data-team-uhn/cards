@@ -35,9 +35,11 @@ import { checkPropTypes } from "../propTypes";
  */
 function SessionExpiryWarningModal(props) {
   checkPropTypes(SessionExpiryWarningModal, props);
+  const DEFAULT_ACTIVE_LENGTH = 29 * 60 * 1000;
+  const DEFAULT_COUNTDOWN_LENGTH = 2 * 60 * 1000;
   const {
-    activeLength = 29 * 60 * 1000,
-    countdownLength = 2 * 60 * 1000,
+    activeLength = DEFAULT_ACTIVE_LENGTH,
+    countdownLength = DEFAULT_COUNTDOWN_LENGTH,
     lastActivityTimestamp,
     onStay,
     onExit,
@@ -68,7 +70,7 @@ function SessionExpiryWarningModal(props) {
     const warningTimer = setTimeout(() => {
       // Restart the countdown timer
       setCountdown(countdownLength);
-      var timeLeft = countdownLength;
+      let timeLeft = countdownLength;
       countdownTimer && clearInterval(countdownTimer);
       // display a modal alert that the session will expire soon
       setOpen(true);

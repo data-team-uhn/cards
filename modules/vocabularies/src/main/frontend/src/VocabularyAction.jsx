@@ -131,7 +131,8 @@ export default function VocabularyAction(props) {
             aggregatedQuestions = aggregatedQuestions.concat(getVocabularyQuestions(data, questionnaire.title));
           })
           .finally(() => {
-            if (++i == questionnairesData.length) {
+            i = i + 1;
+            if (i == questionnairesData.length) {
               setLinkedQuestions(aggregatedQuestions);
               setDisplayPopup(true);
             }

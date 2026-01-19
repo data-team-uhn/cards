@@ -79,7 +79,7 @@ export default function VocabularyDirectory(props) {
   // Function that fetches list of Vocabularies with meta info from Bioontology API
   function getFullVocabList(existingVocabList) {
     setCurStatus(Status["Loading"]);
-    var badResponse = false;
+    let badResponse = false;
     fetch(props.link)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(function(data) {

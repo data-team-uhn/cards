@@ -48,7 +48,7 @@ function QuickSearchConfiguration(props) {
   let buildConfigData = (formData) => {
     formData.append('limit', limit);
     formData.append('showTotalRows', showTotalRows);
-    for (var i in allowedResourceTypes) {
+    for (let i in allowedResourceTypes) {
       formData.append('allowedResourceTypes', allowedResourceTypes[i]);
     }
   }

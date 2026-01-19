@@ -112,7 +112,7 @@ function UserDashboard(props) {
               enableBottomToolbar={creationExtensions.length > 5}
               enablePagination={creationExtensions.length > 5}
               getRowId={ (row) => row["jcr:uuid"] }
-              state={{ rowSelection: { [selectedRow?.["jcr:uuid"]]: true } }}
+              state={{ rowSelection: selectedRow?.["jcr:uuid"] ? { [selectedRow["jcr:uuid"]]: true } : {} }}
               initialState={{ showGlobalFilter: (creationExtensions.length > 5),
                 pagination: { pageSize: 10, pageIndex: 0 }
               }}

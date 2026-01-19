@@ -57,16 +57,16 @@ function PedigreeQuestion(props) {
   // FIXME: hardcoded value
   const PEDIGREE_THUMBNAIL_WIDTH = 300;
 
-  var resizeSVG = function(svgText, newWidthInPixels) {
+  let resizeSVG = function(svgText, newWidthInPixels) {
     const newWidth = "$1width=\"" + newWidthInPixels + "px\"";
-    var resizedSVG = svgText?.replace(/(<svg[^>]+)height="\d+"/, "$1");
+    let resizedSVG = svgText?.replace(/(<svg[^>]+)height="\d+"/, "$1");
     resizedSVG = resizedSVG.replace(/(<svg[^>]+)width="\d+"/, newWidth);
     return resizedSVG;
   };
 
-  var pedigreeJSON = null;
-  var pedigreeSVG  = null;
-  var displayedImage = '';
+  let pedigreeJSON = null;
+  let pedigreeSVG  = null;
+  let displayedImage = '';
 
   if (pedigreeData?.image && pedigreeData.pedigreeJSON) {
     // use pedigree stored in React component state:
@@ -83,13 +83,14 @@ function PedigreeQuestion(props) {
     pedigreeJSON ? [["value", pedigreeJSON]] : []
   , [pedigreeJSON]);
 
-  var image_div = <div className={classes.thumbnail} dangerouslySetInnerHTML={{ __html: displayedImage }}/>;
+  let image_div = <div className={classes.thumbnail} dangerouslySetInnerHTML={{ __html: displayedImage }}/>;
 
-  var closeDialog = function () {
+  let closeDialog = function () {
     setExpanded(false);
   };
 
-  var openPedigree = function () {
+  let openPedigree = function () {
+    // eslint-disable-next-line react-hooks/immutability
     window.pedigreeEditor = new PedigreeEditor({
       "pedigreeJSON": pedigreeJSON,
       "pedigreeDiv": "pedigreeEditor",  // the DIV to render entire pedigree in
@@ -98,13 +99,13 @@ function PedigreeQuestion(props) {
       "readOnlyMode": false });
   };
 
-  var closePedigree = function () {
+  let closePedigree = function () {
     window.pedigreeEditor.unload();
     typeof(props.onChange) == 'function' && props.onChange();
     delete window.pedigreeEditor;
   };
 
-  var onUpdatedPedigree = function (pedigreeJSON, pedigreeSVG) {
+  let onUpdatedPedigree = function (pedigreeJSON, pedigreeSVG) {
     // state change will trigger re-render
     setPedigree({ "image": pedigreeSVG, "pedigreeJSON": pedigreeJSON });
   };

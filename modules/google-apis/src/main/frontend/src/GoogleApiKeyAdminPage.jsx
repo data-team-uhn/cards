@@ -56,7 +56,7 @@ export default function GoogleApiKeyAdminPage() {
   // function to create / edit node
   function updateKey() {
     const URL = `/libs/cards/conf/GoogleApiKey`;
-    var request_data = new FormData();
+    let request_data = new FormData();
     request_data.append('key', googleApiKey);
     fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
       .then((response) => response.ok ? response : Promise.reject(response))
