@@ -225,9 +225,15 @@ function NewFormDialog(props) {
   }
 
   useEffect(() => {
-    if (progress === PROGRESS_SELECT_QUESTIONNAIRE && (selectedSubject || currentSubject)) {filterQuestionnaire();}
+    if (
+      progress === PROGRESS_SELECT_QUESTIONNAIRE
+      && dialogOpen
+      && (selectedSubject || currentSubject)
+    ) {
+      filterQuestionnaire();
+    }
     else setRelatedForms([]);
-  }, [progress]);
+  }, [progress, dialogOpen]);
 
   const isFetching = numFetchRequests > 0;
   if (wasOpen !== open) {
