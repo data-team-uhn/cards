@@ -37,7 +37,8 @@ import org.osgi.service.component.annotations.Reference;
  *
  * @version $Id$
  */
-@Component(service = { Servlet.class })
+@Component(service = { Servlet.class },
+    property = { "sling.auth.requirements=-/content.googleApiKey", "sling.auth.requirements=-/.googleApiKey" })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/Homepage" },
     methods = { "GET" },
