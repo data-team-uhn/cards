@@ -211,6 +211,13 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
             }
 
             if (surveyEventsForm != null) {
+                if (this.formUtils.getValue(this.formUtils.getAnswer(
+                    surveyEventsForm, session.getNode("/Questionnaires/Survey events/responses_received"))) != null)
+                {
+                    // Don't modify submitted forms
+                    return false;
+                }
+
                 Calendar expiry = (Calendar) this.formUtils.getValue(this.formUtils.getAnswer(
                     surveyEventsForm, session.getNode("/Questionnaires/Survey events/survey_expiry")));
                 return (expiry != null && expiry.after(Calendar.getInstance()));
@@ -279,8 +286,8 @@ public class InpatientStatusProcessor extends AbstractClarityDataProcessor imple
                     // If the form is submitted, skip it
                     skippedForm = true;
                 } else if (questionnairePath.endsWith("Survey events")
-                    && this.formUtils.getValue(this.formUtils.getAnswer(form,
-                        session.getNode("/Questionnaires/Survey events/responses_received"))) != null
+                    && this.formUtils.getValue(this.formUtils.getAnswer(
+                        form, session.getNode("/Questionnaires/Survey events/responses_received"))) != null
                 ) {
                     // If the form is a survey events form with responses recieved, skip it
                     skippedForm = true;
