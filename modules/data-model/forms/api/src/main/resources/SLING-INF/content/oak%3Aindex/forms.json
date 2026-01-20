@@ -522,6 +522,53 @@
                 }
             }
         },
+        "cards:AnswerSection": {
+            "jcr:primaryType": "nt:unstructured",
+            "properties": {
+                "jcr:primaryType": "nt:unstructured",
+                "primaryType": {
+                    "name": "jcr:primaryType",
+                    "propertyIndex": true,
+                    "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "created": {
+                    "name": "jcr:created",
+                    "ordered": true,
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "type": "Date",
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "createdBy": {
+                    "name": "jcr:createdBy",
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "analyzed": false,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "section": {
+                    "name": "section",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": false,
+                    "weight": 1,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "form": {
+                    "propertyIndex": true,
+                    "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "statusFlags": {
+                    "name": "statusFlags",
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "analyzed": false,
+                    "jcr:primaryType": "nt:unstructured"
+                }
+            }
+        },
         "cards:Form" : {
             "jcr:primaryType": "nt:unstructured",
             "properties": {
