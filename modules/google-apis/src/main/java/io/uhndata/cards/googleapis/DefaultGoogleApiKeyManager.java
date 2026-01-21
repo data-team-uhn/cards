@@ -75,8 +75,10 @@ public class DefaultGoogleApiKeyManager implements GoogleApiKeyManager
             Resource res = this.rrp.getThreadResourceResolver().resolve(resourcePath);
             if (!res.isResourceType(Resource.RESOURCE_TYPE_NON_EXISTING)) {
                 Node keyNode = res.adaptTo(Node.class);
-                apiKey = keyNode.getProperty("key").getString();
-                LOGGER.debug("Google API key as set in the GoogleApiKey node: [{}]", apiKey);
+                if (keyNode.hasProperty("key")) {
+                    apiKey = keyNode.getProperty("key").getString();
+                    LOGGER.debug("Google API key as set in the GoogleApiKey node: [{}]", apiKey);
+                }
             }
         } catch (Exception e) {
             LOGGER.error("Failed to load Google API key from node: {}", e.getMessage(), e);
