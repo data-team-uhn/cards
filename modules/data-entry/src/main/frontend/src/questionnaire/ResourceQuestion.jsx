@@ -66,10 +66,10 @@ function ResourceQuestion(props) {
       // (by resetting `options` to []) regardless of the display mode
       fetchWithReLogin(globalLoginDisplay, url)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => setOptions(
-          (json?.totalrows == json?.returnedrows) &&
-          json?.rows?.map(row => [row[labelProperty] || row["@name"], row["@path"], true])
-          || []
+        .then((json) => (
+          (json?.rows?.length && json.totalrows == json.returnedrows)
+            ? setOptions(json.rows.map(row => [row[labelProperty] || row["@name"], row["@path"], true]))
+            : setOptions([])
         ))
     } else {
       setOptions([]);
