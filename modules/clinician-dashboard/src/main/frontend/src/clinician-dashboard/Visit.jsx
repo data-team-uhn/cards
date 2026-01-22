@@ -16,10 +16,13 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
-import { useNavigate } from "react-router";
-
+import SurveyIcon from '@mui/icons-material/Assignment';
+import DoneIcon from '@mui/icons-material/Done';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import LockIcon from '@mui/icons-material/Lock';
+import WarningIcon from '@mui/icons-material/Warning';
 import {
   Alert,
   AlertTitle,
@@ -35,26 +38,19 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-
-import DoneIcon from '@mui/icons-material/Done';
-import WarningIcon from '@mui/icons-material/Warning';
-import SurveyIcon from '@mui/icons-material/Assignment';
-import LockIcon from '@mui/icons-material/Lock';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-
+import { DateTime } from "luxon";
+import { useNavigate } from "react-router";
 import { makeStyles, withStyles } from 'tss-react/mui';
 
-import { DateTime } from "luxon";
 import SurveyLinkButton from "./SurveyLinkButton";
+import FormattedText from "../components/FormattedText";
 import EditButton from "../dataHomepage/EditButton";
 import PrintButton from "../dataHomepage/PrintButton";
 import SubjectLockAction from "../locking/SubjectLockAction";
-import FormattedText from "../components/FormattedText";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle";
 import ResourceHeader from "../questionnaire/ResourceHeader";
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy } from "../questionnaire/SubjectIdentifier";
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 const useStyles = makeStyles()(theme => ({
   formItem: {
@@ -84,7 +80,7 @@ const useStyles = makeStyles()(theme => ({
 
 function Visit(props) {
   const id = getSubjectIdFromPath(location.pathname);
-  const [ , patientUuid, visitUuid ] = /^([^\/]+)\/([^\/]+)$/.exec(id);
+  const [ , patientUuid, visitUuid ] = /^([^/]+)\/([^/]+)$/.exec(id);
 
   // Identifier of the questionnaire set used for the visit
   const [ questionnaireSetId, setQuestionnaireSetId ] = useState();
@@ -174,7 +170,7 @@ function Visit(props) {
           'targetUserType': value.targetUserType,
           '@path': value.questionnaire?.['@path'],
         }
-       });
+      });
     setQuestionnaires(data);
 
     let qids = Object.values(json || {})
@@ -191,7 +187,7 @@ function Visit(props) {
     let data = {};
     questionnaireSetIds.forEach(q => {
       if (visit[questionnaireSet?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
-        data[q] = {...visit[questionnaireSet?.[q]?.title][0], targetUserType: questionnaireSet?.[q]?.targetUserType};
+        data[q] = { ...visit[questionnaireSet?.[q]?.title][0], targetUserType: questionnaireSet?.[q]?.targetUserType };
         ids.push(q);
       }
     });
@@ -247,8 +243,7 @@ function Visit(props) {
 
   const displayVisitDateTime = () => {
     let dateTimeAnswer = getVisitField("time");
-    let dateTime = DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(dateTimeAnswer));
-    return !dateTime?.isValid ? "" : dateTime.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
+    return DateTime.fromISO(dateTimeAnswer).toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
   }
 
   const displayVisitInfo = () => {
@@ -257,11 +252,11 @@ function Visit(props) {
     let provider = getVisitField("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
     return (dateTime || location || provider) ?
-      <Alert variant="outlined" severity="info" icon={<EventNoteIcon/>} sx={{marginTop: -2}}>
+      <Alert variant="outlined" severity="info" icon={<EventNoteIcon/>} sx={{ marginTop: -2 }}>
         <strong>
-        {dateTime ? <> {dateTime} </> : null}
-        {location ? <> at {location}</> : null}
-        {provider ? <> with {provider}</> : null}
+          {dateTime ? <> {dateTime} </> : null}
+          {location ? <> at {location}</> : null}
+          {provider ? <> with {provider}</> : null}
         </strong>
       </Alert>
       : null
@@ -293,7 +288,7 @@ function Visit(props) {
 
   const isPageComplete = (questionnaireId, section) => {
     let answerSection = Object.values(surveyData?.[questionnaireId] || {})
-                         .find(e => (e?.section?.["jcr:uuid"] == section?.["jcr:uuid"]));
+      .find(e => (e?.section?.["jcr:uuid"] == section?.["jcr:uuid"]));
     return answerSection && !answerSection.statusFlags?.includes("INCOMPLETE");
   }
 
@@ -303,7 +298,7 @@ function Visit(props) {
       variant="outlined"
       size="small"
       className={`${classes[flag + "Flag"] || classes.DefaultFlag}`}
-      sx={{mr: 1}}
+      sx={{ mr: 1 }}
       key={flag}
     />
   )
@@ -324,53 +319,52 @@ function Visit(props) {
     <>
       <Divider><Typography variant="h6">{title}</Typography></Divider>
       <List>
-      { qIds.map((q, i) => (
-        <ListItem
-          className={classes.formItem}
-          key={q}
-          disablePadding
-          secondaryAction={withAction && !isFormLocked(q) && <EditButton entryPath={surveyData?.[q]?.["@path"]}/>}
-        >
-          <ListItemButton onClick={() => navigate(`/content.html${surveyData?.[q]?.["@path"]}`)}>
-            <ListItemAvatar sx={{alignSelf: "baseline", zoom: 1.2}}>
-            { isFormLocked(q) ? lockedIndicator : (
-                 isFormComplete(q) ? doneIndicator : (
-                   isFormSubmitted(q) ? incompleteIndicator : surveyIndicator
-                 )
-               )
-            }
-            </ListItemAvatar>
-            <ListItemText
-              primary={questionnaires[q]?.title}
-              secondary={<>
-                { displayFlags(q) }
-                { !isFormComplete(q) && isFormNavigable(q) && listPages(q) }
-              </>}
-              slotProps={{'secondary': {'component': 'div'}}}
-            />
-          </ListItemButton>
-        </ListItem>
-      ))}
+        { qIds.map((q, i) => (
+          <ListItem
+            className={classes.formItem}
+            key={q}
+            disablePadding
+            secondaryAction={withAction && !isFormLocked(q) && <EditButton entryPath={surveyData?.[q]?.["@path"]}/>}
+          >
+            <ListItemButton onClick={() => navigate(`/content.html${surveyData?.[q]?.["@path"]}`)}>
+              <ListItemAvatar sx={{ alignSelf: "baseline", zoom: 1.2 }}>
+                { isFormLocked(q) ? lockedIndicator : (
+                  isFormComplete(q) ? doneIndicator : (
+                    isFormSubmitted(q) ? incompleteIndicator : surveyIndicator
+                  )
+                )}
+              </ListItemAvatar>
+              <ListItemText
+                primary={questionnaires[q]?.title}
+                secondary={<>
+                  { displayFlags(q) }
+                  { !isFormComplete(q) && isFormNavigable(q) && listPages(q) }
+                </>}
+                slotProps={{ 'secondary': { 'component': 'div' } }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
       </List>
     </>
   );
 
   // For navigable forms, list pages with their completion status
   const listPages = (qId) => (
-    <List dense disablePadding sx={{width: "fit-content"}}>
+    <List dense disablePadding sx={{ width: "fit-content" }}>
       { Object.values(surveyData?.[qId]?.questionnaire || {})
-          .filter(c => c?.["jcr:primaryType"] == "cards:Section")
-          .map(s => {
-            let isComplete = isPageComplete(qId, s);
-            return (
-              <ListItem disablePadding sx={{paddingRight: 6}} secondaryAction={ isComplete && <DoneIcon color="success"/> }>
-                <ListItemText
-                  disableTypography
-                  primary={<FormattedText variant="caption" sx={isComplete ? {opacity: .5} : {}}>{s.label || s["@name"]}</FormattedText>}
-                />
-              </ListItem>
-             );
-           })
+        .filter(c => c?.["jcr:primaryType"] == "cards:Section")
+        .map(s => {
+          let isComplete = isPageComplete(qId, s);
+          return (
+            <ListItem disablePadding sx={{ paddingRight: 6 }} secondaryAction={ isComplete && <DoneIcon color="success"/> } key={ s["@name"] } >
+              <ListItemText
+                disableTypography
+                primary={<FormattedText variant="caption" sx={isComplete ? { opacity: .5 } : {}}>{s.label || s["@name"]}</FormattedText>}
+              />
+            </ListItem>
+          );
+        })
       }
     </List>
   )

@@ -5,5 +5,9 @@
   "clinician-dashboard.Form.js": ["asset:cards-login.ReLoginDialog.js", "asset:cards-dataentry.Forms.js", "asset:cards-dataentry.FormView.js", "asset:cards-pedigree.Pedigree.js"],
   "clinician-dashboard.Visit.js": ["asset:cards-login.ReLoginDialog.js"],
   "clinician-dashboard.Patient.js": ["asset:cards-login.ReLoginDialog.js"],
-  "clinician-dashboard.DashboardSettingsConfiguration.js": ["asset:cards-login.ReLoginDialog.js"]
+  "clinician-dashboard.DashboardSettingsConfiguration.js": ["asset:cards-login.ReLoginDialog.js"],
+  "clinician-dashboard.FormView": ["cards-dataentry.LiveTable"],
+  "clinician-dashboard.SubjectView": ["cards-dataentry.LiveTable"],
+  "clinician-dashboard.Forms": ["cards-login.ReLoginDialog"],
+  "clinician-dashboard.Subjects": ["cards-login.ReLoginDialog"]
 }

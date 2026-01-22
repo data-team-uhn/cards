@@ -73,8 +73,9 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
  * <Form />
  */
 function Form (props) {
-  let { classes, contentOffset, extensionURL } = props;
   let {
+    classes,
+    contentOffset,
     mode,
     className,
     disableHeader,
@@ -84,7 +85,9 @@ function Form (props) {
     doneLabel,
     onDone,
     questionnaireAddons,
-    paginationProps
+    paginationProps,
+    actionSwitches,
+    extension
   } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -125,6 +128,7 @@ function Form (props) {
   let id = props.id || /Forms\/([^./]+)/.exec(location.pathname)[1];
   let isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
   let isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
+  const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || "";
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
@@ -499,7 +503,7 @@ function Form (props) {
               onClose={() => setActionsMenu(null)}
             />
           </ListItem>
-          ( isActionEnabled("text") &&
+          { isActionEnabled("text") &&
             <ListItem className={classes.actionsMenuItem}>
               <Button
                 size="medium"
@@ -510,7 +514,7 @@ function Form (props) {
                 Export as text
               </Button>
             </ListItem>
-          )
+          }
         </> }
 
       { isActionEnabled("delete") &&

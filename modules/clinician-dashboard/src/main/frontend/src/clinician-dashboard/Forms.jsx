@@ -16,11 +16,9 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
+import DefaultForms from "../dataHomepage/Forms.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import DefaultForms from "../dataHomepage/Forms.jsx";
 
 function Forms(props) {
 

@@ -16,10 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import DefaultSubjectView from "../dataHomepage/SubjectView.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function SubjectView(props) {
 

@@ -16,10 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from "react";
-
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import DefaultFormView from "../dataHomepage/FormView.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function FormView(props) {
 

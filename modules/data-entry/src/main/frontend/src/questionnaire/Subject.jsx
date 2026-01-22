@@ -81,7 +81,12 @@ let createQueryURL = (query, type) => {
 
 function Subject(props) {
   checkPropTypes(Subject, props);
-  let { classes, maxDisplayed = 4, pageSize = 10, extensionURL } = props;
+  let {
+    classes,
+    maxDisplayed = 4,
+    pageSize = 10,
+    extension
+  } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ activeTab, setActiveTab ] = useState(0);
   const fetchRelatedRef = useRef();
@@ -94,6 +99,7 @@ function Subject(props) {
   const navigate = useNavigate();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(getSubjectIdFromPath(location.pathname));
 
+  const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || "";
   const baseURL = "../content.html" + (extensionURL ? "/" + extensionURL : "");
 
   useEffect(() => {

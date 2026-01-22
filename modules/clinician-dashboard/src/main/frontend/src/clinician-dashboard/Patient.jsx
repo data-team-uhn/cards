@@ -16,10 +16,11 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
-import { useNavigate } from "react-router";
-
+import ContactPageIcon from '@mui/icons-material/ContactPage';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import LockIcon from '@mui/icons-material/Lock';
 import {
   Alert,
   AlertTitle,
@@ -27,27 +28,19 @@ import {
   CircularProgress,
   Grid,
   Tooltip,
-  Typography,
 } from "@mui/material";
-
-import ContactPageIcon from '@mui/icons-material/ContactPage';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import LockIcon from '@mui/icons-material/Lock';
-
 import { DataGrid } from '@mui/x-data-grid';
-
 import { DateTime } from "luxon";
-
-import ResourceHeader from "../questionnaire/ResourceHeader.jsx";
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
-import { getSubjectIdFromPath, getHierarchyAsList, getHomepageLink } from "../questionnaire/SubjectIdentifier";
-import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle.jsx";
+import { useNavigate } from "react-router";
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle.jsx";
+import ResourceHeader from "../questionnaire/ResourceHeader.jsx";
+import { getSubjectIdFromPath, getHierarchyAsList, getHomepageLink } from "../questionnaire/SubjectIdentifier";
 
 const statusIcons = {
-  "LOCKED" : <LockIcon sx={{mt: 1.5, ml: 1}} />,
-  "Default" : <EventNoteIcon sx={{mt: 1.5, ml: 1}} />,
+  "LOCKED": <LockIcon sx={{ mt: 1.5, ml: 1 }} />,
+  "Default": <EventNoteIcon sx={{ mt: 1.5, ml: 1 }} />,
 }
 
 const visitGridColumns = [
@@ -57,8 +50,8 @@ const visitGridColumns = [
     width: 50,
     renderCell: ({ value }) => (
       value && statusIcons[value]
-      ? <Tooltip title={value}>{statusIcons[value]}</Tooltip>
-      : statusIcons["Default"]
+        ? <Tooltip title={value}>{statusIcons[value]}</Tooltip>
+        : statusIcons["Default"]
     )
   },
   {
@@ -76,8 +69,7 @@ const visitGridColumns = [
       if (value instanceof Date) {
         value = value.toISOString();
       }
-      let dateTime = DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(value));
-      let dateTimeString = !dateTime?.isValid ? "" : dateTime.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
+      let dateTimeString = DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
       return dateTimeString;
     }
   },
@@ -97,13 +89,13 @@ function Patient(props) {
   const patientUuid = getSubjectIdFromPath(location.pathname);
 
   // Data already associated with the subject
-  const [ patientData, setPatientData ] = useState();
+  const [patientData, setPatientData] = useState();
   // List of visits on record for this patient
-  const [ visits, setVisits ] = useState();
+  const [visits, setVisits] = useState();
   // Visit data formatted for display in a DataGrid
-  const [ visitGridRows, setVisitGridRows ] = useState();
+  const [visitGridRows, setVisitGridRows] = useState();
   // When something goes wrong:
-  const [ error, setError ] = useState();
+  const [error, setError] = useState();
 
   const navigate = useNavigate();
 
@@ -183,8 +175,7 @@ function Patient(props) {
     let name = [lName, fName].filter(n => n).join(", ");
 
     let dobAnswer = patientData?.date_of_birth;
-    let dob = DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(dobAnswer));
-    let dobString = !dob?.isValid ? "" : dob.toLocaleString(DateTime.DATE_FULL);
+    let dobString = DateTime.fromISO(dobAnswer).toLocaleString(DateTime.DATE_FULL);
     let sex = patientData?.sex;
     let birthInfo = [dobString, sex].filter(i => i).join(", ");
 
@@ -193,7 +184,7 @@ function Patient(props) {
         {name ? <AlertTitle>{name}</AlertTitle> : null}
         {birthInfo ? <> {birthInfo} </> : null}
       </>
-    : null
+      : null
   };
 
   const patientInfo = displayPatientInfo();
@@ -208,19 +199,21 @@ function Patient(props) {
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
       <ResourceHeader
         title={`Patient ${patientData?.identifier}`}
-        breadcrumbs={(patientData?.parents && getHierarchyAsList(patientData.parents, true) || [getHomepageLink(patientData)])}
+        breadcrumbs={
+          (patientData?.parents && getHierarchyAsList(patientData.parents, true) || [getHomepageLink(patientData)])
+        }
       />
-      { patientInfo &&
+      {patientInfo &&
         <Grid>
-          <Alert variant="outlined" severity="info" icon={<ContactPageIcon/>}>
-          { patientInfo }
+          <Alert variant="outlined" severity="info" icon={<ContactPageIcon />}>
+            {patientInfo}
           </Alert>
         </Grid>
       }
       <Grid>
         <Box sx={{ height: 400, width: '100%' }}>
           <DataGrid
-            sx={{cursor: "pointer"}}
+            sx={{ cursor: "pointer" }}
             rows={visitGridRows}
             columns={visitGridColumns}
             initialState={{
@@ -231,8 +224,8 @@ function Patient(props) {
               },
             }}
             onRowClick={(params, event) => {
-               event?.preventDefault();
-               navigate(`/content.html${params.row.path}`);
+              event?.preventDefault();
+              navigate(`/content.html${params.row.path}`);
             }}
             pageSizeOptions={[5]}
           />

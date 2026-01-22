@@ -16,11 +16,9 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
+import DefaultSubjects from "../dataHomepage/Subjects.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import DefaultSubjects from "../dataHomepage/Subjects.jsx";
 
 function Subjects(props) {
 

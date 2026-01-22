@@ -16,18 +16,17 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
+import { useState, useContext } from "react";
 
+import DoneIcon from '@mui/icons-material/Done';
+import ErrorIcon from '@mui/icons-material/Error';
+import ShareIcon from '@mui/icons-material/Share';
 import {
   CircularProgress,
   IconButton,
   Tooltip,
 } from "@mui/material";
-
-import ErrorIcon from '@mui/icons-material/Error';
-import DoneIcon from '@mui/icons-material/Done';
-import ShareIcon from '@mui/icons-material/Share';
+import PropTypes from "prop-types";
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 

@@ -16,8 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
 import DefaultForm from "../questionnaire/FormView.jsx";
 
 function Form(props) {
