@@ -230,42 +230,41 @@ let ComputedQuestion = (props) => {
     return [questions, expr];
   }
 
+  let processParsedResults = (parseResults) => {
+    let questions = parseResults[0];
+    let parsedExpression = parseResults[1];
+    let expressionArguments = ["form", "setError"];
+    let expressionValues = [form, (errorMessage) => expressionError = errorMessage];
+    for (const question of questions.values()) {
+      expressionArguments.push(question["argument"]);
+      expressionValues.push(question["value"]);
+    }
+    let result = new Function(expressionArguments, parsedExpression)(...expressionValues);
+    if (typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
+      result = "";
+    }
+    return result;
+  }
+
   let evaluateExpression = () => {
-    let result;
+    let result = "";
     let expressionError = null;
     try {
       let parseResults = parseExpressionInputs(expression, form);
-      if (missingValue) {
-        result = ""
-      } else {
-        let questions = parseResults[0];
-        let parsedExpression = parseResults[1];
-
-        let expressionArguments = ["form", "setError"];
-        let expressionValues = [form, (errorMessage) => expressionError = errorMessage];
-        for(const question of questions.values()) {
-          expressionArguments.push(question["argument"]);
-          expressionValues.push(question["value"]);
-        }
-        result = new Function(expressionArguments, parsedExpression)(...expressionValues);
-        if (typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
-          result = "";
-        }
+      if (!missingValue) {
+        result = processParsedResults(parseResults);
       }
     }
     catch(err) {
       console.error(`Error encountered evaluating expression:\n${expression}\n`, err.message);
-      result = "";
     }
     if (expressionError) {
       setError(true);
       setErrorMessage(`Error encountered evaluating expression:\n${expressionError}`);
-      result = "";
     } else {
       setError(false);
     }
-
-    setValue(typeof(result) === "undefined" ? "" : result);
+    setValue(result);
   }
 
   const muiInputProps = {
