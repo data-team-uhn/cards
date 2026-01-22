@@ -25,7 +25,7 @@ function SubjectView(props) {
     edit: () => false,
     delete: () => false,
     create: () => false,
-    expand: () => false,
+    expand: () => true,
   }
 
   const columns = [
