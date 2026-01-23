@@ -35,7 +35,7 @@ To use the pagination servlet, simply add `.paginate` at the end of the URL when
 ```
 
 - `rows` contains the actual data, serialized as JSON
-- `req` is a reflected query parameter, it will copy whatever value you send as the `req` query paramter, and can be used to differentiate between multiple requests sent in parallel
+- `req` is a reflected query parameter, it will copy whatever value you send as the `req` query parameter, and can be used to differentiate between multiple requests sent in parallel
 - `offset` and `limit` are reflected query parameter, they can be used to specify the "page" that is requested, the 0-based `offset` of the first item to return, and the `limit` number of items to return
 - `returnedrows` is the number of returned items, matching the size of the `rows` array
 - `totalrows` is the total number of items matching the query, but for performance it can be just an estimate if the total number is larger than 10x the page size
@@ -56,7 +56,7 @@ When listing Forms, it is possible to filter them based on their subject, questi
 
 - `includeallstatus`: By default only non-incomplete forms are returned. Use `includeallstatus=true` to return all forms regardless of their status.
 - `filterempty` and `filtnoterempty`: Specify questions that must or must not be empty. Use the parameters multiple times to request multiple questions to be/not be answered. The accepted values are internal question identifiers, which can be obtained by inspecting the JSON of the questionnaire.
-- `filternames`, `filtercomparators`, `filtervalues`, `filtertypes`: Specify restrictions on the answers to specific questions. All four paramters must be specified, and if more than one filter is used, all four parameters must have the same number of appearances in the request, or else the query will be rejected with an error. `filternames` specifies the internal question identifier. `filtercomparators` must be one of the accepted values listed below. `filtervalues` is the value to compare against. `filtertypes` must match the type of the answer, listed in the question under the `dataType` property. These can also be used for filtering on a few Form metadata fields:
+- `filternames`, `filtercomparators`, `filtervalues`, `filtertypes`: Specify restrictions on the answers to specific questions. All four parameters must be specified, and if more than one filter is used, all four parameters must have the same number of appearances in the request, or else the query will be rejected with an error. `filternames` specifies the internal question identifier. `filtercomparators` must be one of the accepted values listed below. `filtervalues` is the value to compare against. `filtertypes` must match the type of the answer, listed in the question under the `dataType` property. These can also be used for filtering on a few Form metadata fields:
     - `cards:Subject` restricts the results to forms related to the specified subject internal identifier
     - `cards:Questionnaire` restricts to forms for a specific questionnaire
     - `cards:Created` for limiting the date when the form was created (use full ISO datetime)
