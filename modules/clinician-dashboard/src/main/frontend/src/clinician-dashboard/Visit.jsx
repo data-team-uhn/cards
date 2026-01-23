@@ -80,7 +80,9 @@ const useStyles = makeStyles()(theme => ({
 
 function Visit(props) {
   const id = getSubjectIdFromPath(location.pathname);
-  const [ , patientUuid, visitUuid ] = /^([^/]+)\/([^/]+)$/.exec(id);
+  const match = /^([^/]+)\/([^/]+)$/.exec(id);
+  const patientUuid = match?.[1];
+  const visitUuid = match?.[2];
 
   // Identifier of the questionnaire set used for the visit
   const [ questionnaireSetId, setQuestionnaireSetId ] = useState();
@@ -129,11 +131,16 @@ function Visit(props) {
           setParents(json["parents"]);
           setVisitInformation(json[VISIT_INFORMATION_FORM_TITLE]?.[0] || {});
           let clinicPath = Object.values(json[VISIT_INFORMATION_FORM_TITLE]?.[0]).find(o => o?.question?.["@name"] == "clinic")?.value;
-          return fetchWithReLogin(globalLoginDisplay, `${clinicPath}.deep.json`)
-            .then((response) => response.ok ? response.json() : Promise.reject(response))
-            .then((json) => {
-              setQuestionnaireSetId(json["survey"]);
-            });
+          if (!clinicPath) {
+            setError("Clinic is missing for this visit.");
+            return;
+          } else {
+            return fetchWithReLogin(globalLoginDisplay, `${clinicPath}.deep.json`)
+              .then((response) => response.ok ? response.json() : Promise.reject(response))
+              .then((json) => {
+                setQuestionnaireSetId(json["survey"]);
+              });
+          }
         }
         selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
       })
@@ -153,9 +160,8 @@ function Visit(props) {
         if (response.status == 404) {
           setError("The survey you are trying to access does not exist. Please contact the administrator for further assistance.");
         } else {
-          //setError("The survey could not be loaded at this time. Please try again later or contact the administrator for further assistance.");
+          setError("The survey could not be loaded at this time. Please try again later or contact the administrator for further assistance.");
         }
-        //setQuestionnaires(null);
       });
   }
 
@@ -179,15 +185,18 @@ function Visit(props) {
       .map(value => value.questionnaire['@name'])
     setQuestionnaireSetIds(qids);
 
-    selectDataForQuestionnaireSet(visit, data, qids);
+    selectDataForQuestionnaireSet(data, qids);
   };
 
-  const selectDataForQuestionnaireSet = (visit, questionnaireSet, questionnaireSetIds) => {
+  const selectDataForQuestionnaireSet = (questionnaireSet, questionnaireSetIds) => {
     let ids = [];
     let data = {};
     questionnaireSetIds.forEach(q => {
-      if (visit[questionnaireSet?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
-        data[q] = { ...visit[questionnaireSet?.[q]?.title][0], targetUserType: questionnaireSet?.[q]?.targetUserType };
+      if (visit?.[questionnaireSet?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
+        data[q] = {
+          ...visit[questionnaireSet?.[q]?.title][0],
+          targetUserType: questionnaireSet?.[q]?.targetUserType
+        };
         ids.push(q);
       }
     });
@@ -206,7 +215,7 @@ function Visit(props) {
   // When a visit is loaded, record if it is locked
   useEffect(() => {
     setLocked(visit?.statusFlags && visit.statusFlags.includes("LOCKED"))
-  }, [visit])
+  }, [visit]);
 
 
   // --------------------------------------------------------------------------------------------------------------
@@ -243,7 +252,11 @@ function Visit(props) {
 
   const displayVisitDateTime = () => {
     let dateTimeAnswer = getVisitField("time");
-    return DateTime.fromISO(dateTimeAnswer).toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
+    if (dateTimeAnswer == null) return null;
+    const dt = DateTime.fromISO(dateTimeAnswer)
+    return dt.isValid
+      ? dt.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
+      : null;
   }
 
   const displayVisitInfo = () => {
@@ -252,7 +265,7 @@ function Visit(props) {
     let provider = getVisitField("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
     return (dateTime || location || provider) ?
-      <Alert variant="outlined" severity="info" icon={<EventNoteIcon/>} sx={{ marginTop: -2 }}>
+      <Alert variant="outlined" severity="info" icon={<EventNoteIcon/>} sx={{ mt: -2 }}>
         <strong>
           {dateTime ? <> {dateTime} </> : null}
           {location ? <> at {location}</> : null}
@@ -297,7 +310,7 @@ function Visit(props) {
       label={flag.substring(0,1).toUpperCase() + flag.substring(1).toLowerCase()}
       variant="outlined"
       size="small"
-      className={`${classes[flag + "Flag"] || classes.DefaultFlag}`}
+      className={classes[flag + "Flag"] || classes.DefaultFlag}
       sx={{ mr: 1 }}
       key={flag}
     />
@@ -357,10 +370,18 @@ function Visit(props) {
         .map(s => {
           let isComplete = isPageComplete(qId, s);
           return (
-            <ListItem disablePadding sx={{ paddingRight: 6 }} secondaryAction={ isComplete && <DoneIcon color="success"/> } key={ s["@name"] } >
+            <ListItem
+              disablePadding
+              sx={{ pr: 6 }}
+              secondaryAction={ isComplete && <DoneIcon color="success"/> }
+              key={ s["@name"] }
+            >
               <ListItemText
                 disableTypography
-                primary={<FormattedText variant="caption" sx={isComplete ? { opacity: .5 } : {}}>{s.label || s["@name"]}</FormattedText>}
+                primary={
+                  <FormattedText variant="caption" sx={isComplete ? { opacity: .5 } : {}}>
+                    {s.label || s["@name"]}
+                  </FormattedText>}
               />
             </ListItem>
           );

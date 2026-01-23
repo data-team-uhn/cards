@@ -52,7 +52,11 @@ function SurveyLinkButton(props) {
     setFetchingLink(true);
     fetchWithReLogin(globalLoginDisplay, `${visitURL}.token.html`)
       .then((response) => response.ok ? response.text() : Promise.reject(response))
-      .then((text) => { setSurveyLink(window.location.origin + "/Survey.html?auth_token=" + text.trim()); copy(window.location.origin + "/Survey.html?auth_token=" + text.trim()); })
+      .then((text) => {
+        let link = window.location.origin + "/Survey.html?auth_token=" + text.trim();
+        setSurveyLink(link);
+        copy(link);
+      })
       .catch(() => setError("Could not generate survey link"))
       .finally(() => setFetchingLink(false));
   };
@@ -63,20 +67,22 @@ function SurveyLinkButton(props) {
 
   if (error) {
     return (<Tooltip title={error}>
-      <IconButton size={size || "large"}>
+      <IconButton size={size}>
         <ErrorIcon />
       </IconButton>
     </Tooltip>);
   }
+
   if (fetchingLink) {
-    return (<Tooltip title={"Generating survey link..."}>
-      <IconButton size={size || "large"}>
+    return (<Tooltip title="Generating survey link...">
+      <IconButton size={size}>
         <CircularProgress size={24}/>
       </IconButton>
     </Tooltip>);
   }
-  return (<Tooltip title={copied ? "Copied" : `Copy patient survey link to clipboard`}>
-    <IconButton size={size || "large"} onClick={onClick}>
+
+  return (<Tooltip title={copied ? "Copied" : "Copy patient survey link to clipboard"}>
+    <IconButton size={size} onClick={onClick}>
       { copied ? <DoneIcon/> : <ShareIcon/> }
     </IconButton>
   </Tooltip>);

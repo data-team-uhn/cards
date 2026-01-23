@@ -87,7 +87,8 @@ function Form (props) {
     questionnaireAddons,
     paginationProps,
     actionSwitches,
-    extension
+    extension,
+    extensionURL
   } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -128,7 +129,7 @@ function Form (props) {
   let id = props.id || /Forms\/([^./]+)/.exec(location.pathname)[1];
   let isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
   let isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
-  const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || "";
+  const activeExtensionURL = extension?.["cards:extensionURL"] || extensionURL || "";
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
@@ -175,7 +176,7 @@ function Form (props) {
   let formNode = useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
-  const baseURL = "/content.html" + (extensionURL ? "/" + extensionURL : "");
+  const baseURL = "/content.html" + (activeExtensionURL ? "/" + activeExtensionURL : "");
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useLayoutEffect(() => {
@@ -536,8 +537,8 @@ function Form (props) {
     <div className={classes.actionsMenu}>
       {isEdit ?
         ( isActionEnabled("save") &&
-          <Tooltip title="Save and view" onClick={onClose}>
-            <IconButton color="primary" size="large">
+          <Tooltip title="Save and view">
+            <IconButton color="primary" size="large" onClick={onClose}>
               <DoneIcon />
             </IconButton>
           </Tooltip>
@@ -553,8 +554,8 @@ function Form (props) {
       }
       { isDropdnEnabled() &&
         <>
-          <Tooltip title="More actions" onClick={(event) => setActionsMenu(event.currentTarget)}>
-            <IconButton size="large">
+          <Tooltip title="More actions">
+            <IconButton size="large" onClick={(event) => setActionsMenu(event.currentTarget)}>
               <MoreIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -616,7 +617,7 @@ function Form (props) {
           title={title}
           breadcrumbs={[
             <Breadcrumbs separator="/" key="breadcrumbs">
-              {getHierarchyAsList(data?.subject, undefined, extensionURL)
+              {getHierarchyAsList(data?.subject, undefined, activeExtensionURL)
                 .map(a => <Typography variant="overline" key={a}>{a}</Typography>)}
             </Breadcrumbs>
           ]}

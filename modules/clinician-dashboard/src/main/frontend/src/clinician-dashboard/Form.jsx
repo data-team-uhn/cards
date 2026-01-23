@@ -16,11 +16,15 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+import { useLocation } from "react-router";
+
 import DefaultForm from "../questionnaire/FormView.jsx";
 
 function Form(props) {
+  let location = useLocation();
 
   const actionSwitches = {
+    // If the form is neither SUBMITTED nor LOCKED, then clinicians can edit it
     edit: data => (!["SUBMITTED", "LOCKED"].some(f => data.statusFlags.includes(f))),
     save: () => true,
     print: () => true,
@@ -28,7 +32,7 @@ function Form(props) {
   }
 
   return (
-    <DefaultForm key={window.location} actionSwitches={actionSwitches} />
+    <DefaultForm key={location.key} actionSwitches={actionSwitches} />
   );
 }
 

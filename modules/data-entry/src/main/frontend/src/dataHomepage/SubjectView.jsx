@@ -45,7 +45,17 @@ import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function SubjectView(props) {
-  const { expanded, actionSwitches, disableHeader, disableAvatar, topPagination, extension, classes } = props;
+  const {
+    expanded,
+    actionSwitches,
+    disableHeader,
+    disableAvatar,
+    topPagination,
+    extension,
+    extensionURL,
+    classes
+  } = props;
+
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ activeTab, setActiveTab ] = useState(0);
   const [ subjectTypes, setSubjectTypes] = useState([]);
@@ -54,8 +64,8 @@ function SubjectView(props) {
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("subjects:filters"));
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
 
-  const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || "";
-  const baseURL = "../content.html" + (extensionURL ? "/" + extensionURL : "");
+  const activeExtensionURL = extension?.["cards:extensionURL"] || extensionURL || "";
+  const baseURL = "../content.html" + (activeExtensionURL ? "/" + activeExtensionURL : "");
 
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("subjects:activeTab");
 
@@ -167,7 +177,7 @@ function SubjectView(props) {
               filters
               onFiltersChange={(str) => setFiltersJsonString(str)}
               filtersJsonString={filtersJsonString}
-              extensionURL={extensionURL}
+              extensionURL={activeExtensionURL}
             />
             : <Typography sx={{ pl: 1 }}>No results</Typography>
         }
@@ -181,7 +191,7 @@ function SubjectView(props) {
           onClose={() => setNewSubjectPopperOpen(false)}
           onSubmit={() => setNewSubjectPopperOpen(false)}
           open={newSubjectPopperOpen}
-          extensionURL={extensionURL}
+          extensionURL={activeExtensionURL}
         />
       </>
       }

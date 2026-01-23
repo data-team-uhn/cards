@@ -30,15 +30,15 @@ function SubjectView(props) {
 
   const columns = [
     {
-      "key": "@name",
-      "label": "Identifier",
-      "format": getEntityIdentifier,
-      "link": "dashboard+path",
+      key: "@name",
+      label: "Identifier",
+      format: getEntityIdentifier,
+      link: "dashboard+path",
     },
     {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:yyyy-MM-dd HH:mm",
+      key: "jcr:created",
+      label: "Created on",
+      format: "date:yyyy-MM-dd HH:mm",
     },
   ]
 

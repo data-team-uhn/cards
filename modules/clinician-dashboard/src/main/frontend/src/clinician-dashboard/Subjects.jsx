@@ -21,6 +21,7 @@ import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Subjects(props) {
+  const { extensionURL } = props;
 
   const actionSwitches = {
     edit: () => false,
@@ -31,20 +32,20 @@ function Subjects(props) {
 
   const columns = [
     {
-      "key": "identifier",
-      "label": "Identifier",
-      "format": getEntityIdentifier,
-      "link": "dashboard+path",
+      key: "identifier",
+      label: "Identifier",
+      format: getEntityIdentifier,
+      link: "dashboard+path",
     },
     {
-      "key": "",
-      "label": "Parents",
-      "format": (row) => (row['parents'] ? getHierarchy(row['parents'], undefined, undefined, props.extensionURL) : ''),
+      key: "",
+      label: "Parents",
+      format: (row) => (row['parents'] ? getHierarchy(row['parents'], undefined, undefined, extensionURL) : ''),
     },
     {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:yyyy-MM-dd HH:mm",
+      key: "jcr:created",
+      label: "Created on",
+      format: "date:yyyy-MM-dd HH:mm",
     },
   ]
 

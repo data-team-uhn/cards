@@ -85,7 +85,7 @@ const visitGridColumns = [
   },
 ];
 
-function Patient(props) {
+function Patient() {
   const patientUuid = getSubjectIdFromPath(location.pathname);
 
   // Data already associated with the subject
@@ -128,19 +128,19 @@ function Patient(props) {
   const formatVisits = () => {
     if (!visits) return;
     setVisitGridRows(
-      visits?.map(visit => ({
-        status: visit?.statusFlags?.find(f => f == "LOCKED"),
-        id: visit?.identifier,
-        path: visit?.["@path"],
-        time: visit?.time && new Date(visit?.time),
-        location: visit?.location,
-        provider: visit?.provider?.join(", "),
+      visits.map(visit => ({
+        status: visit.statusFlags?.find(f => f == "LOCKED"),
+        id: visit.identifier,
+        path: visit["@path"],
+        time: visit.time && new Date(visit?.time),
+        location: visit.location,
+        provider: visit.provider?.join(", "),
       }))
     );
   }
 
   useEffect(fetchPatientData, []);
-  useEffect(fetchVisits, [patientData]);
+  useEffect(fetchVisits, [patientUuid]);
   useEffect(formatVisits, [visits]);
 
   // --------------------------------------------------------------------------------------------------------------
@@ -170,12 +170,14 @@ function Patient(props) {
   //
 
   const displayPatientInfo = () => {
-    let fName = patientData?.first_name;
-    let lName = patientData?.last_name;
+    let fName = patientData?.first_name?.trim();
+    let lName = patientData?.last_name?.trim();
     let name = [lName, fName].filter(n => n).join(", ");
 
     let dobAnswer = patientData?.date_of_birth;
-    let dobString = DateTime.fromISO(dobAnswer).toLocaleString(DateTime.DATE_FULL);
+    let dobString = dobAnswer
+      ? DateTime.fromISO(dobAnswer).toLocaleString(DateTime.DATE_FULL)
+      : "";
     let sex = patientData?.sex;
     let birthInfo = [dobString, sex].filter(i => i).join(", ");
 

@@ -46,6 +46,7 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 function FormView(props) {
   const {
     extension,
+    extensionURL,
     actionSwitches,
     questionnaire,
     expanded,
@@ -60,8 +61,8 @@ function FormView(props) {
   const [ qFilter, setQFilter ] = useState();
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
 
-  const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || ""
-  const baseURL = "../content.html" + (extensionURL ? "/" + extensionURL : "");
+  const activeExtensionURL = extension?.["cards:extensionURL"] || extensionURL || ""
+  const baseURL = "../content.html" + (activeExtensionURL ? "/" + activeExtensionURL : "");
 
   // Column configuration for the LiveTables
   const columns = [
@@ -180,7 +181,7 @@ function FormView(props) {
             disableTopPagination={!topPagination}
             onFiltersChange={(str) => setFiltersJsonString(str)}
             filtersJsonString={filtersJsonString}
-            extensionURL={extensionURL}
+            extensionURL={activeExtensionURL}
           />
         }
         { expanded && isActionEnabled("create") &&
@@ -188,7 +189,7 @@ function FormView(props) {
           presetPath={questionnaire}
           withButton
           buttonTitle="New questionnaire"
-          extensionURL={extensionURL}
+          extensionURL={activeExtensionURL}
         />
         }
       </CardContent>
