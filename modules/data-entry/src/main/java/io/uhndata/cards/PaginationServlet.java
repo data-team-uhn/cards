@@ -58,6 +58,8 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.utils.DateUtils;
+
 /**
  * A servlet that lists resources of a specific type, depending on which "homepage" resource the request is targeting.
  * <p>
@@ -182,7 +184,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         Filter(final String name, final String value, final String type, final String comparator)
         {
             this.name = name;
-            this.value = "date".equals(type) ? formatDate(value) : value;
+            this.value = ("date".equals(type) || "datetime".equals(type)) ? DateUtils.normalize(value) : value;
             this.type = type;
             this.comparator = comparator;
         }
@@ -200,25 +202,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         String getComparator()
         {
             return this.comparator;
-        }
-
-        private String formatDate(String original)
-        {
-            String result = original;
-            if (result.length() <= 10) {
-                // Just the date append the time and timezone
-                result += "T00:00:00.000" + DateUtils.getTimezoneForDateString(original);
-            } else if (result.length() == 16) {
-                // Date and time up to the minute, append seconds, millis and timezone
-                result += ":00.000" + DateUtils.getTimezoneForDateString(original);
-            } else if (result.length() == 19) {
-                // Date and time up to the second, append millis and timezone
-                result += ".000" + DateUtils.getTimezoneForDateString(original);
-            } else if (result.length() == 23) {
-                // Date and time, append the timezone
-                result += DateUtils.getTimezoneForDateString(original);
-            }
-            return result;
         }
     }
 
