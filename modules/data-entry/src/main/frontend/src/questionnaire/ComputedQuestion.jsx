@@ -243,16 +243,12 @@ let ComputedQuestion = (props) => {
 
         let expressionArguments = ["form", "setError"];
         let expressionValues = [form, (errorMessage) => expressionError = errorMessage];
-        const questionsArray = Array.from(questions.values());
-        for (let i = 0; i < questionsArray.length; i++) {
-          const question = questionsArray[i];
+        for(const question of questions.values()) {
           expressionArguments.push(question["argument"]);
           expressionValues.push(question["value"]);
         }
         result = new Function(expressionArguments, parsedExpression)(...expressionValues);
-        const isUndefined = typeof(result) === "undefined";
-        const isNaNNumber = typeof(result) === "number" && isNaN(result);
-        if (isUndefined || isNaNNumber) {
+        if (typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
           result = "";
         }
       }
