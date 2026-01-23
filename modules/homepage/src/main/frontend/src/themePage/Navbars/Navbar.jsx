@@ -27,7 +27,7 @@ function Header({ ...props }) {
   const { classes, color } = props;
 
   return (
-    <AppBar className={classNames(classes.appbar, classes[color])}>
+    <AppBar className={classNames(classes.appBar, classes[color])}>
       <Toolbar className={classes.container}>
         <div className={classes.flex} />
         {/* While the screen is wide enough, display the navbar at the topright */}
