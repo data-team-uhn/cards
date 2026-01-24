@@ -230,11 +230,11 @@ let ComputedQuestion = (props) => {
     return [questions, expr];
   }
 
-  let processParsedResults = (parseResults) => {
+  let processParsedResults = (parseResults, errorFn) => {
     let questions = parseResults[0];
     let parsedExpression = parseResults[1];
     let expressionArguments = ["form", "setError"];
-    let expressionValues = [form, (errorMessage) => expressionError = errorMessage];
+    let expressionValues = [form, errorFn];
     for (const question of questions.values()) {
       expressionArguments.push(question["argument"]);
       expressionValues.push(question["value"]);
@@ -249,10 +249,11 @@ let ComputedQuestion = (props) => {
   let evaluateExpression = () => {
     let result = "";
     let expressionError = null;
+    let errorFn = (errorMessage) => expressionError = errorMessage;
     try {
       let parseResults = parseExpressionInputs(expression, form);
       if (!missingValue) {
-        result = processParsedResults(parseResults);
+        result = processParsedResults(parseResults, errorFn);
       }
     }
     catch(err) {
