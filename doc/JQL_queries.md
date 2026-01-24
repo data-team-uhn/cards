@@ -44,7 +44,7 @@ The basic query structure is as follows:
 ```
 
 - `rows` contains the actual data, serialized as JSON, or if `rawResults` were requested, as a simple map
-- `req` is a reflected query parameter, it will copy whatever value you send as the `req` query paramter, and can be used to differentiate between multiple requests sent in parallel
+- `req` is a reflected query parameter, it will copy whatever value you send as the `req` query parameter, and can be used to differentiate between multiple requests sent in parallel
 - `offset` and `limit` are reflected query parameter, they can be used to specify the "page" that is requested, the 0-based `offset` of the first item to return, and the `limit` number of items to return
 - `returnedrows` is the number of returned items, matching the size of the `rows` array
 - `totalrows` is the total number of items matching the query, but for performance it can be just an estimate if the total number is larger than 10x the page size
