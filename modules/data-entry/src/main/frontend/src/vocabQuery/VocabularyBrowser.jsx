@@ -66,54 +66,21 @@ function VocabularyBrowser(props) {
   // References to the term info buttons generated in the vocabulary tree dialog
   const [buttonRefs, setButtonRefs] = useState({});
 
-  useEffect(() => {
-    if (infoPath) {
-      getInfo(infoPath);
-    } else {
-      closeInfo();
-    }
-  }, [infoPath]);
-
-  useEffect(() => {
-    setBrowserOpened(browserOpen);
-  }, [browserOpen]);
-
-  // Event handler for clicking away from the info box
-  let clickAwayInfo = (event) => {
-    if (!infoAboveBackground && browserRef?.current?.contains(event.target)
-         || infoboxRef?.current?.contains(event.target)) {
-      return;
-    }
-    for (const [, value] of Object.entries(browserOpened ? buttonRefs : infoButtonRefs)) {
-      if (value.contains(event.target)) {
-        return;
-      }
-    }
-
-    closeInfo();
+  let logError = (message) => {
+    setSnackbarVisible(true);
+    setSnackbarMessage(message);
   }
 
-  // Register a button reference that the info box can use to align itself to
-  let registerInfoButton = (id, node) => {
-    // List items getting deleted will overwrite new browser button refs, so
-    // we must ignore deregistration events
-    if (node) {
-      buttonRefs[id] = node;
-    }
-  }
-
-  // Grab information about the given ID and populate the info box
-  let getInfo = (path, parentId = "") => {
-    // If we don't yet know anything about our vocabulary, fill it in
-    var vocabPath = path.split("/").slice(0, -1).join("/");
-    var url = "";
-    if (vocab.path != vocabPath) {
-      url = new URL(vocabPath + ".json", window.location.origin);
-      MakeRequest(url, parseVocabInfo);
+  // Event handler for clicking close button for the info box
+  let closeInfo = (event) => {
+    if (closeupTimer !== null) {
+      clearTimeout(closeupTimer);
     }
 
-    url = new URL(path + ".info.json", window.location.origin);
-    MakeRequest(url, showInfo, { parentInfoId : parentId });
+    setCloseupTimer(setTimeout(() => {setTermInfoVisible(false);
+      setTerm({});
+      setInfoAboveBackground(false);
+      onCloseInfo?.();}, 300));
   }
 
   let parseVocabInfo = (status, data) => {
@@ -147,16 +114,67 @@ function VocabularyBrowser(props) {
     }
   }
 
-  // Event handler for clicking close button for the info box
-  let closeInfo = (event) => {
-    if (closeupTimer !== null) {
-      clearTimeout(closeupTimer);
+  // Grab information about the given ID and populate the info box
+  let getInfo = (path, parentId = "") => {
+    // If we don't yet know anything about our vocabulary, fill it in
+    let vocabPath = path.split("/").slice(0, -1).join("/");
+    let url = "";
+    if (vocab.path != vocabPath) {
+      url = new URL(vocabPath + ".json", window.location.origin);
+      MakeRequest(url, parseVocabInfo);
     }
 
-    setCloseupTimer(setTimeout(() => {setTermInfoVisible(false);
-      setTerm({});
-      setInfoAboveBackground(false);
-      onCloseInfo?.();}, 300));
+    url = new URL(path + ".info.json", window.location.origin);
+    MakeRequest(url, showInfo, { parentInfoId : parentId });
+  }
+
+  useEffect(() => {
+    if (infoPath) {
+      getInfo(infoPath);
+    } else {
+      closeInfo();
+    }
+  }, [infoPath]);
+
+  useEffect(() => {
+    setBrowserOpened(browserOpen);
+  }, [browserOpen]);
+
+  // Clean up the closeup timer when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (closeupTimer !== null) {
+        clearTimeout(closeupTimer);
+      }
+    };
+  }, [closeupTimer]);
+
+  // Event handler for clicking away from the info box
+  let clickAwayInfo = (event) => {
+    if (!infoAboveBackground && browserRef?.current?.contains(event.target)
+         || infoboxRef?.current?.contains(event.target)) {
+      return;
+    }
+    for (const [, value] of Object.entries(browserOpened ? buttonRefs : infoButtonRefs)) {
+      if (value.contains(event.target)) {
+        return;
+      }
+    }
+
+    closeInfo();
+  }
+
+  // Register a button reference that the info box can use to align itself to
+  let registerInfoButton = (id, node) => {
+    // List items getting deleted will overwrite new browser button refs, so
+    // we must ignore deregistration events
+    if (node) {
+      setButtonRefs(oldRefs => {
+        let old = oldRefs;
+        old[id] = node;
+        return old;
+      });
+    }
   }
 
   let openBrowser = () => {
@@ -175,11 +193,6 @@ function VocabularyBrowser(props) {
       setBrowserOpened(false);
       onCloseBrowser?.(selectedTerms, removedTerms);
     }, 300));
-  }
-
-  let logError = (message) => {
-    setSnackbarVisible(true);
-    setSnackbarMessage(message);
   }
 
   let focusTerm = (path) => {
