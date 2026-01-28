@@ -92,6 +92,28 @@ function VocabularyBranch(props) {
   const [ selectedPaths, setSelectedPaths] = useState(currentSelection || []);
   const SelectorComponent = selectorComponent;
 
+  let removePath = (evt) => {
+    let path = evt.detail[VALUE_POS];
+    setSelectedPaths(old => {
+      let newPaths = old.filter(item => item != path);
+      return newPaths;
+    });
+  }
+
+  let addPath = (evt) => {
+    let path = evt.detail[VALUE_POS];
+    setSelectedPaths(old => {
+      let newPaths = old.slice();
+      newPaths.push(path);
+      return newPaths;
+    });
+  }
+
+  let updatePath = (evt) => {
+    let path = evt.detail[VALUE_POS];
+    setSelectedPaths([path]);
+  }
+
   useEffect(() => {
     // Add path to selectedPaths upon term selection from other branches
     window.addEventListener('term-selected', addPath);
@@ -105,29 +127,7 @@ function VocabularyBranch(props) {
       window.removeEventListener('term-unselected', removePath);
       maxAnswers == 1 && window.removeEventListener('term-changed', updatePath);
     };
-  });
-
-  let updatePath = (evt) => {
-    let path = evt.detail[VALUE_POS];
-    setSelectedPaths([path]);
-  }
-
-  let addPath = (evt) => {
-    let path = evt.detail[VALUE_POS];
-    setSelectedPaths(old => {
-      let newPaths = old.slice();
-      newPaths.push(path);
-      return newPaths;
-    });
-  }
-
-  let removePath = (evt) => {
-    let path = evt.detail[VALUE_POS];
-    setSelectedPaths(old => {
-      let newPaths = old.filter(item => item != path);
-      return newPaths;
-    });
-  }
+  }, []);
 
   let loadTerm = (id, path) => {
     if (focused) return;
@@ -144,7 +144,7 @@ function VocabularyBranch(props) {
     setLastKnownID(id);
     setCurrentlyLoading(true);
     // Determine if this node has children
-    var url = new URL(path + ".info.json", window.location.origin);
+    let url = new URL(path + ".info.json", window.location.origin);
     MakeRequest(url, updateChildrenData);
   }
 
@@ -163,7 +163,7 @@ function VocabularyBranch(props) {
 
   // Given information about our children, create elements to display their data
   let buildChildren = (data) => {
-    var children = data["cards:children"].map((row, index) =>
+    let children = data["cards:children"].map((row, index) =>
       (<VocabularyBranch
         classes={classes}
         id={row["identifier"]}
@@ -250,7 +250,7 @@ function VocabularyBranch(props) {
         setSelectedPaths([path]);
         onTermSelected(name, path);
         // This event is needed to pass on to all branches so they update radio buttons states
-        var changedEvent = new CustomEvent('term-changed', {
+        let changedEvent = new CustomEvent('term-changed', {
           bubbles: true,
           cancelable: true,
           detail: [name, path]
