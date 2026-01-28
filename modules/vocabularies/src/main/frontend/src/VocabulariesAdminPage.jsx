@@ -89,15 +89,15 @@ export default function VocabulariesAdminPage() {
   }
 
   function addSetter(acronym, setFunction, type) {
-    let copy = { ...acronymPhaseSettersObject };
-    if (Object.hasOwn(copy, acronym)) {
-      copy[acronym] = { ...copy[acronym], [type]: setFunction };
-    } else {
-      let temp = {};
-      temp[type] = setFunction;
-      copy[acronym] = temp;
-    }
-    setAcronymPhaseSettersObject(copy);
+    setAcronymPhaseSettersObject(prev => {
+      const copy = { ...prev };
+      if (Object.hasOwn(copy, acronym)) {
+        copy[acronym] = { ...copy[acronym], [type]: setFunction };
+      } else {
+        copy[acronym] = { [type]: setFunction };
+      }
+      return copy;
+    });
   }
 
   function setPhase(acronym, phase) {
