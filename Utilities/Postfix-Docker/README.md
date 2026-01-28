@@ -71,10 +71,10 @@ required.
 5.8. Finish.
 ![Screenshot 008](screenshots/008.png)
 
-6. Start CARDS with emailing enabled (such as in the `cards4yourexperience` project):
+6. Start CARDS with emailing enabled:
 
 ```bash
-NIGHTLY_NOTIFICATIONS_SCHEDULE='0 * * * * ? *' SLING_COMMONS_CRYPTO_PASSWORD=password CARDS_HOST_AND_PORT='localhost:8080' ./start_cards.sh --project cards4yourexperience --dev -V emailnotifications.smtps.checkserveridentity=false
+NIGHTLY_NOTIFICATIONS_SCHEDULE='0 * * * * ? *' SLING_COMMONS_CRYPTO_PASSWORD=password CARDS_HOST_AND_PORT='localhost:8080' ./start_cards.sh --dev -f mvn:io.uhndata.cards/cards-email-notifications/VERSION/slingosgifeature -V emailnotifications.smtps.checkserveridentity=false
 ```
 
 7. Send a test email
@@ -104,17 +104,18 @@ $ docker stop goofy_kilby
 Using (with Docker Compose)
 ---------------------------
 
+This requires the [CARDS deploy tool](https://github.com/data-team-uhn/cards-deploy-tool/), run the following steps in a local clone of that repository.
+
 1. Clean up any previously used Docker Compose configuration
 
 ```bash
-cd compose-cluster
 ./cleanup.sh
 ```
 
 2. Build a new Docker Compose YAML configuration
 
 ```bash
-python3 generate_compose_yaml.py --dev_docker_image --oak_filesystem --cards_project cards4yourexperience --server_address localhost:8080 --smtps --smtps_test_container --smtps_test_mail_path ~/path/to/mail/directory/
+python3 generate_compose_yaml.py --dev_docker_image --oak_filesystem --cards_docker_image cards/cards --server_address localhost:8080 --additional_features mvn:io.uhndata.cards/cards-email-notifications/CARDS_VERSION/slingosgifeature --smtps --smtps_test_container --smtps_test_mail_path ~/path/to/mail/directory/
 ```
 
 3. Build the Docker Compose configuration
