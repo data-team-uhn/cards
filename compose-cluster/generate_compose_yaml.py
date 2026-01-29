@@ -80,7 +80,7 @@ argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, t
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
 argparser.add_argument('--custom_env_file', help='Enable a custom file with environment variables')
-argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4prems, cards4lfs, etc...')
+argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4yourexperience, cards4lfs, etc...')
 argparser.add_argument('--demo', help='Enable the Demo Banner, Upgrade Marker Flag, and Demo Forms', action='store_true')
 argparser.add_argument('--demo_banner', help='Enable only the Demo Banner', action='store_true')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
@@ -990,7 +990,7 @@ if args.mssql:
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_PASSWORD=testPassword_')
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_ENCRYPT=false')
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_SCHEMA=path')
-  if args.cards_project == 'cards4prems':
+  if args.cards_project == 'cards4yourexperience':
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=PatientActivity_data_for_PtExpSurveyApp')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_BICKLE_INPATIENT_SQL_TABLE=V_PatientActivity_data_for_PtExpSurveyApp_IPRehab_CCC')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_UHN_OUTPATIENT_SQL_TABLE=V_PatientExperienceSurveySampling')

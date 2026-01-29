@@ -1,6 +1,0 @@
-{
-  "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:oed_9": "/Questionnaires/OED/oed_section/oed_9",
-  "jcr:reference:time": "/Questionnaires/Visit information/time",
-  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
-}

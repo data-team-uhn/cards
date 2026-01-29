@@ -25,7 +25,7 @@ python3 generate_compose_yaml.py \
   --server_address localhost:8080 \
   --web_port_admin 8080 \
   --web_port_user 8090 \
-  --cards_project cards4prems
+  --cards_project cards4yourexperience
 
 docker-compose build
 docker-compose up -d

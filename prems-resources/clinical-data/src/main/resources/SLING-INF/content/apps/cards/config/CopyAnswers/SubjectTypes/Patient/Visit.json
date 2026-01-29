@@ -1,7 +1,0 @@
-{
-  "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:time": "/Questionnaires/Visit information/time",
-  "jcr:reference:surveys_complete": "/Questionnaires/Visit information/surveys_complete",
-  "jcr:reference:surveys_submitted": "/Questionnaires/Visit information/surveys_submitted",
-  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
-}
