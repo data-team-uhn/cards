@@ -12,9 +12,6 @@
 ## Build:
 `mvn clean install`
 
-#### To build a self-contained Docker image:
-`MAVEN_OPTS="-Ddocker.verbose -Ddocker.buildArg.build_jars=true" mvn clean install -Pdocker`
-
 Additional options include:
 
 `mvn clean -Pclean-node` to remove compiled frontend code
@@ -35,43 +32,48 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 A docker image can optionally be built with `mvn install -Pdocker`, if docker is installed, running, and the current user has access to the docker agent.
 
+#### To build a self-contained Docker image:
+`mvn clean install -Pdocker -Ddocker.verbose -Ddocker.buildArg.build_jars=true`
+
 ## Run:
 `./start_cards.sh` => the app will run at `http://localhost:8080` (default port)
 
 `./start_cards.sh -p PORT` to run at a different port
 
-`./start_cards.sh -P PROJECT1,PROJECT2` to run a specific project. Projects are built on top of cards in their own repos.
+`PROJECT_VERSION=1.0.0-SNAPSHOT PROJECT_NAME=project ./start_cards.sh` to run a specific project. Projects are built on top of cards in their own repos.
 
-`./start_cards.sh --permissions SCHEME` to run with a different permission scheme. Currently supported schemes are:
+Other supported parameters:
+
+`--permissions SCHEME` to run with a different permission scheme. Currently supported schemes are:
 - `open`, the default, where all registered users can create, view and edit all records
 - `trusted`, where only users explicitly added to the `TrustedUsers` group can access records
 - `ownership`, where all users can create new records, but only the creator of a record can view and edit it
 
-`./start_cards.sh --dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
+`--dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
-`./start_cards.sh --test` to include the test questionnaires
+`--test` to include the test questionnaires
 
-`./start_cards.sh --demo` to include the demo warning banner
+`--demo` to include the demo warning banner
 
-`./start_cards.sh --permissions` to enable permissions
+`--clarity` to enable clarity integration
 
-`./start_cards.sh --clarity` to enable clarity integration
+`--locking` to enable the locking/sign off abilities
 
-`./start_cards.sh --locking` to enable the locking/sign off abilities
+`--mongo` to use mongo DB for Oak storage
 
-`./start_cards.sh --mongo` to to use mongo DB for Oak storage
-
-`./start_cards.sh --debug` to turn on remote debugging on port 5005
+`--debug` to turn on remote debugging on port 5005
 
 By default, the app will run with username `admin` and password `admin`.
 
-In order to use "Vocabularies" section and load vocabularies from BioPortal (bioontology.org) `BIOPORTAL_APIKEY` environment variable should be set to a valid BioPortal API key. You can [request a new account](https://bioportal.bioontology.org/accounts/new) if you don't already have one, and the API key can be found [in your profile](https://bioportal.bioontology.org/account).
+In order to use "Vocabularies" section and load vocabularies from BioPortal (bioontology.org), a `BIOPORTAL_APIKEY` environment variable should be set to a valid BioPortal API key. You can [request a new account](https://bioportal.bioontology.org/accounts/new) if you don't already have one, and the API key can be found [in your profile](https://bioportal.bioontology.org/account).
 
-A Google API key enables access to Google services such as address autocomplete. `GOOGLE_APIKEY` environment variable should be set to a valid Google API key. You can [can obtain an API key at]( https://developers.google.com/maps/documentation/javascript/get-api-key) if you don't already have one. Follow [these steps](https://help.stockist.co/article/43-verifying-your-google-maps-api-key) to ensure the necessary services such as Places service are enabled for your key.
+A Google API key enables access to Google services such as address autocomplete. `GOOGLE_APIKEY` environment variable should be set to a valid Google API key. You can [obtain an API key](https://developers.google.com/maps/documentation/javascript/get-api-key) if you don't already have one. Follow [these steps](https://help.stockist.co/article/43-verifying-your-google-maps-api-key) to ensure the necessary services such as Places service are enabled for your key.
 
 ## Running with Docker
 
-If Docker is installed, then the build can also create a new image named `cards/cards:latest` if building with `mvn install -Pdocker`.
+If Docker is installed, then the build can also create a new image named `cards/cards:latest` if building with `mvn install -Pdocker`. This image only contains the necessary modules for running the basic CARDS application, and will not be able to use optional modules. For production images, you can use the `build_self_contained.sh` script:
+
+`cd Utilities/Packaging/Docker ; ./build_self_contained.sh cards/cards:latest` (or replace `latest` with the version you want)
 
 ### Test/Development Environments
 
@@ -79,7 +81,7 @@ CARDS can be ran as a *single* Docker container using the file system (instead o
 as a data storage back-end for Apache Sling.
 
 ```bash
-docker run --rm -e INITIAL_SLING_NODE=true -e OAK_FILESYSTEM=true -p 127.0.0.1:8080:8080 -it cards/cards
+docker run --rm -e OAK_FILESYSTEM=true -p 127.0.0.1:8080:8080 -it cards/cards
 ```
 
 ### Production Environments
@@ -94,7 +96,7 @@ docker run --rm --network cardsbridge --name mongo -d mongo
 For basic testing of the CARDS Docker image, run:
 
 ```bash
-docker run --rm --network cardsbridge -e INITIAL_SLING_NODE=true -d -p 8080:8080 cards/cards
+docker run --rm --network cardsbridge -d -p 8080:8080 cards/cards
 ```
 
 However, since runtime data isn't persisted after the container stops, no changes will be permanently persisted this way.
@@ -104,7 +106,7 @@ It is recommended to first create a permanent volume that can be reused between 
 
 Then the container can be started with:
 
-`docker container run --rm --network cardsbridge -e INITIAL_SLING_NODE=true --detach --volume cards-test-volume:/opt/cards/sling/ -p 8080:8080 --name cards-production cards/cards`
+`docker container run --rm --network cardsbridge --detach --volume cards-production-volume:/opt/cards/sling/ -p 8080:8080 --name cards-production cards/cards`
 
 Explanation:
 
@@ -112,19 +114,18 @@ Explanation:
 - `--rm` will automatically remove the container after it is stopped
 - `--network cardsbridge` causes the container to connect to the network providing MongoDB
 - `--detach` starts the container in the background
-- `-e INITIAL_SLING_NODE=true` marks this container as the first to start up, and thus responsible for setting up the database
-- `--volume cards-test-volume:/opt/cards/sling/` mounts the volume named `cards-test-volume` at `/opt/cards/sling/`, where the application data is stored
+- `--volume cards-production-volume:/opt/cards/sling/` mounts the volume named `cards-production-volume` at `/opt/cards/sling/`, where the application data is stored
 - `-p 8080:8080` makes the local port 8080 forward to the 8080 port inside the container
     - you can also specify a specific local network, and a different local port, for example `-p 127.0.0.1:9999:8080`
     - the second port must be `8080`
 - `--name cards-production` gives a name to the container, for easy identification
 - `cards/cards` is the name of the image
 
-To enable developer mode, also add `--env DEV=true -p 5005:5005` to the `docker run` command.
+To enable developer mode, also add `--env DEV=true` to the `docker run` command.
 
-To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. Note that the application will not start until a debugger is actually attached to the process on port 5005.
+To enable debug mode, also add `--env DEBUG=true -p 5005:5005` to the `docker run` command. Note that the application will not start until a debugger is actually attached to the process on port 5005.
 
-`docker run --network cardsbridge -d -p 8080:8080 -p 5005:5005 -e INITIAL_SLING_NODE=true --env DEV=true --env DEBUG=true --name cards-debug cards/cards`
+`docker run --network cardsbridge -d -p 8080:8080 -p 5005:5005 --env DEV=true --env DEBUG=true --name cards-debug cards/cards`
 
 # Environment variables
 
@@ -132,7 +133,7 @@ Environment variables that can be set to enable CARDS functionality can be found
 
 ## Running with Docker-Compose
 
-Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* MongoDB Replicas, and *one* CARDS instance.
+Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* MongoDB Replicas, and *one* CARDS instance, along with other service containers useful for testing or production deployments, like outbound email storage or forwarding, reverse or forward proxies, mssql or s3 databases...
 
 ### Installing/Starting
 
@@ -142,9 +143,7 @@ Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* Mo
 mvn clean install -Pdocker
 ```
 
-2. The `ccmsk/neuralcr` image is also required. Please build it based on
-the instructions available
-at [https://github.com/ccmbioinfo/NeuralCR](https://github.com/ccmbioinfo/NeuralCR).
+2. The optional `ccmsk/neuralcr` image can provide semantic analysis and term extraction from free text questions. Please build it based on the instructions available at [https://github.com/ccmbioinfo/NeuralCR](https://github.com/ccmbioinfo/NeuralCR).
 Use the **develop** branch.
 
 Download the pre-trained NCR models from [here](https://github.com/ccmbioinfo/NeuralCR/releases/download/1.0/ncr_model_params.tar.gz)
@@ -153,20 +152,30 @@ with the directories `0` and `1` from the `ncr_model_params` directory.
 
 3. Now build the *docker-compose* environment.
 
+Clone the [cards-deploy-tool](https://github.com/data-team-uhn/cards-deploy-tool) and install its requirements.
+
+Run the script that generates a docker-compose file. To see a list of all its supported arguments, run:
+
 ```bash
-cd compose-cluster
-python3 generate_compose_yaml.py --shards 2 --replicas 3
-docker-compose build
+python3 generate_compose_yaml.py --help
 ```
 
-3.1 Replacing `python3 generate_compose_yaml.py --shards 2 --replicas 3` with
-`python3 generate_compose_yaml.py --oak_filesystem` will not start a Mongo
-cluster and instead will use the file system as a data storage back-end for
-Apache Sling
-
-4. Start the *docker-compose* environment.
+For example, for a test instance with the base CARDS project running on a filesystem storage, run:
 
 ```bash
+python3 generate_compose_yaml.py --oak_filesystem --cards_docker_image cards/cards:latest --dev_docker_image --composum
+```
+
+For a production instance with the YourExperience project running on a clustered mongo database, run:
+
+```bash
+python3 generate_compose_yaml.py --mongo_cluster --shards 2 --replicas 3 --cards_docker_image cards/cards4yourexp:1.0.0
+```
+
+4. Build and start the *docker-compose* environment.
+
+```bash
+docker-compose build
 docker-compose up -d
 ```
 
@@ -193,7 +202,7 @@ docker-compose down
 from the previous execution:
 
 ```bash
-CARDS_RELOAD=true docker-compose up -d
+docker-compose up -d
 ```
 
 ### Cleaning up
