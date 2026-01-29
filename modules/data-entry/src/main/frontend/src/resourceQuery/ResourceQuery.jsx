@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useRef, useState, useContext } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 
 import Info from "@mui/icons-material/Info";
 import Search from "@mui/icons-material/Search";
@@ -107,6 +107,7 @@ function ResourceQuery(props) {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   const [lookupTimer, setLookupTimer] = useState(null);
+  const [anchorElement, setAnchorElement] = useState(null);
 
   // Holds resource path on dropdown info button click
   const [resourcePath, setResourcePath] = useState("");
@@ -146,7 +147,10 @@ function ResourceQuery(props) {
         setInputValue(event.target.value);
         (maxAnswers != 1 || event.target.value == "") && onChange?.(event);
       }}
-      inputRef={anchorEl}
+      inputRef={(node) => {
+        anchorEl.current = node;
+        setAnchorElement(node);
+      }}
       onKeyDown={(event) => {
         if (event.key == 'Enter') {
           onChange?.(event);
@@ -229,11 +233,11 @@ function ResourceQuery(props) {
     // Query for resources matching the input
     getSuggestions(
       input,
-      showSuggestions,
+      (data) => showSuggestions(data, input),
       () => showSuggestions({ rows: [{
         error: true,
         message: "Answer suggestions cannot be loaded for this question."
-      }] })
+      }] }, input)
     );
   }
 
@@ -273,13 +277,12 @@ function ResourceQuery(props) {
   }
 
   // Callback for queryInput to populate the suggestions bar
-  let showSuggestions = (data) => {
+  let showSuggestions = (data, query) => {
     setSuggestionsLoading(false);
 
     // Populate suggestions
-    var suggestions = [];
-    var query = anchorEl.current.value;
-    var showUserEntry = enableUserEntry;
+    let suggestions = [];
+    let showUserEntry = enableUserEntry;
 
     if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
@@ -363,16 +366,16 @@ function ResourceQuery(props) {
       suggestions.push(
         <MenuItem
           className={classes.dropdownItem}
-          key={anchorEl.current.value}
+          key={query}
           onClick={(e) => {
             if (e.target.localName === "li") {
-              onClick(anchorEl.current.value, anchorEl.current.value);
+              onClick(query, query);
               clearOnClick && setInputValue("");
               closeSuggestions();
             }}
           }
         >
-          {anchorEl.current.value}
+          {query}
         </MenuItem>
       );
     }
@@ -396,7 +399,7 @@ function ResourceQuery(props) {
       && setInputValue("");
     setSuggestionsVisible(false);
     setResourcePath("");
-  };
+  }
 
   let InfoDisplayer = infoDisplayer;
 
@@ -443,12 +446,14 @@ function ResourceQuery(props) {
     }
   }
 
-  if (disabled && anchorEl?.current) {
-    // Alter our text to either the override ("Please select at most X options")
-    // or empty it
-    anchorEl.current.value = "";
-    anchorEl.current.blur();
-  }
+  useEffect(() => {
+    if (disabled && anchorEl?.current) {
+      // Alter our text to either the override ("Please select at most X options")
+      // or empty it
+      anchorEl.current.value = "";
+      anchorEl.current.blur();
+    }
+  }, [disabled]);
 
   return (
     <div>
@@ -474,7 +479,7 @@ function ResourceQuery(props) {
       {/* Suggestions list using Popper */}
       <Popper
         open={suggestionsVisible}
-        anchorEl={anchorEl.current}
+        anchorEl={anchorElement}
         transition
         className={classNames(
           { [classes.popperClose]: !open },
