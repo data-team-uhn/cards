@@ -56,7 +56,12 @@ export default function PrincipalsContainer(props) {
       })
       .then((response) => response.json())
       .then((data) => {
-        data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?');
+        data.rows.forEach((r) => {
+          const firstInitial = r.firstname?.charAt(0) || '';
+          const lastInitial = r.lastname?.charAt(0) || '';
+          const combinedInitials = firstInitial + lastInitial;
+          r.initials = combinedInitials || r.name?.charAt(0) || '?';
+        });
         setUsers(data.rows);
       })
       .catch((error) => console.log(error?.statusText ?? error))
