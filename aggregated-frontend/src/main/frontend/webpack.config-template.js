@@ -55,7 +55,9 @@ const isProduction = process.argv.find(arg => arg.startsWith("--mode"))?.substri
  * @param {object} event - The compiler event object
  */
 function logCompilerEvent(filename, event) {
-  const shortFile = filename.replace(/^.*[\\/]/, '');
+  if (!event) return;
+  const filePath = filename ?? event.filename ?? event.file ?? event.path ?? "(unknown file)";
+  const fileName = filePath.replace(/^.*[\\/]/, '');
 
   const ANSI = {
     reset: '\x1b[0m',
@@ -79,9 +81,9 @@ function logCompilerEvent(filename, event) {
   const sep = `${ANSI.gray}${'-'.repeat(70)}${ANSI.reset}`;
   // If it's a skip/error but has no details, still log a minimal line
   console.log(sep);
-  console.log(`${ANSI.bold}${color}[React Compiler] ${kind} ${shortFile}${ANSI.reset}`);
+  console.log(`${ANSI.bold}${color}[React Compiler] ${kind} ${fileName}${ANSI.reset}`);
 
-  const options = event.detail.options;
+  const options = event.detail?.options;
   if (options) {
     const reason = options.reason;
     const category = options.category;
@@ -103,7 +105,9 @@ module.exports = (env) => {
     mode: 'development',
     devtool: 'eval-cheap-module-source-map',
     cache: {
-      type: 'filesystem'
+      type: 'filesystem',
+      // any change here invalidates the cache
+      version: String(Date.now())
     },
     infrastructureLogging: {
       level: 'error' // Mask Webpack infrastructure-level warnings to silence warning when React Compiler errors on serialisation of Webpack’s persistent cache
