@@ -38,6 +38,7 @@ import userboardStyle from '../userboardStyle.jsx';
 const GROUP_URL="/system/userManager/group/";
 
 function AddUserToGroupDialog(props) {
+  "use no memo";
   checkPropTypes(AddUserToGroupDialog, props);
   const { classes, name, allUsers, groupUsers, reload, isOpen, handleClose } = props;
 
