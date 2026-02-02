@@ -29,9 +29,24 @@ export default function PrincipalsContainer(props) {
   const [ groups, setGroups ] = useState([]);
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  useEffect(() => {
-    handleLoadUsers();
-  }, []);
+  let handleLoadGroups = () => {
+    fetchWithReLogin(globalLoginDisplay, "/home/groups.json",
+      {
+        method: 'GET',
+        credentials: 'include'
+      })
+      .then((response) => response.json())
+      .then((data) => setGroups(data.rows))
+      .catch((error) => console.log(error?.statusText ?? error))
+      .finally(() => {
+        // This event is needed in cases we do not want to collapse details panel after reload
+        let reloadedEvent = new CustomEvent('principals-reloaded', {
+          bubbles: true,
+          cancelable: true
+        });
+        document.dispatchEvent(reloadedEvent);
+      })
+  }
 
   let handleLoadUsers = () => {
     fetchWithReLogin(globalLoginDisplay, "/home/users.json",
@@ -48,24 +63,9 @@ export default function PrincipalsContainer(props) {
       .finally(() => handleLoadGroups());
   }
 
-  let handleLoadGroups = () => {
-    fetchWithReLogin(globalLoginDisplay, "/home/groups.json",
-      {
-        method: 'GET',
-        credentials: 'include'
-      })
-      .then((response) => response.json())
-      .then((data) => setGroups(data.rows))
-      .catch((error) => console.log(error?.statusText ?? error))
-      .finally(() => {
-        // This event is needed in cases we do not want to collapse details panel after reload
-        var reloadedEvent = new CustomEvent('principals-reloaded', {
-          bubbles: true,
-          cancelable: true
-        });
-        document.dispatchEvent(reloadedEvent);
-      })
-  }
+  useEffect(() => {
+    handleLoadUsers();
+  }, []);
 
   return (
     <div>
