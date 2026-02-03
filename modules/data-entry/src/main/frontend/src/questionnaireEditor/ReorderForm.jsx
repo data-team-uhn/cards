@@ -208,103 +208,19 @@ export default function ReorderForm(props) {
     }
   }, [newParent]);
 
-  const SelectReorderSourceAutocomplete = (props) => {
-    return (
-      <>
-        {!disableReorderSourceSelect &&
-          <Grid size={3}>
-            <Typography variant="subtitle2">Item to move</Typography>
-          </Grid>
-        }
-        <Grid size={disableReorderSourceSelect ? 12 : 9}>
-          { // If reorderSource is preselected, don't show the select
-            !disableReorderSourceSelect &&
-              <QuestionnaireAutocomplete
-                showSelection={false}
-                multiple={false}
-                entities={sourceOptions.map((node) => {
-                  const { value, name, title, path, relativePath, jcrPrimaryType } = node;
-                  return {
-                    value: value,
-                    name: name,
-                    text: title,
-                    path: path,
-                    relativePath: relativePath,
-                    type: stripCardsNamespace(jcrPrimaryType)
-                  }
-                })}
-                selection={reorderSourceSelection}
-                onSelectionChanged={setReorderSourceSelection}
-                getOptionValue={(option) => option.value}
-                id="reorderSource"
-                placeholderText="Select a questionnaire entry"
-                disabled={disableReorderSourceSelect}
-              />
-          }
-        </Grid>
-      </>
-    )
-  }
-
-  const ReorderForm = (props) => {
-    return (
-      <Grid container alignItems='baseline' direction="row" rowSpacing={3} columnSpacing={2}>
-        {/* Will render to null if preselected */}
-        <SelectReorderSourceAutocomplete />
-        {!!reorderSource.length &&
-          <>
-            <Grid size={3}>
-              <Typography variant="subtitle2">
-                Move from
-              </Typography>
-            </Grid>
-            <Grid size={9}>
-              <QuestionnaireAutocomplete
-                showSelection={false}
-                multiple={false}
-                entities={[nodes[nodes[reorderSource].parent]].map((node) => {
-                  const { value, name, title, path, relativePath, jcrPrimaryType } = node;
-                  return {
-                    value: value,
-                    name: name,
-                    text: title,
-                    path: path,
-                    relativePath: relativePath,
-                    type: stripCardsNamespace(jcrPrimaryType),
-                  }
-                })}
-                getOptionDisabled={() => true}
-                selection={[nodes[reorderSource].parent]}
-                getOptionValue={(option) => option.value}
-                id="originalParent"
-                disabled
-              />
-            </Grid>
-            <Grid size={3}>
-              <Typography variant="subtitle2">
-                With original position
-              </Typography>
-            </Grid>
-            <Grid size={9}>
-              <Typography>
-                {getOrdinalString(
-                  nodes[nodes[reorderSource].parent].children
-                    .filter(nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType))
-                    .indexOf(reorderSource)
-                )}
-              </Typography>
-            </Grid>
-          </>
-        }
-
+  const selectReorderSourceContent = (
+    <>
+      {!disableReorderSourceSelect &&
         <Grid size={3}>
-          <Typography variant="subtitle2">Move into</Typography>
+          <Typography variant="subtitle2">Item to move</Typography>
         </Grid>
-        <Grid size={9}>
+      }
+      <Grid size={disableReorderSourceSelect ? 12 : 9}>
+        {!disableReorderSourceSelect &&
           <QuestionnaireAutocomplete
             showSelection={false}
             multiple={false}
-            entities={parentOptions.map((node) => {
+            entities={sourceOptions.map((node) => {
               const { value, name, title, path, relativePath, jcrPrimaryType } = node;
               return {
                 value: value,
@@ -313,75 +229,153 @@ export default function ReorderForm(props) {
                 path: path,
                 relativePath: relativePath,
                 type: stripCardsNamespace(jcrPrimaryType)
-              }
+              };
             })}
-            getOptionDisabled={getParentOptionDisabled}
-            selection={newParentSelection}
-            onSelectionChanged={setNewParentSelection}
+            selection={reorderSourceSelection}
+            onSelectionChanged={setReorderSourceSelection}
             getOptionValue={(option) => option.value}
-            placeholderText="Select a new parent entry"
-            id="newParent"
-            disabled={!reorderSource}
+            id="reorderSource"
+            placeholderText="Select a questionnaire entry"
+            disabled={disableReorderSourceSelect}
           />
-        </Grid>
+        }
+      </Grid>
+    </>
+  );
 
-        <Grid size={3}>
-          <Typography variant="subtitle2">With new position</Typography>
-        </Grid>
-        <Grid size={9}>
-          <RadioGroup
-            row
-            value={reorderState.inputs.positionRadio}
-            onChange={(e) => reorderDispatch({ type: 'SET_POSITIONRADIO', payload: e.target.value })}
-          >
-            {(() => {
-              const noNewParent = !newParent
-              const newParentHasNoEntryChildren =
-                !nodes[newParent]?.children.some(child => ENTRY_TYPES.includes(nodes[child].jcrPrimaryType))
-              const filteredChildren = nodes[nodes[reorderSource]?.parent]?.children?.filter(
-                nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType));
-              const originalPositionIndex = filteredChildren?.indexOf(reorderSource);
-              const originalPositionIsFirst = originalPositionIndex === 0;
-              const originalPositionIsLast = originalPositionIndex === filteredChildren?.length - 1;
-              return (
-                [ { value: 'first', label: 'First' },
-                  { value: 'other', label: 'After...' },
-                  { value: 'last', label: 'Last' },
-                ].map(({ value, label }) =>
-                  <FormControlLabel
-                    key={value}
-                    value={value}
-                    label={label}
-                    disabled={[
-                      noNewParent,
-                      newParentHasNoEntryChildren,
-                      (value === 'first' && originalPositionIsFirst),
-                      (value === 'last' && originalPositionIsLast)
-                    ].includes(true)}
-                    control={<Radio />}
-                  />
-                )
-              )
-            })()}
-          </RadioGroup>
-          { reorderState.inputs.positionRadio === 'other' &&
+  const reorderFormContent = (
+    <Grid container alignItems='baseline' direction="row" rowSpacing={3} columnSpacing={2}>
+      {selectReorderSourceContent}
+      {!!reorderSource.length &&
+        <>
+          <Grid size={3}>
+            <Typography variant="subtitle2">
+              Move from
+            </Typography>
+          </Grid>
+          <Grid size={9}>
             <QuestionnaireAutocomplete
               showSelection={false}
               multiple={false}
-              entities={positionOptions}
-              getOptionDisabled={(option) => option.path === nodes[reorderSource]?.path}
-              selection={newPositionSelection}
-              onSelectionChanged={setNewPositionSelection}
-              placeholderText="... other questionnaire entry"
+              entities={[nodes[nodes[reorderSource].parent]].map((node) => {
+                const { value, name, title, path, relativePath, jcrPrimaryType } = node;
+                return {
+                  value: value,
+                  name: name,
+                  text: title,
+                  path: path,
+                  relativePath: relativePath,
+                  type: stripCardsNamespace(jcrPrimaryType),
+                }
+              })}
+              getOptionDisabled={() => true}
+              selection={[nodes[reorderSource].parent]}
               getOptionValue={(option) => option.value}
-              id="newPosition"
-              disabled={!newParent}
+              id="originalParent"
+              disabled
             />
-          }
-        </Grid>
+          </Grid>
+          <Grid size={3}>
+            <Typography variant="subtitle2">
+              With original position
+            </Typography>
+          </Grid>
+          <Grid size={9}>
+            <Typography>
+              {getOrdinalString(
+                nodes[nodes[reorderSource].parent].children
+                  .filter(nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType))
+                  .indexOf(reorderSource)
+              )}
+            </Typography>
+          </Grid>
+        </>
+      }
+
+      <Grid size={3}>
+        <Typography variant="subtitle2">Move into</Typography>
       </Grid>
-    )
-  }
+      <Grid size={9}>
+        <QuestionnaireAutocomplete
+          showSelection={false}
+          multiple={false}
+          entities={parentOptions.map((node) => {
+            const { value, name, title, path, relativePath, jcrPrimaryType } = node;
+            return {
+              value: value,
+              name: name,
+              text: title,
+              path: path,
+              relativePath: relativePath,
+              type: stripCardsNamespace(jcrPrimaryType)
+            }
+          })}
+          getOptionDisabled={getParentOptionDisabled}
+          selection={newParentSelection}
+          onSelectionChanged={setNewParentSelection}
+          getOptionValue={(option) => option.value}
+          placeholderText="Select a new parent entry"
+          id="newParent"
+          disabled={!reorderSource}
+        />
+      </Grid>
+
+      <Grid size={3}>
+        <Typography variant="subtitle2">With new position</Typography>
+      </Grid>
+      <Grid size={9}>
+        <RadioGroup
+          row
+          value={reorderState.inputs.positionRadio}
+          onChange={(e) => reorderDispatch({ type: 'SET_POSITIONRADIO', payload: e.target.value })}
+        >
+          {(() => {
+            const noNewParent = !newParent
+            const newParentHasNoEntryChildren =
+              !nodes[newParent]?.children.some(child => ENTRY_TYPES.includes(nodes[child].jcrPrimaryType))
+            const filteredChildren = nodes[nodes[reorderSource]?.parent]?.children?.filter(
+              nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType));
+            const originalPositionIndex = filteredChildren?.indexOf(reorderSource);
+            const originalPositionIsFirst = originalPositionIndex === 0;
+            const originalPositionIsLast = originalPositionIndex === filteredChildren?.length - 1;
+            return (
+              [ { value: 'first', label: 'First' },
+                { value: 'other', label: 'After...' },
+                { value: 'last', label: 'Last' },
+              ].map(({ value, label }) =>
+                <FormControlLabel
+                  key={value}
+                  value={value}
+                  label={label}
+                  disabled={[
+                    noNewParent,
+                    newParentHasNoEntryChildren,
+                    (value === 'first' && originalPositionIsFirst),
+                    (value === 'last' && originalPositionIsLast)
+                  ].includes(true)}
+                  control={<Radio />}
+                />
+              )
+            )
+          })()}
+        </RadioGroup>
+        { reorderState.inputs.positionRadio === 'other' &&
+          <QuestionnaireAutocomplete
+            showSelection={false}
+            multiple={false}
+            entities={positionOptions}
+            getOptionDisabled={(option) => option.path === nodes[reorderSource]?.path}
+            selection={newPositionSelection}
+            onSelectionChanged={setNewPositionSelection}
+            placeholderText="... other questionnaire entry"
+            getOptionValue={(option) => option.value}
+            id="newPosition"
+            disabled={!newParent}
+          />
+        }
+      </Grid>
+    </Grid>
+  );
 
   const emptyNodes = !Object.keys(nodes).length;
   const nodeNotInTree = disableReorderSourceSelect && !Object.prototype.hasOwnProperty.call(nodes, reorderSource);
@@ -429,7 +423,7 @@ export default function ReorderForm(props) {
   return (
     <>
       <DialogContent>
-        <ReorderForm />
+        {reorderFormContent}
         {reorderState.status === 'error' &&
           <Alert severity='error'>
             {reorderState.error}
