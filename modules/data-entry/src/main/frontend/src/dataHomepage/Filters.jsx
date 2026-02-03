@@ -304,7 +304,7 @@ function Filters(props) {
   }
 
   // Return the pre-computed input element, and focus it if we were asked to
-  let getCachedInput = (filterDatum, index, focusRef) => {
+  let getCachedInput = (filterDatum, index) => {
     let dataType = questionDefinitions[filterDatum.name]?.dataType || "text";
 
     let CachedComponent = filterDatum.comparator === notesComparator ?
@@ -313,7 +313,7 @@ function Filters(props) {
       filterableAnswers[filterDatum.name];
     return (
       <CachedComponent
-        ref={focusRef}
+        ref={index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined}
         questionDefinition={questionDefinitions[filterDatum.name]}
         initial={{
           value: editingFilters[index].value,
@@ -442,8 +442,7 @@ function Filters(props) {
                     >
                       { filterDatum.comparator
                         ?
-                        getCachedInput(filterDatum, index,
-                          (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
+                        getCachedInput(filterDatum, index)
                         :
                         <TextField variant="standard" disabled fullWidth></TextField>
                       }
