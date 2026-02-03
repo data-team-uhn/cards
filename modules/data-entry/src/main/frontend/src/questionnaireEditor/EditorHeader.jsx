@@ -88,7 +88,7 @@ function EditorHeader() {
     setAnchorEl(null);
   }
 
-  if (!warnings || nodes.length === 0) {
+  if (!warnings || Object.keys(nodes).length === 0) {
     return null;
   }
 

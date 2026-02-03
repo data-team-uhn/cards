@@ -25,7 +25,6 @@ import { useQuestionnaireTreeContext, findTreeEntries } from "../questionnaireEd
 // Custom hook to track which item is in view
 export function useInViewTracker(items, options = { threshold: 0.3 }) {
   const [activeItem, setActiveItem] = useState(null);
-  const [lastIntersectingItem, setLastIntersectingItem] = useState(null);
 
   // Set up Intersection Observer
   useEffect(() => {
@@ -33,10 +32,8 @@ export function useInViewTracker(items, options = { threshold: 0.3 }) {
       (entries) => {
         entries.forEach((entry) => {
           const id = entry.target.getAttribute('in-view-data-id');
-
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && id) {
             setActiveItem(id);
-            setLastIntersectingItem(id);
           }
         });
       },
@@ -50,45 +47,39 @@ export function useInViewTracker(items, options = { threshold: 0.3 }) {
       }
     });
 
-    // Cleanup observer on unmount
-    return () => {
-      observer.disconnect();
-    };
-  }, [items, options, lastIntersectingItem]);
+    return () => observer.disconnect();
+  }, [items, options]);
 
-  // Function to scroll to item card when clicked
   const scrollToItem = (id) => {
     const target = document.querySelector(`[in-view-data-id='${id}']`);
+    if (!target) return;
     const targetPosition = target.getBoundingClientRect().top + window.scrollY;
-    const offsetPosition = targetPosition - 100;
-
     window.scrollTo({
-      top: offsetPosition,
+      top: targetPosition - 100,
       behavior: 'smooth'
     });
-  }
+  };
 
-
-
-  // Map of which items are highlighted
-  const [highlightedItems, setHighlightedItems] = useState(new Map());
-  const highlighter = {
+  const [highlightedItems, setHighlightedItems] = useState(() => new Map());
+  const highlighter = useMemo(() => ({
     highlightedItems,
     highlight: (id) => {
-      setHighlightedItems(new Map(highlightedItems.set(id, true)));
+      setHighlightedItems((prev) => {
+        const next = new Map(prev);
+        next.set(id, true);
+        return next;
+      });
     },
     unhighlight: (id) => {
-      highlightedItems.delete(id);
-      setHighlightedItems(new Map(highlightedItems));
+      setHighlightedItems((prev) => {
+        const next = new Map(prev);
+        next.delete(id);
+        return next;
+      });
     },
-    unhighlightAll: (ids) => {
-      highlightedItems.forEach((_, id) => {
-        highlightedItems.delete(id);
-      })
-      setHighlightedItems(new Map(highlightedItems));
-    },
+    unhighlightAll: () => setHighlightedItems(new Map()),
     isHighlighted: (id) => highlightedItems.has(id),
-  }
+  }), [highlightedItems]);
 
   return { activeItem, scrollToItem, highlighter };
 }

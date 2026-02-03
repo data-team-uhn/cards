@@ -51,7 +51,7 @@ export function ReorderModal(props) {
         fullWidth
       >
         <DialogTitle>
-          { noEntryData ? "Select position of an entry" : `Select position of '${title}'` }
+          { noEntryData ? "Select position of an entry" : `Select position of '${title ?? entryData?.["@name"] ?? "entry"}'` }
         </DialogTitle>
         <ReorderForm
           onClose={() => setOpen(false)}

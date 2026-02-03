@@ -446,7 +446,7 @@ export function findTreeEntries(nodes, entryTypes = []) {
     // Return empty array if no nodes
     return [];
   }
-  // Recurisvely traverse the tree and return all nodes with matching entryTypes
+  // Recursively traverse the tree and return all nodes with matching entryTypes
   const entries = []
   const traverseTree = (node, entries) => {
     if (entryTypes.includes(node.jcrPrimaryType)) {
@@ -457,6 +457,7 @@ export function findTreeEntries(nodes, entryTypes = []) {
     }
   }
   const rootNode = Object.values(nodes).find(node => node.parent === null);
+  if (!rootNode) return entries;
   traverseTree(rootNode, entries);
   return entries;
 }
