@@ -73,6 +73,53 @@ function DicomQuestion(props) {
   let [ errorDialogText, setErrorDialogText ] = useState();
   let [ advancedErrorDialogText, setAdvancedErrorDialogText ] = useState();
 
+  let getDicomTagInfo = (tag) => {
+    let group = tag.substring(1,5);
+    let element = tag.substring(5,9);
+    let tagIndex = ("(" + group + "," + element + ")").toUpperCase();
+    if (tagIndex in DICOM_TAG_DICT) {
+      return DICOM_TAG_DICT[tagIndex];
+    } else {
+      return undefined;
+    }
+  }
+
+  let getDicomTagDataFormat = (tag) => {
+    return getDicomTagInfo(tag)?.vr;
+  }
+
+  let getDicomRawHexData = (dicomObj, tag) => {
+    let dataLength = dicomObj.elements[tag].length;
+    let dataOffset = dicomObj.elements[tag].dataOffset;
+    let truncateData = Boolean(dicomObj.elements[tag].length > 8);
+    if (truncateData) {
+      dataLength = 8;
+    }
+    let hex = "0x" + Array.from(dicomObj.byteArray.slice(dataOffset, dataOffset + dataLength))
+      .map(x => x.toString(16).padStart(2, '0'))
+      .join('');
+    if (truncateData) {
+      hex += "...";
+    }
+    return hex;
+  }
+
+  let getDicomTagName = (tag) => {
+    return getDicomTagInfo(tag)?.name;
+  }
+
+  let getDicomTagValue = (dicomObj, tag) => {
+    if (getDicomTagDataFormat(tag) === "US") {
+      return dicomObj.uint16(tag);
+    } else if (getDicomTagDataFormat(tag) === "UL") {
+      return dicomObj.uint32(tag);
+    } else if (["CS", "UI", "DA", "TM", "LO", "PN", "SH", "DS", "IS", "AE"].indexOf(getDicomTagDataFormat(tag)) >= 0) {
+      return dicomObj.string(tag);
+    } else {
+      return getDicomRawHexData(dicomObj, tag);
+    }
+  }
+
   let validateDicomFileTransferSyntax = (file) => {
     let FORBIDDEN_TRANSFER_SYNTAX_UID = ["1.2.840.10008.1.2.4.70"];
     return file.arrayBuffer()
@@ -96,6 +143,38 @@ function DicomQuestion(props) {
       .catch((err) => {
         return Promise.reject(err);
       });
+  }
+
+  let dicomImageToDataURL = (dicomImage) => {
+    let dicomImagePixels = dicomImage.getPixelData();
+    let dicomMinPix = dicomImage.minPixelValue;
+    let dicomMaxPix = dicomImage.maxPixelValue;
+    let dicomCanvas = document.createElement("canvas");
+    dicomCanvas.width = dicomImage.width;
+    dicomCanvas.height = dicomImage.height;
+    let dicomCtx = dicomCanvas.getContext('2d');
+    let canvasImageData = dicomCtx.getImageData(0, 0, dicomCanvas.width, dicomCanvas.height);
+
+    if (dicomImage.color) {
+      // If the DICOM image is colored, simply copy the RGBA pixel values
+      for (let i = 0; i < canvasImageData.data.length; i++) {
+        canvasImageData.data[i] = dicomImagePixels[i];
+      }
+    } else {
+      // Normalize the data so that all pixels are between 0 and 255
+      for (let i = 0; i < canvasImageData.data.length; i+=4) {
+        let thisPixVal = 0;
+        if ((dicomMaxPix - dicomMinPix) !== 0) {
+          thisPixVal = Math.floor(255 * ((dicomImagePixels[i/4] - dicomMinPix) / (dicomMaxPix - dicomMinPix)));
+        }
+        canvasImageData.data[i] = thisPixVal;
+        canvasImageData.data[i+1] = thisPixVal;
+        canvasImageData.data[i+2] = thisPixVal;
+        canvasImageData.data[i+3] = 255;
+      }
+    }
+    dicomCtx.putImageData(canvasImageData, 0, 0);
+    return dicomCanvas.toDataURL();
   }
 
   let previewDicomFile = (file) => {
@@ -133,85 +212,6 @@ function DicomQuestion(props) {
 
   // Load the DICOM image preview, only once, upon initialization
   useEffect(() => fetchDicomFile(), []);
-
-  let getDicomTagInfo = (tag) => {
-    let group = tag.substring(1,5);
-    let element = tag.substring(5,9);
-    let tagIndex = ("(" + group + "," + element + ")").toUpperCase();
-    if (tagIndex in DICOM_TAG_DICT) {
-      return DICOM_TAG_DICT[tagIndex];
-    } else {
-      return undefined;
-    }
-  }
-
-  let getDicomTagName = (tag) => {
-    return getDicomTagInfo(tag)?.name;
-  }
-
-  let getDicomTagDataFormat = (tag) => {
-    return getDicomTagInfo(tag)?.vr;
-  }
-
-  let getDicomRawHexData = (dicomObj, tag) => {
-    let dataLength = dicomObj.elements[tag].length;
-    let dataOffset = dicomObj.elements[tag].dataOffset;
-    let truncateData = Boolean(dicomObj.elements[tag].length > 8);
-    if (truncateData) {
-      dataLength = 8;
-    }
-    let hex = "0x" + Array.from(dicomObj.byteArray.slice(dataOffset, dataOffset + dataLength))
-      .map(x => x.toString(16).padStart(2, '0'))
-      .join('');
-    if (truncateData) {
-      hex += "...";
-    }
-    return hex;
-  }
-
-  let getDicomTagValue = (dicomObj, tag) => {
-    if (getDicomTagDataFormat(tag) === "US") {
-      return dicomObj.uint16(tag);
-    } else if (getDicomTagDataFormat(tag) === "UL") {
-      return dicomObj.uint32(tag);
-    } else if (["CS", "UI", "DA", "TM", "LO", "PN", "SH", "DS", "IS", "AE"].indexOf(getDicomTagDataFormat(tag)) >= 0) {
-      return dicomObj.string(tag);
-    } else {
-      return getDicomRawHexData(dicomObj, tag);
-    }
-  }
-
-  let dicomImageToDataURL = (dicomImage) => {
-    let dicomImagePixels = dicomImage.getPixelData();
-    let dicomMinPix = dicomImage.minPixelValue;
-    let dicomMaxPix = dicomImage.maxPixelValue;
-    let dicomCanvas = document.createElement("canvas");
-    dicomCanvas.width = dicomImage.width;
-    dicomCanvas.height = dicomImage.height;
-    let dicomCtx = dicomCanvas.getContext('2d');
-    let canvasImageData = dicomCtx.getImageData(0, 0, dicomCanvas.width, dicomCanvas.height);
-
-    if (dicomImage.color) {
-      // If the DICOM image is colored, simply copy the RGBA pixel values
-      for (let i = 0; i < canvasImageData.data.length; i++) {
-        canvasImageData.data[i] = dicomImagePixels[i];
-      }
-    } else {
-      // Normalize the data so that all pixels are between 0 and 255
-      for (let i = 0; i < canvasImageData.data.length; i+=4) {
-        let thisPixVal = 0;
-        if ((dicomMaxPix - dicomMinPix) !== 0) {
-          thisPixVal = Math.floor(255 * ((dicomImagePixels[i/4] - dicomMinPix) / (dicomMaxPix - dicomMinPix)));
-        }
-        canvasImageData.data[i] = thisPixVal;
-        canvasImageData.data[i+1] = thisPixVal;
-        canvasImageData.data[i+2] = thisPixVal;
-        canvasImageData.data[i+3] = 255;
-      }
-    }
-    dicomCtx.putImageData(canvasImageData, 0, 0);
-    return dicomCanvas.toDataURL();
-  }
 
   let populateNotesFromDicomFile = (file) => {
     return file.arrayBuffer()
