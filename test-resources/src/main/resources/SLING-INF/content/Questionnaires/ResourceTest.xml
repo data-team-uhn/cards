@@ -310,11 +310,6 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>maxAnswers</name>
-			<value>0</value>
-			<type>Long</type>
-		</property>
-		<property>
 			<name>primaryType</name>
 			<value>cards:Question</value>
 			<type>String</type>
