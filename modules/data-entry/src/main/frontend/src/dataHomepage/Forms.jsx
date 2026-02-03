@@ -34,30 +34,30 @@ function Forms(props) {
 
   const defaultColumns = [
     {
-      "key": "@name",
-      "label": "Identifier",
-      "format": getEntityIdentifier,
-      "link": "dashboard+path",
+      key: "@name",
+      label: "Identifier",
+      format: getEntityIdentifier,
+      link: "dashboard+path",
     },
     {
-      "key": "",
-      "label": "Subject",
-      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, extensionURL) : ''),
+      key: "",
+      label: "Subject",
+      format: (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, extensionURL) : ''),
     },
     {
-      "key": "questionnaire/title",
-      "label": "Questionnaire",
-      "format": "string",
+      key: "questionnaire/title",
+      label: "Questionnaire",
+      format: "string",
     },
     {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:yyyy-MM-dd HH:mm",
+      key: "jcr:created",
+      label: "Created on",
+      format: "date:yyyy-MM-dd HH:mm",
     },
     {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
+      key: "jcr:createdBy",
+      label: "Created by",
+      format: "string",
     },
   ]
 

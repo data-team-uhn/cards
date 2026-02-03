@@ -30,30 +30,30 @@ function Subjects(props) {
 
   const defaultColumns = [
     {
-      "key": "identifier",
-      "label": "Identifier",
-      "format": getEntityIdentifier,
-      "link": "dashboard+path",
+      key: "identifier",
+      label: "Identifier",
+      format: getEntityIdentifier,
+      link: "dashboard+path",
     },
     {
-      "key": "type/label",
-      "label": "Type",
-      "format": "string",
+      key: "type/label",
+      label: "Type",
+      format: "string",
     },
     {
-      "key": "",
-      "label": "Parents",
-      "format": (row) => (row['parents'] ? getHierarchy(row['parents'], undefined, undefined, extensionURL) : ''),
+      key: "",
+      label: "Parents",
+      format: (row) => (row['parents'] ? getHierarchy(row['parents'], undefined, undefined, extensionURL) : ''),
     },
     {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:yyyy-MM-dd HH:mm",
+      key: "jcr:created",
+      label: "Created on",
+      format: "date:yyyy-MM-dd HH:mm",
     },
     {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
+      key: "jcr:createdBy",
+      label: "Created by",
+      format: "string",
     },
   ];
 
