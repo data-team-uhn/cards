@@ -237,8 +237,9 @@ function QuestionnaireSet(props) {
 
   // Determine the screen type (and style) based on the step number
   const screenType = useMemo(() => {
-    return crtStep >= 0 && crtStep < questionnaireIds?.length ? "survey" : "screen";
-  }, [crtStep]);
+    const questionnaireIdsLength = questionnaireIds?.length || 0;
+    return crtStep >= 0 && crtStep < questionnaireIdsLength ? "survey" : "screen";
+  }, [crtStep, questionnaireIds]);
 
   // Screen layout props
 
@@ -263,6 +264,124 @@ function QuestionnaireSet(props) {
     // Skip if the corresponding questionnaire has already been filled out:
     while (next < questionnaireIds.length && isFormComplete(questionnaireIds[next])) ++next;
     return next;
+  }
+
+  // Advance to the next step
+  let nextStep = () => setCrtStep(findNextStep(crtStep))
+
+  let launchNextForm = () => {
+    if (subjectData?.[nextQuestionnaire['@name']]) {
+      // Form already exists and is incomplete: prepare to edit it
+      setCrtFormId(subjectData[nextQuestionnaire['@name']]['@name']);
+    }
+  }
+
+  let selectDataForQuestionnaireSet = (subjectData, questionnaireSet, questionnaireSetIds) => {
+    let ids = [];
+    let data = {};
+    questionnaireSetIds.forEach(q => {
+      if (subjectData[questionnaireSet?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
+        data[q] = subjectData[questionnaireSet?.[q]?.title][0];
+        ids.push(q);
+      }
+    });
+    // If questionnaireIds is defined, this is not the first time we're loading the data.
+    // The purpose of loading it a second time is to check the completion status of forms.
+    // In that case, we do not reassign questionnaireIds to avoid loading this data in a loop
+    !questionnaireIds && setQuestionnaireIds(ids);
+    setSubjectData(data);
+    setSubjectDataLoadCount((counter) => counter+1);
+  };
+
+  const loadExistingData = () => {
+    setComplete(undefined);
+    fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        if (!questionnaires) {
+          setSubjectData(json);
+          setVisitInformation(json[visitInformationFormTitle]?.[0] || {});
+          let clinicPath = Object.values(json[visitInformationFormTitle]?.[0]).find(o => o?.question?.["@name"] == "clinic")?.value;
+          return fetchWithReLogin(globalLoginDisplay, `${clinicPath}.deep.json`)
+            .then((response) => response.ok ? response.json() : Promise.reject(response))
+            .then((json) => {
+              setId(json["survey"]);
+              setTokenLifetime(json.daysRelativeToEventWhileSurveyIsValid);
+            });
+        }
+        selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
+      })
+      .catch(() => setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance."));
+  }
+
+  // Load the markdown serialization of the survey responses to display at the review step
+  let loadPreviews = () => {
+    (questionnaireIds || []).forEach(q => {
+      let formId = subjectData?.[q]?.["@name"];
+      // Fetch the markdown serialization of the forms
+      fetchWithReLogin(globalLoginDisplay, `/Forms/${formId}.md`)
+        .then(response => response.ok ? response.text() : Promise.reject(response))
+        .then(text => setPreviews( oldPreviews => {
+          let newPreviews = Object.assign({}, oldPreviews);
+          newPreviews[formId] = text;
+          return newPreviews;
+        }))
+        .catch(() => setError("Your responses cannot be previewed at this time. Please try again later or contact the sender of the survey for further assistance."));
+    });
+  }
+
+  let postSubmission = () => {
+    let submittedQuestionUuid = visitInformation?.questionnaire?.surveys_submitted?.["jcr:uuid"] || null;
+    let url = visitInformation?.["@path"];
+
+    if (submittedQuestionUuid && url) {
+      setSubmissionInProgress(true);
+      let answerUuid = Object.values(visitInformation)
+        .find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.["@name"] || uuidv4();
+      let data = new FormData();
+      data.append("./" + answerUuid + "/jcr:primaryType", "cards:BooleanAnswer");
+      data.append("./" + answerUuid + "/question", submittedQuestionUuid);
+      data.append("./" + answerUuid + "/question@TypeHint", "Reference");
+      data.append("./" + answerUuid + "/value", 1);
+      data.append("./" + answerUuid + "/value@TypeHint", "Long");
+      fetchWithReLogin(
+        globalLoginDisplay,
+        url,
+        { method: 'POST', body: data }
+      )
+        .then(response => response.ok ? response.text() : Promise.reject(response))
+        .then(() => setSubmitted(true))
+        .catch(() => setError("Recording the submission of your responses has failed. Please try again later or contact the sender of the survey for further assistance."))
+        .finally(() => setSubmissionInProgress(false));
+    }
+  }
+
+  let checkinForms = () => {
+    if (!questionnaireIds || questionnaireIds.length < 1) {
+      // Nothing to check in
+      return;
+    }
+
+    // Requests to /Forms get sent to the dataImportServlet and fail to checkin, so send it to a specific form
+    const URL = "/Forms/" + subjectData?.[questionnaireIds[0]]["@name"];
+    let request_data = new FormData();
+    request_data.append(":operation", "checkin");
+
+    questionnaireIds.forEach(q => {
+      let id = subjectData?.[q]?.["@name"];
+      if (id) {
+        request_data.append(":checkin", `/Forms/${id}`);
+      }
+    });
+
+    fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
+      .then(response => response.ok ? response.text() : Promise.reject(response))
+      .catch(() => console.error("Failed to check in forms"));
+  }
+
+  let onSubmit = () => {
+    postSubmission();
+    checkinForms();
   }
 
   // Determine the next questionnaire that needs to be filled out
@@ -338,27 +457,6 @@ function QuestionnaireSet(props) {
     }
   }, [isComplete, isSubmitted, endReached, enableReviewScreen]);
 
-  const loadExistingData = () => {
-    setComplete(undefined);
-    fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        if (!questionnaires) {
-          setSubjectData(json);
-          setVisitInformation(json[visitInformationFormTitle]?.[0] || {});
-          let clinicPath = Object.values(json[visitInformationFormTitle]?.[0]).find(o => o?.question?.["@name"] == "clinic")?.value;
-          return fetchWithReLogin(globalLoginDisplay, `${clinicPath}.deep.json`)
-            .then((response) => response.ok ? response.json() : Promise.reject(response))
-            .then((json) => {
-              setId(json["survey"]);
-              setTokenLifetime(json.daysRelativeToEventWhileSurveyIsValid);
-            });
-        }
-        selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
-      })
-      .catch(() => setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance."));
-  }
-
   const loadQuestionnaireSet = () => {
     if (!!!id) {
       return;
@@ -414,39 +512,6 @@ function QuestionnaireSet(props) {
     selectDataForQuestionnaireSet(subjectData, data, qids);
   };
 
-  let selectDataForQuestionnaireSet = (subjectData, questionnaireSet, questionnaireSetIds) => {
-    let ids = [];
-    let data = {};
-    questionnaireSetIds.forEach(q => {
-      if (subjectData[questionnaireSet?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
-        data[q] = subjectData[questionnaireSet?.[q]?.title][0];
-        ids.push(q);
-      }
-    });
-    // If questionnaireIds is defined, this is not the first time we're loading the data.
-    // The purpose of loading it a second time is to check the completion status of forms.
-    // In that case, we do not reassign questionnaireIds to avoid loading this data in a loop
-    !questionnaireIds && setQuestionnaireIds(ids);
-    setSubjectData(data);
-    setSubjectDataLoadCount((counter) => counter+1);
-  };
-
-  // Load the markdown serialization of the survey responses to display at the review step
-  let loadPreviews = () => {
-    (questionnaireIds || []).forEach(q => {
-      let formId = subjectData?.[q]?.["@name"];
-      // Fetch the markdown serialization of the forms
-      fetchWithReLogin(globalLoginDisplay, `/Forms/${formId}.md`)
-        .then(response => response.ok ? response.text() : Promise.reject(response))
-        .then(text => setPreviews( oldPreviews => {
-          let newPreviews = Object.assign({}, oldPreviews);
-          newPreviews[formId] = text;
-          return newPreviews;
-        }))
-        .catch(() => setError("Your responses cannot be previewed at this time. Please try again later or contact the sender of the survey for further assistance."));
-    });
-  }
-
   // Find out if a questionnaire has an interpretation for the patient, i.e. a "summary" section
   let hasInterpretation = (json) => {
     if (json?.displayMode == "summary") {
@@ -455,18 +520,8 @@ function QuestionnaireSet(props) {
     let result = false;
     Object.values(json || {})
       .filter(value => value['jcr:primaryType'] == 'cards:Section')
-      .forEach(section => { result ||= hasInterpretation(section) });
+      .forEach(section => { result = result || hasInterpretation(section) });
     return result;
-  }
-
-  // Advance to the next step
-  let nextStep = () => setCrtStep(findNextStep)
-
-  let launchNextForm = () => {
-    if (subjectData?.[nextQuestionnaire['@name']]) {
-      // Form already exists and is incomplete: prepare to edit it
-      setCrtFormId(subjectData[nextQuestionnaire['@name']]['@name']);
-    }
   }
 
   // At first, load the existing subject data to determine which questionnaire set is bound to the visit
@@ -523,65 +578,6 @@ function QuestionnaireSet(props) {
   let displayEstimate = (questionnaireId) => {
     let e = questionnaires[questionnaireId]?.estimate;
     return e ? (e + " minute" + (e != 1 ? "s" : "")) : "";
-  }
-
-  let onSubmit = () => {
-    postSubmission();
-    checkinForms();
-  }
-
-  let postSubmission = () => {
-    let submittedQuestionUuid = visitInformation?.questionnaire?.surveys_submitted?.["jcr:uuid"] || null;
-    let url = visitInformation?.["@path"];
-
-    if (submittedQuestionUuid && url) {
-      setSubmissionInProgress(true);
-      let answerUuid = Object.values(visitInformation)
-        .find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.["@name"] || uuidv4();
-      let data = new FormData();
-      data.append("./" + answerUuid + "/jcr:primaryType", "cards:BooleanAnswer");
-      data.append("./" + answerUuid + "/question", submittedQuestionUuid);
-      data.append("./" + answerUuid + "/question@TypeHint", "Reference");
-      data.append("./" + answerUuid + "/value", 1);
-      data.append("./" + answerUuid + "/value@TypeHint", "Long");
-      fetchWithReLogin(
-        globalLoginDisplay,
-        url,
-        { method: 'POST', body: data }
-      )
-        .then(response => response.ok ? response.text() : Promise.reject(response))
-        .then(() => setSubmitted(true))
-        .catch(() => setError("Recording the submission of your responses has failed. Please try again later or contact the sender of the survey for further assistance."))
-        .finally(() => setSubmissionInProgress(false));
-    }
-  }
-
-  let checkinForms = () => {
-    if (!questionnaireIds || questionnaireIds.length < 1) {
-      // Nothing to check in
-      return;
-    }
-
-    // Requests to /Forms get sent to the dataImportServlet and fail to checkin, so send it to a specific form
-    const URL = "/Forms/" + subjectData?.[questionnaireIds[0]]["@name"];
-    var request_data = new FormData();
-    request_data.append(":operation", "checkin");
-
-    questionnaireIds.forEach(q => {
-      let id = subjectData?.[q]?.["@name"];
-      id && request_data.append(":applyTo", "/Forms/" + id);
-    });
-
-    fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
-      .then( (response) => {
-        if (!response.ok) {
-          return(Promise.reject(response));
-        }
-      })
-      .catch((response) => {
-        // The error is not important enough to display to the user
-        console.log(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
-      });
   }
 
   let surveyIndicator = <Avatar className={classes.stepIndicator}><SurveyIcon /></Avatar>;
