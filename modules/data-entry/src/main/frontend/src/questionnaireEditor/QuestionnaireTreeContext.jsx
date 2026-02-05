@@ -749,7 +749,7 @@ export function QuestionnaireTreeProvider(props) {
         const nodes = initializeRoot(data);
         return nodes;
       })
-  }, []);
+  }, [globalLoginDisplay, questionnaireId]);
 
   const clearTree = useCallback(() => {
     dispatch({ type: CLEAR_TREE });

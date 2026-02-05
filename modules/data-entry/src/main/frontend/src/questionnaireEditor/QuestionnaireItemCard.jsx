@@ -179,7 +179,7 @@ let QuestionnaireItemCard = (props) => {
         .indexOf(itemId)
       : null;
     return itemPosition !== null ? getOrdinalString(itemPosition) : null;
-  }, [type, treeContext?.state?.nodes, data]);
+  }, [type, treeContext, data]);
 
   return (
     <div

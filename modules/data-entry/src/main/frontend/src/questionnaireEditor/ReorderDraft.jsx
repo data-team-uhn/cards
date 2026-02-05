@@ -282,10 +282,13 @@ const ReorderSubmitModal = (props) => {
       reorderDispatch({ type: 'SET_LOADING' });
       await processMoves(moves);
       reorderDispatch({ type: 'SET_SUCCESS' });
+      // Cleanup after success
+      reorderDispatch({ type: 'RESET_MOVES' });
+      setProgressValue(0);
     } catch (error) {
       console.error('Reorder error', error);
       reorderDispatch({ type: 'SET_ERROR', payload: error });
-    } finally {
+      // Cleanup after error
       reorderDispatch({ type: 'RESET_MOVES' });
       setProgressValue(0);
     }
