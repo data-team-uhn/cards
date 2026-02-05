@@ -157,6 +157,118 @@ which can then be verified for accuracy by opening the form in read mode with th
                 <type>Long</type>
             </property>
         </node>
+        <node>
+            <name>question5_string</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Write something:</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>text</value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question6_boolean</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Yes or No?</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>boolean</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>enableUnknown</name>
+                <value>True</value>
+                <type>Boolean</type>
+            </property>
+        </node>
+        <node>
+            <name>question7_datetime</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Pick a date and time</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>date</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dateFormat</name>
+                <value>yyyy-MM-dd HH:mm:ss</value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question8_double</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Pick a number</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>double</value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question9_vocabulary</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Enter an ancestry (Requires HANCESTRO)</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>vocabulary</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>sourceVocabularies</name>
+                <values>
+                    <value>HANCESTRO</value>
+                </values>
+                <type>String</type>
+            </property>
+        </node>
     </node>
     <node>
        <name>computedquestions</name>
@@ -424,6 +536,217 @@ return "The first value from Question 4 is " + @{question4_multi?};
                 <value><![CDATA[
 return 1;
                 ]]></value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question4d_computed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Sum of all the numbers entered in question 4</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>description</name>
+                <value>Expected output: the sum of the numbers entered above</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>text</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value><![CDATA[
+var values = @{[question4_multi:-0]};
+var result = 0;
+for (var i = 0; i < values.length; i++) {
+  result += Number(values[i]);
+}
+return result;
+                ]]></value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question5_stringcomputed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Computed, plain</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>description</name>
+                <value>
+Expected output:
+
+> You wrote [text from previous question]
+
+or
+
+> You wrote nothing
+                </value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value>return "You wrote " + @{question5_string:-nothing}</value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question6_booleancomputed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Boolean, labelled</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>description</name>
+                <value>Expected output: Same as your selection, but with slightly different labels</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>boolean</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value>return @{question6_boolean}</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>yesLabel</name>
+                <value>Yes Label</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>noLabel</name>
+                <value>No Label</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>unknownLabel</name>
+                <value>Unknown Label</value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question7_datecomputed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Date, plain</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>description</name>
+                <value>Expected output: Same as your selection. yyyy-MM-dd HH:mm:ss</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>date</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dateFormat</name>
+                <value>yyyy-MM-dd HH:mm:ss</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value>return @{question7_date}</value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question8_doublecomputed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Double, plain</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>description</name>
+                <value>Expected output: Same as your selection</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>double</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value>return @{question8_double}</value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question9_vocabularycomputed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Vocabulary, plain</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>description</name>
+                <value>Expected output: Same as your selection</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>vocabulary</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>sourceVocabularies</name>
+                <values>
+                    <value>HANCESTRO</value>
+                </values>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value>return @{question9_vocabulary}</value>
                 <type>String</type>
             </property>
         </node>
