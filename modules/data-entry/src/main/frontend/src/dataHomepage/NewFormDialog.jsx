@@ -47,6 +47,7 @@ const PROGRESS_SELECT_SUBJECT = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
+  "use no memo";
   const {
     classes,
     presetPath,
