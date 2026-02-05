@@ -16,45 +16,26 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 
-import CancelIcon from '@mui/icons-material/Cancel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { Chip, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
 
 export class ChipState {
-  constructor(label, variant, color, icon, value, tooltip) {
-    this.label = label;
-    this.variant = variant;
-    this.color = color;
-    this.icon = icon;
+  constructor( chipProps, value, tooltip) {
+    this.chipProps = chipProps;
     this.value = value;
     this.tooltip = tooltip;
   }
 }
 
-/**
- * A 3 state chip supporting the following 3 values and states, each with a configurable tooltip.
- * Expects a single label and size that will apply to all states.
- * 0: A default, outlined, empty circle icon
- * 1: A success color with a checkmark icon
- * -1: An error color with an x icon
- */
-export function TriStateChip(props) {
-  const { size, label, defaultTooltip, positiveTooltip, negativeTooltip, onChange } = props;
-  let states = [
-    new ChipState(label, "outlined", "primary", <RadioButtonUncheckedIcon/>, 0, defaultTooltip),
-    new ChipState(label, "outlined", "success", <CheckCircleIcon/>, 1, positiveTooltip),
-    new ChipState(label, "outlined", "error",  <CancelIcon/>, -1, negativeTooltip),
-  ]
-
-  return MultiStateChip({
-    "size": size,
-    "states": states,
-    "onChange": onChange,
-  });
+export class ChipProps {
+  constructor (label, variant, color, icon) {
+    this.label = label;
+    this.variant = variant;
+    this.color = color;
+    this.icon = icon;
+  }
 }
 
 function MultiStateChip(props) {
@@ -63,20 +44,18 @@ function MultiStateChip(props) {
   const [ currentStateIndex, setCurrentState ] = useState(0);
 
   useMemo(() => {
-    if (currentStateIndex > states?.length && currentStateIndex > 0) {
+    if (currentStateIndex >= states?.length) {
       setCurrentState(0);
     }
   }, [states])
 
-  return <Tooltip title={states[currentStateIndex]?.tooltip}>
+  return states?.length > 0 &&
+    <Tooltip title={states[currentStateIndex].tooltip}>
       <Chip
         size={size}
-        label={states[currentStateIndex]?.label}
-        variant={states[currentStateIndex]?.variant}
-        color={states[currentStateIndex]?.color}
-        icon={states[currentStateIndex]?.icon}
+        {...states[currentStateIndex].chipProps ?? {}}
         onClick={() => {
-          let newIndex = (currentStateIndex + 1 >= states?.length) ? 0 : (currentStateIndex + 1);
+          let newIndex = (currentStateIndex + 1) % states.length;
           setCurrentState(newIndex);
           onChange(states[newIndex].value);
         }}
@@ -88,12 +67,15 @@ MultiStateChip.propTypes = {
   key: PropTypes.string,
   size: PropTypes.oneOf(["small", "medium", "large"]),
   states: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string,
-    variant: PropTypes.oneOf(["filled", "outlined"]),
-    color: PropTypes.string,
-    icon: PropTypes.node,
+    chipProps: PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      variant: PropTypes.oneOf(["filled", "outlined"]),
+      color: PropTypes.string,
+      icon: PropTypes.node,
+    }),
     value: PropTypes.string,
-  }))
+    tooltip: PropTypes.string.isRequired,
+  })).isRequired
 }
 
 export default MultiStateChip;
