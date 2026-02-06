@@ -45,10 +45,6 @@
       "start-order":"25"
     },
     {
-      "id":"org.jasypt:jasypt:1.9.3",
-      "start-order":"25"
-    },
-    {
       "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.jasypt:1.9.3_1",
       "start-order":"25"
     },
