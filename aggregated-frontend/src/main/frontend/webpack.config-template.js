@@ -138,7 +138,7 @@ ENTRY_CONTENT
             {
               loader: reactCompilerLoader,
               options: defineReactCompilerLoaderOption({
-                compilationMode : 'infer',
+                compilationMode : 'annotation',
                 logger: {
                   logEvent(filename, event) {
                     logCompilerEvent(filename, event);
