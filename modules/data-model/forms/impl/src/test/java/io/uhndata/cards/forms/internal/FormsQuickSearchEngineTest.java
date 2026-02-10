@@ -140,6 +140,31 @@ public class FormsQuickSearchEngineTest
     }
 
     @Test
+    public void skip() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Mockito.when(this.formUtils.getValue(Mockito.any(Node.class)))
+            .thenReturn("textAnswer1", "newValue", "textAnswer3");
+        Mockito.when(this.formUtils.getForm(Mockito.any(Node.class))).thenReturn(
+            session.getNode("/Forms/f1/s1/a1"),
+            session.getNode("/Forms/f2/s1/a1"),
+            session.getNode("/Forms/f3/s1/a1"));
+
+        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
+            .withQuery("textAnswer")
+            .withType(QUICK_SEARCH_PARAMETER_TYPE)
+            .build();
+
+        QuickSearchEngine.Results output = this.formsQuickSearchEngine.quickSearch(parameters,
+            this.context.resourceResolver());
+        output.skip();
+        output.skip();
+        Assert.assertTrue(output.hasNext());
+        Assert.assertNotNull(output.next());
+        Assert.assertFalse(output.hasNext());
+    }
+
+    @Test
     public void quickSearchCatchesRepositoryExceptionForQuestionnairesWithoutTextProperty() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);

@@ -94,6 +94,12 @@ public class SimpleQuestionnaireProcessorTest
     }
 
     @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.simpleQuestionnaireProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.simpleQuestionnaireProcessor.getPriority());

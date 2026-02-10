@@ -100,6 +100,12 @@ public class FlattenFormProcessorTest
     }
 
     @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.flattenFormProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.flattenFormProcessor.getPriority());

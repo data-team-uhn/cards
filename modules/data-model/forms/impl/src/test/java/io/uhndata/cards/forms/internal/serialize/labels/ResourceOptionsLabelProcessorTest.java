@@ -106,6 +106,12 @@ public class ResourceOptionsLabelProcessorTest
     }
 
     @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.resourceOptionsLabelProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.resourceOptionsLabelProcessor.getPriority());

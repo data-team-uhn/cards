@@ -95,6 +95,12 @@ public class DicomLabelProcessorTest
     }
 
     @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.dicomLabelProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.dicomLabelProcessor.getPriority());

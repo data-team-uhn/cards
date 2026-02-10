@@ -96,6 +96,12 @@ public class SimpleFormProcessorTest
     }
 
     @Test
+    public void getDescriptionTest()
+    {
+        Assert.assertNotNull(this.simpleFormProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.simpleFormProcessor.getPriority());

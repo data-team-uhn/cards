@@ -94,9 +94,15 @@ public class BareFormProcessorTest
     private BareFormProcessor bareFormProcessor;
 
     @Test
-    public void getNameReturnBare()
+    public void getNameReturnsBare()
     {
         Assert.assertEquals(NAME, this.bareFormProcessor.getName());
+    }
+
+    @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.bareFormProcessor.getDescription());
     }
 
     @Test
