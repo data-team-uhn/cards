@@ -48,10 +48,10 @@ overlays
 
 # Node and friends
 node_modules
-**/src/main/frontend/node/
-**/src/main/frontend/dist/
-**/aggregated-frontend/src/main/frontend/src/
-**/aggregated-frontend/src/main/frontend/webpack.config.js
+/aggregated-frontend/src/main/frontend/node/
+/aggregated-frontend/src/main/frontend/dist/
+/aggregated-frontend/src/main/frontend/src/
+/aggregated-frontend/src/main/frontend/webpack.config.js
 
 # Python bytecode caches
 __pycache__/
@@ -74,3 +74,9 @@ samlKeystore.p12
 /Utilities/FormImport/*.csv
 /Utilities/FormImport/*.json
 /Utilities/FormImport/*.xml
+
+# Playwright test byproducts
+/aggregated-frontend/src/main/frontend/test-results/
+/aggregated-frontend/src/main/frontend/playwright-report/
+/aggregated-frontend/src/main/frontend/playwright/.cache/
+/aggregated-frontend/src/main/frontend/blob-report/

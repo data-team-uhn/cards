@@ -30,14 +30,19 @@
   <packaging>bundle</packaging>
   <name>CARDS - The aggregated frontend files</name>
 
+  <properties>
+    <node.executable>${project.basedir}/src/main/frontend/node/node</node.executable>
+    <yarn.script>${project.basedir}/src/main/frontend/node/yarn/dist/bin/yarn.js</yarn.script>
+  </properties>
+
   <build>
     <plugins>
-      <!-- Run Python script to consolidate webpack.js and package.json files of all modules -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <inherited>false</inherited>
         <executions>
+          <!-- Run Python script to aggregate webpack.config.js and source/test files of all modules -->
           <execution>
             <configuration>
               <executable>python</executable>
@@ -52,6 +57,41 @@
             <goals>
                <goal>exec</goal>
             </goals>
+          </execution>
+          <!-- Run Jest tests -->
+          <execution>
+            <id>jest-tests</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${node.executable}</executable>
+              <workingDirectory>src/main/frontend/</workingDirectory>
+              <arguments>
+                <argument>${yarn.script}</argument>
+                <argument>test</argument>
+                <argument>--passWithNoTests</argument>
+              </arguments>
+              <skip>${skipTests}</skip>
+            </configuration>
+          </execution>
+          <!-- Run Playwright e2e tests -->
+          <execution>
+            <id>playwright-e2e-tests</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${node.executable}</executable>
+              <workingDirectory>src/main/frontend/</workingDirectory>
+              <arguments>
+                <argument>${yarn.script}</argument>
+                <argument>test:e2e</argument>
+              </arguments>
+              <skip>${skipTests}</skip>
+            </configuration>
           </execution>
         </executions>
       </plugin>

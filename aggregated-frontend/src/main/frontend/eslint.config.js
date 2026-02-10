@@ -28,6 +28,7 @@ import jsxA11y from "eslint-plugin-jsx-a11y";
 import globals from "globals";
 import unusedImports from "eslint-plugin-unused-imports";
 import stylistic from "@stylistic/eslint-plugin";
+import jestDom from "eslint-plugin-jest-dom";
 
 // For ESLint rules specs see  https://eslint.org/docs/latest/rules/
 
@@ -53,6 +54,7 @@ const commonPlugins = {
   import: importPlugin,
   "@stylistic": stylistic,
   "jsx-a11y": jsxA11y,
+  "jest-dom": jestDom,
 };
 
 const commonReactSettings = { react: { version: "detect" } };
@@ -74,6 +76,7 @@ const commonRules = {
   ...jsxA11y.configs.recommended.rules,
   ...react.configs.recommended.rules,
   ...reactHooks.configs.flat.recommended.rules,
+  ...jestDom.configs['flat/recommended'].rules,
 
   "import/order": importOrderRule,
 
