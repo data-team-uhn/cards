@@ -123,15 +123,15 @@ public class FormToMarkdownProcessorTest
             + NEXT_LINE
             + "### Section 2" + NEXT_LINE
             + NEXT_LINE
-            + "**Long Question**  " + NEXT_LINE
-            + "100" + NEXT_LINE
+            + "Long Question  " + NEXT_LINE
+            + "**100**" + NEXT_LINE
             + NEXT_LINE
             + "### Section 1" + NEXT_LINE
             + NEXT_LINE
-            + "**Date Question**  " + NEXT_LINE
-            + "—" + NEXT_LINE
+            + "Date Question  " + NEXT_LINE
+            + "**—**" + NEXT_LINE
             + NEXT_LINE
-            + "**Pedigree Question**  <div style='display: inline-block; width: 90%; height: calc(100vw * 0.9);"
+            + "Pedigree Question  <div style='display: inline-block; width: 90%; height: calc(100vw * 0.9);"
             + "overflow: hidden;'><svg style='width: 100%' greeDisplayedValue</div>" + NEXT_LINE
             + NEXT_LINE
             + "**Notes**  " + NEXT_LINE
@@ -149,8 +149,8 @@ public class FormToMarkdownProcessorTest
             + NEXT_LINE
             + "### Section 3" + NEXT_LINE
             + NEXT_LINE
-            + "**Boolean Question**  " + NEXT_LINE
-            + "true" + NEXT_LINE
+            + "Boolean Question  " + NEXT_LINE
+            + "**true**" + NEXT_LINE
             + NEXT_LINE
             + "----", markdown);
     }
@@ -168,11 +168,11 @@ public class FormToMarkdownProcessorTest
             + NEXT_LINE
             + "### Section 4 #1" + NEXT_LINE
             + NEXT_LINE
-            + "**Text Question**  " + NEXT_LINE
-            + "some text" + NEXT_LINE
+            + "Text Question  " + NEXT_LINE
+            + "**some text**" + NEXT_LINE
             + NEXT_LINE
-            + "**Boolean Question**  " + NEXT_LINE
-            + "true" + NEXT_LINE
+            + "Boolean Question  " + NEXT_LINE
+            + "**true**" + NEXT_LINE
             + NEXT_LINE
             + "----", markdown);
     }
