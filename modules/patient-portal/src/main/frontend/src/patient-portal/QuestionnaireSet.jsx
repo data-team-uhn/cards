@@ -865,7 +865,7 @@ function QuestionnaireSet(props) {
       )
   );
 
-  const progress = 100.0 * (crtStep + 1) / ((questionnaireIds?.length || 0) + 1);
+  const progress = Math.min(100, 100.0 * (crtStep + 1) / (questionnaireIds?.length || 1));
 
   const screenContent = (
     <>
