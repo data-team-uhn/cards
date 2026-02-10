@@ -25,6 +25,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
@@ -95,6 +96,12 @@ public class BooleanLabelProcessorTest
     }
 
     @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.booleanLabelProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.booleanLabelProcessor.getPriority());
@@ -128,7 +135,7 @@ public class BooleanLabelProcessorTest
         Node node = session.getNode("/Forms/f1/a1");
         Node question = session.getNode(TEST_QUESTION_PATH);
         question.setProperty("yesLabel", "yes");
-        question.setProperty("noLabel", "yes");
+        question.setProperty("noLabel", "no");
         question.setProperty("unknownLabel", "unknown");
 
         this.booleanLabelProcessor.leave(node, json, mock(Function.class));
@@ -137,6 +144,28 @@ public class BooleanLabelProcessorTest
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
         Assert.assertEquals("yes", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+    }
+
+    @Test
+    public void leaveForMultivaluedBooleanAnswerNode() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        Node node = session.getNode("/Forms/f1/a2");
+        Node question = session.getNode(TEST_QUESTION_PATH);
+        question.setProperty("yesLabel", "yes");
+        question.setProperty("noLabel", "no");
+        question.setProperty("unknownLabel", "unknown");
+
+        this.booleanLabelProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+
+        Assert.assertFalse(jsonObject.isEmpty());
+        Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
+        JsonArray values = jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY);
+        Assert.assertEquals(2, values.size());
+        Assert.assertEquals("yes", values.getString(0));
+        Assert.assertEquals("no", values.getString(1));
     }
 
     @Test
@@ -211,6 +240,10 @@ public class BooleanLabelProcessorTest
                 NODE_TYPE, ANSWER_BOOLEAN_TYPE,
                 QUESTION_PROPERTY, question,
                 VALUE_PROPERTY, 1)
+            .resource("/Forms/f1/a2",
+                NODE_TYPE, ANSWER_BOOLEAN_TYPE,
+                QUESTION_PROPERTY, question,
+                VALUE_PROPERTY, List.of(1, 0).toArray())
             .commit();
     }
 }

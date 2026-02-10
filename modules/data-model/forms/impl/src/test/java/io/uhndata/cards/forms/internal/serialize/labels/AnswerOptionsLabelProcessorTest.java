@@ -104,6 +104,12 @@ public class AnswerOptionsLabelProcessorTest
     }
 
     @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.answerOptionsLabelProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.answerOptionsLabelProcessor.getPriority());
