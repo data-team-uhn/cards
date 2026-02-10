@@ -99,6 +99,12 @@ public class VocabularyLabelProcessorTest
     }
 
     @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.vocabularyLabelProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.vocabularyLabelProcessor.getPriority());

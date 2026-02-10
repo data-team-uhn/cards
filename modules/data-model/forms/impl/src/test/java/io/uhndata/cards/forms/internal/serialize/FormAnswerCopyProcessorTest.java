@@ -108,6 +108,12 @@ public class FormAnswerCopyProcessorTest
     }
 
     @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.formAnswerCopyProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.formAnswerCopyProcessor.getPriority());

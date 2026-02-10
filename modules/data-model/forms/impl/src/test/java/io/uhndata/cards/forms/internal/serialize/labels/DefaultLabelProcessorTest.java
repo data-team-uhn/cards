@@ -96,6 +96,12 @@ public class DefaultLabelProcessorTest
     }
 
     @Test
+    public void getDescriptionReturnsSomething()
+    {
+        Assert.assertNotNull(this.defaultLabelProcessor.getDescription());
+    }
+
+    @Test
     public void getPriorityTest()
     {
         Assert.assertEquals(PRIORITY, this.defaultLabelProcessor.getPriority());
@@ -181,7 +187,7 @@ public class DefaultLabelProcessorTest
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenThrow(new RepositoryException());
+        when(node.isNodeType("cards:Answer")).thenThrow(new RepositoryException());
 
         this.defaultLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
