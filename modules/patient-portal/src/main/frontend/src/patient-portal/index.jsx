@@ -87,13 +87,12 @@ function PatientPortalHomepage (props) {
     </>);
   }
 
-  return (<>
+  return (
     <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
       ...accessConfig,
       ...surveyInstructions
     }} />
-    <Footer />
-  </>);
+  );
 }
 
 const cache = createCache({
