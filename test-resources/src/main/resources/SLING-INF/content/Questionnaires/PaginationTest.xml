@@ -44,6 +44,7 @@ Page 4: **Follow-up and surveillance**, displayed when *Vital status* is *Alive 
 		<name>requiredSubjectTypes</name>
 		<values>
 			<value>/SubjectTypes/Patient</value>
+			<value>/SubjectTypes/Patient/Visit</value>
 		</values>
 		<type>Reference</type>
 	</property>
