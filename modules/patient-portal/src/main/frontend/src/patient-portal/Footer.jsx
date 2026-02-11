@@ -22,6 +22,8 @@ import {
   Link,
   Toolbar,
 } from "@mui/material";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import classNames from "classnames";
 import { makeStyles } from 'tss-react/mui';
 
 import { loadExtensions } from "../uiextension/extensionManager";
@@ -38,12 +40,18 @@ const useStyles = makeStyles()(theme => ({
     color: theme.palette.text.secondary,
     justifyContent: "center",
     minHeight: theme.spacing(2),
+  },
+  horizontal: {
     "& > * + *:before" : {
       content: '"·"',
       display: "inline-block",
       margin: theme.spacing(0, 1),
       opacity: 0.5,
     },
+  },
+  vertical: {
+    display: "grid",
+    textAlign: "center",
   },
 }));
 
@@ -52,6 +60,8 @@ export default function Footer (props) {
 
   const { classes } = useStyles();
 
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
+
   useEffect(() => {
     getFooterExtensions()
       .then(extensions => setFooterExtensions(extensions))
@@ -59,7 +69,9 @@ export default function Footer (props) {
   }, []);
 
   return (
-    <Toolbar className={classes.footer}>
+    <Toolbar
+      className={classNames(classes.footer, isSmallScreen ? classes.vertical : classes.horizontal)}
+    >
       {
         footerExtensions.map((extension, index) => {
           let Extension = extension["cards:extensionRender"];
@@ -72,13 +84,11 @@ export default function Footer (props) {
 
 export function FooterLink (props) {
   return (
-    <span>
-      <Link
-        color="inherit"
-        variant="body2"
-        underline="hover"
-        {...props}
-      />
-    </span>
+    <Link
+      color="inherit"
+      variant="body2"
+      underline="hover"
+      {...props}
+    />
   );
 }
