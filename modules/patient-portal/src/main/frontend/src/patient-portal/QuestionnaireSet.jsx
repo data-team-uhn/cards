@@ -42,6 +42,7 @@ import { DateTime } from "luxon";
 import { makeStyles } from 'tss-react/mui';
 import { v4 as uuidv4 } from 'uuid';
 
+import Footer from "./Footer.jsx";
 import Header from "./Header.jsx";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 import FormattedText from "../components/FormattedText.jsx";
@@ -888,6 +889,7 @@ function QuestionnaireSet(props) {
               exitScreen
         }
       </QuestionnaireSetScreen>
+      { (screenType != "survey") && <Footer /> }
     </>
   )
 
