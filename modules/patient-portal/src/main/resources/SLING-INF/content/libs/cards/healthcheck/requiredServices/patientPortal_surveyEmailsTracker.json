@@ -1,0 +1,4 @@
+{
+  "serviceClass": "org.apache.sling.api.resource.observation.ResourceChangeListener",
+  "osgiFilter": "(service.pid=io.uhndata.cards.patients.surveytracker.SurveyTracker)"
+}

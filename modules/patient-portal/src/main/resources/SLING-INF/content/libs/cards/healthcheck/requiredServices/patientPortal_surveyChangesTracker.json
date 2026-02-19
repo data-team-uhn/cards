@@ -1,0 +1,4 @@
+{
+  "serviceClass": "org.osgi.service.event.EventHandler",
+  "osgiFilter": "(service.pid=io.uhndata.cards.patients.surveytracker.SurveyTracker)"
+}
