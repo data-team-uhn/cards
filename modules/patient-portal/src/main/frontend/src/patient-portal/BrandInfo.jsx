@@ -27,7 +27,7 @@ function BrandInfo () {
   return (
     <Typography component="span" variant="body2">
       Built with <Link
-        href="https://cards.uhndata.io"
+        href="https://github.com/data-team-uhn/cards/"
         title="Clinical Archive for Data Science"
         target="_blank"
         rel="noreferrer"
