@@ -34,6 +34,7 @@
 		<name>requiredSubjectTypes</name>
 		<values>
 			<value>/SubjectTypes/Patient</value>
+			<value>/SubjectTypes/Patient/Visit</value>
 		</values>
 		<type>Reference</type>
 	</property>
@@ -49,6 +50,11 @@
 			<name>dataType</name>
 			<value>date</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 	</node>
 	<node>

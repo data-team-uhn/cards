@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright 2022-2026 DATA @ UHN. See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<node>
+    <name>SurveyInstructions</name>
+    <property>
+        <name>welcomeMessage</name>
+        <value>
+Sample welcome message
+        </value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>noEventsMessage</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>eventSelectionMessage</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>eventLabel</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>noSurveysMessage</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>surveySubmittedMessage</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>enableStartScreen</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <property>
+        <name>greeting</name>
+        <value>Sample Greeting</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>surveyIntro</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>surveyDraftInfo</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>enableReviewScreen</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <property>
+        <name>disclaimer</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>summaryInstructions</name>
+        <value>
+Thank you for filling out these test forms
+        </value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>interpretationInstructions</name>
+        <value></value>
+        <type>String</type>
+    </property>
+</node>

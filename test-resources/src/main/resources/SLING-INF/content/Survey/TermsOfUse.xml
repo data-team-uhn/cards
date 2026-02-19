@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright 2022-2026 DATA @ UHN. See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<node>
+    <name>TermsOfUse</name>
+    <property>
+        <name>title</name>
+        <value>Sample Terms of Use</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>version</name>
+        <value>2026-02-11</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>acceptanceRequired</name>
+        <value>False</value>
+        <type>Boolean</type>
+    </property>
+    <property>
+        <name>text</name>
+        <value>
+## Example Terms of Use
+
+In an actual project, this would contain a lot more text, so here is some lorum ipsum
+
+### 1. Purpose
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur volutpat dolor quis felis gravida, cursus porttitor ligula viverra. Phasellus sodales ipsum a ante porttitor, sit amet varius mauris vulputate. Phasellus vel mauris metus. Quisque euismod dui magna, sit amet pretium risus porta in. Integer ac fermentum tellus. Donec sed sem gravida, molestie velit vel, tincidunt massa. Proin imperdiet mauris a mi sagittis, vitae lacinia nisi ornare. Duis accumsan lorem sed iaculis pretium. Fusce hendrerit neque odio, at vulputate libero ullamcorper ut. Proin et auctor dui. Morbi molestie tortor ut ligula accumsan, eu dapibus metus vehicula.
+
+Sed dictum ex elit, placerat luctus nunc molestie sit amet. Sed ipsum magna, porttitor id ipsum eget, ultrices vestibulum diam. In hac habitasse platea dictumst. Nullam condimentum pulvinar justo, venenatis vulputate elit blandit id. In hac habitasse platea dictumst. Aliquam consequat non arcu sit amet ornare. Suspendisse potenti. Pellentesque et eros molestie justo mollis tincidunt nec sit amet tortor. Aliquam a maximus ligula.
+
+### 2. Data Collection
+
+Phasellus ante neque, maximus ac commodo quis, aliquet id nulla. Sed et nibh vel felis interdum gravida in nec nunc. Pellentesque feugiat eu ipsum quis imperdiet. Morbi feugiat pharetra nisi, ut condimentum nulla finibus ut. Vestibulum ut tristique tortor, et tempus justo. Curabitur efficitur sapien massa, vitae tempus elit consequat vitae. Vestibulum aliquet libero odio, eu euismod tortor dapibus sed. Maecenas mi est, consequat vitae sem ac, accumsan vehicula metus. Sed eros lacus, rhoncus ac libero vel, varius molestie turpis. Ut luctus mauris ut ullamcorper dignissim. Vestibulum dictum lobortis turpis ut blandit. Proin auctor metus ut cursus sollicitudin. Maecenas ut turpis diam. Pellentesque sollicitudin velit ligula, sed fringilla arcu rutrum non. In hac habitasse platea dictumst.
+
+Nullam ac libero sem. Cras facilisis ultrices est eget molestie. Aliquam nec magna et erat blandit pretium sagittis in mauris. Mauris sed diam consequat, venenatis enim non, bibendum turpis. Pellentesque semper fermentum cursus. Integer malesuada auctor justo, a ornare purus condimentum ut. Ut et eleifend velit.
+
+### 3. Limitations
+
+Fusce dapibus eros quis faucibus consequat. In porttitor tincidunt porta. Suspendisse ut nulla eu nibh fermentum tristique sit amet vel neque. Vivamus vitae lorem id dui ultricies tempor a vel est. Curabitur leo sapien, laoreet vitae turpis ultricies, iaculis elementum ante. Ut sit amet ultrices dui. Proin et urna at felis tristique tempor vel vitae orci.
+        </value>
+        <type>String</type>
+    </property>
+
+</node>
