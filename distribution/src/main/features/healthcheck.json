@@ -26,7 +26,8 @@
         "org.apache.felix.hc.generalchecks.BundlesStartedCheck":{
             "hc.tags":[
                 "bundles"
-            ]
+            ],
+            "useCriticalForInactive": true
         },
         "org.apache.felix.hc.generalchecks.CpuCheck":{
             "hc.tags":[
