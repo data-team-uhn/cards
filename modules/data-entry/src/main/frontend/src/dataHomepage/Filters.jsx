@@ -372,6 +372,7 @@ function Filters(props) {
           openDialogAndAdd();
           setFocusRow(activeFilters.length);
         }}
+        data-testid="add-filter-button"
       >
         <Add fontSize="small" />
       </Button>
@@ -383,6 +384,7 @@ function Filters(props) {
         width="md"
         disableEnforceFocus
         title="Modify filters"
+        data-testid="modify-filters-dialog"
       >
         <DialogContent dividers>
           {error &&
@@ -480,6 +482,7 @@ function Filters(props) {
           <Button
             variant="contained"
             onClick={saveFilters}
+            data-testid="apply-filters-button"
           >
             Apply
           </Button>

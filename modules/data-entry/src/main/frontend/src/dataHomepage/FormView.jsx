@@ -188,7 +188,7 @@ function FormView(props) {
   }
 
   return (
-    <Card className={classes.formView}>
+    <Card className={classes.formView} data-testid="forms-view">
       {title &&
       <CardHeader
         title={

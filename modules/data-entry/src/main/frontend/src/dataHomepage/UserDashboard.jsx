@@ -102,7 +102,7 @@ function UserDashboard(props) {
       </Grid>
       }
       { creationExtensions.length > 0 && <>
-        <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
+        <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose} data-testid="new-item-dialog">
           <DialogContent dividers className={classes.dialogContentWithTable}>
             <MaterialReactTable
               enableToolbarInternalActions={false}
@@ -152,6 +152,7 @@ function UserDashboard(props) {
                 setSelectedCreation(creationExtensions.indexOf(selectedRow));
               }}
               disabled={typeof(selectedRow) === "undefined"}
+              data-testid="new-item-next-button"
             >
               Next
             </Button>

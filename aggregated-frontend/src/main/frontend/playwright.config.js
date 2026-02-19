@@ -1,9 +1,5 @@
 /**
  * Playwright config for aggregated-frontend e2e tests.
- * Run against a running CARDS instance (e.g. start_cards2.sh or mvn + Sling).
- *
- * Set CARDS_URL to target a different instance, e.g.:
- *   CARDS_URL=http://localhost:9090 yarn test:e2e
  */
 const { defineConfig, devices } = require('@playwright/test');
 
@@ -19,6 +15,9 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    launchOptions: {
+      slowMo: 500,
+    },
   },
   timeout: 30000,
   expect: {
@@ -30,9 +29,8 @@ module.exports = defineConfig({
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
-    // Start your app via the script you use today :contentReference[oaicite:2]{index=2}
-    command: "bash ./start_cards2.sh -p 8080",
-    // The script itself uses this endpoint to determine readiness :contentReference[oaicite:3]{index=3}
+    command: "bash ./start_cards.sh",
+    // The script itself uses this endpoint to determine readiness
     url: "http://localhost:8080/system/sling/info.sessionInfo.json",
     timeout: 180000,
     reuseExistingServer: !process.env.CI,

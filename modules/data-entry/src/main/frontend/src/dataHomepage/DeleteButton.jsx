@@ -175,7 +175,7 @@ function DeleteButton(props) {
           <Typography>{errorMessage}</Typography>
         </ErrorDialog>
       }
-      <Dialog open={open} onClose={closeDialog}>
+      <Dialog open={open} onClose={closeDialog} data-testid="delete-dialog">
         <DialogTitle>
           Delete {entryLabel ? entryLabel.concat(' ') : entryType.concat(' ')}{deleteRecursive ? " and dependent items": null }
         </DialogTitle>
@@ -190,6 +190,7 @@ function DeleteButton(props) {
             color="error"
             onClick={handleDelete}
             disabled={deletionInProgress}
+            data-testid="delete-button"
           >
             { deletionInProgress ? "Deleting..." : deleteRecursive ? "Delete All" : "Delete" }
           </Button>
