@@ -1551,7 +1551,7 @@
           <!-- Lock down plugin version for build reproducibility -->
           <version>3.3.1</version>
           <configuration>
-            <arguments>-Prelease</arguments>
+            <preparationProfiles>quick</preparationProfiles>
             <releaseProfiles>release,release-profile</releaseProfiles>
             <preparationGoals>clean verify</preparationGoals>
             <!-- Avoid site generation during the release:perform to speed up release process -->
