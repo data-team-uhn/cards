@@ -46,8 +46,7 @@ const useStyles = makeStyles()(theme => ({
     display: "flex",
     justifyContent: "space-between",
     background: theme.palette.background.paper,
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
+    padding: theme.spacing(1, 2) + " !important",
     "& > .cards-patientPortal-surveyTitle" : {
       "@media (max-width: 500px)" : {
         display: "none",

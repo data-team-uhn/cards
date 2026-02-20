@@ -20,11 +20,11 @@
 import {
   Breadcrumbs,
   Collapse,
+  Divider,
   Grid,
   Typography,
   useScrollTrigger
 } from "@mui/material";
-import { grey } from '@mui/material/colors';
 import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
@@ -35,9 +35,9 @@ const useStyles = makeStyles()(theme => ({
   resourceHeader: {
     position: "sticky",
     top: 0,
-    padding: `${theme.spacing(GRID_SPACE_UNIT, GRID_SPACE_UNIT, GRID_SPACE_UNIT)} !important`,
+    padding: `${theme.spacing(GRID_SPACE_UNIT, 0, GRID_SPACE_UNIT)} !important`,
     margin: theme.spacing(GRID_SPACE_UNIT, 0, 0, 0),
-    backgroundColor: grey[100],
+    backgroundColor: theme.palette.background.paper,
     zIndex: "1010",
     "& .MuiBreadcrumbs-root" : {
       width: "fit-content",
@@ -50,8 +50,8 @@ const useStyles = makeStyles()(theme => ({
     margin: theme.spacing(-1.25, 0, -2.25),
   },
   resourceTitle: {
-    backgroundColor: grey[100],
-    padding: `${theme.spacing(GRID_SPACE_UNIT, GRID_SPACE_UNIT, GRID_SPACE_UNIT)} !important`,
+    backgroundColor: theme.palette.background.paper,
+    padding: `${theme.spacing(GRID_SPACE_UNIT, 0, GRID_SPACE_UNIT)} !important`,
     marginTop: theme.spacing(-3*GRID_SPACE_UNIT),
     zIndex: 2,
   }
@@ -130,6 +130,9 @@ function ResourceHeader (props) {
             { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }
           </Collapse>
         </Grid>
+        <Collapse in={fullBreadcrumbTrigger}>
+          { fullBreadcrumbTrigger && <Divider sx={{ mt: 2, mb: -2 }}/> }
+        </Collapse>
       </Grid>
       <Grid size={12} className={classes.resourceTitle}>
         <Grid container justifyContent="space-between" alignItems="start" spacing={1}>

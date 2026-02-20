@@ -245,7 +245,7 @@ function Section(props) {
               >
                 {/* Section header */
                   (hasHeader || isRecurrent) &&
-                  <Grid className={classes.sectionHeader}>
+                  <Grid sx={{ pb: 0 }}>
                     {/* Delete this entry and expand this entry button */}
                     {isEdit && isRecurrent &&
                       <DeleteButton

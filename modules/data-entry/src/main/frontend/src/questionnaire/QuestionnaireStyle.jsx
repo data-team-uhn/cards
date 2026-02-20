@@ -232,17 +232,6 @@ const questionnaireStyle = theme => ({
     position: 'relative',
     textAlign: 'center'
   },
-  sectionHeader: {
-    paddingBottom: "0 !important",
-    "& > h5" : {
-      padding: theme.spacing(1, GRID_SPACE_UNIT),
-      background: theme.palette.action.hover,
-      borderBottom: "1px solid transparent",
-    },
-    "& > .MuiTypography-caption" : {
-      padding: theme.spacing(0, GRID_SPACE_UNIT),
-    }
-  },
   subjectAvatar: {
     backgroundColor: theme.palette.secondary.main,
     marginLeft: theme.spacing(-1),
