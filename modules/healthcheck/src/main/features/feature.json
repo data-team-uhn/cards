@@ -23,7 +23,7 @@
     }
   ],
   "configurations":{
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~locking":{
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cardshealthcheck":{
       "user.mapping":[
         "io.uhndata.cards.healthcheck:healthcheck=[sling-readall]"
       ]
