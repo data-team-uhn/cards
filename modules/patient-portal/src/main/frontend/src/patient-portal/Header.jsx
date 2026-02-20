@@ -118,7 +118,7 @@ function Header (props) {
 
   let subtitleBar = subtitle ?
     <Toolbar variant="dense" className={classes.toolbar}>
-      <Typography variant="h6" color="textPrimary">{ subtitle }</Typography>
+      <Typography variant="subtitle1" color="textPrimary">{ subtitle }</Typography>
       { step }
     </Toolbar>
     : <></>;
