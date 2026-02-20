@@ -26,6 +26,7 @@ import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import AnswerInstructions from "./AnswerInstructions";
+// import AnswerInstructions, { isRequired } from "./AnswerInstructions";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import FormattedText from "../components/FormattedText.jsx";
 
@@ -73,6 +74,9 @@ function Question (props) {
   }, [questionRef]);
 
   let cardClasses = [classes.questionCard];
+  // if (disableInstructions && isRequired(questionDefinition)) {
+  //   cardClasses.push(classes.requiredAnswer);
+  // }
   if (doHighlight) {
     cardClasses.push(classes.focusedQuestionnaireItem);
   }
@@ -102,6 +106,7 @@ function Question (props) {
         // so that pageActive changing does not cause children to lose state
         pageActive && <CardHeader
           disableTypography
+          avatar={disableInstructions && <AnswerInstructions variant="asterisc" {...questionDefinition} {...props} />}
           title={<FormattedText component="h6" variant="h6">{text}</FormattedText>}
           subheader={<FormattedText component="div" variant="caption" color="textSecondary">{description}</FormattedText>}
         />

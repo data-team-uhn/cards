@@ -42,6 +42,13 @@ const questionnaireStyle = theme => ({
         listStylePosition: "inside",
       },
     },
+    "& .MuiCardHeader-avatar" : {
+      marginRight: 0,
+      marginLeft: theme.spacing(-3),
+      width: theme.spacing(3),
+      justifyContent: "center",
+      alignSelf: "baseline",
+    },
     "& .MuiCardContent-root" : {
       paddingLeft: theme.spacing(3),
       paddingRight: theme.spacing(3),
@@ -78,6 +85,16 @@ const questionnaireStyle = theme => ({
       paddingTop: theme.spacing(0),
       paddingBottom: theme.spacing(0),
     }
+  },
+  requiredAnswer: {
+    "& .MuiCardHeader-content > h6 > .wmde-markdown > *:last-child": {
+      display: "inline",
+    },
+    "& .MuiCardHeader-content > h6 > .wmde-markdown > *:last-child::after": {
+      display: "inline",
+      content: '" *"',
+      color: theme.palette.error.main,
+    },
   },
   checkbox: {
     margin: theme.spacing(-2,0),

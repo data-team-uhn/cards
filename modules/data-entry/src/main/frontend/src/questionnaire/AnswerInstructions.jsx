@@ -31,6 +31,7 @@ import { hasWarningFlags } from "./FormUtilities";
 function AnswerInstructions (props) {
   checkPropTypes(AnswerInstructions, props);
   let {
+    variant = "verbose",
     minAnswers = 0,
     maxAnswers = 1,
     currentAnswers = 0,
@@ -58,6 +59,24 @@ function AnswerInstructions (props) {
       || !isEdit && !hasWarningFlags(existingAnswer)
   , [currentAnswers]);
 
+  if (variant == "asterisc") {
+    return (minAnswers > 0 ? <Typography variant="h6" color="error">*</Typography> : null);
+  }
+
+  if (["required", "optional", "short"].includes(variant)) {
+    if (minAnswers > 0 && variant != "optional") {
+      return (
+        <Typography variant="caption" color="error">Required</Typography>
+      );
+    } else if (minAnswers == 0 && variant != "required") {
+      return (
+        <Typography variant="caption" color="textSecondary">Optional</Typography>
+      );
+    } else {
+      return null;
+    }
+  }
+
   return (instructionsExist && (
     <Typography
       component="p"
@@ -77,10 +96,15 @@ function AnswerInstructions (props) {
 }
 
 AnswerInstructions.propTypes = {
+  variant: PropTypes.oneOf(["asterisc", "required", "optional", "short", "verbose"]),
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   currentAnswers: PropTypes.number,
   answerLabel: PropTypes.string,
 };
+
+export function isRequired(questionDefinition) {
+  return questionDefinition?.minAnswers > 0;
+}
 
 export default AnswerInstructions;
