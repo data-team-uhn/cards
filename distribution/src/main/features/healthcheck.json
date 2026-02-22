@@ -97,6 +97,9 @@
             "user.mapping":[
                 "org.apache.sling.hc.support=[sling-readall]"
             ]
+        },
+        "org.apache.sling.commons.scheduler.impl.SchedulerHealthCheck":{
+            "max.quartzJob.duration.acceptable":600000
         }
     }
 }
