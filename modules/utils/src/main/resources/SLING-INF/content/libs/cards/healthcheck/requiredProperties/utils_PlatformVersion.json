@@ -1,3 +1,4 @@
 {
-  "propertyPath": "/libs/cards/conf/Version/Version"
+  "propertyPath": "/libs/cards/conf/Version/Version",
+  "requiredValue": "${project.version}"
 }
