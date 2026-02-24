@@ -18,5 +18,5 @@
 # under the License.
 
 apk update || exit -1
-apk add bash openjdk11 maven python3 gcompat || exit -1
+apk add bash openjdk21 maven python3 gcompat || exit -1
 mvn clean install -Prelease -Dgpg.skip -Dmaven.javadoc.skip || exit -1

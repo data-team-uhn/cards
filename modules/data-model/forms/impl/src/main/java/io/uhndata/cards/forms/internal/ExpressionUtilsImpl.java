@@ -23,7 +23,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,6 +35,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.jackrabbit.oak.api.Type;
+import org.mozilla.javascript.IdScriptableObject;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -71,17 +71,6 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
     private Object toJavaScriptObject(ScriptEngine javascriptEngine, Object javaObject)
     {
-        if (javaObject != null && (javaObject.getClass().isArray() || javaObject instanceof List)) {
-            try {
-                String tempKey = "tmpCardsObjectConversionKey";
-                Bindings tmpBindings = javascriptEngine.createBindings();
-                tmpBindings.put(tempKey, javaObject);
-                return javascriptEngine.eval("Java.from(" + tempKey + ")", tmpBindings);
-            } catch (ScriptException e) {
-                LOGGER.warn("Parsing Object {} to JSObject failed: {}", javaObject,
-                    e.getMessage(), e);
-            }
-        }
         return javaObject;
     }
 
@@ -100,18 +89,25 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
             Bindings env = engine.createBindings();
             AtomicBoolean usedChangedValue = new AtomicBoolean(false);
+            StringBuilder script = new StringBuilder();
             parsedExpression.getQuestions().forEach((key, value) -> {
                 env.put(value.getArgument(), toJavaScriptObject(engine, value.getValue()));
+                script.append("if (typeof " + value.getArgument() + " === 'undefined') " + value.getArgument()
+                    + " = undefined;\n");
                 if (changedQuestions.contains(value.getQuestionName())) {
                     usedChangedValue.set(true);
                 }
             });
-            Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
+            script.append("let result = (function(){" + parsedExpression.getExpression() + "})();\n");
+            script.append("result;");
+            Object result = engine.eval(script.toString(), env);
             return new ExpressionResult(false, usedChangedValue.get(), ValueFormatter.formatResult(result, type),
                 parsedExpression.getQuestions().size());
         } catch (ScriptException e) {
             LOGGER.warn("Evaluating the expression for question {} failed: {}", question,
                 e.getMessage(), e);
+        } catch (Exception e) {
+            LOGGER.error("Failed for {}", question, e);
         }
         return new ExpressionResult(false, false, null, 0);
     }
@@ -340,8 +336,8 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
         static Long formatToLong(final Object rawResult)
         {
-            if (rawResult instanceof String) {
-                return Long.valueOf((String) rawResult);
+            if (rawResult instanceof String || rawResult instanceof IdScriptableObject) {
+                return Long.valueOf(rawResult.toString());
             } else if (rawResult instanceof Integer) {
                 return Long.valueOf((Integer) rawResult);
             } else if (rawResult instanceof Long) {
@@ -360,6 +356,8 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
                 return Double.valueOf((String) rawResult);
             } else if (rawResult instanceof Double) {
                 return (Double) rawResult;
+            } else if (rawResult instanceof IdScriptableObject) {
+                return Double.valueOf(rawResult.toString());
             } else {
                 LOGGER.error("Could not parse Double from " + rawResult.getClass().toString());
                 return null;
@@ -374,6 +372,8 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
                 return (BigDecimal) rawResult;
             } else if (rawResult instanceof Double) {
                 return BigDecimal.valueOf((Double) rawResult);
+            } else if (rawResult instanceof IdScriptableObject) {
+                return new BigDecimal(rawResult.toString());
             } else {
                 LOGGER.error("Could not parse BigDecimal from " + rawResult.getClass().toString());
                 return null;

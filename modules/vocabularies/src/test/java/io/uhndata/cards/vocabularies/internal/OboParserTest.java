@@ -32,7 +32,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import io.uhndata.cards.vocabularies.spi.VocabularyDescription;
 import io.uhndata.cards.vocabularies.spi.VocabularyDescriptionBuilder;

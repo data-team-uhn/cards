@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -274,7 +274,7 @@ public class ImportTask implements Runnable
      */
     String getPostResponse(final String url, final String data, final String token) throws IOException
     {
-        final URLConnection con = new URL(url).openConnection();
+        final URLConnection con = URI.create(url).toURL().openConnection();
         final HttpURLConnection http = (HttpURLConnection) con;
 
         http.setRequestMethod("POST");
