@@ -41,32 +41,51 @@ var getDefaultExpiryForVisit = function(config, visitInformationForm) {
     return getExpiryByDays(days);
 }
 
+var result = null;
+var error = null;
 var visitTimeQuestionUuid = currentSession.getNode("/Questionnaires/Visit information/time").getIdentifier();
-var time = currentSession.getWorkspace().getQueryManager().createQuery("select t.* from [cards:Form] as f inner join [cards:DateAnswer] as t on t.form = f.[jcr:uuid] where f.subject = '" + currentNode.getIdentifier() + "' and t.question = '" + visitTimeQuestionUuid + "' OPTION (index tag cards)", "JCR-SQL2").execute().getNodes();
 var config = sling.getService(Packages.io.uhndata.cards.patients.api.PatientAccessConfiguration);
-if (time.hasNext()) {
-    time = time.next();
-    var visitInformationForm = time.getParent();
-    if (time.hasProperty("value")) {
-        // Calculate when a standard token for this visit would expire for a standard survey
-        time = time.getProperty("value").getDate();
-        var days = config.getDaysRelativeToEventWhileSurveyIsValid(visitInformationForm);
-        time.add(java.util.Calendar.DATE, days + 1);
-        time.set(java.util.Calendar.HOUR_OF_DAY, 0);
-        time.set(java.util.Calendar.MINUTE, 0);
-        time.set(java.util.Calendar.SECOND, 0);
-        time.set(java.util.Calendar.MILLISECOND, 0);
-        var now = java.util.Calendar.getInstance();
-        if (now.compareTo(time) >= 0) {
-            // The standard survey expiry time is in the past: Use the default manual expiry time instead of a survey based expiry time
-            time = getDefaultExpiryForVisit(config, visitInformationForm);
-        }
+var daysParam = request.getParameter("validForDays");
+if (daysParam !== null) {
+    var days = parseInt(daysParam);
+    if (!isNaN(days) && days >= 0) {
+        result = getExpiryByDays(days);
     } else {
-        time = getDefaultExpiryForVisit(config, visitInformationForm);
+        error = "Invalid input: " + daysParam;
     }
 } else {
-    time = getDefaultExpiry(config);
+    var time = currentSession.getWorkspace().getQueryManager().createQuery(
+        "select t.* from [cards:Form] as f inner join [cards:DateAnswer] as t on t.form = f.[jcr:uuid] where f.subject = '"
+            + currentNode.getIdentifier() + "' and t.question = '" + visitTimeQuestionUuid + "' OPTION (index tag cards)"
+        , "JCR-SQL2").execute().getNodes();
+    if (time.hasNext()) {
+        time = time.next();
+        var visitInformationForm = time.getParent();
+        if (time.hasProperty("value")) {
+            // Calculate when a standard token for this visit would expire for a standard survey
+            result = time.getProperty("value").getDate();
+            var days = config.getDaysRelativeToEventWhileSurveyIsValid(visitInformationForm);
+            result.add(java.util.Calendar.DATE, days + 1);
+            result.set(java.util.Calendar.HOUR_OF_DAY, 0);
+            result.set(java.util.Calendar.MINUTE, 0);
+            result.set(java.util.Calendar.SECOND, 0);
+            result.set(java.util.Calendar.MILLISECOND, 0);
+            var now = java.util.Calendar.getInstance();
+            if (now.compareTo(result) >= 0) {
+                // The standard survey expiry time is in the past: Use the default manual expiry time instead of a survey based expiry time
+                result = getDefaultExpiryForVisit(config, visitInformationForm);
+            }
+        } else {
+            result = getDefaultExpiryForVisit(config, visitInformationForm);
+        }
+    } else {
+        result = getDefaultExpiry(config);
+    }
 }
-var token = sling.getService(Packages.io.uhndata.cards.auth.token.TokenManager).create("patient", time, {"cards:sessionSubject": currentNode.getPath()});
-out.println(token.getToken());
+if (!error) {
+    var token = sling.getService(Packages.io.uhndata.cards.auth.token.TokenManager).create("patient", result, {"cards:sessionSubject": currentNode.getPath()});
+    out.println(token.getToken());
+} else {
+    out.println(error);
+}
 %>
