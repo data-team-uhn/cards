@@ -37,7 +37,8 @@ export const DEFAULT_PATIENT_ACCESS_CONFIG = {
   tokenlessAuthEnabled: false,
   PIIAuthRequired: false,
   daysRelativeToEventWhileSurveyIsValid: "0",
-  draftLifetime: "-1"
+  draftLifetime: "-1",
+  manualTokenLifespanDays: "0",
 };
 
 const useStyles = makeStyles()(theme => ({
@@ -76,11 +77,16 @@ function PatientAccessConfiguration() {
       "Patients can edit unsubmitted responses for:",
       "-1 means that drafts are kept until the patient is no longer able to access their surveys, 0 means drafts are deleted daily at midnight, 1 means they are kept until the next day at midnight, etc.",
       "Please use a value of at least 0, or -1 to disable periodic draft deletion."
-    ]
+    ],
+    manualTokenLifespanDays: [
+      "When a token is created manually, the number of days that the token should be valid for by default.",
+      "This should be a positive integer for a number of days, or 0 for a 10 minute token lifespan"
+    ],
   };
 
   const LIMITS = {
-    draftLifetime: { min: -1 }
+    draftLifetime: { min: -1 },
+    manualTokenLifespanDays: { min: 0 },
   }
 
   let buildConfigData = (formData) => {
@@ -152,6 +158,7 @@ function PatientAccessConfiguration() {
         { renderConfigInput("daysRelativeToEventWhileSurveyIsValid", "days") }
         { renderConfigInput("daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted", "days") }
         { renderConfigInput("draftLifetime", "days") }
+        { renderConfigInput("manualTokenLifespanDays", "days") }
       </List>
     </AdminConfigScreen>
   );

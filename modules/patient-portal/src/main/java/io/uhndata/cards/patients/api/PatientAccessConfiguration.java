@@ -80,4 +80,31 @@ public interface PatientAccessConfiguration
      * @return A number of days
      */
     int getClinicDaysRelativeToEventWhileSurveyIsValid(Node clinicNode);
+
+    /**
+     * Get the configured amount of time, in days, that a manually created token should be valid for.
+     * If this value is {@code 0}, then a created token should only be valid for 10 minutes.
+     *
+     * @return A number of days
+     */
+    int getManualTokenLifespanDays();
+
+    /**
+     * Get the configured manual token lifespan for the clinic linked to the Subject related to the
+     * visitInformationNode Resource or default if it cannot be found.
+     *
+     * @param visitInformationForm the JCR Visit Information Node
+     *
+     * @return A number of days
+     */
+    int getManualTokenLifespanDays(Node visitInformationForm);
+
+    /**
+     * Returns the manually created token lifetime associated with the clinic or default if it cannot be found.
+     *
+     * @param clinicNode the clinic Node
+     *
+     * @return A number of days
+     */
+    int getClinicManualTokenLifespanDays(Node clinicNode);
 }
