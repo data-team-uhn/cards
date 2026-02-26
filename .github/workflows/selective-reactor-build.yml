@@ -79,9 +79,9 @@ jobs:
           echo "Touched module roots:"
           echo "$MODULES"
 
-          # Space-separated list for the loop
+          # Comma-separated list for -pl
           echo "mode=modules" >> "$GITHUB_OUTPUT"
-          echo "modules=$(echo "$MODULES" | tr '\n' ' ' | xargs)" >> "$GITHUB_OUTPUT"
+          echo "modules=$(echo "$MODULES" | paste -sd ',')" >> "$GITHUB_OUTPUT"
 
       - name: Full reactor build
         if: steps.detect.outputs.mode == 'full'
@@ -89,13 +89,7 @@ jobs:
 
       - name: Build only touched modules (+ dependencies)
         if: steps.detect.outputs.mode == 'modules'
-        shell: bash
-        run: |
-          set -euo pipefail
-          for module in ${{ steps.detect.outputs.modules }}; do
-            echo "Building module: $module"
-            mvn -B -ntp -pl "$module" -am clean install -Ptests
-          done
+        run: mvn -B -ntp -pl "${{ steps.detect.outputs.modules }}" -am clean install -Ptests
 
       - name: Nothing to build
         if: steps.detect.outputs.mode == 'none'
