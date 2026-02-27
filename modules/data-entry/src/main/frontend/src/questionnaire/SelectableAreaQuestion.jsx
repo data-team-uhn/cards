@@ -393,7 +393,7 @@ function SelectableAreaQuestion(props) {
       }
       { isEdit && <Answer
         answers={notApplicableChecked ?
-          [[notApplicableOption.label | notApplicableOption.value, notApplicableOption.value]] : selection}
+          [[notApplicableOption.label || notApplicableOption.value, notApplicableOption.value]] : selection}
         existingAnswer={existingAnswer}
         questionName={questionName}
         questionDefinition={props.questionDefinition}
