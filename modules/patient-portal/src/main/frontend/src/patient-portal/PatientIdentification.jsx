@@ -200,7 +200,7 @@ function PatientIdentification(props) {
     if (Object.keys(config).length == 0) return;
 
     let auth_token = new URLSearchParams(window.location.search).get("auth_token");
-    setAuthToken(authToken);
+    setAuthToken(auth_token);
     setCanAuthenticate(!!(config?.tokenlessAuthEnabled || auth_token));
 
     // If an auth token is provided and no further identification is required,
