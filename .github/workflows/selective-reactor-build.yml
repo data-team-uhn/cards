@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 21
           cache: maven
 
       - name: Detect changed reactor modules
@@ -94,3 +94,4 @@ jobs:
       - name: Nothing to build
         if: steps.detect.outputs.mode == 'none'
         run: echo "No reactor module changes detected; skipping."
+
