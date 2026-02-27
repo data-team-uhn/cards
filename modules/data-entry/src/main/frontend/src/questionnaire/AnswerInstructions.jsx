@@ -70,7 +70,7 @@ function AnswerInstructions (props) {
       );
     } else if (minAnswers == 0 && variant != "required") {
       return (
-        <Typography variant="caption" color="textSecondary">Optional</Typography>
+        <Typography variant="caption" color="textSecondary">(Optional)</Typography>
       );
     } else {
       return null;

@@ -108,7 +108,10 @@ function Question (props) {
           disableTypography
           avatar={disableInstructions && <AnswerInstructions variant="asterisc" {...questionDefinition} {...props} />}
           title={<FormattedText component="h6" variant="h6">{text}</FormattedText>}
-          subheader={<FormattedText component="div" variant="caption" color="textSecondary">{description}</FormattedText>}
+          subheader={<>
+            <AnswerInstructions variant="optional" {...questionDefinition} />
+            <FormattedText component="div" variant="caption" color="textSecondary">{description}</FormattedText>
+          </>}
         />
       }
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>

@@ -25,6 +25,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from '@mui/icons-material/Edit';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import {
+  Alert,
   Backdrop,
   Breadcrumbs,
   Button,
@@ -116,6 +117,7 @@ function Form (props) {
   // Avoid rendering everything at once before we get all of the questionnaire details
   let [ paginationVariant, setPaginationVariant ] = useState(paginationProps?.variant);
   let [ paginationNavMode, setPaginationNavMode ] = useState(paginationProps?.navMode);
+  let [ hideAnswerInstructions, setHideAnswerInstructions ] = useState();
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
@@ -263,6 +265,8 @@ function Form (props) {
       setIncompleteQuestionEl(null);
       // Take into account the option to hide answer instructions as specified in the questionnaire definition
       let hideInstructions = json?.['questionnaire']?.['hideAnswerInstructions'];
+      setHideAnswerInstructions(!!hideInstructions);
+      console.log(hideInstructions)
       !!hideInstructions && setClassNames(names => ([...names, classes.hideAnswerInstructions]));
     }
   };
@@ -652,6 +656,21 @@ function Form (props) {
           </Breadcrumbs>
           {links}
         </ResourceHeader>
+        }
+        { isEdit && hideAnswerInstructions &&
+          <Grid size={12}>
+            <Alert
+              severity="info"
+              variant="outlined"
+              icon={false}
+              sx={ (theme) => ({
+                pl: 1,
+                borderColor: theme.palette.divider,
+              }) }
+            >
+              <Typography color="error">* Required</Typography>
+            </Alert>
+          </Grid>
         }
         { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere
           with any other values placed inside the context since no variable name should be able to have a '/' in it */}
