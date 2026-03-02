@@ -34,7 +34,7 @@ async function loginAsAdmin(page) {
 
   await page.waitForURL(/\/content\.html\/Questionnaires\/User|\/$/, { timeout: 15000 });
   await page.waitForLoadState('networkidle');
-  await expect(page).toHaveTitle(/Dashboard | Your Experience/i);
+  expect(page.url()).toMatch(/\/content\.html\/Questionnaires\/User/);
 }
 
 /**
@@ -53,14 +53,14 @@ async function clickFirstVisible(locator) {
  */
 async function logout(page, { mode }) {
   if (mode === 'wide') {
-    await clickFirstVisible(page.getByTestId('admin-avatar'));
+    await clickFirstVisible(page.locator('[aria-label="admin-avatar"]'));
   } else if (mode === 'narrow') {
     await page.locator('[aria-label="open drawer"]').click();
   } else {
     throw new Error(`Unknown logout mode: ${mode}`);
   }
 
-  await clickFirstVisible(page.getByTestId('admin-signout'));
+  await clickFirstVisible(page.locator('[aria-label="admin-signout"]'));
 
   await page.waitForURL(/\/login|\/$/, { timeout: 10000 });
   await page.waitForLoadState('networkidle');
@@ -71,8 +71,128 @@ async function logout(page, { mode }) {
   expect(logoutSessionData.userID).toBe('anonymous');
 }
 
+/**
+ * Try to delete the form for the given subject (Questionnaires/User, forms view).
+ * No-op if no form is found. Caller should be logged in.
+ * @param {import('@playwright/test').Page} page
+ * @param {string} subjectId
+ */
+async function deleteFormForSubject(page, subjectId) {
+  // Go to Questionnaires/User dashboard
+  await page.goto('/content.html/Questionnaires/User');
+  await page.waitForLoadState('networkidle');
+
+  // Go to Forms view
+  const formsView = page.locator('[aria-label="forms-view"]');
+  if (!(await formsView.isVisible())) return;
+
+  // Modify filters dialog
+  await formsView.locator('[aria-label="add-filter-button"]').click();
+  const modifyFiltersDialog = page.locator('[aria-label="modify-filters-dialog"]');
+  await expect(modifyFiltersDialog).toBeVisible({ timeout: 5000 });
+  await modifyFiltersDialog.getByPlaceholder('Add new filter...').fill('subject');
+
+  // Click the option that shows "Subject" (variable name; MUI Autocomplete uses role="option")
+  await page.getByRole('option', { name: /Subject/ }).first().click();
+  await modifyFiltersDialog.getByPlaceholder('Search').fill(subjectId);
+  await page.waitForTimeout(500);
+  const dropdownItem = page.locator('li[class*="dropdownItem"]').filter({ visible: true }).first();
+  if (await dropdownItem.isVisible()) await dropdownItem.click();
+  await modifyFiltersDialog.locator('[aria-label="apply-filters-button"]').click();
+
+  // Dialog should close
+  await expect(modifyFiltersDialog).not.toBeVisible({ timeout: 5000 });
+  await page.waitForLoadState('networkidle');
+
+  // Table should have exactly one data row
+  const formsView2 = page.locator('[aria-label="forms-view"]');
+  const dataRows = formsView2.locator('tbody tr');
+  await expect(dataRows).toHaveCount(1);
+
+  // Check that the row contains the subject id
+  const row = dataRows.first();
+  await expect(row.locator('td').first().locator('a')).toHaveText(new RegExp(`^${subjectId} :`));
+  // Column that "created by" column cell contains "admin"
+  await expect(row.locator('td').nth(2)).toContainText('admin');
+  // Last cell: Actions column contains edit and delete buttons
+  const lastTd = row.locator('td').last();
+  await expect(lastTd.locator('a[aria-label="Edit form"]')).toBeVisible();
+  const deleteFormButton = lastTd.locator('[aria-label="Delete form"]');
+  await expect(deleteFormButton).toBeVisible();
+
+  // Delete confirmation dialog
+  await deleteFormButton.click();
+  const deleteDialog = page.locator('[aria-label="delete-dialog"]');
+  await expect(deleteDialog).toBeVisible({ timeout: 5000 });
+  await deleteDialog.locator('[aria-label="delete-button"]').click();
+  await page.waitForLoadState('networkidle');
+
+  // Form link should no longer exist
+  const formsView3 = page.locator('[aria-label="forms-view"]');
+  await expect(formsView3.locator('a').filter({ hasText: `${subjectId} :` })).toHaveCount(0);
+};
+
+/**
+ * Delete the subject with the given id from the Questionnaires/User dashboard.
+ * Assumes the caller is logged in, the subject has no forms, and the subject exists.
+ * Deletion is done via applying global filters to the subjects view,
+ * locating the subject row, then clicking the delete button on the row.
+ * @param {import('@playwright/test').Page} page
+ * @param {string} subjectId
+ */
+async function deleteSubjectByIdWithNoForms(page, subjectId) {
+  // Go to Questionnaires/User dashboard
+  await page.goto('/content.html/Questionnaires/User');
+  await page.waitForLoadState('networkidle');
+  const subjectsView = page.locator('[aria-label="subjects-view"]');
+  if (!(await subjectsView.isVisible())) return;
+
+  // Modify filters dialog
+  await subjectsView.locator('[aria-label="add-filter-button"]').click();
+  const modifyFiltersDialog = page.locator('[aria-label="modify-filters-dialog"]');
+  await expect(modifyFiltersDialog).toBeVisible({ timeout: 5000 });
+  await modifyFiltersDialog.getByPlaceholder('Add new filter...').fill('subject');
+
+  // Click the option that shows "Subject" (variable name; MUI Autocomplete uses role="option")
+  await page.getByRole('option', { name: /Subject/ }).first().click();
+  await modifyFiltersDialog.getByPlaceholder('Search').fill(subjectId);
+  await page.waitForTimeout(500);
+  const dropdownItem = page.locator('li[class*="dropdownItem"]').filter({ visible: true }).first();
+  if (await dropdownItem.isVisible()) await dropdownItem.click();
+  await modifyFiltersDialog.locator('[aria-label="apply-filters-button"]').click();
+
+  // Dialog should close
+  await expect(modifyFiltersDialog).not.toBeVisible({ timeout: 5000 });
+  await page.waitForLoadState('networkidle');
+
+  // Table should have exactly one data row
+  const subjectsView2 = page.locator('[aria-label="subjects-view"]');
+  const dataRows = subjectsView2.locator('tbody tr');
+  await expect(dataRows).toHaveCount(1);
+
+  const row2 = dataRows.first();
+  await expect(row2.locator('td').first().locator('a')).toContainText(subjectId);
+  await expect(row2.locator('td').nth(2)).toContainText('admin');
+
+  const deleteSubjectButton = row2.locator('td').last().locator('[aria-label="Delete subject"]');
+  await expect(deleteSubjectButton).toBeVisible();
+  await deleteSubjectButton.click();
+
+  // Delete confirmation dialog
+  const deleteDialog = page.locator('[aria-label="delete-dialog"]');
+  await expect(deleteDialog).toBeVisible({ timeout: 5000 });
+  await deleteDialog.locator('[aria-label="delete-button"]').click();
+  await page.waitForLoadState('networkidle');
+
+  // Subject link should no longer exist
+  const subjectsView3 = page.locator('[aria-label="subjects-view"]');
+  await expect(subjectsView3.locator('a').filter({ hasText: subjectId })).toHaveCount(0);
+}
+
 module.exports = {
   loginAsAdmin,
   clickFirstVisible,
   logout,
+  deleteFormForSubject,
+  deleteSubjectByIdWithNoForms,
 };

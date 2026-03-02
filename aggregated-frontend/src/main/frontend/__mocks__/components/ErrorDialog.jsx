@@ -19,5 +19,5 @@
 
 import React from 'react';
 export default function ErrorDialog({ children }) {
-  return React.createElement('div', { 'data-testid': 'error-dialog' }, children);
+  return React.createElement('div', { 'area-lable': 'error-dialog' }, children);
 }

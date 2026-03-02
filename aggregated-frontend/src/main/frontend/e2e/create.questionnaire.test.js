@@ -18,19 +18,36 @@
  */
 
 /**
- * E2E test: create a new form Patient information from dashboard with new subject p1-e2e,
- * apply filters, verify table row, then delete the form.
+ * E2E test: create a new form Patient information from dashboard with a new subject
+ * (id unique per browser project to allow parallel chromium/firefox/webkit runs),
+ * apply filters, verify table row, then delete the form and subject.
  *
  * Requires running CARDS instance at baseURL (e.g. http://localhost:8080).
  * Run from aggregated-frontend/src/main/frontend:
- * # npm run test:e2e:headed -- e2e/create.questionnaire.test.js --project=chromium --workers=1
+ * # npm run test:e2e -- e2e/create.questionnaire.test.js
+ * # npm run test:e2e:headed -- e2e/create.questionnaire.test.js --project=chromium
  */
 const { test, expect } = require('@playwright/test');
-const { loginAsAdmin } = require('./helpers');
+const { loginAsAdmin, deleteFormForSubject, deleteSubjectByIdWithNoForms } = require('./helpers');
 
-test.describe('Create questionnaire form with new subject p1-e2e', () => {
-  test('Full flow: login, create form, save, filter by subject, verify row, delete', async ({ page }) => {
+test.describe('Create questionnaire form with new subject', () => {
+  test.afterEach(async ({ page }, testInfo) => {
+    if (testInfo.status === testInfo.expectedStatus) return;
+    const subjectId = `p1-e2e-${testInfo.project.name}`;
+    try {
+      await loginAsAdmin(page);
+      await deleteFormForSubject(page, subjectId);
+      await deleteSubjectByIdWithNoForms(page, subjectId);
+    } catch {
+      // Ignore cleanup errors
+    }
+  });
+
+  test('Full flow: login, create form, save, filter by subject, verify row, delete', async ({ page }, testInfo) => {
     test.setTimeout(120000);
+
+    // Unique subject id per project so chromium/firefox/webkit can run in parallel
+    const subjectId = `p1-e2e-${testInfo.project.name}`;
 
     await loginAsAdmin(page);
 
@@ -38,13 +55,13 @@ test.describe('Create questionnaire form with new subject p1-e2e', () => {
     await page.getByRole('button', { name: 'new' }).click();
 
     // New item dialog
-    const newItemDialog = page.getByTestId('new-item-dialog');
+    const newItemDialog = page.locator('[aria-label="new-item-dialog"]');
     await expect(newItemDialog).toBeVisible();
     await newItemDialog.locator('td').filter({ hasText: 'Questionnaire' }).click();
-    await newItemDialog.getByTestId('new-item-next-button').click();
+    await newItemDialog.locator('[aria-label="new-item-next-button"]').click();
 
     // New form dialog (select questionnaire)
-    const newFormDialog1 = page.getByTestId('new-form-dialog');
+    const newFormDialog1 = page.locator('[aria-label="new-form-dialog"]');
     await expect(newFormDialog1).toBeVisible();
 
     await page.waitForTimeout(500);
@@ -54,18 +71,18 @@ test.describe('Create questionnaire form with new subject p1-e2e', () => {
     await expect(firstRow).toContainText('Patient information');
     await firstRow.click();
 
-    await newFormDialog1.getByTestId('new-form-continue-button').click();
+    await newFormDialog1.locator('[aria-label="new-form-continue-button"]').click();
 
     // New form dialog again (subject step)
-    const newFormDialog2 = page.getByTestId('new-form-dialog');
+    const newFormDialog2 = page.locator('[aria-label="new-form-dialog"]');
     await expect(newFormDialog2).toBeVisible();
-    await newFormDialog2.getByTestId('new-form-new-subject-button').click();
+    await newFormDialog2.locator('[aria-label="new-form-new-subject-button"]').click();
 
     // New subject dialog
-    const newSubjectDialog = page.getByTestId('new-subject-dialog');
+    const newSubjectDialog = page.locator('[aria-label="new-subject-dialog"]');
     await expect(newSubjectDialog).toBeVisible();
-    await newSubjectDialog.getByTestId('new-subject-identifier-input').locator('input').fill('p1-e2e');
-    await newSubjectDialog.getByTestId('new-subject-create-button').click();
+    await newSubjectDialog.locator('[aria-label="new-subject-identifier-input"]').locator('input').fill(subjectId);
+    await newSubjectDialog.locator('[aria-label="new-subject-create-button"]').click();
 
     // Redirect to form edit URL
     await page.waitForURL(/\/content\.html\/Forms\/[^/]+\.edit$/, { timeout: 15000 });
@@ -77,107 +94,10 @@ test.describe('Create questionnaire form with new subject p1-e2e', () => {
     // Assert Edit button exists (form view mode)
     await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible();
 
-    // Go to Questionnaires/User dashboard
-    await page.goto('/content.html/Questionnaires/User');
-    await page.waitForLoadState('networkidle');
-
-    // Open filters: click add-filter-button
-    const formsView1 = page.getByTestId('forms-view');
-    await expect(formsView1).toBeVisible();
-    await formsView1.getByTestId('add-filter-button').click();
-
-    // Modify filters dialog
-    const modifyFiltersDialog = page.getByTestId('modify-filters-dialog');
-    await expect(modifyFiltersDialog).toBeVisible();
-    await modifyFiltersDialog.getByPlaceholder('Add new filter...').fill('subject');
-    // Click the option that shows "Subject" (variable name; MUI Autocomplete uses role="option")
-    await page.getByRole('option', { name: /Subject/ }).first().click();
-
-    await modifyFiltersDialog.getByPlaceholder('Search').fill('p1-e2e');
-    await page.waitForTimeout(500);
-    await page.locator('li[class*="dropdownItem"]').filter({ visible: true }).first().click();
-
-    await modifyFiltersDialog.getByTestId('apply-filters-button').click();
-
-    // Dialog should close
-    await expect(modifyFiltersDialog).not.toBeVisible();
-
-    await page.waitForLoadState('networkidle');
-
-    // Table should have exactly one data row
-    const formsView2 = page.getByTestId('forms-view');
-    const dataRows = formsView2.locator('tbody tr');
-    await expect(dataRows).toHaveCount(1);
-
-    const row = dataRows.first();
-    // First td contains link with "p1-e2e : Patient information"
-    await expect(row.locator('td').first().locator('a')).toContainText('p1-e2e : Patient information');
-    // Column that contains "admin" (Created by column)
-    await expect(row.locator('td').nth(2)).toContainText('admin');
-    // Last td: Actions column
-    const lastTd = row.locator('td').last();
-    await expect(lastTd.locator('a[aria-label="Edit form"]')).toBeVisible();
-    const deleteFormButton = lastTd.locator('[aria-label="Delete form"]');
-    await expect(deleteFormButton).toBeVisible();
-
-    await deleteFormButton.click();
-
-    // Delete confirmation dialog
-    const deleteDialog = page.getByTestId('delete-dialog');
-    await expect(deleteDialog).toBeVisible();
-    await deleteDialog.getByTestId('delete-button').click();
-
-    await page.waitForLoadState('networkidle');
-
-    // Form link should no longer exist
-    const formsView3 = page.getByTestId('forms-view');
-    await expect(formsView3.locator('a').filter({ hasText: 'p1-e2e : Patient information' })).toHaveCount(0);
+    // Delete the form
+    await deleteFormForSubject(page, subjectId);
 
     // Delete the subject
-    const subjectsView = page.getByTestId('subjects-view');
-    await expect(subjectsView).toBeVisible();
-    await subjectsView.getByTestId('add-filter-button').click();
-
-    // Modify filters dialog
-    const modifyFiltersDialog2 = page.getByTestId('modify-filters-dialog');
-    await expect(modifyFiltersDialog2).toBeVisible();
-    await modifyFiltersDialog2.getByPlaceholder('Add new filter...').fill('subject');
-    // Click the option that shows "Subject" (variable name; MUI Autocomplete uses role="option")
-    await page.getByRole('option', { name: /Subject/ }).first().click();
-
-    await modifyFiltersDialog.getByPlaceholder('Search').fill('p1-e2e');
-    await page.waitForTimeout(500);
-    await page.locator('li[class*="dropdownItem"]').filter({ visible: true }).first().click();
-
-    await modifyFiltersDialog.getByTestId('apply-filters-button').click();
-
-    // Dialog should close
-    await expect(modifyFiltersDialog).not.toBeVisible();
-
-    await page.waitForLoadState('networkidle');
-
-    // Table should have exactly one data row
-    const subjectsView2 = page.getByTestId('subjects-view');
-    const dataRows2 = subjectsView2.locator('tbody tr');
-    await expect(dataRows2).toHaveCount(1);
-
-    const row2 = dataRows2.first();
-    await expect(row2.locator('td').first().locator('a')).toContainText('p1-e2e');
-    await expect(row2.locator('td').nth(2)).toContainText('admin');
-    const deleteSubjectButton = row2.locator('td').last().locator('[aria-label="Delete subject"]');
-    await expect(deleteSubjectButton).toBeVisible();
-
-    await deleteSubjectButton.click();
-    // Delete confirmation dialog
-    const deleteDialog2 = page.getByTestId('delete-dialog');
-    await expect(deleteDialog2).toBeVisible();
-    await deleteDialog2.getByTestId('delete-button').click();
-
-    await page.waitForLoadState('networkidle');
-
-    // Subject link should no longer exist
-    const subjectsView3 = page.getByTestId('subjects-view');
-    await expect(subjectsView3.locator('a').filter({ hasText: 'p1-e2e' })).toHaveCount(0);
-
+    await deleteSubjectByIdWithNoForms(page, subjectId);
   });
 });

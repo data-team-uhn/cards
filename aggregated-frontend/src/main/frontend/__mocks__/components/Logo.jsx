@@ -19,5 +19,5 @@
 
 import React from 'react';
 export default function Logo() {
-  return React.createElement('div', { 'data-testid': 'logo' });
+  return React.createElement('div', { 'area-lable': 'logo' });
 }

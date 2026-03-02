@@ -212,7 +212,7 @@ function SearchBar(props) {
       <Input
         type="text"
         placeholder="Search"
-        data-testid="search-bar"
+        aria-label="search-bar"
         value={search}
         ref={searchBar}
         onChange={(event) => {

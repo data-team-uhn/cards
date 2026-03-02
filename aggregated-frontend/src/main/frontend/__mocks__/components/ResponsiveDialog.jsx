@@ -19,5 +19,5 @@
 
 import React from 'react';
 export default function ResponsiveDialog({ children }) {
-  return React.createElement('div', { 'data-testid': 'responsive-dialog' }, children);
+  return React.createElement('div', { 'area-lable': 'responsive-dialog' }, children);
 }

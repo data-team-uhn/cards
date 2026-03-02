@@ -139,7 +139,7 @@ function SubjectView(props) {
   }
 
   return (
-    <Card className={classes.subjectView} data-testid="subjects-view">
+    <Card className={classes.subjectView} aria-label="subjects-view">
       {!disableHeader &&
       <CardHeader
         avatar={!disableAvatar && <Avatar className={classes.subjectViewAvatar}><AssignmentIndIcon/></Avatar>}

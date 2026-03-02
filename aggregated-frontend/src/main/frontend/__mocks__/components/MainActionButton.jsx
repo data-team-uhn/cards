@@ -19,5 +19,5 @@
 
 import React from 'react';
 export default function MainActionButton(props) {
-  return React.createElement('button', { ...props, 'data-testid': 'main-action-button' }, props.label);
+  return React.createElement('button', { ...props, 'area-lable': 'main-action-button' }, props.label);
 }
