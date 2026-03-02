@@ -36,14 +36,15 @@ import org.apache.sling.api.resource.ValueMap;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,6 +54,7 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ServicesPresentHealthCheckTest
 {
     @Mock
@@ -94,7 +96,6 @@ public class ServicesPresentHealthCheckTest
     @Before
     public void setup() throws LoginException, RepositoryException, PersistenceException, InvalidSyntaxException
     {
-        MockitoAnnotations.initMocks(this);
         this.checker.activate(this.bc);
 
         when(this.rrf.getServiceResourceResolver(any())).thenReturn(this.rr);

@@ -41,11 +41,12 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -53,6 +54,7 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
+@RunWith(MockitoJUnitRunner.class)
 public class PropertiesPresentHealthCheckTest
 {
     @Mock
@@ -99,8 +101,6 @@ public class PropertiesPresentHealthCheckTest
     @Before
     public void setup() throws LoginException, RepositoryException
     {
-        MockitoAnnotations.initMocks(this);
-
         when(this.rrf.getServiceResourceResolver(any())).thenReturn(this.rr);
         when(this.rr.adaptTo(Session.class)).thenReturn(this.session);
         when(this.session.nodeExists(PropertiesPresentHealthCheck.CONFIGURATION_PATH)).thenReturn(true);
