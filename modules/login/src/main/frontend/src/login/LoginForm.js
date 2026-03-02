@@ -56,7 +56,15 @@ function LoginForm(props) {
 
   let loginRedirectPath = () => {
     const currentPath = window.location.pathname.startsWith("/login") ? "/" : window.location.pathname;
-    return new URLSearchParams(window.location.search).get("resource") || currentPath;
+    const resource = new URLSearchParams(window.location.search).get("resource") || "";
+
+    // Only allow relative, same-origin paths starting with a single "/"
+    const isValidRelativePath =
+      resource.startsWith("/") &&
+      !resource.startsWith("//") &&
+      !resource.includes("://");
+
+    return isValidRelativePath ? resource : currentPath;
   };
 
   let submitLogin = () => {

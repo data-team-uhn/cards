@@ -167,6 +167,13 @@ function RegistrationForm(props) {
   const formRef = useRef();
 
   let signIn = (username, password) => {
+    const resource = new URLSearchParams(window.location.search).get('resource') || "";
+    const isValidRelativePath =
+      resource.startsWith("/") &&
+      !resource.startsWith("//") &&
+      !resource.includes("://");
+    const redirectTarget = isValidRelativePath ? resource : "/";
+
     fetch('/j_security_check',
       {
         method: 'POST',
@@ -183,7 +190,7 @@ function RegistrationForm(props) {
       if (handleLogin) {
         handleLogin(true);
       } else {
-        window.location = new URLSearchParams(window.location.search).get('resource') || '/';
+        window.location = redirectTarget;
       }
     });
   }
