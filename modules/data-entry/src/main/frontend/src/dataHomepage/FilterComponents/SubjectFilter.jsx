@@ -31,6 +31,7 @@ import { checkPropTypes } from "../../propTypes";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 import SearchBar from "../../SearchBar.jsx";
 import { QuickSearchIdentifier } from "../../themePage/Navbars/QuickSearchIdentifier.jsx";
+import { escapeJQL } from "../../escape.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice();
 
@@ -62,7 +63,8 @@ const SubjectFilter = (props, ref) => {
   let constructQuery = (query, requestID) => {
     let url = new URL("/query", window.location.origin);
     let formattedQuery = query?.toLowerCase()?.replace(/\s*\/\s*/g, " / ");
-    let sqlquery = "SELECT s.* FROM [cards:Subject] as s" + (query.search ? ` WHERE lower(s.'fullIdentifier') LIKE '%25${formattedQuery}%25'` : "");
+    let safeQuery = escapeJQL(formattedQuery || "");
+    let sqlquery = "SELECT s.* FROM [cards:Subject] as s" + (query.search ? ` WHERE lower(s.'fullIdentifier') LIKE '%25${safeQuery}%25'` : "");
     sqlquery += " order by s.'fullIdentifier'";
     url.searchParams.set("query", sqlquery);
     url.searchParams.set("limit", query.pageSize);
