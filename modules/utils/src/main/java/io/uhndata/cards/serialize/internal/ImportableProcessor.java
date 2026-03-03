@@ -38,7 +38,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  * This processor is intended to be run alongside the following other processors:
  * * .deep
  * * .-identify
- * The name of this processor is {@code jsontoxml}.
+ * The name of this processor is {@code importable}.
  *
  * @version $Id$
  */
