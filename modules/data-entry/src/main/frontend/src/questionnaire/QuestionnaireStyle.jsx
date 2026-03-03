@@ -30,6 +30,87 @@ export const FORM_ENTRY_CONTAINER_PROPS = {
 
 export const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing/2;
 
+// Focused style helpers for specific components
+export const formPaginationStyles = theme => ({
+  formFooter: {
+    position: "relative",
+  },
+  hiddenFooter: {
+    display: "none",
+  },
+  formStepper: {
+    position: "relative",
+    margin: theme.spacing(0, -2),
+    "& .MuiMobileStepper-progress" : {
+      width: "100%",
+    },
+  },
+  only_next: {
+    marginLeft: 0,
+  },
+  paginationButton: {
+    float: "right",
+    margin: theme.spacing(1),
+    minWidth: "fit-content",
+  },
+});
+
+export const subjectSelectorDialogStyles = theme => ({
+  createNewSubjectButton: {
+    marginRight: 'auto',
+  },
+  newSubjectInput: {
+    padding: theme.spacing(3, 3, 5),
+  },
+  subjectFilter: {
+    marginTop: 0,
+  },
+  invalidSubjectText: {
+    fontStyle: "italic"
+  },
+  dialogContentWithTable: {
+    padding: 0,
+    "& .MuiPaper-root": {
+      boxShadow: "0 none",
+    },
+    "& .MuiPaper-root > .MuiToolbar-root" : {
+      paddingRight: theme.spacing(3),
+    },
+    "& .MuiTableCell-root" : {
+      padding: theme.spacing(2, 3),
+    },
+    "& .MuiTableCell-footer" : {
+      paddingRight: theme.spacing(1),
+      paddingBottom: 0,
+    },
+  },
+});
+
+// Shared factory for sticky header/footer questionnaire sections
+const edgeSectionStyles = (theme, edge) => ({
+  "&.cards-edit-section" : {
+    position: "sticky",
+    ...(edge === "top"
+      ? { top: 0, zIndex: 2, paddingTop: 0 }
+      : { bottom: 0, paddingBottom: "0 !important" }),
+  },
+  "& > .MuiCollapse-wrapper" : {
+    border: "1px solid " + theme.palette.primary.light,
+  },
+  "& .MuiGrid-root:not(:first-of-type)": {
+    paddingTop: 0,
+  },
+  "& .MuiGrid-root:not(:last-child)": {
+    paddingBottom: 0,
+  },
+  "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
+    background: grey[100],
+  },
+  "& .MuiCard-root" : {
+    borderColor: "transparent",
+  },
+});
+
 const questionnaireStyle = theme => ({
   questionCard : {
     overflow: "unset",
@@ -404,51 +485,8 @@ const questionnaireStyle = theme => ({
   hiddenSection: {
     display: "none"
   },
-  headerSection : {
-    "&.cards-edit-section" : {
-      position: "sticky",
-      top: 0,
-      zIndex: 2,
-      paddingTop: 0,
-    },
-    "& > .MuiCollapse-wrapper" : {
-      border: "1px solid " + theme.palette.primary.light,
-    },
-    "& .MuiGrid-root:not(:first-of-type)": {
-      paddingTop: 0,
-    },
-    "& .MuiGrid-root:not(:last-child)": {
-      paddingBottom: 0,
-    },
-    "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
-      background: grey[100],
-    },
-    "& .MuiCard-root" : {
-      borderColor: "transparent",
-    },
-  },
-  footerSection : {
-    "&.cards-edit-section" : {
-      position: "sticky",
-      bottom: 0,
-      paddingBottom: "0 !important",
-    },
-    "& > .MuiCollapse-wrapper" : {
-      border: "1px solid " + theme.palette.primary.light,
-    },
-    "& .MuiGrid-root:not(:first-of-type)": {
-      paddingTop: 0,
-    },
-    "& .MuiGrid-root:not(:last-child)": {
-      paddingBottom: 0,
-    },
-    "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
-      background: grey[100],
-    },
-    "& .MuiCard-root" : {
-      borderColor: "transparent",
-    },
-  },
+  headerSection : edgeSectionStyles(theme, "top"),
+  footerSection : edgeSectionStyles(theme, "bottom"),
   entryActionIcon: {
     float: "right",
     marginRight: theme.spacing(1),

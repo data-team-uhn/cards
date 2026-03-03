@@ -28,7 +28,7 @@ import { withStyles } from 'tss-react/mui';
 
 import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import FormPageNavigation from "./FormPageNavigation";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import { formPaginationStyles } from "./QuestionnaireStyle";
 import { checkPropTypes } from "../propTypes";
 
 class Page {
@@ -311,4 +311,4 @@ FormPagination.propTypes = {
   saveInProgress: PropTypes.bool
 };
 
-export default withStyles(FormPagination, QuestionnaireStyle);
+export default withStyles(FormPagination, formPaginationStyles);
