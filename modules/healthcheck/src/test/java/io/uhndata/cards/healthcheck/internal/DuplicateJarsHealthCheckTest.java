@@ -31,9 +31,10 @@ import org.apache.sling.api.resource.PersistenceException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -45,6 +46,7 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
+@RunWith(MockitoJUnitRunner.class)
 public class DuplicateJarsHealthCheckTest
 {
     @Mock
@@ -77,7 +79,6 @@ public class DuplicateJarsHealthCheckTest
     @Before
     public void setup() throws LoginException, RepositoryException, PersistenceException, InvalidSyntaxException
     {
-        MockitoAnnotations.initMocks(this);
         this.checker.activate(this.bc);
 
         when(this.b1.getSymbolicName()).thenReturn("example.bundle1");
