@@ -23,13 +23,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import DateTimeUtilities from "../../components/DateTimeUtilities.jsx";
 import { checkPropTypes } from "../../propTypes";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
 const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPARATORS);
@@ -45,7 +43,7 @@ const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPAR
  */
 const DateFilter = (props, ref) => {
   checkPropTypes(DateFilter, props);
-  const { classes, initial, onChangeInput, questionDefinition } = props;
+  const { initial, onChangeInput, questionDefinition } = props;
 
   const [ displayedDate, setDisplayedDate ] = useState(DateTimeUtilities.toPrecision(initial?.value));
 
@@ -69,7 +67,7 @@ const DateFilter = (props, ref) => {
         }}
         slotProps={{ textField: {
           variant: 'standard',
-          className: classes.answerDateField,
+          sx: (theme) => ({ top: theme.spacing(-2), width: '100%' }),
         },
         field: {
           clearable: true,
@@ -80,7 +78,6 @@ const DateFilter = (props, ref) => {
     </LocalizationProvider>
   )
 };
-DateFilter.displayName = 'DateFilter';
 
 DateFilter.propTypes = {
   initial: PropTypes.shape({
@@ -93,14 +90,12 @@ DateFilter.propTypes = {
   })
 }
 
-const StyledDateFilter = withStyles(DateFilter, QuestionnaireStyle);
-
-export default StyledDateFilter;
+export default DateFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date") {
-    return [COMPARATORS, StyledDateFilter, 50];
+    return [COMPARATORS, DateFilter, 50];
   } else if (questionDefinition.dataType === "datetime") {
-    return [COMPARATORS_CREATED_DATE, StyledDateFilter, 50];
+    return [COMPARATORS_CREATED_DATE, DateFilter, 50];
   }
 });

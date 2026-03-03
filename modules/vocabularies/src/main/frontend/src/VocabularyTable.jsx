@@ -94,7 +94,7 @@ export default function VocabularyTable(props) {
                 sx: {
                   whiteSpace: "pre",
                   textAlign: "right",
-                  paddingRight: "0.3rem"
+                  pr: "0.3rem"
                 },
               },
               enableColumnFilter: false,

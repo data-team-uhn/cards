@@ -23,17 +23,27 @@ import ErrorIcon from "@mui/icons-material/Error";
 import { InputAdornment, Tooltip } from "@mui/material";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { escapeJQL } from "../../escape.jsx";
 import { checkPropTypes } from "../../propTypes";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
+import inputStyles from "../../questionnaire/inputStyles.jsx";
 import SearchBar from "../../SearchBar.jsx";
 import { QuickSearchIdentifier } from "../../themePage/Navbars/QuickSearchIdentifier.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice();
+
+const useStyles = makeStyles()(theme => ({
+  ...inputStyles(theme),
+  subjectFilter: {
+    marginTop: 0,
+  },
+  invalidSubjectText: {
+    fontStyle: "italic",
+  },
+}));
 
 /**
  * Display a filter on the associated subject of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
@@ -44,9 +54,11 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  */
 const SubjectFilter = (props, ref) => {
   checkPropTypes(SubjectFilter, props);
-  const { classes, initial, onChangeInput } = props;
+  const { initial, onChangeInput } = props;
   const [ error, setError ] = useState();
   const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
+
+  const classes = useStyles();
 
   let invalidateInput = (event) => {
     // The results are only valid after new text has been typed if they have emptied the input box
@@ -115,12 +127,10 @@ SubjectFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledSubjectFilter = withStyles(SubjectFilter, QuestionnaireStyle);
-
-export default StyledSubjectFilter;
+export default SubjectFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType == 'subject') {
-    return [COMPARATORS, StyledSubjectFilter, 50];
+    return [COMPARATORS, SubjectFilter, 50];
   }
 });

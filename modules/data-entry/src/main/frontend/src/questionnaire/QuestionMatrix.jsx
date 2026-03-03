@@ -36,7 +36,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Answer, { LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_ANSWER_POS } from "./Answer";
 import { hasWarningFlags } from "./FormUtilities";
 import Question from "./Question";
-import QuestionnaireStyle from './QuestionnaireStyle';
+import questionMatrixStyles from './questionMatrixStyles.jsx';
 import FormattedText from "../components/FormattedText.jsx";
 
 /** Conversion between the `dataType` setting in the question definition and the corresponding primary node type
@@ -288,7 +288,7 @@ let QuestionMatrix = (props) => {
         value={option[VALUE_POS]}
         name={"answer-" + sectionAnswerPath + question}
         onChange={(event) => selectOption(question, option, event)}
-        className={classes.checkbox}
+        sx={{ my: -2, mx: 0 }}
       />
     )
   }
@@ -345,4 +345,4 @@ let QuestionMatrix = (props) => {
   )
 }
 
-export default withStyles(QuestionMatrix, QuestionnaireStyle);
+export default withStyles(QuestionMatrix, questionMatrixStyles);

@@ -30,8 +30,8 @@ import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
+import inputStyles from "./inputStyles";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 
 // Component that renders a date/time question
@@ -278,14 +278,15 @@ function DateQuestion(props) {
           { instructions }
         </Typography>
       }
-      { isRange && rangeError && <Typography
-        component="p"
-        color="error"
-        className={classes.answerInstructions}
-        variant="caption"
-      >
-        { rangeError }
-      </Typography>
+      { isRange && rangeError &&
+        <Typography
+          component="p"
+          color="error"
+          className="cards-answerInstructions"
+          variant="caption"
+        >
+          { rangeError }
+        </Typography>
       }
       { pageActive &&
         <div className={isRange ? classes.range : ''}>
@@ -314,7 +315,7 @@ function DateQuestion(props) {
 
 DateQuestion.propTypes = DateTimeUtilities.PROP_TYPES;
 
-const StyledDateQuestion = withStyles(DateQuestion, QuestionnaireStyle);
+const StyledDateQuestion = withStyles(DateQuestion, inputStyles);
 export default StyledDateQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

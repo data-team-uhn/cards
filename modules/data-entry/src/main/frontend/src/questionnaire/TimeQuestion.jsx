@@ -31,8 +31,8 @@ import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
+import inputStyles from "./inputStyles";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 
 // Component that renders a time question
@@ -169,7 +169,7 @@ TimeQuestion.propTypes = {
   dateFormat: PropTypes.string
 };
 
-const StyledTimeQuestion = withStyles(TimeQuestion, QuestionnaireStyle);
+const StyledTimeQuestion = withStyles(TimeQuestion, inputStyles);
 export default StyledTimeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

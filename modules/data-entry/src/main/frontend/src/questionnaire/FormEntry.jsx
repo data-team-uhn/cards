@@ -70,7 +70,6 @@ let displayQuestion = (
   path,
   existingAnswer,
   key,
-  classes,
   onAddedAnswerPath,
   sectionAnswersState,
   onChange,
@@ -95,7 +94,7 @@ let displayQuestion = (
   let gridClasses = [];
   let displayMode = questionDefinition.displayMode;
   if (pageActive === false || displayMode == 'hidden' || (isSummary && displayMode !== "summary") || (!isSummary && displayMode === "summary")) {
-    gridClasses.push(classes.hiddenQuestion);
+    gridClasses.push("cards-hidden");
   }
 
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
@@ -176,7 +175,7 @@ let displaySection = (
   );
 }
 
-let displayInformation = (infoDefinition, key, classes, pageActive, isEdit, gridProps) => {
+let displayInformation = (infoDefinition, key, pageActive, isEdit, gridProps) => {
   let isVisible = (
     (!infoDefinition.formMode || infoDefinition.formMode == "edit") && isEdit
     || infoDefinition.formMode == "view" && !isEdit
@@ -198,7 +197,6 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit, grid
  * @param {string} path the path to the parent of the question
  * @param {Object} existingAnswer form data that may include answers already submitted for this component
  * @param {string} key the node name of the question definition JCR node
- * @param {Object} classes style classes
  * @returns a React component that renders the matrix section
  */
 let displayMatrix = (
@@ -206,7 +204,6 @@ let displayMatrix = (
   path,
   existingAnswer,
   key,
-  classes,
   pageActive,
   isEdit,
   contentOffset,
@@ -232,7 +229,7 @@ let displayMatrix = (
 
   let gridClasses = [];
   if (pageActive === false || sectionDefinition.displayMode == 'hidden') {
-    gridClasses.push(classes.hiddenQuestion);
+    gridClasses.push("cards-hidden");
   }
 
   return (
@@ -258,12 +255,10 @@ let displayMatrix = (
  * @param {int} depth the section nesting depth
  * @param {Object} existingAnswers form data that may include answers already submitted for this component
  * @param {string} key the node name of the section definition JCR node
- * @param {Object} classes style classes
  * @returns a React component that renders the section
  */
 export default function FormEntry(props) {
   let {
-    classes,
     entryDefinition,
     path,
     depth,
@@ -290,7 +285,6 @@ export default function FormEntry(props) {
       path,
       existingAnswers,
       keyProp,
-      classes,
       onAddedAnswerPath,
       sectionAnswersState,
       onChange,
@@ -308,7 +302,6 @@ export default function FormEntry(props) {
         path,
         existingAnswers,
         keyProp,
-        classes,
         pageActive,
         isEdit,
         contentOffset,
@@ -332,6 +325,6 @@ export default function FormEntry(props) {
       );
     }
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit, gridProps);
+    return displayInformation(entryDefinition, keyProp, pageActive, isEdit, gridProps);
   }
 }

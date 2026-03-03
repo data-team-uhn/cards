@@ -22,12 +22,33 @@ import { useState, useRef, useEffect } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import UnfoldLess from "@mui/icons-material/UnfoldLess";
 import UnfoldMore from "@mui/icons-material/UnfoldMore";
-import { Button, Collapse, Grid, TextField, Tooltip } from "@mui/material";
+import {
+  Button,
+  Collapse,
+  Grid,
+  TextField,
+  Tooltip,
+  Typography
+} from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+
+const useStyles = makeStyles()(theme => ({
+  notesContainer: {
+    whiteSpace: "pre-wrap",
+    padding: theme.spacing(3, 0, 1),
+  },
+  toggleNotesButton: {
+    textTransform: "none",
+  },
+  noteSection: {
+    "& .MuiTextField-root" :{
+      width: "100%",
+    },
+  },
+}));
 
 function Note (props) {
   checkPropTypes(Note, props);
@@ -35,19 +56,21 @@ function Note (props) {
     answerPath,
     children,
     existingAnswer,
-    classes,
     onChangeNote,
     pageActive,
     fullSize,
     value,
+    readonly,
     // eslint-disable-next-line no-unused-vars
     onAddSuggestion,
     placeholder = "Please place any additional notes here.",
     ...rest
   } = props;
+
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();
+  let classes = useStyles();
 
   // This allows setting the note contents programatically via the `value` prop
   useEffect(() => {
@@ -64,6 +87,15 @@ function Note (props) {
   // Render nothing but keep state if this page is inactive
   if (!pageActive) {
     return <></>;
+  }
+
+  if (readonly && value) {
+    return (
+      <div className={classes.notesContainer}>
+        <Typography variant="subtitle1">Notes</Typography>
+        { value }
+      </div>
+    );
   }
 
   return (<>
@@ -128,4 +160,4 @@ Note.propTypes = {
   value: PropTypes.string,
 };
 
-export default withStyles(Note, QuestionnaireStyle);
+export default Note;

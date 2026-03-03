@@ -34,15 +34,25 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from 'react-router';
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import DeleteWithRefreshButton from "./DeleteWithRefreshButton.jsx";
 import LiveTable from "./LiveTable.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+
+const useStyles = makeStyles()(theme => ({
+  subjectView: {
+    "& .MuiTabs-indicator": {
+      background: theme.palette.secondary.main,
+    },
+  },
+  subjectViewAvatar: {
+    background: theme.palette.secondary.main,
+  },
+}));
 
 function SubjectView(props) {
   const {
@@ -53,9 +63,9 @@ function SubjectView(props) {
     topPagination,
     extension,
     extensionURL,
-    classes
   } = props;
 
+  const { classes } = useStyles();
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ activeTab, setActiveTab ] = useState(0);
   const [ subjectTypes, setSubjectTypes] = useState([]);
@@ -199,4 +209,4 @@ function SubjectView(props) {
   );
 }
 
-export default withStyles(SubjectView, QuestionnaireStyle);
+export default SubjectView;

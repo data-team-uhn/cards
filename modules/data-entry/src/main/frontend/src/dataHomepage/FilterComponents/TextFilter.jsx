@@ -26,16 +26,9 @@ import { withStyles } from 'tss-react/mui';
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
+import inputStyles from "../../questionnaire/inputStyles.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(TEXT_COMPARATORS);
-
-const QuestionnaireStyleNotesContain = theme => ({
-  ...QuestionnaireStyle,
-  textField: {
-    // The default min-width is 250 px, which is too wide when the comparator is "notes contain"
-    minWidth: "155px !important",
-  } });
 
 /**
  * Display a filter on a numeric answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
@@ -84,14 +77,13 @@ TextFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledTextFilter = withStyles(TextFilter, QuestionnaireStyle);
-const StyledNotesContainFilter = withStyles(TextFilter, QuestionnaireStyleNotesContain);
-export default { StyledTextFilter, StyledNotesContainFilter }
+const StyledTextFilter = withStyles(TextFilter, inputStyles);
+export default StyledTextFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   return [COMPARATORS, StyledTextFilter, 10];
 });
 
 FilterComponentManager.registerTextFilterComponent((questionDefinition) => {
-  return StyledNotesContainFilter;
+  return StyledTextFilter;
 });

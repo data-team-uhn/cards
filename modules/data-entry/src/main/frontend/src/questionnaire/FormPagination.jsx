@@ -24,12 +24,26 @@ import {
   MobileStepper
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import FormPageNavigation from "./FormPageNavigation";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 import { checkPropTypes } from "../propTypes";
+
+const useStyles = makeStyles()(theme => ({
+  formStepper: {
+    position: "relative",
+    margin: theme.spacing(0, -2),
+    "& .MuiMobileStepper-progress" : {
+      width: "100%",
+    },
+  },
+  paginationButton: {
+    float: "right",
+    margin: theme.spacing(1),
+    minWidth: "fit-content",
+  },
+}));
 
 class Page {
   constructor(visible, title, key) {
@@ -52,7 +66,6 @@ class Page {
 function FormPagination (props) {
   checkPropTypes(FormPagination, props);
   let {
-    classes,
     enabled = true,
     variant = "progress",
     navMode = "back_next",
@@ -85,6 +98,8 @@ function FormPagination (props) {
   let questionIndex = 0;
   let pagesResults = {};
   let pagesArray = [];
+
+  const { classes } = useStyles();
 
   useEffect(() => {
     setPagesCallback(null);
@@ -288,7 +303,6 @@ function FormPagination (props) {
               }
             }}
             className={stepperClasses}
-
             steps={lastValidPage() + 1}
             nextButton={saveButton}
             backButton={backButton}
@@ -311,4 +325,4 @@ FormPagination.propTypes = {
   saveInProgress: PropTypes.bool
 };
 
-export default withStyles(FormPagination, QuestionnaireStyle);
+export default FormPagination;
