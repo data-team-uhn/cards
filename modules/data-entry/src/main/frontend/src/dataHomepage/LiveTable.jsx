@@ -190,7 +190,7 @@ function LiveTable(props) {
     window.addEventListener("LivetableRefresh",  refresh);
     return () => {
       // unsubscribe event
-      document.removeEventListener("LivetableRefresh",  refresh);
+      window.removeEventListener("LivetableRefresh",  refresh);
     };
   }, [entryType]);
 

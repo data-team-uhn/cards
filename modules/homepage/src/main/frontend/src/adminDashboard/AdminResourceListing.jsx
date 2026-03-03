@@ -80,9 +80,9 @@ function AdminResourceListing(props) {
     window.addEventListener("MaterialTableAppend", addData);
     return () => {
       // unsubscribe event
-      document.removeEventListener("MaterialTableAppend", addData);
+      window.removeEventListener("MaterialTableAppend", addData);
     };
-  });
+  }, []);
 
   return (
     <AdminScreen
