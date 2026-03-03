@@ -774,7 +774,7 @@ function Form (props) {
         <SessionExpiryWarningModal
           lastActivityTimestamp={lastSaveTimestamp}
           onStay={() => setAutosaveOptions({})}
-          onExit={() => props.history.push("/")}
+          onExit={() => navigate("/")}
           onExpired={() => { removeWindowHandlers(); setAutosaveOptions({ performCheckin: true }); } }
         />
       }

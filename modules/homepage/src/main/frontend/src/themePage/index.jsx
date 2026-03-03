@@ -22,9 +22,8 @@ import { useState, useEffect } from "react";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider } from '@mui/material/styles';
-import { createBrowserHistory } from "history";
 import { createRoot } from 'react-dom/client';
-import { unstable_HistoryRouter as Router, Routes, Route, Navigate } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { withStyles } from 'tss-react/mui';
 
 import PageStart from "../PageStart";
@@ -170,19 +169,17 @@ const cache = createCache({
   speedy: true
 });
 
-const hist = createBrowserHistory();
-hist.listen(({ action, location }) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#main-container'));
 root.render(
   <CacheProvider value={cache}>
     <ThemeProvider theme={appTheme}>
-      <Router history={hist}>
+      <BrowserRouter>
         <Routes>
           <Route path="/*" element={<MainComponent />}/>
           <Route path="/" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
           <Route path="/content" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
         </Routes>
-      </Router>
+      </BrowserRouter>
     </ThemeProvider>
   </CacheProvider>
 );
