@@ -1058,7 +1058,9 @@ function SubjectSelectorList(props) {
       }
       if (currentSubject) {
         let subjectID = currentSubject["jcr:uuid"];
-        conditions.push(`(isdescendantnode(n,'${currentSubject["@path"]}') OR n.'jcr:uuid'='${subjectID}')`);
+        conditions.push(
+          `(isdescendantnode(n,'${escapeJQL(currentSubject["@path"])}') OR n.'jcr:uuid'='${escapeJQL(subjectID)}')`
+        );
       }
       let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
@@ -1073,8 +1075,9 @@ function SubjectSelectorList(props) {
       let filteredData = json["rows"];
       let querySubjectSubset = "";
       for (let i = 0; i < filteredData.length; i++) {
-        querySubjectSubset += "f.'subject'='" + filteredData[i]['jcr:uuid'] + "'";
-        if ((i+1) != filteredData.length) {
+        const subjectUuid = escapeJQL(filteredData[i]['jcr:uuid']);
+        querySubjectSubset += `f.'subject'='${subjectUuid}'`;
+        if ((i + 1) != filteredData.length) {
           querySubjectSubset += " or ";
         }
       }

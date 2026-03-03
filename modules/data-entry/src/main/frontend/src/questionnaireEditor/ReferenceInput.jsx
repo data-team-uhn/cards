@@ -29,6 +29,7 @@ import VariableAutocomplete from "../dataHomepage/VariableAutocomplete";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { stripCardsNamespace } from "../questionnaire/QuestionnaireUtilities";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
+import { escapeJQL } from "../escape.jsx";
 
 // Use the filter code to get what sorts of variables can be used as references
 let FILTER_URL = "/Questionnaires.deep.json";
@@ -176,8 +177,10 @@ let ReferenceInput = (props) => {
       fetchRequest = fetchWithReLogin(globalLoginDisplay, url);
     } else {
       // If this is an existing value, we will be given a jcr:uuid instead
-      let url = new URL(`query?query=SELECT * FROM [nt:base] AS n WHERE n.'jcr:uuid'='${field}'`,
-        window.location.origin);
+      let url = new URL(
+        `query?query=SELECT * FROM [nt:base] AS n WHERE n.'jcr:uuid'='${escapeJQL(field)}'`,
+        window.location.origin
+      );
       fetchRequest = fetchWithReLogin(globalLoginDisplay, url)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {

@@ -45,8 +45,22 @@ let ListInput = (props) => {
     console.log('error');
   }
 
+  const isSafeJcrIdentifier = (val) =>
+    typeof val === "string" && /^[A-Za-z0-9_.:-]+$/.test(val);
+
   useEffect(() => {
-    fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`))
+    // Validate type configuration before constructing the query
+    if (!isSafeJcrIdentifier(type.primaryType) || !isSafeJcrIdentifier(type.orderProperty)) {
+      console.error("Invalid list question configuration: unsafe JCR identifiers", type);
+      return;
+    }
+
+    fetch(
+      '/query?query='
+      + encodeURIComponent(
+        `select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`
+      )
+    )
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let listOptions = Array.from(json?.rows ?? []);
