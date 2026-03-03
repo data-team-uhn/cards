@@ -158,8 +158,6 @@ var SaveLoadEngine = Class.create( {
     var svg = editor.getWorkspace().getSVGCopy();
     var svgText = svg.getSVGText();
 
-    console.log('[SAVE] data: ' + JSON.stringify(jsonData));
-
     onSaveCallback(jsonData, svgText);
 
     editor.getActionStack().addSaveEvent();
@@ -170,7 +168,6 @@ var SaveLoadEngine = Class.create( {
     var didLoadData = false;
 
     if (initialPedigreeJSONString) {
-      console.log('[LOAD] recived JSON: ' + initialPedigreeJSONString);
 
       try {
         this.createGraphFromSerializedData(initialPedigreeJSONString);
