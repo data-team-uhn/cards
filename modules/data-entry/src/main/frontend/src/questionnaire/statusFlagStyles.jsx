@@ -16,24 +16,20 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { Lock } from "@mui/icons-material"
-import { IconButton, Tooltip } from "@mui/material";
 
-/**
- * A placeholder component that renders a lock icon.
- */
-function PermissionsButton(props) {
-  const { size } = props;
+const statusFlagStyles = theme => ({
+  INCOMPLETEFlag: {
+  },
+  INVALIDFlag: {
+    borderColor: theme.palette.error.main,
+    color: theme.palette.error.main,
+  },
+  LOCKEDFlag: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.background.paper,
+  },
+  DefaultFlag: {
+  },
+});
 
-  return (
-    <>
-      <Tooltip title="Set Permissions">
-        <IconButton component="span" size="large">
-          <Lock fontSize={size || "default"}/>
-        </IconButton>
-      </Tooltip>
-    </>
-  );
-}
-
-export default PermissionsButton;
+export default statusFlagStyles;

@@ -93,7 +93,7 @@ const useStyles = makeStyles()(theme => ({
     "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root.cards-questionnaire-entry-props": {
       paddingLeft: theme.spacing(7.5),
     },
-  }
+  },
 }));
 
 // General class or Sections and Questions
@@ -117,7 +117,6 @@ let QuestionnaireItemCard = (props) => {
     onActionDone,
     doHighlight,
     model,
-    upperClasses
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
@@ -143,7 +142,7 @@ let QuestionnaireItemCard = (props) => {
     cardClasses.push(classes.collapsed);
   }
   if (highlight) {
-    cardClasses.push(upperClasses.focusedQuestionnaireItem);
+    cardClasses.push("cards-focused");
   }
 
   let formattedType = camelCaseToWords(type);

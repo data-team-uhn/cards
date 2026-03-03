@@ -935,11 +935,11 @@ export default function VariantFilesContainer() {
             columns={[
               { header: 'Created', size: 10,
                 muiTableBodyCellProps: {
-                  sx: (theme) => ({
-                    paddingLeft: theme.spacing(2),
+                  sx: {
+                    pl: 2,
                     fontWeight: "bold",
                     whiteSpace: 'nowrap',
-                  })
+                  },
                 },
                 Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
                   {DateTime.fromISO(row.original['jcr:created']).toFormat(DateTimeUtilities.VIEW_DATE_FORMAT)}
@@ -949,8 +949,8 @@ export default function VariantFilesContainer() {
                 muiTableBodyCellProps: {
                   sx: {
                     whiteSpace: 'pre-wrap',
-                    paddingBottom: "8px",
-                  }
+                    pb: 1,
+                  },
                 },
                 Cell: ({ row }) => row.original["jcr:createdBy"] }
             ]}
@@ -961,7 +961,7 @@ export default function VariantFilesContainer() {
                 muiTableHeadCellProps: { align: 'right' },
                 muiTableBodyCellProps: {
                   sx: {
-                    padding: '0',
+                    p: 0,
                     textAlign: 'right'
                   },
                 },

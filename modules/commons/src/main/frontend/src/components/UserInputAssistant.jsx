@@ -33,10 +33,82 @@ import {
   Popper,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import style from "./style.jsx";
+const useStyles = makeStyles()(theme => ({
+  userInputAssistant: {
+    "& .MuiCard-root" : {
+      maxWidth: "375px",
+      border: "2px solid " + theme.palette.primary.main,
+      "&.Uia-placement-right": {
+        marginLeft: theme.spacing(2),
+        "&:before" : {
+          content: "''",
+          display: "block",
+          borderTop: theme.spacing(2) + " solid transparent",
+          borderBottom: theme.spacing(2) + " solid transparent",
+          borderRight: theme.spacing(2) + " solid " + theme.palette.primary.main,
+          position: "absolute",
+          left: 0,
+          top: "50%",
+          marginTop: theme.spacing(-2),
+        },
+      },
+      "&.Uia-placement-bottom": {
+        margin: theme.spacing(3,4,0),
+      },
+      "& .MuiAvatar-root" : {
+        background: theme.palette.primary.main,
+      },
+      "&.Uia-hint-secondary" : {
+        borderColor: theme.palette.secondary.main,
+        "&.Uia-placement-right:before" : {
+          borderRightColor: theme.palette.secondary.main,
+        },
+        "& .MuiAvatar-root" : {
+          background: theme.palette.secondary.main,
+        },
+      },
+      "&.Uia-success" : {
+        borderColor: theme.palette.success.main,
+        "&.Uia-placement-right:before" : {
+          borderRightColor: theme.palette.success.main,
+        },
+        "& .MuiAvatar-root" : {
+          background: theme.palette.success.main,
+        },
+      },
+      "&.Uia-info" : {
+        borderColor: theme.palette.info.main,
+        "&.Uia-placement-right:before" : {
+          borderRightColor: theme.palette.info.main,
+        },
+        "& .MuiAvatar-root" : {
+          background: theme.palette.info.main,
+        },
+      },
+      "&.Uia-warning" : {
+        borderColor: theme.palette.warning.main,
+        "&.Uia-placement-right:before" : {
+          borderRightColor: theme.palette.warning.main,
+        },
+        "& .MuiAvatar-root" : {
+          background: theme.palette.warning.main,
+        },
+      },
+      "&.Uia-error" : {
+        borderColor: theme.palette.error.main,
+        "&.Uia-placement-right:before" : {
+          borderRightColor: theme.palette.error.main,
+        },
+        "& .MuiAvatar-root" : {
+          background: theme.palette.error.main,
+        },
+      },
+    },
+  },
+}));
 
 // Component that renders a hint/tooltip/suggested action to be
 // displayed to the user as they do data entry
@@ -89,11 +161,12 @@ function UserInputAssistant (props) {
     actionLabel,
     onAction,
     onIgnore,
-    onClickAway,
-    classes
+    onClickAway
   } = props;
 
   let [ enabled, setEnabled ] = useState(true);
+
+  const { classes } = useStyles();
 
   let [ placement, setPlacement ] = useState("right");
 
@@ -166,4 +239,4 @@ UserInputAssistant.propTypes = {
   onClickAway: PropTypes.func,
 };
 
-export default withStyles(UserInputAssistant, style);
+export default UserInputAssistant;

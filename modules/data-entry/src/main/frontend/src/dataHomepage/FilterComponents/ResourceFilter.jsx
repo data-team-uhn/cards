@@ -23,7 +23,7 @@ import { withStyles } from 'tss-react/mui';
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
+import inputStyles from "../../questionnaire/inputStyles.jsx";
 import ResourceQuery from "../../resourceQuery/ResourceQuery.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
@@ -72,7 +72,7 @@ ResourceFilter.propTypes = {
   })
 }
 
-const StyledResourceFilter = withStyles(ResourceFilter, QuestionnaireStyle);
+const StyledResourceFilter = withStyles(ResourceFilter, inputStyles);
 
 export default StyledResourceFilter;
 

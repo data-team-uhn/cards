@@ -30,12 +30,9 @@ import {
   Select,
   FormHelperText
 } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 function SubjectTypeDialog(props) {
-  const { open, onClose, onSuccess, data, isEdit, currentSubjectType, classes } = props;
+  const { open, onClose, onSuccess, data, isEdit, currentSubjectType } = props;
   const initialParent = currentSubjectType?.["@path"].replace("/" + currentSubjectType["@name"], "") || "/SubjectTypes";
   const subjectTypes = !isEdit ? data : data.filter(item => item["jcr:uuid"] != currentSubjectType["jcr:uuid"]);
 
@@ -302,7 +299,7 @@ function SubjectTypeDialog(props) {
         </Grid>
         {error && <Typography color='error'>{error}</Typography>}
       </DialogContent>
-      <DialogActions className={classes.dialogActions}>
+      <DialogActions>
         <Button variant="outlined" onClick={close}>Cancel</Button>
         <Button
           disabled={!isEdit && (!label || isDuplicateLabel)
@@ -324,4 +321,4 @@ function SubjectTypeDialog(props) {
   );
 }
 
-export default withStyles(SubjectTypeDialog, QuestionnaireStyle);
+export default SubjectTypeDialog;

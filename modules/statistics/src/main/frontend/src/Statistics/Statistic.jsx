@@ -42,13 +42,38 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
-import statisticsStyle from "./statisticsStyle.jsx";
+const useStyles = makeStyles()(theme => ({
+  statsCard: {
+    "& .MuiCardHeader-root": {
+      paddingBottom: 0,
+    },
+    "& .MuiCardContent-root": {
+      paddingTop: 0,
+    },
+    "& .recharts-legend-wrapper": {
+      marginRight: "-10px",
+    },
+  },
+  customTooltip: {
+    margin: 0,
+    padding: "10px",
+    backgroundColor: theme.palette.grey[50],
+    border: `1px solid ${theme.palette.grey[50]}`,
+    whiteSpace: "nowrap",
+  },
+  label: {
+    margin: 0,
+    padding: 0,
+    listStyleType: "none",
+  },
+}));
 
 // A single statistic, displayed as a chart
 function Statistic(props) {
-  const { classes, definition, disableClick } = props;
+  const { definition, disableClick } = props;
+  const { classes } = useStyles();
   // Colours to be used before relying on the google palette
   const DEFAULT_PALETTE = [
     "#f94900",
@@ -293,4 +318,4 @@ function Statistic(props) {
   </Grid>
 }
 
-export default withStyles(Statistic, statisticsStyle);
+export default Statistic;

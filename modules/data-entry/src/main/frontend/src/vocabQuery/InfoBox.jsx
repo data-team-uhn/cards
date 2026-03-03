@@ -32,12 +32,11 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
-import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import BrowseTheme from "./browseStyle.jsx";
+import BrowseTheme from "./browseStyle";
 
 // Component that renders a dialog with term info for a single vocabulary term.
 //
@@ -79,7 +78,6 @@ function InfoBox(props) {
       anchorEl={term.infoAnchor}
       transition
       className={
-        classNames({ [classes.popperClose]: !open })
         + " " + classes.popperNav
         + " " + (infoAboveBackground ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
       }
@@ -133,13 +131,13 @@ function InfoBox(props) {
               />
               <CardContent className={classes.infoPaper}>
                 <div className={classes.infoSection}>
-                  <Typography className={classes.infoDefinition}>{term.definition}</Typography>
+                  <Typography>{term.definition}</Typography>
                 </div>
                 {term.alsoKnownAs.length > 0 && (
                   <div className={classes.infoSection}>
-                    <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>
+                    <Typography variant="h6">Also known as</Typography>
                     {term.alsoKnownAs.map((name, index) => {
-                      return (<Typography className={classes.infoAlsoKnownAs} key={index}>
+                      return (<Typography key={index}>
                         {name}
                       </Typography>
                       );
@@ -148,9 +146,9 @@ function InfoBox(props) {
                 )}
                 {term.typeOf.length > 0 && (
                   <div className={classes.infoSection}>
-                    <Typography variant="h6" className={classes.infoHeader}>Is a type of</Typography>
+                    <Typography variant="h6">Is a type of</Typography>
                     {term.typeOf.map((name, index) => {
-                      return (<Typography className={classes.typeOf} key={index}>
+                      return (<Typography key={index}>
                         {name}
                       </Typography>
                       );

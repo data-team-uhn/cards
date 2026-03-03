@@ -33,7 +33,7 @@ import { withStyles } from 'tss-react/mui';
 
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import { checkPropTypes } from "../propTypes";
-import BrowseTheme from "./browseStyle.jsx";
+import BrowseTheme from "./browseStyle";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import VocabularyBranch from "./VocabularyBranch.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
@@ -255,7 +255,6 @@ function VocabularyTree(props) {
       open={open}
       ref={browserRef}
       onClose={(evt) => onCancel(evt)}
-      className={classes.dialog}
       classes={{
         paper: classes.dialogPaper,
         root: classes.infoDialog
@@ -278,9 +277,8 @@ function VocabularyTree(props) {
             />
           )}
         </div>
-        <div className={classes.browserAnswerInstrustions}>
+        <div className={classes.browserAnswerInstructions}>
           <AnswerInstructions
-            className={classes.answerInstrustions}
             currentAnswers={selectedTerms.length}
             {...questionDefinition}
           />

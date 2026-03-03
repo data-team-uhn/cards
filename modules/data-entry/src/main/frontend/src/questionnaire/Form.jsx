@@ -46,9 +46,10 @@ import { withStyles } from 'tss-react/mui';
 import { FormProvider } from "./FormContext";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import FormPagination from "./FormPagination";
+import formStyles from "./formStyles.jsx";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import { getFirstIncompleteQuestionEl, hasWarningFlags } from "./FormUtilities.jsx";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
 import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
 import { getTextHierarchy, getHierarchyAsList } from "./SubjectIdentifier";
@@ -659,7 +660,7 @@ function Form (props) {
       className={classNames?.join(' ')}
     >
       <input type="hidden" name=":baseVersion" value={baseVersion} />
-      <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
+      <Grid container className={classes.formContainer} {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
           title={title}
@@ -698,7 +699,7 @@ function Form (props) {
             }
             {
               wasCheckedOut ?
-                <Typography variant="overline" className={classes.warningStatus}>Another user is editing</Typography>
+                <Typography variant="overline" color="warning">Another user is editing</Typography>
                 : ""
             }
             {
@@ -780,7 +781,6 @@ function Form (props) {
                     depth={0}
                     existingAnswers={data}
                     keyProp={key}
-                    classes={classes}
                     onChange={()=>setLastSaveStatus(undefined)}
                     visibleCallback={pageResult.callback}
                     pageActive={pageResult.page.visible}
@@ -795,7 +795,7 @@ function Form (props) {
         {/* FormPagination must be called regardless of whether paginationEnabled is true or false,
             because it is what populates the contents of the form.
             However, it should only be displayed to the user in edit mode when paginationEnabled is true. */}
-        <Grid size={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
+        <Grid size={12} className={paginationEnabled ? classes.formFooter : "cards-hidden"} id="cards-resource-footer">
           {data && <FormPagination
             saveInProgress={saveInProgress}
             disableProgress={disableProgress}
@@ -819,7 +819,7 @@ function Form (props) {
         </Grid>
         { !paginationEnabled && !disableButton &&
         <Grid size="auto" className={classes.formBottom}>
-          <div className={classes.mainPageAction}>
+          <div>
             { isEdit &&
               <MainActionButton
                 style={doneButtonStyle}
@@ -858,4 +858,4 @@ function Form (props) {
   );
 }
 
-export default withStyles(Form, QuestionnaireStyle);
+export default withStyles(Form, formStyles);

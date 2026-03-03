@@ -109,7 +109,7 @@ const browseStyle = theme => ({
   selectionContainer: {
     padding: theme.spacing(0, 3, 2),
   },
-  browserAnswerInstrustions: {
+  browserAnswerInstructions: {
     padding: theme.spacing(1, 3, 0),
     marginBottom: theme.spacing(-2),
   },

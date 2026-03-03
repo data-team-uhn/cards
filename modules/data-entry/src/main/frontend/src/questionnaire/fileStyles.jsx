@@ -16,24 +16,27 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { Lock } from "@mui/icons-material"
-import { IconButton, Tooltip } from "@mui/material";
 
-/**
- * A placeholder component that renders a lock icon.
- */
-function PermissionsButton(props) {
-  const { size } = props;
+import inputStyles from "./inputStyles.jsx";
 
-  return (
-    <>
-      <Tooltip title="Set Permissions">
-        <IconButton component="span" size="large">
-          <Lock fontSize={size || "default"}/>
-        </IconButton>
-      </Tooltip>
-    </>
-  );
-}
+const fileStyles = theme => ({
+  ...inputStyles(theme),
+  fileResourceAnswerList: {
+    listStyleType: 'none',
+    paddingInlineStart: "0",
+    marginTop: theme.spacing(3),
+    "& > li" : {
+      display: "flex",
+      alignItems: "center",
+    },
+    "& > li > .MuiIconButton-root" : {
+      marginLeft: theme.spacing(0.5),
+    },
+  },
+  fileResourceAnswerInput: {
+    marginTop: theme.spacing(-1.25),
+    marginBottom: theme.spacing(3)
+  },
+});
 
-export default PermissionsButton;
+export default fileStyles;

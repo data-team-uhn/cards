@@ -43,7 +43,7 @@ import Answer, { LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAU
 import AnswerInstructions from "./AnswerInstructions.jsx";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import multipleChoiceStyles from "./multipleChoiceStyles.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import UserInputAssistant from "../components/UserInputAssistant.jsx";
 
@@ -423,7 +423,7 @@ function MultipleChoice(props) {
   // Hold the input box for either multiple choice type
   let CustomInput = customInput;
   let ghostInput = (input || textbox || customInput)
-    && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
+    && (<div className={isBare ? "" : classes.searchWrapper}>
       { customInput ?
         <CustomInput
           initialSelection={selection.filter(option => option[VALUE_POS])}
@@ -581,7 +581,6 @@ function MultipleChoice(props) {
             <RadioGroup
               aria-label="selection"
               name={props.questionDefinition['jcr:uuid'] + (instanceId || '')}
-              className={classes.selectionList}
               value={selection.length > 0 && String(selection[0][VALUE_POS])}
             >
               <List className={classes.optionsList}>
@@ -616,10 +615,7 @@ function MultipleChoice(props) {
                       label="&nbsp;"
                       value={ghostValue}
                       key={ghostValue}
-                      className={classes.ghostFormControl + " " + classes.childFormControl}
-                      classes={{
-                        label: classes.inputLabel
-                      }}
+                      sx={{ height: 0 }}
                     />
                     {ghostInput}
                   </ListItem>
@@ -704,7 +700,7 @@ function generateDefaultOptions(
   });
 }
 
-let StyledResponseChild = withStyles(ResponseChild, QuestionnaireStyle);
+let StyledResponseChild = withStyles(ResponseChild, multipleChoiceStyles);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
@@ -760,10 +756,6 @@ function ResponseChild(props) {
                 }
                 label={name}
                 value={id}
-                className={classes.childFormControl}
-                classes={{
-                  label: classes.inputLabel
-                }}
               />
               <FormattedText className={classes.selectionDescription} variant="caption" color="textSecondary">
                 {description}
@@ -778,9 +770,9 @@ function ResponseChild(props) {
                   title="Delete"
                   size="large"
                 >
-                  <Close color="action" className={classes.deleteIcon}/>
+                  <Close color="action"/>
                 </IconButton>
-                <div className={classes.inputLabel}>
+                <div>
                   <Typography color={isInvalid ? "error" : ""}>
                     {name}
                   </Typography>
@@ -813,4 +805,4 @@ MultipleChoice.propTypes = {
   error: PropTypes.bool
 };
 
-export default withStyles(MultipleChoice, QuestionnaireStyle);
+export default withStyles(MultipleChoice, multipleChoiceStyles);

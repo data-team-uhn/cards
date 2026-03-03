@@ -23,14 +23,12 @@ import { Alert, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { useTheme, alpha } from '@mui/material/styles';
 import Tooltip from "@mui/material/Tooltip";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import Answer, { LABEL_POS, VALUE_POS } from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 import FormattedText from "../components/FormattedText.jsx";
 
 // Component that renders an image with clickable areas based on the available
@@ -53,7 +51,7 @@ import FormattedText from "../components/FormattedText.jsx";
 //    />
 function SelectableAreaQuestion(props) {
   checkPropTypes(SelectableAreaQuestion, props);
-  let { classes, existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
+  let { existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
   let { variant, maxAnswers } = { ...props.questionDefinition, ...props };
 
   const [ map, setMap ] = useState(null);
@@ -275,7 +273,7 @@ function SelectableAreaQuestion(props) {
 
     setImageMap(
       initialized && map ?
-        <svg className={classes.selectableArea}
+        <svg
           width={width}
           height={height}
           viewBox={viewBox}>
@@ -352,17 +350,13 @@ function SelectableAreaQuestion(props) {
                 <Checkbox
                   checked={notApplicableChecked}
                   onChange={() => onNotApplicableClicked()}
-                  className={classes.checkbox}
+                  sx={{ my: -2, mx: 0 }}
                   color="secondary"
                 />}
               label={notApplicableOption.label || notApplicableOption.value}
               value={notApplicableOption.value}
-              className={classes.childFormControl}
-              classes={{
-                label: classes.inputLabel
-              }}
             />
-            <FormattedText className={classes.selectionDescription} variant="caption" color="textSecondary">
+            <FormattedText sx={{ pl: 4 }} variant="caption" color="textSecondary">
               {notApplicableOption.help}
             </FormattedText>
           </>
@@ -418,11 +412,10 @@ SelectableAreaQuestion.propTypes = {
   maxAnswers: PropTypes.number
 };
 
-const StyledSelectableAreaQuestion = withStyles(SelectableAreaQuestion, QuestionnaireStyle);
-export default StyledSelectableAreaQuestion;
+export default SelectableAreaQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "selectableArea") {
-    return [StyledSelectableAreaQuestion, 50];
+    return [SelectableAreaQuestion, 50];
   }
 });

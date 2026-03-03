@@ -19,14 +19,15 @@
 
 import { useRef, useEffect, useMemo } from "react";
 
-import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
+import { Card, CardHeader, CardContent, List, ListItem } from "@mui/material";
 import PropTypes from "prop-types";
 import { useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import AnswerInstructions from "./AnswerInstructions";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import Note from "./Note.jsx";
+import questionStyles from "./questionStyles.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
@@ -74,7 +75,7 @@ function Question (props) {
 
   let cardClasses = [classes.questionCard];
   if (doHighlight) {
-    cardClasses.push(classes.focusedQuestionnaireItem);
+    cardClasses.push("cards-focused");
   }
 
   let labels = existingAnswer?.[1].displayedValue;
@@ -135,10 +136,7 @@ function Question (props) {
             children
           }
           { pageActive && !isEdit && existingAnswer?.[1]?.note &&
-            <div className={classes.notesContainer}>
-              <Typography variant="subtitle1">Notes</Typography>
-              {existingAnswer[1].note}
-            </div>
+            <Note readonly value={existingAnswer[1].note} />
           }
         </div>
       </CardContent>
@@ -152,4 +150,4 @@ Question.propTypes = {
   disableInstructions: PropTypes.bool,
 };
 
-export default withStyles(Question, QuestionnaireStyle);
+export default withStyles(Question, questionStyles);

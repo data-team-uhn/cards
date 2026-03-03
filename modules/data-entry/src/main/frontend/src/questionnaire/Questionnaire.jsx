@@ -48,9 +48,10 @@ import { Link, useNavigate, useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
 import { ENTRY_TYPES, QUESTION_TYPES } from "./FormEntry";
+import formStyles from "./formStyles.jsx";
+import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
 import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
 import QuestionnairePreview from "./QuestionnairePreview";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
 import ResourceHeader from "./ResourceHeader";
 import DeleteButton from "../dataHomepage/DeleteButton";
@@ -230,7 +231,7 @@ let Questionnaire = (props) => {
       </Typography>
       :
       ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
-        <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+        <Grid container className={classes.formContainer} {...FORM_ENTRY_CONTAINER_PROPS}>
           { questionnaireHeader }
           { !isEdit ?
             <QuestionnairePreview
@@ -257,7 +258,7 @@ let Questionnaire = (props) => {
   );
 };
 
-export default withStyles(Questionnaire, QuestionnaireStyle);
+export default withStyles(Questionnaire, formStyles);
 
 
 let QuestionnaireItemSet = (props) => {
@@ -673,7 +674,6 @@ let QuestionnaireEntry = (props) => {
       moreInfo={renderFields({ condensed: true })}
       data={entryData}
       type={type}
-      upperClasses={classes}
       doHighlight={doHighlight}
       action={
         menuItems?.length > 0 ?

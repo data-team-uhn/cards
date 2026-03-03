@@ -41,8 +41,8 @@ import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion } from "./Subject.jsx";
+import subjectTimelineStyles from "./subjectTimelineStyle.jsx";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { checkPropTypes } from "../propTypes";
@@ -73,7 +73,7 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
     divClasses.push(classes.timelineDateEntryFinal);
   }
 
-  return <div key={index} className={divClasses.join(",")}>
+  return <div key={index} className={divClasses.join(" ")}>
     <Typography variant="h6" component="h1">
       {questionTitle} (<Link href={`/content.html${formPath}#${questionData.questionPath}`} underline="hover">{formTitle}</Link>)
     </Typography>
@@ -89,7 +89,7 @@ function CustomTimelineConnector(props) {
     divClasses.push(className);
   }
 
-  return <div className={divClasses.join(",")}>
+  return <div className={divClasses.join(" ")}>
     <Tooltip title={longText}>
       <div className={classes.timelineCircle}>
         <Typography variant="body2">{shortText}</Typography>
@@ -137,7 +137,7 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
       }
     </TimelineSeparator>
     <TimelineContent className={classes.timelineContent}>
-      <Paper elevation={3} className={paperClasses.join(",")}>
+      <Paper elevation={3} className={paperClasses.join(" ")}>
         {dateEntry.questions.map((question, index) => {
           return DateAnswerDisplay(classes, question, index, dateEntry.questions.length, dateEntry.level)
         })}
@@ -382,8 +382,7 @@ function SubjectTimeline(props) {
 }
 
 SubjectTimeline.propTypes = {
-  classes: PropTypes.object.isRequired,
   subject: PropTypes.object.isRequired
 }
 
-export default withStyles(SubjectTimeline, QuestionnaireStyle);
+export default withStyles(SubjectTimeline, subjectTimelineStyles);

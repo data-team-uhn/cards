@@ -472,7 +472,7 @@ function LiveTable(props) {
         </TableBody>
       </Table>
       {!disableBottomPagination && paginationControls}
-      {!tableData && (<LinearProgress className={classes.progressIndicator}/>)}
+      {!tableData && (<LinearProgress/>)}
     </Paper>
   );
 }

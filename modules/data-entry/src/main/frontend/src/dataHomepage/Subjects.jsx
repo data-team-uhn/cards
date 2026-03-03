@@ -19,8 +19,8 @@
 import { Grid } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 
+import dashboardStyles from "./dashboardStyles.jsx";
 import SubjectView from "./SubjectView.jsx";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
@@ -71,4 +71,4 @@ function Subjects(props) {
   );
 }
 
-export default withStyles(Subjects, QuestionnaireStyle);
+export default withStyles(Subjects, dashboardStyles);

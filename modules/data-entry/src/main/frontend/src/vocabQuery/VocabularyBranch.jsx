@@ -27,7 +27,7 @@ import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import BrowseTheme from "./browseStyle.jsx";
+import BrowseTheme from "./browseStyle";
 import { MakeRequest } from "./util.jsx";
 import { VALUE_POS } from "../questionnaire/Answer";
 

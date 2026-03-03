@@ -30,8 +30,9 @@ import { withStyles } from 'tss-react/mui';
 import { FormProvider } from "./FormContext";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import FormPagination from "./FormPagination";
+import formStyles from "./formStyles.jsx";
 import { FormUpdateProvider } from "./FormUpdateContext";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
 import MainActionButton from "../components/MainActionButton.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
@@ -72,7 +73,7 @@ function QuestionnairePreview (props) {
   }
 
   return (<div className={data?.hideAnswerInstructions ? classes.hideAnswerInstructions : null}>
-    <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
+    <Grid container className={classes.formContainer} {...FORM_ENTRY_CONTAINER_PROPS} >
       { /* Added dummy save functionality for mocking file and pedigree questions functionality. */ }
       <FormProvider additionalFormData={{
         ['/Save']: () => Promise.resolve(),
@@ -92,7 +93,6 @@ function QuestionnairePreview (props) {
                 depth={0}
                 existingAnswers={data}
                 keyProp={key}
-                classes={classes}
                 onChange={()=>{}}
                 visibleCallback={pageResult.callback}
                 pageActive={pageResult.page.visible}
@@ -125,4 +125,4 @@ function QuestionnairePreview (props) {
   </div>);
 }
 
-export default withStyles(QuestionnairePreview, QuestionnaireStyle);
+export default withStyles(QuestionnairePreview, formStyles);
