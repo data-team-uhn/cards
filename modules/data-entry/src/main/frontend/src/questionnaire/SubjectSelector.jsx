@@ -34,7 +34,7 @@ import { withStyles } from 'tss-react/mui';
 import { v4 as uuidv4 } from 'uuid';
 
 import { escapeJQL } from "../escape.jsx";
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import QuestionnaireStyle, { subjectSelectorDialogStyles } from "./QuestionnaireStyle.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./SubjectIdentifier.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
@@ -244,7 +244,7 @@ function UnstyledNewSubjectDialog (props) {
   )
 }
 
-const NewSubjectDialogChild = withStyles(UnstyledNewSubjectDialog, QuestionnaireStyle);
+const NewSubjectDialogChild = withStyles(UnstyledNewSubjectDialog, subjectSelectorDialogStyles);
 
 /**
  * Component that displays a dialog to select parents for a new subject
@@ -437,7 +437,7 @@ function UnstyledSelectParentDialog (props) {
   )
 }
 
-export const SelectParentDialog = withStyles(UnstyledSelectParentDialog, QuestionnaireStyle);
+export const SelectParentDialog = withStyles(UnstyledSelectParentDialog, subjectSelectorDialogStyles);
 
 // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
 // We must cast each case into an array to handle it properly
@@ -884,7 +884,7 @@ function UnstyledSelectorDialog (props) {
   </>);
 }
 
-export const SelectorDialog = withStyles(UnstyledSelectorDialog, QuestionnaireStyle);
+export const SelectorDialog = withStyles(UnstyledSelectorDialog, subjectSelectorDialogStyles);
 
 /**
  * Create new subjects from an array of identifiers.

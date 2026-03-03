@@ -36,7 +36,7 @@ import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import { escapeJQL } from "../escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import { subjectSelectorDialogStyles } from "../questionnaire/QuestionnaireStyle.jsx";
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
@@ -531,4 +531,4 @@ function NewFormDialog(props) {
   )
 }
 
-export default withStyles(NewFormDialog, QuestionnaireStyle);
+export default withStyles(NewFormDialog, subjectSelectorDialogStyles);
