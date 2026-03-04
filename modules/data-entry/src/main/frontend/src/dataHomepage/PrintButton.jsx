@@ -94,7 +94,7 @@ function PrintButton(props) {
     window.addEventListener("keydown", handleOnPrintKeydown);
     return () => {
       // unsubscribe event
-      document.removeEventListener("keydown", handleOnPrintKeydown);
+      window.removeEventListener("keydown", handleOnPrintKeydown);
     };
   }, []);
 
