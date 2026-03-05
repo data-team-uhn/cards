@@ -137,7 +137,6 @@ function MultipleChoice(props) {
   // No user input (aka. an empty input) takes the place of an empty string
   if (maxAnswers !== 1) {
     initialSelection = initialSelection || ["", ""];
-    all_options.concat(["", ""]);
   }
   const [selection, setSelection] = useState(initialSelection);
   const [options, setOptions] = useState(all_options);
