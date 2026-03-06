@@ -261,7 +261,7 @@
     "configurations":{
         "org.apache.sling.jcr.oak.server.internal.OakSlingRepositoryManager":{
             "oak.observation.queue.length:Integer":"100000",
-            "oak.observation.limitCommitRate":true
+            "oak.observation.limitCommitRate":false
         },
         "org.apache.sling.commons.log.LogManager":{
             "org.apache.sling.commons.log.packagingDataEnabled":true,
