@@ -6,10 +6,6 @@
             "start-order":"10"
         },
         {
-            "id":"com.google.guava:guava:15.0",
-            "start-order":"15"
-        },
-        {
             "id":"org.apache.jackrabbit:jackrabbit-data:${jackrabbit.version}",
             "start-order":"15"
         },
@@ -31,6 +27,10 @@
         },
         {
             "id":"org.apache.jackrabbit:oak-api:${oak.version}",
+            "start-order":"15"
+        },
+        {
+            "id":"org.apache.jackrabbit:oak-auth-external:${oak.version}",
             "start-order":"15"
         },
         {
@@ -70,6 +70,10 @@
             "start-order":"15"
         },
         {
+            "id":"org.apache.jackrabbit:oak-shaded-guava:${oak.version}",
+            "start-order":"15"
+        },
+        {
             "id":"org.apache.jackrabbit:oak-security-spi:${oak.version}",
             "start-order":"15"
         },
@@ -90,11 +94,11 @@
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.api:2.4.0",
+            "id":"org.apache.sling:org.apache.sling.jcr.api:2.4.2",
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.base:3.1.12",
+            "id":"org.apache.sling:org.apache.sling.jcr.base:3.2.0",
             "start-order":"15"
         },
         {
@@ -102,15 +106,15 @@
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.registration:1.0.6",
+            "id":"org.apache.sling:org.apache.sling.jcr.registration:1.0.10",
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.oak.server:1.2.10",
+            "id":"org.apache.sling:org.apache.sling.jcr.oak.server:1.4.4",
             "start-order":"16"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.resource:3.2.0",
+            "id":"org.apache.sling:org.apache.sling.jcr.resource:3.3.6",
             "start-order":"20"
         },
         {
@@ -118,19 +122,19 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.jackrabbit.vault:org.apache.jackrabbit.vault:3.6.0",
+            "id":"org.apache.jackrabbit.vault:org.apache.jackrabbit.vault:4.2.0",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.contentloader:2.5.2",
+            "id":"org.apache.sling:org.apache.sling.jcr.contentloader:2.6.0",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.jackrabbit.accessmanager:3.0.10",
+            "id":"org.apache.sling:org.apache.sling.jcr.jackrabbit.accessmanager:5.0.0",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.jackrabbit.usermanager:2.2.26",
+            "id":"org.apache.sling:org.apache.sling.jcr.jackrabbit.usermanager:3.0.0",
             "start-order":"20"
         }
     ],
@@ -195,9 +199,11 @@
                 "org.apache.jackrabbit.oak.security.user.UserAuthenticationFactoryImpl",
                 "org.apache.jackrabbit.oak.spi.security.authorization.principalbased.impl.PrincipalBasedAuthorizationConfiguration"
             ]
-         },
+        },
         "org.apache.sling.jackrabbit.usermanager.impl.resource.AuthorizableResourceProvider":{
             "resources.for.nested.properties":true
-         }
+        },
+        "org.apache.sling.jcr.oak.server.internal.index.LuceneIndexRepositoryInitializer":{
+        }
     }
 }
