@@ -24,7 +24,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 
 import javax.jcr.RepositoryException;
-import javax.json.JsonObject;
+
+import jakarta.json.JsonObject;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;

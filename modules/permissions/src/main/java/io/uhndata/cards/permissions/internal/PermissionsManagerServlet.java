@@ -26,13 +26,14 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
+
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletException;
 
 import org.apache.jackrabbit.api.JackrabbitSession;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -54,9 +55,8 @@ import io.uhndata.cards.permissions.spi.PermissionsManager;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/FormsHomepage", "cards/Form", "cards/Answer" },
     selectors = { "permissions" },
-    methods = { "POST" }
-    )
-public class PermissionsManagerServlet extends SlingAllMethodsServlet
+    methods = { "POST" })
+public class PermissionsManagerServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = -677311195300436475L;
 
@@ -66,7 +66,7 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
     private PermissionsManager permissionsChangeServiceHandler;
 
     @Override
-    protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
+    protected void doPost(SlingJakartaHttpServletRequest request, SlingJakartaHttpServletResponse response)
         throws ServletException
     {
         // Get request parameters

@@ -30,7 +30,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;

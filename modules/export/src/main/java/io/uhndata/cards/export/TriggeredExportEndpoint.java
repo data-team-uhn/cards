@@ -25,16 +25,16 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import javax.servlet.Servlet;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -63,7 +63,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
     resourceTypes = { "cards/ResourceHomepage" },
     methods = { "GET" },
     selectors = { "export" })
-public class TriggeredExportEndpoint extends SlingSafeMethodsServlet
+public class TriggeredExportEndpoint extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = -1615592669184694092L;
 
@@ -88,7 +88,8 @@ public class TriggeredExportEndpoint extends SlingSafeMethodsServlet
     private volatile List<DataStore> stores;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
@@ -132,7 +133,8 @@ public class TriggeredExportEndpoint extends SlingSafeMethodsServlet
         writeSuccess("S3 export started", response);
     }
 
-    private DataPipeline buildPipeline(final ExportConfigDefinition config, final SlingHttpServletResponse response)
+    private DataPipeline buildPipeline(final ExportConfigDefinition config,
+        final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         final DataRetriever retriever =
@@ -171,7 +173,7 @@ public class TriggeredExportEndpoint extends SlingSafeMethodsServlet
         }
     }
 
-    private void writeError(final int status, final String message, final SlingHttpServletResponse response)
+    private void writeError(final int status, final String message, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         final JsonObjectBuilder json = Json.createObjectBuilder();
@@ -180,7 +182,7 @@ public class TriggeredExportEndpoint extends SlingSafeMethodsServlet
         writeResponse(status, json.build().toString(), response);
     }
 
-    private void writeSuccess(final String message, final SlingHttpServletResponse response)
+    private void writeSuccess(final String message, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         final JsonObjectBuilder json = Json.createObjectBuilder();
@@ -189,7 +191,7 @@ public class TriggeredExportEndpoint extends SlingSafeMethodsServlet
         writeResponse(200, json.build().toString(), response);
     }
 
-    private void writeResponse(final int status, final String body, final SlingHttpServletResponse response)
+    private void writeResponse(final int status, final String body, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         response.setStatus(status);

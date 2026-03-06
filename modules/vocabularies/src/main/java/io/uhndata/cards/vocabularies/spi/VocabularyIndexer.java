@@ -20,8 +20,8 @@ package io.uhndata.cards.vocabularies.spi;
 
 import java.io.IOException;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 
 /**
  * A {@code VocabularyIndexer} can index a vocabulary into the repository. In general, based on specific request
@@ -38,7 +38,7 @@ public interface VocabularyIndexer
      * a theoretical ability to parse the data. It does not check the actual data indicated by the source, so even if
      * this method returns {@code true}, the actual data may be corrupted, or in a newer or older incompatible format
      * not supported. If this method returns {@code true} but the data cannot be actually parsed, then
-     * {@link #index(String, SlingHttpServletRequest, SlingHttpServletResponse)} will throw a
+     * {@link #index(String, SlingJakartaHttpServletRequest, SlingJakartaHttpServletResponse)} will throw a
      * {@link VocabularyIndexException}, which will cause
      * {@link io.uhndata.cards.vocabularies.VocabularyIndexerServlet} to try the next available parser.
      *
@@ -59,6 +59,6 @@ public interface VocabularyIndexer
      * @throws IOException when writing the json response fails
      * @throws VocabularyIndexException when parsing the vocabulary or storing the parsed data fail
      */
-    void index(String source, SlingHttpServletRequest request, SlingHttpServletResponse response)
+    void index(String source, SlingJakartaHttpServletRequest request, SlingJakartaHttpServletResponse response)
         throws IOException, VocabularyIndexException;
 }

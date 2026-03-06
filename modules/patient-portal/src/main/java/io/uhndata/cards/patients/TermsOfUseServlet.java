@@ -28,17 +28,18 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.VersionManager;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import javax.servlet.Servlet;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -51,7 +52,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/PatientHomepage" }, extensions = {
     "termsOfUse" }, methods = { "GET", "POST" })
-public class TermsOfUseServlet extends SlingAllMethodsServlet
+public class TermsOfUseServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = -5555906093850253193L;
 
@@ -69,14 +70,14 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
     private QuestionnaireUtils questionnaireUtils;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         // This only works for a token-authenticated session; refuse requests if this is not the case
         final String sessionSubjectIdentifier =
             (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
         if (sessionSubjectIdentifier == null) {
-            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
+            writeError(response, SlingJakartaHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
             return;
         }
 
@@ -99,20 +100,20 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
     }
 
     @Override
-    public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doPost(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         // This only works for a token-authenticated session; refuse requests if this is not the case
         final String sessionSubjectIdentifier =
             (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
         if (sessionSubjectIdentifier == null) {
-            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
+            writeError(response, SlingJakartaHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
             return;
         }
 
         final String touVersionAccepted = request.getParameter(TOU);
         if (StringUtils.isBlank(touVersionAccepted)) {
-            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST,
+            writeError(response, SlingJakartaHttpServletResponse.SC_BAD_REQUEST,
                 "Must specify the version of Terms of Use accepted");
             return;
         }
@@ -125,7 +126,7 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
             final Node patientInformationForm =
                 getPatientInformationForm(subject, patientInformationQuestionnaire, session);
             if (patientInformationForm == null) {
-                writeError(response, SlingHttpServletResponse.SC_CONFLICT, "Sorry, cannot record your answer");
+                writeError(response, SlingJakartaHttpServletResponse.SC_CONFLICT, "Sorry, cannot record your answer");
                 return;
             }
 
@@ -183,11 +184,11 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
         return null;
     }
 
-    private void writeSuccess(final SlingHttpServletResponse response)
+    private void writeSuccess(final SlingJakartaHttpServletResponse response)
         throws IOException, RepositoryException
     {
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(SlingHttpServletResponse.SC_OK);
+        response.setStatus(SlingJakartaHttpServletResponse.SC_OK);
         try (Writer out = response.getWriter()) {
             final JsonObjectBuilder result = Json.createObjectBuilder();
             result.add("status", "success");
@@ -195,11 +196,11 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void writeCurrentTouVersion(final SlingHttpServletResponse response, final String value)
+    private void writeCurrentTouVersion(final SlingJakartaHttpServletResponse response, final String value)
         throws IOException
     {
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(SlingHttpServletResponse.SC_OK);
+        response.setStatus(SlingJakartaHttpServletResponse.SC_OK);
         try (Writer out = response.getWriter()) {
             final JsonObjectBuilder result = Json.createObjectBuilder();
             result.add("status", "success");
@@ -208,8 +209,8 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void writeError(final SlingHttpServletResponse response, final int statusCode, final String errorMessage)
-        throws IOException
+    private void writeError(final SlingJakartaHttpServletResponse response, final int statusCode,
+        final String errorMessage) throws IOException
     {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(statusCode);

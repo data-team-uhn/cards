@@ -36,14 +36,15 @@ import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import javax.json.stream.JsonGenerator;
-import javax.servlet.Servlet;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -66,8 +67,8 @@ import org.slf4j.LoggerFactory;
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-        resourceTypes = { "cards/ResourceHomepage" },
-        selectors = { "count" })
+    resourceTypes = { "cards/ResourceHomepage" },
+    selectors = { "count" })
 public class CountServlet extends PaginationServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CountServlet.class);
@@ -77,8 +78,8 @@ public class CountServlet extends PaginationServlet
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
-            throws IOException, IllegalArgumentException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException, IllegalArgumentException
     {
         try {
             // Ensure that this can only be run when logged in as admin
@@ -121,7 +122,7 @@ public class CountServlet extends PaginationServlet
      * @param response the HTTP response
      * @throws IOException if failed or interrupted I/O operation
      */
-    private void writeEmptyResponse(final SlingHttpServletResponse response) throws IOException
+    private void writeEmptyResponse(final SlingJakartaHttpServletResponse response) throws IOException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -143,9 +144,10 @@ public class CountServlet extends PaginationServlet
      * @throws IOException if failed or interrupted I/O operation
      * @throws RepositoryException if accessing the repository fails
      */
-    private void writeResponse(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
-                               final Query query, final Map<FilterType, List<Filter>> filters, Session session)
-            throws IOException, RepositoryException
+    private void writeResponse(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response,
+        final Query query, final Map<FilterType, List<Filter>> filters, Session session)
+        throws IOException, RepositoryException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -166,8 +168,7 @@ public class CountServlet extends PaginationServlet
     }
 
     /**
-     * Creates a <code>QueryCache</code> node that represents the current QueryCache instance with identified
-     * filters.
+     * Creates a <code>QueryCache</code> node that represents the current QueryCache instance with identified filters.
      *
      * @param request the current request
      * @param session the current session
@@ -175,8 +176,8 @@ public class CountServlet extends PaginationServlet
      * @param filters a list of filters
      * @throws RepositoryException if accessing the repository fails
      */
-    private void createQueryCacheNode(final SlingHttpServletRequest request, final Session session, final long count,
-                                      final Map<FilterType, List<Filter>> filters) throws RepositoryException
+    private void createQueryCacheNode(final SlingJakartaHttpServletRequest request, final Session session,
+        final long count, final Map<FilterType, List<Filter>> filters) throws RepositoryException
     {
         Node node = session.getNode("/QueryCache").addNode(UUID.randomUUID().toString(), "cards:QueryCache");
         node.setProperty("countType", "=");
@@ -223,7 +224,7 @@ public class CountServlet extends PaginationServlet
      * @return a long-typed number of the number of Resources with the specified parameters
      * @throws IOException if failed or interrupted I/O operation
      */
-    private long getCount(final Query query, final SlingHttpServletResponse response) throws IOException
+    private long getCount(final Query query, final SlingJakartaHttpServletResponse response) throws IOException
     {
         long count = 0;
         // Which unique items have been seen so far in the query results
@@ -248,8 +249,8 @@ public class CountServlet extends PaginationServlet
         return count;
     }
 
-    private void writeError(final int status, final String message, final SlingHttpServletResponse response)
-            throws IOException
+    private void writeError(final int status, final String message, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         final JsonObjectBuilder json = Json.createObjectBuilder();
         json.add("status", "error");

@@ -21,11 +21,11 @@ package io.uhndata.cards.vocabularies;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -48,7 +48,7 @@ import io.uhndata.cards.vocabularies.spi.VocabularyParserUtils;
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/VocabulariesHomepage" }, methods = { "POST" })
-public class VocabularyIndexerServlet extends SlingAllMethodsServlet
+public class VocabularyIndexerServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = -2156160697967947088L;
 
@@ -66,7 +66,7 @@ public class VocabularyIndexerServlet extends SlingAllMethodsServlet
     private VocabularyParserUtils utils;
 
     @Override
-    public void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
+    public void doPost(SlingJakartaHttpServletRequest request, SlingJakartaHttpServletResponse response)
         throws IOException
     {
         boolean success = false;

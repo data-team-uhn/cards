@@ -29,9 +29,10 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
 
 import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
@@ -61,7 +62,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  */
 @Component(
     service = { AdapterFactory.class },
-    property = { "adaptables=org.apache.sling.api.resource.Resource", "adapters=javax.json.JsonObject" })
+    property = { "adaptables=org.apache.sling.api.resource.Resource", "adapters=jakarta.json.JsonObject" })
 public class ResourceToJsonAdapterFactory
     implements AdapterFactory
 {

@@ -21,9 +21,10 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.servlets.post.Modification;
+import org.apache.sling.servlets.post.SlingJakartaPostProcessor;
 import org.apache.sling.servlets.post.SlingPostProcessor;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -35,12 +36,12 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @Component
-public class CheckinSlingPostProcessor implements SlingPostProcessor
+public class CheckinSlingPostProcessor implements SlingJakartaPostProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckinSlingPostProcessor.class);
 
     @Override
-    public void process(SlingHttpServletRequest request, List<Modification> changes) throws RepositoryException
+    public void process(SlingJakartaHttpServletRequest request, List<Modification> changes) throws RepositoryException
     {
         RequestParameter doCheckin = request.getRequestParameter(":checkin");
         if (doCheckin != null) {

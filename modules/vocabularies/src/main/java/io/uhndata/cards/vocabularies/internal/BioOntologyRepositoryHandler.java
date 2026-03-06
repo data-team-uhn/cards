@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;

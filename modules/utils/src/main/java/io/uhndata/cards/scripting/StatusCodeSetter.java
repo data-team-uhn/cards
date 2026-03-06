@@ -17,9 +17,10 @@
 package io.uhndata.cards.scripting;
 
 import javax.script.Bindings;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.sling.api.SlingHttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.scripting.sightly.pojo.Use;
 
 /**
@@ -36,12 +37,12 @@ import org.apache.sling.scripting.sightly.pojo.Use;
  */
 public class StatusCodeSetter implements Use
 {
-    private SlingHttpServletResponse response;
+    private SlingJakartaHttpServletResponse response;
 
     @Override
     public void init(Bindings bindings)
     {
-        this.response = (SlingHttpServletResponse) bindings.get("response");
+        this.response = (SlingJakartaHttpServletResponse) bindings.get("jakartaResponse");
     }
 
     /** Set the response status code to 200 OK. */

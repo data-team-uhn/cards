@@ -27,8 +27,9 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
 
 import org.osgi.service.component.annotations.Component;
 

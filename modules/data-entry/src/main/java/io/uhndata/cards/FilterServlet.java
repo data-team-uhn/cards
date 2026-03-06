@@ -25,19 +25,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.query.Query;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue.ValueType;
-import javax.servlet.Servlet;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue.ValueType;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 
@@ -61,14 +62,15 @@ import org.osgi.service.component.annotations.Component;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/Questionnaire", "cards/QuestionnairesHomepage" },
     selectors = { "filters" })
-public class FilterServlet extends SlingSafeMethodsServlet
+public class FilterServlet extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = 2558430802619674046L;
 
     private static final String DEEP_JSON_SUFFIX = ".deep.json";
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

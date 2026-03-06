@@ -22,7 +22,8 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonValue;
 
 import org.osgi.service.component.annotations.Component;
 

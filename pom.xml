@@ -92,9 +92,10 @@
     <dependencies>
       <!-- Common dependencies -->
       <dependency>
-        <groupId>javax.json</groupId>
-        <artifactId>javax.json-api</artifactId>
-        <version>1.1.4</version>
+        <groupId>jakarta.json</groupId>
+        <artifactId>jakarta.json-api</artifactId>
+        <version>2.0.2</version>
+        <scope>provided</scope>
       </dependency>
       <!-- Apache Commons -->
       <dependency>
@@ -185,7 +186,13 @@
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
-        <version>3.1.0</version>
+        <version>4.0.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>6.0.0</version>
         <scope>provided</scope>
       </dependency>
       <!-- JCR -->
@@ -783,7 +790,7 @@
                       <!--module name="ImportControl"/-->
 
                       <module name="ImportOrder">
-                        <property name="groups" value="org.phenotips,org.xwiki,java,javax,org" />
+                        <property name="groups" value="java,javax,jakarta,org" />
                         <property name="ordered" value="true" />
                         <property name="separated" value="true" />
                         <!-- Static imports -->
@@ -1241,7 +1248,7 @@
                       <!--module name="ImportControl"/-->
 
                       <module name="ImportOrder">
-                        <property name="groups" value="org.phenotips,org.xwiki,java,javax,org" />
+                        <property name="groups" value="java,javax,jakarta,org" />
                         <property name="ordered" value="true" />
                         <property name="separated" value="true" />
                         <!-- Static imports -->

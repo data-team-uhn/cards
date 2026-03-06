@@ -33,22 +33,23 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletResponse;
+
+import jakarta.json.Json;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.jackrabbit.oak.spi.security.principal.EveryonePrincipal;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -59,7 +60,7 @@ import io.uhndata.cards.permissions.spi.PermissionsManager;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/ClinicMappingFolder" }, methods = { "POST" })
-public class ClinicsServlet extends SlingAllMethodsServlet
+public class ClinicsServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = -5555906093850253193L;
 
@@ -90,7 +91,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     private PermissionsManager permissionsManager;
 
     @Override
-    public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doPost(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         try {
@@ -124,7 +125,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
      *
      * @param request servlet request whose arguments we need to parse
      */
-    private boolean parseArguments(final SlingHttpServletRequest request)
+    private boolean parseArguments(final SlingJakartaHttpServletRequest request)
     {
         this.clinicName.set(request.getParameter("clinicName"));
         this.displayName.set(request.getParameter("displayName"));
@@ -194,7 +195,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
      * @param response object to send response through
      * @param reason reason to give to user
      */
-    private void returnError(final SlingHttpServletResponse response, String reason)
+    private void returnError(final SlingJakartaHttpServletResponse response, String reason)
     {
         LOGGER.error(reason);
         try {

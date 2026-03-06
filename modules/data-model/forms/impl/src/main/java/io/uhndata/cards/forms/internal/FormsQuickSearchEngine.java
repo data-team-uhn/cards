@@ -26,8 +26,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.RowIterator;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
 
 import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Pair;

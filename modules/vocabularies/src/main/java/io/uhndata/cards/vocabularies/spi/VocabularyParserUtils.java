@@ -23,11 +23,12 @@ import java.io.Writer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import jakarta.json.Json;
+import jakarta.json.stream.JsonGenerator;
+
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -85,11 +86,12 @@ public class VocabularyParserUtils
      * @param error the error message caught from the exception which is null if there is no error
      * @throws IOException thrown when json cannot be written
      */
-    public void writeStatusJson(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
+    public void writeStatusJson(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response,
         final boolean isSuccessful, final String error) throws IOException
     {
         response.setStatus(isSuccessful
-            ? SlingHttpServletResponse.SC_OK : SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            ? SlingJakartaHttpServletResponse.SC_OK : SlingJakartaHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         Writer out = response.getWriter();
         JsonGenerator generator = Json.createGenerator(out);
         generator.writeStartObject();

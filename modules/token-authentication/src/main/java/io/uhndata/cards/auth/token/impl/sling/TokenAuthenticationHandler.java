@@ -24,17 +24,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jackrabbit.api.security.authentication.token.TokenCredentials;
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
 import org.apache.sling.auth.core.AuthConstants;
 import org.apache.sling.auth.core.AuthUtil;
-import org.apache.sling.auth.core.spi.AuthenticationHandler;
 import org.apache.sling.auth.core.spi.AuthenticationInfo;
-import org.apache.sling.auth.core.spi.DefaultAuthenticationFeedbackHandler;
+import org.apache.sling.auth.core.spi.DefaultJakartaAuthenticationFeedbackHandler;
+import org.apache.sling.auth.core.spi.JakartaAuthenticationHandler;
 import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -48,11 +48,12 @@ import io.uhndata.cards.auth.token.TokenManager;
  *
  * @version $Id$
  */
-@Component(service = AuthenticationHandler.class, immediate = true, property = {
-    AuthenticationHandler.TYPE_PROPERTY + "=" + HttpServletRequest.FORM_AUTH,
+@Component(service = JakartaAuthenticationHandler.class, immediate = true, property = {
+    JakartaAuthenticationHandler.TYPE_PROPERTY + "=" + HttpServletRequest.FORM_AUTH,
     "path=/",
     "sling.auth.requirements=-/Expired" })
-public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHandler implements AuthenticationHandler
+public class TokenAuthenticationHandler extends DefaultJakartaAuthenticationFeedbackHandler
+    implements JakartaAuthenticationHandler
 {
     /** The name of the request parameter that may hold a login token. */
     private static final String TOKEN_REQUEST_PARAMETER = "auth_token";

@@ -43,16 +43,17 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.stream.JsonGenerator;
-import javax.servlet.Servlet;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -80,7 +81,7 @@ import io.uhndata.cards.utils.DateUtils;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/ResourceHomepage" },
     selectors = { "paginate" })
-public class PaginationServlet extends SlingSafeMethodsServlet
+public class PaginationServlet extends SlingJakartaSafeMethodsServlet
 {
 
     protected static final String FIELDNAMES = "fieldnames";
@@ -206,7 +207,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     }
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException, IllegalArgumentException
     {
         try {
@@ -250,8 +251,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @return {@code true} if any mandatory special property has an "is empty" filter, {@code false} otherwise
      * @throws RepositoryException if accessing the repository fails
      */
-    protected boolean checkForSpecialEmptyFilter(final SlingHttpServletRequest request,
-        final Map<FilterType, List<Filter>> filters, final SlingHttpServletResponse response)
+    protected boolean checkForSpecialEmptyFilter(final SlingJakartaHttpServletRequest request,
+        final Map<FilterType, List<Filter>> filters, final SlingJakartaHttpServletResponse response)
         throws RepositoryException
     {
         for (Filter filter : filters.getOrDefault(FilterType.EMPTY, new ArrayList<Filter>())) {
@@ -275,7 +276,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @throws IOException if failed or interrupted I/O operation
      * @throws RepositoryException if accessing the repository fails
      */
-    private void writeEmptyResponse(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
+    private void writeEmptyResponse(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response,
         final long offset, final long limit)
         throws IOException, RepositoryException
     {
@@ -304,7 +306,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @throws IOException if failed or interrupted I/O operation
      * @throws RepositoryException if accessing the repository fails
      */
-    private void writeResponse(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
+    private void writeResponse(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response,
         final long offset, final long limit, final Query query)
         throws IOException, RepositoryException
     {
@@ -329,7 +332,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @return a node type string
      * @throws RepositoryException if accessing the repository fails
      */
-    private String getNodeType(final SlingHttpServletRequest request) throws RepositoryException
+    private String getNodeType(final SlingJakartaHttpServletRequest request) throws RepositoryException
     {
         final Node node = request.getResource().adaptTo(Node.class);
         return node.hasProperty("childNodeType") ? node.getProperty("childNodeType").getString()
@@ -345,7 +348,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @return a query that takes into account the requested filters
      * @throws RepositoryException if accessing the repository fails
      */
-    protected String createQuery(final SlingHttpServletRequest request, Session session,
+    protected String createQuery(final SlingJakartaHttpServletRequest request, Session session,
         final Map<FilterType, List<Filter>> filters) throws RepositoryException
     {
         // If we want this query to be fast, we need to use the exact nodetype requested.
@@ -425,7 +428,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param request the current request
      * @return a map from field parameter name to array of field parameter values
      */
-    protected Map<String, String[]> getFieldParameters(final SlingHttpServletRequest request)
+    protected Map<String, String[]> getFieldParameters(final SlingJakartaHttpServletRequest request)
     {
         final String[] names = request.getParameterValues(FIELDNAMES);
         final String[] values = request.getParameterValues(FIELDVALUES);
@@ -461,7 +464,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *         only some types of filters, depending on which filters are specified in the request
      * @throws IllegalArgumentException when the number of request parameters are not equal
      */
-    protected Map<FilterType, List<Filter>> parseFiltersFromRequest(final SlingHttpServletRequest request)
+    protected Map<FilterType, List<Filter>> parseFiltersFromRequest(final SlingJakartaHttpServletRequest request)
         throws IllegalArgumentException
     {
         final Map<FilterType, List<Filter>> result = new HashMap<>();
@@ -950,7 +953,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *            limits[2] is the number of results actually returned, equal to or less than limits[1]; limits[3] is an
      *            approximate number of total items that match the query
      */
-    private void writeSummary(final JsonGenerator jsonGen, final SlingHttpServletRequest request, final long[] limits)
+    private void writeSummary(final JsonGenerator jsonGen, final SlingJakartaHttpServletRequest request,
+        final long[] limits)
     {
         final boolean totalIsApproximate = limits[4] == 1;
         jsonGen.write("req", request.getParameter("req"));
@@ -978,7 +982,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *         approximate number of total items that match the query
      */
     private long[] writeResources(final JsonGenerator jsonGen, final Query query,
-        final long resultOffset, final long resultLimit, final SlingHttpServletRequest request)
+        final long resultOffset, final long resultLimit, final SlingJakartaHttpServletRequest request)
     {
         // Problem 1: Currently Oak does not support DISTINCT, so we must manually ensure uniqueness of the results.
         // Problem 2: Currently Oak does not support giving a total number of matches, so we must gauge it.

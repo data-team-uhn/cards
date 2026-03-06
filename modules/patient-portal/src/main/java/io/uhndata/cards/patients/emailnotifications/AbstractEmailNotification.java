@@ -31,6 +31,8 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import jakarta.mail.MessagingException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -49,7 +51,6 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.patients.emailnotifications.AppointmentUtils.EmptyNodeIterator;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
-import jakarta.mail.MessagingException;
 
 abstract class AbstractEmailNotification
 {

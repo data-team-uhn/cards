@@ -37,21 +37,22 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
-import javax.json.JsonValue.ValueType;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParser.Event;
-import javax.servlet.Servlet;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
+import jakarta.json.JsonValue.ValueType;
+import jakarta.json.stream.JsonParser;
+import jakarta.json.stream.JsonParser.Event;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.FieldOption;
@@ -73,7 +74,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
     resourceTypes = { "cards/Statistic", "cards/StatisticsHomepage" },
     selectors = { "query" },
     methods = { "POST" })
-public class StatisticQueryServlet extends SlingAllMethodsServlet
+public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = 2558430802619674046L;
 
@@ -99,7 +100,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
-    protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
+    protected void doPost(SlingJakartaHttpServletRequest request, SlingJakartaHttpServletResponse response)
         throws IOException
     {
         Map<String, String> arguments = parseArguments(request);
@@ -187,7 +188,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param request the POST request made to this servlet
      * @return map of arguments to their values
      */
-    protected Map<String, String> parseArguments(SlingHttpServletRequest request) throws IOException
+    protected Map<String, String> parseArguments(SlingJakartaHttpServletRequest request) throws IOException
     {
         JsonParser parser = Json.createParser(request.getInputStream());
         Map<String, String> retVal = new HashMap<>();
