@@ -22,12 +22,10 @@ import { Delete } from "@mui/icons-material";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { Tooltip, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import ErrorDialog from "../components/ErrorDialog.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { checkPropTypes } from "../propTypes";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 /**
  * A component that renders an icon to open a dialog to delete an entry.
@@ -35,7 +33,6 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 function DeleteButton(props) {
   checkPropTypes(DeleteButton, props);
   const {
-    classes,
     entryPath = "",
     entryName,
     onClick,
@@ -186,7 +183,7 @@ function DeleteButton(props) {
           <Typography>{dialogMessage}</Typography>
           <Typography>{dialogAction}</Typography>
         </DialogContent>
-        <DialogActions className={classes.dialogActions}>
+        <DialogActions>
           <Button variant="outlined" onClick={closeDialog}>Cancel</Button>
           <Button
             variant="contained"
@@ -232,4 +229,4 @@ DeleteButton.propTypes = {
   className: PropTypes.string,
 }
 
-export default withStyles(DeleteButton, QuestionnaireStyle);
+export default DeleteButton;

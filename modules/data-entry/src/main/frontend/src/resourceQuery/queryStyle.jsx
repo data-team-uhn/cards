@@ -26,14 +26,11 @@ const queryStyle = theme => ({
   popperNav: {
     // Old material-dashboard-react style, overridden because of issues with small screens
   },
-  errorSnack: {
-    backgroundColor: theme.palette.error.dark,
-  },
   searchWrapper: {
-    margin: theme.spacing(0),
+    margin: 0,
     position: 'relative',
     display: 'inline-block',
-    paddingBottom: theme.spacing(0),
+    paddingBottom: 0,
     "& .MuiInputBase-root" : {
       minWidth: "250px",
     },
@@ -77,9 +74,6 @@ const queryStyle = theme => ({
   infoButton: {
     marginLeft: theme.spacing(0.5),
     marginTop: theme.spacing(-0.25),
-  },
-  noResults: {
-    marginBottom: theme.spacing(-1),
   },
   dropdownMessage: {
     opacity: "1 !important",

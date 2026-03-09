@@ -215,7 +215,7 @@ function LiveTable(props) {
 
   let makeRow = (entry, i) => {
     return (
-      <TableRow key={entry["@path"] + i} className={classes.dataRow}>
+      <TableRow key={entry["@path"] + i} sx={{ height: "3em" }}>
         { columns ?
           (
             columns.map((column, index) => makeCell(entry, column, index))
@@ -472,7 +472,7 @@ function LiveTable(props) {
         </TableBody>
       </Table>
       {!disableBottomPagination && paginationControls}
-      {!tableData && (<LinearProgress className={classes.progressIndicator}/>)}
+      {!tableData && (<LinearProgress/>)}
     </Paper>
   );
 }

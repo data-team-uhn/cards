@@ -314,7 +314,6 @@ let AnswerOptions = (props) => {
               disabled={!option.data[option.label]}
               error={option.data[option.label] && option.isDuplicate}
               helperText={option.isDuplicate ? 'duplicated value or label' : ''}
-              className={classes.answerOptionInput}
               defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
               onChange={(event) => handleSpecialInputOption(option, event.target.value)}
             />

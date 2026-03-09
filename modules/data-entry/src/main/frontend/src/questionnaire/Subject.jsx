@@ -47,10 +47,10 @@ import { withStyles } from 'tss-react/mui';
 import FormattedText from "../components/FormattedText";
 import { checkPropTypes } from "../propTypes";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import ResourceHeader from "./ResourceHeader.jsx"
 import SubjectActions from "./SubjectActions.jsx";
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy, getHomepageLink } from "./SubjectIdentifier";
+import subjectStyles from "./subjectStyles.jsx";
 import SubjectTimeline from "./SubjectTimeline.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
@@ -226,7 +226,7 @@ function SubjectContainer(props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!relatedSubjects) {
     return (
-      <Grid container justifyContent="center" className={classes.circularProgressContainer}><Grid><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center" sx={{ mt: 5 }}><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -460,7 +460,7 @@ function SubjectMemberInternal (props) {
   // If the subjectGroups data has not yet been fetched, return an in-progress symbol
   if (!subjectGroups) {
     return (
-      <Grid container justifyContent="center" className={classes.circularProgressContainer}><Grid><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center" className={classes}><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -575,10 +575,10 @@ function SubjectMemberInternal (props) {
                   }
                 }}
                 muiDetailPanelProps={{
-                  sx: (theme) => ({
-                    marginLeft: theme.spacing(9),
+                  sx: {
+                    ml: 9,
                     width: '100%'
-                  })
+                  }
                 }}
                 renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
                 defaultColumn={{
@@ -590,10 +590,10 @@ function SubjectMemberInternal (props) {
                     id: 'Actions',
                     size: 80,
                     muiTableBodyCellProps: {
-                      sx: (theme) => ({
-                        paddingRight: theme.spacing(2),
+                      sx: {
+                        pr: 2,
                         flex: '0 0 auto',
-                      }),
+                      },
                     },
                   },
                   'mrt-row-expand': {
@@ -601,13 +601,13 @@ function SubjectMemberInternal (props) {
                     minSize: 40,
                     maxSize: 40,
                     muiTableBodyCellProps: {
-                      sx: (theme) => ({
-                        paddingRight: '0',
-                        paddingLeft: theme.spacing(0.25),
-                        paddingTop: theme.spacing(0.5),
+                      sx: {
+                        pr: 0,
+                        pl: 0.25,
+                        pt: 0.5,
                         flex: '0 0 auto',
                         alignItems: 'start'
-                      }),
+                      },
                     },
                   },
                 }}
@@ -616,9 +616,9 @@ function SubjectMemberInternal (props) {
                     size: 400,
                     muiTableBodyCellProps: {
                       sx: {
-                        paddingLeft: 0,
+                        pl: 0,
                         fontWeight: "bold",
-                        paddingTop: "10px",
+                        pt: "10px",
                         whiteSpace: 'nowrap',
                       },
                     },
@@ -642,11 +642,11 @@ function SubjectMemberInternal (props) {
                     ) },
                   { id: 'Status',
                     muiTableBodyCellProps: {
-                      sx: (theme) => ({
-                        whiteSpace: 'nowrap',
-                        paddingTop: "10px",
-                        paddingBottom: theme.spacing(1),
-                      }),
+                      sx: {
+                        whiteSpace: "nowrap",
+                        pt: 1.5,
+                        pb: 1,
+                      },
                     },
                     Cell: ({ row }) => (<Box className={classes.formFlagBox}>
                       { row.original["statusFlags"].map((status) => {
@@ -856,7 +856,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
       isHidden ? null :
         <Typography variant="body2" component="div" className={classes.formPreviewQuestion} key={key}>
           {questionTitle}
-          <span className={classes.formPreviewSeparator}>–</span>
+          <Box component="span" sx={{ my: 0, mx: 1.5 }}>–</Box>
           <div className={classes.formPreviewAnswer}>{content}</div>
         </Typography>
     );
@@ -889,10 +889,9 @@ export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion)
 }
 
 Subject.propTypes = {
-  classes: PropTypes.object.isRequired,
   maxDisplayed: PropTypes.number,
   pageSize: PropTypes.number,
   extensionURL: PropTypes.string
 }
 
-export default withStyles(Subject, QuestionnaireStyle);
+export default withStyles(Subject, subjectStyles);

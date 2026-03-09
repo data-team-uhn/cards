@@ -17,40 +17,13 @@
 //  under the License.
 //
 
-const statisticsStyle = theme => ({
-  statsContainer: {
-    minHeight: "50vh",
-    marginTop: theme.spacing(4),
-  },
-  statsCard: {
-    "& .MuiCardHeader-root" : {
-      paddingBottom: 0,
-    },
-    "& .MuiCardContent-root" : {
-      paddingTop: 0,
-    },
-    "& .recharts-legend-wrapper" : {
-      marginRight: "-10px",
-    },
-  },
-  subjectFilterInput: {
-    width: "100%"
-  },
-  categoryOption: {
-    whiteSpace: "normal",
-  },
-  customTooltip: {
-    margin: 0,
-    padding: "10px",
-    backgroundColor: theme.palette.grey[50],
-    border: `1px solid ${theme.palette.grey[50]}`,
-    whiteSpace: "nowrap",
-  },
-  label : {
-    margin: 0,
-    padding: 0,
-    listStyleType: "none"
-  }
-});
+// Props used in grid containers for displaying Form entries
+export const FORM_ENTRY_CONTAINER_PROPS = {
+  direction: "column",
+  spacing: 4,
+  alignItems: "stretch",
+  justifyContent: "space-between",
+  wrap: "nowrap",
+};
 
-export default statisticsStyle;
+export const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing / 2;

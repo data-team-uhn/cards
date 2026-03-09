@@ -24,8 +24,8 @@ import { withStyles } from 'tss-react/mui';
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
+import filterStyles from "../../questionnaire/filterStyles.jsx";
 import { NumberFormatCustom } from "../../questionnaire/NumberQuestion";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
 
@@ -77,7 +77,7 @@ NumericFilter.propTypes = {
   })
 }
 
-const StyledNumericFilter = withStyles(NumericFilter, QuestionnaireStyle);
+const StyledNumericFilter = withStyles(NumericFilter, filterStyles);
 
 export default StyledNumericFilter;
 

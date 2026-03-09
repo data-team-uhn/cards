@@ -127,7 +127,7 @@ let GroupUsersTable = (props) => {
   });
 
   return (
-    <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
+    <Grid container sx={{ py: 2 }}>
       <Grid size={1}></Grid>
       <Grid size={11}>
         {error && <Alert severity="error">{error}</Alert>}

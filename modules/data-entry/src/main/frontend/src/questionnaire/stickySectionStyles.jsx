@@ -16,24 +16,30 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { Lock } from "@mui/icons-material"
-import { IconButton, Tooltip } from "@mui/material";
 
-/**
- * A placeholder component that renders a lock icon.
- */
-function PermissionsButton(props) {
-  const { size } = props;
+import { grey } from '@mui/material/colors';
 
-  return (
-    <>
-      <Tooltip title="Set Permissions">
-        <IconButton component="span" size="large">
-          <Lock fontSize={size || "default"}/>
-        </IconButton>
-      </Tooltip>
-    </>
-  );
-}
-
-export default PermissionsButton;
+// Shared factory for sticky header/footer questionnaire sections
+export const stickySectionStyles = (theme, position = "top") => ({
+  "&.cards-edit-section" : {
+    position: "sticky",
+    ...(position === "top"
+      ? { top: 0, zIndex: 2, paddingTop: 0 }
+      : { bottom: 0, paddingBottom: "0 !important" }),
+  },
+  "& > .MuiCollapse-wrapper" : {
+    border: "1px solid " + theme.palette.primary.light,
+  },
+  "& .MuiGrid-root:not(:first-of-type)": {
+    paddingTop: 0,
+  },
+  "& .MuiGrid-root:not(:last-child)": {
+    paddingBottom: 0,
+  },
+  "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
+    background: grey[100],
+  },
+  "& .MuiCard-root" : {
+    borderColor: "transparent",
+  },
+});

@@ -29,7 +29,7 @@ import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { escapeJQL } from "../../escape.jsx";
 import { checkPropTypes } from "../../propTypes";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
+import filterStyles from "../../questionnaire/filterStyles.jsx";
 import SearchBar from "../../SearchBar.jsx";
 import { QuickSearchIdentifier } from "../../themePage/Navbars/QuickSearchIdentifier.jsx";
 
@@ -115,7 +115,7 @@ SubjectFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledSubjectFilter = withStyles(SubjectFilter, QuestionnaireStyle);
+const StyledSubjectFilter = withStyles(SubjectFilter, filterStyles);
 
 export default StyledSubjectFilter;
 

@@ -29,6 +29,7 @@ import { DropIndicator } from "@atlaskit/pragmatic-drag-and-drop-react-drop-indi
 import CloseIcon from '@mui/icons-material/Close';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {
+  Box,
   Checkbox,
   Grid,
   IconButton,
@@ -195,7 +196,7 @@ function DroppableAnswerOption(props) {
         <Grid size={3} className={classes.answerOptionActions}>
           {generateDescriptionIcon(value, index, false)}
           <Tooltip title="Delete option">
-            <IconButton onClick={() => deleteOption(index)} className={classes.answerOptionButton}>
+            <IconButton onClick={() => deleteOption(index)}>
               <CloseIcon/>
             </IconButton>
           </Tooltip>
@@ -206,11 +207,11 @@ function DroppableAnswerOption(props) {
 
   return (
     <>
-      <div className={classes.optionsList}>
+      <Box sx={{ p: 0 }}>
         {generateOption(false)}
         {draggableState?.type === 'dragging-over' && draggableState?.closestEdge &&
           (<DropIndicator edge={draggableState.closestEdge} gap='8px'/>)}
-      </div>
+      </Box>
       { draggableState.type === "preview" &&
         createPortal(
           generateOption(true),

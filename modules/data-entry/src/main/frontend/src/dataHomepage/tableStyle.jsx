@@ -50,10 +50,6 @@ const liveTableStyle = theme => ({
       padding: theme.spacing(0.25),
     },
   },
-  saveButton: {
-    position: 'absolute',
-    right: theme.spacing(2)
-  },
   answerField: {
     width: "100%",
   },
@@ -67,9 +63,6 @@ const liveTableStyle = theme => ({
       marginTop: theme.spacing(0.5),
       marginBottom: theme.spacing(0.5),
     }
-  },
-  dataRow: {
-    height: "3em"
   },
 });
 
