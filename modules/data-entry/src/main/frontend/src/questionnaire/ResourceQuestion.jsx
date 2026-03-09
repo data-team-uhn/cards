@@ -32,6 +32,7 @@ import ResourceQuery from "../resourceQuery/ResourceQuery";
 // Component that renders a question, where the answer options are children of a given JCR node
 
 function ResourceQuestion(props) {
+  "use memo";
   checkPropTypes(ResourceQuestion, props);
   const { primaryType, labelProperty, maxAnswers, displayMode } = { ...props.questionDefinition };
   const [options, setOptions] = useState();
