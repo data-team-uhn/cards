@@ -81,7 +81,7 @@ CARDS can be ran as a *single* Docker container using the file system (instead o
 as a data storage back-end for Apache Sling.
 
 ```bash
-docker run --rm -e OAK_FILESYSTEM=true -p 127.0.0.1:8080:8080 -it cards/cards
+docker run --rm -e OAK_FILESYSTEM=true --volume ~/.m2:/root/.m2 -p 127.0.0.1:8080:8080 -it cards/cards
 ```
 
 ### Production Environments
