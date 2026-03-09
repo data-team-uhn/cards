@@ -243,7 +243,7 @@ let AnswerOptions = (props) => {
       newOption.label = inputs[1] ? inputs[1].trim() : "";
       newOption.isNew = true;
       setOptions(oldValue => {
-        var value = oldValue.slice();
+        let value = oldValue.slice();
         value.push(newOption);
         return value;
       });
@@ -368,7 +368,7 @@ let AnswerOptions = (props) => {
       specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data, "description": description });
     } else {
       setOptions(oldValue => {
-        var value = oldValue.slice();
+        let value = oldValue.slice();
         value[descriptionIndex].description = description;
         return value;
       });

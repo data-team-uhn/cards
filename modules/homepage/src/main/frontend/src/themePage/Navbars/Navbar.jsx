@@ -25,12 +25,9 @@ import { checkPropTypes } from "../../propTypes";
 function Header({ ...props }) {
   checkPropTypes(Header, props);
   const { classes, color } = props;
-  const appBarClasses = classNames({
-    [" " + classes[color]]: color
-  });
 
   return (
-    <AppBar className={classes.appBar + appBarClasses}>
+    <AppBar className={classNames(classes.appBar, classes[color])}>
       <Toolbar className={classes.container}>
         <div className={classes.flex} />
         {/* While the screen is wide enough, display the navbar at the topright */}

@@ -90,12 +90,13 @@ let entitySpecs = {
 // TODO: Don't actually need entity.uuid ?
 function QuestionnaireAutocomplete(props) {
   checkPropTypes(QuestionnaireAutocomplete, props);
+  const DEFAULT_GET_OPTION_VALUE = (option) => option?.path;
   const {
     multiple = false,
     entities,
     selection = [],
     onSelectionChanged = () => {},
-    getOptionValue = (option) => option?.path,
+    getOptionValue = DEFAULT_GET_OPTION_VALUE,
     placeholderText = 'Select an option',
     ...rest
   } = props;

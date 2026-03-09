@@ -81,11 +81,13 @@ const useStyles = makeStyles()(theme => ({
 
 let VariableAutocomplete = (props) => {
   checkPropTypes(VariableAutocomplete, props);
+  const DEFAULT_GET_OPTION_VALUE = (option) => option?.uuid;
+  const DEFAULT_GET_OPTION_LABEL = (option) => option?.label;
   const {
     className,
     options,
-    getOptionValue = (option) => option?.uuid,
-    getOptionLabel = (option) => option?.label,
+    getOptionValue = DEFAULT_GET_OPTION_VALUE,
+    getOptionLabel = DEFAULT_GET_OPTION_LABEL,
     getOptionSecondaryLabel = () => {},
     onValueChanged = () => {},
     getHelperText = () => {},

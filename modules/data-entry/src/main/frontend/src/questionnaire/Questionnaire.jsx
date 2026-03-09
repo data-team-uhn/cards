@@ -75,7 +75,7 @@ let Questionnaire = (props) => {
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
-  let isEdit = window.location.pathname.endsWith(".edit");
+  let isEdit = location.pathname.endsWith(".edit");
   let navigate = useNavigate();
 
   let pageNameWriter = usePageNameWriterContext();

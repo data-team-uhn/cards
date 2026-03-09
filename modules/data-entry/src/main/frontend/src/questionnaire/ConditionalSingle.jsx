@@ -57,9 +57,9 @@ export function isConditionalSatisfied(conditional, context) {
     // Invalid operation
     throw new Error("Invalid operation specified.")
   }
-  var dataType = TRANSFORMATIONS[conditional.dataType] ? conditional.dataType : 'text';
-  var operandA = getValue(conditional.operandA, context);
-  var operandB = getValue(conditional.operandB, context);
+  let dataType = TRANSFORMATIONS[conditional.dataType] ? conditional.dataType : 'text';
+  let operandA = getValue(conditional.operandA, context);
+  let operandB = getValue(conditional.operandB, context);
 
   return compare(operandA, operandB, dataType, conditional.comparator);
 }

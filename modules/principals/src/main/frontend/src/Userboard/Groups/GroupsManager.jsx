@@ -195,7 +195,7 @@ function GroupsManager(props) {
 
     let usersToRemove = users ? users : Object.keys(table.getState().rowSelection).map(user => groupUsers[user].name);
     if (usersToRemove.length == 0) return;
-    for (var i = 0; i < usersToRemove.length; ++i) {
+    for (let i = 0; i < usersToRemove.length; ++i) {
       formData.append(':member@Delete', usersToRemove[i]);
     }
 

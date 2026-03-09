@@ -43,7 +43,7 @@ function NewQuestionnaireDialog(props) {
 
     // Make a POST request to create a new questionnaire, with a randomly generated UUID
     const URL = "/Questionnaires/" + uuidv4();
-    var request_data = new FormData();
+    let request_data = new FormData();
     request_data.append('jcr:primaryType', 'cards:Questionnaire');
     request_data.append('title', title);
     fetch( URL, { method: 'POST', body: request_data })

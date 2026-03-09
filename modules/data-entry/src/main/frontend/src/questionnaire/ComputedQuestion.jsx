@@ -115,7 +115,7 @@ let ComputedQuestion = (props) => {
       newDisplayedValue =
         DateTimeUtilities.formatDateAnswer(dateFormat, newDisplayedValue, DateTimeUtilities.slingDateFormat);
     } else if (dataType === "vocabulary") {
-      var url = new URL("." + newDisplayedValue + ".info.json", window.location.origin);
+      let url = new URL("." + newDisplayedValue + ".info.json", window.location.origin);
       let showInfo = (status, data, params) => {
         if (status === null && data) {
           console.log("Setting value to " + data["label"]);
@@ -217,7 +217,7 @@ let ComputedQuestion = (props) => {
             "value": getQuestionValue(questionName, form, defaultValue, asArray) });
       }
 
-      missingValue &&= !isValueOptional;
+      missingValue = missingValue && !isValueOptional;
       if (missingValue) {
         // Exit early as the expression cannot be evaluated without all inputs
         return null;

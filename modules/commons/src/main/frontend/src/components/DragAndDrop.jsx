@@ -140,7 +140,7 @@ export default function DragAndDrop(props) {
   return (
     <div
       style={{ display: 'inline-block', position: 'relative', opacity: disabled ? 0.5 : 1 }}
-      onClick={handleClick.bind(this)}
+      onClick={handleClick}
       onKeyDown={handleKeyDown}
       role="button"
       tabIndex={disabled ? -1 : 0}
@@ -153,7 +153,7 @@ export default function DragAndDrop(props) {
         multiple={multifile}
         ref={inputRef}
         style={{ display: 'none' }}
-        onChange={onChangeFile.bind(this)}
+        onChange={onChangeFile}
         value=""
         disabled={disabled}
       />

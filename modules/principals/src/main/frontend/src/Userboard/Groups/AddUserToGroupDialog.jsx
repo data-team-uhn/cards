@@ -38,6 +38,7 @@ import userboardStyle from '../userboardStyle.jsx';
 const GROUP_URL="/system/userManager/group/";
 
 function AddUserToGroupDialog(props) {
+  "use no memo";
   checkPropTypes(AddUserToGroupDialog, props);
   const { classes, name, allUsers, groupUsers, reload, isOpen, handleClose } = props;
 
@@ -49,7 +50,7 @@ function AddUserToGroupDialog(props) {
     let formData = new FormData();
 
     let selectedUsers = Object.keys(table?.getState().rowSelection);
-    for (var i = 0; i < selectedUsers.length; ++i) {
+    for (let i = 0; i < selectedUsers.length; ++i) {
       formData.append(':member', freeUsers[selectedUsers[i]].name);
     }
 
@@ -71,7 +72,7 @@ function AddUserToGroupDialog(props) {
   let handleEntering = () => {
     setFreeUsers(allUsers);
     if (Array.isArray(groupUsers)) {
-      var groupUsersArray = groupUsers.map((n) => n.name);
+      let groupUsersArray = groupUsers.map((n) => n.name);
       let filtered = allUsers.filter(el => !groupUsersArray.includes( el.name ));
       setFreeUsers(filtered);
     }

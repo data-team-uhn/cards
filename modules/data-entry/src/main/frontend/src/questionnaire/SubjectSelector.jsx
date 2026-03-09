@@ -188,7 +188,7 @@ function UnstyledNewSubjectDialog (props) {
             getRowId={ (row) => row["label"] }
             rowCount={rowCount}
             state={{
-              rowSelection: { [newSubjectType?.["label"]]: true },
+              rowSelection: newSubjectType?.["label"] ? { [newSubjectType["label"]]: true } : {},
               globalFilter,
               isLoading,
               pagination,
@@ -369,7 +369,7 @@ function UnstyledSelectParentDialog (props) {
               onPaginationChange={setPagination}
               rowCount={rowCount}
               state={{
-                rowSelection: { [value?.["jcr:uuid"]]: true },
+                rowSelection: value?.["jcr:uuid"] ? { [value["jcr:uuid"]]: true } : {},
                 globalFilter,
                 isLoading,
                 pagination,
@@ -1127,7 +1127,7 @@ function SubjectSelectorList(props) {
         getRowId={ (row) => row["jcr:uuid"] }
         rowCount={rowCount}
         state={{
-          rowSelection: { [selectedSubject?.["jcr:uuid"]]: true },
+          rowSelection: selectedSubject?.["jcr:uuid"] ? { [selectedSubject["jcr:uuid"]]: true } : {},
           globalFilter,
           isLoading,
           pagination,

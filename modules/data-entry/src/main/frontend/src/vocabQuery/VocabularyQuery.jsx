@@ -58,18 +58,18 @@ function VocabularyQuery(props) {
   // Callback onSuccess/onFailure when all requests have responded
   let makeMultiRequest = (queue, input, statuses, prevData, onSuccess, onFailure) => {
     // Get vocabulary to search through
-    var selectedVocab = queue.pop();
+    let selectedVocab = queue.pop();
     if (selectedVocab === undefined) {
       // Finished making all the requests and received all responses
       onFetchDone(statuses, prevData, onSuccess, onFailure);
       return;
     }
-    var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
+    let url = new URL(`./${selectedVocab}.search.json`, REST_URL);
     url.searchParams.set("suggest", input.replace(/[^\w\s]/g, ' '));
 
     //Are there any filters that should be associated with this request?
     if (questionDefinition?.vocabularyFilters?.[selectedVocab]) {
-      var filter = questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
+      let filter = questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
         return (`term_category:${category}`);
       }).join(" OR ");
       url.searchParams.set("customFilter", `(${filter})`);
@@ -83,14 +83,14 @@ function VocabularyQuery(props) {
 
   // Fetch suggestions for the given input
   let fetchSuggestions = (input, onSuccess, onFailure) => {
-    var vocabQueue = questionDefinition.sourceVocabularies.slice();
+    let vocabQueue = questionDefinition.sourceVocabularies.slice();
     makeMultiRequest(vocabQueue, input, {}, [], onSuccess, onFailure);
   }
 
   // Process the statuses from all the requests to call the appropriate handler
   let onFetchDone = (statuses, data, onSuccess, onFailure) => {
-    var allRequestsFailed = Object.keys(statuses).filter(vocab => !statuses[vocab]).length == 0;
-    var allRequestsSucceded = Object.keys(statuses).filter(vocab => statuses[vocab]).length == 0;
+    let allRequestsFailed = Object.keys(statuses).filter(vocab => !statuses[vocab]).length == 0;
+    let allRequestsSucceded = Object.keys(statuses).filter(vocab => statuses[vocab]).length == 0;
 
     if (!allRequestsFailed && !allRequestsSucceded) {
       data.splice(0, 0, {
@@ -114,9 +114,9 @@ function VocabularyQuery(props) {
       "@path" : element["@path"],
       matchedFields : []
     };
-    var name = element["label"] || element["name"] || element["identifier"];
-    var synonyms = element["synonym"] || element["has_exact_synonym"] || [];
-    var definition = Array.from(element["def"] || element["description"] || element["definition"] || [])[0] || "";
+    let name = element["label"] || element["name"] || element["identifier"];
+    let synonyms = element["synonym"] || element["has_exact_synonym"] || [];
+    let definition = Array.from(element["def"] || element["description"] || element["definition"] || [])[0] || "";
 
     suggestion.label = name;
     if (name.toLowerCase() == query.toLowerCase() || synonyms.find(s => s.toLowerCase() == query.toLowerCase())) {

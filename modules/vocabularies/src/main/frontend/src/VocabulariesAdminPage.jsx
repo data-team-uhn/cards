@@ -89,15 +89,15 @@ export default function VocabulariesAdminPage() {
   }
 
   function addSetter(acronym, setFunction, type) {
-    var copy = acronymPhaseSettersObject;
-    if (Object.hasOwn(copy, acronym)) {
-      copy[acronym][type] = setFunction;
-    } else {
-      var temp = {};
-      temp[type] = setFunction;
-      copy[acronym] = temp;
-    }
-    setAcronymPhaseSettersObject(copy);
+    setAcronymPhaseSettersObject(prev => {
+      const copy = { ...prev };
+      if (Object.hasOwn(copy, acronym)) {
+        copy[acronym] = { ...copy[acronym], [type]: setFunction };
+      } else {
+        copy[acronym] = { [type]: setFunction };
+      }
+      return copy;
+    });
   }
 
   function setPhase(acronym, phase) {
@@ -106,7 +106,7 @@ export default function VocabulariesAdminPage() {
       setters[key]?.(phase);
     }
     // update acronyms object
-    let phases = acronymPhaseObject;
+    let phases = { ...acronymPhaseObject };
     phases[acronym] = phase;
     setAcronymPhaseObject(phases);
   }
@@ -115,7 +115,7 @@ export default function VocabulariesAdminPage() {
      All others have the default not installed phase
   */
   function setPhases() {
-    var tempAcronymPhaseObject = {};
+    let tempAcronymPhaseObject = {};
 
     localVocabList.map((vocab) => {
       tempAcronymPhaseObject[vocab.acronym] = Phase["Latest"]; // default
@@ -141,7 +141,7 @@ export default function VocabulariesAdminPage() {
     const acronym = vocab.acronym;
 
     if (action === "add") {
-      var tempLocalVocabList = localVocabList.slice();
+      let tempLocalVocabList = localVocabList.slice();
       // find out if we already have this vocab installed and update it
       // in case we are updating one
       let installedIndex = localVocabList.findIndex(item => item.acronym == vocab.acronym);
@@ -153,11 +153,19 @@ export default function VocabulariesAdminPage() {
       setLocalVocabList(tempLocalVocabList);
 
     } else if (action === "remove") {
-      var copy = acronymPhaseSettersObject;
-      delete copy[acronym]["local"];
+      let copy = { ...acronymPhaseSettersObject };
+      if (copy[acronym]) {
+        // eslint-disable-next-line no-unused-vars
+        const { local, ...rest } = copy[acronym];
+        if (Object.keys(rest).length > 0) {
+          copy[acronym] = rest;
+        } else {
+          delete copy[acronym];
+        }
+      }
       setAcronymPhaseSettersObject(copy);
 
-      let phases = acronymPhaseObject;
+      let phases = { ...acronymPhaseObject };
       delete phases[acronym];
       setAcronymPhaseObject(phases);
 

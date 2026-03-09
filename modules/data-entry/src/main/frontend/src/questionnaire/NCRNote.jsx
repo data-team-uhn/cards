@@ -32,31 +32,33 @@ const ONTOLOGY_KEY = "hp_id";
 function ParsedNoteSection (props) {
   let { classes, onAddSuggestion, tooltips, text, offset } = props;
   let hasMatch = tooltips.length > 0;
-  let frontMatter = text;
-  if (hasMatch) {
-    var matches = tooltips.sort( (e1, e2) => (e1.start-e2.start) );
-    var firstMatch = matches[0];
-    // The front matter is the text before the first match begins
-    frontMatter = text.substring(0, firstMatch.start-offset);
-    var matchID = firstMatch[ONTOLOGY_KEY]; // TODO: Handle more than just HPO
-    var matchName = firstMatch["names"][0];
 
-    // The contained matter is the text inside the first match
-    var containedMatches = matches.filter( (el) => (
-      el.start >= firstMatch.start && el.end <= firstMatch.end
-        && !(el.start == firstMatch.start && el.end == firstMatch.end)
-    ));
-    var containedMatter = text.substring(firstMatch.start-offset, firstMatch.end-offset);
-
-    // The uncontained matter is the text after the first match, up until the end of the last match
-    // (It still needs to be parsed for more notes)
-    var uncontainedMatches = matches.filter( (el) => (el.end > firstMatch.end));
-    var lastMatch = Math.max(...(tooltips.map((el) => (el.end))));
-    var middleMatter = text.substring(firstMatch.end-offset, lastMatch-offset);
-
-    // The end matter is the text after the last match
-    var endMatter = text.substring(lastMatch-offset);
+  if (!hasMatch) {
+    return <Typography display="inline">{text}</Typography>;
   }
+
+  let matches = tooltips.sort( (e1, e2) => (e1.start-e2.start) );
+  let firstMatch = matches[0];
+  // The front matter is the text before the first match begins
+  let frontMatter = text.substring(0, firstMatch.start-offset);
+  let matchID = firstMatch[ONTOLOGY_KEY]; // TODO: Handle more than just HPO
+  let matchName = firstMatch["names"][0];
+
+  // The contained matter is the text inside the first match
+  let containedMatches = matches.filter( (el) => (
+    el.start >= firstMatch.start && el.end <= firstMatch.end
+      && !(el.start == firstMatch.start && el.end == firstMatch.end)
+  ));
+  let containedMatter = text.substring(firstMatch.start-offset, firstMatch.end-offset);
+
+  // The uncontained matter is the text after the first match, up until the end of the last match
+  // (It still needs to be parsed for more notes)
+  let uncontainedMatches = matches.filter( (el) => (el.end > firstMatch.end));
+  let lastMatch = Math.max(...(tooltips.map((el) => (el.end))));
+  let middleMatter = text.substring(firstMatch.end-offset, lastMatch-offset);
+
+  // The end matter is the text after the last match
+  let endMatter = text.substring(lastMatch-offset);
 
   // Handle the user clicking on a chip which corresponds to a suggestion
   let addSuggestion = (event) => {
@@ -66,34 +68,31 @@ function ParsedNoteSection (props) {
 
   return (<>
     <Typography display="inline">{frontMatter}</Typography>
-    {hasMatch &&
-      <>
-        <Tooltip title={`Add ${matchName} (${matchID}) to selection`}>
-          <Chip
-            size="small"
-            onClick={addSuggestion}
-            color="info"
-            label={
-              <ParsedNoteSection
-                tooltips={containedMatches}
-                text={containedMatter}
-                offset={firstMatch.start}
-                classes={classes}
-                onAddSuggestion={onAddSuggestion}
-              />
-            }
+    <Tooltip title={`Add ${matchName} (${matchID}) to selection`}>
+      <Chip
+        size="small"
+        onClick={addSuggestion}
+        color="info"
+        label={
+          <ParsedNoteSection
+            tooltips={containedMatches}
+            text={containedMatter}
+            offset={firstMatch.start}
+            classes={classes}
+            onAddSuggestion={onAddSuggestion}
           />
-        </Tooltip>
-        <ParsedNoteSection
-          tooltips={uncontainedMatches}
-          text={middleMatter}
-          offset={firstMatch.end}
-          classes={classes}
-          onAddSuggestion={onAddSuggestion}
-        />
-        <Typography display="inline">{endMatter}</Typography>
-      </>}
-  </>)
+        }
+      />
+    </Tooltip>
+    <ParsedNoteSection
+      tooltips={uncontainedMatches}
+      text={middleMatter}
+      offset={firstMatch.end}
+      classes={classes}
+      onAddSuggestion={onAddSuggestion}
+    />
+    <Typography display="inline">{endMatter}</Typography>
+  </>);
 }
 
 function NCRNote (props) {

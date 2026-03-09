@@ -174,7 +174,7 @@ function DroppableAnswerOption(props) {
               checked={value.isDefault}
               onChange={(event) => {
                 setOptions(old => {
-                  var _new = old.slice();
+                  let _new = old.slice();
                   _new[index].isDefault = !!(event?.target?.checked);
                   return _new;
                 });

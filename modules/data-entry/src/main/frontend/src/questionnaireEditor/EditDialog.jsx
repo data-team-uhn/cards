@@ -56,6 +56,8 @@ let EditDialog = (props) => {
   let [ error, setError ] = useState('');
   let [ variableNameError, setVariableNameError ] = useState('');
 
+  // Dynamic require - webpack warning is expected for this pattern
+  // Critical dependency: the request of a dependency is an expression
   let json = model ? require(`./${model}`) : require(`./${type}.json`);
   let hints = null;
   try {
@@ -98,7 +100,7 @@ let EditDialog = (props) => {
 
     } else {
       // If the entry doesn't exist, create it
-      var request_data = new FormData(event.currentTarget);
+      let request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
       fetchWithReLogin(globalLoginDisplay,
         `${data['@path']}/${targetId}`,
