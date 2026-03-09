@@ -35,8 +35,8 @@ import FormattedText from "../components/FormattedText.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import { subjectSelectorDialogStyles } from "../questionnaire/QuestionnaireStyle.jsx";
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
+import { subjectSelectorDialogStyles } from "../questionnaire/subjectSelectorDialogStyles.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;
@@ -475,7 +475,7 @@ function NewFormDialog(props) {
               variant="contained"
               color="success"
               onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
-              className={classes.createNewSubjectButton}
+              sx={{ mr: 'auto' }}
             >
               New subject
             </Button>

@@ -20,10 +20,15 @@
 import { useState } from "react";
 
 import { CircularProgress, Chip, Tooltip, Typography } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import Note from "./Note.jsx";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+
+const useStyles = makeStyles()(() => ({
+  NCRLoadingIndicator: {
+    display: "flex",
+  },
+}));
 
 const NCRURL = window.location.origin + "/ncr/annotate/";
 const ONTOLOGY_KEY = "hp_id";
@@ -96,7 +101,8 @@ function ParsedNoteSection (props) {
 }
 
 function NCRNote (props) {
-  const { classes, existingAnswer, vocabulary, onAddSuggestion, onChangeNote, onBlur, ...rest } = props;
+  const { existingAnswer, vocabulary, onAddSuggestion, onChangeNote, onBlur, ...rest } = props;
+  const { classes } = useStyles();
   const [ cachedText, setCachedText ] = useState(existingAnswer?.[1]?.note || "");
   const [ parsedText, setParsedText ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
@@ -179,4 +185,4 @@ function NCRNote (props) {
   );
 }
 
-export default withStyles(NCRNote, QuestionnaireStyle);
+export default NCRNote;

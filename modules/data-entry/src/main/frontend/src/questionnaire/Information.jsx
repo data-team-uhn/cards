@@ -19,16 +19,24 @@
 
 import { Alert, Card, CardContent } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
-import { checkPropTypes } from "../propTypes";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 import FormattedText from "../components/FormattedText.jsx";
+import { checkPropTypes } from "../propTypes";
+
+const useStyles = makeStyles()(theme => ({
+  informationCard: {
+    "& .MuiCardContent-root": {
+      padding: theme.spacing(1.5, 2),
+    },
+  },
+}));
 
 // GUI for displaying Information cards
 function Information (props) {
   checkPropTypes(Information, props);
-  let { classes, infoDefinition, ...otherProps } = props;
+  let { infoDefinition, ...otherProps } = props;
+  const { classes } = useStyles();
   let { text, type = "plain" } = { ...otherProps, ...infoDefinition }
 
   return (type == "plain" ?
@@ -54,4 +62,4 @@ Information.propTypes = {
   }),
 };
 
-export default withStyles(Information, QuestionnaireStyle);
+export default Information;

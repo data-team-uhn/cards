@@ -26,7 +26,7 @@ import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import AnswerInstructions from "./AnswerInstructions";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import questionStyles from "./questionStyles.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
@@ -152,4 +152,4 @@ Question.propTypes = {
   disableInstructions: PropTypes.bool,
 };
 
-export default withStyles(Question, QuestionnaireStyle);
+export default withStyles(Question, questionStyles);

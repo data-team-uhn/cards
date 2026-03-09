@@ -21,10 +21,8 @@ import { useState, useEffect } from 'react';
 
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import PropTypes from 'prop-types';
-import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 
 const infoButton = {
   name: "Markdown help button",
@@ -46,8 +44,7 @@ let MarkdownText = (props) => {
   let {
     onChange,
     height = 200,
-    preview = "live",
-    classes
+    preview = "live"
   } = props;
   const [value, setValue] = useState(props.value || '');
   let cmd = commands.getExtraCommands();
@@ -60,7 +57,6 @@ let MarkdownText = (props) => {
 
   return (
     <MDEditor
-      className={classes.markdown}
       value={value}
       height={height}
       preview={preview}
@@ -77,4 +73,4 @@ MarkdownText.propTypes = {
   preview: PropTypes.string
 };
 
-export default withStyles(MarkdownText, QuestionnaireStyle);
+export default MarkdownText;

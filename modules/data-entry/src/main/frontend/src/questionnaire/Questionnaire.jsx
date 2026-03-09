@@ -48,9 +48,10 @@ import { Link, useNavigate, useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
 import { ENTRY_TYPES, QUESTION_TYPES } from "./FormEntry";
+import formStyles from "./formStyles.jsx";
+import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
 import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
 import QuestionnairePreview from "./QuestionnairePreview";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
 import ResourceHeader from "./ResourceHeader";
 import DeleteButton from "../dataHomepage/DeleteButton";
@@ -257,7 +258,7 @@ let Questionnaire = (props) => {
   );
 };
 
-export default withStyles(Questionnaire, QuestionnaireStyle);
+export default withStyles(Questionnaire, formStyles);
 
 
 let QuestionnaireItemSet = (props) => {

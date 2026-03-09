@@ -26,7 +26,7 @@ import { withStyles } from 'tss-react/mui';
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
+import filterStyles from "../../questionnaire/filterStyles.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
@@ -90,7 +90,7 @@ ListFilter.propTypes = {
   questionDefinition: PropTypes.object
 }
 
-const StyledListFilter = withStyles(ListFilter, QuestionnaireStyle);
+const StyledListFilter = withStyles(ListFilter, filterStyles);
 
 export default StyledListFilter;
 

@@ -21,10 +21,8 @@ import { useState, useEffect } from "react";
 
 import { Snackbar, SnackbarContent } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import BrowseTheme from "./browseStyle.jsx";
 import InfoBox from "./InfoBox.jsx";
 import { MakeRequest } from "./util.jsx";
 import VocabularyTree from "./VocabularyTree.jsx";
@@ -48,7 +46,7 @@ import VocabularyTree from "./VocabularyTree.jsx";
 function VocabularyBrowser(props) {
   checkPropTypes(VocabularyBrowser, props);
   const { browserOpen, onCloseInfo, onCloseBrowser, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots,
-    vocabulary, enableSelection, initialSelection, questionDefinition, classes } = props;
+    vocabulary, enableSelection, initialSelection, questionDefinition } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
@@ -233,7 +231,7 @@ function VocabularyBrowser(props) {
         variant="error"
       >
         <SnackbarContent
-          className={classes.errorSnack}
+          sx={theme => ({ backgroundColor: theme.palette.error.dark })}
           role="alertdialog"
           message={snackbarMessage}
         />
@@ -255,4 +253,4 @@ VocabularyBrowser.propTypes = {
   questionDefinition: PropTypes.object,
 }
 
-export default withStyles(VocabularyBrowser, BrowseTheme);
+export default VocabularyBrowser;

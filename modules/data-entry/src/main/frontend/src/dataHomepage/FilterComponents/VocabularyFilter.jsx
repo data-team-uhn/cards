@@ -23,7 +23,7 @@ import { withStyles } from 'tss-react/mui';
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
+import filterStyles from "../../questionnaire/filterStyles.jsx";
 import VocabularyQuery from "../../vocabQuery/VocabularyQuery.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
@@ -68,7 +68,7 @@ VocabularyFilter.propTypes = {
   })
 }
 
-const StyledVocabularyFilter = withStyles(VocabularyFilter, QuestionnaireStyle);
+const StyledVocabularyFilter = withStyles(VocabularyFilter, filterStyles);
 
 export default StyledVocabularyFilter;
 

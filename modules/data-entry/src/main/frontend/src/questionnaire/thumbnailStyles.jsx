@@ -16,24 +16,20 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { Lock } from "@mui/icons-material"
-import { IconButton, Tooltip } from "@mui/material";
 
-/**
- * A placeholder component that renders a lock icon.
- */
-function PermissionsButton(props) {
-  const { size } = props;
+import filterStyles from "./filterStyles.jsx";
 
-  return (
-    <>
-      <Tooltip title="Set Permissions">
-        <IconButton component="span" size="large">
-          <Lock fontSize={size || "default"}/>
-        </IconButton>
-      </Tooltip>
-    </>
-  );
-}
+const thumbnailStyles = theme => ({
+  ...filterStyles(theme),
+  thumbnail: {
+    border: "1px solid " + theme.palette.divider,
+  },
+  thumbnailLink: {
+    cursor: "pointer",
+    "& div:hover" : {
+      borderColor: "inherit !important",
+    },
+  },
+});
 
-export default PermissionsButton;
+export default thumbnailStyles;

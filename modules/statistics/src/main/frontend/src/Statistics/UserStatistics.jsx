@@ -23,15 +23,21 @@ import {
   Grid,
   Typography
 } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import Statistic from "./Statistic.jsx";
-import statisticsStyle from "./statisticsStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+
+const useStyles = makeStyles()(theme => ({
+  statsContainer: {
+    minHeight: "50vh",
+    marginTop: theme.spacing(4),
+  },
+}));
 
 // Dashboard of all of the statistics viewable by the user
 function UserStatistics(props) {
-  const { classes } = props;
+  const { classes } = useStyles();
   let [ currentStatistic, setCurrentStatistic ] = useState([]);
   let [initialized, setInitialized] = useState(false);
   // Error message set when fetching the data from the server fails
@@ -133,4 +139,4 @@ function UserStatistics(props) {
   );
 }
 
-export default withStyles(UserStatistics, statisticsStyle);
+export default UserStatistics;

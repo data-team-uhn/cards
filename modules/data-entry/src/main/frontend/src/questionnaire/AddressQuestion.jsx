@@ -29,7 +29,7 @@ import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import questionStyles from "./questionStyles.jsx";
 import StyledTextQuestion from "./TextQuestion";
 
 
@@ -173,7 +173,7 @@ AddressQuestion.propTypes = {
 };
 
 
-const StyledAddressQuestion = withStyles(AddressQuestion, QuestionnaireStyle);
+const StyledAddressQuestion = withStyles(AddressQuestion, questionStyles);
 export default StyledAddressQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

@@ -16,24 +16,20 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { Lock } from "@mui/icons-material"
-import { IconButton, Tooltip } from "@mui/material";
 
-/**
- * A placeholder component that renders a lock icon.
- */
-function PermissionsButton(props) {
-  const { size } = props;
+import questionStyles from "./questionStyles.jsx";
 
-  return (
-    <>
-      <Tooltip title="Set Permissions">
-        <IconButton component="span" size="large">
-          <Lock fontSize={size || "default"}/>
-        </IconButton>
-      </Tooltip>
-    </>
-  );
-}
+// Extends questionStyles for notesContainer; adds note-specific styles only
+const noteStyles = theme => ({
+  ...questionStyles(theme),
+  toggleNotesButton: {
+    textTransform: "none",
+  },
+  noteSection: {
+    "& .MuiTextField-root" :{
+      width: "100%",
+    },
+  },
+});
 
-export default PermissionsButton;
+export default noteStyles;

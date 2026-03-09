@@ -17,10 +17,36 @@
 
 import { CircularProgress, Fab, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import style from './style.jsx';
+
+const useStyles = makeStyles()(theme => ({
+  mainActionButton: {
+    margin: theme.spacing(1),
+    position: "fixed",
+    bottom: theme.spacing(2),
+    right: theme.spacing(4),
+    zIndex: 100,
+    "& .MuiCircularProgress-root" : {
+      position: 'absolute',
+      top: "50%",
+      left: "50%",
+      marginTop: "-28px",
+      marginLeft: "-28px",
+    },
+    "& .MuiFab-extended + .MuiCircularProgress-root" : {
+      marginTop: "-16px",
+      marginLeft: "-16px",
+    },
+    "& .MuiFab-extended .MuiSvgIcon-root" : {
+      marginRight: theme.spacing(1),
+    },
+    "& .MuiFab-extended .MuiFab-label" : {
+      marginRight: theme.spacing(1),
+    },
+  },
+}));
 
 // Component that renders a floating action button (Fab) at the bottom right of the screen,
 // to be used as the main action for a specific page.
@@ -53,7 +79,6 @@ import style from './style.jsx';
 function MainActionButton(props) {
   checkPropTypes(MainActionButton, props);
   const {
-    classes,
     icon,
     label,
     title,
@@ -65,6 +90,8 @@ function MainActionButton(props) {
   } = props;
 
   let extended = !!label;
+
+  const { classes } = useStyles();
 
   let button = (
     <div className={classes.mainActionButton} style={style}>
@@ -105,4 +132,4 @@ MainActionButton.propTypes = {
   style: PropTypes.object,
 }
 
-export default withStyles(MainActionButton, style);
+export default MainActionButton;

@@ -29,6 +29,7 @@ import {
   TimelineOppositeContent
 } from "@mui/lab";
 import {
+  Box,
   CircularProgress,
   Link,
   Paper,
@@ -41,8 +42,8 @@ import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion } from "./Subject.jsx";
+import subjectTimelineStyles from "./subjectTimelineStyle.jsx";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { checkPropTypes } from "../propTypes";
@@ -73,7 +74,7 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
     divClasses.push(classes.timelineDateEntryFinal);
   }
 
-  return <div key={index} className={divClasses.join(",")}>
+  return <div key={index} className={divClasses.join(" ")}>
     <Typography variant="h6" component="h1">
       {questionTitle} (<Link href={`/content.html${formPath}#${questionData.questionPath}`} underline="hover">{formTitle}</Link>)
     </Typography>
@@ -89,7 +90,7 @@ function CustomTimelineConnector(props) {
     divClasses.push(className);
   }
 
-  return <div className={divClasses.join(",")}>
+  return <div className={divClasses.join(" ")}>
     <Tooltip title={longText}>
       <div className={classes.timelineCircle}>
         <Typography variant="body2">{shortText}</Typography>
@@ -119,7 +120,7 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
   }
 
   return <TimelineItem key={index}>
-    <TimelineOppositeContent className={classes.timelineContent}>
+    <TimelineOppositeContent sx={{ p: 3, pt: 1 }}>
       <Typography color="textSecondary" className={classes.timelineDate}>{dateText}</Typography>
     </TimelineOppositeContent>
     <TimelineSeparator className={separatorClasses.join(",")}>
@@ -136,8 +137,8 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
         : null
       }
     </TimelineSeparator>
-    <TimelineContent className={classes.timelineContent}>
-      <Paper elevation={3} className={paperClasses.join(",")}>
+    <TimelineContent sx={{ p: 3, pt: 1 }}>
+      <Paper elevation={3} className={paperClasses.join(" ")}>
         {dateEntry.questions.map((question, index) => {
           return DateAnswerDisplay(classes, question, index, dateEntry.questions.length, dateEntry.level)
         })}
@@ -369,22 +370,21 @@ function SubjectTimeline(props) {
   }
 
   return ( dateEntries?.length ?
-    <div className={classes.timelineContainer}><Timeline position="alternate" className={classes.timeline}>
+    <Box sx={{ alignItems: "center" }}><Timeline position="alternate" className={classes.timeline}>
       {
         dateEntries.map((dateEntry, index) => {
           let nextEntry = (index + 1 < dateEntries.length) ? dateEntries[index + 1] : null;
           return TimelineEntry(classes, dateEntry, index, dateEntries.length, nextEntry);
         })
       }
-    </Timeline></div>
+    </Timeline></Box>
     :
     <Typography color="textSecondary" variant="caption">No timeline data available</Typography>
   )
 }
 
 SubjectTimeline.propTypes = {
-  classes: PropTypes.object.isRequired,
   subject: PropTypes.object.isRequired
 }
 
-export default withStyles(SubjectTimeline, QuestionnaireStyle);
+export default withStyles(SubjectTimeline, subjectTimelineStyles);

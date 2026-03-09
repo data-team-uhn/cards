@@ -29,7 +29,7 @@ import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import { GRID_SPACE_UNIT } from "./QuestionnaireStyle";
+import { GRID_SPACE_UNIT } from "./questionnaireConstants.jsx";
 
 const useStyles = makeStyles()(theme => ({
   resourceHeader: {

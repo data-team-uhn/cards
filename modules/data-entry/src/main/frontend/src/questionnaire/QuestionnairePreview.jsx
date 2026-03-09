@@ -30,8 +30,9 @@ import { withStyles } from 'tss-react/mui';
 import { FormProvider } from "./FormContext";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import FormPagination from "./FormPagination";
+import formStyles from "./formStyles.jsx";
 import { FormUpdateProvider } from "./FormUpdateContext";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
 import MainActionButton from "../components/MainActionButton.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
@@ -125,4 +126,4 @@ function QuestionnairePreview (props) {
   </div>);
 }
 
-export default withStyles(QuestionnairePreview, QuestionnaireStyle);
+export default withStyles(QuestionnairePreview, formStyles);

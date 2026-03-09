@@ -30,7 +30,7 @@ import Answer, { LABEL_POS, VALUE_POS } from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import questionMatrixStyles from "./questionMatrixStyles.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
 // Component that renders an image with clickable areas based on the available
@@ -275,7 +275,7 @@ function SelectableAreaQuestion(props) {
 
     setImageMap(
       initialized && map ?
-        <svg className={classes.selectableArea}
+        <svg
           width={width}
           height={height}
           viewBox={viewBox}>
@@ -352,15 +352,11 @@ function SelectableAreaQuestion(props) {
                 <Checkbox
                   checked={notApplicableChecked}
                   onChange={() => onNotApplicableClicked()}
-                  className={classes.checkbox}
+                  sx={{ my: -2, mx: 0 }}
                   color="secondary"
                 />}
               label={notApplicableOption.label || notApplicableOption.value}
               value={notApplicableOption.value}
-              className={classes.childFormControl}
-              classes={{
-                label: classes.inputLabel
-              }}
             />
             <FormattedText className={classes.selectionDescription} variant="caption" color="textSecondary">
               {notApplicableOption.help}
@@ -418,7 +414,7 @@ SelectableAreaQuestion.propTypes = {
   maxAnswers: PropTypes.number
 };
 
-const StyledSelectableAreaQuestion = withStyles(SelectableAreaQuestion, QuestionnaireStyle);
+const StyledSelectableAreaQuestion = withStyles(SelectableAreaQuestion, questionMatrixStyles);
 export default StyledSelectableAreaQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

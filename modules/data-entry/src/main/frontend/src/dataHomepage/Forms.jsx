@@ -21,7 +21,7 @@ import { useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
 import FormView from "./FormView.jsx";
-import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import dashboardStyles from "../questionnaire/dashboardStyles.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
@@ -76,4 +76,4 @@ function Forms(props) {
   );
 }
 
-export default withStyles(Forms, questionnaireStyle);
+export default withStyles(Forms, dashboardStyles);

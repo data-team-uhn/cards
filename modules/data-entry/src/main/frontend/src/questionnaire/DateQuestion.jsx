@@ -31,7 +31,7 @@ import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import questionStyles from "./questionStyles.jsx";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 
 // Component that renders a date/time question
@@ -314,7 +314,7 @@ function DateQuestion(props) {
 
 DateQuestion.propTypes = DateTimeUtilities.PROP_TYPES;
 
-const StyledDateQuestion = withStyles(DateQuestion, QuestionnaireStyle);
+const StyledDateQuestion = withStyles(DateQuestion, questionStyles);
 export default StyledDateQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

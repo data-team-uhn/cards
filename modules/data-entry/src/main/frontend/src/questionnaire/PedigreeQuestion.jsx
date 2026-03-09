@@ -27,7 +27,7 @@ import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import thumbnailStyles from "./thumbnailStyles.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PedigreeEditor from "../pedigree/pedigree";
 
@@ -179,7 +179,7 @@ PedigreeQuestion.propTypes = {
   existingAnswer: PropTypes.array,
 }
 
-const StyledPedigreeQuestion = withStyles(PedigreeQuestion, QuestionnaireStyle);
+const StyledPedigreeQuestion = withStyles(PedigreeQuestion, thumbnailStyles);
 export default StyledPedigreeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
