@@ -39,7 +39,8 @@ import ConditionalSingle from "./ConditionalSingle";
 import { useFormReaderContext, useFormWriterContext } from "./FormContext";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { hasWarningFlags } from "./FormUtilities";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
+import sectionStyles from "./sectionStyles.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import { checkPropTypes } from "../propTypes";
@@ -192,9 +193,6 @@ function Section(props) {
   // Or if we're in view mode and do not have any answers or other content, and the section is not marked as incomplete
   if (!isDisplayed) {
     collapseClasses.push(classes.collapsedSection);
-  }
-  if (hasHeader) {
-    collapseClasses.push(classes.collapseWrapper);
   }
   // Don't hide for undefined or null values
   if (pageActive === false) {
@@ -373,4 +371,4 @@ Section.propTypes = {
   }).isRequired,
 }
 
-export default withStyles(Section, QuestionnaireStyle);
+export default withStyles(Section, sectionStyles);

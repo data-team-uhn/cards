@@ -34,14 +34,24 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from 'react-router';
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import LiveTable from "./LiveTable.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+
+const useStyles = makeStyles()(theme => ({
+  formView: {
+    "& .MuiTabs-indicator": {
+      background: theme.palette.primary.main,
+    },
+  },
+  formViewAvatar: {
+    background: theme.palette.primary.main,
+  },
+}));
 
 function FormView(props) {
   const {
@@ -53,8 +63,9 @@ function FormView(props) {
     disableHeader,
     disableAvatar,
     topPagination,
-    classes
   } = props;
+
+  const { classes } = useStyles();
 
   const [ title, setTitle ] = useState(props.title);
   const [ subtitle, setSubtitle ] = useState(props.subtitle);
@@ -197,4 +208,4 @@ function FormView(props) {
   );
 }
 
-export default withStyles(FormView, QuestionnaireStyle);
+export default FormView;

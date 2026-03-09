@@ -22,12 +22,12 @@ import Info from "@mui/icons-material/Info";
 import ArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import ArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import More from "@mui/icons-material/MoreHoriz";
-import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import BrowseTheme from "./browseStyle.jsx";
+import BrowseTheme from "./browseStyle";
 import { MakeRequest } from "./util.jsx";
 import { VALUE_POS } from "../questionnaire/Answer";
 
@@ -305,14 +305,14 @@ function VocabularyBranch(props) {
         color="secondary"
         onChange={onSelectionChanged}
         onClick={event => event.stopPropagation()}
-        className={classes.termSelector}
+        sx={theme => ({ m: theme.spacing(-.25, 0, 0, -1.5) })}
       /> }
       {/* Term name */}
       <Typography onClick={() => loadTerm(id, path)}
         className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}
         component="div">
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
-        <span className={classes.infoIcon}>
+        <Box component="span" sx={{ whiteSpace: "nowrap" }}>
           {name.split(" ").pop()}&nbsp;
           {/* Button to open info page */}
           <IconButton
@@ -324,7 +324,7 @@ function VocabularyBranch(props) {
           >
             <Info color="primary" fontSize="small" className={classes.infoButton}/>
           </IconButton>
-        </span>
+        </Box>
       </Typography>
 
       {/* Children */}

@@ -19,6 +19,7 @@
 import { useState, useEffect } from "react";
 
 import {
+  Box,
   Button,
   Checkbox,
   DialogContent,
@@ -33,7 +34,7 @@ import { withStyles } from 'tss-react/mui';
 
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import { checkPropTypes } from "../propTypes";
-import BrowseTheme from "./browseStyle.jsx";
+import BrowseTheme from "./browseStyle";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import VocabularyBranch from "./VocabularyBranch.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
@@ -255,7 +256,6 @@ function VocabularyTree(props) {
       open={open}
       ref={browserRef}
       onClose={(evt) => onCancel(evt)}
-      className={classes.dialog}
       classes={{
         paper: classes.dialogPaper,
         root: classes.infoDialog
@@ -263,7 +263,7 @@ function VocabularyTree(props) {
       {...rest}
     >
       { enableSelection && <>
-        <div className={classes.selectionContainer}>
+        <Box sx={theme => ({ p: theme.spacing(0, 3, 2) })}>
           <Typography variant="body2" component="span">{questionDefinition?.text}:</Typography>
           { selectedTerms?.filter(i => i[LABEL_POS]).map(s =>
             <Chip
@@ -274,13 +274,12 @@ function VocabularyTree(props) {
               label={s[LABEL_POS]}
               onClick={() => onTermClick(s[VALUE_POS])}
               onDelete={() => removeOption(...s)}
-              className={classes.selectionChips}
+              sx={{ m: 0.5 }}
             />
           )}
-        </div>
-        <div className={classes.browserAnswerInstrustions}>
+        </Box>
+        <div className={classes.browserAnswerInstructions}>
           <AnswerInstructions
-            className={classes.answerInstrustions}
             currentAnswers={selectedTerms.length}
             {...questionDefinition}
           />
@@ -289,9 +288,9 @@ function VocabularyTree(props) {
       }
       <DialogContent className={classes.treeContainer} dividers>
         {parentNode?.length ?
-          <div className={classes.treeRoot}>
+          <Box sx={{ display: "block" }}>
             {parentNode}
-          </div>
+          </Box>
           : ""}
         <div className={parentNode?.length ? classes.treeNode : undefined}>
           {currentNode}

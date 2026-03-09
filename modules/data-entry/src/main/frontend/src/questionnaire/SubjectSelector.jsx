@@ -21,6 +21,7 @@ import { Fragment, useEffect, useState, useContext } from "react";
 
 import {
   Alert,
+  Box,
   Button,
   CircularProgress,
   DialogActions,
@@ -34,8 +35,8 @@ import { withStyles } from 'tss-react/mui';
 import { v4 as uuidv4 } from 'uuid';
 
 import { escapeJQL } from "../escape.jsx";
-import QuestionnaireStyle, { subjectSelectorDialogStyles } from "./QuestionnaireStyle.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./SubjectIdentifier.jsx";
+import { subjectSelectorDialogStyles } from "./subjectSelectorDialogStyles.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
@@ -166,7 +167,7 @@ function UnstyledNewSubjectDialog (props) {
       <ResponsiveDialog title="Create new subject" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
           { error && <Alert severity="error">{error}</Alert>}
-          <div className={classes.newSubjectInput}>
+          <Box sx={{ p: 3, pb: 5 }}>
             <TextField
               label="Enter subject identifier"
               variant="outlined"
@@ -178,7 +179,7 @@ function UnstyledNewSubjectDialog (props) {
               error={!isValid}
               helperText={newSubjectType?.["idPatternHint"] || ""}
             />
-          </div>
+          </Box>
           <MaterialReactTable
             enableTableHead={false}
             enableToolbarInternalActions={false}
@@ -406,7 +407,7 @@ function UnstyledSelectParentDialog (props) {
             variant="contained"
             color="success"
             onClick={onCreateParent}
-            className={classes.createNewSubjectButton}
+            sx={{ mr: 'auto' }}
           >
             New subject
           </Button>
@@ -861,7 +862,7 @@ function UnstyledSelectorDialog (props) {
           color="success"
           disabled={disabled_controls}
           onClick={() => setNewSubjectPopperOpen(true)}
-          className={classes.createNewSubjectButton}
+          sx={{ mr: 'auto' }}
         >
           New subject
         </Button>
@@ -1164,6 +1165,6 @@ function SubjectSelectorList(props) {
   )
 }
 
-const StyledSubjectSelectorList = withStyles(SubjectSelectorList, QuestionnaireStyle);
+const StyledSubjectSelectorList = withStyles(SubjectSelectorList, subjectSelectorDialogStyles);
 
 export default StyledSubjectSelectorList;

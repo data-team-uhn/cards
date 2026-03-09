@@ -30,7 +30,7 @@ import { withStyles } from 'tss-react/mui';
 
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import dashboardStyles from "../questionnaire/dashboardStyles.jsx";
 import { loadExtensions } from "../uiextension/extensionManager";
 
 async function getDashboardExtensions() {
@@ -179,4 +179,4 @@ function UserDashboard(props) {
   );
 }
 
-export default withStyles(UserDashboard, QuestionnaireStyle);
+export default withStyles(UserDashboard, dashboardStyles);

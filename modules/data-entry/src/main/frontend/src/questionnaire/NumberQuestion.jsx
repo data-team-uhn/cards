@@ -36,7 +36,7 @@ import AnswerInstructions from "./AnswerInstructions";
 import { useFormReaderContext } from "./FormContext";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import questionStyles from "./questionStyles.jsx";
 import FormattedText from "../components/FormattedText";
 
 /** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
@@ -578,7 +578,7 @@ NumberQuestion.propTypes = {
   isRange: PropTypes.bool,
 };
 
-const StyledNumberQuestion = withStyles(NumberQuestion, QuestionnaireStyle);
+const StyledNumberQuestion = withStyles(NumberQuestion, questionStyles);
 export default StyledNumberQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

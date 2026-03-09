@@ -27,7 +27,7 @@ import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import noteStyles from "./noteStyles.jsx";
 
 function Note (props) {
   checkPropTypes(Note, props);
@@ -128,4 +128,4 @@ Note.propTypes = {
   value: PropTypes.string,
 };
 
-export default withStyles(Note, QuestionnaireStyle);
+export default withStyles(Note, noteStyles);

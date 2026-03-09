@@ -46,9 +46,10 @@ import { withStyles } from 'tss-react/mui';
 import { FormProvider } from "./FormContext";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import FormPagination from "./FormPagination";
+import formStyles from "./formStyles.jsx";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import { getFirstIncompleteQuestionEl, hasWarningFlags } from "./FormUtilities.jsx";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
 import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
 import { getTextHierarchy, getHierarchyAsList } from "./SubjectIdentifier";
@@ -650,7 +651,7 @@ function Form (props) {
             }
             {
               wasCheckedOut ?
-                <Typography variant="overline" className={classes.warningStatus}>Another user is editing</Typography>
+                <Typography variant="overline" sx={theme => ({ color: theme.palette.warning.main })}>Another user is editing</Typography>
                 : ""
             }
             {
@@ -770,8 +771,8 @@ function Form (props) {
           />}
         </Grid>
         { !paginationEnabled && !disableButton &&
-        <Grid size="auto" className={classes.formBottom}>
-          <div className={classes.mainPageAction}>
+        <Grid size="auto" sx={theme => ({ minHeight: theme.spacing(8) })}>
+          <div>
             { isEdit &&
               <MainActionButton
                 style={doneButtonStyle}
@@ -810,4 +811,4 @@ function Form (props) {
   );
 }
 
-export default withStyles(Form, QuestionnaireStyle);
+export default withStyles(Form, formStyles);

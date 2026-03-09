@@ -352,7 +352,7 @@ function ResourceQuery(props) {
         >
           <Typography
             component="p"
-            className={classes.noResults}
+            sx={{ mb: -1 }}
             variant="caption"
           >
             {data["rows"].filter(r => !r.error).length > 0 ? NONE_OF_ABOVE_TEXT : NO_RESULTS_TEXT}
@@ -477,7 +477,6 @@ function ResourceQuery(props) {
         anchorEl={anchorEl.current}
         transition
         className={classNames(
-          { [classes.popperClose]: !open },
           classes.popperNav,
           classes.popperListOnTop
         )}

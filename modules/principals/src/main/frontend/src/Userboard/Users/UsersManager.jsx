@@ -150,7 +150,7 @@ function UsersManager(props) {
             const tableTitle = "User " + user.name + " Groups";
 
             return currentUserGroups.length > 0 && (
-              <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
+              <Grid container sx={{ py: 2 }}>
                 <Grid size={1}></Grid>
                 <Grid size={11}>
                   <MaterialReactTable

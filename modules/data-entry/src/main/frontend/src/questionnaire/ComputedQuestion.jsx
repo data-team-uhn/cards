@@ -28,7 +28,7 @@ import Answer, { VALUE_POS } from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
-import QuestionnaireStyle from './QuestionnaireStyle';
+import questionStyles from './questionStyles.jsx';
 import DateTimeUtilities from "../components/DateTimeUtilities";
 import FormattedText from "../components/FormattedText";
 import { MakeRequest } from "../vocabQuery/util.jsx";
@@ -372,7 +372,7 @@ ComputedQuestion.propTypes = {
   }).isRequired
 };
 
-const StyledComputedQuestion = withStyles(ComputedQuestion, QuestionnaireStyle);
+const StyledComputedQuestion = withStyles(ComputedQuestion, questionStyles);
 export default StyledComputedQuestion;
 
 AnswerComponentManager.registerAnswerComponent((definition) => {
