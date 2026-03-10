@@ -48,10 +48,10 @@ function ResourceQuestion(props) {
 
   // In order to determine indentation levels, we need to see if there are any default suggestions
   // (i.e. children of the definition that are of type cards:AnswerOption)
-  let defaults = props.defaults || Object.values(props.questionDefinition)
+  const defaults = props.defaults || Object.values(props.questionDefinition)
     .filter(value => value['jcr:primaryType'] == 'cards:AnswerOption');
-  let singleEntryInput = maxAnswers === 1;
-  let isNested = !!(singleEntryInput && defaults?.length);
+  const singleEntryInput = maxAnswers === 1;
+  const isNested = !!(singleEntryInput && defaults?.length);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
