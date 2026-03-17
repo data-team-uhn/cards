@@ -674,7 +674,6 @@ let QuestionnaireEntry = (props) => {
       moreInfo={renderFields({ condensed: true })}
       data={entryData}
       type={type}
-      upperClasses={classes}
       doHighlight={doHighlight}
       action={
         menuItems?.length > 0 ?

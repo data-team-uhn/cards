@@ -41,6 +41,7 @@ import EditDialog from "./EditDialog";
 import { camelCaseToWords } from "./LabeledField";
 import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+import questionnaireItemStyles from "../questionnaire/questionnaireItemStyles";
 
 const useStyles = makeStyles()(theme => ({
   root : {
@@ -93,7 +94,8 @@ const useStyles = makeStyles()(theme => ({
     "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root.cards-questionnaire-entry-props": {
       paddingLeft: theme.spacing(7.5),
     },
-  }
+  },
+  ...questionnaireItemStyles(theme),
 }));
 
 // General class or Sections and Questions
@@ -117,7 +119,6 @@ let QuestionnaireItemCard = (props) => {
     onActionDone,
     doHighlight,
     model,
-    upperClasses
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
@@ -143,7 +144,7 @@ let QuestionnaireItemCard = (props) => {
     cardClasses.push(classes.collapsed);
   }
   if (highlight) {
-    cardClasses.push(upperClasses.focusedQuestionnaireItem);
+    cardClasses.push(classes.focusedQuestionnaireItem);
   }
 
   let formattedType = camelCaseToWords(type);
