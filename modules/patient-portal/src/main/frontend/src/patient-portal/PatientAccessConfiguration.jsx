@@ -74,7 +74,7 @@ function PatientAccessConfiguration() {
     ],
     draftLifetime: [
       "Patients can edit unsubmitted responses for:",
-      "-1 means that drafts are kept until the patient is no longer able to access their surveys, 0 means drafts are deleted daily at midnight, 1 means they are kept until the next day at midmight, etc.",
+      "-1 means that drafts are kept until the patient is no longer able to access their surveys, 0 means drafts are deleted daily at midnight, 1 means they are kept until the next day at midnight, etc.",
       "Please use a value of at least 0, or -1 to disable periodic draft deletion."
     ]
   };
