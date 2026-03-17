@@ -17,12 +17,23 @@
 //  under the License.
 //
 
-import questionStyles from "./questionStyles.jsx";
-import subjectStyles from "./subjectStyles.jsx";
+import statusFlagStyles from "./statusFlagStyles.jsx";
 
 const formStyles = theme => ({
-  ...questionStyles(theme),
-  ...subjectStyles(theme),
+  ...statusFlagStyles(theme),
+  hideAnswerInstructions: {
+    "& .cards-answerInstructions" : {
+      display: "none",
+    }
+  },
+  questionnaireItemWithError: {
+    "&.MuiCard-root, > .MuiCard-root" : {
+      outline: `1px solid ${theme.palette.error.light}`,
+    },
+    "& p[class*='-answerInstructions']" : {
+      display: "block",
+    },
+  },
   formFooter: {
     position: "relative",
   },
@@ -43,7 +54,6 @@ const formStyles = theme => ({
       textTransform: "none",
       width: "100%",
     }
-
   },
 });
 

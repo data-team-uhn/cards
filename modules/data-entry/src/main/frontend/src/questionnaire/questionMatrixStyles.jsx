@@ -17,10 +17,10 @@
 //  under the License.
 //
 
-import questionStyles from "./questionStyles.jsx";
+import multipleChoiceStyles from "./multipleChoiceStyles.jsx";
 
 const questionMatrixStyles = theme => ({
-  ...questionStyles(theme),
+  ...multipleChoiceStyles(theme),
   questionMatrixView: {
     width: "auto",
     "& th, td" : {

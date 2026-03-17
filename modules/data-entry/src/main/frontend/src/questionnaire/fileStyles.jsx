@@ -17,10 +17,10 @@
 //  under the License.
 //
 
-import filterStyles from "./filterStyles.jsx";
+import inputStyles from "./inputStyles.jsx";
 
 const fileStyles = theme => ({
-  ...filterStyles(theme),
+  ...inputStyles(theme),
   fileResourceAnswerList: {
     listStyleType: 'none',
     paddingInlineStart: "0",

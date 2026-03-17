@@ -21,6 +21,31 @@ import { grey } from '@mui/material/colors';
 
 import { GRID_SPACE_UNIT } from "./questionnaireConstants.jsx";
 
+// Shared factory for sticky header/footer questionnaire sections
+const stickySectionStyles = (theme, position = "top") => ({
+  "&.cards-edit-section" : {
+    position: "sticky",
+    ...(position === "top"
+      ? { top: 0, zIndex: 2, paddingTop: 0 }
+      : { bottom: 0, paddingBottom: "0 !important" }),
+  },
+  "& > .MuiCollapse-wrapper" : {
+    border: "1px solid " + theme.palette.primary.light,
+  },
+  "& .MuiGrid-root:not(:first-of-type)": {
+    paddingTop: 0,
+  },
+  "& .MuiGrid-root:not(:last-child)": {
+    paddingBottom: 0,
+  },
+  "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
+    background: grey[100],
+  },
+  "& .MuiCard-root" : {
+    borderColor: "transparent",
+  },
+});
+
 const sectionStyles = theme => ({
   sectionHeader: {
     paddingBottom: "0 !important",
@@ -67,60 +92,13 @@ const sectionStyles = theme => ({
   recurrentSectionInstance: {
     marginBottom: theme.spacing(2*GRID_SPACE_UNIT),
   },
-  headerSection : {
-    "&.cards-edit-section" : {
-      position: "sticky",
-      top: 0,
-      zIndex: 2,
-      paddingTop: 0,
-    },
-    "& > .MuiCollapse-wrapper" : {
-      border: "1px solid " + theme.palette.primary.light,
-    },
-    "& .MuiGrid-root:not(:first-of-type)": {
-      paddingTop: 0,
-    },
-    "& .MuiGrid-root:not(:last-child)": {
-      paddingBottom: 0,
-    },
-    "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
-      background: grey[100],
-    },
-    "& .MuiCard-root" : {
-      borderColor: "transparent",
-    },
-  },
-  footerSection : {
-    "&.cards-edit-section" : {
-      position: "sticky",
-      bottom: 0,
-      paddingBottom: "0 !important",
-    },
-    "& > .MuiCollapse-wrapper" : {
-      border: "1px solid " + theme.palette.primary.light,
-    },
-    "& .MuiGrid-root:not(:first-of-type)": {
-      paddingTop: 0,
-    },
-    "& .MuiGrid-root:not(:last-child)": {
-      paddingBottom: 0,
-    },
-    "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
-      background: grey[100],
-    },
-    "& .MuiCard-root" : {
-      borderColor: "transparent",
-    },
-  },
+  headerSection : stickySectionStyles(theme, "top"),
+  footerSection : stickySectionStyles(theme, "bottom"),
   highlightedSection: {
     "& .MuiGrid-root > .MuiCard-root, .MuiGrid-root > .MuiTypography-h5": {
       borderColor: theme.palette.warning.main,
       boxShadow: `1px 1px 2px ${theme.palette.warning.main}`,
     },
-  },
-  // Used by FormEntry when nested in Section (for hidden questions/matrices)
-  hiddenQuestion: {
-    display: "none",
   },
 });
 

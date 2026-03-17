@@ -17,10 +17,7 @@
 //  under the License.
 //
 
-import filterStyles from "./filterStyles.jsx";
-
 const questionStyles = theme => ({
-  ...filterStyles(theme),
   questionCard : {
     overflow: "unset",
     "& .MuiCardHeader-root" : {
@@ -44,11 +41,6 @@ const questionStyles = theme => ({
       padding: theme.spacing(1, 0),
     },
   },
-  hideAnswerInstructions: {
-    "& .cards-answerInstructions" : {
-      display: "none",
-    }
-  },
   editModeAnswers: {
     "& .MuiListItem-root:hover" : {
       background: theme.palette.action.hover,
@@ -64,106 +56,10 @@ const questionStyles = theme => ({
       paddingBottom: 0,
     }
   },
-  ghostListItem: {
-    paddingTop: 0,
-    alignItems: "flex-start",
-  },
-  searchWrapper: {
-    margin: 0,
-    position: 'relative',
-    display: 'inline-block',
-    padding: theme.spacing(.5, 0, 0, 0),
-  },
-  nestedInput: {
-    minWidth: "218px !important",
-    marginLeft: theme.spacing(-2.5),
-  },
-  textField: {
-    // Differing input types have differing widths, so setting width:100%
-    // is insufficient in making sure all components are the same size
-    width: "250px",
-  },
-  textBox: {
-    // Outlined textboxes that are not part of a single select list should stretch full width
-    width: "100%",
-  },
-  selectMultiValues: {
-    whiteSpace: "normal",
-    "& .MuiChip-root" : {
-      margin: "1px",
-    },
-  },
-  deleteButton: {
-    padding: theme.spacing(1,0),
-    margin: theme.spacing(-1,0,-1,-1.5),
-    fontSize: "10px",
-    minWidth: "42px",
-    "& + div" : {
-      marginRight: theme.spacing(2),
-    },
-  },
-  range: {
-    display: "flex",
-    alignItems: "baseline",
-    flexWrap: "wrap",
-    "& .numberRangeLimit": {
-      minWidth: "110px !important",
-      width: "110px",
-    },
-    "& .separator" : {
-      padding: theme.spacing(1),
-    }
-  },
-  hiddenQuestion: {
-    display: "none"
-  },
-  answerInstructions: {
-    margin: theme.spacing(-3,0,1),
-    padding: theme.spacing(1, 0),
-  },
-  notesContainer: {
-    whiteSpace: "pre-wrap",
-    padding: theme.spacing(3, 0, 1),
-  },
-  compactLayout : {
-    "& .MuiList-root" : {
-      [theme.breakpoints.up('sm')]: {
-        display: "inline-block",
-      },
-    },
-    "& .MuiListItem-root" : {
-      [theme.breakpoints.up('sm')]: {
-        display: "inline-flex",
-        width: "auto",
-      },
-    },
-    "& .MuiListItem-root > div:first-of-type > .MuiTextField-root" : {
-      [theme.breakpoints.up('sm')]: {
-        minWidth: "100px",
-        marginTop: theme.spacing(-1.5),
-      },
-    },
-  },
   focusedQuestionnaireItem: {
     "&.MuiCard-root, > .MuiCard-root" : {
       outline: `2px solid ${theme.palette.primary.main}`,
     },
-  },
-  questionnaireItemWithError: {
-    "&.MuiCard-root, > .MuiCard-root" : {
-      outline: `1px solid ${theme.palette.error.light}`,
-    },
-    "& p[class*='-answerInstructions']" : {
-      display: "block",
-    },
-  },
-  selectionChild: {
-    cursor: "pointer",
-    flexWrap: "wrap",
-  },
-  selectionDescription: {
-    flexBasis: "100%",
-    paddingLeft: theme.spacing(4)
   },
 });
 

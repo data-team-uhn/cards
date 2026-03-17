@@ -36,8 +36,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./SubjectIdentifier.jsx";
-import { subjectSelectorDialogStyles } from "./subjectSelectorDialogStyles.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
+import tableDialogStyles from "../dataHomepage/tableDialogStyles.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 /***
@@ -245,7 +245,7 @@ function UnstyledNewSubjectDialog (props) {
   )
 }
 
-const NewSubjectDialogChild = withStyles(UnstyledNewSubjectDialog, subjectSelectorDialogStyles);
+const NewSubjectDialogChild = withStyles(UnstyledNewSubjectDialog, tableDialogStyles);
 
 /**
  * Component that displays a dialog to select parents for a new subject
@@ -438,7 +438,7 @@ function UnstyledSelectParentDialog (props) {
   )
 }
 
-export const SelectParentDialog = withStyles(UnstyledSelectParentDialog, subjectSelectorDialogStyles);
+export const SelectParentDialog = withStyles(UnstyledSelectParentDialog, tableDialogStyles);
 
 // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
 // We must cast each case into an array to handle it properly
@@ -885,7 +885,7 @@ function UnstyledSelectorDialog (props) {
   </>);
 }
 
-export const SelectorDialog = withStyles(UnstyledSelectorDialog, subjectSelectorDialogStyles);
+export const SelectorDialog = withStyles(UnstyledSelectorDialog, tableDialogStyles);
 
 /**
  * Create new subjects from an array of identifiers.
@@ -1165,6 +1165,6 @@ function SubjectSelectorList(props) {
   )
 }
 
-const StyledSubjectSelectorList = withStyles(SubjectSelectorList, subjectSelectorDialogStyles);
+const StyledSubjectSelectorList = withStyles(SubjectSelectorList, tableDialogStyles);
 
 export default StyledSubjectSelectorList;

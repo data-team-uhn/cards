@@ -19,8 +19,8 @@
 import { Grid } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 
+import dashboardStyles from "./dashboardStyles.jsx";
 import SubjectView from "./SubjectView.jsx";
-import dashboardStyles from "../questionnaire/dashboardStyles.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 

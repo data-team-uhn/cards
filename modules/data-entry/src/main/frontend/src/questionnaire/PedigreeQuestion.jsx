@@ -21,13 +21,13 @@ import { useMemo, useState } from "react";
 
 import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
+import inputStyles from "./inputStyles";
 import Question from "./Question";
-import thumbnailStyles from "./thumbnailStyles.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PedigreeEditor from "../pedigree/pedigree";
 
@@ -45,9 +45,26 @@ import PedigreeEditor from "../pedigree/pedigree";
 //      description="De-identified information only."
 //      }}
 //    />
+
+const useStyles = makeStyles()(theme => ({
+  ...inputStyles(theme),
+  thumbnail: {
+    border: "1px solid " + theme.palette.divider,
+  },
+  thumbnailLink: {
+    cursor: "pointer",
+    "& div:hover" : {
+      borderColor: "inherit !important",
+    },
+  },
+}));
+
 function PedigreeQuestion(props) {
   checkPropTypes(PedigreeQuestion, props);
-  const { existingAnswer, classes, pageActive, ...rest } = props;
+  const { existingAnswer, pageActive, ...rest } = props;
+
+  const { classes } = useStyles();
+
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in CARDS:
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
@@ -179,11 +196,10 @@ PedigreeQuestion.propTypes = {
   existingAnswer: PropTypes.array,
 }
 
-const StyledPedigreeQuestion = withStyles(PedigreeQuestion, thumbnailStyles);
-export default StyledPedigreeQuestion;
+export default PedigreeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "pedigree") {
-    return [StyledPedigreeQuestion, 50];
+    return [PedigreeQuestion, 50];
   }
 });
