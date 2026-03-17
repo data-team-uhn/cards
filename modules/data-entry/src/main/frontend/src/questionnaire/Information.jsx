@@ -31,7 +31,7 @@ function Information (props) {
 
   return (type == "plain" ?
     <Card variant="outlined">
-      <CardContent sx={{ px: 2, py: 1.5 }}>
+      <CardContent sx={[{ '&:last-child': { p: 2 } }]}>
         <FormattedText>{text}</FormattedText>
       </CardContent>
     </Card>
