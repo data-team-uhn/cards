@@ -220,7 +220,9 @@ function NewFormDialog(props) {
   // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
     const subjectUuid = (currentSubject || selectedSubject)?.['jcr:uuid'];
-    fetchWithReLogin(globalLoginDisplay, `/query?rawResults=true&query=SELECT f.questionnaire FROM [cards:Form] as f where f.'subject'='${escapeJQL(subjectUuid)}' OPTION (index tag property)&limit=1000`)
+    fetchWithReLogin(globalLoginDisplay,
+      `/query?rawResults=true&query=SELECT f.questionnaire FROM [cards:Form] as f where f.'subject'='${escapeJQL(subjectUuid)}' OPTION (index tag property)&limit=1000`
+    )
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         setRelatedForms(response.rows);
