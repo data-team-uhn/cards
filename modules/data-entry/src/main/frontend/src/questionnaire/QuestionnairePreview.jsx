@@ -93,7 +93,6 @@ function QuestionnairePreview (props) {
                 depth={0}
                 existingAnswers={data}
                 keyProp={key}
-                classes={classes}
                 onChange={()=>{}}
                 visibleCallback={pageResult.callback}
                 pageActive={pageResult.page.visible}

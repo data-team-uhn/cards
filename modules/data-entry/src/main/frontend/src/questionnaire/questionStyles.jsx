@@ -17,6 +17,8 @@
 //  under the License.
 //
 
+import questionnaireItemStyles from "./questionnaireItemStyles";
+
 const questionStyles = theme => ({
   questionCard : {
     overflow: "unset",
@@ -56,11 +58,7 @@ const questionStyles = theme => ({
       paddingBottom: 0,
     }
   },
-  focusedQuestionnaireItem: {
-    "&.MuiCard-root, > .MuiCard-root" : {
-      outline: `2px solid ${theme.palette.primary.main}`,
-    },
-  },
+  ...questionnaireItemStyles(theme),
 });
 
 export default questionStyles;
