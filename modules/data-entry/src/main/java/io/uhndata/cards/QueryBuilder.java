@@ -35,16 +35,17 @@ import javax.jcr.Value;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 import javax.script.Bindings;
 
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
+
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.scripting.SlingScriptHelper;
@@ -160,7 +161,7 @@ public class QueryBuilder implements Use
     @Override
     public void init(Bindings bindings)
     {
-        SlingHttpServletRequest request = (SlingHttpServletRequest) bindings.get("request");
+        SlingJakartaHttpServletRequest request = (SlingJakartaHttpServletRequest) bindings.get("jakartaRequest");
         this.resourceResolver = (ResourceResolver) bindings.get("resolver");
         final SlingScriptHelper slingHelper = (SlingScriptHelper) bindings.get("sling");
         this.searchEngines = Arrays.asList(slingHelper.getServices(QuickSearchEngine.class, null));
@@ -197,7 +198,7 @@ public class QueryBuilder implements Use
         }
     }
 
-    private QueryResult query(final SlingHttpServletRequest request)
+    private QueryResult query(final SlingJakartaHttpServletRequest request)
         throws UnsupportedEncodingException, RepositoryException
     {
         final String jcrQuery = request.getParameter("query");

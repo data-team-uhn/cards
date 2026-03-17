@@ -19,11 +19,11 @@ package io.uhndata.cards.utils.internal;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.servlets.post.Modification;
-import org.apache.sling.servlets.post.SlingPostProcessor;
+import org.apache.sling.servlets.post.SlingJakartaPostProcessor;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -32,10 +32,10 @@ import org.osgi.service.component.annotations.Component;
  * @version $Id$
  */
 @Component
-public class DenyScriptsSlingPostProcessor implements SlingPostProcessor
+public class DenyScriptsSlingPostProcessor implements SlingJakartaPostProcessor
 {
     @Override
-    public void process(SlingHttpServletRequest request, List<Modification> changes) throws Exception
+    public void process(SlingJakartaHttpServletRequest request, List<Modification> changes) throws Exception
     {
         if ("admin".equalsIgnoreCase(request.getRemoteUser())) {
             return;

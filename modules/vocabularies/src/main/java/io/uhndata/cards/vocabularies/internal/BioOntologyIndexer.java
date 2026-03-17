@@ -29,8 +29,8 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -92,8 +92,8 @@ public class BioOntologyIndexer implements VocabularyIndexer
     }
 
     @Override
-    public void index(final String source, final SlingHttpServletRequest request,
-        final SlingHttpServletResponse response)
+    public void index(final String source, final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response)
         throws IOException, VocabularyIndexException
     {
         // Obtain relevant request parameters.

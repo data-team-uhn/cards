@@ -36,15 +36,15 @@
       "start-order":"15"
     },
     {
-      "id":"commons-codec:commons-codec:1.15",
+      "id":"commons-codec:commons-codec:1.21.0",
       "start-order":"15"
     },
     {
-      "id":"com.fasterxml.woodstox:woodstox-core:5.4.0",
+      "id":"com.fasterxml.woodstox:woodstox-core:7.1.1",
       "start-order":"15"
     },
     {
-      "id":"org.codehaus.woodstox:stax2-api:4.2.1",
+      "id":"org.codehaus.woodstox:stax2-api:4.2.2",
       "start-order":"15"
     },
     {

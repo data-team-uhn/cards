@@ -21,7 +21,8 @@ package io.uhndata.cards.serialize.internal;
 import java.util.function.Function;
 
 import javax.jcr.Node;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonValue;
 
 import org.osgi.service.component.annotations.Component;
 

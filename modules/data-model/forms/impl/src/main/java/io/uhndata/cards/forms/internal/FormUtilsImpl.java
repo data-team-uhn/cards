@@ -38,9 +38,10 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonValue;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonValue;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Strings;

@@ -37,22 +37,23 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
-import javax.servlet.Servlet;
-import javax.servlet.http.Cookie;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.http.Cookie;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -71,7 +72,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
     "validateCredentials" }, methods = { "POST" })
 
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
-public class ValidateCredentialsServlet extends SlingAllMethodsServlet
+public class ValidateCredentialsServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = 1223548547434563162L;
 
@@ -110,7 +111,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     private PatientAccessConfiguration patientAccessConfiguration;
 
     @Override
-    public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doPost(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
@@ -145,8 +146,8 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void handleTokenlessAuthentication(final SlingHttpServletRequest request,
-        final SlingHttpServletResponse response, final Session session, final ResourceResolver rr)
+    private void handleTokenlessAuthentication(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response, final Session session, final ResourceResolver rr)
         throws IOException, RepositoryException
     {
         Node patientInformationForm = findMatchingPatientInformation(request, session, rr);
@@ -175,8 +176,8 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void generateAndApplyToken(final SlingHttpServletRequest request,
-        final SlingHttpServletResponse response, String tokenUser, String subjectPath)
+    private void generateAndApplyToken(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response, String tokenUser, String subjectPath)
     {
         // Generate token
         Calendar tokenExpiryDate = Calendar.getInstance();
@@ -192,8 +193,8 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         createCookie(request, response, token, 3600);
     }
 
-    private void createCookie(final SlingHttpServletRequest request,
-        final SlingHttpServletResponse response, final String value, final int maxAgeSeconds)
+    private void createCookie(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response, final String value, final int maxAgeSeconds)
     {
         final Cookie cookie = new Cookie("cards_auth_token", value);
         final String ctxPath = request.getContextPath();
@@ -205,15 +206,15 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
 
     }
 
-    private void handleTokenAuthentication(final SlingHttpServletRequest request,
-        final SlingHttpServletResponse response, final Session session, String sessionSubjectIdentifier)
+    private void handleTokenAuthentication(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response, final Session session, String sessionSubjectIdentifier)
         throws IOException, RepositoryException
     {
         Node visitSubject = null;
         try {
             visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
         } catch (ItemNotFoundException e) {
-            writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "Visit not found");
+            writeError(response, SlingJakartaHttpServletResponse.SC_UNAUTHORIZED, "Visit not found");
         }
 
         if (this.patientAccessConfiguration.isPatientIdentificationRequired()) {
@@ -223,7 +224,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
                 patientInformationQuestionniare, session);
             if (patientInformationForm == null) {
                 LOGGER.warn("Patient Information not found for visit {}", visitSubject.getPath());
-                writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "Missing user data");
+                writeError(response, SlingJakartaHttpServletResponse.SC_UNAUTHORIZED, "Missing user data");
                 return;
             }
 
@@ -236,7 +237,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         writeSuccess(response, sessionSubjectIdentifier, visitSubject, session, true);
     }
 
-    private Node findMatchingPatientInformation(final SlingHttpServletRequest request, final Session session,
+    private Node findMatchingPatientInformation(final SlingJakartaHttpServletRequest request, final Session session,
         final ResourceResolver rr)
         throws IOException, RepositoryException
     {
@@ -272,7 +273,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         return null;
     }
 
-    private String getParameterOrNull(final SlingHttpServletRequest request, final String name)
+    private String getParameterOrNull(final SlingJakartaHttpServletRequest request, final String name)
     {
         String result = request.getParameter(name);
         if (result == null || "undefined".equals(result) || "".equals(result)) {
@@ -281,7 +282,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         return result;
     }
 
-    List<Node> getVisitForms(final SlingHttpServletRequest request, final Session session,
+    List<Node> getVisitForms(final SlingJakartaHttpServletRequest request, final Session session,
         final ResourceResolver rr, final Node patientSubject, final Node patientInformationForm)
         throws RepositoryException
     {
@@ -313,8 +314,8 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         return validVisitForms;
     }
 
-    private boolean validatePatient(final SlingHttpServletRequest request,
-        final SlingHttpServletResponse response, final Session session,
+    private boolean validatePatient(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response, final Session session,
         final Node patientInformationForm, Node patientInformationQuestionnaire)
         throws IOException, RepositoryException
     {
@@ -326,7 +327,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         return validateCredentials(credentials, response);
     }
 
-    private List<Credential> gatherData(final SlingHttpServletRequest request, final Session session,
+    private List<Credential> gatherData(final SlingJakartaHttpServletRequest request, final Session session,
         final Node patientInformationForm, Node patientInformationQuestionnaire)
         throws RepositoryException
     {
@@ -346,20 +347,20 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         return credentials;
     }
 
-    private boolean validateCredentials(final List<Credential> credentials, final SlingHttpServletResponse response)
-        throws IOException
+    private boolean validateCredentials(final List<Credential> credentials,
+        final SlingJakartaHttpServletResponse response) throws IOException
     {
         // Check that the client sent all the needed information
         if (credentials.stream().filter(c -> c.presentedValue != null).count() < 2
             || credentials.stream().anyMatch(c -> c.mandatory && StringUtils.isEmpty(c.presentedValue))) {
-            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Missing authentication data");
+            writeError(response, SlingJakartaHttpServletResponse.SC_BAD_REQUEST, "Missing authentication data");
             return false;
         }
 
         // If the patient information is missing, abort
         if (credentials.stream().filter(c -> c.storedValue != null).count() < 2
             || credentials.stream().anyMatch(c -> c.mandatory && StringUtils.isEmpty(c.storedValue))) {
-            writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "Missing user data");
+            writeError(response, SlingJakartaHttpServletResponse.SC_UNAUTHORIZED, "Missing user data");
             return false;
         }
 
@@ -490,12 +491,12 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         return null;
     }
 
-    private void writeSuccess(final SlingHttpServletResponse response, final String sessionSubjectIdentifier,
+    private void writeSuccess(final SlingJakartaHttpServletResponse response, final String sessionSubjectIdentifier,
         final Node visitSubject, final Session session, final boolean includePatientInformation)
         throws IOException, RepositoryException
     {
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(SlingHttpServletResponse.SC_OK);
+        response.setStatus(SlingJakartaHttpServletResponse.SC_OK);
         final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
 
         try (Writer out = response.getWriter()) {
@@ -517,14 +518,14 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void writeInvalidCredentialsError(final SlingHttpServletResponse response)
+    private void writeInvalidCredentialsError(final SlingJakartaHttpServletResponse response)
         throws IOException
     {
-        writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "Invalid credentials");
+        writeError(response, SlingJakartaHttpServletResponse.SC_UNAUTHORIZED, "Invalid credentials");
     }
 
-    private void writeError(final SlingHttpServletResponse response, final int statusCode, final String errorMessage)
-        throws IOException
+    private void writeError(final SlingJakartaHttpServletResponse response, final int statusCode,
+        final String errorMessage) throws IOException
     {
         if (response != null) {
             response.setContentType("application/json;charset=UTF-8");
@@ -535,12 +536,12 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void writeVisitSelection(final SlingHttpServletResponse response, final List<Node> visits,
+    private void writeVisitSelection(final SlingJakartaHttpServletResponse response, final List<Node> visits,
         final Node visitLocationQuestion)
         throws IOException, RepositoryException
     {
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(SlingHttpServletResponse.SC_BAD_REQUEST);
+        response.setStatus(SlingJakartaHttpServletResponse.SC_BAD_REQUEST);
         try (Writer out = response.getWriter()) {
             final JsonObjectBuilder result = Json.createObjectBuilder();
             result.add("status", "needsVisit");

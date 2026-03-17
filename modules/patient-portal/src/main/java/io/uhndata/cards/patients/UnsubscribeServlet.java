@@ -30,16 +30,17 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.VersionManager;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import javax.servlet.Servlet;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.servlet.Servlet;
+
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -52,7 +53,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/PatientHomepage" }, extensions = {
     "unsubscribe" }, methods = { "GET", "POST" })
-public class UnsubscribeServlet extends SlingAllMethodsServlet
+public class UnsubscribeServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = 552901093350213103L;
 
@@ -70,7 +71,7 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
     private QuestionnaireUtils questionnaireUtils;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
@@ -91,16 +92,16 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
         } catch (final LoginException e) {
             LOGGER.error("Service authorization not granted: {}", e.getMessage());
         } catch (final IllegalAccessException e) {
-            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
+            writeError(response, SlingJakartaHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
         } catch (final ItemNotFoundException e) {
-            writeError(response, SlingHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
+            writeError(response, SlingJakartaHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
         } catch (final RepositoryException e) {
             LOGGER.warn("Exception validating patient authentication: {}", e.getMessage(), e);
         }
     }
 
     @Override
-    public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doPost(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
@@ -132,9 +133,9 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
         } catch (final LoginException e) {
             LOGGER.error("Service authorization not granted: {}", e.getMessage());
         } catch (final IllegalAccessException e) {
-            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
+            writeError(response, SlingJakartaHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
         } catch (final ItemNotFoundException e) {
-            writeError(response, SlingHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
+            writeError(response, SlingJakartaHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
         } catch (final RepositoryException e) {
             LOGGER.warn("Exception validating patient authentication: {}", e.getMessage(), e);
         }
@@ -145,7 +146,7 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
         return session.getNode("/Questionnaires/Patient information");
     }
 
-    private Node getPatientInformationForm(final SlingHttpServletRequest request, final Session session,
+    private Node getPatientInformationForm(final SlingJakartaHttpServletRequest request, final Session session,
         final Node patientInformationQuestionnaire)
         throws IllegalAccessException, ItemNotFoundException, RepositoryException
     {
@@ -195,11 +196,11 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
         return null;
     }
 
-    private void writeSuccess(final SlingHttpServletResponse response, final Boolean value)
+    private void writeSuccess(final SlingJakartaHttpServletResponse response, final Boolean value)
         throws IOException, RepositoryException
     {
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(SlingHttpServletResponse.SC_OK);
+        response.setStatus(SlingJakartaHttpServletResponse.SC_OK);
         try (Writer out = response.getWriter()) {
             final JsonObjectBuilder result = Json.createObjectBuilder();
             result.add("status", "success");
@@ -210,8 +211,8 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void writeError(final SlingHttpServletResponse response, final int statusCode, final String errorMessage)
-        throws IOException
+    private void writeError(final SlingJakartaHttpServletResponse response, final int statusCode,
+        final String errorMessage) throws IOException
     {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(statusCode);

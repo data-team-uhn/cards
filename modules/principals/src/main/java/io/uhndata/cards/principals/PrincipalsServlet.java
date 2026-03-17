@@ -26,9 +26,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
-import javax.servlet.Servlet;
+
+import jakarta.json.Json;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
@@ -39,9 +40,9 @@ import org.apache.jackrabbit.api.security.user.QueryBuilder;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.jackrabbit.oak.spi.security.user.AuthorizableType;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletPaths;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ import org.slf4j.LoggerFactory;
  */
 @Component(service = { Servlet.class })
 @SlingServletPaths(value = { "/home.json", "/home/users.json", "/home/groups.json" })
-public class PrincipalsServlet extends SlingSafeMethodsServlet
+public class PrincipalsServlet extends SlingJakartaSafeMethodsServlet
 {
     /**
      * Creates a query for principals matching the request parameters.
@@ -140,7 +141,8 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
     private static final Logger LOGGER = LoggerFactory.getLogger(PrincipalsServlet.class);
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -216,7 +218,8 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
      * @param totalMatchingPrincipals the total number of accessible principals matching the request filters, may be
      *            {@code 0} if no principals match the filters, or the current user cannot access the principals
      */
-    private void writeSummary(final JsonGenerator jsonGen, final SlingHttpServletRequest request, final String filter,
+    private void writeSummary(final JsonGenerator jsonGen, final SlingJakartaHttpServletRequest request,
+        final String filter,
         final long offset, final long limit, final long returnedPrincipals, final long totalMatchingPrincipals)
     {
         jsonGen.write("req", request.getParameter("req"));

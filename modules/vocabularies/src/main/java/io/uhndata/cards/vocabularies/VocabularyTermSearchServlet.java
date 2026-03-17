@@ -25,16 +25,16 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.stream.JsonGenerator;
-import javax.servlet.Servlet;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 
@@ -47,9 +47,8 @@ import org.osgi.service.component.annotations.Component;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/Vocabulary" },
     methods = { "GET" },
-    selectors = { "search" }
-    )
-public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
+    selectors = { "search" })
+public class VocabularyTermSearchServlet extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = -8244429250995709300L;
 
@@ -58,7 +57,8 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
     private static final int MAX_LIMIT = 1000;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         String suggest = request.getParameter("suggest");
         String query = request.getParameter("query");
@@ -203,8 +203,8 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
      *            match the filters, or the current user cannot access the nodes
      * @param oakQuery test code, do not commit
      */
-    private void writeSummary(final JsonGenerator jsonGen, final SlingHttpServletRequest request, final long[] limits,
-        final String oakQuery)
+    private void writeSummary(final JsonGenerator jsonGen, final SlingJakartaHttpServletRequest request,
+        final long[] limits, final String oakQuery)
     {
         jsonGen.write("req", request.getParameter("req"));
         jsonGen.write("offset", limits[0]);

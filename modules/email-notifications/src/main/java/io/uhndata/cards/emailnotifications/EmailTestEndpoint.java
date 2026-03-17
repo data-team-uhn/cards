@@ -19,24 +19,23 @@ package io.uhndata.cards.emailnotifications;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.servlet.Servlet;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.Servlet;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.commons.messaging.mail.MailService;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/Homepage" },
     selectors = { "emailtest" })
-public final class EmailTestEndpoint extends SlingSafeMethodsServlet
+public final class EmailTestEndpoint extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = -3886647765025375822L;
 
@@ -44,16 +43,17 @@ public final class EmailTestEndpoint extends SlingSafeMethodsServlet
     private MailService mailService;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         final Writer out = response.getWriter();
         final String subject = "CARDS-UHN Test Message";
         final String text = "Here is a test message from CARDS at the University Health Network";
 
-        //Ensure that this can only be run when logged in as admin
+        // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
         if (remoteUser == null || !"admin".equals(remoteUser)) {
-            //admin login required
+            // admin login required
             response.setStatus(403);
             out.write("Only admin can perform this operation.");
             return;
@@ -65,7 +65,7 @@ public final class EmailTestEndpoint extends SlingSafeMethodsServlet
         final String toName = request.getParameter("toName");
         final boolean isHtml = "true".equals(request.getParameter("isHtml"));
         if (fromEmail == null || fromName == null || toEmail == null || toName == null) {
-            //Missing parameters
+            // Missing parameters
             response.setStatus(400);
             out.write("Missing required URL parameters");
             return;

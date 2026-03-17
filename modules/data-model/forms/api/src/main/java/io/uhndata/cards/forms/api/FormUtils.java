@@ -23,7 +23,8 @@ import java.util.Set;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.Value;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonValue;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;

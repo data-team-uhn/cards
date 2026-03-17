@@ -27,15 +27,16 @@ import java.util.Map;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -51,7 +52,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/Subject" },
     methods = { "LOCK", "UNLOCK" })
-public class LockServlet extends SlingAllMethodsServlet
+public class LockServlet extends SlingJakartaAllMethodsServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(LockServlet.class);
 
@@ -61,7 +62,7 @@ public class LockServlet extends SlingAllMethodsServlet
 
     private static final String METHOD_UNLOCK = "UNLOCK";
 
-    private SlingHttpServletRequest request;
+    private SlingJakartaHttpServletRequest request;
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -70,7 +71,7 @@ public class LockServlet extends SlingAllMethodsServlet
     private LockManager lockManager;
 
     @Override
-    protected boolean mayService(SlingHttpServletRequest request, SlingHttpServletResponse response)
+    protected boolean mayService(SlingJakartaHttpServletRequest request, SlingJakartaHttpServletResponse response)
         throws ServletException, IOException
     {
         // assume the method is known for now
@@ -98,7 +99,8 @@ public class LockServlet extends SlingAllMethodsServlet
         return allowBuf;
     }
 
-    public void handleRequest(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
+    public void handleRequest(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response,
         final boolean isLockRequest)
         throws IOException, IllegalArgumentException
     {
@@ -136,8 +138,8 @@ public class LockServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void writeError(final SlingHttpServletResponse response, final int statusCode, final String errorMessage)
-        throws IOException
+    private void writeError(final SlingJakartaHttpServletResponse response, final int statusCode,
+        final String errorMessage) throws IOException
     {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(statusCode);
@@ -146,7 +148,7 @@ public class LockServlet extends SlingAllMethodsServlet
         }
     }
 
-    private void writeSuccess(final SlingHttpServletResponse response)
+    private void writeSuccess(final SlingJakartaHttpServletResponse response)
         throws IOException, RepositoryException
     {
         response.setContentType("application/json;charset=UTF-8");

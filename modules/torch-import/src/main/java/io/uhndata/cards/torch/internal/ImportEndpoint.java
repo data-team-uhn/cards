@@ -22,15 +22,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import javax.servlet.Servlet;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,9 +42,10 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
     resourceTypes = { "cards/SubjectsHomepage" },
     extensions = { "importTorch" },
     methods = { "GET" })
-public class ImportEndpoint extends SlingSafeMethodsServlet
+public class ImportEndpoint extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = -2727980234215527292L;
+
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
 
@@ -55,7 +56,8 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
     private volatile List<ImportConfig> configs;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
@@ -89,7 +91,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
         writeSuccess(response);
     }
 
-    private void writeError(final int status, final String message, final SlingHttpServletResponse response)
+    private void writeError(final int status, final String message, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         final JsonObjectBuilder json = Json.createObjectBuilder();
@@ -98,7 +100,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
         writeResponse(status, json.build().toString(), response);
     }
 
-    private void writeSuccess(final SlingHttpServletResponse response)
+    private void writeSuccess(final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         final JsonObjectBuilder json = Json.createObjectBuilder();
@@ -107,7 +109,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
         writeResponse(200, json.build().toString(), response);
     }
 
-    private void writeResponse(final int status, final String body, final SlingHttpServletResponse response)
+    private void writeResponse(final int status, final String body, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         response.setStatus(status);

@@ -22,12 +22,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 
@@ -41,12 +41,12 @@ import io.uhndata.cards.serialize.CSVString;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/Questionnaire" }, extensions = { "csv", "tsv" },
     methods = { "GET" })
-public class QuestionnaireCSVServlet extends SlingSafeMethodsServlet
+public class QuestionnaireCSVServlet extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = -677311295300436475L;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         final Resource questionnaire = request.getResource();

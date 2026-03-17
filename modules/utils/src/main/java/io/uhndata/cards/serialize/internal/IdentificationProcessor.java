@@ -22,8 +22,9 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;

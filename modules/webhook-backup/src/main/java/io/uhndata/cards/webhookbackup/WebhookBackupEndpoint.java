@@ -23,12 +23,12 @@ import java.io.Writer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -41,7 +41,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
     selectors = { "webhookbackup" })
-public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
+public class WebhookBackupEndpoint extends SlingJakartaSafeMethodsServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebhookBackupEndpoint.class);
 
@@ -54,7 +54,8 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
     private ThreadResourceResolverProvider rrp;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         final Writer out = response.getWriter();
 

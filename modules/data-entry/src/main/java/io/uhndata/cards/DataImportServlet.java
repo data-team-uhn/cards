@@ -43,8 +43,9 @@ import javax.jcr.ValueFactory;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.version.VersionManager;
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletResponse;
+
+import jakarta.servlet.Servlet;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -52,13 +53,13 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletName;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -80,7 +81,7 @@ import io.uhndata.cards.spi.SearchUtils;
 @SlingServletResourceTypes(resourceTypes = { "cards/FormsHomepage" }, methods = { "POST" })
 @SlingServletName(servletName = "Data Import Servlet")
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
-public class DataImportServlet extends SlingAllMethodsServlet
+public class DataImportServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = -5821127949309764050L;
 
@@ -142,7 +143,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private final ThreadLocal<Map<String, Resource>> cachedAnswers = new ThreadLocal<>();
 
     @Override
-    protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
+    protected void doPost(SlingJakartaHttpServletRequest request, SlingJakartaHttpServletResponse response)
         throws IOException
     {
         try {
@@ -189,7 +190,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
      * @throws IOException if getting the data from the request fails
      * @throws RepositoryException if saving the processed data fails due to repository errors or incorrect data
      */
-    private void parseData(final SlingHttpServletRequest request, boolean patch) throws IOException, RepositoryException
+    private void parseData(final SlingJakartaHttpServletRequest request, boolean patch)
+        throws IOException, RepositoryException
     {
         final RequestParameter dataFile = request.getRequestParameter(":data");
         if (dataFile == null) {

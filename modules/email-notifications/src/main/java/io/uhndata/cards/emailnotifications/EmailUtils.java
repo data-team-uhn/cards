@@ -21,12 +21,12 @@ package io.uhndata.cards.emailnotifications;
 import java.util.Collections;
 import java.util.Map;
 
+import jakarta.mail.Header;
+import jakarta.mail.MessagingException;
+
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.sling.commons.messaging.mail.MailService;
 import org.apache.sling.commons.messaging.mail.MessageBuilder;
-
-import jakarta.mail.Header;
-import jakarta.mail.MessagingException;
 
 public final class EmailUtils
 {

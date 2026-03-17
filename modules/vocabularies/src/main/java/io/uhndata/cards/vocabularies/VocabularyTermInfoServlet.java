@@ -23,23 +23,23 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.JsonValue.ValueType;
-import javax.json.stream.JsonGenerator;
-import javax.servlet.Servlet;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
+import jakarta.json.JsonValue.ValueType;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 
@@ -53,9 +53,8 @@ import org.osgi.service.component.annotations.Component;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/VocabularyTerm" },
     methods = { "GET" },
-    selectors = { "info" }
-    )
-public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
+    selectors = { "info" })
+public class VocabularyTermInfoServlet extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = -8244429250995709300L;
 
@@ -67,7 +66,8 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
     private static final String[] KEYS_TO_COPY = { "identifier", "label", "@path" };
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         Resource vocabulary = this.findParentVocabulary(request.getResource());
         ResourceResolver resolver = request.getResourceResolver();

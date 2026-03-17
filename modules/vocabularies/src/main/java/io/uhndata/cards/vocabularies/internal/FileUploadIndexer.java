@@ -26,8 +26,8 @@ import java.util.List;
 import javax.jcr.Node;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.request.RequestParameter;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -85,8 +85,8 @@ public class FileUploadIndexer implements VocabularyIndexer
     }
 
     @Override
-    public void index(final String source, final SlingHttpServletRequest request,
-        final SlingHttpServletResponse response)
+    public void index(final String source, final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response)
         throws IOException, VocabularyIndexException
     {
         // Obtain relevant request parameters.

@@ -6,11 +6,11 @@
             "start-order":"5"
         },
         {
-            "id":"org.apache.felix:org.apache.felix.healthcheck.core:2.0.14",
+            "id":"org.apache.felix:org.apache.felix.healthcheck.core:2.3.0",
             "start-order":"5"
         },
         {
-            "id":"org.apache.felix:org.apache.felix.healthcheck.generalchecks:2.0.14",
+            "id":"org.apache.felix:org.apache.felix.healthcheck.generalchecks:3.0.8",
             "start-order":"5"
         },
         {
@@ -18,7 +18,7 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.hc.support:1.0.6",
+            "id":"org.apache.sling:org.apache.sling.hc.support:1.0.10",
             "start-order":"20"
         }
     ],
@@ -28,6 +28,12 @@
                 "bundles"
             ],
             "useCriticalForInactive": true
+        },
+        "org.apache.sling.jcr.contentloader.hc.BundleContentLoadedCheck":{
+            "hc.tags":[
+                "bundles",
+                "content-loading"
+            ]
         },
         "org.apache.felix.hc.generalchecks.CpuCheck":{
             "hc.tags":[
@@ -91,7 +97,8 @@
             "responseTextFor503":"classpath:io.uhndata.cards.startup-customization:custom_index.html"
         },
         "org.apache.felix.hc.core.impl.servlet.HealthCheckExecutorServlet~default":{
-            "servletPath":"/system/health"
+            "servletPath":"/system/health",
+            "servletContextName":"org.osgi.service.http"
         },
         "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~hc-support":{
             "user.mapping":[

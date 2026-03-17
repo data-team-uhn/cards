@@ -27,6 +27,8 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 
+import jakarta.mail.MessagingException;
+
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
@@ -36,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.emailnotifications.EmailTemplate;
 import io.uhndata.cards.emailnotifications.EmailUtils;
 import io.uhndata.cards.forms.api.FormUtils;
-import jakarta.mail.MessagingException;
 
 public final class EmailAlertEventListener implements EventListener
 {

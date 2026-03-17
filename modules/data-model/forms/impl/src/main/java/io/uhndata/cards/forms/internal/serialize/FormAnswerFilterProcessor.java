@@ -27,7 +27,8 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonValue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;

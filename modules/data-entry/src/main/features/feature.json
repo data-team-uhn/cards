@@ -18,7 +18,7 @@
 {
   "bundles":[
     {
-      "id":"org.apache.sling:org.apache.sling.scripting.sightly:1.4.18-1.4.0",
+      "id":"org.apache.sling:org.apache.sling.scripting.sightly:2.0.0-1.4.0",
       "start-order":"25"
     },
     {
@@ -34,7 +34,7 @@
       "start-order":"26"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.api:2.27.0",
+      "id":"org.apache.sling:org.apache.sling.api:3.0.2",
       "start-order":"25"
     },
     {
@@ -51,14 +51,6 @@
     },
     {
       "id":"com.github.jsonld-java:jsonld-java:0.13.4",
-      "start-order":"25"
-    },
-    {
-      "id":"javax.json:javax.json-api:1.1.4",
-      "start-order":"25"
-    },
-    {
-      "id":"org.slf4j:slf4j-api:${slf4j.version}",
       "start-order":"25"
     },
     {

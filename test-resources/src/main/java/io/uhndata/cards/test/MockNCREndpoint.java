@@ -21,19 +21,19 @@ package io.uhndata.cards.test;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletPaths;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 @Component(service = { Servlet.class })
 @SlingServletPaths(value = { "/ncr/annotate" })
-public class MockNCREndpoint extends SlingSafeMethodsServlet
+public class MockNCREndpoint extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = -7548643624429561469L;
     private static final String MOCK_NCR_INPUT_1 = "The patient has heart disease and diabetes";
@@ -81,7 +81,8 @@ public class MockNCREndpoint extends SlingSafeMethodsServlet
     }
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response) throws IOException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

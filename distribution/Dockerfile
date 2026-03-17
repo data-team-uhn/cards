@@ -63,7 +63,7 @@ ENV DEV=
 # Put everything in /opt/cards
 RUN mkdir -p /opt/cards/.cards-data/
 WORKDIR /opt/cards/
-COPY target/dependency/org.apache.sling.feature.launcher.jar .
+COPY target/dependency/org.apache.sling.feature.launcher/ org.apache.sling.feature.launcher/
 COPY target/${project.artifactId}-${project.version}-core_mongo_far.far .
 COPY target/${project.artifactId}-${project.version}-core_tar_far.far .
 COPY logback.xml ./.cards-data/

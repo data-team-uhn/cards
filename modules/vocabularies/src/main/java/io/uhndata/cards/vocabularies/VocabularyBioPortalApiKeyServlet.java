@@ -21,13 +21,13 @@ package io.uhndata.cards.vocabularies;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
-import javax.servlet.Servlet;
+import jakarta.json.Json;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.servlet.Servlet;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -41,21 +41,22 @@ import org.osgi.service.component.annotations.Reference;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/VocabulariesHomepage" },
     methods = { "GET" },
-    selectors = { "bioportalApiKey" }
-    )
-public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
+    selectors = { "bioportalApiKey" })
+public class VocabularyBioPortalApiKeyServlet extends SlingJakartaSafeMethodsServlet
 {
     /**
      * The response from this service is a JSON object with this key holding the BioPortal API key as its value.
      */
     private static final String RESPONSE_JSON_KEY = "apikey";
+
     private static final long serialVersionUID = -574543232589675813L;
 
     @Reference
     private BioPortalApiKeyManager apiKeyManager;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
+        throws IOException
     {
         response.setContentType("application/json");
         try (Writer out = response.getWriter(); JsonGenerator jsonGen = Json.createGenerator(out)) {

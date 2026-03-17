@@ -32,9 +32,10 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.sling.api.resource.LoginException;
@@ -44,8 +45,8 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.testing.mock.jcr.MockJcr;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletRequest;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -166,8 +167,8 @@ public class VocabularyIndexerServletTest
      * @param params - parameters that the mock http request is to have
      * @throws Exception if request made fails
      */
-    public void makePost(MockSlingHttpServletRequest request, MockSlingHttpServletResponse response, String params)
-        throws Exception
+    public void makePost(MockSlingJakartaHttpServletRequest request,
+        MockSlingJakartaHttpServletResponse response, String params) throws Exception
     {
         // Configure POST request using given parameters
         request.setQueryString(params);
@@ -252,13 +253,13 @@ public class VocabularyIndexerServletTest
 
         // Execute request
 
-        MockSlingHttpServletRequest request =
-            new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+            new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         // Set the resource of the request as the /Vocabularies node
         request.setResource(this.resourceResolver.getResource("/Vocabularies"));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         // Set request parameters and execute request. Note that no version is provided.
         String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&localpath=./flat_NCIT_type_testcase.zip";
@@ -303,13 +304,13 @@ public class VocabularyIndexerServletTest
 
         // Execute request
 
-        MockSlingHttpServletRequest request =
-            new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+            new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         // Set the resource of the request as the /Vocabularies node
         request.setResource(this.resourceResolver.getResource("/Vocabularies"));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         // Set request parameters and execute request. Note that the localpath "./someLocation" does not exist.
         String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&version=19.05d&localpath=./someLocation";
@@ -358,13 +359,13 @@ public class VocabularyIndexerServletTest
 
         // Execute request
 
-        MockSlingHttpServletRequest request =
-            new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+            new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         // Set the resource of the request as the /Vocabularies node
         request.setResource(this.resourceResolver.getResource("/Vocabularies"));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         // Set the request parameters and execute request
         String requestParams = "source=ncit-flat&identifier=flatTestVocabulary&version=19.05d&localpath="

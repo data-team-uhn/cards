@@ -18,7 +18,7 @@
 {
   "bundles":[
     {
-      "id":"commons-io:commons-io:2.14.0",
+      "id":"commons-io:commons-io:2.21.0",
       "start-order":"25"
     },
     {
@@ -30,7 +30,7 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.commons:commons-lang3:3.18.0",
+      "id":"org.apache.commons:commons-lang3:3.20.0",
       "start-order":"25"
     },
     {
@@ -42,7 +42,7 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.api:2.27.0",
+      "id":"org.apache.sling:org.apache.sling.api:3.0.2",
       "start-order":"25"
     },
     {
@@ -59,14 +59,6 @@
     },
     {
       "id":"com.github.jsonld-java:jsonld-java:0.13.4",
-      "start-order":"25"
-    },
-    {
-      "id":"javax.json:javax.json-api:1.1.4",
-      "start-order":"25"
-    },
-    {
-      "id":"org.slf4j:slf4j-api:${slf4j.version}",
       "start-order":"25"
     },
     {

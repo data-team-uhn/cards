@@ -27,8 +27,8 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,8 +79,8 @@ public abstract class AbstractNCITIndexer implements VocabularyIndexer
      * @throws IOException thrown when response Json cannot be written
      */
     @Override
-    public void index(final String source, final SlingHttpServletRequest request,
-        final SlingHttpServletResponse response)
+    public void index(final String source, final SlingJakartaHttpServletRequest request,
+        final SlingJakartaHttpServletResponse response)
         throws IOException, VocabularyIndexException
     {
         // Obtain relevant request parameters.

@@ -20,15 +20,16 @@ import java.io.IOException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.sling.api.SlingHttpServletRequest;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,15 +62,15 @@ public class PreventVersionOverrideServletFilter implements Filter
         throws IOException, ServletException
     {
         String requestBaseVersion = request.getParameter(":baseVersion");
-        if (!(request instanceof SlingHttpServletRequest) || requestBaseVersion == null) {
+        if (!(request instanceof SlingJakartaHttpServletRequest) || requestBaseVersion == null) {
             chain.doFilter(request, response);
             return;
         }
-        SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
+        SlingJakartaHttpServletRequest slingRequest = (SlingJakartaHttpServletRequest) request;
         try {
             Node node = slingRequest.getResource().adaptTo(Node.class);
             if (node != null && !requestBaseVersion.equals(node.getProperty("jcr:baseVersion").getNode().getPath())) {
-                slingRequest.setAttribute("javax.servlet.error.status_code", HttpServletResponse.SC_CONFLICT);
+                slingRequest.setAttribute("jakarta.servlet.error.status_code", HttpServletResponse.SC_CONFLICT);
                 throw new ServletException("The answers to this form were modified while you were editing. "
                     + "Please refresh to see the latest data.");
             }

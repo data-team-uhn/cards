@@ -2,23 +2,23 @@
 {
     "bundles":[
         {
-            "id":"org.antlr:antlr4-runtime:4.9.3",
+            "id":"org.antlr:antlr4-runtime:4.7.1",
             "start-order":"20"
         },
         {
-            "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.rhino:1.7.14_2",
+            "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.rhino:1.7.15_1",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.scripting.api:2.2.0",
+            "id":"org.apache.sling:org.apache.sling.scripting.api:2.2.2",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.scripting.spi:1.0.4",
+            "id":"org.apache.sling:org.apache.sling.scripting.spi:2.0.0",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.scripting.core:2.4.6",
+            "id":"org.apache.sling:org.apache.sling.scripting.core:3.0.2",
             "start-order":"20"
         },
         {
@@ -34,11 +34,11 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.scripting.jsp.taglib:2.4.0",
+            "id":"org.apache.sling:org.apache.sling.scripting.jsp.taglib:2.4.2",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.scripting.jsp:2.5.4",
+            "id":"org.apache.sling:org.apache.sling.scripting.jsp:2.6.2",
             "start-order":"20"
         },
         {
@@ -50,7 +50,7 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.scripting.sightly.js.provider:1.2.6",
+            "id":"org.apache.sling:org.apache.sling.scripting.sightly.js.provider:1.2.14",
             "start-order":"20"
         },
         {
@@ -58,11 +58,11 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.scripting.sightly:1.4.18-1.4.0",
+            "id":"org.apache.sling:org.apache.sling.scripting.sightly:2.0.0-1.4.0",
             "start-order":"20"
         },
         {
-            "id":"org.attoparser:attoparser:2.0.5.RELEASE",
+            "id":"org.attoparser:attoparser:2.0.7.RELEASE",
             "start-order":"20"
         },
         {
@@ -70,11 +70,11 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.ognl:3.3.2_1",
+            "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.ognl:3.3.4_1",
             "start-order":"20"
         },
         {
-            "id":"org.javassist:javassist:3.28.0-GA",
+            "id":"org.javassist:javassist:3.30.2-GA",
             "start-order":"20"
         }
     ],

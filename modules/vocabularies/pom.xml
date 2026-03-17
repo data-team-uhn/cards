@@ -82,17 +82,17 @@
       <artifactId>jcr</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.json</groupId>
-      <artifactId>javax.json-api</artifactId>
+      <groupId>jakarta.json</groupId>
+      <artifactId>jakarta.json-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient-osgi</artifactId>
-      <version>4.5.13</version>
+      <version>4.5.14</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -109,7 +109,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
-      <version>4.4.15</version>
+      <version>4.4.16</version>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
@@ -134,25 +134,25 @@
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.core</artifactId>
-      <version>3.2.2</version>
+      <version>4.0.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.junit4</artifactId>
-      <version>3.2.2</version>
+      <version>4.0.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock-oak</artifactId>
-      <version>3.1.2-1.40.0</version>
+      <version>4.1.0-1.86.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.jcr-mock</artifactId>
-      <version>1.5.4</version>
+      <version>1.7.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

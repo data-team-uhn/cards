@@ -20,7 +20,7 @@ package io.uhndata.cards.spi;
 
 import java.util.List;
 
-import javax.json.JsonObject;
+import jakarta.json.JsonObject;
 
 import org.apache.sling.api.resource.ResourceResolver;
 

@@ -17,7 +17,8 @@
 package io.uhndata.cards.links.api;
 
 import javax.jcr.Node;
-import javax.json.JsonObject;
+
+import jakarta.json.JsonObject;
 
 /**
  * A Link, a connection from one resource to another.

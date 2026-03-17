@@ -23,16 +23,17 @@ import java.io.IOException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -49,7 +50,7 @@ import io.uhndata.cards.links.api.LinkUtils;
     resourceTypes = { "cards/Resource" },
     extensions = { "links" },
     methods = { "GET", "POST", "DELETE" })
-public class LinksServlet extends SlingAllMethodsServlet
+public class LinksServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = 1337L;
 
@@ -57,7 +58,7 @@ public class LinksServlet extends SlingAllMethodsServlet
     private LinkUtils links;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         Node currentNode = request.getResource().adaptTo(Node.class);
@@ -69,7 +70,7 @@ public class LinksServlet extends SlingAllMethodsServlet
     }
 
     @Override
-    public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doPost(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         final Session session = request.getResourceResolver().adaptTo(Session.class);
@@ -90,7 +91,7 @@ public class LinksServlet extends SlingAllMethodsServlet
     }
 
     @Override
-    protected void doDelete(SlingHttpServletRequest request, SlingHttpServletResponse response)
+    protected void doDelete(SlingJakartaHttpServletRequest request, SlingJakartaHttpServletResponse response)
         throws ServletException, IOException
     {
         final Session session = request.getResourceResolver().adaptTo(Session.class);

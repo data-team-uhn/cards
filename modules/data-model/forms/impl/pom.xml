@@ -62,8 +62,8 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>javax.json</groupId>
-      <artifactId>javax.json-api</artifactId>
+      <groupId>jakarta.json</groupId>
+      <artifactId>jakarta.json-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
@@ -136,13 +136,17 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.rhino</artifactId>
+      <version>1.7.14_2</version>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.rhino</artifactId>
-      <version>1.7.14_2</version>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
   </dependencies>
 </project>

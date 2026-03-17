@@ -36,17 +36,18 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.OnParentVersionAction;
 import javax.jcr.version.VersionManager;
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
+
+import jakarta.json.Json;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletException;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -68,7 +69,7 @@ import org.slf4j.LoggerFactory;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/Item" },
     methods = { "DELETE" })
-public class DeleteServlet extends SlingAllMethodsServlet
+public class DeleteServlet extends SlingJakartaAllMethodsServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeleteServlet.class);
 
@@ -166,7 +167,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     @Override
-    public void doDelete(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doDelete(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws ServletException, IOException
     {
         try {
@@ -204,11 +205,11 @@ public class DeleteServlet extends SlingAllMethodsServlet
             }
         } catch (AccessDeniedException e) {
             LOGGER.error("AccessDeniedException trying to delete node: {}", e.getMessage(), e);
-            sendJsonError(response, request.getRemoteUser() == null ? SlingHttpServletResponse.SC_UNAUTHORIZED
-                : SlingHttpServletResponse.SC_FORBIDDEN);
+            sendJsonError(response, request.getRemoteUser() == null ? SlingJakartaHttpServletResponse.SC_UNAUTHORIZED
+                : SlingJakartaHttpServletResponse.SC_FORBIDDEN);
         } catch (RepositoryException e) {
             LOGGER.error("Unknown RepositoryException trying to delete node: {}", e.getMessage(), e);
-            sendJsonError(response, SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            sendJsonError(response, SlingJakartaHttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
         } finally {
             // Cleanup state to free memory
             this.resolver.remove();
@@ -228,7 +229,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
      * @throws AccessDeniedException if the requesting user does not have permission to delete the node
      * @throws RepositoryException if deletion fails due to a repository error
      */
-    private void handleDelete(final SlingHttpServletResponse response, final Node node)
+    private void handleDelete(final SlingJakartaHttpServletResponse response, final Node node)
         throws IOException, AccessDeniedException, RepositoryException
     {
         // Check if this node or its children are referenced by other nodes
@@ -241,9 +242,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
             String referencedNodes = listReferrersFromTraversal();
             if (referencedNodes == null || referencedNodes.length() > 0) {
                 // Will not be able to delete node due to references. Inform user.
-                sendJsonError(response, SlingHttpServletResponse.SC_CONFLICT,
+                sendJsonError(response, SlingJakartaHttpServletResponse.SC_CONFLICT,
                     String.format("This item is referenced %s.",
-                    StringUtils.isEmpty(referencedNodes) ? "by unknown item(s)" : "in " + referencedNodes));
+                        StringUtils.isEmpty(referencedNodes) ? "by unknown item(s)" : "in " + referencedNodes));
             } else {
                 // References were found but they are not references that need user prompting to delete.
                 // Do not inform user, just delete.
@@ -542,7 +543,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
      * @param response the response object to write to
      * @param sc the HTTP response code to send
      */
-    private static void sendJsonError(final SlingHttpServletResponse response, int sc)
+    private static void sendJsonError(final SlingJakartaHttpServletResponse response, int sc)
         throws IOException
     {
         sendJsonError(response, sc, null, null);
@@ -555,7 +556,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
      * @param sc the HTTP response code to send
      * @param message a message to be sent explaining the error
      */
-    private static void sendJsonError(final SlingHttpServletResponse response, int sc, String message)
+    private static void sendJsonError(final SlingJakartaHttpServletResponse response, int sc, String message)
         throws IOException
     {
         sendJsonError(response, sc, message, null);
@@ -569,7 +570,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
      * @param message a message to be sent explaining the error
      * @param exception the exception that lead to the error
      */
-    private static void sendJsonError(final SlingHttpServletResponse response, int sc, String message,
+    private static void sendJsonError(final SlingJakartaHttpServletResponse response, int sc, String message,
         Exception exception)
         throws IOException
     {

@@ -18,7 +18,7 @@ package io.uhndata.cards.scripting;
 
 import javax.script.Bindings;
 
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.scripting.sightly.pojo.Use;
 
 /**
@@ -34,12 +34,12 @@ import org.apache.sling.scripting.sightly.pojo.Use;
  */
 public class ContentTypeSetter implements Use
 {
-    private SlingHttpServletResponse response;
+    private SlingJakartaHttpServletResponse response;
 
     @Override
     public void init(Bindings bindings)
     {
-        this.response = (SlingHttpServletResponse) bindings.get("response");
+        this.response = (SlingJakartaHttpServletResponse) bindings.get("jakartaResponse");
     }
 
     /** Set the content type to text/html. */

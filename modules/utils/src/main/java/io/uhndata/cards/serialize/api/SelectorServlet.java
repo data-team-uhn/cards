@@ -29,14 +29,14 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import javax.servlet.Servlet;
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.servlet.Servlet;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.FieldOption;
@@ -59,7 +59,7 @@ import io.uhndata.cards.serialize.spi.SelectorDetails.SelectorOption;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/ResourceHomepage" }, extensions = {
     "selectors" }, methods = { "GET", "POST" })
-public class SelectorServlet extends SlingSafeMethodsServlet
+public class SelectorServlet extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = 2558430802619674046L;
 
@@ -79,7 +79,7 @@ public class SelectorServlet extends SlingSafeMethodsServlet
     private volatile List<ResourceCSVProcessor> allCSVProcessors;
 
     @Override
-    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+    public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
         response.setCharacterEncoding("UTF-8");
