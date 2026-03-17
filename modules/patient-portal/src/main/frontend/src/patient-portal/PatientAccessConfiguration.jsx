@@ -80,7 +80,7 @@ function PatientAccessConfiguration() {
     ],
     manualTokenLifespanDays: [
       "When a token is created manually, the number of days that the token should be valid for by default.",
-      "This should be a positive integer for a number of days, or 0 for a 10 minute token lifespan"
+      "This should be a positive integer for a number of days, or 0 for a 1 hour token lifespan"
     ],
   };
 

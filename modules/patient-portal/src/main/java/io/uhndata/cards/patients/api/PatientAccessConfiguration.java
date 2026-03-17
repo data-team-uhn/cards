@@ -83,7 +83,7 @@ public interface PatientAccessConfiguration
 
     /**
      * Get the configured amount of time, in days, that a manually created token should be valid for.
-     * If this value is {@code 0}, then a created token should only be valid for 10 minutes.
+     * If this value is {@code 0}, then a created token should only be valid for 1 hour.
      *
      * @return A number of days
      */

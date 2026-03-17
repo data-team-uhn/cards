@@ -15,15 +15,15 @@
 
 response.setContentType('text/plain');
 
-var get10MinExpiry = function() {
+var getOneHourExpiry = function() {
     var result = java.util.Calendar.getInstance();
-    result.setTimeInMillis(result.getTimeInMillis() + 600000);
+    result.setTimeInMillis(result.getTimeInMillis() + (1000*60*60));
     return result;
 }
 
 var getExpiryByDays = function(days) {
     if (days < 1) {
-        return get10MinExpiry();
+        return getOneHourExpiry();
     } else {
         var result = java.util.Calendar.getInstance();
         result.add(java.util.Calendar.DATE, days);
