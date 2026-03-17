@@ -52,6 +52,7 @@ import { MakeRequest } from "../vocabQuery/util.jsx";
 //  expression="if (@{question_b} === 0) setError('Can not divide by 0'); return @{question_a}/@{question_b}"
 //  />
 let ComputedQuestion = (props) => {
+  "use memo";
   checkPropTypes(ComputedQuestion, props);
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest } = props;
   const {
@@ -67,7 +68,7 @@ let ComputedQuestion = (props) => {
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
 
-  let initialValue = existingAnswer?.[1].value || "";
+  const initialValue = existingAnswer?.[1].value || "";
   const [displayValue, changeDisplayValue] = useState(initialValue);
   const [baseValue, changeBaseValue] = useState(initialValue);
   const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
@@ -82,14 +83,14 @@ let ComputedQuestion = (props) => {
   const defaultTag = ":-";
   const booleanDefaultLabels = { "0": "No", "1": "Yes", "-1": "Unknown" }
 
-  let setError = (input) => {
+  const setError = (input) => {
     if (error !== input) changeError(input);
   }
-  let setErrorMessage = (input) => {
+  const setErrorMessage = (input) => {
     if (errorMessage !== input) changeErrorMessage(input);
   }
 
-  let setValue = (input) => {
+  const setValue = (input) => {
     if (input === baseValue) {
       //Do nothing
       return;
@@ -133,7 +134,7 @@ let ComputedQuestion = (props) => {
     }
   }
 
-  let setFieldType = (value) => {
+  const setFieldType = (value) => {
     if (fieldType !== value) {
       changeFieldType(value);
     }
@@ -141,7 +142,7 @@ let ComputedQuestion = (props) => {
 
   let missingValue = false;
 
-  let getQuestionValue = (name, form, defaultValue, asArray) => {
+  const getQuestionValue = (name, form, defaultValue, asArray) => {
     // Get all the [label, value] pairs for this answer
     // If there are no values and a default is provided, use it
     // Discard labels, keep only values
@@ -160,7 +161,7 @@ let ComputedQuestion = (props) => {
     return (asArray ? values : values[0]);
   }
 
-  let parseExpressionInputs = (expr, form) => {
+  const parseExpressionInputs = (expr, form) => {
     // List of all the questions that have an argument already
     let questions = new Map();
 
@@ -230,42 +231,42 @@ let ComputedQuestion = (props) => {
     return [questions, expr];
   }
 
-  let evaluateExpression = () => {
-    let result;
+  const processParsedResults = (parseResults, errorFn) => {
+    let questions = parseResults[0];
+    let parsedExpression = parseResults[1];
+    let expressionArguments = ["form", "setError"];
+    let expressionValues = [form, errorFn];
+    for (const question of questions.values()) {
+      expressionArguments.push(question["argument"]);
+      expressionValues.push(question["value"]);
+    }
+    let result = new Function(expressionArguments, parsedExpression)(...expressionValues);
+    if (typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
+      result = "";
+    }
+    return result;
+  }
+
+  const evaluateExpression = () => {
+    let result = "";
     let expressionError = null;
+    let errorFn = (errorMessage) => expressionError = errorMessage;
     try {
       let parseResults = parseExpressionInputs(expression, form);
-      if (missingValue) {
-        result = ""
-      } else {
-        let questions = parseResults[0];
-        let parsedExpression = parseResults[1];
-
-        let expressionArguments = ["form", "setError"];
-        let expressionValues = [form, (errorMessage) => expressionError = errorMessage];
-        for(const question of questions.values()) {
-          expressionArguments.push(question["argument"]);
-          expressionValues.push(question["value"]);
-        }
-        result = new Function(expressionArguments, parsedExpression)(...expressionValues);
-        if (typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
-          result = "";
-        }
+      if (!missingValue) {
+        result = processParsedResults(parseResults, errorFn);
       }
     }
     catch(err) {
       console.error(`Error encountered evaluating expression:\n${expression}\n`, err.message);
-      result = "";
     }
     if (expressionError) {
       setError(true);
       setErrorMessage(`Error encountered evaluating expression:\n${expressionError}`);
-      result = "";
     } else {
       setError(false);
     }
-
-    setValue(typeof(result) === "undefined" ? "" : result);
+    setValue(result);
   }
 
   const muiInputProps = {
@@ -281,7 +282,7 @@ let ComputedQuestion = (props) => {
   // Performance improvement? Only compute if inputs have changed
   evaluateExpression();
 
-  let capitalizedDataType = dataType.substring(0, 1).toUpperCase() + dataType.substring(1);
+  const capitalizedDataType = dataType.substring(0, 1).toUpperCase() + dataType.substring(1);
   let answerType, answerNodeType = `cards:${capitalizedDataType}Answer`, newFieldType;
   switch (dataType) {
     case "boolean":
