@@ -17,19 +17,23 @@
 //  under the License.
 //
 
-import questionStyles from "./questionStyles.jsx";
-
-// Extends questionStyles for notesContainer; adds note-specific styles only
-const noteStyles = theme => ({
-  ...questionStyles(theme),
-  toggleNotesButton: {
-    textTransform: "none",
-  },
-  noteSection: {
-    "& .MuiTextField-root" :{
-      width: "100%",
+const tableDialogStyles = theme => ({
+  dialogContentWithTable: {
+    padding: 0,
+    "& .MuiPaper-root": {
+      boxShadow: "0 none",
+    },
+    "& .MuiPaper-root > .MuiToolbar-root" : {
+      paddingRight: theme.spacing(3),
+    },
+    "& .MuiTableCell-root" : {
+      padding: theme.spacing(2, 3),
+    },
+    "& .MuiTableCell-footer" : {
+      paddingRight: theme.spacing(1),
+      paddingBottom: 0,
     },
   },
 });
 
-export default noteStyles;
+export default tableDialogStyles;

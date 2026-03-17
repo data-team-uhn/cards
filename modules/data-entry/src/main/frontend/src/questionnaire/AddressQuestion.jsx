@@ -28,8 +28,8 @@ import { withStyles } from 'tss-react/mui';
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
+import inputStyles from "./inputStyles";
 import Question from "./Question";
-import questionStyles from "./questionStyles.jsx";
 import StyledTextQuestion from "./TextQuestion";
 
 
@@ -173,7 +173,7 @@ AddressQuestion.propTypes = {
 };
 
 
-const StyledAddressQuestion = withStyles(AddressQuestion, questionStyles);
+const StyledAddressQuestion = withStyles(AddressQuestion, inputStyles);
 export default StyledAddressQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

@@ -460,7 +460,7 @@ function SubjectMemberInternal (props) {
   // If the subjectGroups data has not yet been fetched, return an in-progress symbol
   if (!subjectGroups) {
     return (
-      <Grid container justifyContent="center" className={classes}><Grid><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center" sx={{ mt: 5 }}><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -644,7 +644,7 @@ function SubjectMemberInternal (props) {
                     muiTableBodyCellProps: {
                       sx: {
                         whiteSpace: "nowrap",
-                        pt: 1.5,
+                        pt: 1.25,
                         pb: 1,
                       },
                     },

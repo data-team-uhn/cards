@@ -43,7 +43,7 @@ import Answer, { LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAU
 import AnswerInstructions from "./AnswerInstructions.jsx";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
-import questionStyles from "./questionStyles.jsx";
+import multipleChoiceStyles from "./multipleChoiceStyles.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import UserInputAssistant from "../components/UserInputAssistant.jsx";
 
@@ -583,7 +583,7 @@ function MultipleChoice(props) {
               name={props.questionDefinition['jcr:uuid'] + (instanceId || '')}
               value={selection.length > 0 && String(selection[0][VALUE_POS])}
             >
-              <List sx={{ p: 0 }}>
+              <List className={classes.optionsList}>
                 { generateDefaultOptions(
                   options,
                   selection,
@@ -639,7 +639,7 @@ function MultipleChoice(props) {
         {
           pageActive && <>
             {instructions}
-            <List sx={{ p: 0 }}>
+            <List className={classes.optionsList}>
               {generateDefaultOptions(
                 options,
                 selection,
@@ -700,7 +700,7 @@ function generateDefaultOptions(
   });
 }
 
-let StyledResponseChild = withStyles(ResponseChild, questionStyles);
+let StyledResponseChild = withStyles(ResponseChild, multipleChoiceStyles);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
@@ -805,4 +805,4 @@ MultipleChoice.propTypes = {
   error: PropTypes.bool
 };
 
-export default withStyles(MultipleChoice, questionStyles);
+export default withStyles(MultipleChoice, multipleChoiceStyles);

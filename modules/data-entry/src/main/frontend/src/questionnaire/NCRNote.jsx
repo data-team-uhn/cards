@@ -20,22 +20,15 @@
 import { useState } from "react";
 
 import { CircularProgress, Chip, Tooltip, Typography } from "@mui/material";
-import { makeStyles } from 'tss-react/mui';
 
 import Note from "./Note.jsx";
-
-const useStyles = makeStyles()(() => ({
-  NCRLoadingIndicator: {
-    display: "flex",
-  },
-}));
 
 const NCRURL = window.location.origin + "/ncr/annotate/";
 const ONTOLOGY_KEY = "hp_id";
 
 // Attempt to split up the given text & tooltips to highlight
 function ParsedNoteSection (props) {
-  let { classes, onAddSuggestion, tooltips, text, offset } = props;
+  let { onAddSuggestion, tooltips, text, offset } = props;
   let hasMatch = tooltips.length > 0;
 
   if (!hasMatch) {
@@ -83,7 +76,6 @@ function ParsedNoteSection (props) {
             tooltips={containedMatches}
             text={containedMatter}
             offset={firstMatch.start}
-            classes={classes}
             onAddSuggestion={onAddSuggestion}
           />
         }
@@ -93,7 +85,6 @@ function ParsedNoteSection (props) {
       tooltips={uncontainedMatches}
       text={middleMatter}
       offset={firstMatch.end}
-      classes={classes}
       onAddSuggestion={onAddSuggestion}
     />
     <Typography display="inline">{endMatter}</Typography>
@@ -102,7 +93,6 @@ function ParsedNoteSection (props) {
 
 function NCRNote (props) {
   const { existingAnswer, vocabulary, onAddSuggestion, onChangeNote, onBlur, ...rest } = props;
-  const { classes } = useStyles();
   const [ cachedText, setCachedText ] = useState(existingAnswer?.[1]?.note || "");
   const [ parsedText, setParsedText ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
@@ -150,7 +140,6 @@ function NCRNote (props) {
         tooltips={json["matches"]}
         text={cachedText}
         offset={0}
-        classes={classes}
         onAddSuggestion={onAddSuggestion}
       />
     </div>)
@@ -178,7 +167,7 @@ function NCRNote (props) {
       existingAnswer = {existingAnswer}
       {...rest}
     >
-      {isLoading && <CircularProgress className={classes.NCRLoadingIndicator} />}
+      {isLoading && <CircularProgress />}
       {parsedText}
       {error && <Typography color="error">{error}</Typography>}
     </Note>

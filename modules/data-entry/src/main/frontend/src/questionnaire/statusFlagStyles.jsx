@@ -17,17 +17,19 @@
 //  under the License.
 //
 
-const filterStyles = theme => ({
-  answerField: {
-    position: 'relative',
-    width: "100%",
+const statusFlagStyles = theme => ({
+  INCOMPLETEFlag: {
   },
-  subjectFilter: {
-    marginTop: 0,
+  INVALIDFlag: {
+    borderColor: theme.palette.error.main,
+    color: theme.palette.error.main,
   },
-  invalidSubjectText: {
-    fontStyle: "italic",
+  LOCKEDFlag: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.background.paper,
+  },
+  DefaultFlag: {
   },
 });
 
-export default filterStyles;
+export default statusFlagStyles;

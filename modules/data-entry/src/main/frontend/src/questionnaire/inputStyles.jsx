@@ -17,21 +17,32 @@
 //  under the License.
 //
 
-export const subjectSelectorDialogStyles = theme => ({
-  dialogContentWithTable: {
-    padding: 0,
-    "& .MuiPaper-root": {
-      boxShadow: "0 none",
+const inputStyles = theme => ({
+  answerField: {
+    position: 'relative',
+    width: "100%",
+  },
+  textField: {
+    // Differing input types have differing widths, so setting width:100%
+    // is insufficient in making sure all components are the same size
+    width: "250px",
+  },
+  textBox: {
+    // Outlined textboxes that are not part of a single select list should stretch full width
+    width: "100%",
+  },
+  range: {
+    display: "flex",
+    alignItems: "baseline",
+    flexWrap: "wrap",
+    "& .numberRangeLimit": {
+      minWidth: "110px !important",
+      width: "110px",
     },
-    "& .MuiPaper-root > .MuiToolbar-root" : {
-      paddingRight: theme.spacing(3),
-    },
-    "& .MuiTableCell-root" : {
-      padding: theme.spacing(2, 3),
-    },
-    "& .MuiTableCell-footer" : {
-      paddingRight: theme.spacing(1),
-      paddingBottom: 0,
-    },
+    "& .separator" : {
+      padding: theme.spacing(1),
+    }
   },
 });
+
+export default inputStyles;

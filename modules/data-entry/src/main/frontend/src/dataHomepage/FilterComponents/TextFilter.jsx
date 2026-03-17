@@ -26,13 +26,12 @@ import { withStyles } from 'tss-react/mui';
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import filterStyles from "../../questionnaire/filterStyles.jsx";
-import questionStyles from "../../questionnaire/questionStyles.jsx";
+import inputStyles from "../../questionnaire/inputStyles.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(TEXT_COMPARATORS);
 
 const textFilterNotesContainStyles = theme => ({
-  ...questionStyles(theme),
+  ...inputStyles(theme),
   textField: {
     // The default min-width is 250 px, which is too wide when the comparator is "notes contain"
     minWidth: "155px !important",
@@ -86,7 +85,7 @@ TextFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledTextFilter = withStyles(TextFilter, filterStyles);
+const StyledTextFilter = withStyles(TextFilter, inputStyles);
 const StyledNotesContainFilter = withStyles(TextFilter, textFilterNotesContainStyles);
 export default { StyledTextFilter, StyledNotesContainFilter }
 
