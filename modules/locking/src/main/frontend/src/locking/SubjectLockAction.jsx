@@ -43,9 +43,9 @@ import { DateTime } from "luxon";
 import PropTypes from "prop-types";
 
 import ErrorDialog from "../components/ErrorDialog.jsx";
+import { escapeJQL } from "../escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { checkPropTypes } from "../propTypes";
-import { escapeJQL } from "../escape.jsx";
 
 function SubjectLockAction(props) {
   checkPropTypes(SubjectLockAction, props);

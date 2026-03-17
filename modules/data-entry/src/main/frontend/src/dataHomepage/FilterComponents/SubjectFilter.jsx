@@ -27,11 +27,11 @@ import { withStyles } from 'tss-react/mui';
 
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
+import { escapeJQL } from "../../escape.jsx";
 import { checkPropTypes } from "../../propTypes";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 import SearchBar from "../../SearchBar.jsx";
 import { QuickSearchIdentifier } from "../../themePage/Navbars/QuickSearchIdentifier.jsx";
-import { escapeJQL } from "../../escape.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice();
 
