@@ -26,6 +26,7 @@ import EditorInput from "./EditorInput";
 import { useFieldsReaderContext, useFieldsWriterContext } from "./FieldsContext";
 import QuestionComponentManager from "./QuestionComponentManager";
 import VariableAutocomplete from "../dataHomepage/VariableAutocomplete";
+import { escapeJQL } from "../escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { stripCardsNamespace } from "../questionnaire/QuestionnaireUtilities";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
@@ -176,8 +177,10 @@ let ReferenceInput = (props) => {
       fetchRequest = fetchWithReLogin(globalLoginDisplay, url);
     } else {
       // If this is an existing value, we will be given a jcr:uuid instead
-      let url = new URL(`query?query=SELECT * FROM [nt:base] AS n WHERE n.'jcr:uuid'='${field}'`,
-        window.location.origin);
+      let url = new URL(
+        `query?query=SELECT * FROM [nt:base] AS n WHERE n.'jcr:uuid'='${escapeJQL(field)}'`,
+        window.location.origin
+      );
       fetchRequest = fetchWithReLogin(globalLoginDisplay, url)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {

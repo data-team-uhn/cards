@@ -34,6 +34,7 @@ import { v4 as uuidv4 } from 'uuid';
 import FormattedText from "../components/FormattedText.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
+import { escapeJQL } from "../escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
@@ -144,7 +145,7 @@ function NewFormDialog(props) {
 
   let fetchQuestionnaire = (questionnaireName) => {
     // Send a fetch request to determine the subjects available for the specified questionnaire
-    let query = `select * from [cards:Questionnaire] as n where name()='${questionnaireName}'`;
+    let query = `select * from [cards:Questionnaire] as n where name()='${escapeJQL(questionnaireName)}'`;
     fetchWithReLogin(globalLoginDisplay, '/query?query=' + encodeURIComponent(query))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
@@ -218,7 +219,10 @@ function NewFormDialog(props) {
 
   // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
-    fetchWithReLogin(globalLoginDisplay, `/query?rawResults=true&query=SELECT f.questionnaire FROM [cards:Form] as f where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}' OPTION (index tag property)&limit=1000`)
+    const subjectUuid = (currentSubject || selectedSubject)?.['jcr:uuid'];
+    fetchWithReLogin(globalLoginDisplay,
+      `/query?rawResults=true&query=SELECT f.questionnaire FROM [cards:Form] as f where f.'subject'='${escapeJQL(subjectUuid)}' OPTION (index tag property)&limit=1000`
+    )
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         setRelatedForms(response.rows);

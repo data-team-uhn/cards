@@ -43,6 +43,7 @@ import { DateTime } from "luxon";
 import PropTypes from "prop-types";
 
 import ErrorDialog from "../components/ErrorDialog.jsx";
+import { escapeJQL } from "../escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { checkPropTypes } from "../propTypes";
 
@@ -179,7 +180,11 @@ function SubjectLockAction(props) {
 
     let subjects = [subject["jcr:uuid"]];
     getChildSubjects(subject, subjects);
-    fetchWithReLogin(globalLoginDisplay, `/query?limit=100&query=SELECT * FROM [cards:Form] as f where f.'subject' in ('${subjects.join("','")}') and f.'statusFlags'='INCOMPLETE'`)
+    const escapedSubjects = subjects.map(s => escapeJQL(s));
+    fetchWithReLogin(
+      globalLoginDisplay,
+      `/query?limit=100&query=SELECT * FROM [cards:Form] as f where f.'subject' in ('${escapedSubjects.join("','")}') and f.'statusFlags'='INCOMPLETE'`
+    )
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         if (response.rows?.length > 0) {

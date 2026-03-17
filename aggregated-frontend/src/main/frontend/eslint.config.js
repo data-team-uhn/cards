@@ -107,7 +107,7 @@ const commonRules = {
   "max-nested-callbacks": ["error", 3],
 
   // codestyle rules
-  "@stylistic/max-len": ["error", { code: 120, ignoreUrls: true, ignoreStrings: true, ignoreComments: true }],
+  "@stylistic/max-len": ["error", { code: 120, ignoreUrls: true, ignoreStrings: true, ignoreComments: true, ignoreTemplateLiterals: true }],
   "@stylistic/no-extra-semi": "error",
 
   "jsx-a11y/no-autofocus": "off",
