@@ -19,13 +19,14 @@
 
 import { useRef, useEffect, useMemo } from "react";
 
-import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
+import { Card, CardHeader, CardContent, List, ListItem } from "@mui/material";
 import PropTypes from "prop-types";
 import { useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import AnswerInstructions from "./AnswerInstructions";
+import Note from "./Note.jsx";
 import questionStyles from "./questionStyles.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
@@ -135,10 +136,7 @@ function Question (props) {
             children
           }
           { pageActive && !isEdit && existingAnswer?.[1]?.note &&
-            <div className={classes.notesContainer}>
-              <Typography variant="subtitle1">Notes</Typography>
-              {existingAnswer[1].note}
-            </div>
+            <Note readonly value={existingAnswer[1].note} />
           }
         </div>
       </CardContent>

@@ -17,7 +17,10 @@
 //  under the License.
 //
 
+import statusFlagStyles from "./statusFlagStyles.jsx";
+
 const subjectStyles = theme => ({
+  ...statusFlagStyles(theme),
   subjectAvatar: {
     backgroundColor: theme.palette.secondary.main,
     marginLeft: theme.spacing(-1),
@@ -73,18 +76,6 @@ const subjectStyles = theme => ({
   childSubjectFlag: {
     marginLeft: theme.spacing(1),
     textTransform: "none",
-  },
-  INCOMPLETEFlag: {
-  },
-  INVALIDFlag: {
-    borderColor: theme.palette.error.main,
-    color: theme.palette.error.main,
-  },
-  LOCKEDFlag: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.background.paper,
-  },
-  DefaultFlag: {
   },
   formPreview: {
     padding: theme.spacing(1),

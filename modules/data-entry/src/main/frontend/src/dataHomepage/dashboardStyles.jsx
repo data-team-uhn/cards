@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { subjectSelectorDialogStyles } from "./subjectSelectorDialogStyles.jsx";
+import tableDialogStyles from "./tableDialogStyles.jsx";
 
 const dashboardStyles = theme => ({
   dashboardContainer: {
@@ -58,7 +58,7 @@ const dashboardStyles = theme => ({
       paddingRight: theme.spacing(.5),
     },
   },
-  ...subjectSelectorDialogStyles(theme),
+  ...tableDialogStyles(theme),
 });
 
 export default dashboardStyles;

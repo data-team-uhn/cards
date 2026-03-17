@@ -651,7 +651,7 @@ function Form (props) {
             }
             {
               wasCheckedOut ?
-                <Typography variant="overline" sx={theme => ({ color: theme.palette.warning.main })}>Another user is editing</Typography>
+                <Typography variant="overline" sx={{ color: 'warning.main' }}>Another user is editing</Typography>
                 : ""
             }
             {
@@ -733,7 +733,6 @@ function Form (props) {
                     depth={0}
                     existingAnswers={data}
                     keyProp={key}
-                    classes={classes}
                     onChange={()=>setLastSaveStatus(undefined)}
                     visibleCallback={pageResult.callback}
                     pageActive={pageResult.page.visible}

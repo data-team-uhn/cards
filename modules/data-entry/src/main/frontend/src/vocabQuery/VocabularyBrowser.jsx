@@ -19,7 +19,7 @@
 
 import { useState, useEffect } from "react";
 
-import { Snackbar, SnackbarContent } from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
 import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
@@ -230,11 +230,9 @@ function VocabularyBrowser(props) {
         }}
         variant="error"
       >
-        <SnackbarContent
-          sx={theme => ({ backgroundColor: theme.palette.error.dark })}
-          role="alertdialog"
-          message={snackbarMessage}
-        />
+        <Alert severity="error">
+          { snackbarMessage }
+        </Alert>
       </Snackbar>
     </>
   );

@@ -20,8 +20,8 @@ import { Grid } from "@mui/material";
 import { useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
+import dashboardStyles from "./dashboardStyles.jsx";
 import FormView from "./FormView.jsx";
-import dashboardStyles from "../questionnaire/dashboardStyles.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 

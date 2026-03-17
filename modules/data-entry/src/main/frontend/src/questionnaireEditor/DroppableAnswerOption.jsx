@@ -29,7 +29,6 @@ import { DropIndicator } from "@atlaskit/pragmatic-drag-and-drop-react-drop-indi
 import CloseIcon from '@mui/icons-material/Close';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {
-  Box,
   Checkbox,
   Grid,
   IconButton,
@@ -207,11 +206,11 @@ function DroppableAnswerOption(props) {
 
   return (
     <>
-      <Box sx={{ p: 0 }}>
+      <div className={classes.optionsList}>
         {generateOption(false)}
         {draggableState?.type === 'dragging-over' && draggableState?.closestEdge &&
           (<DropIndicator edge={draggableState.closestEdge} gap='8px'/>)}
-      </Box>
+      </div>
       { draggableState.type === "preview" &&
         createPortal(
           generateOption(true),

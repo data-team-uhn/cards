@@ -309,7 +309,6 @@ function Section(props) {
                           depth={depth+1}
                           existingAnswers={existingSectionAnswer}
                           keyProp={key}
-                          classes={classes}
                           onChange={onChange}
                           isEdit={isEdit}
                           isSummary={isSummary}
