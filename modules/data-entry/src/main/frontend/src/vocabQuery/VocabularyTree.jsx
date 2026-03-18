@@ -19,7 +19,6 @@
 import { useState, useEffect } from "react";
 
 import {
-  Box,
   Button,
   Checkbox,
   DialogContent,
@@ -263,7 +262,7 @@ function VocabularyTree(props) {
       {...rest}
     >
       { enableSelection && <>
-        <Box sx={theme => ({ p: theme.spacing(0, 3, 2) })}>
+        <div className={classes.selectionContainer}>
           <Typography variant="body2" component="span">{questionDefinition?.text}:</Typography>
           { selectedTerms?.filter(i => i[LABEL_POS]).map(s =>
             <Chip
@@ -274,10 +273,10 @@ function VocabularyTree(props) {
               label={s[LABEL_POS]}
               onClick={() => onTermClick(s[VALUE_POS])}
               onDelete={() => removeOption(...s)}
-              sx={{ m: 0.5 }}
+              className={classes.selectionChips}
             />
           )}
-        </Box>
+        </div>
         <div className={classes.browserAnswerInstructions}>
           <AnswerInstructions
             currentAnswers={selectedTerms.length}
@@ -288,9 +287,9 @@ function VocabularyTree(props) {
       }
       <DialogContent className={classes.treeContainer} dividers>
         {parentNode?.length ?
-          <Box sx={{ display: "block" }}>
+          <div className={classes.treeRoot}>
             {parentNode}
-          </Box>
+          </div>
           : ""}
         <div className={parentNode?.length ? classes.treeNode : undefined}>
           {currentNode}
