@@ -64,10 +64,16 @@ const browseStyle = theme => ({
     display: 'inline',
     cursor: 'pointer'
   },
+  infoIcon: {
+    whiteSpace: "nowrap"
+  },
   treeContainer: {
     padding: theme.spacing(2,2,2,6),
   },
   // Tree components
+  treeRoot: {
+    display: "block",
+  },
   treeNode: {
     // Nothing in here for now, but this is here in case we
     // want to apply themes in the future
@@ -100,9 +106,18 @@ const browseStyle = theme => ({
   browseAction: {
     margin: theme.spacing(1)
   },
+  selectionContainer: {
+    padding: theme.spacing(0, 3, 2),
+  },
   browserAnswerInstructions: {
     padding: theme.spacing(1, 3, 0),
     marginBottom: theme.spacing(-2),
+  },
+  selectionChips: {
+    margin: theme.spacing(0.5, 0.5),
+  },
+  termSelector: {
+    margin: theme.spacing(-.25, 0, 0, -1.5),
   },
 });
 
