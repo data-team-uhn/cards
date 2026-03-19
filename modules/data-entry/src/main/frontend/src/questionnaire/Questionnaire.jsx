@@ -231,7 +231,7 @@ let Questionnaire = (props) => {
       </Typography>
       :
       ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
-        <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+        <Grid container className={classes.formContainer} {...FORM_ENTRY_CONTAINER_PROPS}>
           { questionnaireHeader }
           { !isEdit ?
             <QuestionnairePreview

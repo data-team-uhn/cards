@@ -21,6 +21,14 @@ import statusFlagStyles from "./statusFlagStyles.jsx";
 
 const formStyles = theme => ({
   ...statusFlagStyles(theme),
+  formContainer: {
+    "& .cards-hidden": {
+      display: "none",
+    },
+    "& .cards-focused.MuiCard-root, .cards-focused > .MuiCard-root": {
+      outline: `2px solid ${theme.palette.primary.main}`,
+    },
+  },
   hideAnswerInstructions: {
     "& .cards-answerInstructions" : {
       display: "none",
@@ -36,9 +44,6 @@ const formStyles = theme => ({
   },
   formFooter: {
     position: "relative",
-  },
-  hiddenFooter: {
-    display: "none",
   },
   actionsMenu: {
     border: "1px solid " + theme.palette.divider,

@@ -612,7 +612,7 @@ function Form (props) {
       className={classNames?.join(' ')}
     >
       <input type="hidden" name=":baseVersion" value={baseVersion} />
-      <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
+      <Grid container className={classes.formContainer} {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
           title={title}
@@ -747,7 +747,7 @@ function Form (props) {
         {/* FormPagination must be called regardless of whether paginationEnabled is true or false,
             because it is what populates the contents of the form.
             However, it should only be displayed to the user in edit mode when paginationEnabled is true. */}
-        <Grid size={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
+        <Grid size={12} className={paginationEnabled ? classes.formFooter : "cards-hidden"} id="cards-resource-footer">
           {data && <FormPagination
             saveInProgress={saveInProgress}
             disableProgress={disableProgress}

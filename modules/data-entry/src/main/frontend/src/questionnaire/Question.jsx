@@ -75,7 +75,7 @@ function Question (props) {
 
   let cardClasses = [classes.questionCard];
   if (doHighlight) {
-    cardClasses.push(classes.focusedQuestionnaireItem);
+    cardClasses.push("cards-focused");
   }
 
   let labels = existingAnswer?.[1].displayedValue;
