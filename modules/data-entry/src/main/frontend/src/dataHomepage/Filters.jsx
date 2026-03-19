@@ -423,6 +423,7 @@ function Filters(props) {
                     className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       variant="standard"
+                      fullWidth
                       value={filterDatum.comparator || ""}
                       onChange={(event) => handleChangeComparator(index, event.target.value)}
                     >
