@@ -207,7 +207,7 @@ function UnstyledNewSubjectDialog (props) {
             muiTableHeadCellProps={{
               sx: {
                 fontSize: 'large',
-                paddingTop: '0',
+                pt: 0,
               },
             }}
             muiTableBodyCellProps={{

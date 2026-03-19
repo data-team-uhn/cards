@@ -67,7 +67,7 @@ const DateFilter = (props, ref) => {
         }}
         slotProps={{ textField: {
           variant: 'standard',
-          sx: { top: -2, width: '100%' },
+          sx: (theme) => ({ top: theme.spacing(-2), width: '100%' }),
         },
         field: {
           clearable: true,

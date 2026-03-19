@@ -108,7 +108,7 @@ function AdminResourceListing(props) {
             muiTableHeadCellProps: { align: 'right' },
             muiTableBodyCellProps: {
               sx: {
-                padding: '0',
+                p: 0,
               },
             },
           },
