@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import questionnaireItemStyles from "./questionnaireItemStyles";
-
 const questionStyles = theme => ({
   questionCard : {
     overflow: "unset",
@@ -58,7 +56,6 @@ const questionStyles = theme => ({
       paddingBottom: 0,
     }
   },
-  ...questionnaireItemStyles(theme),
 });
 
 export default questionStyles;

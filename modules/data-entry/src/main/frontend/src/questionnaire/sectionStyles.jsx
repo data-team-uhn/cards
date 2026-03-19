@@ -82,9 +82,6 @@ const sectionStyles = theme => ({
   collapsedSection: {
     padding: "0 !important",
   },
-  hiddenSection: {
-    display: "none",
-  },
   entryActionIcon: {
     float: "right",
     marginRight: theme.spacing(1),

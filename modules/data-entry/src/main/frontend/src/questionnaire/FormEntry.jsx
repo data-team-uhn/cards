@@ -55,8 +55,6 @@ export const SECTION_TYPES = ["cards:Section"];
 export const INFO_TYPES = ["cards:Information"];
 export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPES);
 
-let hiddenStyle = { display: "none" };
-
 /**
  * Method responsible for displaying a question from the questionnaire, along with its answer(s).
  *
@@ -93,15 +91,15 @@ let displayQuestion = (
   // This variable must start with an upper case letter so that React treats it as a component
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
 
-  let gridStyle = {};
+  let gridClasses = [];
   let displayMode = questionDefinition.displayMode;
   if (pageActive === false || displayMode == 'hidden' || (isSummary && displayMode !== "summary") || (!isSummary && displayMode === "summary")) {
-    gridStyle = hiddenStyle;
+    gridClasses.push("cards-hidden");
   }
 
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
-    <Grid key={key} sx={gridStyle} {...gridProps}>
+    <Grid key={key} className={gridClasses.join(" ")} {...gridProps}>
       <QuestionDisplay
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
@@ -229,13 +227,13 @@ let displayMatrix = (
     return null;
   }
 
-  let gridStyle = {};
+  let gridClasses = [];
   if (pageActive === false || sectionDefinition.displayMode == 'hidden') {
-    gridStyle = hiddenStyle;
+    gridClasses.push("cards-hidden");
   }
 
   return (
-    <Grid key={key} sx={gridStyle} {...gridProps}>
+    <Grid key={key} className={gridClasses.join(" ")} {...gridProps}>
       <QuestionMatrix
         sectionDefinition={sectionDefinition}
         existingSectionAnswer={existingSectionAnswer}
