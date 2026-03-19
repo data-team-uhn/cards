@@ -30,14 +30,6 @@ import inputStyles from "../../questionnaire/inputStyles.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(TEXT_COMPARATORS);
 
-const textFilterNotesContainStyles = theme => ({
-  ...inputStyles(theme),
-  textField: {
-    // The default min-width is 250 px, which is too wide when the comparator is "notes contain"
-    minWidth: "155px !important",
-  },
-});
-
 /**
  * Display a filter on a numeric answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
@@ -86,13 +78,12 @@ TextFilter.propTypes = {
 }
 
 const StyledTextFilter = withStyles(TextFilter, inputStyles);
-const StyledNotesContainFilter = withStyles(TextFilter, textFilterNotesContainStyles);
-export default { StyledTextFilter, StyledNotesContainFilter }
+export default StyledTextFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   return [COMPARATORS, StyledTextFilter, 10];
 });
 
 FilterComponentManager.registerTextFilterComponent((questionDefinition) => {
-  return StyledNotesContainFilter;
+  return StyledTextFilter;
 });
