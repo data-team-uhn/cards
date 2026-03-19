@@ -196,7 +196,7 @@ function Section(props) {
   }
   // Don't hide for undefined or null values
   if (pageActive === false) {
-    collapseClasses.push(classes.hiddenSection);
+    collapseClasses.push("cards-hidden");
   }
 
   let sectionPosition = {};

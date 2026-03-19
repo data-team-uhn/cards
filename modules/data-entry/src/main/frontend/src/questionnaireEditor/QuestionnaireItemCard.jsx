@@ -41,7 +41,6 @@ import EditDialog from "./EditDialog";
 import { camelCaseToWords } from "./LabeledField";
 import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
-import questionnaireItemStyles from "../questionnaire/questionnaireItemStyles";
 
 const useStyles = makeStyles()(theme => ({
   root : {
@@ -95,7 +94,6 @@ const useStyles = makeStyles()(theme => ({
       paddingLeft: theme.spacing(7.5),
     },
   },
-  ...questionnaireItemStyles(theme),
 }));
 
 // General class or Sections and Questions
@@ -144,7 +142,7 @@ let QuestionnaireItemCard = (props) => {
     cardClasses.push(classes.collapsed);
   }
   if (highlight) {
-    cardClasses.push(classes.focusedQuestionnaireItem);
+    cardClasses.push("cards-focused");
   }
 
   let formattedType = camelCaseToWords(type);
