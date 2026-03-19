@@ -15,8 +15,10 @@
 
 response.setContentType('text/plain');
 
+var Calendar = java.util.Calendar;
+
 var getOneHourExpiry = function() {
-    var result = java.util.Calendar.getInstance();
+    var result = Calendar.getInstance();
     result.setTimeInMillis(result.getTimeInMillis() + (1000*60*60));
     return result;
 }
@@ -25,8 +27,13 @@ var getExpiryByDays = function(days) {
     if (days < 1) {
         return getOneHourExpiry();
     } else {
-        var result = java.util.Calendar.getInstance();
-        result.add(java.util.Calendar.DATE, days);
+        var result = Calendar.getInstance();
+        // Generate a new date at midnight
+        result.add(Calendar.DATE, days + 1);
+        result.set(Calendar.HOUR_OF_DAY, 0);
+        result.set(Calendar.MINUTE, 0);
+        result.set(Calendar.SECOND, 0);
+        result.set(Calendar.MILLISECOND, 0);
         return result;
     }
 }
@@ -63,16 +70,17 @@ if (daysParam !== null) {
         var visitInformationForm = time.getParent();
         if (time.hasProperty("value")) {
             // Calculate when a standard token for this visit would expire for a standard survey
-            result = time.getProperty("value").getDate();
-            var days = config.getDaysRelativeToEventWhileSurveyIsValid(visitInformationForm);
-            result.add(java.util.Calendar.DATE, days + 1);
-            result.set(java.util.Calendar.HOUR_OF_DAY, 0);
-            result.set(java.util.Calendar.MINUTE, 0);
-            result.set(java.util.Calendar.SECOND, 0);
-            result.set(java.util.Calendar.MILLISECOND, 0);
-            var now = java.util.Calendar.getInstance();
-            if (now.compareTo(result) >= 0) {
-                // The standard survey expiry time is in the past: Use the default manual expiry time instead of a survey based expiry time
+            var visitTime = time.getProperty("value").getDate();
+            var validDays = config.getDaysRelativeToEventWhileSurveyIsValid(visitInformationForm);
+            visitTime.add(Calendar.DATE, validDays + 1);
+            var diff = java.time.temporal.ChronoUnit.DAYS.between(Calendar.getInstance().toInstant(), visitTime.toInstant());
+            // Check if we are still within the standard visit expiry period
+            if (diff >= 1) {
+                // There is at least one day left in the standard visit expiry period:
+                // Generate a token with the standard visit expiry period
+                result = getExpiryByDays(diff);
+            } else {
+                // Generate a token with the non-visit based expiry period
                 result = getDefaultExpiryForVisit(config, visitInformationForm);
             }
         } else {
