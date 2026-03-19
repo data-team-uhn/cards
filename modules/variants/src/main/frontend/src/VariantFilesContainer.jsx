@@ -947,10 +947,10 @@ export default function VariantFilesContainer() {
               },
               { header: 'Uploaded By',
                 muiTableBodyCellProps: {
-                  sx: {
+                  sx: (theme) => ({
                     whiteSpace: 'pre-wrap',
-                    paddingBottom: "8px",
-                  }
+                    pb: theme.spacing(1),
+                  })
                 },
                 Cell: ({ row }) => row.original["jcr:createdBy"] }
             ]}
@@ -961,7 +961,7 @@ export default function VariantFilesContainer() {
                 muiTableHeadCellProps: { align: 'right' },
                 muiTableBodyCellProps: {
                   sx: {
-                    padding: '0',
+                    p: 0,
                     textAlign: 'right'
                   },
                 },
