@@ -34,7 +34,7 @@ import { withStyles } from 'tss-react/mui'
 
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import { checkPropTypes } from "../../propTypes";
-import userboardStyle from '../userboardStyle.jsx';
+import userboardStyles from '../userboardStyles.jsx';
 import CreateGroupDialog from "./CreateGroupDialog.jsx";
 import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
 import AddUserToGroupDialog from "./AddUserToGroupDialog.jsx";
@@ -317,4 +317,4 @@ GroupsManager.propTypes = {
   reload: PropTypes.func.isRequired
 }
 
-export default withStyles (GroupsManager, userboardStyle);
+export default withStyles (GroupsManager, userboardStyles);

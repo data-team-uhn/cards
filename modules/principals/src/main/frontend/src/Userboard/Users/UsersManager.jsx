@@ -27,7 +27,7 @@ import { withStyles } from 'tss-react/mui';
 
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import { checkPropTypes } from "../../propTypes";
-import userboardStyle from '../userboardStyle.jsx';
+import userboardStyles from '../userboardStyles.jsx';
 import CreateUserDialog from "./CreateUserDialog.jsx";
 import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
 import ChangeUserPasswordDialog from "./ChangeUserPasswordDialog.jsx";
@@ -191,4 +191,4 @@ UsersManager.propTypes = {
   reload: PropTypes.func.isRequired
 }
 
-export default withStyles(UsersManager, userboardStyle);
+export default withStyles(UsersManager, userboardStyles);

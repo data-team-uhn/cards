@@ -16,9 +16,9 @@ import {
   blackColor,
   grayColor,
   hexToRgb
-} from "../../themeStyle.jsx";
+} from "../../themeStyles.jsx";
 
-const dropdownStyle = theme => ({
+const dropdownStyles = theme => ({
   buttonLink: {
     [theme.breakpoints.down('lg')]: {
       display: "flex",
@@ -140,4 +140,4 @@ const dropdownStyle = theme => ({
   },
 });
 
-export default dropdownStyle;
+export default dropdownStyles;

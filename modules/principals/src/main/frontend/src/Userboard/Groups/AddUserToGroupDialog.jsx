@@ -33,7 +33,7 @@ import { withStyles } from 'tss-react/mui';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 import { checkPropTypes } from "../../propTypes";
-import userboardStyle from '../userboardStyle.jsx';
+import userboardStyles from '../userboardStyles.jsx';
 
 const GROUP_URL="/system/userManager/group/";
 
@@ -153,4 +153,4 @@ AddUserToGroupDialog.propTypes = {
   handleClose: PropTypes.func.isRequired
 }
 
-export default withStyles(AddUserToGroupDialog, userboardStyle);
+export default withStyles(AddUserToGroupDialog, userboardStyles);

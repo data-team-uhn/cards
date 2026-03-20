@@ -37,7 +37,7 @@ import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import QueryMatchingUtils from "./QueryMatchingUtils";
-import QueryStyle from "./queryStyle.jsx";
+import queryStyles from "./queryStyles.jsx";
 import FormattedText from "../components/FormattedText";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
@@ -565,4 +565,4 @@ ResourceQuery.propTypes = {
   formatSuggestionData: PropTypes.func,
 };
 
-export default withStyles(ResourceQuery, QueryStyle);
+export default withStyles(ResourceQuery, queryStyles);

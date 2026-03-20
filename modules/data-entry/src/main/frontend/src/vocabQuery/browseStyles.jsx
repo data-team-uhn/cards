@@ -17,10 +17,10 @@
 //  under the License.
 //
 
-import queryStyle from "../resourceQuery/queryStyle.jsx";
+import queryStyles from "../resourceQuery/queryStyles.jsx";
 
-const browseStyle = theme => ({
-  ...queryStyle(theme),
+const browseStyles = theme => ({
+  ...queryStyles(theme),
   infoPaper: {
     padding: theme.spacing(2),
   },
@@ -121,4 +121,4 @@ const browseStyle = theme => ({
   },
 });
 
-export default browseStyle;
+export default browseStyles;

@@ -36,7 +36,7 @@ import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import BrowseTheme from "./browseStyle";
+import browseStyles from "./browseStyles";
 
 // Component that renders a dialog with term info for a single vocabulary term.
 //
@@ -181,4 +181,4 @@ InfoBox.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default withStyles(InfoBox, BrowseTheme);
+export default withStyles(InfoBox, browseStyles);

@@ -17,7 +17,7 @@ import { NavLink, useLocation } from "react-router";
 import { withStyles } from 'tss-react/mui';
 
 import AppInfo from "./AppInfo.jsx";
-import sidebarStyle from "./sidebarStyle.jsx";
+import sidebarStyles from "./sidebarStyles.jsx";
 import { loadExtensions } from "../../uiextension/extensionManager";
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 
@@ -183,4 +183,4 @@ const Sidebar = ({ ...props }) => {
   );
 };
 
-export default withStyles(Sidebar, sidebarStyle);
+export default withStyles(Sidebar, sidebarStyles);

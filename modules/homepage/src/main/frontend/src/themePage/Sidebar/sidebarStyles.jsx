@@ -26,9 +26,9 @@ import {
   grayColor,
   blackColor,
   hexToRgb
-} from "../../themeStyle.jsx";
+} from "../../themeStyles.jsx";
 
-const sidebarStyle = theme => ({
+const sidebarStyles = theme => ({
   drawerPaper: {
     border: "none",
     position: "fixed",
@@ -418,4 +418,4 @@ const sidebarStyle = theme => ({
   },
 });
 
-export default sidebarStyle;
+export default sidebarStyles;

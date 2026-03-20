@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-const liveTableStyle = theme => ({
+const liveTableStyles = theme => ({
   tableHeader: {
     fontWeight: "300"
   },
@@ -69,4 +69,4 @@ const liveTableStyle = theme => ({
   },
 });
 
-export default liveTableStyle;
+export default liveTableStyles;

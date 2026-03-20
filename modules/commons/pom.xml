@@ -58,8 +58,8 @@
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <inputExcludes combine.children="append">
-            <exclude>**/headerStyle.jsx</exclude>
-            <exclude>**/themeStyle.jsx</exclude>
+            <exclude>**/headerStyles.jsx</exclude>
+            <exclude>**/themeStyles.jsx</exclude>
             <exclude>**/components/ComposedIcon.jsx</exclude>
           </inputExcludes>
         </configuration>

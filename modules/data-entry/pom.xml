@@ -65,8 +65,8 @@
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <inputExcludes combine.children="append">
-            <exclude>**/vocabQuery/queryStyle.jsx</exclude>
-            <exclude>**/vocabQuery/themeStyle.jsx</exclude>
+            <exclude>**/resourceQuery/queryStyles.jsx</exclude>
+            <exclude>**/vocabQuery/browseStyles.jsx</exclude>
           </inputExcludes>
         </configuration>
       </plugin>

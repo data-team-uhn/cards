@@ -18,7 +18,7 @@ import { withStyles } from 'tss-react/mui';
 
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
-import headerStyle from "../../headerStyle.jsx";
+import headerStyles from "../../headerStyles.jsx";
 import { checkPropTypes } from "../../propTypes";
 
 
@@ -55,4 +55,4 @@ Header.propTypes = {
   color: PropTypes.oneOf(["primary", "info", "success", "warning", "danger", "blue", "teal", "rose", "bronze", "red", "orange", "green", "purple"])
 };
 
-export default withStyles(Header, headerStyle);
+export default withStyles(Header, headerStyles);

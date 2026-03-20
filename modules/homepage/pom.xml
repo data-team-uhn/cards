@@ -72,7 +72,7 @@
             <exclude>**/Dashboard/**</exclude>
             <exclude>**/Navbars/**</exclude>
             <exclude>**/Sidebar/**</exclude>
-            <exclude>**/themePage/indexStyle.jsx</exclude>
+            <exclude>**/themePage/indexStyles.jsx</exclude>
           </inputExcludes>
         </configuration>
       </plugin>
