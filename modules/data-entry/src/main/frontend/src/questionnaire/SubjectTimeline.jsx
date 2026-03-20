@@ -364,18 +364,18 @@ function SubjectTimeline(props) {
   }, [subject]);
 
   if (!dateEntries) {
-    return <CircularProgress/>
+    return <CircularProgress className={classes.timelineLoading}/>
   }
 
   return ( dateEntries?.length ?
-    <div className={classes.timelineContainer}><Timeline position="alternate" className={classes.timeline}>
+    <Timeline position="alternate" className={classes.timeline}>
       {
         dateEntries.map((dateEntry, index) => {
           let nextEntry = (index + 1 < dateEntries.length) ? dateEntries[index + 1] : null;
           return TimelineEntry(classes, dateEntry, index, dateEntries.length, nextEntry);
         })
       }
-    </Timeline></div>
+    </Timeline>
     :
     <Typography color="textSecondary" variant="caption">No timeline data available</Typography>
   )
