@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-const queryStyle = theme => ({
+const queryStyles = theme => ({
   // The following ensures poppers are placed below the presentation (zIndex 1300)
   // but above everything else
   popperListOnTop: {
@@ -80,4 +80,4 @@ const queryStyle = theme => ({
   },
 });
 
-export default queryStyle;
+export default queryStyles;

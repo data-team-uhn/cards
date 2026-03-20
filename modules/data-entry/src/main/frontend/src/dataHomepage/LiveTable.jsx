@@ -42,7 +42,7 @@ import { Link } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
 import Filters from "./Filters.jsx";
-import LiveTableStyle from "./tableStyle.jsx";
+import liveTableStyles from "./tableStyles.jsx";
 import DateTimeUtilities from "../components/DateTimeUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
@@ -477,4 +477,4 @@ function LiveTable(props) {
   );
 }
 
-export default withStyles(LiveTable, LiveTableStyle);
+export default withStyles(LiveTable, liveTableStyles);

@@ -16,9 +16,9 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { blackColor, grayColor } from "../themeStyle.jsx"
+import { blackColor, grayColor } from "../themeStyles.jsx"
 
-const clinicStyle = theme => ({
+const clinicStyles = theme => ({
   listButton: {
     color: grayColor[3]
   },
@@ -32,4 +32,4 @@ const clinicStyle = theme => ({
   }
 });
 
-export default clinicStyle;
+export default clinicStyles;

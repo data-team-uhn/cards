@@ -27,7 +27,7 @@ import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import BrowseTheme from "./browseStyle";
+import browseStyles from "./browseStyles";
 import { MakeRequest } from "./util.jsx";
 import { VALUE_POS } from "../questionnaire/Answer";
 
@@ -355,4 +355,4 @@ VocabularyBranch.propTypes = {
   parentId: PropTypes.string,
 };
 
-export default withStyles(VocabularyBranch, BrowseTheme);
+export default withStyles(VocabularyBranch, browseStyles);
