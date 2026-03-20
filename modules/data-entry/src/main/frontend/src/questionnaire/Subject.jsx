@@ -169,7 +169,6 @@ function Subject(props) {
                 />
                 : <Grid>
                   <SubjectTimeline
-                    classes={classes}
                     subject={currentSubject}
                   />
                 </Grid> }

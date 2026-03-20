@@ -22,8 +22,9 @@ const subjectTimelineStyles = theme => ({
     maxWidth: "1000px",
     margin: "auto"
   },
-  timelineContainer: {
-    alignItems: "center",
+  timelineLoading: {
+    display: "flex",
+    margin: "auto",
   },
   timelineContent: {
     padding: theme.spacing(1,3,3),
