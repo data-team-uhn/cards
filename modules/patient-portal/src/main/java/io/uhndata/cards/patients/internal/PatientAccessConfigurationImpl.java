@@ -62,6 +62,9 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     /** Property on config node for the number of days draft responses from patients are kept. */
     private static final String DRAFT_LIFETIME_PROP = "draftLifetime";
 
+    /** Default property on config node for the number of days a manually created token is valid for. */
+    private static final String MANUAL_TOKEN_LIFETIME_PROP = "manualTokenLifespanDays";
+
     /** Whether or not tokenless auth is enabled by default (used in case of errors). */
     private static final Boolean TOKENLESS_AUTH_ENABLED_DEFAULT = false;
 
@@ -73,6 +76,9 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
 
     /** The number of days a patient's draft response is kept for by default (used in case of errors). */
     private static final int DRAFT_LIFETIME_DEFAULT = -1;
+
+    /** The number of days a manually created token is valid for by default (used in case of errors). */
+    private static final int MANUAL_TOKEN_LIFETIME_DEFAULT = 0;
 
     @Reference
     private FormUtils formUtils;
@@ -131,21 +137,30 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     @Override
     public int getDaysRelativeToEventWhileSurveyIsValid()
     {
+        return getTokenLifespan(DEFAULT_TOKEN_LIFETIME_PROP, TOKEN_LIFETIME_DEFAULT);
+    }
+
+    private int getTokenLifespan(String prop, int defaultValue)
+    {
         try
         {
-            Property lifetime = getConfig(DEFAULT_TOKEN_LIFETIME_PROP);
-            return lifetime == null ? TOKEN_LIFETIME_DEFAULT : (int) lifetime.getLong();
+            Property lifetime = getConfig(prop);
+            return lifetime == null ? defaultValue : (int) lifetime.getLong();
         } catch (RepositoryException e) {
-            return TOKEN_LIFETIME_DEFAULT;
+            return defaultValue;
         }
     }
 
     @Override
     public int getDaysRelativeToEventWhileSurveyIsValid(Node visitInformationNode)
     {
+        return getClinicDaysRelativeToEventWhileSurveyIsValid(getClinicNode(visitInformationNode));
+    }
+
+    private Node getClinicNode(Node visitInformationNode)
+    {
         Node visitSubject = this.formUtils.getSubject(visitInformationNode, "/SubjectTypes/Patient/Visit");
-        Node clinicNode = AppointmentUtils.getValidClinicNode(this.formUtils, visitSubject);
-        return getClinicDaysRelativeToEventWhileSurveyIsValid(clinicNode);
+        return AppointmentUtils.getValidClinicNode(this.formUtils, visitSubject);
     }
 
     @Override
@@ -157,7 +172,7 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
                 return (int) clinicNode.getProperty(TOKEN_LIFETIME_PROP).getLong();
             }
         } catch (RepositoryException e) {
-            // TODO Auto-generated catch block
+            // Fallback to default
         }
         return getDaysRelativeToEventWhileSurveyIsValid();
     }
@@ -173,5 +188,30 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
         } catch (RepositoryException e) {
             return DRAFT_LIFETIME_DEFAULT;
         }
+    }
+
+    @Override
+    public int getManualTokenLifespanDays()
+    {
+        return getTokenLifespan(MANUAL_TOKEN_LIFETIME_PROP, MANUAL_TOKEN_LIFETIME_DEFAULT);
+    }
+
+    @Override
+    public int getManualTokenLifespanDays(Node visitInformationNode)
+    {
+        return getClinicManualTokenLifespanDays(getClinicNode(visitInformationNode));
+    }
+
+    @Override
+    public int getClinicManualTokenLifespanDays(Node clinicNode)
+    {
+        try {
+            if (clinicNode != null && clinicNode.hasProperty(MANUAL_TOKEN_LIFETIME_PROP)) {
+                return (int) clinicNode.getProperty(MANUAL_TOKEN_LIFETIME_PROP).getLong();
+            }
+        } catch (RepositoryException e) {
+            // Fallback to default
+        }
+        return getManualTokenLifespanDays();
     }
 }

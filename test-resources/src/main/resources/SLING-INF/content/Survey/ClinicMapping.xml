@@ -96,5 +96,10 @@
             <value>Date Test</value>
             <type>String</type>
         </property>
+        <property>
+            <name>manualTokenLifespanDays</name>
+            <value>14</value>
+            <type>Long</type>
+        </property>
     </node>
 </node>

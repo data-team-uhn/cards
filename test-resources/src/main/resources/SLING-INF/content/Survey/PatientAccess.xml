@@ -34,4 +34,9 @@
         <value>30</value>
         <type>Long</type>
     </property>
+    <property>
+        <name>manualTokenLifespanDays</name>
+        <value>7</value>
+        <type>Long</type>
+    </property>
 </node>
