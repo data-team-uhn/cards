@@ -22,6 +22,9 @@ const subjectTimelineStyles = theme => ({
     maxWidth: "1000px",
     margin: "auto"
   },
+  timelineContent: {
+    padding: theme.spacing(1,3,3),
+  },
   timelinePaper: {
     padding: theme.spacing(1, 2),
   },

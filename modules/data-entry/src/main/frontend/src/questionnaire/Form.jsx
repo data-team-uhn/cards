@@ -742,7 +742,7 @@ function Form (props) {
           />}
         </Grid>
         { !paginationEnabled && !disableButton &&
-        <Grid size="auto" sx={theme => ({ minHeight: theme.spacing(8) })}>
+        <Grid size="auto" className={classes.formBottom}>
           <div>
             { isEdit &&
               <MainActionButton

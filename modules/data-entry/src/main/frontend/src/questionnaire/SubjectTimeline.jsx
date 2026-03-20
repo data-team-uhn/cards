@@ -120,7 +120,7 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
   }
 
   return <TimelineItem key={index}>
-    <TimelineOppositeContent sx={{ p: 3, pt: 1 }}>
+    <TimelineOppositeContent className={classes.timelineContent}>
       <Typography color="textSecondary" className={classes.timelineDate}>{dateText}</Typography>
     </TimelineOppositeContent>
     <TimelineSeparator className={separatorClasses.join(",")}>
@@ -137,7 +137,7 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
         : null
       }
     </TimelineSeparator>
-    <TimelineContent sx={{ p: 3, pt: 1 }}>
+    <TimelineContent className={classes.timelineContent}>
       <Paper elevation={3} className={paperClasses.join(" ")}>
         {dateEntry.questions.map((question, index) => {
           return DateAnswerDisplay(classes, question, index, dateEntry.questions.length, dateEntry.level)
