@@ -20,7 +20,7 @@ import { Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
-import HeaderStyle from "../headerStyle.jsx";
+import headerStyles from "../headerStyles.jsx";
 import { QuickSearchMatch, QuickSearchIdentifier } from "./Navbars/QuickSearchIdentifier.jsx";
 
 
@@ -77,5 +77,5 @@ function QuickSearchResults(props) {
   );
 }
 
-export default withStyles(QuickSearchResults, HeaderStyle);
+export default withStyles(QuickSearchResults, headerStyles);
 

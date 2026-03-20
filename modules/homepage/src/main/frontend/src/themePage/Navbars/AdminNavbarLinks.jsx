@@ -41,7 +41,7 @@ import { checkPropTypes } from "../../propTypes";
 import SearchBar from "../../SearchBar.jsx"; // In the commons module
 import { appTheme } from "../../themePalette.jsx";
 import ChangeUserPasswordDialog from "../../Userboard/Users/ChangeUserPasswordDialog.jsx";
-import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
+import sidebarStyles from "../Sidebar/sidebarStyles.jsx";
 
 function HeaderLinks (props) {
   checkPropTypes(HeaderLinks, props);
@@ -212,4 +212,4 @@ HeaderLinks.propTypes = {
   closeSidebar: PropTypes.func
 }
 
-export default withStyles(HeaderLinks, sidebarStyle);
+export default withStyles(HeaderLinks, sidebarStyles);

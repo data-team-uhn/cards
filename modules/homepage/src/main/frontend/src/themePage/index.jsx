@@ -29,7 +29,7 @@ import { withStyles } from 'tss-react/mui';
 import PageStart from "../PageStart";
 import { getRoutes } from '../routes';
 import { appTheme } from "../themePalette.jsx";
-import IndexStyle from "./indexStyle.jsx";
+import appStyles from "./indexStyles.jsx";
 import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
 import Sidebar from "./Sidebar/Sidebar.jsx"
@@ -161,7 +161,7 @@ function Main(props) {
   );
 }
 
-const MainComponent = withStyles(Main, IndexStyle);
+const MainComponent = withStyles(Main, appStyles);
 
 const router = createBrowserRouter([
   {

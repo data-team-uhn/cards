@@ -50,7 +50,7 @@
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <inputExcludes combine.children="append">
-            <exclude>**/Userboard/themeStyle.jsx</exclude>
+            <exclude>**/Userboard/themeStyles.jsx</exclude>
           </inputExcludes>
         </configuration>
       </plugin>

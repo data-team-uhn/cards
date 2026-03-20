@@ -36,7 +36,7 @@ import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router";
 import { withStyles } from 'tss-react/mui';
 
-import HeaderStyle from "./headerStyle.jsx";
+import headerStyles from "./headerStyles.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 import { checkPropTypes } from "./propTypes";
 import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
@@ -364,4 +364,4 @@ SearchBar.propTypes = {
   disableButton: PropTypes.bool,
 }
 
-export default withStyles(SearchBar, HeaderStyle);
+export default withStyles(SearchBar, headerStyles);

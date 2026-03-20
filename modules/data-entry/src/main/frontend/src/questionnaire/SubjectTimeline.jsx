@@ -42,7 +42,7 @@ import { withStyles } from 'tss-react/mui';
 
 import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
 import { displayQuestion } from "./Subject.jsx";
-import subjectTimelineStyles from "./subjectTimelineStyle.jsx";
+import subjectTimelineStyles from "./subjectTimelineStyles.jsx";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { checkPropTypes } from "../propTypes";

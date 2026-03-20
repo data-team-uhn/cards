@@ -103,21 +103,20 @@ Enter the path to the OSGi module that will provide this ExtensionPoint: ./modul
 Available JSX files
 -------------------
 	--> ./modules/homepage/src/main/frontend/src/themePage/QuickSearchResults.jsx
-	--> ./modules/homepage/src/main/frontend/src/themePage/indexStyle.jsx
+	--> ./modules/homepage/src/main/frontend/src/themePage/indexStyles.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Page.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/QuickSearchConfiguration.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/index.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/EntityIdentifier.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/PageStart/PageStart.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Sidebar/sidebar.jsx
-	--> ./modules/homepage/src/main/frontend/src/themePage/Sidebar/sidebarStyle.jsx
+	--> ./modules/homepage/src/main/frontend/src/themePage/Sidebar/sidebarStyles.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Sidebar/AppInfo.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/AdminNavbarLinks.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/QuickSearchIdentifier.jsx
-	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/dropdownStyle.jsx
+	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/dropdownStyles.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/Navbar.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/HeaderSearchBar.jsx
-	--> ./modules/homepage/src/main/frontend/src/adminDashboard/AdminDashboardStyle.jsx
 	--> ./modules/homepage/src/main/frontend/src/adminDashboard/AdminDashboard.jsx
 Enter the JSX file to add this ExtensionPoint to: ./modules/homepage/src/main/frontend/src/themePage/index.jsx
 To use this UI ExtensionPoint:
