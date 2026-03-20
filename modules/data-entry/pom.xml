@@ -58,18 +58,6 @@
           </instructions>
         </configuration>
       </plugin>
-
-      <!-- Reconfigure to ignore theme files from material-dashboard-react, as they're under their own license -->
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <inputExcludes combine.children="append">
-            <exclude>**/resourceQuery/queryStyles.jsx</exclude>
-            <exclude>**/vocabQuery/browseStyles.jsx</exclude>
-          </inputExcludes>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
