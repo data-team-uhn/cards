@@ -44,16 +44,6 @@
           </instructions>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <inputExcludes combine.children="append">
-            <exclude>**/Userboard/themeStyles.jsx</exclude>
-          </inputExcludes>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
