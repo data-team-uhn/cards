@@ -765,7 +765,7 @@ function FormData(props) {
   }
   // Handle questions and sections differently
   let handleDisplayQuestion = (entryDefinition, data, key) => {
-    let result = displayQuestion(entryDefinition, data, key, classes);
+    let result = displayQuestion(entryDefinition, data, key);
     if (result && displayed < maxDisplayed) {
       displayed++;
     } else {
@@ -790,7 +790,7 @@ function FormData(props) {
 }
 
 // Display the questions/question found within sections
-export function displayQuestion(entryDefinition, data, key, classes) {
+export function displayQuestion(entryDefinition, data, key) {
   const existingQuestionAnswer = data && Object.entries(data)
     .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
       && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
@@ -817,6 +817,14 @@ export function displayQuestion(entryDefinition, data, key, classes) {
             return (
               <Tooltip key={answerValue} title={"Download " + answerValue}>
                 <Chip
+                  sx={{
+                    m: 0, mr: 1, mb: 2,
+                    "& .MuiChip-iconSmall": { ml: 0.75 },
+                    "& a" : {
+                      color: "inherit",
+                      textDecoration: "none",
+                    },
+                  }}
                   icon={<FileIcon />}
                   label={<a href={path} target="_blank" rel="noreferrer" download={answerValue}>{answerValue}</a>}
                   color="primary"
@@ -860,10 +868,15 @@ export function displayQuestion(entryDefinition, data, key, classes) {
     }
     return (
       isHidden ? null :
-        <Typography variant="body2" component="div" className={classes.formPreviewQuestion} key={key}>
+        <Typography
+          variant="body2"
+          component="div"
+          sx={{ display: "flex" }}
+          key={key}
+        >
           {questionTitle}
           <Box component="span" sx={{ my: 0, mx: 1.5 }}>–</Box>
-          <div className={classes.formPreviewAnswer}>{content}</div>
+          <Box sx={{ fontWeight: 200 }}>{content}</Box>
         </Typography>
     );
   }
