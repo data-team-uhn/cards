@@ -609,7 +609,7 @@ function MultipleChoice(props) {
                           }}
                           onClick={() => inputElRef.current?.select()}
                           disabled={!ghostSelected && disabled}
-                          sx={{ m: 0, mb: -5 }}
+                          className={classes.ghostRadiobox}
                         />
                       }
                       label="&nbsp;"
@@ -742,14 +742,14 @@ function ResponseChild(props) {
                       <Radio
                         color="secondary"
                         disabled={!checked && disabled}
-                        sx={{ my: -2, mx: 0 }}
+                        className={classes.checkbox}
                       />
                     ) :
                     (
                       <Checkbox
                         checked={checked}
                         disabled={!checked && disabled}
-                        sx={{ my: -2, mx: 0 }}
+                        className={classes.checkbox}
                         color="secondary"
                       />
                     )

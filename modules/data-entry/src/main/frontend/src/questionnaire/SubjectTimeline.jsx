@@ -29,7 +29,6 @@ import {
   TimelineOppositeContent
 } from "@mui/lab";
 import {
-  Box,
   CircularProgress,
   Link,
   Paper,
@@ -369,14 +368,14 @@ function SubjectTimeline(props) {
   }
 
   return ( dateEntries?.length ?
-    <Box sx={{ alignItems: "center" }}><Timeline position="alternate" className={classes.timeline}>
+    <div className={classes.timelineContainer}><Timeline position="alternate" className={classes.timeline}>
       {
         dateEntries.map((dateEntry, index) => {
           let nextEntry = (index + 1 < dateEntries.length) ? dateEntries[index + 1] : null;
           return TimelineEntry(classes, dateEntry, index, dateEntries.length, nextEntry);
         })
       }
-    </Timeline></Box>
+    </Timeline></div>
     :
     <Typography color="textSecondary" variant="caption">No timeline data available</Typography>
   )

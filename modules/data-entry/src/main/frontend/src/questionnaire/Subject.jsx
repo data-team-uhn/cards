@@ -582,10 +582,10 @@ function SubjectMemberInternal (props) {
                   }
                 }}
                 muiDetailPanelProps={{
-                  sx: (theme) => ({
-                    ml: theme.spacing(9),
+                  sx: {
+                    ml: 9,
                     width: '100%'
-                  })
+                  }
                 }}
                 renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
                 defaultColumn={{
@@ -597,10 +597,10 @@ function SubjectMemberInternal (props) {
                     id: 'Actions',
                     size: 80,
                     muiTableBodyCellProps: {
-                      sx: (theme) => ({
-                        pr: theme.spacing(2),
+                      sx: {
+                        pr: 2,
                         flex: '0 0 auto',
-                      }),
+                      },
                     },
                   },
                   'mrt-row-expand': {
@@ -608,13 +608,13 @@ function SubjectMemberInternal (props) {
                     minSize: 40,
                     maxSize: 40,
                     muiTableBodyCellProps: {
-                      sx: (theme) => ({
+                      sx: {
                         pr: 0,
-                        pl: theme.spacing(0.25),
-                        pt: theme.spacing(0.5),
+                        pl: 0.25,
+                        pt: 0.5,
                         flex: '0 0 auto',
                         alignItems: 'start'
-                      }),
+                      },
                     },
                   },
                 }}
@@ -625,7 +625,7 @@ function SubjectMemberInternal (props) {
                       sx: {
                         pl: 0,
                         fontWeight: "bold",
-                        pt: "10px",
+                        pt: 1.25,
                         whiteSpace: 'nowrap',
                       },
                     },
