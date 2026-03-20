@@ -80,6 +80,12 @@ const multipleChoiceStyles = theme => ({
     flexBasis: "100%",
     paddingLeft: theme.spacing(4)
   },
+  checkbox: {
+    margin: theme.spacing(-2,0),
+  },
+  ghostRadiobox: {
+    margin: theme.spacing(0,0,-5,0),
+  },
 });
 
 export default multipleChoiceStyles;

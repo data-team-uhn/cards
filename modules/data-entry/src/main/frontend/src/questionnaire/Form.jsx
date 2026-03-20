@@ -623,7 +623,7 @@ function Form (props) {
             }
             {
               wasCheckedOut ?
-                <Typography variant="overline" sx={{ color: 'warning.main' }}>Another user is editing</Typography>
+                <Typography variant="overline" color="warning">Another user is editing</Typography>
                 : ""
             }
             {
