@@ -142,7 +142,7 @@ function Visit(props) {
               });
           }
         }
-        selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
+        selectDataForQuestionnaireSet(questionnaires, questionnaireSetIds);
       })
       .catch(() => setError("The survey data could not be loaded for this visit. Please try again later or contact the administrator for further assistance."));
   }
