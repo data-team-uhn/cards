@@ -81,22 +81,6 @@ const subjectStyles = theme => ({
     padding: theme.spacing(1),
     background: theme.palette.action.hover,
   },
-  formPreviewQuestion: {
-    display: "flex",
-  },
-  formPreviewAnswer: {
-    fontWeight: 200,
-    "& .MuiChip-root" : {
-      margin: "0 0.5em 0.5em 0",
-      "& .MuiChip-iconSmall": {
-        marginLeft: "6px",
-      },
-      "& a" : {
-        color: "inherit",
-        textDecoration: "none",
-      },
-    },
-  },
 });
 
 export default subjectStyles;
