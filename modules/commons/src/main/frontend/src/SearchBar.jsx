@@ -343,15 +343,18 @@ let defaultQueryConstructor = (query, requestID, showTotalRows, allowedResourceT
   return new_url;
 }
 
-let defaultResultConstructor = (props) => (
-  <>
-    <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
-    <ListItemText
-      primary={(props.resultData["jcr:uuid"])}
-      className={classes.dropdownItem}
-    />
-  </>
-);
+let defaultResultConstructor = (props) => {
+  const { classes, resultData } = props;
+  return (
+    <>
+      <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
+      <ListItemText
+        primary={resultData["jcr:uuid"]}
+        className={classes.dropdownItem}
+      />
+    </>
+  );
+};
 
 SearchBar.propTypes = {
   invertColors: PropTypes.bool,
