@@ -24,7 +24,7 @@ import { Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from 
 import { DialogActions, DialogContent, Grid, Select, MenuItem, TextField } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 
-import LiveTableStyle from "./tableStyle.jsx";
+import liveTableStyles from "./tableStyles.jsx";
 import VariableAutocomplete from "./VariableAutocomplete";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
@@ -488,4 +488,4 @@ function Filters(props) {
   );
 }
 
-export default withStyles(Filters, LiveTableStyle);
+export default withStyles(Filters, liveTableStyles);

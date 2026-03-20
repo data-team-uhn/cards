@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import userboardStyle from './userboardStyle.jsx';
+import userboardStyles from './userboardStyles.jsx';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 function DeletePrincipalDialog(props) {
@@ -83,4 +83,4 @@ DeletePrincipalDialog.propTypes = {
   type: PropTypes.string.isRequired
 }
 
-export default withStyles(DeletePrincipalDialog, userboardStyle);
+export default withStyles(DeletePrincipalDialog, userboardStyles);

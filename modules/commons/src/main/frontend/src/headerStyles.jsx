@@ -20,9 +20,9 @@ import {
   whiteColor,
   grayColor,
   hexToRgb
-} from "./themeStyle.jsx";
+} from "./themeStyles.jsx";
 
-const headerStyle = theme => ({
+const headerStyles = theme => ({
   appBar: {
     backgroundColor: "transparent",
     boxShadow: "none",
@@ -131,4 +131,4 @@ const headerStyle = theme => ({
   },
 });
 
-export default headerStyle;
+export default headerStyles;

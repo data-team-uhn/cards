@@ -33,7 +33,7 @@ import { withStyles } from 'tss-react/mui';
 
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import { checkPropTypes } from "../propTypes";
-import BrowseTheme from "./browseStyle";
+import browseStyles from "./browseStyles";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import VocabularyBranch from "./VocabularyBranch.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
@@ -332,4 +332,4 @@ VocabularyTree.propTypes = {
   questionDefinition: PropTypes.object,
 };
 
-export default withStyles(VocabularyTree, BrowseTheme);
+export default withStyles(VocabularyTree, browseStyles);

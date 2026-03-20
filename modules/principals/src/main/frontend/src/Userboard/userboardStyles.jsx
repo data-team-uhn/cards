@@ -17,7 +17,7 @@
 
 // Taken from https://www.creative-tim.com/product/material-dashboard-react
 
-const userboardStyle = theme => ({
+const userboardStyles = theme => ({
   root: {
     "& .MuiPaper-root" : {
       backgroundColor: "transparent",
@@ -44,4 +44,4 @@ const userboardStyle = theme => ({
   }
 });
 
-export default userboardStyle;
+export default userboardStyles;

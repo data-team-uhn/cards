@@ -12,9 +12,9 @@
 import {
   drawerWidth,
   transition
-} from "../themeStyle.jsx";
+} from "../themeStyles.jsx";
 
-const appStyle = theme => ({
+const appStyles = theme => ({
   wrapper: {
     position: "relative",
     top: "0"
@@ -42,4 +42,4 @@ const appStyle = theme => ({
   }
 });
 
-export default appStyle;
+export default appStyles;
