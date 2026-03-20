@@ -215,7 +215,7 @@ function LiveTable(props) {
 
   let makeRow = (entry, i) => {
     return (
-      <TableRow key={entry["@path"] + i} sx={{ height: "3em" }}>
+      <TableRow key={entry["@path"] + i} className={classes.dataRow}>
         { columns ?
           (
             columns.map((column, index) => makeCell(entry, column, index))

@@ -64,6 +64,9 @@ const liveTableStyle = theme => ({
       marginBottom: theme.spacing(0.5),
     }
   },
+  dataRow: {
+    height: "3em"
+  },
 });
 
 export default liveTableStyle;

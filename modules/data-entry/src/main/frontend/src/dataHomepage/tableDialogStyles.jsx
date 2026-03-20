@@ -34,6 +34,9 @@ const tableDialogStyles = theme => ({
       paddingBottom: 0,
     },
   },
+  createNewSubjectButton: {
+    marginRight: 'auto',
+  },
 });
 
 export default tableDialogStyles;

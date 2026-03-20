@@ -479,7 +479,7 @@ function NewFormDialog(props) {
               variant="contained"
               color="success"
               onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
-              sx={{ mr: 'auto' }}
+              className={classes.createNewSubjectButton}
             >
               New subject
             </Button>

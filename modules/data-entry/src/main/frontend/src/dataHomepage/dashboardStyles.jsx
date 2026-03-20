@@ -20,6 +20,9 @@
 import tableDialogStyles from "./tableDialogStyles.jsx";
 
 const dashboardStyles = theme => ({
+  formBottom: {
+    minHeight: theme.spacing(8),
+  },
   dashboardContainer: {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(6),

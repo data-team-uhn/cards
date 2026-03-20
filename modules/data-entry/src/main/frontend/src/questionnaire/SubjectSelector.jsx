@@ -407,7 +407,7 @@ function UnstyledSelectParentDialog (props) {
             variant="contained"
             color="success"
             onClick={onCreateParent}
-            sx={{ mr: 'auto' }}
+            className={classes.createNewSubjectButton}
           >
             New subject
           </Button>
@@ -862,7 +862,7 @@ function UnstyledSelectorDialog (props) {
           color="success"
           disabled={disabled_controls}
           onClick={() => setNewSubjectPopperOpen(true)}
-          sx={{ mr: 'auto' }}
+          className={classes.createNewSubjectButton}
         >
           New subject
         </Button>
