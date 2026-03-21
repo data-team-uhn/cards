@@ -17,10 +17,7 @@
 //  under the License.
 //
 
-import inputStyles from "./inputStyles.jsx";
-
 const multipleChoiceStyles = theme => ({
-  ...inputStyles(theme),
   ghostListItem: {
     paddingTop: 0,
     alignItems: "flex-start",

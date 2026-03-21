@@ -18,12 +18,10 @@
 //
 
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import inputStyles from "../../questionnaire/inputStyles.jsx";
 import ResourceQuery from "../../resourceQuery/ResourceQuery.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
@@ -39,11 +37,12 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  */
 const ResourceFilter = (props, ref) => {
   checkPropTypes(ResourceFilter, props);
-  const { classes, initial, onChangeInput, questionDefinition } = props;
+  const { initial, onChangeInput, questionDefinition } = props;
   const enableUserEntry = !!!questionDefinition?.displayMode || questionDefinition?.displayMode?.includes("input");
 
   return (
     <ResourceQuery
+      fullWidth
       onClick={(id, name) => onChangeInput(id, name)}
       onChange={(event) => event.target.value == "" && onChangeInput("", "")}
       clearOnClick={false}
@@ -53,7 +52,6 @@ const ResourceFilter = (props, ref) => {
       inputRef={ref}
       value={initial?.label}
       enableUserEntry={enableUserEntry}
-      className={classes.answerField}
     />
   )
 };
@@ -72,12 +70,10 @@ ResourceFilter.propTypes = {
   })
 }
 
-const StyledResourceFilter = withStyles(ResourceFilter, inputStyles);
-
-export default StyledResourceFilter;
+export default ResourceFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "resource") {
-    return [COMPARATORS, StyledResourceFilter, 70];
+    return [COMPARATORS, ResourceFilter, 70];
   }
 });

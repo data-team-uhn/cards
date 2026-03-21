@@ -445,7 +445,7 @@ function Filters(props) {
                         getCachedInput(filterDatum, index,
                           (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         :
-                        <TextField variant="standard" disabled className={classes.answerField}></TextField>
+                        <TextField variant="standard" disabled fullWidth></TextField>
                       }
                     </Grid>}
                   {/* Deletion button */}

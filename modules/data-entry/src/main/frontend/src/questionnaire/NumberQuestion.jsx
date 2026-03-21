@@ -22,19 +22,19 @@ import { useState, useEffect } from "react";
 import {
   InputAdornment,
   Slider,
+  Stack,
   TextField,
   Typography
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { NumericFormat } from 'react-number-format';
-import { makeStyles, withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import AnswerInstructions from "./AnswerInstructions";
 import { useFormReaderContext } from "./FormContext";
-import inputStyles from "./inputStyles";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import FormattedText from "../components/FormattedText";
@@ -129,7 +129,7 @@ const useSliderStyles = makeStyles()(theme => ({
 //    />
 function NumberQuestion(props) {
   checkPropTypes(NumberQuestion, props);
-  const { existingAnswer, errorText = "", classes, pageActive, disableValueInstructions, ...rest } = props;
+  const { existingAnswer, errorText = "", pageActive, disableValueInstructions, ...rest } = props;
   const {
     dataType,
     displayMode,
@@ -433,9 +433,14 @@ function NumberQuestion(props) {
               onChange: (event, value) => { setValue(setLowerLimit, value[0]); setValue(setUpperLimit, value[1]); }
             })
             :
-            <div className={classes.range}>
+            <Stack
+              direction="row"
+              spacing={1}
+              useFlexGap
+              className="cards-answerRange"
+              sx={{ '& > .MuiTextField-root': { maxWidth: "110px" } }}
+            >
               <TextField
-                className="numberRangeLimit"
                 variant="standard"
                 helperText="Lower limit"
                 value={lowerLimit}
@@ -453,9 +458,8 @@ function NumberQuestion(props) {
                   },
                 }}
               />
-              <span className="separator">&mdash;</span>
+              <span>&mdash;</span>
               <TextField
-                className="numberRangeLimit"
                 variant="standard"
                 helperText="Upper limit"
                 value={upperLimit}
@@ -473,7 +477,7 @@ function NumberQuestion(props) {
                   },
                 }}
               />
-            </div>)
+            </Stack>)
           }
           <Answer
             answers={answers}
@@ -578,11 +582,10 @@ NumberQuestion.propTypes = {
   isRange: PropTypes.bool,
 };
 
-const StyledNumberQuestion = withStyles(NumberQuestion, inputStyles);
-export default StyledNumberQuestion;
+export default NumberQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (["long", "double", "decimal"].includes(questionDefinition.dataType)) {
-    return [StyledNumberQuestion, 50];
+    return [NumberQuestion, 50];
   }
 });

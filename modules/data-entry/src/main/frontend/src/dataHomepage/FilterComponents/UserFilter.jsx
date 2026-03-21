@@ -63,6 +63,7 @@ const UserFilter = (props, ref) => {
 
   return (
     <Autocomplete
+      fullWidth
       value={selection && users?.find(item => item.name == selection) || null}
       filterOptions={filterUserOptions}
       onChange={(event, value) => {
