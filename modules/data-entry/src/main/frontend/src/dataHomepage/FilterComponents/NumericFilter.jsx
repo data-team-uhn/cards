@@ -19,12 +19,10 @@
 
 import { TextField } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import inputStyles from "../../questionnaire/inputStyles.jsx";
 import { NumberFormatCustom } from "../../questionnaire/NumberQuestion";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
@@ -40,15 +38,14 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  */
 const NumericFilter = (props, ref) => {
   checkPropTypes(NumericFilter, props);
-  const { classes, initial, onChangeInput, questionDefinition } = props;
+  const { initial, onChangeInput, questionDefinition } = props;
   return (
     <TextField
       variant="standard"
-      className={classes.answerField}
+      fullWidth
       slotProps={{
         input: {
           inputComponent: NumberFormatCustom, // Used to override a TextField's type
-          className: classes.answerField
         },
         inputLabel: {
           shrink: true,
@@ -77,12 +74,10 @@ NumericFilter.propTypes = {
   })
 }
 
-const StyledNumericFilter = withStyles(NumericFilter, inputStyles);
-
-export default StyledNumericFilter;
+export default NumericFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType == 'decimal' || questionDefinition.dataType == 'double' || questionDefinition.dataType == 'long') {
-    return [COMPARATORS, StyledNumericFilter, 50];
+    return [COMPARATORS, NumericFilter, 50];
   }
 });

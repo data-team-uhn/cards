@@ -23,12 +23,10 @@ import { TextField } from "@mui/material";
 import GlobalStyles from '@mui/material/GlobalStyles';
 import PropTypes from "prop-types";
 import { usePlacesWidget } from "react-google-autocomplete";
-import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import inputStyles from "./inputStyles";
 import Question from "./Question";
 import StyledTextQuestion from "./TextQuestion";
 
@@ -95,7 +93,7 @@ const inputGlobalStyles = <GlobalStyles
 //   />
 function AddressQuestion(props) {
   checkPropTypes(AddressQuestion, props);
-  const { existingAnswer, classes, pageActive, questionDefinition, ...rest } = props;
+  const { existingAnswer, pageActive, questionDefinition, ...rest } = props;
 
   let currentStartValue = existingAnswer && existingAnswer[1].value || "";
   const [address, setAddress] = useState(currentStartValue);
@@ -145,7 +143,7 @@ function AddressQuestion(props) {
     >
       {inputGlobalStyles}
       <TextField
-        className={classes.textField}
+        className="cards-answerTextField"
         multiline
         maxRows={4}
         variant="standard"
@@ -172,12 +170,10 @@ AddressQuestion.propTypes = {
   }).isRequired,
 };
 
-
-const StyledAddressQuestion = withStyles(AddressQuestion, inputStyles);
-export default StyledAddressQuestion;
+export default AddressQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "address" && googleApiKey) {
-    return [StyledAddressQuestion, 50];
+    return [AddressQuestion, 50];
   }
 });

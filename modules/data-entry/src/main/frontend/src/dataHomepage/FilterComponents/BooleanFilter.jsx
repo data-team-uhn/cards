@@ -21,12 +21,10 @@ import { useState } from "react";
 
 import { Select, MenuItem } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import inputStyles from "../../questionnaire/inputStyles.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
@@ -40,7 +38,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  */
 const BooleanFilter = (props, ref) => {
   checkPropTypes(BooleanFilter, props);
-  const { classes, initial, onChangeInput } = props;
+  const { initial, onChangeInput } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");
 
@@ -55,12 +53,12 @@ const BooleanFilter = (props, ref) => {
   return (
     <Select
       variant="standard"
+      fullWidth
       value={selection}
       onChange={(event, el) => {
         setSelection(event.target.value);
         onChangeInput(event.target.value, el.props["data-label"]);
       }}
-      className={classes.answerField}
       ref={ref}
     >
       { options.map( (answer) => {
@@ -82,12 +80,10 @@ BooleanFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledBooleanFilter = withStyles(BooleanFilter, inputStyles);
-
-export default StyledBooleanFilter;
+export default BooleanFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "boolean") {
-    return [COMPARATORS, StyledBooleanFilter, 50];
+    return [COMPARATORS, BooleanFilter, 50];
   }
 });

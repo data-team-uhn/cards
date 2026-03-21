@@ -26,7 +26,6 @@ import { makeStyles } from 'tss-react/mui';
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import inputStyles from "./inputStyles";
 import Question from "./Question";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PedigreeEditor from "../pedigree/pedigree";
@@ -47,7 +46,6 @@ import PedigreeEditor from "../pedigree/pedigree";
 //    />
 
 const useStyles = makeStyles()(theme => ({
-  ...inputStyles(theme),
   thumbnail: {
     border: "1px solid " + theme.palette.divider,
   },
@@ -139,28 +137,26 @@ function PedigreeQuestion(props) {
     >
       {
         pageActive && <>
-          <div className={classes.answerField}>
-            { pedigreeData.image ?
-              <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
-                <Grid>
-                  <Tooltip title="Edit Pedigree">
-                    <Link className={classes.thumbnailLink} onClick={() => setExpanded(true)} underline="hover">
-                      {image_div}
-                    </Link>
-                  </Tooltip>
-                </Grid>
-                <Grid>
-                  <DeleteButton
-                    entryName="pedigree"
-                    entryType="Pedigree"
-                    onComplete={() => setPedigree({})}
-                  />
-                </Grid>
+          { pedigreeData.image ?
+            <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
+              <Grid>
+                <Tooltip title="Edit Pedigree">
+                  <Link className={classes.thumbnailLink} onClick={() => setExpanded(true)} underline="hover">
+                    {image_div}
+                  </Link>
+                </Tooltip>
               </Grid>
-              :
-              <Button variant="outlined" onClick={() => setExpanded(true)}>Draw</Button>
-            }
-          </div>
+              <Grid>
+                <DeleteButton
+                  entryName="pedigree"
+                  entryType="Pedigree"
+                  onComplete={() => setPedigree({})}
+                />
+              </Grid>
+            </Grid>
+            :
+            <Button variant="outlined" onClick={() => setExpanded(true)}>Draw</Button>
+          }
           <Dialog fullScreen open={expanded}
             onClose={() => setExpanded(false)}
             slotProps={{

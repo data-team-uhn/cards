@@ -25,13 +25,11 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { DateTime } from "luxon";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
-import inputStyles from "./inputStyles";
 import Question from "./Question";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 
@@ -53,7 +51,7 @@ import DateTimeUtilities from "../components/DateTimeUtilities";
 //  />
 function TimeQuestion(props) {
   checkPropTypes(TimeQuestion, props);
-  let { existingAnswer, classes, pageActive, ...rest } = props;
+  let { existingAnswer, pageActive, ...rest } = props;
   let {
     lowerLimit,
     upperLimit,
@@ -132,7 +130,7 @@ function TimeQuestion(props) {
               value={selectedTime}
               slotProps={{ textField: {
                 variant: 'standard',
-                className: classes.textField,
+                className: "cards-answerTextField",
                 error: error,
                 helperText: error ? errorMessage : null,
                 onBlur: (event) => { if (selectedTime?.invalid) {
@@ -169,11 +167,10 @@ TimeQuestion.propTypes = {
   dateFormat: PropTypes.string
 };
 
-const StyledTimeQuestion = withStyles(TimeQuestion, inputStyles);
-export default StyledTimeQuestion;
+export default TimeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "time") {
-    return [StyledTimeQuestion, 50];
+    return [TimeQuestion, 50];
   }
 });
