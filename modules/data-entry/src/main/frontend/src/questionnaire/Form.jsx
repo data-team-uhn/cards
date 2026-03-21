@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useRef, useEffect, useState, useContext, useLayoutEffect, useMemo } from "react";
+import { useRef, useEffect, useState, useContext, useLayoutEffect, useMemo, useCallback } from "react";
 
 
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -40,7 +40,7 @@ import {
 } from "@mui/material";
 import { alpha } from '@mui/material/styles';
 import { DateTime } from "luxon";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useBlocker } from "react-router";
 import { withStyles } from 'tss-react/mui';
 
 import { FormProvider } from "./FormContext";
@@ -292,7 +292,7 @@ function Form (props) {
   }
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
-  let saveData = (event, performCheckin, onSuccess) => {
+  let saveData = (event, performCheckin, onSuccess, onFailure) => {
     // This stops the normal browser form submission
     event && event.preventDefault();
     if (!formNode.current) {
@@ -360,6 +360,7 @@ function Form (props) {
           // since we know the data is stale and won't be able to be saved
           removeWindowHandlers?.();
           openErrorDialog();
+          onFailure?.();
         })
         setLastSaveStatus(undefined);
       } else if (response.status >= 400 || response.status < 100) {
@@ -367,6 +368,7 @@ function Form (props) {
           setErrorCode(response.status);
           setErrorMessage(json["status.message"]);
           openErrorDialog();
+          onFailure?.();
         })
         setLastSaveStatus(undefined);
       }
@@ -375,6 +377,7 @@ function Form (props) {
       setErrorMessage(err?.message);
       openErrorDialog();
       setLastSaveStatus(undefined);
+      onFailure?.();
     })
       .finally(() => formNode?.current && setSaveInProgress(false));
   }
@@ -388,9 +391,54 @@ function Form (props) {
     }
   }, [autosaveOptions]);
 
-  let saveDataWithCheckin = (event, onSuccess) => {
-    return saveData(event, true, onSuccess);
+  let saveDataWithCheckin = (event, onSuccess, onFailure) => {
+    return saveData(event, true, onSuccess, onFailure);
   }
+
+  let bypassNavBlockRef = useRef(false);
+  let safeNavigate = (to, options) => {
+    bypassNavBlockRef.current = true;
+    navigate(to, options);
+  };
+
+  let navBlocker = useBlocker(
+    useCallback(({ currentLocation, nextLocation }) => {
+      if (bypassNavBlockRef.current) {
+        bypassNavBlockRef.current = false;
+        return false;
+      }
+      if (!isEdit || !formNode?.current) {
+        return false;
+      }
+      return (
+        currentLocation.pathname !== nextLocation.pathname ||
+        currentLocation.search !== nextLocation.search ||
+        currentLocation.hash !== nextLocation.hash
+      );
+    }, [isEdit])
+  );
+
+  let leaveSaveStartedRef = useRef(false);
+  useEffect(() => {
+    if (navBlocker.state !== "blocked") {
+      leaveSaveStartedRef.current = false;
+      return;
+    }
+    if (leaveSaveStartedRef.current) {
+      return;
+    }
+    leaveSaveStartedRef.current = true;
+    if (!formNode.current) {
+      navBlocker.proceed();
+      return;
+    }
+    saveDataWithCheckin(undefined, () => {
+      removeWindowHandlers?.();
+      navBlocker.proceed();
+    }, () => {
+      navBlocker.reset();
+    });
+  }, [navBlocker.state, navBlocker]);
 
   // Handle when the subject of the form changes
   let changeSubject = (subject) => {
@@ -415,7 +463,7 @@ function Form (props) {
 
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    navigate(baseURL + formURL + '.edit' + window.location.hash);
+    safeNavigate(baseURL + formURL + '.edit' + window.location.hash);
   }
 
   let onClose = (event) => {
@@ -423,13 +471,13 @@ function Form (props) {
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
       removeWindowHandlers?.();
-      navigate(baseURL + formURL);
+      safeNavigate(baseURL + formURL);
     });
   }
 
   let onDelete = () => {
     removeWindowHandlers?.();
-    navigate(baseURL + (data?.subject?.['@path'] || ''));
+    safeNavigate(baseURL + (data?.subject?.['@path'] || ''));
   }
 
   let title = data?.questionnaire?.title || id || "";
@@ -774,7 +822,7 @@ function Form (props) {
         <SessionExpiryWarningModal
           lastActivityTimestamp={lastSaveTimestamp}
           onStay={() => setAutosaveOptions({})}
-          onExit={() => navigate("/")}
+          onExit={() => safeNavigate("/")}
           onExpired={() => { removeWindowHandlers(); setAutosaveOptions({ performCheckin: true }); } }
         />
       }

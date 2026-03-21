@@ -23,7 +23,7 @@ import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { createBrowserRouter, RouterProvider, Routes, Route, Navigate } from "react-router";
 import { withStyles } from 'tss-react/mui';
 
 import PageStart from "../PageStart";
@@ -163,6 +163,21 @@ function Main(props) {
 
 const MainComponent = withStyles(Main, IndexStyle);
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Navigate to="/content.html/Questionnaires/User" replace />,
+  },
+  {
+    path: "/content",
+    element: <Navigate to="/content.html/Questionnaires/User" replace />,
+  },
+  {
+    path: "*",
+    element: <MainComponent />,
+  },
+]);
+
 const cache = createCache({
   key: 'tss',
   // Enable style speedy insertion mode
@@ -173,13 +188,7 @@ const root = createRoot(document.querySelector('#main-container'));
 root.render(
   <CacheProvider value={cache}>
     <ThemeProvider theme={appTheme}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/*" element={<MainComponent />}/>
-          <Route path="/" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
-          <Route path="/content" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router} />
     </ThemeProvider>
   </CacheProvider>
 );
