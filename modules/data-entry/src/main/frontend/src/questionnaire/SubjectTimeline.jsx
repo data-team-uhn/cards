@@ -359,8 +359,7 @@ function SubjectTimeline(props) {
 
   useEffect(() => {
     if (subject) {
-      getForms().then(formData => getDateAnswers(formData))
-        .then(dateAnswers => getDateEntries(dateAnswers));
+      getForms().then(getDateAnswers).then(getDateEntries);
     }
   }, [subject]);
 
