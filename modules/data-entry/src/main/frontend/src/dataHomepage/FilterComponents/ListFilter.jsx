@@ -21,12 +21,10 @@ import { useState } from "react";
 
 import { Select, MenuItem } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import inputStyles from "../../questionnaire/inputStyles.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
@@ -41,7 +39,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  */
 const ListFilter = (props, ref) => {
   checkPropTypes(ListFilter, props);
-  const { classes, initial, onChangeInput, questionDefinition } = props;
+  const { initial, onChangeInput, questionDefinition } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");
 
@@ -63,13 +61,13 @@ const ListFilter = (props, ref) => {
   return (
     <Select
       variant="standard"
+      fullWidth
       value={selection}
       onChange={(event) => {
         let value = event.target.value;
         setSelection(value);
         onChangeInput(value, valueToLabel[value]);
       }}
-      className={classes.answerField}
       ref={ref}
     >
       {options.map((value) => (
@@ -90,12 +88,10 @@ ListFilter.propTypes = {
   questionDefinition: PropTypes.object
 }
 
-const StyledListFilter = withStyles(ListFilter, inputStyles);
-
-export default StyledListFilter;
+export default ListFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.displayMode === "list") {
-    return [COMPARATORS, StyledListFilter, 60];
+    return [COMPARATORS, ListFilter, 60];
   }
 });

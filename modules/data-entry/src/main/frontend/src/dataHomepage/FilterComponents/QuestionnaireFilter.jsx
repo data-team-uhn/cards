@@ -22,12 +22,10 @@ import { useState } from "react";
 import ErrorIcon from "@mui/icons-material/Error";
 import { Select, MenuItem, Card, CardHeader, CardContent, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import inputStyles from "../../questionnaire/inputStyles.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice();
 
@@ -40,7 +38,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  */
 const QuestionnaireFilter = (props, ref) => {
   checkPropTypes(QuestionnaireFilter, props);
-  const { classes, initial, onChangeInput } = props;
+  const { initial, onChangeInput } = props;
   const [ error, setError ] = useState();
   // Store information about each questionnaire and whether or not we have
   // initialized
@@ -99,13 +97,13 @@ const QuestionnaireFilter = (props, ref) => {
   return (
     <Select
       variant="standard"
+      fullWidth
       value={questionnaires.length === 0 ? "" : selection}
       onChange={(event) => {
         let uuid = event.target.value;
         setSelection(uuid);
         onChangeInput(uuid, uuidToTitle[uuid]);
       }}
-      className={classes.answerField}
       ref={ref}
     >
       {questionnaires.map((uuid) => (
@@ -125,12 +123,10 @@ QuestionnaireFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledQuestionnaireFilter = withStyles(QuestionnaireFilter, inputStyles);
-
-export default StyledQuestionnaireFilter;
+export default QuestionnaireFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType == 'questionnaire') {
-    return [COMPARATORS, StyledQuestionnaireFilter, 50];
+    return [COMPARATORS, QuestionnaireFilter, 50];
   }
 });

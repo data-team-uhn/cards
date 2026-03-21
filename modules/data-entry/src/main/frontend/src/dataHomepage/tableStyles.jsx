@@ -50,9 +50,6 @@ const liveTableStyles = theme => ({
       padding: theme.spacing(0.25),
     },
   },
-  answerField: {
-    width: "100%",
-  },
   hidden: {
     visibility: "hidden"
   },

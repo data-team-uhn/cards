@@ -35,6 +35,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
+import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
@@ -437,13 +438,17 @@ function MultipleChoice(props) {
         :
         <TextField
           variant={textbox ? "outlined" : "standard"}
+          fullWidth={!!textbox}
           error={error || inputError}
           helperText={
             inputError
               ? <FormattedText variant="caption">{ validationErrorText }</FormattedText>
               : maxAnswers !== 1 && !error && "Press ENTER to add a new value"
           }
-          className={(textbox ? classes.textBox : classes.textField) + (isRadio ? (' ' + classes.nestedInput) : '')}
+          className={classNames({
+            "cards-answerTextField": !textbox,
+            [classes.nestedInput]: isRadio
+          })}
           onChange={ghostUpdateEvent}
           disabled={disabled}
           onFocus={() => maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}

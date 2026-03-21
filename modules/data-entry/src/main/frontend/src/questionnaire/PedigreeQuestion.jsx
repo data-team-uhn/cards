@@ -26,7 +26,6 @@ import { makeStyles } from 'tss-react/mui';
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import inputStyles from "./inputStyles";
 import Question from "./Question";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PedigreeEditor from "../pedigree/pedigree";
@@ -47,7 +46,6 @@ import PedigreeEditor from "../pedigree/pedigree";
 //    />
 
 const useStyles = makeStyles()(theme => ({
-  ...inputStyles(theme),
   thumbnail: {
     border: "1px solid " + theme.palette.divider,
   },
@@ -139,7 +137,7 @@ function PedigreeQuestion(props) {
     >
       {
         pageActive && <>
-          <div className={classes.answerField}>
+          <div>
             { pedigreeData.image ?
               <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
                 <Grid>

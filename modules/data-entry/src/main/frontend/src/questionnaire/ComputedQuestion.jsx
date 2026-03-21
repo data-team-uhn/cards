@@ -21,13 +21,11 @@ import { useState } from "react";
 
 import { InputAdornment, TextField, Typography } from "@mui/material";
 import PropTypes from 'prop-types';
-import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import Answer, { VALUE_POS } from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
-import inputStyles from './inputStyles';
 import Question from "./Question";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 import FormattedText from "../components/FormattedText";
@@ -54,7 +52,7 @@ import { MakeRequest } from "../vocabQuery/util.jsx";
 let ComputedQuestion = (props) => {
   "use memo";
   checkPropTypes(ComputedQuestion, props);
-  const { existingAnswer, classes, pageActive, questionDefinition, ...rest } = props;
+  const { existingAnswer, pageActive, questionDefinition, ...rest } = props;
   const {
     expression,
     unitOfMeasurement,
@@ -338,9 +336,10 @@ let ComputedQuestion = (props) => {
             :
             <TextField
               variant="standard"
+              multiline
               type={fieldType}
               disabled={true}
-              className={classes.textField + " " + classes.answerField}
+              className="cards-answerTextField"
               value={displayValue}
               slotProps={{
                 input: muiInputProps
@@ -372,11 +371,10 @@ ComputedQuestion.propTypes = {
   }).isRequired
 };
 
-const StyledComputedQuestion = withStyles(ComputedQuestion, inputStyles);
-export default StyledComputedQuestion;
+export default ComputedQuestion;
 
 AnswerComponentManager.registerAnswerComponent((definition) => {
   if (definition.entryMode === "computed") {
-    return [StyledComputedQuestion, 80];
+    return [ComputedQuestion, 80];
   }
 });
