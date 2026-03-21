@@ -84,6 +84,10 @@ function DicomQuestion(props) {
     }
   }
 
+  let getDicomTagName = (tag) => {
+    return getDicomTagInfo(tag)?.name;
+  }
+
   let getDicomTagDataFormat = (tag) => {
     return getDicomTagInfo(tag)?.vr;
   }
@@ -102,10 +106,6 @@ function DicomQuestion(props) {
       hex += "...";
     }
     return hex;
-  }
-
-  let getDicomTagName = (tag) => {
-    return getDicomTagInfo(tag)?.name;
   }
 
   let getDicomTagValue = (dicomObj, tag) => {
