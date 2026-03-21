@@ -771,18 +771,16 @@ function Form (props) {
         </Grid>
         { !paginationEnabled && !disableButton &&
         <Grid size="auto" className={classes.formBottom}>
-          <div>
-            { isEdit &&
-              <MainActionButton
-                style={doneButtonStyle}
-                disabled={disableProgress}
-                inProgress={saveInProgress}
-                onClick={handleSubmit}
-                icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
-                label={saveInProgress ? "Saving..." : doneLabel || (lastSaveStatus ? "Saved" : "Save")}
-              />
-            }
-          </div>
+          { isEdit &&
+            <MainActionButton
+              style={doneButtonStyle}
+              disabled={disableProgress}
+              inProgress={saveInProgress}
+              onClick={handleSubmit}
+              icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
+              label={saveInProgress ? "Saving..." : doneLabel || (lastSaveStatus ? "Saved" : "Save")}
+            />
+          }
         </Grid>
         }
       </Grid>
