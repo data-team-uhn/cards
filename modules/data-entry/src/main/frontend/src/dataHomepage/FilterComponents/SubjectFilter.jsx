@@ -29,14 +29,12 @@ import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { escapeJQL } from "../../escape.jsx";
 import { checkPropTypes } from "../../propTypes";
-import inputStyles from "../../questionnaire/inputStyles.jsx";
 import SearchBar from "../../SearchBar.jsx";
 import { QuickSearchIdentifier } from "../../themePage/Navbars/QuickSearchIdentifier.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice();
 
 const useStyles = makeStyles()(theme => ({
-  ...inputStyles(theme),
   subjectFilter: {
     marginTop: 0,
   },
@@ -94,6 +92,7 @@ const SubjectFilter = (props, ref) => {
 
   return (
     <SearchBar
+      fullWidth
       defaultValue={initial?.label}
       onChange={invalidateInput}
       onPopperClose={closePopper}
@@ -103,10 +102,10 @@ const SubjectFilter = (props, ref) => {
       resultConstructor={QuickSearchIdentifier}
       disableDropdownItemLink={true}
       error={!!error /* Turn into a boolean to prevent PropTypes warnings */}
-      className={classNames(classes.answerField,
-        { [classes.subjectFilter]: hasSelectedValidSubject,
-          [classes.invalidSubjectText]: !hasSelectedValidSubject, }
-      )}
+      className={classNames({
+        [classes.subjectFilter]: hasSelectedValidSubject,
+        [classes.invalidSubjectText]: !hasSelectedValidSubject
+      })}
       startAdornment={
         error && <InputAdornment position="end">
           <Tooltip title={error}>

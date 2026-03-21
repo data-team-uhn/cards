@@ -21,12 +21,10 @@ import { useState } from "react";
 
 import { TextField } from "@mui/material";
 import PropTypes from "prop-types";
-import { withStyles } from 'tss-react/mui';
 
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { checkPropTypes } from "../../propTypes";
-import inputStyles from "../../questionnaire/inputStyles.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(TEXT_COMPARATORS);
 
@@ -40,18 +38,15 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  */
 const TextFilter = (props, ref) => {
   checkPropTypes(TextFilter, props);
-  const { classes, initial, onChangeInput } = props;
+  const { initial, onChangeInput } = props;
   // Manage our own state inside here as well
   const [ input, setInput ] = useState(initial?.value || "");
 
   return (
     <TextField
       variant="standard"
-      className={classes.answerField}
+      fullWidth
       slotProps={{
-        input: {
-          className: classes.answerField,
-        },
         inputLabel: {
           shrink: true,
         },
@@ -77,13 +72,12 @@ TextFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledTextFilter = withStyles(TextFilter, inputStyles);
-export default StyledTextFilter;
+export default TextFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
-  return [COMPARATORS, StyledTextFilter, 10];
+  return [COMPARATORS, TextFilter, 10];
 });
 
 FilterComponentManager.registerTextFilterComponent((questionDefinition) => {
-  return StyledTextFilter;
+  return TextFilter;
 });

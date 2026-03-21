@@ -19,18 +19,16 @@
 
 import { useState, useEffect } from "react";
 
-import { Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
-import inputStyles from "./inputStyles";
 import Question from "./Question";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 
@@ -63,7 +61,7 @@ import DateTimeUtilities from "../components/DateTimeUtilities";
 //  />
 function DateQuestion(props) {
   checkPropTypes(DateQuestion, props);
-  let { existingAnswer, classes, pageActive, ...rest } = props;
+  let { existingAnswer, pageActive, ...rest } = props;
   let {
     dateFormat = DateTimeUtilities.defaultDateFormat,
     type = DateTimeUtilities.TIMESTAMP_TYPE,
@@ -197,7 +195,7 @@ function DateQuestion(props) {
           slotProps={{ textField: {
             variant: 'standard',
             error: formatError || minMaxError || rangeError,
-            className: classes.textField,
+            className: "cards-answerTextField",
             helperText: formatError || minMaxError || null,
             onBlur: (event) => validateInput(event, date, isEnd),
             onFocus: (event) => cleanErrorMessages(isEnd),
@@ -289,16 +287,21 @@ function DateQuestion(props) {
         </Typography>
       }
       { pageActive &&
-        <div className={isRange ? classes.range : ''}>
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          className={isRange ? "cards-answerRange" : ''}
+        >
           { getDateField(false, displayedDate, formatError) }
           { /* If this is an interval, allow the user to select a second date */
             isRange &&
           <>
-            <span className="separator">&mdash;</span>
+            <span>&mdash;</span>
             { getDateField(true, displayedEndDate, endFormatError) }
           </>
           }
-        </div>
+        </Stack>
       }
       <Answer
         answers={outputAnswers}
@@ -315,18 +318,17 @@ function DateQuestion(props) {
 
 DateQuestion.propTypes = DateTimeUtilities.PROP_TYPES;
 
-const StyledDateQuestion = withStyles(DateQuestion, inputStyles);
-export default StyledDateQuestion;
+export default DateQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date") {
     let dateType = DateTimeUtilities.getDateType(questionDefinition.dateFormat);
     if ( [DateTimeUtilities.FULL_DATE_TYPE, DateTimeUtilities.DATETIME_TYPE, DateTimeUtilities.MONTH_DATE_TYPE]
       .includes(dateType)) {
-      return [StyledDateQuestion, 70];
+      return [DateQuestion, 70];
     } else {
       // Default date handler
-      return [StyledDateQuestion, 50];
+      return [DateQuestion, 50];
     }
   }
 });

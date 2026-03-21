@@ -86,6 +86,7 @@ function ResourceQuery(props) {
     focusAfterSelecting = true,
     disabled,
     variant = 'default',
+    fullWidth,
     isNested,
     placeholder,
     value,
@@ -136,6 +137,7 @@ function ResourceQuery(props) {
     <Input
       disabled={disabled}
       variant='outlined'
+      fullWidth={fullWidth}
       slotProps={{
         htmlInput: {
           "aria-label": "Search",
@@ -545,6 +547,7 @@ ResourceQuery.propTypes = {
   focusAfterSelecting: PropTypes.bool.isRequired,
   disabled: PropTypes.bool,
   variant: PropTypes.string,
+  fullWidth: PropTypes.bool,
   isNested: PropTypes.bool,
   placeholder: PropTypes.string,
   value: PropTypes.string,

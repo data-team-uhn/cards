@@ -45,7 +45,15 @@ const questionStyles = theme => ({
     "& .MuiListItem-root:hover" : {
       background: theme.palette.action.hover,
       borderRadius: theme.spacing(0.5),
-    }
+    },
+    "& .cards-answerTextField" : {
+      width: "100%",
+      maxWidth: "250px",
+    },
+    "& .cards-answerRange": {
+      flexWrap: "wrap",
+      alignItems: "baseline",
+    },
   },
   viewModeAnswers :{
     "& .MuiList-root": {
