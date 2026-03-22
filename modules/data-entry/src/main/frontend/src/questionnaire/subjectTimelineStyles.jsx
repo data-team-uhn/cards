@@ -18,19 +18,22 @@
 //
 
 const subjectTimelineStyles = theme => ({
-  timeline: {
-    maxWidth: "1000px",
-    margin: "auto"
-  },
   timelineLoading: {
     display: "flex",
     margin: "auto",
   },
-  timelineContent: {
-    padding: theme.spacing(1,3,3),
-  },
-  timelinePaper: {
-    padding: theme.spacing(1, 2),
+  timeline: {
+    maxWidth: "1000px",
+    margin: "auto",
+    "& .MuiTimelineContent-root, .MuiTimelineOppositeContent-root": {
+      margin: theme.spacing(0, 1),
+    },
+    "& .MuiTimelineSeparator-root": {
+      minHeight: theme.spacing(12)
+    },
+    "& .MuiTimelineConnector-root": {
+      backgroundColor: theme.palette.grey[200],
+    },
   },
   timelineAncestor: {
     opacity: 0.3,
@@ -38,29 +41,14 @@ const subjectTimelineStyles = theme => ({
       opacity: 1,
     },
   },
-  timelineDate: {
-    lineHeight: "1em",
-    marginLeft: theme.spacing(-2),
-    marginRight: theme.spacing(-2),
-    color: theme.palette.primary.main
-  },
-  timelineDateEntry: {
-    paddingBottom: theme.spacing(2),
-  },
-  timelineDateEntryFinal: {
-    paddingBottom: 0,
-  },
-  timelineConnectorGroup: {
+  timelineLabeledConnector: {
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
     flexGrow: 1
   },
-  timelineConnectorLine: {
-    backgroundColor: theme.palette.grey["200"]
-  },
   timelineCircle: {
-    background: theme.palette.grey["200"],
+    background: theme.palette.grey[200],
     position: "absolute",
     top: "50%",
     transform: "translateY(calc(-50% + 14px))",
@@ -74,7 +62,7 @@ const subjectTimelineStyles = theme => ({
       content: "''",
       display: "block",
       borderBottom: "12px solid",
-      borderBottomColor: theme.palette.grey["200"],
+      borderBottomColor: theme.palette.grey[200],
       borderLeft: "12px solid transparent",
       borderRight: "12px solid transparent",
       position: "absolute",
@@ -84,15 +72,12 @@ const subjectTimelineStyles = theme => ({
       content: "''",
       display: "block",
       borderTop: "12px solid",
-      borderTopColor: theme.palette.grey["200"],
+      borderTopColor: theme.palette.grey[200],
       borderLeft: "12px solid transparent",
       borderRight: "12px solid transparent",
       position: "absolute",
       bottom: "-7px"
     }
-  },
-  timelineSeparator: {
-    minHeight: theme.spacing(12)
   },
 });
 
