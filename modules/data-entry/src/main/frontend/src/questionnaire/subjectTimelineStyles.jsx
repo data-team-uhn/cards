@@ -28,6 +28,9 @@ const subjectTimelineStyles = theme => ({
     "& .MuiTimelineContent-root, .MuiTimelineOppositeContent-root": {
       margin: theme.spacing(0, 1),
     },
+    "& .MuiTimelineItem-root:nth-of-type(2n) .MuiTimelineContent-root .MuiStack-root": {
+      justifyContent: "flex-end",
+    },
     "& .MuiTimelineSeparator-root": {
       minHeight: theme.spacing(12)
     },

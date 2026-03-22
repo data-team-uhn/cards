@@ -24,9 +24,9 @@ import CollapsedIcon from "@mui/icons-material/ChevronRight";
 import FormIcon from "@mui/icons-material/Description";
 import ExpandedIcon from "@mui/icons-material/ExpandMore";
 import FileIcon from "@mui/icons-material/InsertDriveFile";
-import { Box } from '@mui/material';
 import {
   Avatar,
+  Box,
   CircularProgress,
   Card,
   CardContent,
@@ -34,6 +34,7 @@ import {
   Grid,
   IconButton,
   Skeleton,
+  Stack,
   Tooltip,
   Tab,
   Tabs,
@@ -812,7 +813,7 @@ export function displayQuestion(entryDefinition, data, key) {
               <Tooltip key={answerValue} title={"Download " + answerValue}>
                 <Chip
                   sx={{
-                    m: 0, mr: 1, mb: 2,
+                    mr: 1, my: 0.25,
                     "& .MuiChip-iconSmall": { ml: 0.75 },
                     "& a" : {
                       color: "inherit",
@@ -862,16 +863,20 @@ export function displayQuestion(entryDefinition, data, key) {
     }
     return (
       isHidden ? null :
-        <Typography
-          variant="body2"
-          component="div"
-          sx={{ display: "flex" }}
+        <Stack
+          direction="row"
+          spacing={1}
+          divider={<span>—</span>}
           key={key}
+          sx={{ flexWrap: "wrap" }}
         >
-          {questionTitle}
-          <Box component="span" sx={{ my: 0, mx: 1.5 }}>–</Box>
-          <Box sx={{ fontWeight: 200 }}>{content}</Box>
-        </Typography>
+          <Typography variant="body2">
+            {questionTitle}
+          </Typography>
+          <Typography variant="body2" component="div" sx={{ fontWeight: 200 }}>
+            {content}
+          </Typography>
+        </Stack>
     );
   }
   else return null;
