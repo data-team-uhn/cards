@@ -37,6 +37,7 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
+import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
@@ -65,12 +66,10 @@ function DateAnswerDisplay(classes, questionData, index, rootLevel) {
   // Find the first '/' after "/Forms/" in the path
   let formPath = questionData.answerPath.substring(0, questionData.answerPath.indexOf("/", "/Forms/".length+1));
   let formTitle = `${questionData.names?.length > 0 ? questionData.names.join(" / ") + ": " : ""}${questionData.formTitle}`;
-  let divClasses = [];
-  if (questionData.level === -1 && rootLevel !== -1) {
-    divClasses.push(classes.timelineAncestor);
-  }
 
-  return <div key={index} className={divClasses.join(" ")}>
+  return <div key={index} className={classNames({
+    [classes.timelineAncestor]: (questionData.level === -1 && rootLevel !== -1)
+  })}>
     <Typography variant="h6" component="h1">
       {questionTitle} (<Link href={`/content.html${formPath}#${questionData.questionPath}`} underline="hover">{formTitle}</Link>)
     </Typography>
@@ -81,12 +80,10 @@ function DateAnswerDisplay(classes, questionData, index, rootLevel) {
 function CustomTimelineConnector(props) {
   let { classes, shortText, longText, className } = props;
 
-  let divClasses = [classes.timelineLabeledConnector];
-  if (className) {
-    divClasses.push(className);
-  }
-
-  return <div className={divClasses.join(" ")}>
+  return <div className={classNames(
+    classes.timelineLabeledConnector,
+    className
+  )}>
     <Tooltip title={longText}>
       <div className={classes.timelineCircle}>
         <Typography variant="body2">{shortText}</Typography>
@@ -100,16 +97,11 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
   let dateText = DateTimeUtilities.formatDateAnswer(DateTimeUtilities.VIEW_DATE_FORMAT, dateEntry.date);
   let diff = DateTimeUtilities.dateDifference(dateEntry.date, nextEntry && nextEntry.date);
 
-  let paperClasses = [];
-  if (dateEntry.level < 0) {
-    paperClasses.push(classes.timelineAncestor);
-  }
-
-  let separatorClasses = [];
+  let separatorIsAncestor = false;
   let connectorIsAncestor = false;
   if (dateEntry.level < 0) {
     // Grey out connector + dot
-    separatorClasses.push(classes.timelineAncestor);
+    separatorIsAncestor = true;
   } else if (nextEntry && nextEntry.level < 0) {
     // Only grey out connector
     connectorIsAncestor = true;
@@ -119,7 +111,9 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
     <TimelineOppositeContent>
       <Typography color="primary">{dateText}</Typography>
     </TimelineOppositeContent>
-    <TimelineSeparator className={separatorClasses.join(",")}>
+    <TimelineSeparator
+      className={classNames({ [classes.timelineAncestor] : separatorIsAncestor })}
+    >
       <TimelineDot color={
         dateEntry.level == 0
           ? "primary"
@@ -132,13 +126,15 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
               classes={classes}
               shortText={diff.short}
               longText={diff.long}
-              className={connectorIsAncestor ? classes.timelineAncestor : null}/>
+              className={classNames({ [classes.timelineAncestor] : connectorIsAncestor })}/>
             : <TimelineConnector />)
         : null
       }
     </TimelineSeparator>
     <TimelineContent>
-      <Card className={paperClasses.join(" ")}>
+      <Card className={classNames({
+        [classes.timelineAncestor]: (dateEntry.level < 0)
+      })}>
         <CardContent>
           <Stack spacing={3}>
             {dateEntry.questions.map((question, index) => {
