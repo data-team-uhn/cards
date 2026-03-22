@@ -772,11 +772,9 @@ function ResponseChild(props) {
                 >
                   <Close color="action"/>
                 </IconButton>
-                <div>
-                  <Typography color={isInvalid ? "error" : ""}>
-                    {name}
-                  </Typography>
-                </div>
+                <Typography color={isInvalid ? "error" : ""}>
+                  {name}
+                </Typography>
                 { description &&
                 <FormattedText
                   className={classes.selectionDescription}
