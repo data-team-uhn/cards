@@ -17,9 +17,11 @@
 //  under the License.
 //
 
+import actionMenuStyles from "./actionMenuStyles.jsx";
 import statusFlagStyles from "./statusFlagStyles.jsx";
 
 const subjectStyles = theme => ({
+  ...actionMenuStyles(theme),
   ...statusFlagStyles(theme),
   subjectAvatar: {
     backgroundColor: theme.palette.secondary.main,
