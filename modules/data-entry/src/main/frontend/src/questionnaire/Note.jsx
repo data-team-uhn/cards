@@ -89,11 +89,11 @@ function Note (props) {
     return <></>;
   }
 
-  if (readonly && value) {
-    return (
+  if (readonly) {
+    return (note &&
       <div className={classes.notesContainer}>
         <Typography variant="subtitle1">Notes</Typography>
-        { value }
+        { note }
       </div>
     );
   }
