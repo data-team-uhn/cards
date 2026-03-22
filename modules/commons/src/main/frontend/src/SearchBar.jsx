@@ -347,7 +347,11 @@ let defaultResultConstructor = (props) => {
   const { classes, resultData } = props;
   return (
     <>
-      <ListItemAvatar><Avatar className={classes.searchResultAvatar}><DescriptionIcon /></Avatar></ListItemAvatar>
+      <ListItemAvatar>
+        <Avatar className={classes.searchResultAvatar}>
+          <DescriptionIcon />
+        </Avatar>
+      </ListItemAvatar>
       <ListItemText
         primary={resultData["jcr:uuid"]}
         className={classes.dropdownItem}
