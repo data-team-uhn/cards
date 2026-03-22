@@ -70,9 +70,14 @@ function DateAnswerDisplay(classes, questionData, index, rootLevel) {
   return <div key={index} className={classNames({
     [classes.timelineAncestor]: (questionData.level === -1 && rootLevel !== -1)
   })}>
-    <Typography variant="h6" component="h1">
-      {questionTitle} (<Link href={`/content.html${formPath}#${questionData.questionPath}`} underline="hover">{formTitle}</Link>)
-    </Typography>
+    <Link
+      href={`/content.html${formPath}#${questionData.questionPath}`}
+      underline="hover"
+      variant="overline"
+    >
+      {formTitle}:
+    </Link>
+    <Typography variant="h6">{questionTitle}</Typography>
     {questionData.followup}
   </div>
 }
