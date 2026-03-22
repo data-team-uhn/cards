@@ -17,36 +17,22 @@
 //  under the License.
 //
 
-import actionMenuStyles from "./actionMenuStyles.jsx";
-import statusFlagStyles from "./statusFlagStyles.jsx";
-
-const formStyles = theme => ({
-  ...actionMenuStyles(theme),
-  ...statusFlagStyles(theme),
-  formContainer: {
-    "& .cards-hidden": {
-      display: "none",
-    },
-    "& .cards-focused.MuiCard-root, .cards-focused > .MuiCard-root": {
-      outline: `2px solid ${theme.palette.primary.main}`,
-    },
+const actionMenuStyles = theme => ({
+  actionsMenu: {
+    border: "1px solid " + theme.palette.divider,
+    borderRadius: theme.spacing(3),
+    display: "flex",
+    marginBottom: theme.spacing(1),
   },
-  hideAnswerInstructions: {
-    "& .cards-answerInstructions" : {
-      display: "none",
+  actionsMenuItem: {
+    padding: theme.spacing(0,1),
+    "& .MuiButtonBase-root" : {
+      fontWeight: "normal",
+      justifyContent: "flex-start",
+      textTransform: "none",
+      width: "100%",
     }
-  },
-  questionnaireItemWithError: {
-    "&.MuiCard-root, > .MuiCard-root" : {
-      outline: `1px solid ${theme.palette.error.light}`,
-    },
-    "& p[class*='-answerInstructions']" : {
-      display: "block",
-    },
-  },
-  formFooter: {
-    position: "relative",
   },
 });
 
-export default formStyles;
+export default actionMenuStyles;
