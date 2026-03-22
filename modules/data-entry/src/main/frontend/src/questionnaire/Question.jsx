@@ -47,7 +47,8 @@ function Question (props) {
     text,
     description,
     compact,
-    disableInstructions
+    disableInstructions,
+    enableNotes,
   } = { ...questionDefinition, ...props };
 
   const location = useLocation();
@@ -135,8 +136,8 @@ function Question (props) {
             :
             children
           }
-          { pageActive && !isEdit && existingAnswer?.[1]?.note &&
-            <Note readonly value={existingAnswer[1].note} />
+          { enableNotes &&
+            <Note readonly pageActive={pageActive} existingAnswer={existingAnswer} />
           }
         </div>
       </CardContent>
