@@ -29,12 +29,12 @@ import {
   TimelineOppositeContent
 } from "@mui/lab";
 import {
+  Card,
+  CardContent,
   CircularProgress,
   Link,
-  Paper,
-  Tooltip
-} from "@mui/material";
-import {
+  Stack,
+  Tooltip,
   Typography
 } from "@mui/material";
 import PropTypes from "prop-types";
@@ -50,7 +50,7 @@ import { checkPropTypes } from "../propTypes";
 const NUM_QUESTIONS = 2;
 const STRIPPING_REGEX = [/^date of +/i, / +date$/i];
 
-function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
+function DateAnswerDisplay(classes, questionData, index, rootLevel) {
   let questionTitle = questionData.questionText;
   // Strip unwanted strings from the question title
   for (const regexp of STRIPPING_REGEX) {
@@ -65,12 +65,9 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
   // Find the first '/' after "/Forms/" in the path
   let formPath = questionData.answerPath.substring(0, questionData.answerPath.indexOf("/", "/Forms/".length+1));
   let formTitle = `${questionData.names?.length > 0 ? questionData.names.join(" / ") + ": " : ""}${questionData.formTitle}`;
-  let divClasses = [classes.timelineDateEntry];
+  let divClasses = [];
   if (questionData.level === -1 && rootLevel !== -1) {
     divClasses.push(classes.timelineAncestor);
-  }
-  if (index === length - 1) {
-    divClasses.push(classes.timelineDateEntryFinal);
   }
 
   return <div key={index} className={divClasses.join(" ")}>
@@ -84,7 +81,7 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
 function CustomTimelineConnector(props) {
   let { classes, shortText, longText, className } = props;
 
-  let divClasses = [classes.timelineConnectorGroup];
+  let divClasses = [classes.timelineLabeledConnector];
   if (className) {
     divClasses.push(className);
   }
@@ -95,7 +92,7 @@ function CustomTimelineConnector(props) {
         <Typography variant="body2">{shortText}</Typography>
       </div>
     </Tooltip>
-    <TimelineConnector className={classes.timelineConnectorLine}/>
+    <TimelineConnector/>
   </div>
 }
 
@@ -103,12 +100,12 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
   let dateText = DateTimeUtilities.formatDateAnswer(DateTimeUtilities.VIEW_DATE_FORMAT, dateEntry.date);
   let diff = DateTimeUtilities.dateDifference(dateEntry.date, nextEntry && nextEntry.date);
 
-  let paperClasses = [classes.timelinePaper];
+  let paperClasses = [];
   if (dateEntry.level < 0) {
     paperClasses.push(classes.timelineAncestor);
   }
 
-  let separatorClasses = [classes.timelineSeparator];
+  let separatorClasses = [];
   let connectorIsAncestor = false;
   if (dateEntry.level < 0) {
     // Grey out connector + dot
@@ -119,11 +116,15 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
   }
 
   return <TimelineItem key={index}>
-    <TimelineOppositeContent className={classes.timelineContent}>
-      <Typography color="textSecondary" className={classes.timelineDate}>{dateText}</Typography>
+    <TimelineOppositeContent>
+      <Typography color="primary">{dateText}</Typography>
     </TimelineOppositeContent>
     <TimelineSeparator className={separatorClasses.join(",")}>
-      <TimelineDot color={dateEntry.level == 0 ? "primary" : (dateEntry.level == 1 ? "secondary" : "grey")}/>
+      <TimelineDot color={
+        dateEntry.level == 0
+          ? "primary"
+          : (dateEntry.level == 1 ? "secondary" : "grey")
+      }/>
       {index !== (length - 1)
         ? (
           diff.short
@@ -132,16 +133,20 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
               shortText={diff.short}
               longText={diff.long}
               className={connectorIsAncestor ? classes.timelineAncestor : null}/>
-            : <TimelineConnector className={classes.timelineConnectorLine}/>)
+            : <TimelineConnector />)
         : null
       }
     </TimelineSeparator>
-    <TimelineContent className={classes.timelineContent}>
-      <Paper elevation={3} className={paperClasses.join(" ")}>
-        {dateEntry.questions.map((question, index) => {
-          return DateAnswerDisplay(classes, question, index, dateEntry.questions.length, dateEntry.level)
-        })}
-      </Paper>
+    <TimelineContent>
+      <Card className={paperClasses.join(" ")}>
+        <CardContent>
+          <Stack spacing={3}>
+            {dateEntry.questions.map((question, index) => {
+              return DateAnswerDisplay(classes, question, index, dateEntry.level)
+            })}
+          </Stack>
+        </CardContent>
+      </Card>
     </TimelineContent>
   </TimelineItem>;
 }
