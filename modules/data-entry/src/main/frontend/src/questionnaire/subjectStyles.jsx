@@ -23,6 +23,11 @@ import statusFlagStyles from "./statusFlagStyles.jsx";
 const subjectStyles = theme => ({
   ...actionMenuStyles(theme),
   ...statusFlagStyles(theme),
+  subjectLoading: {
+    display: "flex",
+    margin: "auto",
+    marginTop: theme.spacing(2),
+  },
   subjectAvatar: {
     backgroundColor: theme.palette.secondary.main,
     marginLeft: theme.spacing(-1),
