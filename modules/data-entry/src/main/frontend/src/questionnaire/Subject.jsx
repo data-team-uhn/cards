@@ -33,6 +33,7 @@ import {
   Chip,
   Grid,
   IconButton,
+  Skeleton,
   Tooltip,
   Tab,
   Tabs,
@@ -225,7 +226,7 @@ function SubjectContainer(props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!relatedSubjects) {
     return (
-      <Grid container justifyContent="center" sx={{ mt: 5 }}><Grid><CircularProgress/></Grid></Grid>
+      <Box><CircularProgress className={classes.subjectLoading} /></Box>
     );
   }
 
@@ -320,7 +321,7 @@ function SubjectHeader(props) {
 
   if (!subject) {
     return (
-      <Grid><CircularProgress/></Grid>
+      <Grid><CircularProgress className={classes.subjectLoading} /></Grid>
     );
   }
 
@@ -459,7 +460,7 @@ function SubjectMemberInternal (props) {
   // If the subjectGroups data has not yet been fetched, return an in-progress symbol
   if (!subjectGroups) {
     return (
-      <Grid container justifyContent="center" sx={{ mt: 5 }}><Grid><CircularProgress/></Grid></Grid>
+      <Box><CircularProgress className={classes.subjectLoading} /></Box>
     );
   }
 
@@ -745,7 +746,7 @@ function FormData(props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <Skeleton variant="rectangular" width={200} height={100} />
     );
   }
 
