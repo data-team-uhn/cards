@@ -38,6 +38,19 @@
                     "nullCheckEnabled": true,
                     "weight": 1,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -75,6 +88,15 @@
                     "ordered": true,
                     "propertyIndex": true
                 },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
                 "lowernote": {
                     "function": "lower([note])",
                     "propertyIndex": true
@@ -111,6 +133,19 @@
                     "nullCheckEnabled": true,
                     "weight": 10,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -142,6 +177,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -173,6 +221,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -204,6 +265,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -237,6 +311,19 @@
                     "nullCheckEnabled": true,
                     "weight": 10000,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -270,6 +357,19 @@
                     "nullCheckEnabled": true,
                     "weight": 100,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -301,6 +401,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -332,6 +445,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -363,6 +489,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -394,6 +533,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -425,6 +577,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -456,6 +621,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -483,6 +661,19 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },
@@ -518,6 +709,19 @@
                 "lowervalue": {
                     "function": "lower([value])",
                     "ordered": true,
+                    "propertyIndex": true
+                },
+                "note": {
+                    "name": "note",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lowernote": {
+                    "function": "lower([note])",
                     "propertyIndex": true
                 }
             }
