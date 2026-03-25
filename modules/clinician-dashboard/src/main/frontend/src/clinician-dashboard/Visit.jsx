@@ -130,7 +130,7 @@ function Visit(props) {
           setVisitPath(json["@path"]);
           setParents(json["parents"]);
           setVisitInformation(json[VISIT_INFORMATION_FORM_TITLE]?.[0] || {});
-          let clinicPath = Object.values(json[VISIT_INFORMATION_FORM_TITLE]?.[0]).find(o => o?.question?.["@name"] == "clinic")?.value;
+          let clinicPath = json[VISIT_INFORMATION_FORM_TITLE]?.[0]?.clinic;
           if (!clinicPath) {
             setError("Clinic is missing for this visit.");
             return;
@@ -245,9 +245,7 @@ function Visit(props) {
   // Visit information - extract and format relevant info from the Visit information form associated with this visit
 
   const getVisitField = (qName) => {
-    let question = visitInformation?.questionnaire?.[qName]?.["jcr:uuid"];
-    let answer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == question)?.value || null;
-    return answer;
+    return visitInformation?.[qName];
   }
 
   const displayVisitDateTime = () => {

@@ -1,5 +1,6 @@
 {
   "jcr:primaryType": "nt:unstructured",
+  "jcr:reference:clinic": "/Questionnaires/Visit information/clinic",
   "jcr:reference:time": "/Questionnaires/Visit information/time",
   "jcr:reference:location": "/Questionnaires/Visit information/location",
   "jcr:reference:provider": "/Questionnaires/Visit information/provider",
