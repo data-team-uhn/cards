@@ -130,6 +130,15 @@ public class SlackNotificationsTask implements Runnable
         return slackNotificationString;
     }
 
+    private Map<String, Long> mergeStats(Map<String, Long> oldStats, Map<String, Long> newStats)
+    {
+        Map<String, Long> result = new HashMap<>();
+        for (Map.Entry<String, Long> newValue : newStats.entrySet()) {
+            result.put(newValue.getKey(), oldStats.get(newValue.getKey()) + newValue.getValue());
+        }
+        return result;
+    }
+
     @Override
     public void run()
     {
@@ -159,7 +168,7 @@ public class SlackNotificationsTask implements Runnable
                 if (thisMetricValue == null) {
                     continue;
                 }
-                gatheredStatistics.put(thisHumanName, thisMetricValue);
+                gatheredStatistics.merge(thisHumanName, thisMetricValue, this::mergeStats);
             }
 
             // Get all the error stack traces under /LoggedEvents/
