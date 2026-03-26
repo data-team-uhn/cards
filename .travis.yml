@@ -1,3 +1,0 @@
-language: java
-script: mvn verify -PintegrationTests
-jdk: openjdk8
