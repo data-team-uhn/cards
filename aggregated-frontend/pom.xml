@@ -142,6 +142,14 @@
                 <exclude>**/yarn.lock</exclude>
                 <exclude>**/package.json</exclude>
                 <exclude>**/tsconfig.json</exclude>
+                <!-- Jest -->
+                <exclude>**/jest.config.*</exclude>
+                <exclude>**/jest.setup.*</exclude>
+                <exclude>**/babel.config.jest.js</exclude>
+                <exclude>**/__mocks__/**</exclude>
+                <!-- Playwright -->
+                <exclude>**/playwright.config.*</exclude>
+                <exclude>**/e2e/**</exclude>
               </excludes>
             </fileset>
           </filesets>

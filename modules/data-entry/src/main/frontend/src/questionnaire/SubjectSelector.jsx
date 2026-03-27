@@ -356,6 +356,7 @@ function UnstyledSelectParentDialog (props) {
       onClose={onClose}
       keepMounted
       title={`Select ${parentType?.['label']} for ${childType?.['label']} ${childName}`}
+      aria-label="select-parent-dialog"
     >
       <DialogContent dividers className={classes.dialogContentWithTable}>
         { error && <Alert severity="error">{error}</Alert>}
