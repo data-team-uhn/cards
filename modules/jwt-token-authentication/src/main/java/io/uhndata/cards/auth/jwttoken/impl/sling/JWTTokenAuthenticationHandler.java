@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.auth.token.impl.sling;
+package io.uhndata.cards.auth.jwttoken.impl.sling;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -51,8 +51,10 @@ import io.uhndata.cards.auth.token.TokenManager;
 @Component(service = JakartaAuthenticationHandler.class, immediate = true, property = {
     JakartaAuthenticationHandler.TYPE_PROPERTY + "=" + HttpServletRequest.FORM_AUTH,
     "path=/",
-    "sling.auth.requirements=-/Expired" })
-public class TokenAuthenticationHandler extends DefaultJakartaAuthenticationFeedbackHandler
+    "sling.auth.requirements=-/Expired",
+    "service.ranking:Integer=50"
+})
+public class JWTTokenAuthenticationHandler extends DefaultJakartaAuthenticationFeedbackHandler
     implements JakartaAuthenticationHandler
 {
     /** The name of the request parameter that may hold a login token. */
@@ -61,7 +63,7 @@ public class TokenAuthenticationHandler extends DefaultJakartaAuthenticationFeed
     /** The name of the cookie that may hold a login token. */
     private static final String TOKEN_COOKIE_NAME = "cards_auth_token";
 
-    @Reference(target = "(component.name=io.uhndata.cards.auth.token.impl.TokenManagerImpl)")
+    @Reference(target = "(component.name=io.uhndata.cards.auth.jwttoken.impl.CardsJwtTokenManagerImpl)")
     private TokenManager tokenManager;
 
     @Override
@@ -216,12 +218,11 @@ public class TokenAuthenticationHandler extends DefaultJakartaAuthenticationFeed
     private AuthenticationInfo processLoginToken(final String loginToken, final boolean isLogin,
         final HttpServletRequest request, final HttpServletResponse response)
     {
-        if (!isNodeTokenString(loginToken)) {
+        if (!isJwtTokenString(loginToken)) {
             // The string does not match the format of a login token:
             // Exit early so that other authentication handlers can try to parse it
             return null;
         }
-
         // Try to parse it
         final TokenInfo token = this.tokenManager.parse(loginToken);
         // If it is not a valid token, then trying to parse it would return null
@@ -244,11 +245,10 @@ public class TokenAuthenticationHandler extends DefaultJakartaAuthenticationFeed
         return info;
     }
 
-    private boolean isNodeTokenString(final String token)
+    private boolean isJwtTokenString(final String token)
     {
-        // Node tokens consist of a UUID and a hexadecimal key separated by an `_`
-        return token != null && token.matches(
-            "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}_[0-9a-f]+$");
+        // JWTs consist of 3 base64URL strings separated by `.`
+        return token != null && token.matches("^[\\w-_]+\\.[\\w-_]+\\.[\\w-_]+$");
     }
 
     /**

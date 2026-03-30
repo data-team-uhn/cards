@@ -30,6 +30,7 @@ import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
  */
 public interface CardsToken extends TokenInfo
 {
+
     /** The name of the parent node where tokens for a user are stored. */
     String TOKENS_NODE_NAME = "cards:tokens";
 
