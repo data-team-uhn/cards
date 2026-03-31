@@ -6,8 +6,8 @@
   "clinician-dashboard.Visit.js": ["asset:cards-login.ReLoginDialog.js", "asset:cards-locking.SubjectLockAction.js"],
   "clinician-dashboard.Patient.js": ["asset:cards-login.ReLoginDialog.js"],
   "clinician-dashboard.DashboardSettingsConfiguration.js": ["asset:cards-login.ReLoginDialog.js"],
-  "clinician-dashboard.FormView": ["cards-dataentry.FormView.js"],
-  "clinician-dashboard.SubjectView": ["cards-dataentry.SubjectView.js"],
-  "clinician-dashboard.Forms": ["cards-login.ReLoginDialog", "cards-dataentry.Forms.js"],
-  "clinician-dashboard.Subjects": ["cards-login.ReLoginDialog", "cards-dataentry.Subjects.js"]
+  "clinician-dashboard.FormView.js": ["asset:cards-dataentry.FormView.js"],
+  "clinician-dashboard.SubjectView.js": ["asset:cards-dataentry.SubjectView.js"],
+  "clinician-dashboard.Forms.js": ["asset:cards-login.ReLoginDialog.js", "asset:cards-dataentry.Forms.js"],
+  "clinician-dashboard.Subjects.js": ["asset:cards-login.ReLoginDialog.js", "asset:cards-dataentry.Subjects.js"]
 }
