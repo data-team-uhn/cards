@@ -43,6 +43,7 @@
     <module>data-entry</module>
     <module>data-model</module>
     <module>patient-portal</module>
+    <module>clinician-dashboard</module>
     <module>ldap-support</module>
     <module>saml-support</module>
     <module>utils</module>

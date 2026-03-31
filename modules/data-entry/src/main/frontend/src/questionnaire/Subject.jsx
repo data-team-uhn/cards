@@ -81,7 +81,13 @@ let createQueryURL = (query, type) => {
 
 function Subject(props) {
   checkPropTypes(Subject, props);
-  let { classes, maxDisplayed = 4, pageSize = 10, extensionURL } = props;
+  let {
+    classes,
+    maxDisplayed = 4,
+    pageSize = 10,
+    extension,
+    extensionURL
+  } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ activeTab, setActiveTab ] = useState(0);
   const fetchRelatedRef = useRef();
@@ -94,7 +100,8 @@ function Subject(props) {
   const navigate = useNavigate();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(getSubjectIdFromPath(location.pathname));
 
-  const baseURL = "../content.html" + (extensionURL ? "/" + extensionURL : "");
+  const activeExtensionURL = extension?.["cards:extensionURL"] || extensionURL || "";
+  const baseURL = "../content.html" + (activeExtensionURL ? "/" + activeExtensionURL : "");
 
   useEffect(() => {
     let newId = getSubjectIdFromPath(location.pathname);
@@ -131,7 +138,7 @@ function Subject(props) {
         currentSubject={currentSubject}
         withButton
         buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
-        extensionURL={extensionURL}
+        extensionURL={activeExtensionURL}
       />
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader
@@ -142,7 +149,7 @@ function Subject(props) {
           getSubject={handleSubject}
           reloadSubject={fetchRelatedRef}
           contentOffset={props.contentOffset}
-          extensionURL={extensionURL}
+          extensionURL={activeExtensionURL}
         />
         <Grid>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
@@ -165,7 +172,7 @@ function Subject(props) {
                   subject={currentSubject}
                   fetchSubjectData={fetchRelatedRef.current}
                   baseURL={baseURL}
-                  extensionURL={extensionURL}
+                  extensionURL={activeExtensionURL}
                 />
                 : <Grid>
                   <SubjectTimeline

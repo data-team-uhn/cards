@@ -73,8 +73,9 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
  * <Form />
  */
 function Form (props) {
-  let { classes, contentOffset, extensionURL } = props;
   let {
+    classes,
+    contentOffset,
     mode,
     className,
     disableHeader,
@@ -84,7 +85,10 @@ function Form (props) {
     doneLabel,
     onDone,
     questionnaireAddons,
-    paginationProps
+    paginationProps,
+    actionSwitches,
+    extension,
+    extensionURL
   } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -125,6 +129,7 @@ function Form (props) {
   let id = props.id || /Forms\/([^./]+)/.exec(location.pathname)[1];
   let isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
   let isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
+  const activeExtensionURL = extension?.["cards:extensionURL"] || extensionURL || "";
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
@@ -171,7 +176,7 @@ function Form (props) {
   let formNode = useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
-  const baseURL = "/content.html" + (extensionURL ? "/" + extensionURL : "");
+  const baseURL = "/content.html" + (activeExtensionURL ? "/" + activeExtensionURL : "");
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useLayoutEffect(() => {
@@ -469,14 +474,24 @@ function Form (props) {
     );
   }
 
+  let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]?.(data)));
+
+  let isDropdnEnabled = () => (
+    (isEdit && isActionEnabled("subject"))
+    || (!isEdit && isActionEnabled("text"))
+    || isActionEnabled("delete")
+  );
+
   let dropdownList = (
     <List>
       { isEdit ?
-        <ListItem className={classes.actionsMenuItem}>
-          <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
-            Change subject
-          </Button>
-        </ListItem>
+        ( isActionEnabled("subject") &&
+          <ListItem className={classes.actionsMenuItem}>
+            <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
+              Change subject
+            </Button>
+          </ListItem>
+        )
         : <>
           <ListItem className={classes.actionsMenuItem}>
             <PrintButton
@@ -489,17 +504,21 @@ function Form (props) {
               onClose={() => setActionsMenu(null)}
             />
           </ListItem>
-          <ListItem className={classes.actionsMenuItem}>
-            <Button
-              size="medium"
-              onClick={() => {
-                window.open(formURL + ".txt");
-                setActionsMenu(null);
-              }}>
-              Export as text
-            </Button>
-          </ListItem>
+          { isActionEnabled("text") &&
+            <ListItem className={classes.actionsMenuItem}>
+              <Button
+                size="medium"
+                onClick={() => {
+                  window.open(formURL + ".txt");
+                  setActionsMenu(null);
+                }}>
+                Export as text
+              </Button>
+            </ListItem>
+          }
         </> }
+
+      { isActionEnabled("delete") &&
       <ListItem className={classes.actionsMenuItem}>
         <DeleteButton
           entryPath={data ? data["@path"] : formURL}
@@ -510,45 +529,54 @@ function Form (props) {
           size="medium"
         />
       </ListItem>
+      }
     </List>
   )
 
   let formMenu = (
     <div className={classes.actionsMenu}>
       {isEdit ?
-        <Tooltip title="Save and view" onClick={onClose}>
-          <IconButton color="primary" size="large">
-            <DoneIcon />
-          </IconButton>
-        </Tooltip>
+        ( isActionEnabled("save") &&
+          <Tooltip title="Save and view">
+            <IconButton color="primary" size="large" onClick={onClose}>
+              <DoneIcon />
+            </IconButton>
+          </Tooltip>
+        )
         :
-        <Tooltip title="Edit">
-          <IconButton color="primary" onClick={onEdit} size="large">
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
+        ( isActionEnabled("edit") &&
+          <Tooltip title="Edit">
+            <IconButton color="primary" onClick={onEdit} size="large">
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        )
       }
-      <Tooltip title="More actions" onClick={(event) => setActionsMenu(event.currentTarget)}>
-        <IconButton size="large">
-          <MoreIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      { !actionsMenu && <div style={{ display: "none" }}>{ dropdownList }</div> }
-      <Popover
-        open={Boolean(actionsMenu)}
-        anchorEl={actionsMenu}
-        onClose={() => setActionsMenu(null)}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        { dropdownList }
-      </Popover>
+      { isDropdnEnabled() &&
+        <>
+          <Tooltip title="More actions">
+            <IconButton size="large" onClick={(event) => setActionsMenu(event.currentTarget)}>
+              <MoreIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          { !actionsMenu && <div style={{ display: "none" }}>{ dropdownList }</div> }
+          <Popover
+            open={Boolean(actionsMenu)}
+            anchorEl={actionsMenu}
+            onClose={() => setActionsMenu(null)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            { dropdownList }
+          </Popover>
+        </>
+      }
     </div>
   )
 
@@ -589,7 +617,7 @@ function Form (props) {
           title={title}
           breadcrumbs={[
             <Breadcrumbs separator="/" key="breadcrumbs">
-              {getHierarchyAsList(data?.subject, undefined, extensionURL)
+              {getHierarchyAsList(data?.subject, undefined, activeExtensionURL)
                 .map(a => <Typography variant="overline" key={a}>{a}</Typography>)}
             </Breadcrumbs>
           ]}
