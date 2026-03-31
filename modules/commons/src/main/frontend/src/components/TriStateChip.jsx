@@ -39,7 +39,9 @@ function TriStateChip(props) {
     defaultTooltip,
     positiveTooltip,
     negativeTooltip,
-    onChange
+    onSetPositive,
+    onSetNegative,
+    onClear
   } = props;
 
   let states = [
@@ -47,6 +49,18 @@ function TriStateChip(props) {
     new ChipState(new ChipProps(label, "outlined", "success", <CheckCircleIcon/>), 1, positiveTooltip),
     new ChipState(new ChipProps(label, "outlined", "error",  <CancelIcon/>), -1, negativeTooltip),
   ]
+
+  let onChange = (newState) => {
+    if (newState == 0) {
+      onClear();
+    }
+    else if (newState == 1) {
+      onSetPositive();
+    }
+    else {
+      onSetNegative();
+    }
+  }
 
   return MultiStateChip({
     "key": key,
@@ -63,7 +77,9 @@ TriStateChip.propTypes = {
   defaultTooltip: PropTypes.string.isRequired,
   positiveTooltip: PropTypes.string.isRequired,
   negativeTooltip: PropTypes.string.isRequired,
-  onChange: PropTypes.func
+  onSetPositive: PropTypes.func,
+  onSetNegative: PropTypes.func,
+  onClear: PropTypes.func
 }
 
 export default TriStateChip;
