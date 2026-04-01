@@ -33,9 +33,6 @@ const userboardStyles = theme => ({
   info: {
     backgroundColor: theme.palette.info.main
   },
-  addIcon: {
-    backgroundColor: theme.palette.primary.main
-  },
   dialogTitle: {
     padding: theme.spacing(2,0,2,3)
   },

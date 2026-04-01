@@ -355,8 +355,6 @@ const sidebarStyles = theme => ({
     flexDirection: "column",
     justifyContent: "space-between"
   },
-  adminButton: {
-  },
   adminSidebar: {
     [theme.breakpoints.up("md")]: {
       width: "100%",

@@ -320,7 +320,7 @@ function FileQuestion(props) {
             error={error}
             disabled={disableUploads}
           />
-          { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
+          { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.fileResourceAnswerList}>
             {Object.keys(uploadedFiles).map((filepath, idx) =>
               <li key={idx}>
                 <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download underline="hover">{filepath}</Link>

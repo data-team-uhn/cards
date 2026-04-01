@@ -34,7 +34,7 @@ import { DateTime } from "luxon";
 import { useNavigate } from "react-router";
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle.jsx";
+import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/questionnaireConstants.jsx";
 import ResourceHeader from "../questionnaire/ResourceHeader.jsx";
 import { getSubjectIdFromPath, getHierarchyAsList, getHomepageLink } from "../questionnaire/SubjectIdentifier";
 
