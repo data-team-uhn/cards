@@ -37,9 +37,6 @@ const appStyles = theme => ({
   container: {
     padding: theme.spacing(0, 2)
   },
-  map: {
-    marginTop: "70px"
-  }
 });
 
 export default appStyles;

@@ -53,9 +53,6 @@ const headerStyles = theme => ({
   flex: {
     flex: 1
   },
-  appResponsive: {
-    top: "8px"
-  },
   primary: {
     backgroundColor: primaryColor[0],
     color: whiteColor,
@@ -80,11 +77,6 @@ const headerStyles = theme => ({
     backgroundColor: dangerColor[0],
     color: whiteColor,
     ...defaultBoxShadow
-  },
-  skeletonHeader: {
-    backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
-    borderRadius: "15px",
-    width: theme.spacing(32)
   },
   dropdownItem: {
     whiteSpace: "normal",
