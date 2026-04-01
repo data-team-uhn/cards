@@ -114,7 +114,6 @@ Available JSX files
 	--> ./modules/homepage/src/main/frontend/src/themePage/Sidebar/AppInfo.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/AdminNavbarLinks.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/QuickSearchIdentifier.jsx
-	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/dropdownStyles.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/Navbar.jsx
 	--> ./modules/homepage/src/main/frontend/src/themePage/Navbars/HeaderSearchBar.jsx
 	--> ./modules/homepage/src/main/frontend/src/adminDashboard/AdminDashboard.jsx

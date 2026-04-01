@@ -18,8 +18,7 @@ import {
   warningColor,
   dangerColor,
   whiteColor,
-  grayColor,
-  hexToRgb
+  grayColor
 } from "./themeStyles.jsx";
 
 const headerStyles = theme => ({
@@ -53,9 +52,6 @@ const headerStyles = theme => ({
   flex: {
     flex: 1
   },
-  appResponsive: {
-    top: "8px"
-  },
   primary: {
     backgroundColor: primaryColor[0],
     color: whiteColor,
@@ -81,10 +77,11 @@ const headerStyles = theme => ({
     color: whiteColor,
     ...defaultBoxShadow
   },
-  skeletonHeader: {
-    backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
-    borderRadius: "15px",
-    width: theme.spacing(32)
+  // Default meta themeColor is "blue" (libs/cards/conf/ThemeColor.json)
+  blue: {
+    backgroundColor: infoColor[0],
+    color: whiteColor,
+    ...defaultBoxShadow
   },
   dropdownItem: {
     whiteSpace: "normal",
