@@ -18,8 +18,7 @@ import {
   warningColor,
   dangerColor,
   whiteColor,
-  grayColor,
-  hexToRgb
+  grayColor
 } from "./themeStyles.jsx";
 
 const headerStyles = theme => ({
@@ -75,6 +74,12 @@ const headerStyles = theme => ({
   },
   danger: {
     backgroundColor: dangerColor[0],
+    color: whiteColor,
+    ...defaultBoxShadow
+  },
+  // Default meta themeColor is "blue" (libs/cards/conf/ThemeColor.json)
+  blue: {
+    backgroundColor: infoColor[0],
     color: whiteColor,
     ...defaultBoxShadow
   },

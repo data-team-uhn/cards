@@ -880,7 +880,7 @@ function QuestionnaireSet(props) {
         step={stepIndicator(crtStep, true)}
       />
       <QuestionnaireSetScreen
-        className={classes[screenType] + (screenSubtype && classes[screenSubtype] ? (" " + classes[screenSubtype]) : "")}
+        className={classes[screenType]}
         key="screen"
       >
         {
