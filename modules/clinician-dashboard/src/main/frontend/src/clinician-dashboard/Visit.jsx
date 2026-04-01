@@ -40,7 +40,7 @@ import {
 } from "@mui/material";
 import { DateTime } from "luxon";
 import { useNavigate } from "react-router";
-import { makeStyles, withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import SurveyLinkButton from "./SurveyLinkButton";
 import FormattedText from "../components/FormattedText";
@@ -48,17 +48,13 @@ import EditButton from "../dataHomepage/EditButton";
 import PrintButton from "../dataHomepage/PrintButton";
 import SubjectLockAction from "../locking/SubjectLockAction";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle";
+import formStyles from "../questionnaire/formStyles.jsx";
+import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/questionnaireConstants.jsx";
 import ResourceHeader from "../questionnaire/ResourceHeader";
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy } from "../questionnaire/SubjectIdentifier";
 
 const useStyles = makeStyles()(theme => ({
-  formItem: {
-    "& .MuiListItemAvatar-root" : {
-      marginTop: 6,
-      zoom: 1,
-    },
-  },
+  ...formStyles(theme),
   stepIndicator : {
     border: "1px solid " + theme.palette.action.disabled,
     background: "transparent",
@@ -425,4 +421,4 @@ function Visit(props) {
   );
 }
 
-export default withStyles(Visit, QuestionnaireStyle);
+export default Visit;

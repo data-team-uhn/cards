@@ -252,20 +252,6 @@ function QuestionnaireSet(props) {
     return contentOffset || 0;
   }, [crtStep, contentOffset]);
 
-  // Subtype for non-survey screens
-  const screenSubtype = useMemo(() => {
-    return (
-      screenType == "screen" ?
-        isComplete ?
-          isSubmitted ?
-            "summaryScreen"
-            :
-            "reviewScreen"
-          : "incompleteScreen"
-        : ""
-    );
-  }, [screenType, isComplete, isSubmitted]);
-
   // Reset the crtFormId when returning to the welcome screen
   useEffect(() => {
     crtStep == -1 && setCrtFormId(null);
