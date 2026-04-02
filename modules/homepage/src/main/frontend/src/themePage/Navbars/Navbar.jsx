@@ -11,10 +11,8 @@
 */
 import Menu from "@mui/icons-material/Menu";
 import { AppBar, Box, Toolbar, IconButton } from "@mui/material";
-import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
-// @mui/icons-material
 
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
@@ -27,7 +25,7 @@ function Header({ ...props }) {
   const { classes, color } = props;
 
   return (
-    <AppBar className={classNames(classes.appBar, classes[color])}>
+    <AppBar className={classes.appBar}>
       <Toolbar className={classes.container}>
         <div className={classes.flex} />
         {/* While the screen is wide enough, display the navbar at the topright */}
