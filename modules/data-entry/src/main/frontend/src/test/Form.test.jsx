@@ -38,6 +38,11 @@ jest.mock('react-router', () => {
   const React = require('react');
   return {
     useNavigate: () => mockNavigate,
+    useBlocker: () => ({
+      state: 'unblocked',
+      proceed: jest.fn(),
+      reset: jest.fn(),
+    }),
     Link: ({ children, to, ...props }) => React.createElement('a', { href: to, ...props }, children),
     useLocation: () => ({ pathname: '/', search: '', hash: '' }),
   };

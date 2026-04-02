@@ -760,6 +760,7 @@ function Form (props) {
                 title="Set subject"
                 selectedQuestionnaire={data?.questionnaire}
                 disableRedirect
+                ariaLabel="set-subject-dialog"
               />
             }
             <LoadingOverlay open={fetchInProgress} />
