@@ -48,13 +48,21 @@ import EditButton from "../dataHomepage/EditButton";
 import PrintButton from "../dataHomepage/PrintButton";
 import SubjectLockAction from "../locking/SubjectLockAction";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import formStyles from "../questionnaire/formStyles.jsx";
+import actionMenuStyles from "../questionnaire/actionMenuStyles.jsx";
 import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/questionnaireConstants.jsx";
 import ResourceHeader from "../questionnaire/ResourceHeader";
+import statusFlagStyles from "../questionnaire/statusFlagStyles.jsx";
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy } from "../questionnaire/SubjectIdentifier";
 
 const useStyles = makeStyles()(theme => ({
-  ...formStyles(theme),
+  ...actionMenuStyles(theme),
+  ...statusFlagStyles(theme),
+  formItem: {
+    "& .MuiListItemAvatar-root" : {
+      marginTop: 6,
+      zoom: 1,
+    },
+  },
   stepIndicator : {
     border: "1px solid " + theme.palette.action.disabled,
     background: "transparent",
@@ -396,7 +404,7 @@ function Visit(props) {
         title={`Visit ${visitNumber}`}
         breadcrumbs={(parents && getHierarchyAsList(parents, true) || "")}
         action={
-          <div className={props.classes.actionsMenu}>
+          <div className={classes.actionsMenu}>
             { !isLocked && <>
               <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} size="medium"/>
               <SubjectLockAction subject={visit} reloadSubject={loadExistingData} size="medium"/>

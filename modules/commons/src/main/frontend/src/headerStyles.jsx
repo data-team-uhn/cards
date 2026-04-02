@@ -77,12 +77,6 @@ const headerStyles = theme => ({
     color: whiteColor,
     ...defaultBoxShadow
   },
-  // Default meta themeColor is "blue" (libs/cards/conf/ThemeColor.json)
-  blue: {
-    backgroundColor: infoColor[0],
-    color: whiteColor,
-    ...defaultBoxShadow
-  },
   dropdownItem: {
     whiteSpace: "normal",
     "& .MuiListItem-root" : {
