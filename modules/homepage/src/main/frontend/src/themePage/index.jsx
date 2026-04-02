@@ -22,9 +22,8 @@ import { useState, useEffect } from "react";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider } from '@mui/material/styles';
-import { createBrowserHistory } from "history";
 import { createRoot } from 'react-dom/client';
-import { unstable_HistoryRouter as Router, Routes, Route, Navigate } from "react-router";
+import { createBrowserRouter, RouterProvider, Routes, Route, Navigate } from "react-router";
 import { withStyles } from 'tss-react/mui';
 
 import PageStart from "../PageStart";
@@ -164,25 +163,32 @@ function Main(props) {
 
 const MainComponent = withStyles(Main, IndexStyle);
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Navigate to="/content.html/Questionnaires/User" replace />,
+  },
+  {
+    path: "/content",
+    element: <Navigate to="/content.html/Questionnaires/User" replace />,
+  },
+  {
+    path: "*",
+    element: <MainComponent />,
+  },
+]);
+
 const cache = createCache({
   key: 'tss',
   // Enable style speedy insertion mode
   speedy: true
 });
 
-const hist = createBrowserHistory();
-hist.listen(({ action, location }) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#main-container'));
 root.render(
   <CacheProvider value={cache}>
     <ThemeProvider theme={appTheme}>
-      <Router history={hist}>
-        <Routes>
-          <Route path="/*" element={<MainComponent />}/>
-          <Route path="/" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
-          <Route path="/content" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
-        </Routes>
-      </Router>
+      <RouterProvider router={router} />
     </ThemeProvider>
   </CacheProvider>
 );

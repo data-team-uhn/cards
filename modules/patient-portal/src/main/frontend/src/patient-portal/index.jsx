@@ -21,9 +21,8 @@ import { useState, useEffect } from "react";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider } from '@mui/material/styles';
-import { createBrowserHistory } from "history";
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 
 import Footer from "./Footer.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
@@ -95,25 +94,32 @@ function PatientPortalHomepage (props) {
   );
 }
 
+const router = createBrowserRouter([
+  {
+    path: "/Survey.html/",
+    element: <PatientPortalHomepage />,
+  },
+  {
+    path: "/Survey",
+    element: <Navigate to="/Survey.html/" replace />,
+  },
+  {
+    path: "/",
+    element: <Navigate to="/Survey.html/" replace />,
+  },
+]);
+
 const cache = createCache({
   key: 'tss',
   // Enable style speedy insertion mode
   speedy: true
 });
 
-const hist = createBrowserHistory();
-hist.listen(({ action, location }) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#patient-portal-container'));
 root.render(
   <CacheProvider value={cache}>
     <ThemeProvider theme={portalTheme}>
-      <Router history={hist}>
-        <Routes>
-          <Route path="/Survey.html/" element={<PatientPortalHomepage />}/>
-          <Route path="/Survey" element={<Navigate replace to="/Survey.html/" />}/>
-          <Route path="/" element={<Navigate replace to="/Survey.html/" />}/>
-        </Routes>
-      </Router>
+      <RouterProvider router={router} />
     </ThemeProvider>
   </CacheProvider>
 );
