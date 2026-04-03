@@ -225,7 +225,7 @@ let EditDialog = (props) => {
               JSON={json[0]}
               edit={true}
               path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
-              saveButtontRef={saveButtonRef}
+              saveButtonRef={saveButtonRef}
             />
           </Grid>
         </DialogContent>
