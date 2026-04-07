@@ -52,13 +52,13 @@ function TriStateChip(props) {
 
   let onChange = (newState) => {
     if (newState == 0) {
-      onClear();
+      onClear?.();
     }
     else if (newState == 1) {
-      onSetPositive();
+      onSetPositive?.();
     }
     else {
-      onSetNegative();
+      onSetNegative?.();
     }
   }
 
