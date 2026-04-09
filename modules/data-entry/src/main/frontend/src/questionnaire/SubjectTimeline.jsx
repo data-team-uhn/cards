@@ -279,7 +279,7 @@ function SubjectTimeline(props) {
           currentSection = currentSection ? currentSection[1] : "";
         }
 
-        let currentAnswers = Object.entries(data.form ? data.form : data)
+        let currentAnswers = Object.entries(data)
           .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
                                   && value["section"]["@name"] == entryDefinition["@name"])[0];
         currentAnswers = currentAnswers ? currentAnswers[1] : "";
@@ -301,7 +301,7 @@ function SubjectTimeline(props) {
       dateAnswerData = dateAnswerData.concat(
         handleDisplayNodes(
           Object.entries(formEntry.form.questionnaire).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType'])),
-          formEntry,
+          formEntry.form,
           {
             level: formEntry.level,
             names: formEntry.names,
