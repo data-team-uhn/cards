@@ -310,6 +310,10 @@ function Form (props) {
     setIncompleteQuestionEl(null);
     if (performCheckin) {
       data.append(":checkin", "true");
+    } else {
+      // If the form has been checked in in the background, it will be automatically checked out.
+      // This disabled re-checking in right away, we want to keep it checked out while we're still editing.
+      data.append(":autoCheckin", "false");
     }
     return fetchWithReLogin(globalLoginDisplay, formURL, {
       method: "POST",
@@ -324,6 +328,15 @@ function Form (props) {
         return;
       }
       if (response.ok) {
+        response.json()
+          .then(json => {
+            let newBaseVersion = json.changes?.find(x => x.type=='moved')?.argument[1];
+            if (newBaseVersion) {
+              setBaseVersion(newBaseVersion);
+            }
+          })
+          .catch(e => console.error("Failed to update the base version", e));
+
         if (!disableHeader) {
           fetchWithReLogin(globalLoginDisplay, `${formURL}/statusFlags.json`)
             .then((response) => response.ok ? response.json() : Promise.reject(response))
