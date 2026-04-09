@@ -531,7 +531,17 @@ function MultipleChoice(props) {
                 if (maxAnswers == 1) {
                   setSelection([[event.target.value, event.target.value]]);
                 } else {
-                  setSelection(Array.of(event.target.value || []).flat().map(v => [v,v]));
+                  setSelection(oldSelection => {
+                    let isExclusiveOpt = o => (o == naOption || o == noneOfTheAboveOption);
+                    let oldExclusiveOpts = oldSelection.map(s => s?.[VALUE_POS]).filter(isExclusiveOpt);
+                    let newSelection = Array.of(event?.target?.value || []).flat()
+                    let newExclusiveOpts = newSelection.filter(o => isExclusiveOpt(o) && !oldExclusiveOpts.includes(o));
+                    return (
+                      newExclusiveOpts?.length
+                        ? newExclusiveOpts
+                        : newSelection.filter(v => !oldExclusiveOpts.includes(v))
+                    ).map(v => [v,v]);
+                  });
                 }
                 handleFormDataChange?.();
               }}

@@ -36,6 +36,12 @@
                   "type": "textOptions",
                   "childrenType": "cards:AnswerOption"
                 }
+              },
+              "select" : {
+                "answerOptions" : {
+                  "type": "textOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               }
             }
           },
@@ -157,6 +163,12 @@
                   "childrenType": "cards:AnswerOption"
                 }
               },
+              "select" : {
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
+              },
               "slider": {
                 "isRange" : "boolean",
                 "minValueLabel" : "string",
@@ -219,6 +231,12 @@
               "list+input" : {
                 "decimalScale": "long",
                 "compact" : "boolean",
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
+              },
+              "select" : {
                 "answerOptions" : {
                   "type": "numberOptions",
                   "childrenType": "cards:AnswerOption"
@@ -350,6 +368,12 @@
                 "enableVocabularyBrowser" : "boolean",
                 "enableUserEntry" : "boolean",
                 "compact" : "boolean",
+                "answerOptions" : {
+                  "type": "textOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
+              },
+              "select" : {
                 "answerOptions" : {
                   "type": "textOptions",
                   "childrenType": "cards:AnswerOption"
