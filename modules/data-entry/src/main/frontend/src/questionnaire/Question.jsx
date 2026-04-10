@@ -136,7 +136,7 @@ function Question (props) {
             :
             children
           }
-          { enableNotes &&
+          { !isEdit && enableNotes &&
             <Note readonly pageActive={pageActive} existingAnswer={existingAnswer} />
           }
         </div>
