@@ -16,6 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+import { useEffect } from 'react';
 
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -23,6 +24,8 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import PropTypes from "prop-types";
 
 import MultiStateChip, { ChipState, ChipProps } from './MultiStateChip';
+
+let states = [];
 
 /**
  * A 3 state chip supporting the following 3 values and states, each with a configurable tooltip.
@@ -36,19 +39,21 @@ function TriStateChip(props) {
     key,
     size,
     label,
-    defaultTooltip,
-    positiveTooltip,
-    negativeTooltip,
+    defaultTooltip = "Clear",
+    positiveTooltip = "Include",
+    negativeTooltip = "Exclude",
     onSetPositive,
     onSetNegative,
     onClear
   } = props;
 
-  let states = [
-    new ChipState(new ChipProps(label, "outlined", "primary", <RadioButtonUncheckedIcon/>), 0, defaultTooltip),
-    new ChipState(new ChipProps(label, "outlined", "success", <CheckCircleIcon/>), 1, positiveTooltip),
-    new ChipState(new ChipProps(label, "outlined", "error",  <CancelIcon/>), -1, negativeTooltip),
-  ]
+  useEffect(() => {
+    states = [
+      new ChipState(new ChipProps(label, "outlined", "primary", <RadioButtonUncheckedIcon/>), 0, defaultTooltip),
+      new ChipState(new ChipProps(label, "outlined", "success", <CheckCircleIcon/>), 1, positiveTooltip),
+      new ChipState(new ChipProps(label, "outlined", "error",  <CancelIcon/>), -1, negativeTooltip)
+    ]
+  }, [label, defaultTooltip, positiveTooltip, negativeTooltip]);
 
   let onChange = (newState) => {
     if (newState == 0) {
@@ -72,11 +77,11 @@ function TriStateChip(props) {
 
 TriStateChip.propTypes = {
   key: PropTypes.string,
-  size: PropTypes.oneOf(["small", "medium", "large"]),
-  label: PropTypes.string,
-  defaultTooltip: PropTypes.string.isRequired,
-  positiveTooltip: PropTypes.string.isRequired,
-  negativeTooltip: PropTypes.string.isRequired,
+  size: PropTypes.oneOf(["small", "medium"]),
+  label: PropTypes.string.isRequired,
+  defaultTooltip: PropTypes.string,
+  positiveTooltip: PropTypes.string,
+  negativeTooltip: PropTypes.string,
   onSetPositive: PropTypes.func,
   onSetNegative: PropTypes.func,
   onClear: PropTypes.func

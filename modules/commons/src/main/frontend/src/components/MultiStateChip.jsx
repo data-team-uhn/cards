@@ -65,17 +65,8 @@ function MultiStateChip(props) {
 
 MultiStateChip.propTypes = {
   key: PropTypes.string,
-  size: PropTypes.oneOf(["small", "medium", "large"]),
-  states: PropTypes.arrayOf(PropTypes.shape({
-    chipProps: PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      variant: PropTypes.oneOf(["filled", "outlined"]),
-      color: PropTypes.string,
-      icon: PropTypes.node,
-    }),
-    value: PropTypes.string,
-    tooltip: PropTypes.string.isRequired,
-  })).isRequired
+  size: PropTypes.oneOf(["small", "medium"]),
+  states: PropTypes.arrayOf(PropTypes.instanceOf(ChipState)).isRequired
 }
 
 export default MultiStateChip;
