@@ -51,13 +51,13 @@ let EditorInput = (props) => {
     <Grid>
       <Grid container alignItems="flex-start" spacing={2}>
         <Grid size={4} className={classes.labelContainer}>
-          <Typography variant="subtitle2">
+          <Typography variant="subtitle2" sx={{ display: "flex" }}>
             {camelCaseToWords(name?.concat(':')) || ''}
             { name && hint &&
             <Tooltip enterTouchDelay={200} title={
               <FormattedText variant="caption">{hint}</FormattedText>
             }>
-              <Info color="primary" />
+              <Info color="primary" fontSize="small" sx={{ pl: .25 }} />
             </Tooltip>
             }
           </Typography>
