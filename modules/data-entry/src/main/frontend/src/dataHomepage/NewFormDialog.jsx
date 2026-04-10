@@ -80,7 +80,8 @@ function NewFormDialog(props) {
   //table state
   const [globalFilter, setGlobalFilter] = useState('');
   const [pagination, setPagination] = useState({
-    pageIndex: 0,
+    selectedPage: 0,
+    activePage: 0,
     pageSize: 5,
   });
 
@@ -325,7 +326,7 @@ function NewFormDialog(props) {
 
       url.searchParams.set("query", sql);
       url.searchParams.set("limit", pagination.pageSize);
-      url.searchParams.set("offset", pagination.pageIndex*pagination.pageSize);
+      url.searchParams.set("offset", pagination.activePage*pagination.pageSize);
       const response = await fetchWithReLogin(globalLoginDisplay, url);
       const json = await response.json();
       setData(json["rows"]);
@@ -339,9 +340,34 @@ function NewFormDialog(props) {
   }, [
     currentSubject?.["jcr:uuid"],
     globalFilter,
-    pagination.pageIndex,
+    pagination.activePage,
     pagination.pageSize
   ]);
+
+  // When the number of valid pages changes, make sure to keep some results visible.
+  // Track two pages:
+  // - The most recent page the user has navigated to (selected page)
+  // - The page that is currently displayed (active page)
+  // When the amount of pages reduces, adjust the active page down if needed to keep visible results.
+  // When the amount of pages increases, adjust the active page back up until it reaches the user's selected page.
+  useEffect(() => {
+    let highestPage = Math.floor((rowCount - 1)/pagination.pageSize);
+    if (rowCount > 0 && (pagination.activePage > highestPage)) {
+      // If the current page has no results on it, reduce the active page to the last page with results
+      setPagination((prev) => ({
+        ...prev,
+        activePage: highestPage
+      }))
+    } else if (pagination.activePage < pagination.selectedPage && highestPage > pagination.activePage)
+      // If there are later pages than the active page, increase the active page until it reaches the user selected page
+      setPagination((prev) => ({
+        ...prev,
+        activePage: Math.min(highestPage, prev.selectedPage)
+      }))
+  }, [
+    rowCount,
+    pagination.pageSize
+  ])
 
   let handleChangeRowsPerPage = (event) => {
     setPagination((prev) => ({
@@ -353,7 +379,8 @@ function NewFormDialog(props) {
   let handleChangePage = (event, page) => {
     setPagination((prev) => ({
       ...prev,
-      pageIndex: page,
+      selectedPage: page,
+      activePage: page,
     }));
   }
 
@@ -447,7 +474,7 @@ function NewFormDialog(props) {
                   rowsPerPageOptions={[5, 10, 15, 20, 25, 30, 50, 100, 1000]}
                   count={totalIsApproximate ? -1 : rowCount}
                   rowsPerPage={pagination.pageSize}
-                  page={pagination.pageIndex}
+                  page={pagination.activePage}
                   onPageChange={handleChangePage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   labelDisplayedRows={({ from, to, count }) =>
