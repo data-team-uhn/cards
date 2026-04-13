@@ -329,7 +329,13 @@ function NewFormDialog(props) {
       url.searchParams.set("offset", pagination.activePage*pagination.pageSize);
       const response = await fetchWithReLogin(globalLoginDisplay, url);
       const json = await response.json();
-      setData(json["rows"]);
+      if (json.totalrows > 0 && json.returnedrows == 0) {
+        // There is relevant data available but we are on too late of a page to display it:
+        // Do not setData to an empty array as a new fetch will be triggered and we want to avoid
+        // the screen flashing to a larger "loading data from nothing" table during that fetch
+      } else {
+        setData(json["rows"]);
+      }
       setRowCount(json.totalrows);
       setTotalIsApproximate(json.totalIsApproximate);
 
@@ -353,7 +359,7 @@ function NewFormDialog(props) {
   useEffect(() => {
     let highestPage = Math.floor((rowCount - 1)/pagination.pageSize);
     if (rowCount > 0 && (pagination.activePage > highestPage)) {
-      // If the current page has no results on it, reduce the active page to the last page with results
+      // If the current page has no results on it and there is available data, reduce the active page to the last page with results
       setPagination((prev) => ({
         ...prev,
         activePage: highestPage
