@@ -99,7 +99,10 @@ function CustomTimelineConnector(props) {
 }
 
 function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
-  let dateText = DateTimeUtilities.formatDateAnswer(DateTimeUtilities.VIEW_DATE_FORMAT, dateEntry.date);
+  let displayFormat = typeof dateEntry.date === "number"
+    ? DateTimeUtilities.YEAR_DATE_FORMAT
+    : DateTimeUtilities.VIEW_DATE_FORMAT;
+  let dateText = DateTimeUtilities.formatDateAnswer(displayFormat, dateEntry.date);
   let diff = DateTimeUtilities.dateDifference(dateEntry.date, nextEntry && nextEntry.date);
 
   let separatorIsAncestor = false;
@@ -285,7 +288,7 @@ function SubjectTimeline(props) {
           currentSection = currentSection ? currentSection[1] : "";
         }
 
-        let currentAnswers = Object.entries(data.form ? data.form : data)
+        let currentAnswers = Object.entries(data)
           .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
                                   && value["section"]["@name"] == entryDefinition["@name"])[0];
         currentAnswers = currentAnswers ? currentAnswers[1] : "";
@@ -307,7 +310,7 @@ function SubjectTimeline(props) {
       dateAnswerData = dateAnswerData.concat(
         handleDisplayNodes(
           Object.entries(formEntry.form.questionnaire).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType'])),
-          formEntry,
+          formEntry.form,
           {
             level: formEntry.level,
             names: formEntry.names,
@@ -318,7 +321,10 @@ function SubjectTimeline(props) {
         ))
     });
     return dateAnswerData.sort((a, b) => {
-      return a.date.value > b.date.value ? 1 : (a.date.value === b.date.value ? 0 : -1)
+      // Year answers are stored as longs: convert to strings for proper comparison
+      let aVal = a.date.value.toString();
+      let bVal = b.date.value.toString();
+      return aVal > bVal ? 1 : (aVal === bVal ? 0 : -1)
     });
   }
 
@@ -341,11 +347,14 @@ function SubjectTimeline(props) {
     let previousDate = null;
 
     for (const dateAnswer of dateAnswers) {
-      let diff = DateTimeUtilities.dateDifference(previousDate, dateAnswer.date.value);
-      if (newDateEntries.length === 0 || diff.short) {
+      let newDate = dateAnswer.date.value;
+      let diff = DateTimeUtilities.dateDifference(previousDate, newDate);
+      // Do not group year answers with fully specified answers that are January first:
+      // years are stored as long which gets parsed to type number, other dates are stored as strings
+      if (newDateEntries.length === 0 || diff.short || typeof previousDate !== typeof newDate) {
         // Create a new paper
         newDateEntries.push({
-          date: dateAnswer.date.value,
+          date: newDate,
           level: dateAnswer.level,
           questions: []
         })

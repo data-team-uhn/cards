@@ -27,6 +27,7 @@ export default class DateTimeUtilities {
   static slingDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
   static defaultDateFormat = "yyyy-MM-dd";
   static VIEW_DATE_FORMAT = "yyyy/MM/dd";
+  static YEAR_DATE_FORMAT = "yyyy";
 
   static YEAR_DATE_TYPE = "year";
   static MONTH_DATE_TYPE = "month";
@@ -93,6 +94,10 @@ export default class DateTimeUtilities {
     }
 
     let new_date = date;
+    if (typeof new_date === "number") {
+      // Year date answers are saved as numbers: convert to a string for parsing
+      new_date = new_date.toString();
+    }
     if (typeof new_date === "string") {
       new_date = fromFormat ? DateTime.fromFormat(new_date, fromFormat) : DateTime.fromISO(new_date);
     }
