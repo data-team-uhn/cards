@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Admin Subject",
+  "cards:targetURL": "/content.html/admin/Subjects/*",
+  "cards:extensionURL": "admin",
+  "cards:extensionRenderURL": "asset:cards-dataentry.Subject.js"
+}

@@ -51,6 +51,7 @@
               SLING-INF/content/Survey/PatientAccess.xml;path:=/Survey/PatientAccess;overwrite:=true,
               SLING-INF/content/Survey/TermsOfUse.xml;path:=/Survey/TermsOfUse;overwrite:=true,
               SLING-INF/content/Survey/SurveyInstructions.xml;path:=/Survey/SurveyInstructions;overwrite:=true,
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
