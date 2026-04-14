@@ -329,13 +329,14 @@ function NewFormDialog(props) {
       url.searchParams.set("offset", pagination.activePage*pagination.pageSize);
       const response = await fetchWithReLogin(globalLoginDisplay, url);
       const json = await response.json();
-      if (json.totalrows > 0 && json.returnedrows == 0) {
-        // There is relevant data available but we are on too late of a page to display it:
-        // Do not setData to an empty array as a new fetch will be triggered and we want to avoid
-        // the screen flashing to a larger "loading data from nothing" table during that fetch
-      } else {
+
+      // If there is relevant data available but we are on too late of a page to display it:
+      // Do not setData to an empty array as a new fetch will be triggered and we want to avoid
+      // the screen flashing to a larger "loading data from nothing" table during that fetch
+      if (!(json.totalrows > 0 && json.returnedrows == 0)) {
         setData(json["rows"]);
       }
+
       setRowCount(json.totalrows);
       setTotalIsApproximate(json.totalIsApproximate);
 
@@ -357,18 +358,18 @@ function NewFormDialog(props) {
   // When the amount of pages reduces, adjust the active page down if needed to keep visible results.
   // When the amount of pages increases, adjust the active page back up until it reaches the user's selected page.
   useEffect(() => {
-    let highestPage = Math.floor((rowCount - 1)/pagination.pageSize);
-    if (rowCount > 0 && (pagination.activePage > highestPage)) {
+    let lastPage = Math.floor((rowCount - 1)/pagination.pageSize);
+    if (rowCount > 0 && (pagination.activePage > lastPage)) {
       // If the current page has no results on it and there is available data, reduce the active page to the last page with results
       setPagination((prev) => ({
         ...prev,
-        activePage: highestPage
+        activePage: lastPage
       }))
-    } else if (pagination.activePage < pagination.selectedPage && highestPage > pagination.activePage)
+    } else if (pagination.activePage < pagination.selectedPage && lastPage > pagination.activePage)
       // If there are later pages than the active page, increase the active page until it reaches the user selected page
       setPagination((prev) => ({
         ...prev,
-        activePage: Math.min(highestPage, prev.selectedPage)
+        activePage: Math.min(lastPage, prev.selectedPage)
       }))
   }, [
     rowCount,
