@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Subjects",
+  "cards:targetURL": "/content.html/admin/Subjects",
+  "cards:extensionURL": "admin",
+  "cards:icon": "asset:cards-dataentry.subjectsIcon.js",
+  "cards:hint": "All created subjects"
+}
