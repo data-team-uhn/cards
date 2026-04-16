@@ -70,6 +70,7 @@ function QuickSearchResults(props) {
             customUrl={'/query?quick='+ encodeURIComponent(anchor) + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
             defaultLimit={10}
             disableTopPagination
+            showTotalRows={true}
           />
         </CardContent>
       </Card>
