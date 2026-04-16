@@ -171,8 +171,9 @@ function NumberQuestion(props) {
   const sliderValues = [typeof(lowerLimit) === "undefined" ? minValue : Number(lowerLimit), typeof(upperLimit) === "undefined" ? minValue : Number(upperLimit)];
 
   const isSlider = displayMode === "slider" && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined';
-  const isRangeSelected = isRange && typeof(lowerLimit) != 'undefined' && !isNaN(+lowerLimit) && typeof(upperLimit) != 'undefined' && !isNaN(+upperLimit);
-  const isSingleSliderSelected = isSlider && typeof(sliderValue) != 'undefined' && !isNaN(+sliderValue);
+  const isValidNumber = (input) => typeof(input) != 'undefined' && input !== "" && !isNaN(input);
+  const isRangeSelected = isRange && isValidNumber(lowerLimit) && isValidNumber(upperLimit);
+  const isSingleSliderSelected = isSlider && isValidNumber(sliderValue);
 
   const formContext = useFormReaderContext();
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
