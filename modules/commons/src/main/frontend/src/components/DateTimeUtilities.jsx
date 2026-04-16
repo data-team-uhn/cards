@@ -133,7 +133,7 @@ export default class DateTimeUtilities {
       return "";
     }
     if (Array.isArray(value)) {
-      return `${this.formatDateAnswer(dateFormat, value[0])} to ${this.formatDateAnswer(dateFormat, value[1])}`;
+      return `${this.formatDateAnswer(dateFormat, value[0], fromFormat)} to ${this.formatDateAnswer(dateFormat, value[1], fromFormat)}`;
     }
     dateFormat = dateFormat || this.defaultDateFormat;
     let dateType = this.getDateType(dateFormat);

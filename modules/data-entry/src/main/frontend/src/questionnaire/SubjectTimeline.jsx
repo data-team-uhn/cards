@@ -99,7 +99,8 @@ function CustomTimelineConnector(props) {
 }
 
 function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
-  let displayFormat = typeof dateEntry.date === "number"
+  let displayFormat = (typeof dateEntry.date === "number"
+    || (Array.isArray(dateEntry.date) && dateEntry.date.length > 0 && typeof dateEntry.date[0] === "number"))
     ? DateTimeUtilities.YEAR_DATE_FORMAT
     : DateTimeUtilities.VIEW_DATE_FORMAT;
   let dateText = DateTimeUtilities.formatDateAnswer(displayFormat, dateEntry.date);
