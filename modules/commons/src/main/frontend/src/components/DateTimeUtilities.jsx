@@ -94,10 +94,6 @@ export default class DateTimeUtilities {
     }
 
     let new_date = date;
-    if (typeof new_date === "number") {
-      // Year date answers are saved as numbers: convert to a string for parsing
-      new_date = new_date.toString();
-    }
     if (typeof new_date === "string") {
       new_date = fromFormat ? DateTime.fromFormat(new_date, fromFormat) : DateTime.fromISO(new_date);
     }
@@ -137,7 +133,7 @@ export default class DateTimeUtilities {
       return "";
     }
     if (Array.isArray(value)) {
-      return `${this.formatDateAnswer(dateFormat, value[0])} to ${this.formatDateAnswer(dateFormat, value[1])}`;
+      return `${this.formatDateAnswer(dateFormat, value[0], fromFormat)} to ${this.formatDateAnswer(dateFormat, value[1], fromFormat)}`;
     }
     dateFormat = dateFormat || this.defaultDateFormat;
     let dateType = this.getDateType(dateFormat);
@@ -149,12 +145,22 @@ export default class DateTimeUtilities {
     return date.toFormat(dateFormat);
   }
 
+  static dateFromAnswerValue = (dateInput) => {
+    // If the answer was an interval, it will have two dates in an array. Compare to the first date only
+    let date = Array.isArray(dateInput) ? dateInput[0] : dateInput;
+    // Year date answers are saved as numbers: convert to a string for parsing
+    if (typeof date === "number") {
+      date = date.toString();
+    }
+    return this.toPrecision(date, this.defaultDateFormat);
+  }
+
   static dateDifference = (startDateInput, endDateInput) => {
     // Compute the displayed difference
     let result = { long:"" }
     if (startDateInput && endDateInput) {
-      let startDate = this.toPrecision(startDateInput, this.defaultDateFormat);
-      let endDate = this.toPrecision(endDateInput, this.defaultDateFormat);
+      let startDate = this.dateFromAnswerValue(startDateInput);
+      let endDate = this.dateFromAnswerValue(endDateInput);
 
       let diff = [];
       let longDiff = [];
