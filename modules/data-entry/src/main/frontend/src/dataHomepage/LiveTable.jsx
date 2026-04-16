@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 
 import {
   Paper,
@@ -90,6 +90,8 @@ function LiveTable(props) {
       "fetchError": false,
     }
   );
+  // Ref for the in-flight request number so async callbacks (handleResponse) see the correct value
+  const requestNumberRef = useRef(-1);
   // The base URL to fetch from.
   // This can either be a custom URL provided in props,
   // or an URL obtained from the current location by extracting the last path segment and appending .paginate
@@ -126,11 +128,13 @@ function LiveTable(props) {
       // TODO: abort previous request
     }
 
+    const nextRequestNumber = fetchStatus.currentRequestNumber + 1;
+    requestNumberRef.current = nextRequestNumber;
+
     let url = new URL(urlBase);
     url.searchParams.set("offset", goToStart ? 0 : newPage.offset ?? paginationData.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
-    // eslint-disable-next-line react-hooks/immutability
-    url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
+    url.searchParams.set("req", nextRequestNumber);
     url.searchParams.set("showTotalRows", showTotalRows);
     resourceSelectors && url.searchParams.set("resourceSelectors", resourceSelectors);
 
@@ -148,6 +152,7 @@ function LiveTable(props) {
     }
     let currentFetch = fetchWithReLogin(globalLoginDisplay, url);
     setFetchStatus(Object.assign({}, fetchStatus, {
+      "currentRequestNumber": nextRequestNumber,
       "currentFetch": currentFetch,
       "fetchError": false,
     }));
@@ -160,7 +165,7 @@ function LiveTable(props) {
   };
 
   let handleResponse = (json) => {
-    if (+json.req !== fetchStatus.currentRequestNumber) {
+    if (+json.req !== requestNumberRef.current) {
       // This is the response for an older request. Discard it, wait for the right one.
       return;
     }
