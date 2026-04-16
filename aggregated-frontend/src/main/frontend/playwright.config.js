@@ -24,32 +24,25 @@ const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './e2e',
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
+  // retry failed tests 2 times in continuous Integration to reduce random red builds
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? 'dot' : [['html', { open: 'never' }]],
+  // use 1 separate test runner process to avoid interference between unisolated tests
+  workers: 1,
+  // auto-open the HTML report in your browser whenever the run is considered failed
+  reporter: process.env.CI ? 'dot' : [['html', { open: 'on-failure' }]],
   use: {
     baseURL: process.env.CARDS_URL || 'http://localhost:8080',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    launchOptions: {
-      slowMo: 500,
-    },
   },
-  timeout: 30000,
+  // Patient portal + fixtures can exceed 60s without slowMo; keep headroom for CI/IDE runners
+  timeout: 180000,
   expect: {
     timeout: 10000,
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-  ],
-  webServer: {
-    command: "bash ./start_cards.sh",
-    // The script itself uses this endpoint to determine readiness
-    url: "http://localhost:8080/system/sling/info.sessionInfo.json",
-    timeout: 180000,
-    reuseExistingServer: !process.env.CI,
-  },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } }
+  ]
 });

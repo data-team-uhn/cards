@@ -21,50 +21,31 @@ import { test as base } from '@playwright/test';
 import { HomePage } from '../pages/home.page';
 import { users } from '../config/users';
 import { loginAs } from '../flows/auth/login.flow';
+import { AuthAssertions } from '../assertions/auth.assertions';
 
 type AuthFixtures = {
-  userHomePage: HomePage;
   adminHomePage: HomePage;
 };
 
 export const test = base.extend<AuthFixtures>({
-  userHomePage: async ({ browser }, use) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-
-    // 1. perform login - flow used here
-    await loginAs(page, users.user);
-
-    // 2. create HomePage object
-    const homePage = new HomePage(page);
-
-    // 3. ensure page is fully loaded with components
-    await homePage.expectLoaded();
-
-    // 4. provide ready-to-use page
-    await use(homePage);
-
-    // 5. cleanup: close browser context
-    await context.close();
-  },
-
   adminHomePage: async ({ browser }, use) => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    // 1. perform login - flow used here
+    // perform login - flow used here
     await loginAs(page, users.admin);
 
-    // 2. create HomePage object
+    // create HomePage object
     const homePage = new HomePage(page);
 
-    // 3. ensure page is fully loaded
-    await homePage.expectLoaded();
+    // ensure login succeeded
+    const authAssertions = new AuthAssertions(page);
+    await authAssertions.expectLoggedIn();
 
-    // 4. provide ready-to-use page
+    // provide ready-to-use page
     await use(homePage);
 
-    // 5. cleanup: close browser context
+    // cleanup: close browser context
     await context.close();
   },
 });

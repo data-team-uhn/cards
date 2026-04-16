@@ -20,10 +20,6 @@
 import { Page } from '@playwright/test';
 import { Dashboard } from '../../components/page-elements/dashboard.component';
 
-/**
- * Log out from the application.
- * @param {import('@playwright/test').Page} page
- */
 export async function logout(page: Page) {
   const dashboard = new Dashboard(page);
   await dashboard.goto();

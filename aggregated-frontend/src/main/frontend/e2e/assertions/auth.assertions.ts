@@ -60,7 +60,6 @@ export class AuthAssertions {
    * Assert user is logged out
    */
   async expectLoggedOut() {
-    // ASSERTIONS: after logout
     const logoutSessionResponse = await this.page.request.get('/system/sling/info.sessionInfo.json');
     expect(logoutSessionResponse.ok()).toBeTruthy();
     const logoutSessionData = await logoutSessionResponse.json();
@@ -68,4 +67,3 @@ export class AuthAssertions {
     await this.expectOnLoginPage();
   }
 }
-

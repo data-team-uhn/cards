@@ -1,0 +1,71 @@
+{
+  "isPatientPortalTest": true,
+  "questionnaireName": "IC",
+  "title": "UHN Integrated Care Patient Experience Survey",
+  "testFlow": [
+    {
+      "type": "section",
+      "sectionId": "",
+      "answers": {
+        "ic_1": { "role": "radio", "name": "Yes", "exact": true },
+        "ic_2": { "role": "radio", "name": "Yes", "exact": true },
+        "ic_3": { "role": "radio", "name": "Yes", "exact": true },
+        "ic_4": { "role": "radio", "name": "Yes, all of my needs" },
+        "ic_5": { "role": "radio", "name": "Yes", "exact": true },
+        "ic_6": { "role": "radio", "name": "Never" },
+        "ic_7": { "role": "radio", "name": "1" },
+        "ic_8": { "role": "textbox", "value": "Great experience!" }
+      }
+    },
+    {
+      "type": "section",
+      "sectionId": "ic_feedback",
+      "verify": [
+        { "field": "ic_feedback/ic_contact_email_section/ic_contact_email", "visible": false },
+        { "field": "ic_feedback/ic_contact_name_section/ic_contact_name", "visible": false },
+        { "field": "ic_feedback/ic_contact_phone_section/ic_contact_phone", "visible": false }
+      ],
+      "answers": {
+        "ic_contact_mode": {
+          "role": "radio",
+          "visibility": [
+            {
+              "name": "Phone call",
+              "verify": [
+                { "field": "ic_feedback/ic_contact_email_section/ic_contact_email", "visible": false },
+                { "field": "ic_feedback/ic_contact_name_section/ic_contact_name", "visible": true },
+                { "field": "ic_feedback/ic_contact_phone_section/ic_contact_phone", "visible": true }
+              ]
+            },
+            {
+              "name": "Text",
+              "verify": [
+                { "field": "ic_feedback/ic_contact_email_section/ic_contact_email", "visible": false },
+                { "field": "ic_feedback/ic_contact_name_section/ic_contact_name", "visible": true },
+                { "field": "ic_feedback/ic_contact_phone_section/ic_contact_phone", "visible": true }
+              ]
+            },
+            {
+              "name": "I do not want to be contacted",
+              "verify": [
+                { "field": "ic_feedback/ic_contact_email_section/ic_contact_email", "visible": false },
+                { "field": "ic_feedback/ic_contact_name_section/ic_contact_name", "visible": false },
+                { "field": "ic_feedback/ic_contact_phone_section/ic_contact_phone", "visible": false }
+              ]
+            },
+            {
+              "name": "Email",
+              "verify": [
+                { "field": "ic_feedback/ic_contact_email_section/ic_contact_email", "visible": true },
+                { "field": "ic_feedback/ic_contact_name_section/ic_contact_name", "visible": true },
+                { "field": "ic_feedback/ic_contact_phone_section/ic_contact_phone", "visible": false }
+              ]
+            }
+          ]
+        },
+        "ic_contact_email_section/ic_contact_email": { "role": "textbox", "value": "test@example.com" },
+        "ic_contact_name_section/ic_contact_name": { "role": "textbox", "value": "John Doe" }
+      }
+    }
+  ]
+}

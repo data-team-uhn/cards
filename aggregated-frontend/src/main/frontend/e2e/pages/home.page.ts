@@ -63,19 +63,17 @@ export class HomePage {
     await this.page.waitForLoadState('networkidle');
   }
 
-  async createFormWithNewPatientSubject(questionnaireName: string, subjectId: string) {
-    await this.createNewItem.createFormWithNewPatientSubject(questionnaireName, subjectId);
+  async createFormWithNewSubject(questionnaireName: string, subjectId: string) {
+    await this.createNewItem.createFormWithNewSubject(questionnaireName, subjectId);
   }
 
   async selectPatientSubjectParentByName(subjectId: string) {
     await this.createNewItem.selectPatientSubjectParentByName(subjectId);
   }
 
-  async filterQuestionnairesByName(name: string) {}
-
-  async filterSubjectsByName(name: string) {}
-
-  async deleteFormByName(name: string) {}
+  async createParentSubjectForGivenSubject(subjectId: string) {
+    await this.createNewItem.createParentSubjectForGivenSubject(subjectId);
+  }
 
   async deleteFormBySubject(subjectId: string) {
     await this.formsView.deleteFormBySubject(subjectId);

@@ -1,7 +1,7 @@
 {
   "isPatientPortalTest": false,
   "questionnaireName": "Patient information",
-  "fields": {
+  "answers": {
     "last_name": { "role": "textbox", "value": "Doe" },
     "first_name": { "role": "textbox", "value": "John" },
     "date_of_birth": { "role": "textbox", "value": "2023-01-01" }

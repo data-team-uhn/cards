@@ -1,0 +1,172 @@
+{
+  "isPatientPortalTest": true,
+  "questionnaireName": "OCPE",
+  "title": "UHN Outpatient Care Patient Experience Survey",
+  "testFlow": [
+    {
+      "type": "section",
+      "sectionId": "section_visit_type",
+      "nextPageConditions": {
+        "depth": 1,
+        "cases": [
+          {
+            "set": {
+              "ocpe_1": { "role": "radio", "name": "In person" }
+            },
+            "expect": [
+              { "field": "section_virtual_care/section_q2a/ocpe_2a", "visible": false },
+              { "field": "section_virtual_care/section_q2b/ocpe_2b", "visible": false }
+            ]
+          },
+          {
+            "set": {
+              "ocpe_1": { "role": "radio", "name": "Telephone call" }
+            },
+            "expect": [
+              { "field": "section_virtual_care/section_q2a/ocpe_2a", "visible": true },
+              { "field": "section_virtual_care/section_q2b/ocpe_2b", "visible": false }
+            ]
+          },
+          {
+            "set": {
+              "ocpe_1": { "role": "radio", "name": "Virtual (video conference)" }
+            },
+            "expect": [
+              { "field": "section_virtual_care/section_q2a/ocpe_2a", "visible": false },
+              { "field": "section_virtual_care/section_q2b/ocpe_2b", "visible": true }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "section",
+      "sectionId": "section_virtual_care",
+      "answers": {
+        "section_q2b/ocpe_2b": {
+          "role": "checkbox",
+          "visibility": [
+            {
+              "name": "Scheduling process",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": false },
+                { "field": "section_virtual_care/section_q3/ocpe_3", "visible": true }
+              ]
+            },
+            {
+              "name": "Software set-up (downloading or opening the virtual program or app)",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": false },
+                { "field": "section_virtual_care/section_q3/ocpe_3", "visible": true }
+              ]
+            },
+            {
+              "name": "Login process",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": false },
+                { "field": "section_virtual_care/section_q3/ocpe_3", "visible": true }
+              ]
+            },
+            {
+              "name": "I could not hear the health care provider",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": false },
+                { "field": "section_virtual_care/section_q3/ocpe_3", "visible": true }
+              ]
+            },
+            {
+              "name": "I could not see the health care provider",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": false },
+                { "field": "section_virtual_care/section_q3/ocpe_3", "visible": true }
+              ]
+            },
+            {
+              "name": "The health care provider could not hear me",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": false },
+                { "field": "section_virtual_care/section_q3/ocpe_3", "visible": true }
+              ]
+            },
+            {
+              "name": "The health care provider could not see me",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": false },
+                { "field": "section_virtual_care/section_q3/ocpe_3", "visible": true }
+              ]
+            },
+            {
+              "name": "There were no technical problems",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": true },
+                { "field": "section_virtual_care/section_q3/ocpe_3", "visible": false }
+              ]
+            },
+            {
+              "name": "Other technical problems",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": false },
+                { "field": "section_virtual_care/section_q3/ocpe_3", "visible": true }
+              ]
+            }
+          ]
+        },
+        "section_q3/ocpe_3": {
+          "role": "radio",
+          "exact": true,
+          "visibility": [
+            {
+              "name": "No",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": false }
+              ]
+            },
+            {
+              "name": "Yes",
+              "verify": [
+                { "field": "section_virtual_care/section_q4/ocpe_4", "visible": true }
+              ]
+            }
+          ]
+        },
+        "section_q4/ocpe_4": { "role": "radio", "name": "Yes", "exact": true }
+      }
+    },
+    {
+      "type": "section",
+      "sectionId": "section_care_experience",
+      "answers": {
+        "ocpe_5": { "role": "radio", "name": "Definitely" },
+        "ocpe_6": { "role": "radio", "name": "Definitely" },
+        "ocpe_7": { "role": "radio", "name": "Definitely" },
+        "ocpe_8": { "role": "radio", "name": "Definitely" },
+        "ocpe_9": { "role": "radio", "name": "Definitely" },
+        "ocpe_10": { "role": "radio", "name": "Definitely" },
+        "ocpe_11": { "role": "radio", "name": "Definitely" },
+        "ocpe_12": { "role": "radio", "name": "Definitely" },
+        "ocpe_13": { "role": "radio", "name": "Definitely" },
+        "ocpe_14": { "role": "radio", "name": "Definitely" },
+        "ocpe_15": { "role": "radio", "name": "0 - I had a very poor experience" },
+        "ocpe_16": { "role": "textbox", "value": "—" }
+      }
+    },
+    {
+      "type": "section",
+      "sectionId": "section_module2",
+      "answers": {
+        "ocpe_17": { "role": "radio", "name": "Definitely" },
+        "ocpe_18": { "role": "radio", "name": "Definitely" },
+        "ocpe_19": { "role": "radio", "name": "Definitely" },
+        "ocpe_20": { "role": "radio", "isMatrix": true,
+          "answers": [
+            { "key": "ocpe_20_1", "label": "Very good" },
+            { "key": "ocpe_20_2", "label": "Fair" },
+            { "key": "ocpe_20_3", "label": "Poor" }
+          ]
+        },
+        "ocpe_21": { "role": "radio", "name": "Definitely" },
+        "ocpe_22": { "role": "radio", "name": "0 – Not at all likely" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "isPatientPortalTest": true,
+  "questionnaireName": "PMOO",
+  "title": "Princess Margaret Outpatient Oncology Survey",
+  "testFlow": [
+    {
+      "type": "section",
+      "sectionId": "pmoo_page_1",
+      "answers": {
+        "pmoo_1": { "role": "radio", "name": "Not at all" },
+        "pmoo_2_ed_1": { "role": "radio", "name": "Yes", "exact": true }
+      }
+    },
+    {
+      "type": "section",
+      "sectionId": "pmoo_page_2",
+      "answers": {
+        "pmoo_3_ed_2": { "role": "radio", "name": "Never" },
+        "pmoo_4_ed_3": { "role": "radio", "name": "Never" },
+        "pmoo_5_ed_4": { "role": "radio", "name": "Never" }
+      }
+    },
+    {
+      "type": "section",
+      "sectionId": "pmoo_page_3",
+      "answers": {
+        "pmoo_6_ed_11": { "role": "radio", "name": "Never" },
+        "pmoo_7_ed_5": { "role": "radio", "name": "Never" },
+        "pmoo_8_ed_6": { "role": "radio", "name": "No", "exact": true },
+        "pmoo_9_yvm_10a": { "role": "radio", "name": "Not at all" }
+      }
+    },
+    {
+      "type": "section",
+      "sectionId": "pmoo_page_4",
+      "answers": {
+        "pmoo_10_yvm_12": { "role": "radio", "name": "Not at all" },
+        "pmoo_11_yvm_14": { "role": "radio", "name": "Very poor" },
+        "pmoo_11b_yvm_14b": { "role": "radio", "name": "0 - Not at all likely" },
+        "pmoo_12_yvm_15": { "role": "textbox", "value": "—" },
+        "pmoo_13_yvm_16": { "role": "radio", "name": "Yes", "exact": true }
+      }
+    }
+  ]
+}

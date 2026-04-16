@@ -138,7 +138,7 @@ function ResourceHeader (props) {
           </Collapse>
         </Grid>
       </Grid>
-      <Grid size={12} className={classes.resourceTitle}>
+      <Grid size={12} className={classes.resourceTitle} aria-label="resource-title">
         <Grid container justifyContent="space-between" alignItems="start" spacing={1}>
           <Grid>
             <Grid container spacing={1} alignItems="center">

@@ -1,11 +1,11 @@
 {
   "isPatientPortalTest": false,
   "questionnaireName": "Visit information",
-  "fields": {
+  "answers": {
     "clinic": { "role": "combobox", "option": "UHN Emergency Department" },
     "surveys_complete": { "role": "radio", "name": "No" },
     "surveys_submitted": { "role": "radio", "name": "No" },
-    "time": { "role": "textbox", "name": "yyyy-mm-dd hh:mm", "value": "2026-03-20 00:00" },
+    "time": { "role": "textbox", "name": "yyyy-mm-dd hh:mm" },
     "provider": { "role": "textbox", "value": "UHN" },
     "location": { "role": "textbox", "value": "UHN Emergency Department" },
     "status": { "role": "textbox", "value": "in progress" },

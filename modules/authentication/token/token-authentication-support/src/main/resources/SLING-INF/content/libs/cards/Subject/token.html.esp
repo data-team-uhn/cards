@@ -15,10 +15,25 @@
 
 response.setContentType('text/plain');
 
+var runId = String(java.lang.System.currentTimeMillis());
+var logEndpoint = 'http://127.0.0.1:7405/ingest/05bb07cf-97e1-43e8-b3f2-c7a9a8e4ddaf';
+var debugLog = function(hypothesisId, location, message, data) {
+    // #region agent log
+    if (typeof fetch === 'function') {
+        fetch(logEndpoint, {method: 'POST', headers: {'Content-Type': 'application/json', 'X-Debug-Session-Id': '55f0ce'}, body: JSON.stringify({sessionId: '55f0ce', runId: runId, hypothesisId: hypothesisId, location: location, message: message, data: data, timestamp: Date.now()})}).catch(function(){});
+    }
+    // #endregion
+}
 
 var getOneHourExpiry = function() {
+    // #region agent log
+    debugLog('H1', 'token.html.esp:getOneHourExpiry:beforeGetInstance', 'Entering getOneHourExpiry', {calendarClass: String(java.util.Calendar)});
+    // #endregion
     var result = java.util.Calendar.getInstance();
     result.setTimeInMillis(result.getTimeInMillis() + (1000*60*60));
+    // #region agent log
+    debugLog('H1', 'token.html.esp:getOneHourExpiry:afterSet', 'Built one hour expiry', {resultClass: String(result.getClass().getName()), resultMillis: String(result.getTimeInMillis())});
+    // #endregion
     return result;
 }
 
@@ -52,9 +67,15 @@ var error = null;
 var visitTimeQuestionUuid = currentSession.getNode("/Questionnaires/Visit information/time").getIdentifier();
 var config = sling.getService(Packages.io.uhndata.cards.patients.api.PatientAccessConfiguration);
 var daysParam = request.getParameter("validForDays");
+// #region agent log
+debugLog('H2', 'token.html.esp:main:inputs', 'Token script inputs', {hasDaysParam: String(daysParam !== null), currentNodePath: String(currentNode.getPath())});
+// #endregion
 if (daysParam !== null) {
     var days = parseInt(daysParam);
     if (!isNaN(days) && days >= 0) {
+        // #region agent log
+        debugLog('H2', 'token.html.esp:main:validDaysParam', 'Using validForDays branch', {days: String(days)});
+        // #endregion
         result = getExpiryByDays(days);
     } else {
         error = "Invalid input: " + daysParam;
@@ -71,8 +92,14 @@ if (daysParam !== null) {
             // Calculate when a standard token for this visit would expire for a standard survey
             var visitTime = time.getProperty("value").getDate();
             var validDays = config.getDaysRelativeToEventWhileSurveyIsValid(visitInformationForm);
+            // #region agent log
+            debugLog('H3', 'token.html.esp:main:visitValue', 'Loaded visit time and valid days', {visitTimeClass: String(visitTime.getClass().getName()), validDays: String(validDays)});
+            // #endregion
             visitTime.add(java.util.Calendar.DATE, validDays + 1);
             var diff = java.time.temporal.ChronoUnit.DAYS.between(java.util.Calendar.getInstance().toInstant(), visitTime.toInstant());
+            // #region agent log
+            debugLog('H4', 'token.html.esp:main:visitDiff', 'Computed visit expiry diff', {diff: String(diff), visitTimeMillis: String(visitTime.getTimeInMillis())});
+            // #endregion
             // Check if we are still within the standard visit expiry period
             if (diff >= 1) {
                 // There is at least one day left in the standard visit expiry period:
@@ -90,6 +117,9 @@ if (daysParam !== null) {
     }
 }
 if (!error) {
+    // #region agent log
+    debugLog('H5', 'token.html.esp:main:beforeCreateToken', 'About to create token', {resultClass: String(result.getClass().getName()), resultMillis: String(result.getTimeInMillis())});
+    // #endregion
     var token = sling.getService(Packages.io.uhndata.cards.auth.token.TokenManager).create("patient", result, {"cards:sessionSubject": currentNode.getPath()});
     out.println(token.getToken());
 } else {

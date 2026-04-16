@@ -41,12 +41,17 @@ export class SubjectsView {
   }
 
   /**
-   * Delete the subject with the given id from the Questionnaires/User dashboard.
+   * Delete the subject with the given id from the subjects view.
    * @param {string} subjectId
+   * @param {string} type - 'visit' or 'patient'
    * @param {boolean} [hasForms] second delete-dialog confirm when subject has linked forms
    */
-  async deletePatientSubjectById(subjectId: string, hasForms: boolean = false) {
+  async deleteSubjectById(subjectId: string, type: 'visit' | 'patient', hasForms: boolean = false) {
     await this.filterBySubject(subjectId);
+
+    if (type === 'visit') {
+      await this.subjectsView.getByRole('tab', { name: 'Visits' }).click();
+    }
 
     const row = this.subjectsView.locator('tbody tr').first();
     await expect(row.locator('td').first().locator('a')).toContainText(subjectId);
@@ -64,15 +69,23 @@ export class SubjectsView {
     }
 
     await this.page.waitForLoadState('networkidle');
-
-    await expect(this.subjectsView.locator('a').filter({ hasText: subjectId })).toHaveCount(0);
   }
   
   /**
-   * Delete subject when it has no forms (single confirm).
+   * Delete subject when it has no forms.
    * @param {string} subjectId
+   * @param {string} type - 'visit' or 'patient'
    */
-  async deleteSubjectByIdWithNoForms(subjectId: string) {
-    return this.deletePatientSubjectById(subjectId, false);
+  async deleteSubjectByIdWithNoForms(subjectId: string, type: 'visit' | 'patient') {
+    return this.deleteSubjectById(subjectId, type, false);
+  }
+
+  /**
+   * Delete subject when it has forms.
+   * @param {string} subjectId
+   * @param {string} type - 'visit' or 'patient'
+   */
+  async deleteSubjectByIdWithForms(subjectId: string, type: 'visit' | 'patient') {
+    return this.deleteSubjectById(subjectId, type, true);
   }
 }

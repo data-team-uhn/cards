@@ -1,15 +1,12 @@
 {
   "isPatientPortalTest": true,
   "questionnaireName": "OED",
-  "heading": "Your Experience at UHN",
-  "ul": "UHN Patient Experience Emergency Department Survey",
-  "sections": {
-    "oed_module1": {
-      "heading": {
-        "name": "During this emergency",
-        "text": "During this emergency department visit..."
-      },
-      "fields": {
+  "title": "UHN Patient Experience Emergency Department Survey",
+  "testFlow": [
+    {
+      "type": "section",
+      "sectionId": "oed_module1",
+      "answers": {
         "oed_1": { "role": "radio", "name": "Yes", "exact": true },
         "oed_2": { "role": "radio", "name": "Never" },
         "oed_3": { "role": "radio", "name": "Never" },
@@ -21,18 +18,16 @@
         "oed_9": { "role": "radio", "name": "- Extremely likely" }
       }
     },
-    "oed_module2": {
-      "heading": {
-        "name": "Additional questions about",
-        "text": "Additional questions about your recent emergency visit"
-      },
-      "fields": {
+    {
+      "type": "section",
+      "sectionId": "oed_module2",
+      "answers": {
         "oed_11": { "role": "radio", "name": "Always" },
         "oed_sqp_1": { "role": "radio", "name": "Never" },
         "oed_sqp_2": {
           "role": "radio",
           "exact": true,
-          "checkCondition": [
+          "visibility": [
             {
               "name": "Yes",
               "verify": { "field": "oed_module2/section_oed_sqp_3/oed_sqp_3", "visible": true }
@@ -46,7 +41,7 @@
         "oed_sqp_4": {
           "role": "radio",
           "exact": true,
-          "checkCondition": [
+          "visibility": [
             {
               "name": "No",
               "verify": { "field": "oed_module2/section_oed_sqp_5/oed_sqp_5", "visible": false }
@@ -60,11 +55,13 @@
         "section_oed_sqp_5/oed_sqp_5": { "role": "radio", "name": "Never" }
       }
     },
-    "oed_module3": {
-      "fields": {
+    {
+      "type": "section",
+      "sectionId": "oed_module3",
+      "answers": {
         "oed_ic_1": { "role": "radio", "name": "Yes, always" },
         "oed_ic_2": { "role": "radio", "name": "Not at all" }
       }
     }
-  }
+  ]
 }

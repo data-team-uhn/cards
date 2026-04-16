@@ -21,16 +21,25 @@ import { Page } from '@playwright/test';
 import { FormPage } from '../pages/form.page';   
 import { HomePage } from '../pages/home.page';
 
-export async function createVisitFormWithGivenPatientSubjectId(page: Page, subjectId: string, data: { questionnaireName: string, fields: Record<string, any> }) {
-    
+/**
+ * Create and save a new form with a new patient and new visit subject
+ * @param {Page} page - The page object
+ * @param {string} patientSubjectId - The patient subject id
+ * @param {string} visitSubjectId - The visit subject id
+ * @param {Record<string, any>} data - The form answers data object
+ */
+export async function createAndSaveFormWithNewPatientAndVisitSubjectIds(
+    page: Page,
+    patientSubjectId: string,
+    visitSubjectId: string,
+    data: Record<string, any>,
+) {
     const homePage = new HomePage(page);
     await homePage.expectLoaded();
-    await homePage.createFormWithNewPatientSubject(data.questionnaireName, 'visit-' + subjectId);
+    await homePage.createFormWithNewSubject(data.title, visitSubjectId);
 
-    await homePage.selectPatientSubjectParentByName(subjectId);
+    await homePage.createParentSubjectForGivenSubject(patientSubjectId);
 
     const formPage = new FormPage(page);
     await formPage.expectLoadedForEdit();
-    await formPage.answerQuestions(data.questionnaireName, data.fields, null);
-    await formPage.saveAndView();
 }

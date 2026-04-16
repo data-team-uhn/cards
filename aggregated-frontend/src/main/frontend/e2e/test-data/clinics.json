@@ -1,0 +1,50 @@
+{
+  "UHN-IP": {
+    "displayName": "UHN Inpatient",
+    "questionnaires": ["OAIP"]
+  },
+  "UHN-ED": {
+    "displayName": "UHN Emergency Department",
+    "questionnaires": ["OED"]
+  },
+  "UHN-EDIP": {
+    "displayName": "UHN Emergency and Inpatient",
+    "questionnaires": ["OED", "OAIP"]
+  },
+  "Rehab": {
+    "displayName": "UHN Rehab",
+    "questionnaires": ["Rehab"]
+  },
+  "UHN-IC": {
+    "displayName": "UHN Integrated Care Program",
+    "questionnaires": ["IC"]
+  },
+  "UHN-EDIC": {
+    "displayName": "UHN Emergency and Integrated Care Program",
+    "questionnaires": ["OED", "IC"]
+  },
+  "UHN-IPIC": {
+    "displayName": "UHN Inpatient and Integrated Care Program",
+    "questionnaires": ["OAIP", "IC"]
+  },
+  "UHN-EDIPIC": {
+    "displayName": "UHN Emergency, Inpatient and Integrated Care Program",
+    "questionnaires": ["OED", "OAIP", "IC"]
+  },
+  "PMH-YVM": {
+    "displayName": "Your Voice Matters (PMH)",
+    "questionnaires": ["YVM"]
+  },
+  "PM-OO": {
+    "displayName": "PM Outpatient Oncology",
+    "questionnaires": ["PMOO"]
+  },
+  "PM-OO-IP": {
+    "displayName": "PM Outpatient Oncology and Inpatient",
+    "questionnaires": ["PMOO", "OAIP"]
+  },
+  "UHN-OC": {
+    "displayName": "UHN Outpatient Care",
+    "questionnaires": ["OCPE"]
+  }
+}

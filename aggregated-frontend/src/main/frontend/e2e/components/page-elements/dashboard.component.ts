@@ -47,7 +47,6 @@ export class Dashboard {
     }
   }
 
-
   /**
    * Sign out: open user menu (avatar or drawer) then click sign out; assert anonymous session.
    * @param {import('@playwright/test').Page} page

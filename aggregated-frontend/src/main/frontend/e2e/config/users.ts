@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 export type User = {
   username: string;
   password: string;

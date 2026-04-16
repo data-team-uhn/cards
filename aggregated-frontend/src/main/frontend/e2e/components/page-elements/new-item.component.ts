@@ -42,43 +42,40 @@ export class CreateNewItem {
 
   /**
    * New → Questionnaire → search/select questionnaire → continue → new subject → create with identifier.
-   * Note: we using the default Patient subject type selection in the dialog, so we don't need to select it.
+   * Note: we using the default required subject selection in the dialog, so we don't need to select it.
    * @param {string} questionnaireName - name of the questionnaire to create
-   * @param {string} subjectId - id of the new Patient subject
+   * @param {string} subjectId - id of the new subject
    */
-  async createFormWithNewPatientSubject(questionnaireName: string, subjectId: string) {
+  async createFormWithNewSubject(questionnaireName: string, subjectId: string) {
     await this.newItemButton.click();
-  
+
     await expect(this.newItemDialog).toBeVisible();
     await this.newItemDialog.locator('td').filter({ hasText: 'Questionnaire' }).click();
     await this.newItemDialog.locator('[aria-label="new-item-next-button"]').click();
-  
+
     await expect(this.newFormDialog).toBeVisible();
-  
+
     await this.page.waitForLoadState('networkidle');
-  
+
     await this.newFormDialog.getByRole('textbox', { name: 'Search' }).fill(questionnaireName);
     const firstRow = this.newFormDialog.locator('tbody tr').first();
     await expect(firstRow).toContainText(questionnaireName);
     await firstRow.click();
-  
+
     await this.newFormDialog.locator('[aria-label="new-form-continue-button"]').click();
     await this.newFormDialog.locator('[aria-label="new-form-new-subject-button"]').click();
-  
+
     await this.newSubjectDialog.locator('[aria-label="new-subject-identifier-input"]').locator('input').fill(subjectId);
     await this.newSubjectDialog.getByRole('button', { name: 'new-subject-create-button' }).click();
 
     await this.page.waitForLoadState('networkidle');
 
-    // check if we ccidentally bumped into situation of duplucate subjects and report the relevant error
+    // check if we accidentally bumped into situation of duplucate subjects and report the relevant error
     if (await this.newSubjectDialog.isVisible()) {
-      if (await this.newSubjectDialog.getByRole('alert').isVisible()
-        && await this.newSubjectDialog.getByRole('alert').textContent() === `Patient ${subjectId} already exists`) {
-        //throw new Error(`Patient ${subjectId} already exists`);
+      if (await this.newSubjectDialog.getByRole('alert').isVisible()) {
+        throw new Error('Patient' + subjectId + ' already exists');
       }
-      //throw new Error(`Unexpected error:`);
     }
-    await this.page.waitForLoadState('networkidle');
   }
 
   /**
@@ -86,14 +83,44 @@ export class CreateNewItem {
    * @param {string} subjectId - parent Patient subject id
    */
   async selectPatientSubjectParentByName(subjectId: string) {
-
     await this.selectParentDialog.getByRole('textbox', { name: 'Search' }).fill(subjectId);
-    await this.selectParentDialog.getByRole('cell', { name: 'Patient ' + subjectId }).click();
+    // Global filter in MaterialReactTable is async; hierarchy text includes the identifier but may not match a single cell accessible name.
+    const parentRows = this.selectParentDialog.getByRole('row').filter({ hasText: subjectId });
+    await expect(parentRows.first()).toBeVisible({ timeout: 60000 });
+
+    const count = await parentRows.count();
+    let firstEnabledRow: Locator | null = null;
+    for (let i = 0; i < count; i++) {
+      const row = parentRows.nth(i);
+      if (await row.isEnabled()) {
+        firstEnabledRow = row;
+        break;
+      }
+    }
+    if (!firstEnabledRow) {
+      throw new Error(`No enabled parent row found for subject: ${subjectId}`);
+    }
+    await firstEnabledRow.click();
+
     await this.selectParentDialog.getByRole('button', { name: 'Continue' }).click();
-  
     await this.page.waitForLoadState('networkidle');
-  
+
     await this.verifyNewItemDialogIsClosed();
+  }
+
+  async createParentSubjectForGivenSubject(subjectId: string) {
+    await this.selectParentDialog.getByRole('button', { name: 'New subject' }).click();
+    await this.newSubjectDialog.getByRole('textbox', { name: 'Enter subject identifier' }).fill(subjectId);
+    await this.newSubjectDialog.getByRole('button', { name: 'new-subject-create-button' }).click();
+
+    await this.page.waitForLoadState('networkidle');
+
+    // check if we accidentally bumped into situation of duplucate subjects and report the relevant error
+    if (await this.selectParentDialog.isVisible()) {
+      if (await this.selectParentDialog.getByRole('alert').isVisible()) {
+        throw new Error('Patient' + subjectId + ' already exists');
+      }
+    }
   }
 
   async verifyNewItemDialogIsClosed() {
@@ -101,10 +128,6 @@ export class CreateNewItem {
     await expect(this.newItemDialog).not.toBeVisible();
     await expect(this.newFormDialog).not.toBeVisible();
     await expect(this.newSubjectDialog).not.toBeVisible();
-  }
-
-  // TODO implement verify patient subject already exists
-  async verifyPatientSubjectAlreadyExists(subjectId: string) {
-    await expect(this.newSubjectDialog.getByRole('alert')).toContainText(`Patient ${subjectId} already exists`);
+    await expect(this.selectParentDialog).not.toBeVisible();
   }
 }

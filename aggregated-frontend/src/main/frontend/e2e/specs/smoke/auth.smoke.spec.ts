@@ -23,7 +23,7 @@ import { logout } from '../../flows/auth/logout.flow';
 import { AuthAssertions } from '../../assertions/auth.assertions';
 import { users, type User } from '../../config/users';
 
-test('Page  loads', async ({ page }) => {
+test('Page loads', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle("Your Experience");
 });
