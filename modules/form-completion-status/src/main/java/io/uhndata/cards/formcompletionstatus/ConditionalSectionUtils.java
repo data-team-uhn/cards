@@ -35,6 +35,8 @@ import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.utils.DateUtils;
+
 public final class ConditionalSectionUtils
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConditionalSectionUtils.class);
@@ -323,7 +325,8 @@ public final class ConditionalSectionUtils
                     @SuppressWarnings("unchecked")
                     Iterable<Comparable<Object>> answerValues =
                         (Iterable<Comparable<Object>>) answerProperty.getValue(type.getOakType());
-                    answerValues.forEach(v -> this.values.add(v));
+                    boolean isDate = type.getOakType().equals(Type.DATES);
+                    answerValues.forEach(v -> this.values.add(isDate ? toCalendar(v) : v));
                 }
             } else {
                 Property valueProp = node.getProperty(PROP_VALUE);
@@ -335,6 +338,13 @@ public final class ConditionalSectionUtils
                     this.values.add(type.getValue(valueProp.getValue()));
                 }
             }
+        }
+
+        @SuppressWarnings("unchecked")
+        private Comparable<Object> toCalendar(Object s)
+        {
+            Object c = DateUtils.parseCalendar(String.valueOf(s));
+            return (Comparable<Object>) c;
         }
 
         /**
