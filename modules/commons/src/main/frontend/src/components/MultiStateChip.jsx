@@ -21,6 +21,8 @@ import { useState, useMemo } from "react";
 import { Chip, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
 
+import { checkPropTypes } from "../propTypes";
+
 export class ChipState {
   constructor( chipProps, value, tooltip) {
     this.chipProps = chipProps;
@@ -39,6 +41,7 @@ export class ChipProps {
 }
 
 function MultiStateChip(props) {
+  checkPropTypes(MultiStateChip, props);
   const { size, states, onChange } = props;
 
   const [ currentStateIndex, setCurrentState ] = useState(0);

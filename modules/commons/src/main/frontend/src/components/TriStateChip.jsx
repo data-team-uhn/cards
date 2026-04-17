@@ -24,6 +24,7 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import PropTypes from "prop-types";
 
 import MultiStateChip, { ChipState, ChipProps } from './MultiStateChip';
+import { checkPropTypes } from "../propTypes";
 
 
 /**
@@ -34,6 +35,7 @@ import MultiStateChip, { ChipState, ChipProps } from './MultiStateChip';
  * -1: An error color with an x icon
  */
 function TriStateChip(props) {
+  checkPropTypes(TriStateChip, props);
   const {
     key,
     size,
