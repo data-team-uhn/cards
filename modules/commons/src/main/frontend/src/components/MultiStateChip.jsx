@@ -66,7 +66,8 @@ function MultiStateChip(props) {
 MultiStateChip.propTypes = {
   key: PropTypes.string,
   size: PropTypes.oneOf(["small", "medium"]),
-  states: PropTypes.arrayOf(PropTypes.instanceOf(ChipState)).isRequired
+  states: PropTypes.arrayOf(PropTypes.instanceOf(ChipState)).isRequired,
+  onChange: PropTypes.func.isRequired,
 }
 
 export default MultiStateChip;

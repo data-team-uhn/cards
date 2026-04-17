@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -25,7 +25,6 @@ import PropTypes from "prop-types";
 
 import MultiStateChip, { ChipState, ChipProps } from './MultiStateChip';
 
-let states = [];
 
 /**
  * A 3 state chip supporting the following 3 values and states, each with a configurable tooltip.
@@ -47,12 +46,14 @@ function TriStateChip(props) {
     onClear
   } = props;
 
+  const [ states, setStates ] = useState([]);
+
   useEffect(() => {
-    states = [
+    setStates ([
       new ChipState(new ChipProps(label, "outlined", "primary", <RadioButtonUncheckedIcon/>), 0, defaultTooltip),
       new ChipState(new ChipProps(label, "outlined", "success", <CheckCircleIcon/>), 1, positiveTooltip),
       new ChipState(new ChipProps(label, "outlined", "error",  <CancelIcon/>), -1, negativeTooltip)
-    ]
+    ])
   }, [label, defaultTooltip, positiveTooltip, negativeTooltip]);
 
   let onChange = (newState) => {
