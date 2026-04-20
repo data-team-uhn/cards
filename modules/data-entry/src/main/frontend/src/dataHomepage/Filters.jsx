@@ -88,43 +88,6 @@ function Filters(props) {
     }
   }
 
-  // Parse filters that were passed from one of dashboard table expansions
-  // When new data is added, trigger a new fetch
-  useEffect(() => {
-    if (!filterRequestSent) {
-      grabFilters();
-    }
-
-    if (filtersJsonString && Object.keys(questionDefinitions).length > 0) {
-      // Parse out the filters
-      let newFilters = [];
-      try {
-        newFilters = JSON.parse(decodeURIComponent(window.atob(filtersJsonString)));
-      } catch (err) {
-        // Ignore silently malformed filters sent in the URL
-        return;
-      }
-      if (!Array.isArray(newFilters)) return;
-      newFilters.forEach( (newFilter) => {
-        getOutputChoices(newFilter.name);
-      });
-      setEditingFilters(newFilters);
-      setActiveFilters(newFilters);
-      onChangeFilters?.(newFilters);
-    }
-  }, [filtersJsonString, questionDefinitions]);
-
-  // Obtain information about the filters that can be applied
-  let grabFilters = () => {
-    setFilterRequestSent(true);
-    let url = new URL(questionnaire ? questionnaire + ".filters" : FILTER_URL, window.location.origin);
-
-    fetchWithReLogin(globalLoginDisplay, url)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(parseFilterData)
-      .catch(setError);
-  }
-
   // Parse the json response from FilterSerlet
   let parseFilterData = (data) => {
 
@@ -166,6 +129,64 @@ function Filters(props) {
     setAutoselectOptions(newAutoselectOptions);
   }
 
+  // Obtain information about the filters that can be applied
+  let grabFilters = () => {
+    setFilterRequestSent(true);
+    let url = new URL(questionnaire ? questionnaire + ".filters" : FILTER_URL, window.location.origin);
+
+    fetchWithReLogin(globalLoginDisplay, url)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(parseFilterData)
+      .catch(setError);
+  }
+
+  let getOutputChoices = (field) => {
+    let [comparators, component] = FilterComponentManager.getFilterComparatorsAndComponent(questionDefinitions[field]);
+    if (questionDefinitions[field].enableNotes && !comparators.includes(notesComparator)) {
+      comparators = comparators.slice();
+      comparators.push(notesComparator);
+      setTextFilterComponent(old => ({
+        ...old,
+        [field]: FilterComponentManager.getTextFilterComponent(questionDefinitions[field])
+      }));
+    }
+    setFilterComparators( old => ({
+      ...old,
+      [field]: comparators
+    }));
+    setFilterableAnswers( old => ({
+      ...old,
+      [field]: component
+    }));
+    return [comparators, component]
+  }
+
+  // Parse filters that were passed from one of dashboard table expansions
+  // When new data is added, trigger a new fetch
+  useEffect(() => {
+    if (!filterRequestSent) {
+      grabFilters();
+    }
+
+    if (filtersJsonString && Object.keys(questionDefinitions).length > 0) {
+      // Parse out the filters
+      let newFilters = [];
+      try {
+        newFilters = JSON.parse(decodeURIComponent(window.atob(filtersJsonString)));
+      } catch (err) {
+        // Ignore silently malformed filters sent in the URL
+        return;
+      }
+      if (!Array.isArray(newFilters)) return;
+      newFilters.forEach( (newFilter) => {
+        getOutputChoices(newFilter.name);
+      });
+      setEditingFilters(newFilters);
+      setActiveFilters(newFilters);
+      onChangeFilters?.(newFilters);
+    }
+  }, [filtersJsonString, questionDefinitions]);
+
   // Open the filter selection dialog
   let openDialogAndAdd = () => {
     setDialogOpen(true);
@@ -188,7 +209,7 @@ function Filters(props) {
 
   // Add a new filter
   let addFilter = () => {
-    setEditingFilters(oldfilters => {var newfilters = oldfilters.slice(); newfilters.push({}); return(newfilters);})
+    setEditingFilters(oldfilters => {let newfilters = oldfilters.slice(); newfilters.push({}); return(newfilters);})
   }
 
   // Handle the user changing one of the active filter categories
@@ -204,8 +225,8 @@ function Filters(props) {
 
     getOutputChoices(path);
     setEditingFilters(oldfilters => {
-      var newfilters = oldfilters.slice();
-      var newfilter = {
+      let newfilters = oldfilters.slice();
+      let newfilter = {
         name: path,
         uuid: questionDefinitions[path]["jcr:uuid"],
         comparator: loadedComparators[0],
@@ -248,27 +269,6 @@ function Filters(props) {
     })
   }
 
-  let getOutputChoices = (field) => {
-    let [comparators, component] = FilterComponentManager.getFilterComparatorsAndComponent(questionDefinitions[field]);
-    if (questionDefinitions[field].enableNotes && !comparators.includes(notesComparator)) {
-      comparators = comparators.slice();
-      comparators.push(notesComparator);
-      setTextFilterComponent(old => ({
-        ...old,
-        [field]: FilterComponentManager.getTextFilterComponent(questionDefinitions[field])
-      }));
-    }
-    setFilterComparators( old => ({
-      ...old,
-      [field]: comparators
-    }));
-    setFilterableAnswers( old => ({
-      ...old,
-      [field]: component
-    }));
-    return [comparators, component]
-  }
-
   // Parse out all of our stuff into chips
   let saveFilters = () => {
     // Create a deep copy of the active filters
@@ -304,7 +304,7 @@ function Filters(props) {
   }
 
   // Return the pre-computed input element, and focus it if we were asked to
-  let getCachedInput = (filterDatum, index, focusRef) => {
+  let getCachedInput = (filterDatum, index) => {
     let dataType = questionDefinitions[filterDatum.name]?.dataType || "text";
 
     let CachedComponent = filterDatum.comparator === notesComparator ?
@@ -313,7 +313,7 @@ function Filters(props) {
       filterableAnswers[filterDatum.name];
     return (
       <CachedComponent
-        ref={focusRef}
+        ref={index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined}
         questionDefinition={questionDefinitions[filterDatum.name]}
         initial={{
           value: editingFilters[index].value,
@@ -442,8 +442,7 @@ function Filters(props) {
                     >
                       { filterDatum.comparator
                         ?
-                        getCachedInput(filterDatum, index,
-                          (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
+                        getCachedInput(filterDatum, index)
                         :
                         <TextField variant="standard" disabled fullWidth></TextField>
                       }

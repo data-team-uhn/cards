@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useRef, useState, useContext } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 
 import Info from "@mui/icons-material/Info";
 import Search from "@mui/icons-material/Search";
@@ -108,6 +108,7 @@ function ResourceQuery(props) {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   const [lookupTimer, setLookupTimer] = useState(null);
+  const [anchorElement, setAnchorElement] = useState(null);
 
   // Holds resource path on dropdown info button click
   const [resourcePath, setResourcePath] = useState("");
@@ -133,60 +134,6 @@ function ResourceQuery(props) {
   let infoboxRef = useRef();
   let browserRef = useRef();
 
-  const inputEl = (
-    <Input
-      disabled={disabled}
-      variant='outlined'
-      fullWidth={fullWidth}
-      slotProps={{
-        htmlInput: {
-          "aria-label": "Search",
-        },
-      }}
-      onChange={(event) => {
-        delayLookup(event.target.value);
-        setInputValue(event.target.value);
-        (maxAnswers != 1 || event.target.value == "") && onChange?.(event);
-      }}
-      inputRef={anchorEl}
-      onKeyDown={(event) => {
-        if (event.key == 'Enter') {
-          onChange?.(event);
-          closeAutocomplete(event);
-          event.preventDefault();
-        } else if (event.key == 'ArrowDown' || event.key == 'ArrowUp') {
-          // Move the focus to the 1st or last item of suggestions list
-          if (menuRef?.current?.children?.length > 0) {
-            let index = (event.key == 'ArrowDown') ? 0 : menuRef.current.children.length -1;
-            menuRef.current.children[index].focus();
-          }
-          event.preventDefault();
-        } else if (event.key == 'Tab' || event.key == "Escape") {
-          maxAnswers != 1 && setInputValue("");
-          closeAutocomplete(event);
-        }
-      }}
-      onFocus={(status) => {
-        anchorEl.current.select();
-        setSuggestionsVisible(false);
-        setResourcePath("");
-      }}
-      className={(variant == "labeled" ? (classes.searchInput + " ") : "") + className}
-      multiline={true}
-      endAdornment={(
-        <InputAdornment position="end" ref={searchButtonRef} onClick={() => {
-          queryInput(anchorEl.current.value);
-        }
-        }
-        className = {classes.searchButton}>
-          <Search />
-        </InputAdornment>
-      )}
-      placeholder={placeholder}
-      value={inputValue}
-    />
-  );
-
   const globalContext = useContext(GlobalLoginContext);
 
   const otherProperties = propertiesToSearch?.trim() ? propertiesToSearch.trim().split(/\s*,\s*/) : [];
@@ -202,41 +149,6 @@ function ResourceQuery(props) {
     });
     url += `&limit=${MAX_RESULTS}`;
     return url;
-  }
-
-  // Lookup the search input after a short interval
-  // This will reset the interval if called before the interval hangs up
-  let delayLookup = (value) => {
-    if (lookupTimer !== null) {
-      clearTimeout(lookupTimer);
-    }
-
-    setLookupTimer(setTimeout(queryInput, 500, value));
-    setSuggestionsVisible(true);
-    setSuggestions([]);
-  }
-
-  // Grab suggestions for the given input
-  let queryInput = (input) => {
-    // Stop the timer
-    setLookupTimer(null);
-
-    // Empty/blank input? Do not query
-    if (input.trim() === "") {
-      return;
-    }
-
-    // Grab suggestions
-    setSuggestionsLoading(true);
-    // Query for resources matching the input
-    getSuggestions(
-      input,
-      showSuggestions,
-      () => showSuggestions({ rows: [{
-        error: true,
-        message: "Answer suggestions cannot be loaded for this question."
-      }] })
-    );
   }
 
   let getSuggestions = fetchSuggestions || ((input, onSuccess, onFailure) => {
@@ -274,14 +186,36 @@ function ResourceQuery(props) {
     return suggestion;
   }
 
+  // Register a button reference that the info box can use to align itself to
+  let registerInfoButton = (id, node) => {
+    // List items getting deleted will overwrite new browser button refs, so
+    // we must ignore deregistration events
+    if (node) {
+      setButtonRefs(oldRefs => {
+        let newRefs = Object.assign({}, oldRefs);
+        newRefs[id] = node;
+        return newRefs;
+      });
+    }
+  }
+
+  let closeSuggestions = () => {
+    if (clearOnClick && anchorEl?.current) {
+      anchorEl.current.value = "";
+    }
+    if (focusAfterSelecting) {
+      anchorEl?.current?.select();
+    }
+    setSuggestionsVisible(false);
+  }
+
   // Callback for queryInput to populate the suggestions bar
-  let showSuggestions = (data) => {
+  let showSuggestions = (data, query) => {
     setSuggestionsLoading(false);
 
     // Populate suggestions
-    var suggestions = [];
-    var query = anchorEl.current.value;
-    var showUserEntry = enableUserEntry;
+    let suggestions = [];
+    let showUserEntry = enableUserEntry;
 
     if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
@@ -365,22 +299,45 @@ function ResourceQuery(props) {
       suggestions.push(
         <MenuItem
           className={classes.dropdownItem}
-          key={anchorEl.current.value}
+          key={query}
           onClick={(e) => {
             if (e.target.localName === "li") {
-              onClick(anchorEl.current.value, anchorEl.current.value);
+              onClick(query, query);
               clearOnClick && setInputValue("");
               closeSuggestions();
             }}
           }
         >
-          {anchorEl.current.value}
+          {query}
         </MenuItem>
       );
     }
 
     setSuggestions(suggestions);
     setSuggestionsVisible(true);
+  }
+
+  // Grab suggestions for the given input
+  let queryInput = (input) => {
+    // Stop the timer
+    setLookupTimer(null);
+
+    // Empty/blank input? Do not query
+    if (input.trim() === "") {
+      return;
+    }
+
+    // Grab suggestions
+    setSuggestionsLoading(true);
+    // Query for resources matching the input
+    getSuggestions(
+      input,
+      (data) => showSuggestions(data, input),
+      () => showSuggestions({ rows: [{
+        error: true,
+        message: "Answer suggestions cannot be loaded for this question."
+      }] }, input)
+    );
   }
 
   // Event handler for clicking away from the autocomplete while it is open
@@ -398,32 +355,78 @@ function ResourceQuery(props) {
       && setInputValue("");
     setSuggestionsVisible(false);
     setResourcePath("");
-  };
+  }
+
+  // Lookup the search input after a short interval
+  // This will reset the interval if called before the interval hangs up
+  let delayLookup = (value) => {
+    if (lookupTimer !== null) {
+      clearTimeout(lookupTimer);
+    }
+
+    setLookupTimer(setTimeout(queryInput, 500, value));
+    setSuggestionsVisible(true);
+    setSuggestions([]);
+  }
+
+  const inputEl = (
+    <Input
+      disabled={disabled}
+      variant='outlined'
+      fullWidth={fullWidth}
+      slotProps={{
+        htmlInput: {
+          "aria-label": "Search",
+        },
+      }}
+      onChange={(event) => {
+        delayLookup(event.target.value);
+        setInputValue(event.target.value);
+        (maxAnswers != 1 || event.target.value == "") && onChange?.(event);
+      }}
+      inputRef={(node) => {
+        anchorEl.current = node;
+        setAnchorElement(node);
+      }}
+      onKeyDown={(event) => {
+        if (event.key == 'Enter') {
+          onChange?.(event);
+          closeAutocomplete(event);
+          event.preventDefault();
+        } else if (event.key == 'ArrowDown' || event.key == 'ArrowUp') {
+          // Move the focus to the 1st or last item of suggestions list
+          if (menuRef?.current?.children?.length > 0) {
+            let index = (event.key == 'ArrowDown') ? 0 : menuRef.current.children.length -1;
+            menuRef.current.children[index].focus();
+          }
+          event.preventDefault();
+        } else if (event.key == 'Tab' || event.key == "Escape") {
+          maxAnswers != 1 && setInputValue("");
+          closeAutocomplete(event);
+        }
+      }}
+      onFocus={(status) => {
+        anchorEl.current.select();
+        setSuggestionsVisible(false);
+        setResourcePath("");
+      }}
+      className={(variant == "labeled" ? (classes.searchInput + " ") : "") + className}
+      multiline={true}
+      endAdornment={(
+        <InputAdornment position="end" ref={searchButtonRef} onClick={() => {
+          queryInput(anchorEl.current.value);
+        }
+        }
+        className = {classes.searchButton}>
+          <Search />
+        </InputAdornment>
+      )}
+      placeholder={placeholder}
+      value={inputValue}
+    />
+  );
 
   let InfoDisplayer = infoDisplayer;
-
-  // Register a button reference that the info box can use to align itself to
-  let registerInfoButton = (id, node) => {
-    // List items getting deleted will overwrite new browser button refs, so
-    // we must ignore deregistration events
-    if (node) {
-      setButtonRefs(oldRefs => {
-        let newRefs = Object.assign({}, oldRefs);
-        newRefs[id] = node;
-        return newRefs;
-      });
-    }
-  }
-
-  let closeSuggestions = () => {
-    if (clearOnClick && anchorEl?.current) {
-      anchorEl.current.value = "";
-    }
-    if (focusAfterSelecting) {
-      anchorEl?.current?.select();
-    }
-    setSuggestionsVisible(false);
-  }
 
   let updateSelection = (selectedEntries, removedEntries) => {
     selectedEntries?.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
@@ -445,12 +448,14 @@ function ResourceQuery(props) {
     }
   }
 
-  if (disabled && anchorEl?.current) {
-    // Alter our text to either the override ("Please select at most X options")
-    // or empty it
-    anchorEl.current.value = "";
-    anchorEl.current.blur();
-  }
+  useEffect(() => {
+    if (disabled && anchorEl?.current) {
+      // Alter our text to either the override ("Please select at most X options")
+      // or empty it
+      anchorEl.current.value = "";
+      anchorEl.current.blur();
+    }
+  }, [disabled]);
 
   return (
     <div>
@@ -476,7 +481,7 @@ function ResourceQuery(props) {
       {/* Suggestions list using Popper */}
       <Popper
         open={suggestionsVisible}
-        anchorEl={anchorEl.current}
+        anchorEl={anchorElement}
         transition
         className={classNames(
           classes.popperNav,
