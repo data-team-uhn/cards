@@ -93,63 +93,38 @@ function VocabularyTree(props) {
   const [removedTerms, setRemovedTerms] = useState([]);
   const [selectionChanged, setSelectionChanged] = useState(false);
 
-  useEffect(() => {
-    if (browseRoots && !vocabulary.roots) {
-      // if vocab was just installed -> grab the info to get the roots for browser population
-      var url = new URL(`${vocabulary.acronym}.json`, REST_URL);
-      MakeRequest(url, getRoots);
-    } else {
-      rebuildBrowser();
-    }
-  }, [path, vocabulary]);
-
-  useEffect(() => {
-    rebuildBrowser();
-  }, [roots]);
-
-  useEffect(() => {
-    setSelectionChanged(true);
-  }, [selectedTerms, removedTerms]);
-
-  let getRoots = (status, data) => {
-    setRoots(data?.roots);
-  }
-
-  // Rebuild the browser tree centered around the given term.
-  let rebuildBrowser = () => {
-    // if we are building for roots for the first time
-    if (roots && !parentNode) {
-      let rootBranches = roots.map((row, index) => {
-        return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], true, (roots.length == 1), false, true) : false;
-      }).filter(i => i);
-      setParentNode(rootBranches);
-      return;
-    }
-
-    // Do not re-grab suggestions for the same term, or if our lookup has failed (to prevent infinite loops)
-    if (path === lastKnownTerm) {
-      return;
-    }
-
-    // If the search is empty, remove every component
-    if (!path) {
-      setParentNode(null);
-      setCurrentNode(null);
-      setLastKnownTerm(path);
-      return;
-    }
-
-    // Create the XHR request
-    var url = new URL(path + ".info.json", window.location.origin);
-    MakeRequest(url, rebuildTree);
-    setLastKnownTerm(path);
+  // Construct a branch element for rendering
+  let constructBranch = (id, path, name, ischildnode, defaultexpanded, focused, hasChildren) => {
+    return(
+      <VocabularyBranch
+        id={id}
+        path={path}
+        name={name.trim()}
+        onTermClick={onTermClick}
+        onCloseInfoBox={onCloseInfoBox}
+        registerInfo={registerInfo}
+        getInfo={getInfo}
+        expands={ischildnode}
+        defaultOpen={defaultexpanded}
+        key={id}
+        headNode={!ischildnode}
+        focused={focused}
+        onError={onError}
+        knownHasChildren={!!hasChildren}
+        selectorComponent={selectorComponent}
+        onTermSelected={addOption}
+        onTermUnselected={removeOption}
+        currentSelection={selectedTerms?.map(item => item[VALUE_POS])}
+        maxAnswers={maxAnswers}
+      />
+    );
   }
 
   // Callback from an onload to generate the tree from a /suggest query about the parent
   let rebuildTree = (status, data) => {
     if (status === null) {
       // Construct parent elements, if they exist
-      var parentBranches = null;
+      let parentBranches = null;
       if ("parents" in data) {
         parentBranches = data["parents"].map((row, index) => {
           return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], false, false, false, row["cards:hasChildren"]) : false;
@@ -178,7 +153,7 @@ function VocabularyTree(props) {
       return old.filter(item => item[VALUE_POS] != path);
     });
     // This event is needed to pass on to all branches so they check selected term
-    var addedEvent = new CustomEvent('term-selected', {
+    let addedEvent = new CustomEvent('term-selected', {
       bubbles: true,
       cancelable: true,
       detail: [name, path]
@@ -199,7 +174,7 @@ function VocabularyTree(props) {
       });
     }
     // This event is needed to pass on to all branches so they un-check selected term
-    var removedEvent = new CustomEvent('term-unselected', {
+    let removedEvent = new CustomEvent('term-unselected', {
       bubbles: true,
       cancelable: true,
       detail: [name, path]
@@ -221,32 +196,57 @@ function VocabularyTree(props) {
     setRemovedTerms([]);
   }
 
-  // Construct a branch element for rendering
-  let constructBranch = (id, path, name, ischildnode, defaultexpanded, focused, hasChildren) => {
-    return(
-      <VocabularyBranch
-        id={id}
-        path={path}
-        name={name.trim()}
-        onTermClick={onTermClick}
-        onCloseInfoBox={onCloseInfoBox}
-        registerInfo={registerInfo}
-        getInfo={getInfo}
-        expands={ischildnode}
-        defaultOpen={defaultexpanded}
-        key={id}
-        headNode={!ischildnode}
-        focused={focused}
-        onError={onError}
-        knownHasChildren={!!hasChildren}
-        selectorComponent={selectorComponent}
-        onTermSelected={addOption}
-        onTermUnselected={removeOption}
-        currentSelection={selectedTerms?.map(item => item[VALUE_POS])}
-        maxAnswers={maxAnswers}
-      />
-    );
+  // Rebuild the browser tree centered around the given term.
+  let rebuildBrowser = () => {
+    // if we are building for roots for the first time
+    if (roots && !parentNode) {
+      let rootBranches = roots.map((row, index) => {
+        return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], true, (roots.length == 1), false, true) : false;
+      }).filter(i => i);
+      setParentNode(rootBranches);
+      return;
+    }
+
+    // Do not re-grab suggestions for the same term, or if our lookup has failed (to prevent infinite loops)
+    if (path === lastKnownTerm) {
+      return;
+    }
+
+    // If the search is empty, remove every component
+    if (!path) {
+      setParentNode(null);
+      setCurrentNode(null);
+      setLastKnownTerm(path);
+      return;
+    }
+
+    // Create the XHR request
+    let url = new URL(path + ".info.json", window.location.origin);
+    MakeRequest(url, rebuildTree);
+    setLastKnownTerm(path);
   }
+
+  let getRoots = (status, data) => {
+    setRoots(data?.roots);
+  }
+
+  useEffect(() => {
+    if (browseRoots && !vocabulary.roots) {
+      // if vocab was just installed -> grab the info to get the roots for browser population
+      let url = new URL(`${vocabulary.acronym}.json`, REST_URL);
+      MakeRequest(url, getRoots);
+    } else {
+      rebuildBrowser();
+    }
+  }, [path, vocabulary]);
+
+  useEffect(() => {
+    rebuildBrowser();
+  }, [roots]);
+
+  useEffect(() => {
+    setSelectionChanged(true);
+  }, [selectedTerms, removedTerms]);
 
   return (
     <ResponsiveDialog
