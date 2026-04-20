@@ -97,6 +97,7 @@ function SearchBar(props) {
   const [ limit, setLimit ] = useState(5);
   const [ allowedResourceTypes, setAllowedResourceTypes ] = useState([]);
   const [ showTotalRows, setShowTotalRows ] = useState(true);
+  const [ anchorElement, setAnchorElement ] = useState(null);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -244,13 +245,13 @@ function SearchBar(props) {
           </InputAdornment>
         }
         className={(invertColors ? classes.invertedColors + " " : "") + className}
-        inputRef={input}
+        inputRef={ref => {input.current = ref; setAnchorElement(ref)}}
         {...rest}
       />
       {/* Suggestions list using Popper */}
       <Popper
         open={popperOpen}
-        anchorEl={input.current}
+        anchorEl={anchorElement}
         className={popperOpen ? classes.aboveBackground : ""}
         modifiers={[{
           name: 'preventOverflow',

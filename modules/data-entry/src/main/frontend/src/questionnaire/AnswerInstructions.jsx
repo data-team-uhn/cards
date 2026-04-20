@@ -56,7 +56,7 @@ function AnswerInstructions (props) {
   const answerIsAcceptable  = useMemo(() =>
     (currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers)
       || !isEdit && !hasWarningFlags(existingAnswer)
-  , [currentAnswers]);
+  , [currentAnswers, isEdit, existingAnswer, minAnswers, maxAnswers]);
 
   return (instructionsExist && (
     <Typography

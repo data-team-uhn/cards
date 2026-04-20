@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { TextField } from "@mui/material";
 import GlobalStyles from '@mui/material/GlobalStyles';
@@ -102,10 +102,9 @@ function AddressQuestion(props) {
   const countries = questionDefinition.countries?.split(/\s*,\s*/) || undefined;
   let searchPlacesAround = undefined;
   try {
-    searchPlacesAround = questionDefinition.searchPlacesAround
-      ? JSON.parse(questionDefinition.searchPlacesAround)
-      :
-      undefined;
+    if (questionDefinition.searchPlacesAround) {
+      searchPlacesAround = JSON.parse(questionDefinition.searchPlacesAround);
+    }
   } catch (e) {
     // No bounds
   }
@@ -126,11 +125,16 @@ function AddressQuestion(props) {
   });
 
   // If google API authentication problem emerges due to to the invalid key or key with disabled Places service
-  // eslint-disable-next-line react-hooks/immutability
-  window.gm_authFailure = () => {
-    console.error("Error in Google API authentication");
-    setIsValidApi(false);
-  };
+  useEffect(() => {
+    window.gm_authFailure = () => {
+      console.error("Error in Google API authentication");
+      setIsValidApi(false);
+    };
+    // Cleanup: restore original handler if it existed, or remove ours
+    return () => {
+      delete window.gm_authFailure;
+    };
+  }, []);
 
   if (!isValidApi) {
     return <StyledTextQuestion {...props} />

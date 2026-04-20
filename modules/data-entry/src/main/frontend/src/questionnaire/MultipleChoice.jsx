@@ -158,6 +158,7 @@ function MultipleChoice(props) {
   const [assistantAnchor, setAssistantAnchor] = useState(null);
   const [tmpGhostSelection, setTmpGhostSelection] = useState(null);
   const [inputError, setInputError] = useState();
+  const [inputBlurred, setInputBlurred] = useState(false);
 
   const formContext = useFormReaderContext();
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
@@ -171,6 +172,12 @@ function MultipleChoice(props) {
       (liveValidation || inputError !== false) && setInputError(!validate(ghostName));
     }
   }, [ghostName, inputError]);
+
+  useEffect(() => {
+    if (!inputBlurred) return;
+    inputElRef.current?.blur();
+    setInputBlurred(false);
+  }, [inputBlurred]);
 
   let selectOption = (id, name, checked = false) => {
     if (!(isRadio || isBare) && !checked && naOption == id) {
@@ -314,7 +321,7 @@ function MultipleChoice(props) {
   let acceptOption = (valToAccept, labelToAccept) => {
     if (isRadio || isBare) {
       selectOption(valToAccept, labelToAccept) && setGhostName("");
-      inputElRef.current?.blur();
+      setInputBlurred(true);
     } else if (maxAnswers !== 1 && !error && valToAccept !== "") {
       // If we can select multiple and are not in error, add this option (if not already available) and ensure it's selected
       addOption(valToAccept, labelToAccept);
