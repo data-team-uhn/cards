@@ -29,25 +29,6 @@ export default function PrincipalsContainer(props) {
   const [ groups, setGroups ] = useState([]);
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  useEffect(() => {
-    handleLoadUsers();
-  }, []);
-
-  let handleLoadUsers = () => {
-    fetchWithReLogin(globalLoginDisplay, "/home/users.json",
-      {
-        method: 'GET',
-        credentials: 'include'
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?');
-        setUsers(data.rows);
-      })
-      .catch((error) => console.log(error?.statusText ?? error))
-      .finally(() => handleLoadGroups());
-  }
-
   let handleLoadGroups = () => {
     fetchWithReLogin(globalLoginDisplay, "/home/groups.json",
       {
@@ -59,13 +40,37 @@ export default function PrincipalsContainer(props) {
       .catch((error) => console.log(error?.statusText ?? error))
       .finally(() => {
         // This event is needed in cases we do not want to collapse details panel after reload
-        var reloadedEvent = new CustomEvent('principals-reloaded', {
+        let reloadedEvent = new CustomEvent('principals-reloaded', {
           bubbles: true,
           cancelable: true
         });
         document.dispatchEvent(reloadedEvent);
       })
   }
+
+  let handleLoadUsers = () => {
+    fetchWithReLogin(globalLoginDisplay, "/home/users.json",
+      {
+        method: 'GET',
+        credentials: 'include'
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        data.rows?.forEach((r) => {
+          const firstInitial = r.firstname?.charAt(0) || '';
+          const lastInitial = r.lastname?.charAt(0) || '';
+          const combinedInitials = firstInitial + lastInitial;
+          r.initials = combinedInitials || r.name?.charAt(0) || '?';
+        });
+        setUsers(data.rows);
+      })
+      .catch((error) => console.log(error?.statusText ?? error))
+      .finally(() => handleLoadGroups());
+  }
+
+  useEffect(() => {
+    handleLoadUsers();
+  }, []);
 
   return (
     <div>
