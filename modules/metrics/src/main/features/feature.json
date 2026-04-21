@@ -28,5 +28,12 @@
       "start-order":"25"
     }
   ],
+  "configurations":{
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~metrics":{
+      "user.mapping":[
+        "io.uhndata.cards.metrics=[cards-metrics]"
+      ]
+    }
+  },
   "repoinit:TEXT|true": "@file"
 }
