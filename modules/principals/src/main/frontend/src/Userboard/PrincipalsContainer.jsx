@@ -56,7 +56,7 @@ export default function PrincipalsContainer(props) {
       })
       .then((response) => response.json())
       .then((data) => {
-        data.rows.forEach((r) => {
+        data.rows?.forEach((r) => {
           const firstInitial = r.firstname?.charAt(0) || '';
           const lastInitial = r.lastname?.charAt(0) || '';
           const combinedInitials = firstInitial + lastInitial;
