@@ -35,6 +35,7 @@
     <module>resolver-provider</module>
     <module>form-completion-status</module>
     <module>commons</module>
+    <module>status</module>
     <module>ui-extension</module>
     <module>login</module>
     <module>homepage</module>
