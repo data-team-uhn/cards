@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   Checkbox,
@@ -81,9 +81,15 @@ let QuestionMatrix = (props) => {
   const valueType = sectionDefinition.dataType.charAt(0).toUpperCase() + sectionDefinition.dataType.slice(1);
   // Use existing existingAnswer, Otherwise, create a new UUID
   const answerSectionID = existingSectionAnswer ? existingSectionAnswer[0] : uuidv4();
-  const sectionAnswerPath = path + "/" + answerSectionID;
+  const [sectionAnswerPath, setSectionAnswerPath ] = useState(path + "/" + answerSectionID);
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const enableVerticalLayout = verticalLayout || isSmallScreen;
+
+  useEffect(() => {
+    if (existingSectionAnswer) {
+      setSectionAnswerPath(path + "/" + existingSectionAnswer[0]);
+    }
+  }, [existingSectionAnswer]);
 
   const subquestions = Object.entries(sectionDefinition)
     .filter(([key, value]) => value['jcr:primaryType'] == 'cards:Question');
