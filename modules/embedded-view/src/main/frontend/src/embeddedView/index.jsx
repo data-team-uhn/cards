@@ -16,6 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+import { StrictMode } from "react";
+
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
 
@@ -36,11 +38,13 @@ function EmbeddedView (props) {
 
 const root = createRoot(document.querySelector('#embedded-homepage-container'));
 root.render(
-  <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={appTheme}>
-      <EmbeddedView />
-    </ThemeProvider>
-  </StyledEngineProvider>
+  <StrictMode>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={appTheme}>
+        <EmbeddedView />
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </StrictMode>
 );
 
 export default EmbeddedView;
