@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -56,7 +55,7 @@ public class ScheduledSlackNotification
     private Scheduler scheduler;
 
     @Activate
-    protected void activate(Configuration config, ComponentContext componentContext) throws Exception
+    protected void activate(Configuration config) throws Exception
     {
         LOGGER.info("ScheduledSlackNotifications activating");
         final String nightlyNotificationsSchedule = getSchedule(config.schedule());

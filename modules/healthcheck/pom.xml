@@ -41,6 +41,10 @@
     </plugins>
   </build>
 
+  <properties>
+    <coverage.instructionRatio>0.83</coverage.instructionRatio>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.uhndata.cards</groupId>

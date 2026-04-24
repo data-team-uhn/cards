@@ -103,7 +103,7 @@ public class MetricsStatusReporter implements StatusReporter
                 gatheredStatistics.merge(thisHumanName, thisMetricValue, this::mergeStats);
             }
         } catch (LoginException e) {
-            LOGGER.warn("Failed to create service session: {}", e, e.getMessage());
+            LOGGER.warn("Failed to create service session: {}", e.getMessage(), e);
         }
         return gatheredStatistics;
     }

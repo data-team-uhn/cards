@@ -53,6 +53,6 @@ public @interface Configuration
 
     @AttributeDefinition(name = "Don't post empty messages",
         description = "If the message ends up containing nothing at all, don't post anything."
-            + "If this setting is false, then a 'Nothing to report' message will be sent in this case.")
+            + " If this setting is false, then a 'Nothing to report' message will be sent in this case.")
     boolean skipEmpty() default true;
 }
