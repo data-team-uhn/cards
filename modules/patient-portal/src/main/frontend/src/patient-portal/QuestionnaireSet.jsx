@@ -252,9 +252,9 @@ function QuestionnaireSet(props) {
     return contentOffset || 0;
   }, [crtStep, contentOffset]);
 
-  // Reset the crtFormId when returning to the welcome screen
+  // Reset the crtFormId when on the welcome screen or review screen so that "Update my Answers" triggers page loads correctly
   useEffect(() => {
-    crtStep == -1 && setCrtFormId(null);
+    (crtStep == -1 || crtStep >= questionnaireIds?.length) && setCrtFormId(null);
   }, [crtStep]);
 
   // Find the next step : Skip questionnaires that have already been filled out
