@@ -40,21 +40,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Check that JCR select queries return a number of results that satisfies an expected condition. The list of checks is
- * defined as nodes in the repository, under {@code /libs/cards/healthcheck/queryCountChecks/}, with:
+ * Check that JCR select queries return a number of results that satisfies
+ * an expected condition. The list of checks is defined as nodes in the
+ * repository, under {@code /libs/cards/healthcheck/queryCountChecks/}, with:
  * <ul>
- * <li>{@code query} — a JCR-SQL2 select query to execute (e.g. {@code SELECT * FROM [cards:Form]})</li>
- * <li>{@code comparator} — one of {@code <}, {@code <=}, {@code =}, {@code >=}, {@code >}, {@code !=}</li>
- * <li>{@code expectedCount} — the long value to compare the row count against</li>
- * <li>{@code limit} — (optional) maximum rows to fetch before counting; defaults to 1</li>
+ * <li>{@code query} — a JCR-SQL2 select query to execute</li>
+ * <li>{@code comparator} — one of {@code <}, {@code <=}, {@code =},
+ *     {@code >=}, {@code >}, {@code !=}</li>
+ * <li>{@code expectedCount} — long value to compare the row count against</li>
+ * <li>{@code limit} — (optional) maximum rows to fetch before counting;
+ *     defaults to 1</li>
  * </ul>
- * The check passes when {@code actualCount comparator expectedCount} is true. The limit caps how many rows are
- * retrieved, so set it to at least {@code expectedCount} when using {@code =}, {@code >=}, or {@code >} comparators.
+ * The check passes when {@code actualCount comparator expectedCount} is true.
+ * The limit caps how many rows are retrieved, so set it to at least
+ * {@code expectedCount} when using {@code =}, {@code >=}, or {@code >}.
  * <p>
- * The query string may contain the following date placeholders, which are resolved at execution time (UTC):
+ * The query string may contain date placeholders resolved at execution time:
  * <ul>
- * <li>{@code ${today}} — today's date in {@code YYYY-MM-DD} format</li>
- * <li>{@code ${yesterday}} — yesterday's date in {@code YYYY-MM-DD} format</li>
+ * <li>{@code ${today}} — today's date in {@code YYYY-MM-DD} format (UTC)</li>
+ * <li>{@code ${yesterday}} — yesterday's date in {@code YYYY-MM-DD}
+ *     format (UTC)</li>
  * </ul>
  * Use them in JCR SQL2 date literals, e.g.
  * {@code CAST('${yesterday}T00:00:00.000Z' AS DATE)}.
@@ -64,38 +69,57 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  * @since 0.9.38
  */
-@Component(service = HealthCheck.class, property = { HealthCheck.TAGS + "=cards",
-    HealthCheck.NAME + "=CARDS query counts" }, immediate = true)
-public class QueryCountHealthCheck implements HealthCheck
+@Component(
+    service = HealthCheck.class,
+    property = {
+        HealthCheck.TAGS + "=cards",
+        HealthCheck.NAME + "=CARDS query counts"
+    },
+    immediate = true)
+public final class QueryCountHealthCheck implements HealthCheck
 {
     /** JCR node where all the configurations are stored. */
-    public static final String CONFIGURATION_PATH = "/libs/cards/healthcheck/queryCountChecks";
+    public static final String CONFIGURATION_PATH =
+        "/libs/cards/healthcheck/queryCountChecks";
 
-    /** Configuration property: JCR-SQL2 count query to execute. */
+    /** Configuration property: JCR-SQL2 select query to execute. */
     public static final String QUERY_PROPERTY = "query";
 
-    /** Configuration property: comparison operator ({@code <}, {@code <=}, {@code =}, {@code >=}, {@code >},
-     *  {@code !=}). */
+    /**
+     * Configuration property: comparison operator ({@code <}, {@code <=},
+     * {@code =}, {@code >=}, {@code >}, {@code !=}).
+     */
     public static final String COMPARATOR_PROPERTY = "comparator";
 
     /** Configuration property: the expected count to compare against. */
     public static final String EXPECTED_COUNT_PROPERTY = "expectedCount";
 
-    /** Configuration property: maximum rows to fetch before counting; defaults to 1. */
+    /**
+     * Configuration property: maximum rows to fetch before counting;
+     * defaults to {@link #DEFAULT_LIMIT}.
+     */
     public static final String LIMIT_PROPERTY = "limit";
 
+    /** Default value for the {@code limit} property. */
     public static final long DEFAULT_LIMIT = 1L;
 
-    /** Placeholder replaced with today's date ({@code YYYY-MM-DD}, UTC) at query execution time. */
+    /** Placeholder replaced with today's date ({@code YYYY-MM-DD}, UTC)
+     *  at query execution time. */
     public static final String TODAY_PLACEHOLDER = "${today}";
 
-    /** Placeholder replaced with yesterday's date ({@code YYYY-MM-DD}, UTC) at query execution time. */
+    /** Placeholder replaced with yesterday's date ({@code YYYY-MM-DD},
+     *  UTC) at query execution time. */
     public static final String YESTERDAY_PLACEHOLDER = "${yesterday}";
 
-    private static final Set<String> VALID_COMPARATORS = Set.of("<", "<=", "=", ">=", ">", "!=");
+    /** Valid comparator strings for the {@code comparator} property. */
+    private static final Set<String> VALID_COMPARATORS =
+        Set.of("<", "<=", "=", ">=", ">", "!=");
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(QueryCountHealthCheck.class);
+    /** Default logger. */
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(QueryCountHealthCheck.class);
 
+    /** The resource resolver factory. */
     @Reference
     private ResourceResolverFactory rrf;
 
@@ -105,63 +129,92 @@ public class QueryCountHealthCheck implements HealthCheck
         final FormattingResultLog result = new FormattingResultLog();
         int passed = 0;
         int failed = 0;
-        try (ResourceResolver resolver =
-            this.rrf.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "healthcheck"))) {
+        try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(
+            Map.of(ResourceResolverFactory.SUBSERVICE, "healthcheck"))) {
             final Session session = resolver.adaptTo(Session.class);
             if (!session.nodeExists(CONFIGURATION_PATH)) {
-                result.warn("No query count checks configured, please check the system integrity");
+                result.warn("No query count checks configured,"
+                    + " please check the system integrity");
                 return new Result(result);
             }
-            final NodeIterator configurations = session.getNode(CONFIGURATION_PATH).getNodes();
+            final NodeIterator configurations =
+                session.getNode(CONFIGURATION_PATH).getNodes();
             while (configurations.hasNext()) {
-                final Node configuration = configurations.nextNode();
                 try {
-                    final String query = resolveDatePlaceholders(
-                        configuration.getProperty(QUERY_PROPERTY).getString());
-                    final String comparator = configuration.getProperty(COMPARATOR_PROPERTY).getString();
-                    final long expectedCount = configuration.getProperty(EXPECTED_COUNT_PROPERTY).getLong();
-
-                    if (!VALID_COMPARATORS.contains(comparator)) {
-                        result.healthCheckError("Invalid comparator '{}' in configuration '{}'",
-                            comparator, configuration.getName());
-                        continue;
-                    }
-
-                    final long limit = configuration.hasProperty(LIMIT_PROPERTY)
-                        ? configuration.getProperty(LIMIT_PROPERTY).getLong()
-                        : DEFAULT_LIMIT;
-                    final Query jcrQuery = session.getWorkspace().getQueryManager()
-                        .createQuery(query, Query.JCR_SQL2);
-                    jcrQuery.setLimit(limit);
-                    final RowIterator rows = jcrQuery.execute().getRows();
-                    long actualCount = 0;
-                    while (rows.hasNext()) {
-                        rows.nextRow();
-                        actualCount++;
-                    }
-
-                    if (evaluate(actualCount, comparator, expectedCount)) {
-                        result.debug("Count check passed for '{}': {} {} {} (actual: {})",
-                            configuration.getName(), query, comparator, expectedCount, actualCount);
+                    final int checkResult = runSingleCheck(
+                        configurations.nextNode(), result, session);
+                    if (checkResult > 0) {
                         passed++;
-                    } else {
-                        result.critical("Count check failed for '{}': result of {} was {}, expected {} {}",
-                            configuration.getName(), query, actualCount, comparator, expectedCount);
+                    } else if (checkResult == 0) {
                         failed++;
                     }
                 } catch (RepositoryException e) {
-                    LOGGER.error("Unexpected exception while running query count check", e);
-                    result.healthCheckError("Cannot run count check: {}", e.getMessage(), e);
+                    LOGGER.error(
+                        "Unexpected exception while running query count check",
+                        e);
+                    result.healthCheckError(
+                        "Cannot run count check: {}", e.getMessage(), e);
                 }
             }
         } catch (LoginException | RepositoryException e) {
-            result.healthCheckError("Healthcheck module not set up properly: {}", e.getMessage());
+            result.healthCheckError(
+                "Healthcheck module not set up properly: {}", e.getMessage());
         }
-        result.info("{} query count checks passed" + (failed != 0 ? " and {} failed" : ""), passed, failed);
+        result.info("{} query count checks passed"
+            + (failed != 0 ? " and {} failed" : ""), passed, failed);
         return new Result(result);
     }
 
-    private String resolveDatePlaceholders(String query)
+    private int runSingleCheck(final Node configuration,
+        final FormattingResultLog result, final Session session)
+        throws RepositoryException
+    {
+        final String query = resolveDatePlaceholders(
+            configuration.getProperty(QUERY_PROPERTY).getString());
+        final String comparator = configuration
+            .getProperty(COMPARATOR_PROPERTY).getString();
+        final long expectedCount = configuration
+            .getProperty(EXPECTED_COUNT_PROPERTY).getLong();
+
+        if (!VALID_COMPARATORS.contains(comparator)) {
+            result.healthCheckError(
+                "Invalid comparator '{}' in configuration '{}'",
+                comparator, configuration.getName());
+            return -1;
+        }
+
+        final long limit =
+            configuration.hasProperty(LIMIT_PROPERTY)
+            ? configuration.getProperty(LIMIT_PROPERTY).getLong()
+            : DEFAULT_LIMIT;
+        final Query jcrQuery =
+            session.getWorkspace().getQueryManager()
+            .createQuery(query, Query.JCR_SQL2);
+        jcrQuery.setLimit(limit);
+        final RowIterator rows = jcrQuery.execute().getRows();
+        long actualCount = 0;
+        while (rows.hasNext()) {
+            rows.nextRow();
+            actualCount++;
+        }
+
+        if (evaluate(actualCount, comparator, expectedCount)) {
+            result.debug(
+                "Count check passed for '{}': {} {} {}"
+                + " (actual: {})",
+                configuration.getName(), query,
+                comparator, expectedCount, actualCount);
+            return 1;
+        }
+        result.critical(
+            "Count check failed for '{}': result of {}"
+            + " was {}, expected {} {}",
+            configuration.getName(), query,
+            actualCount, comparator, expectedCount);
+        return 0;
+    }
+
+    private String resolveDatePlaceholders(final String query)
     {
         final LocalDate today = LocalDate.now(ZoneOffset.UTC);
         return query
@@ -169,16 +222,17 @@ public class QueryCountHealthCheck implements HealthCheck
             .replace(YESTERDAY_PLACEHOLDER, today.minusDays(1).toString());
     }
 
-    private boolean evaluate(long actual, String comparator, long expected)
+    private boolean evaluate(
+        final long actual, final String comparator, final long expected)
     {
-        switch (comparator) {
-            case "<": return actual < expected;
-            case "<=": return actual <= expected;
-            case "=": return actual == expected;
-            case ">=": return actual >= expected;
-            case ">": return actual > expected;
-            case "!=": return actual != expected;
-            default: return false;
-        }
+        final int cmp = Long.compare(actual, expected);
+        return Map.of(
+            "<", cmp < 0,
+            "<=", cmp <= 0,
+            "=", cmp == 0,
+            ">=", cmp >= 0,
+            ">", cmp > 0,
+            "!=", cmp != 0
+        ).getOrDefault(comparator, false);
     }
 }

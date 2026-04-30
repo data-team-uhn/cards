@@ -16,6 +16,8 @@
  */
 package io.uhndata.cards.healthcheck.internal;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,9 +46,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -184,12 +183,12 @@ public class QueryCountHealthCheckTest
 
         when(this.expectedProp1.getLong()).thenReturn(2L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
-        Assert.assertEquals(Status.OK, this.checker.execute().getStatus()); // 1 < 2
+        Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
 
         when(this.rowIterator.hasNext()).thenReturn(true, false);
         when(this.expectedProp1.getLong()).thenReturn(1L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
-        Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus()); // 1 < 1
+        Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
     }
 
     @Test
@@ -199,12 +198,12 @@ public class QueryCountHealthCheckTest
 
         when(this.expectedProp1.getLong()).thenReturn(0L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
-        Assert.assertEquals(Status.OK, this.checker.execute().getStatus()); // 1 > 0
+        Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
 
         when(this.rowIterator.hasNext()).thenReturn(true, false);
         when(this.expectedProp1.getLong()).thenReturn(1L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
-        Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus()); // 1 > 1
+        Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
     }
 
     @Test
@@ -214,12 +213,12 @@ public class QueryCountHealthCheckTest
 
         when(this.expectedProp1.getLong()).thenReturn(0L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
-        Assert.assertEquals(Status.OK, this.checker.execute().getStatus()); // 1 != 0
+        Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
 
         when(this.rowIterator.hasNext()).thenReturn(true, false);
         when(this.expectedProp1.getLong()).thenReturn(1L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
-        Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus()); // 1 != 1
+        Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
     }
 
     @Test
