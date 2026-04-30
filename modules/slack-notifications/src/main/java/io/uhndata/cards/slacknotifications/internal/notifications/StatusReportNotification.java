@@ -64,7 +64,7 @@ public class StatusReportNotification implements SlackNotificationProducer
     @Override
     public String getName()
     {
-        return "Health Check";
+        return "status";
     }
 
     @Override

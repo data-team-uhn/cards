@@ -43,7 +43,7 @@ public interface SlackNotificationProducer
     String COLOR = "color";
 
     /** The color used for neutral/informational messages. */
-    String INFO = "996";
+    String INFO = "999";
 
     /** The color used for success messages. */
     String SUCCESS = "393";
