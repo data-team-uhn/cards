@@ -45,6 +45,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -235,6 +238,23 @@ public class QueryCountHealthCheckTest
         when(this.expectedProp1.getLong()).thenReturn(0L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
+    }
+
+    @Test
+    public void testDatePlaceholders() throws Exception
+    {
+        final String today = LocalDate.now(ZoneOffset.UTC).toString();
+        final String yesterday = LocalDate.now(ZoneOffset.UTC).minusDays(1).toString();
+        final String queryWithPlaceholders = "SELECT * FROM [cards:DateAnswer] WHERE [value] >= CAST('"
+            + QueryCountHealthCheck.YESTERDAY_PLACEHOLDER + "T00:00:00.000Z' AS DATE)"
+            + " AND [value] < CAST('" + QueryCountHealthCheck.TODAY_PLACEHOLDER + "T00:00:00.000Z' AS DATE)";
+        final String expectedQuery = "SELECT * FROM [cards:DateAnswer] WHERE [value] >= CAST('"
+            + yesterday + "T00:00:00.000Z' AS DATE)"
+            + " AND [value] < CAST('" + today + "T00:00:00.000Z' AS DATE)";
+        when(this.queryProp1.getString()).thenReturn(queryWithPlaceholders);
+        when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
+        this.checker.execute();
+        verify(this.queryManager).createQuery(eq(expectedQuery), eq(Query.JCR_SQL2));
     }
 
     @Test

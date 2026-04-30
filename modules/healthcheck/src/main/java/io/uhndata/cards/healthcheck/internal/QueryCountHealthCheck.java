@@ -16,6 +16,8 @@
  */
 package io.uhndata.cards.healthcheck.internal;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +50,15 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * The check passes when {@code actualCount comparator expectedCount} is true. The limit caps how many rows are
  * retrieved, so set it to at least {@code expectedCount} when using {@code =}, {@code >=}, or {@code >} comparators.
+ * <p>
+ * The query string may contain the following date placeholders, which are resolved at execution time (UTC):
+ * <ul>
+ * <li>{@code ${today}} — today's date in {@code YYYY-MM-DD} format</li>
+ * <li>{@code ${yesterday}} — yesterday's date in {@code YYYY-MM-DD} format</li>
+ * </ul>
+ * Use them in JCR SQL2 date literals, e.g.
+ * {@code CAST('${yesterday}T00:00:00.000Z' AS DATE)}.
+ * <p>
  * Other CARDS modules should provide the actual checks to run.
  *
  * @version $Id$
@@ -75,6 +86,12 @@ public class QueryCountHealthCheck implements HealthCheck
 
     public static final long DEFAULT_LIMIT = 1L;
 
+    /** Placeholder replaced with today's date ({@code YYYY-MM-DD}, UTC) at query execution time. */
+    public static final String TODAY_PLACEHOLDER = "${today}";
+
+    /** Placeholder replaced with yesterday's date ({@code YYYY-MM-DD}, UTC) at query execution time. */
+    public static final String YESTERDAY_PLACEHOLDER = "${yesterday}";
+
     private static final Set<String> VALID_COMPARATORS = Set.of("<", "<=", "=", ">=", ">", "!=");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryCountHealthCheck.class);
@@ -99,7 +116,8 @@ public class QueryCountHealthCheck implements HealthCheck
             while (configurations.hasNext()) {
                 final Node configuration = configurations.nextNode();
                 try {
-                    final String query = configuration.getProperty(QUERY_PROPERTY).getString();
+                    final String query = resolveDatePlaceholders(
+                        configuration.getProperty(QUERY_PROPERTY).getString());
                     final String comparator = configuration.getProperty(COMPARATOR_PROPERTY).getString();
                     final long expectedCount = configuration.getProperty(EXPECTED_COUNT_PROPERTY).getLong();
 
@@ -141,6 +159,14 @@ public class QueryCountHealthCheck implements HealthCheck
         }
         result.info("{} query count checks passed" + (failed != 0 ? " and {} failed" : ""), passed, failed);
         return new Result(result);
+    }
+
+    private String resolveDatePlaceholders(String query)
+    {
+        final LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        return query
+            .replace(TODAY_PLACEHOLDER, today.toString())
+            .replace(YESTERDAY_PLACEHOLDER, today.minusDays(1).toString());
     }
 
     private boolean evaluate(long actual, String comparator, long expected)
