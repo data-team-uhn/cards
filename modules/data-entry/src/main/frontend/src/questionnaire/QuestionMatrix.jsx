@@ -80,16 +80,17 @@ let QuestionMatrix = (props) => {
   const ControlElement = isRadio ? Radio : Checkbox;
   const valueType = sectionDefinition.dataType.charAt(0).toUpperCase() + sectionDefinition.dataType.slice(1);
   // Use existing existingAnswer, Otherwise, create a new UUID
-  const answerSectionID = existingSectionAnswer ? existingSectionAnswer[0] : uuidv4();
-  const [sectionAnswerPath, setSectionAnswerPath ] = useState(path + "/" + answerSectionID);
+  const [answerSectionID, setAnswerSectionID] = useState(() => existingSectionAnswer?.[0] ?? uuidv4());
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const enableVerticalLayout = verticalLayout || isSmallScreen;
 
   useEffect(() => {
-    if (existingSectionAnswer) {
-      setSectionAnswerPath(path + "/" + existingSectionAnswer[0]);
+    if (existingSectionAnswer?.[0]) {
+      setAnswerSectionID(existingSectionAnswer[0]);
     }
   }, [existingSectionAnswer]);
+
+  const sectionAnswerPath = `${path}/${answerSectionID}`;
 
   const subquestions = Object.entries(sectionDefinition)
     .filter(([key, value]) => value['jcr:primaryType'] == 'cards:Question');
