@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 
 import SubjectIcon from "@mui/icons-material/AssignmentInd";
 import CollapsedIcon from "@mui/icons-material/ChevronRight";
@@ -125,9 +125,9 @@ function Subject(props) {
   }, [pageTitle]);
 
   // Callback to set the fetch function from SubjectHeader
-  const handleSetFetchSubjectData = (fetchFn) => {
+  const handleSetFetchSubjectData = useCallback((fetchFn) => {
     setFetchSubjectData(() => fetchFn);
-  };
+  }, []);
 
   // the subject data, fetched in the SubjectContainer component, will be stored in the `type` state
   function handleSubject(e) {
@@ -306,12 +306,12 @@ function SubjectHeader(props) {
   // The data will contain the subject metadata,
   // such as authorship and versioning information.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
-  let fetchSubjectData = () => {
+  const fetchSubjectData = useCallback(() => {
     fetchWithReLogin(globalLoginDisplay, `/Subjects/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleSubjectResponse)
       .catch(handleError);
-  };
+  }, [id]);
 
   useEffect(() => {
     if (onFetchSubjectDataReady) {
