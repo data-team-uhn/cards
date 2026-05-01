@@ -46,7 +46,7 @@
     "react-router": "7.12.0",
     "react-to-print": "3.1.0",
     "material-react-table": "3.2.1",
-    "uuid": "11.1.0",
+    "uuid": "14.0.0",
     "@atlaskit/pragmatic-drag-and-drop": "1.5.2",
     "@atlaskit/pragmatic-drag-and-drop-flourish": "2.0.2",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
