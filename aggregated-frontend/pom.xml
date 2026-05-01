@@ -58,6 +58,24 @@
                <goal>exec</goal>
             </goals>
           </execution>
+          <!-- Install Playwright browser binaries before running e2e tests -->
+          <execution>
+            <id>playwright-install-browsers</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${node.executable}</executable>
+              <workingDirectory>src/main/frontend/</workingDirectory>
+              <arguments>
+                <argument>${yarn.script}</argument>
+                <argument>playwright</argument>
+                <argument>install</argument>
+              </arguments>
+              <skip>${skipTests}</skip>
+            </configuration>
+          </execution>
           <!-- Run Playwright e2e tests -->
           <execution>
             <id>playwright-e2e-tests</id>
