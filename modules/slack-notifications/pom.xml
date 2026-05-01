@@ -49,19 +49,15 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.commons.scheduler</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.component</artifactId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.component.annotations</artifactId>
+      <artifactId>org.osgi.service.metatype.annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.json</groupId>
@@ -85,7 +81,7 @@
     </dependency>
     <dependency>
       <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-metrics</artifactId>
+      <artifactId>cards-status</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

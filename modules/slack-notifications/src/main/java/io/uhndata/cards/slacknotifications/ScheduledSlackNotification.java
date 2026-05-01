@@ -19,43 +19,53 @@
 
 package io.uhndata.cards.slacknotifications;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.slacknotifications.spi.SlackNotificationProducer;
+
 @Component(immediate = true)
-public class ScheduledSlackNotifications
+@Designate(ocd = Configuration.class, factory = true)
+public class ScheduledSlackNotification
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledSlackNotifications.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledSlackNotification.class);
 
-    /** Provides access to resources. */
-    @Reference
-    private ResourceResolverFactory resolverFactory;
+    private static final String SCHEDULER_JOB_PREFIX = "ScheduledSlackNotification-";
 
-    /** The scheduler for rescheduling jobs. */
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.UPDATE,
+        policy = ReferencePolicy.DYNAMIC)
+    private volatile List<SlackNotificationProducer> notifications = new ArrayList<>();
+
     @Reference
     private Scheduler scheduler;
 
     @Activate
-    protected void activate(ComponentContext componentContext) throws Exception
+    protected void activate(Configuration config) throws Exception
     {
         LOGGER.info("ScheduledSlackNotifications activating");
-        final String nightlyNotificationsSchedule =
-            StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE"), "0 0 7 * * ? *");
+        final String nightlyNotificationsSchedule = getSchedule(config.schedule());
 
         ScheduleOptions slackNotificationsOptions = this.scheduler.EXPR(nightlyNotificationsSchedule);
-        slackNotificationsOptions.name("slackNightlyNotifications");
+        slackNotificationsOptions.name(SCHEDULER_JOB_PREFIX + config.name());
         slackNotificationsOptions.canRunConcurrently(true);
 
-        final Runnable slackNotificationsJob = new SlackNotificationsTask(this.resolverFactory);
+        final Runnable slackNotificationsJob =
+            new SlackNotificationsTask(config, this.notifications);
 
         try {
             this.scheduler.schedule(slackNotificationsJob, slackNotificationsOptions);
@@ -63,5 +73,21 @@ public class ScheduledSlackNotifications
         } catch (Exception e) {
             LOGGER.error("SlackNotificationsTask Failed to schedule: {}", e.getMessage(), e);
         }
+    }
+
+    @Deactivate
+    public void configRemoved(final Configuration removedConfig)
+    {
+        LOGGER.debug("Removed slack notification configuration {}", removedConfig.name());
+        this.scheduler.unschedule(SCHEDULER_JOB_PREFIX + removedConfig.name());
+    }
+
+    private String getSchedule(final String config)
+    {
+        String result = config;
+        if (result != null && result.startsWith("%ENV%")) {
+            result = System.getenv(config.substring("%ENV%".length()));
+        }
+        return StringUtils.defaultIfEmpty(result, "0 0 0 * * ? *");
     }
 }

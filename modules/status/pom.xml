@@ -26,18 +26,13 @@
     <version>0.9.38-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-metrics</artifactId>
+  <artifactId>cards-status</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Metrics</name>
+  <name>CARDS - Status Reporting</name>
+  <description>Support for reporting the status of the application</description>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingfeature-maven-plugin</artifactId>
-      </plugin>
-
-      <!-- This is an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -48,21 +43,24 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-status</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.service.component.annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.api</artifactId>
+      <groupId>jakarta.json</groupId>
+      <artifactId>jakarta.json-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.servlets.annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.api</artifactId>
     </dependency>
   </dependencies>
 </project>
