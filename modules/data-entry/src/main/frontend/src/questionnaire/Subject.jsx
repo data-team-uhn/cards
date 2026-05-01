@@ -311,7 +311,7 @@ function SubjectHeader(props) {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleSubjectResponse)
       .catch(handleError);
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (onFetchSubjectDataReady) {
