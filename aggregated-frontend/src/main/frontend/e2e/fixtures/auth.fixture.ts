@@ -18,17 +18,18 @@
  */
 
 import { test as base } from '@playwright/test';
-import { HomePage } from '../pages/home.page';
+
+import { AuthAssertions } from '../assertions/auth.assertions';
 import { users } from '../config/users';
 import { loginAs } from '../flows/auth/login.flow';
-import { AuthAssertions } from '../assertions/auth.assertions';
+import { HomePage } from '../pages/home.page';
 
 type AuthFixtures = {
   adminHomePage: HomePage;
 };
 
 export const test = base.extend<AuthFixtures>({
-  adminHomePage: async ({ browser }, use) => {
+  adminHomePage: async ({ browser }, useFixture) => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
@@ -43,7 +44,7 @@ export const test = base.extend<AuthFixtures>({
     await authAssertions.expectLoggedIn();
 
     // provide ready-to-use page
-    await use(homePage);
+    await useFixture(homePage);
 
     // cleanup: close browser context
     await context.close();

@@ -18,10 +18,11 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { loginAs } from '../../flows/auth/login.flow';
-import { logout } from '../../flows/auth/logout.flow';
+
 import { AuthAssertions } from '../../assertions/auth.assertions';
 import { users, type User } from '../../config/users';
+import { loginAs } from '../../flows/auth/login.flow';
+import { logout } from '../../flows/auth/logout.flow';
 
 test('Page loads', async ({ page }) => {
   await page.goto('/');

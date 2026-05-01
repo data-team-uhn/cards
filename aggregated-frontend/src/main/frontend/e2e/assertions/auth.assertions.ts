@@ -18,8 +18,9 @@
  */
 
 import { expect, Page } from '@playwright/test';
-import { LoginPage } from '../pages/login-page';
+
 import { HomePage } from '../pages/home.page';
+import { LoginPage } from '../pages/login-page';
 
 export class AuthAssertions {
   constructor(private page: Page) {}

@@ -18,6 +18,7 @@
  */
 
 import { Page } from '@playwright/test';
+
 import { Dashboard } from '../../components/page-elements/dashboard.component';
 
 export async function logout(page: Page) {

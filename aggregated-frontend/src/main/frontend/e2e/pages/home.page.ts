@@ -18,6 +18,7 @@
  */
 
 import { expect, Page } from '@playwright/test';
+
 import { Dashboard } from '../components/page-elements/dashboard.component';
 
 export class HomePage {

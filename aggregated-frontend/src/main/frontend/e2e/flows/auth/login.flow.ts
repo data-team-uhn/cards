@@ -18,6 +18,7 @@
  */
 
 import { Page } from '@playwright/test';
+
 import type { User } from '../../config/users';
 import { LoginPage } from '../../pages/login-page';
 
