@@ -111,6 +111,11 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 function QuestionnaireSet(props) {
+
+  /////////////////////
+  // Props and state //
+  /////////////////////
+
   const { subject, username, displayText, contentOffset, config } = props;
 
   // Identifier of the questionnaire set used for the visit
@@ -173,6 +178,10 @@ function QuestionnaireSet(props) {
 
   const visitInformationFormTitle = "Visit information";
 
+  //////////////////////////
+  // Function definitions //
+  //////////////////////////
+
   const isFormComplete = (questionnaireId) => {
     return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
   }
@@ -212,11 +221,6 @@ function QuestionnaireSet(props) {
     return DateTimeUtilities.toPrecision(dateAnswer);
   }
 
-  // If the `enableReviewScreen` state is not already defined, initialize it with the value passed via config
-  useEffect(() => {
-    typeof(enableReviewScreen) == "undefined" && setEnableReviewScreen(config?.enableReviewScreen);
-  }, [config?.enableReviewScreen]);
-
   // Flag for whether the user is permitted to submit incomplete forms
   // based on configuration specifying how long in advance (if permitted)
   // and on the event date. Defaults to false.
@@ -253,13 +257,8 @@ function QuestionnaireSet(props) {
     return contentOffset || 0;
   }, [crtStep, contentOffset]);
 
-  // Reset the crtFormId when on the welcome screen or review screen so that "Update my Answers" triggers page loads correctly
-  useEffect(() => {
-    (crtStep == -1 || crtStep >= questionnaireIds?.length) && setCrtFormId(null);
-  }, [crtStep]);
-
   // Find the next step : Skip questionnaires that have already been filled out
-  let findNextStep = (step) => {
+  const findNextStep = (step) => {
     let next = step + 1;
     // Skip if the corresponding questionnaire has already been filled out:
     while (next < questionnaireIds.length && isFormComplete(questionnaireIds[next])) ++next;
@@ -267,16 +266,24 @@ function QuestionnaireSet(props) {
   }
 
   // Advance to the next step
-  let nextStep = () => setCrtStep(findNextStep(crtStep))
+  const goToNextStep = () => setCrtStep(findNextStep(crtStep))
 
-  let launchNextForm = () => {
+  // Determine the next questionnaire that needs to be filled out
+  const nextQuestionnaire = useMemo(() => {
+    if (!questionnaires || !subjectData) return null;
+    // Find the next unfilled questionnaire, if any:
+    let nextStep = findNextStep(crtStep);
+    return nextStep < questionnaireIds?.length ? questionnaires[questionnaireIds?.[nextStep]] : null;
+  }, [crtStep, questionnaires, subjectData, questionnaireIds]);
+
+  const launchNextForm = () => {
     if (subjectData?.[nextQuestionnaire['@name']]) {
       // Form already exists and is incomplete: prepare to edit it
       setCrtFormId(subjectData[nextQuestionnaire['@name']]['@name']);
     }
   }
 
-  let selectDataForQuestionnaireSet = (subjectData, questionnaireSet, questionnaireSetIds) => {
+  const selectDataForQuestionnaireSet = (subjectData, questionnaireSet, questionnaireSetIds) => {
     let ids = [];
     let data = {};
     questionnaireSetIds.forEach(q => {
@@ -315,7 +322,7 @@ function QuestionnaireSet(props) {
   }
 
   // Load the markdown serialization of the survey responses to display at the review step
-  let loadPreviews = () => {
+  const loadPreviews = () => {
     (questionnaireIds || []).forEach(q => {
       let formId = subjectData?.[q]?.["@name"];
       // Fetch the markdown serialization of the forms
@@ -330,7 +337,7 @@ function QuestionnaireSet(props) {
     });
   }
 
-  let postSubmission = () => {
+  const postSubmission = () => {
     let submittedQuestionUuid = visitInformation?.questionnaire?.surveys_submitted?.["jcr:uuid"] || null;
     let url = visitInformation?.["@path"];
 
@@ -356,7 +363,7 @@ function QuestionnaireSet(props) {
     }
   }
 
-  let checkinForms = () => {
+  const checkinForms = () => {
     if (!questionnaireIds || questionnaireIds.length < 1) {
       // Nothing to check in
       return;
@@ -379,18 +386,91 @@ function QuestionnaireSet(props) {
       .catch(() => console.error("Failed to check in forms"));
   }
 
-  let onSubmit = () => {
+  const onSubmit = () => {
     postSubmission();
     checkinForms();
   }
 
-  // Determine the next questionnaire that needs to be filled out
-  const nextQuestionnaire = useMemo(() => {
-    if (!questionnaires || !subjectData) return null;
-    // Find the next unfilled questionnaire, if any:
-    let nextStep = findNextStep(crtStep);
-    return nextStep < questionnaireIds?.length ? questionnaires[questionnaireIds?.[nextStep]] : null;
-  }, [crtStep, questionnaires, subjectData, questionnaireIds]);
+  // Find out if a questionnaire has an interpretation for the patient, i.e. a "summary" section
+  const hasInterpretation = (json) => {
+    if (json?.displayMode == "summary") {
+      return true;
+    }
+    let result = false;
+    Object.values(json || {})
+      .filter(value => value['jcr:primaryType'] == 'cards:Section')
+      .forEach(section => { result = result || hasInterpretation(section) });
+    return result;
+  }
+
+  const parseQuestionnaireSet = (json) => {
+    // Extract the title, intro, and ending
+    setTitle(json.name);
+    setIntro(json.intro || "");
+    setEnding(json.ending || "");
+    // If the questionnaire set specifies a value for `enableReviewScreen`, overwrite the curently stored value
+    typeof(json.enableReviewScreen) != "undefined" && setEnableReviewScreen(json.enableReviewScreen);
+
+    // Map the relevant questionnaire info
+    let data = {};
+    Object.entries(json || {})
+      .filter(([key, value]) => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
+      .filter(([key, value]) => (!value.targetUserType || value.targetUserType == 'patient'))
+      .forEach(([key, value]) => {
+        let addons = Object.values(value).filter(filterValue => ENTRY_TYPES.includes(filterValue['jcr:primaryType']));
+        data[value.questionnaire['@name']] = {
+          'title': value.questionnaire?.title || key,
+          'alias': key,
+          '@path': value.questionnaire?.['@path'],
+          '@name': value.questionnaire?.['@name'],
+          'hasInterpretation': hasInterpretation(value.questionnaire) || addons.some(hasInterpretation),
+          'estimate': value.estimate,
+          'questionnaireAddons': addons
+        }
+      });
+    setQuestionnaires(data);
+
+    let qids = Object.values(json || {})
+      .filter(value => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
+      .sort((a, b) => (a.order - b.order))
+      .map(value => value.questionnaire['@name'])
+    setQuestionnaireSetIds(qids);
+
+    selectDataForQuestionnaireSet(subjectData, data, qids);
+  };
+
+  const loadQuestionnaireSet = () => {
+    if (!!!id) {
+      return;
+    }
+    fetchWithReLogin(globalLoginDisplay, `/Survey/${id}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        parseQuestionnaireSet(json);
+      })
+      .catch((response) => {
+        if (response.status == 404) {
+          setError("The survey you are trying to access does not exist. Please contact the sender of the survey for further assistance.");
+        } else {
+          setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance.");
+        }
+        setQuestionnaires(null);
+      });
+  }
+
+  /////////////
+  // Effects //
+  /////////////
+
+  // If the `enableReviewScreen` state is not already defined, initialize it with the value passed via config
+  useEffect(() => {
+    typeof(enableReviewScreen) == "undefined" && setEnableReviewScreen(config?.enableReviewScreen);
+  }, [config?.enableReviewScreen]);
+
+  // Reset the crtFormId when on the welcome screen or review screen so that "Update my Answers" triggers page loads correctly
+  useEffect(() => {
+    (crtStep == -1 || crtStep >= questionnaireIds?.length) && setCrtFormId(null);
+  }, [crtStep]);
 
   // If we're back to the start because the user was directed to add missing answers,
   // dont't show the welcome screen and skip to the next step without them pressing start
@@ -405,7 +485,7 @@ function QuestionnaireSet(props) {
     if (reviewMode) {
       setReviewMode(false);
     } else {
-      crtFormId && nextStep();
+      crtFormId && goToNextStep();
     }
   }, [crtFormId]);
 
@@ -457,77 +537,14 @@ function QuestionnaireSet(props) {
     }
   }, [isComplete, isSubmitted, endReached, enableReviewScreen]);
 
-  const loadQuestionnaireSet = () => {
-    if (!!!id) {
-      return;
-    }
-    fetchWithReLogin(globalLoginDisplay, `/Survey/${id}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        parseQuestionnaireSet(json);
-      })
-      .catch((response) => {
-        if (response.status == 404) {
-          setError("The survey you are trying to access does not exist. Please contact the sender of the survey for further assistance.");
-        } else {
-          setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance.");
-        }
-        setQuestionnaires(null);
-      });
-  }
-
-  let parseQuestionnaireSet = (json) => {
-    // Extract the title, intro, and ending
-    setTitle(json.name);
-    setIntro(json.intro || "");
-    setEnding(json.ending || "");
-    // If the questionnaire set specifies a value for `enableReviewScreen`, overwrite the curently stored value
-    typeof(json.enableReviewScreen) != "undefined" && setEnableReviewScreen(json.enableReviewScreen);
-
-    // Map the relevant questionnaire info
-    let data = {};
-    Object.entries(json || {})
-      .filter(([key, value]) => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
-      .filter(([key, value]) => (!value.targetUserType || value.targetUserType == 'patient'))
-      .forEach(([key, value]) => {
-        let addons = Object.values(value).filter(filterValue => ENTRY_TYPES.includes(filterValue['jcr:primaryType']));
-        data[value.questionnaire['@name']] = {
-          'title': value.questionnaire?.title || key,
-          'alias': key,
-          '@path': value.questionnaire?.['@path'],
-          '@name': value.questionnaire?.['@name'],
-          'hasInterpretation': hasInterpretation(value.questionnaire) || addons.some(hasInterpretation),
-          'estimate': value.estimate,
-          'questionnaireAddons': addons
-        }
-      });
-    setQuestionnaires(data);
-
-    let qids = Object.values(json || {})
-      .filter(value => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
-      .sort((a, b) => (a.order - b.order))
-      .map(value => value.questionnaire['@name'])
-    setQuestionnaireSetIds(qids);
-
-    selectDataForQuestionnaireSet(subjectData, data, qids);
-  };
-
-  // Find out if a questionnaire has an interpretation for the patient, i.e. a "summary" section
-  let hasInterpretation = (json) => {
-    if (json?.displayMode == "summary") {
-      return true;
-    }
-    let result = false;
-    Object.values(json || {})
-      .filter(value => value['jcr:primaryType'] == 'cards:Section')
-      .forEach(section => { result = result || hasInterpretation(section) });
-    return result;
-  }
-
   // At first, load the existing subject data to determine which questionnaire set is bound to the visit
   useEffect(loadExistingData, []);
   // After the visit is loaded and we know the questionnaire set identifier, load all questionnaires that need to be filled out
   useEffect(loadQuestionnaireSet, [id]);
+
+  ///////////////
+  // Rendering //
+  ///////////////
 
   const getMessageScreen = (message) => (
     <>
@@ -568,24 +585,23 @@ function QuestionnaireSet(props) {
     );
   }
 
-  let stepIndicator = (step, withTotal) => {
+  const stepIndicator = (step, withTotal) => {
     return (
       step >=0 && questionnaireIds?.length > 1 && step < questionnaireIds?.length ?
         <Avatar className={classes.stepIndicator}>{step + 1}{withTotal ? ("/" + questionnaireIds?.length) : ""}</Avatar>
         : <></>);
   }
 
-  let displayEstimate = (questionnaireId) => {
+  const displayEstimate = (questionnaireId) => {
     let e = questionnaires[questionnaireId]?.estimate;
     return e ? (e + " minute" + (e != 1 ? "s" : "")) : "";
   }
 
-  let surveyIndicator = <Avatar className={classes.stepIndicator}><SurveyIcon /></Avatar>;
+  const surveyIndicator = <Avatar className={classes.stepIndicator}><SurveyIcon /></Avatar>;
 
-  let doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
+  const doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
 
-  let incompleteIndicator = <Avatar className={classes.incompleteIndicator}><WarningIcon /></Avatar>;
-
+  const incompleteIndicator = <Avatar className={classes.incompleteIndicator}><WarningIcon /></Avatar>;
 
   const greet = (name) => {
     let greeting = displayText("greeting", Typography, { variant: "h6", key: "welcome-greeting" });
@@ -603,7 +619,7 @@ function QuestionnaireSet(props) {
     return !date?.isValid ? "" : date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
   }
 
-  let appointmentAlert = () => {
+  const appointmentAlert = () => {
     const eventLabel = displayText("eventLabel", AlertTitle);
     const time = appointmentDate();
     let location = getVisitInformation("location");
@@ -666,9 +682,9 @@ function QuestionnaireSet(props) {
   }
 
   // Replace all occurrences of the visit information pattern with the value from the Visit information form
-  let introMessage = fillInVisitData(intro);
+  const introMessage = fillInVisitData(intro);
 
-  let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
+  const welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     greet(username),
     appointmentAlert(),
     displayText(
@@ -706,7 +722,7 @@ function QuestionnaireSet(props) {
     displayText("surveyDraftInfo", FormattedText, { key: "draft-info" }),
   ];
 
-  let formScreen = [
+  const formScreen = [
     <Form
       key={crtStep}
       id={crtFormId}
@@ -716,13 +732,13 @@ function QuestionnaireSet(props) {
       questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
       doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
       doneLabel={nextQuestionnaire ? "Next survey" : enableReviewScreen ? "Review" : "Submit my answers"}
-      onDone={nextQuestionnaire ? launchNextForm : nextStep}
+      onDone={nextQuestionnaire ? launchNextForm : goToNextStep}
       doneButtonStyle={{ position: "relative", right: 0, bottom: "unset", textAlign: "center" }}
       contentOffset={formContentOffset}
     />
   ];
 
-  let submitButton = (label) => (
+  const submitButton = (label) => (
     <Fab
       variant="extended"
       disabled={submissionInProgress}
@@ -734,7 +750,7 @@ function QuestionnaireSet(props) {
     </Fab>
   );
 
-  let reviewScreen = !enableReviewScreen ? [
+  const reviewScreen = !enableReviewScreen ? [
     <CircularProgress key="review-loading"/>
   ] : [
     <Typography variant="h4" key="review-title">Review and Submit</Typography>,
@@ -767,21 +783,21 @@ function QuestionnaireSet(props) {
   ];
 
   // Are there any response interpretations to display to the patient?
-  let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
+  const hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
   // Replace any occurence of a visit information field with its value per current visit
-  let endingMessage = fillInVisitData(ending);
+  const endingMessage = fillInVisitData(ending);
 
-  let finalInstructions = (
+  const finalInstructions = (
     endingMessage ? <FormattedText key="summary-instructions">{endingMessage}</FormattedText> :
       displayText("summaryInstructions", FormattedText, { color: "textSecondary", key: "summary-instructions" })
   );
 
-  let disclaimer = (
+  const disclaimer = (
     displayText("disclaimer", Alert, { severity: "warning", key: "disclaimer" })
   );
 
-  let summaryScreen = hasInterpretations ? [
+  const summaryScreen = hasInterpretations ? [
     <Typography variant="h4" key="summary-title">Thank you</Typography>,
     finalInstructions,
     disclaimer,
@@ -810,9 +826,9 @@ function QuestionnaireSet(props) {
     disclaimer,
   ];
 
-  let loadingScreen = [ <CircularProgress key="exit-loading"/> ];
+  const loadingScreen = [ <CircularProgress key="exit-loading"/> ];
 
-  let incompleteScreen = [
+  const incompleteScreen = [
     <List key="incomplete-list" disablePadding>
       { (questionnaireIds || []).map((q, i) => (
         <ListItem key={q+"Exit"} disablePadding>
@@ -839,7 +855,7 @@ function QuestionnaireSet(props) {
     </Grid>
   ];
 
-  let exitScreen = (
+  const exitScreen = (
     typeof(isComplete) == 'undefined'
       ? loadingScreen
       : ( isComplete || submittingIncomplete
