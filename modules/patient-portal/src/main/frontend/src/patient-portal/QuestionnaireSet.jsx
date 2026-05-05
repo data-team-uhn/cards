@@ -499,7 +499,7 @@ function QuestionnaireSet(props) {
 
   // Determine if all surveys have been filled out
   useEffect(() => {
-    if (!subjectData || !questionnaireIds) return;
+    if (!questionnaireIds) return;
     setComplete(Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length);
   }, [subjectDataLoadCount]);
 
@@ -783,7 +783,7 @@ function QuestionnaireSet(props) {
   ];
 
   // Are there any response interpretations to display to the patient?
-  const hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
+  const hasInterpretations = questionnaireIds.some(q => questionnaires?.[q]?.hasInterpretation);
 
   // Replace any occurence of a visit information field with its value per current visit
   const endingMessage = fillInVisitData(ending);
