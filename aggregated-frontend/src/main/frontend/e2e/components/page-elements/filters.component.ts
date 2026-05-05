@@ -48,14 +48,9 @@ export class Filters {
     await this.page.getByRole('option', { name: /Subject/ }).first().click();
     await this.modifyFiltersDialog.getByPlaceholder('Search').fill(subjectId);
     await this.page.waitForTimeout(500);
-    // Skip disabled placeholder rows (e.g. MUI menuitem with aria-disabled="true").
-    const dropdownItem = this.page
-      .locator('li[class*="dropdownItem"]:not([aria-disabled="true"])')
-      .filter({ visible: true })
-      .first();
-    if ((await dropdownItem.count()) > 0 && (await dropdownItem.isVisible())) {
-      await dropdownItem.click();
-    }
+    const dropdownItem = this.page.getByRole('menuitem').first();
+    await dropdownItem.click();
+    await this.page.waitForTimeout(500);
     await this.modifyFiltersDialog.locator('[aria-label="apply-filters-button"]').click();
   }
 

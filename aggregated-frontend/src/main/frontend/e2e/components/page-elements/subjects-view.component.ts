@@ -47,11 +47,12 @@ export class SubjectsView {
    * @param {boolean} [hasForms] second delete-dialog confirm when subject has linked forms
    */
   async deleteSubjectById(subjectId: string, type: 'visit' | 'patient', hasForms: boolean = false) {
-    await this.filterBySubject(subjectId);
-
     if (type === 'visit') {
       await this.subjectsView.getByRole('tab', { name: 'Visits' }).click();
     }
+
+    await this.filterBySubject(subjectId);
+    await this.page.waitForLoadState('networkidle');
 
     const row = this.subjectsView.locator('tbody tr').first();
     await expect(row.locator('td').first().locator('a')).toContainText(subjectId);

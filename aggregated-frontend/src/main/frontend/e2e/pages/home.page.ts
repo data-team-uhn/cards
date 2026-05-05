@@ -35,8 +35,8 @@ export class HomePage {
 
     // Inject component
     this.dashboard = new Dashboard(page);
-    this.formsView = new FormsView(page); //page.locator('[aria-label="forms-view"]');
-    this.subjectsView = new SubjectsView(page); //page.locator('[aria-label="subjects-view"]');
+    this.formsView = new FormsView(page);
+    this.subjectsView = new SubjectsView(page);
     this.createNewItem = new CreateNewItem(page);
   }
 

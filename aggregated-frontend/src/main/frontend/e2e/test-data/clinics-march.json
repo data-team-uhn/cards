@@ -1,0 +1,18 @@
+{
+  "UHN-IP": {
+    "displayName": "UHN Inpatient",
+    "questionnaires": ["OAIP"]
+  },
+  "UHN-ED": {
+    "displayName": "UHN Emergency Department",
+    "questionnaires": ["OED"]
+  },
+  "Rehab": {
+    "displayName": "UHN Rehab",
+    "questionnaires": ["Rehab"]
+  },
+  "UHN-OC": {
+    "displayName": "UHN Outpatient Care",
+    "questionnaires": ["OCPE"]
+  }
+}

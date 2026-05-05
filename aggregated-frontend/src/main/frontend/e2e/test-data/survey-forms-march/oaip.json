@@ -1,0 +1,37 @@
+{
+  "isPatientPortalTest": true,
+  "questionnaireName": "OAIP",
+  "title": "UHN Patient Experience Inpatient Survey",
+  "testFlow": [
+    {
+      "type": "section",
+      "sectionId": "oaip_module1",
+      "answers": {
+        "oaip_1": { "role": "radio", "name": "Never" },
+        "oaip_2": { "role": "radio", "name": "Never" },
+        "oaip_3": { "role": "radio", "name": "Never" },
+        "oaip_4": { "role": "radio", "name": "Never" },
+        "oaip_5": { "role": "radio", "name": "Yes, always" },
+        "oaip_6": { "role": "radio", "name": "Not at all" },
+        "oaip_7": { "role": "radio", "name": "Not at all" },
+        "oaip_8": { "role": "radio", "name": "0 - I had a very poor experience" },
+        "oaip_9": { "role": "radio", "name": "0 - Not at all likely" },
+        "oaip_10": { "role": "textbox", "value": "—" }
+      }
+    },
+    {
+      "type": "section",
+      "sectionId": "oaip_module2",
+      "answers": {
+        "oaip_11": { "role": "radio", "name": "Never" },
+        "oaip_12": { "role": "radio", "name": "Never" },
+        "oaip_13": { "role": "radio", "name": "Never" },
+        "oaip_sqp_1": { "role": "radio", "name": "Never" },
+        "oaip_sqp_2": { "role": "radio", "exact": true, "name": "Yes" },
+        "section_oaip_sqp_3/oaip_sqp_3": { "role": "radio", "name": "Yes, always" },
+        "oaip_sqp_4": { "role": "radio", "exact": true, "name": "Yes" },
+        "section_oaip_sqp_5/oaip_sqp_5": { "role": "radio", "name": "Never" }
+      }
+    }
+  ]
+}

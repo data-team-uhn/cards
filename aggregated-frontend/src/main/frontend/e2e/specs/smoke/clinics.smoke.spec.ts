@@ -18,9 +18,7 @@
  */
 
 import { test } from '../../fixtures/visit-information.fixture';
-import { logout } from '../../flows/auth/logout.flow';
-import { FormPage } from '../../pages/form.page';
-import { beginSurvey } from '../../helpers';
+import { runPatientPortalFlow } from '../../flows/patient-portal-flow';
 import { createAndSaveFormWithNewPatientSubject } from '../../flows/patient-information.flow';
 import PatientInformationFormTestData from '../../test-data/internal-forms/patient-information.json' with { type: 'json' };
 import { loginAs } from '../../flows/auth/login.flow';
@@ -28,8 +26,9 @@ import { users } from '../../config/users';
 
 // Clinics to Questionnaires mapping
 import ClinicsToQuestionnaireMapping from '../../test-data/clinics.json' with { type: 'json' };
+import ClinicsToQuestionnaireMappingMarch from '../../test-data/clinics-march.json' with { type: 'json' };
 
-// Survey form test data
+// Survey form test data - before march visit date
 import OAIPTestData from '../../test-data/survey-forms/oaip.json' with { type: 'json' };
 import OEDTestData from '../../test-data/survey-forms/oed.json' with { type: 'json' };
 import ICTestData from '../../test-data/survey-forms/ic.json' with { type: 'json' };
@@ -37,6 +36,12 @@ import RehabTestData from '../../test-data/survey-forms/rehab.json' with { type:
 import OCPETestData from '../../test-data/survey-forms/ocpe.json' with { type: 'json' };
 import PMOOTestData from '../../test-data/survey-forms/pmoo.json' with { type: 'json' };
 import YVMTestData from '../../test-data/survey-forms/yvm.json' with { type: 'json' };
+
+// Survey form test data - after march visit date
+import OAIPMarchTestData from '../../test-data/survey-forms-march/oaip.json' with { type: 'json' };
+import OEDMarchTestData from '../../test-data/survey-forms-march/oed.json' with { type: 'json' };
+import RehabMarchTestData from '../../test-data/survey-forms-march/rehab.json' with { type: 'json' };
+import OCPEMarchTestData from '../../test-data/survey-forms-march/ocpe.json' with { type: 'json' };
 
 const SURVEY_FORM_DATA: Record<string, any> = {
   OAIP: OAIPTestData,
@@ -47,6 +52,26 @@ const SURVEY_FORM_DATA: Record<string, any> = {
   PMOO: PMOOTestData,
   YVM: YVMTestData
 };
+
+const SURVEY_FORM_DATA_MARCH: Record<string, any> = {
+  OAIP: OAIPMarchTestData,
+  OED: OEDMarchTestData,
+  Rehab: RehabMarchTestData,
+  OCPE: OCPEMarchTestData
+};
+
+const VISIT_DATE_SCENARIOS = [
+  {
+    visitDate: '2026-02-20 00:00',
+    clinicsToQuestionnaireMapping: ClinicsToQuestionnaireMapping,
+    surveyFormData: SURVEY_FORM_DATA
+  },
+  {
+    visitDate: '2026-04-02 00:00',
+    clinicsToQuestionnaireMapping: ClinicsToQuestionnaireMappingMarch,
+    surveyFormData: SURVEY_FORM_DATA_MARCH
+  }
+];
 
 const randomDigits = (length: number): string =>
   Array.from({ length }, () => Math.floor(Math.random() * 10)).join('');
@@ -68,59 +93,32 @@ test.describe('Patient Portal Tests', () => {
     await adminHomePage.subjectsView.deleteSubjectByIdWithForms(patientSubjectId, 'patient');
   });
 
-  for (const [clinicKey, clinic] of Object.entries(ClinicsToQuestionnaireMapping)) {
-    test.describe(`Test for clinic: ${clinicKey}`, () => {
+  for (const scenario of VISIT_DATE_SCENARIOS) {
+    for (const [clinicKey, clinic] of Object.entries(scenario.clinicsToQuestionnaireMapping)) {
+      test.describe(`Test for clinic: ${clinicKey} (${scenario.visitDate})`, () => {
+        const visitSubjectId = randomDigits(10);
+        const clinicName = clinic.displayName;
+        const visitDate = scenario.visitDate;
 
-      const visitSubjectId = randomDigits(10);
-      const clinicName = clinic.displayName;
-      const visitDate = "2026-02-20 00:00";
-      // Passing params to the fixture
-      test.use({
-        clinicName,
-        patientSubjectId,
-        visitSubjectId,
-        visitDate,
+        // Passing params to the fixture
+        test.use({
+          clinicName,
+          patientSubjectId,
+          visitSubjectId,
+          visitDate
+        });
+
+        test(`begin patient portal flow for ${clinicName} on ${visitDate}`, async ({ adminHomePage, createdVisitSubject: createdVisitSubjectId, browser }) => {
+          const adminPage = adminHomePage.page;
+          await runPatientPortalFlow(
+            adminPage,
+            browser,
+            createdVisitSubjectId,
+            clinic.questionnaires,
+            scenario.surveyFormData
+          );
+        });
       });
-
-      test(`begin patient portal flow for ${clinicName}`, async ({ adminHomePage, createdVisitSubject: visitSubjectId, browser }) => {
-        const adminPage = adminHomePage.page;
-
-        // Generate token for the visit subject from the visit information form
-        const formPage = new FormPage(adminPage);
-        const token = await formPage.generateTokenForSubject(visitSubjectId);
-
-        await logout(adminPage);
-
-        // fresh browser context (clean cookies/session)
-        const patientContext = await browser.newContext();
-        const page = await patientContext.newPage();
-        try {
-          // Go to Survey page
-          await page.goto('/Survey.html?auth_token=' + token);
-          await page.waitForLoadState('networkidle');
-
-          const surveyData: Record<string, any>[] = [];
-          for (const questionnaireName of clinic.questionnaires) {
-            const questionnaireData = SURVEY_FORM_DATA[questionnaireName];
-            if (!questionnaireData) {
-              throw new Error(`Missing survey-form data for questionnaire: ${questionnaireName}`);
-            }
-            surveyData.push(questionnaireData);
-          }
-
-          // Check the beginning page for the given questionnaires and click Begin button
-          await beginSurvey(page, surveyData);
-
-          for (const questionnaireData of surveyData) {
-            // Fill survey
-            const surveyForm = new FormPage(page);
-            await surveyForm.fillSurvey(questionnaireData);
-          }
-        } finally {
-          // ensure context is closed if test fails
-          await patientContext.close();
-        }
-      });
-    });
+    }
   }
 });

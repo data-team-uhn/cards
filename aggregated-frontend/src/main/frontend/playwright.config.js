@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/**
- * Playwright config for aggregated-frontend e2e tests.
- */
+
 const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
