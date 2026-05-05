@@ -79,7 +79,7 @@ function PatientAccessConfiguration() {
       "Please use a value of at least 0, or -1 to disable periodic draft deletion."
     ],
     manualTokenLifespanDays: [
-      "When a token is created manually, the number of days that the token should be valid for by default.",
+      "When a token is created manually, the number of days that the token should be valid for by default:",
       "This should be a positive integer for a number of days, or 0 for a 1 hour token lifespan"
     ],
   };
