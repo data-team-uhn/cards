@@ -22,7 +22,8 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonValue;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -46,6 +47,12 @@ public class DefaultOptionsProcessor implements ResourceJsonProcessor
     public int getPriority()
     {
         return 10;
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return "Include the `defaultOptions` child node in the serialization.";
     }
 
     @Override
