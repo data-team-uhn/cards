@@ -300,7 +300,7 @@ let AnswerOptions = (props) => {
         value.push(newOption);
         return value;
       });
-      setUsesDefaultOptions(false)
+      setUsesDefaultOptions(false);
     }
 
     tempValue && setTempValue('');
