@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Load the {@code defaultOptions} child node. The name of this processor is {@code identify}.
+ * Load the {@code defaultOptions} child node. The name of this processor is {@code includeDefaultOptions}.
  *
  * @version $Id$
  */
@@ -60,6 +60,9 @@ public class DefaultOptionsProcessor implements ResourceJsonProcessor
         final Function<Node, JsonValue> serializeNode)
     {
         try {
+            // The second condition handles children of the defaultOptions container itself:
+            // the serializer recurses into child nodes, so each direct child of defaultOptions
+            // (an individual option entry) is visited with node=defaultOptions and child=optionEntry.
             if ("defaultOptions".equals(child.getName()) || "defaultOptions".equals(node.getName())) {
                 return serializeNode.apply(child);
             }
