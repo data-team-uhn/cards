@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -119,7 +119,9 @@ let AnswerOptions = (props) => {
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   // Whether the answer options are suggested / pre-filled for a certain
   //   question type and props (true) or user-entered (false)
-  let [ usesDefaultOptions, setUsesDefaultOptions ] = useState(false);
+  const usesDefaultOptions = useRef(false);
+  const optionsRef = useRef(options);
+  useEffect(() => { optionsRef.current = options; });
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
@@ -182,7 +184,7 @@ let AnswerOptions = (props) => {
   // If more than one property suggests options, only use the first available.
   useEffect(() => {
     // Don't overwrite user-entered/curated options
-    if (options?.length > 0 && !usesDefaultOptions) return;
+    if (optionsRef.current?.length > 0 && !usesDefaultOptions.current) return;
 
     let prefilledOptions = [];
     let optionSuggestions = Object.values(fieldsReader)
@@ -210,8 +212,8 @@ let AnswerOptions = (props) => {
     }
 
     setOptions(prefilledOptions);
-    setUsesDefaultOptions(true);
-  }, [fieldsReader, usesDefaultOptions]);
+    usesDefaultOptions.current = true;
+  }, [fieldsReader]);
 
   let specialOptionsInfo = [
     {
@@ -239,7 +241,7 @@ let AnswerOptions = (props) => {
   // Clear local state when data changes
   useEffect(() => {
     setOptions(extractSortedOptions(data));
-    setUsesDefaultOptions(false);
+    usesDefaultOptions.current = false;
     setDeletedOptions([]);
     setTempValue('');
     setIsDuplicate(false);
@@ -257,7 +259,7 @@ let AnswerOptions = (props) => {
       newOptions.splice(index, 1);
       return newOptions;
     });
-    setUsesDefaultOptions(false);
+    usesDefaultOptions.current = false;
   }
 
   let validateOption = (optionInput, setter, specialOption) => {
@@ -300,7 +302,7 @@ let AnswerOptions = (props) => {
         value.push(newOption);
         return value;
       });
-      setUsesDefaultOptions(false);
+      usesDefaultOptions.current = false;
     }
 
     tempValue && setTempValue('');
@@ -420,7 +422,7 @@ let AnswerOptions = (props) => {
         value[descriptionIndex].description = description;
         return value;
       });
-      setUsesDefaultOptions(false);
+      usesDefaultOptions.current = false;
     }
     handlePopoverClose();
   }
