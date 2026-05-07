@@ -199,12 +199,14 @@ let AnswerOptions = (props) => {
     if (optionSuggestions) {
       prefilledOptions = Object.entries(optionSuggestions)
         .filter(([key]) => !key.startsWith("@") && !key.startsWith("jcr:"))
-        .map(([key, label]) => ({
-          label: label,
+        .map(([key, option]) => ({
+          label: option.label,
           value: key,
           "@path": path + "/AnswerOption" + stringToHash(key),
+          defaultOrder: option.defaultOrder,
           isNew: true,
-        }));
+        }))
+        .sort((a, b) => a.defaultOrder - b.defaultOrder);
     }
 
     setOptions(prefilledOptions);

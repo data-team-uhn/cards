@@ -60,7 +60,7 @@ public class DefaultOptionsProcessor implements ResourceJsonProcessor
         final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (child.getName().equals("defaultOptions")) {
+            if ("defaultOptions".equals(child.getName()) || "defaultOptions".equals(node.getName())) {
                 return serializeNode.apply(child);
             }
         } catch (RepositoryException e) {
