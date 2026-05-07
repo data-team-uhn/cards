@@ -119,7 +119,7 @@ let AnswerOptions = (props) => {
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   // Whether the answer options are suggested / pre-filled for a certain
   //   question type and props (true) or user-entered (false)
-  let [ usesDefaultOptions, setUsesDefaultOptions ] = useState();
+  let [ usesDefaultOptions, setUsesDefaultOptions ] = useState(false);
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);

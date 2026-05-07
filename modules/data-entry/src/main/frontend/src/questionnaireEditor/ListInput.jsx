@@ -107,6 +107,10 @@ let ListInput = (props) => {
     changeValue(event.target.value);
   };
 
+  // Prevent a MUI Select warning when options haven't loaded yet; otherwise pass the full
+  // selection array (multi) or the first selected value (single).
+  const selectValue = options.length === 0 ? "" : (type.multiple ? selection : (selection?.[0] ?? ''));
+
   return (
     <EditorInput name={objectKey} hint={hint}>
       <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType + (type.multiple ? '[]' : '') } />
@@ -123,7 +127,7 @@ let ListInput = (props) => {
           variant="standard"
           id={objectKey}
           multiple={type.multiple}
-          value={options.length === 0 ? "" : (type.multiple ? selection : (selection?.[0] ?? ''))}
+          value={selectValue}
           onChange={handleChange}
           input={<Input id={objectKey} />}
           renderValue={type.multiple ? () => (
