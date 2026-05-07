@@ -181,7 +181,7 @@ let AnswerOptions = (props) => {
   // Pre-populate answer options with options suggested by the properties already filled in, if any.
   // If more than one property suggests options, only use the first available.
   useEffect(() => {
-    // Don't overwrite user-entered/currated options
+    // Don't overwrite user-entered/curated options
     if (options?.length > 0 && !usesDefaultOptions) return;
 
     let prefilledOptions = [];
