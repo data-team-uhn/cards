@@ -135,9 +135,9 @@ let AnswerOptions = (props) => {
   const fieldsReader = useFieldsReaderContext();
 
   const notApplicable  = Object.values(data)
-     .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
+    .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data)
-     .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
+    .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
 
   const DEFAULT_NA_NODE_NAME = "None";
   const DEFAULT_NONEOFTHEABOVE_NODE_NAME = "NoneOfTheAbove";
@@ -204,7 +204,7 @@ let AnswerOptions = (props) => {
           value: key,
           "@path": path + "/AnswerOption" + stringToHash(key),
           isNew: true,
-      }));
+        }));
     }
 
     setOptions(prefilledOptions);

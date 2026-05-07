@@ -38,7 +38,7 @@ let ListInput = (props) => {
 
   let changeValue = (val) => {
     let value = Array.of(val ?? []).flat();
-    changeFieldsContext((oldContext) => ({...oldContext, [objectKey]: value}));
+    changeFieldsContext((oldContext) => ({ ...oldContext, [objectKey]: value }));
     setSelection(value.filter(v => v?.[type.identifierProperty] != ''));
   }
 
@@ -60,7 +60,7 @@ let ListInput = (props) => {
       '/query?query='
       + encodeURIComponent(
         `select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`),
-       window.location.origin
+      window.location.origin
     );
     url.searchParams.set("resourceSelectors", ".includeDefaultOptions");
     fetch(url)
