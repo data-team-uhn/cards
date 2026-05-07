@@ -4,7 +4,7 @@
     "image": "/libs/cards/resources/media/dataEntry/fullBody.svg",
     "jcr:path:map": "/libs/cards/resources/media/dataEntry/fullBodyMap.json",
     "defaultOptions": {
-      "jcr:primaryType" : "nt:unstructured",
+      "jcr:primaryType": "nt:unstructured",
       "face":     { "label": "Face",     "defaultOrder": 1 },
       "leftjaw":  { "label": "Left Jaw", "defaultOrder": 2 },
       "rightjaw": { "label": "Right Jaw","defaultOrder": 3 },
