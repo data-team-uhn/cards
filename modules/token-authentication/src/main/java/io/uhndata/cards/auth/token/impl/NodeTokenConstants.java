@@ -26,31 +26,35 @@ import java.util.List;
  * @version $Id$
  */
 
-@SuppressWarnings("checkstyle:InterfaceIsType")
-public interface NodeTokenConstants
+public final class NodeTokenConstants
 {
     /** The name of the parent node where tokens for a user are stored. */
-    String TOKENS_NODE_NAME = "cards:tokens";
+    public static final String TOKENS_NODE_NAME = "cards:tokens";
 
     /** The path of the parent node where tokens for a user are stored. */
-    String TOKENS_NODE_PATH = "/jcr:system/cards:tokens";
+    public static final String TOKENS_NODE_PATH = "/jcr:system/cards:tokens";
 
     /** The node type for the parent node where tokens for a user are stored. */
-    String TOKENS_NT_NAME = "rep:Unstructured";
+    public static final String TOKENS_NT_NAME = "rep:Unstructured";
 
     /** The node type for a token node. */
-    String TOKEN_NT_NAME = "cards:Token";
+    public static final String TOKEN_NT_NAME = "cards:Token";
 
     /** The name of the JCR attribute where the expiration is stored. */
-    String TOKEN_ATTRIBUTE_EXPIRY = "cards:token.exp";
+    public static final String TOKEN_ATTRIBUTE_EXPIRY = "cards:token.exp";
 
     /** The name of the JCR attribute where the hash of the secret key is stored. */
-    String TOKEN_ATTRIBUTE_KEY = "cards:token.key";
+    public static final String TOKEN_ATTRIBUTE_KEY = "cards:token.key";
 
     /** Reserved attributes that will not be stored in the session after authentication. */
-    List<String> RESERVED_ATTRIBUTES =
+    public static final List<String> RESERVED_ATTRIBUTES =
         Collections.unmodifiableList(Arrays.asList(TOKEN_ATTRIBUTE_EXPIRY, TOKEN_ATTRIBUTE_KEY));
 
     /** Delimiter between the node identifier and the secret key in the token identifier. */
-    String TOKEN_DELIMITER = "_";
+    public static final String TOKEN_DELIMITER = "_";
+
+    private NodeTokenConstants()
+    {
+        // Static utility file, no need to instantiate
+    }
 }

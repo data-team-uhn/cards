@@ -16,38 +16,38 @@
 // under the License.
 
 {
-  "bundles":[
+  "bundles": [
     {
-      "id":"${project.groupId}:cards-token-authentication-api:${project.version}",
-      "start-order":"25"
+      "id": "${project.groupId}:cards-token-authentication-api:${project.version}",
+      "start-order": "25"
     },
     {
-      "id":"${project.groupId}:cards-jwt-token-authentication:${project.version}",
-      "start-order":"27"
+      "id": "${project.groupId}:cards-jwt-token-authentication:${project.version}",
+      "start-order": "27"
     },
     {
-      "id":"io.jsonwebtoken:jjwt-impl:0.13.0",
-      "start-order":"25"
+      "id": "io.jsonwebtoken:jjwt-impl:0.13.0",
+      "start-order": "25"
     },
     {
-      "id":"io.jsonwebtoken:jjwt-api:0.13.0",
-      "start-order":"25"
+      "id": "io.jsonwebtoken:jjwt-api:0.13.0",
+      "start-order": "25"
     },
     {
-      "id":"io.jsonwebtoken:jjwt-jackson:0.13.0",
-      "start-order":"25"
+      "id": "io.jsonwebtoken:jjwt-jackson:0.13.0",
+      "start-order": "25"
     }
   ],
-  "configurations":{
-    "org.apache.sling.jcr.repoinit.RepositoryInitializer~cards-jwt-token-authentication":{
-      "service.ranking:Integer":300,
+  "configurations": {
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~cards-jwt-token-authentication": {
+      "service.ranking:Integer": 300,
       "scripts": [
-          "create path /libs/cards/conf/JWTSigningKey \n set ACL for everyone \n   deny jcr:all on /libs/cards/conf/JWTSigningKey \n end",
-          "create service user cards-jwt-token-manager \n set ACL for cards-jwt-token-manager \n allow jcr:all on /libs/cards/conf/JWTSigningKey \n     allow jcr:read on / \n end"
+        "create path (rep:Unstructured) /jcr:system/cards:jwt/JWTSigningKey \n set ACL for everyone \n   deny jcr:all on /jcr:system/cards:jwt/JWTSigningKey \n end",
+        "create service user cards-jwt-token-manager \n set ACL for cards-jwt-token-manager \n allow jcr:all on /jcr:system/cards:jwt/JWTSigningKey \n     allow jcr:read on / \n end"
       ]
     },
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-jwt-token-authentication":{
-      "user.mapping":[
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-jwt-token-authentication": {
+      "user.mapping": [
         "io.uhndata.cards.jwt-token-authentication=[cards-jwt-token-manager]"
       ]
     }

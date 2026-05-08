@@ -51,7 +51,7 @@ import io.uhndata.cards.auth.token.CardsToken;
  *
  * @version $Id$
  */
-public class CardsTokenImpl implements CardsToken, NodeTokenConstants
+public class CardsTokenImpl implements CardsToken
 {
     /** The name of the parent node where tokens for a user are stored. */
     public static final String SYSTEM_NODE_NAME = "jcr:system";
@@ -115,7 +115,7 @@ public class CardsTokenImpl implements CardsToken, NodeTokenConstants
                 final Property p = it.nextProperty();
                 final String name = p.getName();
                 final String value = p.getString();
-                if (RESERVED_ATTRIBUTES.contains(name)) {
+                if (NodeTokenConstants.RESERVED_ATTRIBUTES.contains(name)) {
                     continue;
                 } else if (!isSystemProperty(name)) {
                     // This is not a reserved or system property, thus it is a simple stored attribute
@@ -150,7 +150,7 @@ public class CardsTokenImpl implements CardsToken, NodeTokenConstants
         for (final PropertyState p : this.tokenTree.getProperties()) {
             final String name = p.getName();
             final String value = p.getValue(Type.STRING);
-            if (RESERVED_ATTRIBUTES.contains(name)) {
+            if (NodeTokenConstants.RESERVED_ATTRIBUTES.contains(name)) {
                 continue;
             } else if (!isSystemProperty(name)) {
                 // This is not a reserved or system property, thus it is a simple stored attribute
@@ -214,7 +214,8 @@ public class CardsTokenImpl implements CardsToken, NodeTokenConstants
         // login token
 
         // The login token contains both the token node UUID, and the secret key, so extract just the key
-        final String credentialsToken = StringUtils.substringAfter(tokenCredentials.getToken(), TOKEN_DELIMITER);
+        final String credentialsToken = StringUtils.substringAfter(tokenCredentials.getToken(),
+            NodeTokenConstants.TOKEN_DELIMITER);
 
         // Check the validity of the login token
         if (this.validationKey == null
@@ -269,14 +270,15 @@ public class CardsTokenImpl implements CardsToken, NodeTokenConstants
     {
         if (this.tokenNode != null) {
             try {
-                if (this.tokenNode.hasProperty(TOKEN_ATTRIBUTE_EXPIRY)) {
-                    return this.tokenNode.getProperty(TOKEN_ATTRIBUTE_EXPIRY).getDate();
+                if (this.tokenNode.hasProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_EXPIRY)) {
+                    return this.tokenNode.getProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_EXPIRY).getDate();
                 }
             } catch (RepositoryException e) {
                 LOGGER.warn("Failed to access token expiration date for {}: {}", this.loginToken, e.getMessage(), e);
             }
-        } else if (this.tokenTree != null && this.tokenTree.hasProperty(TOKEN_ATTRIBUTE_EXPIRY)) {
-            return ISO8601.parse(this.tokenTree.getProperty(TOKEN_ATTRIBUTE_EXPIRY).getValue(Type.DATE));
+        } else if (this.tokenTree != null && this.tokenTree.hasProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_EXPIRY)) {
+            return ISO8601.parse(
+                this.tokenTree.getProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_EXPIRY).getValue(Type.DATE));
         }
         return null;
     }
@@ -296,14 +298,14 @@ public class CardsTokenImpl implements CardsToken, NodeTokenConstants
     {
         if (this.tokenNode != null) {
             try {
-                if (this.tokenNode.hasProperty(TOKEN_ATTRIBUTE_KEY)) {
-                    return this.tokenNode.getProperty(TOKEN_ATTRIBUTE_KEY).getString();
+                if (this.tokenNode.hasProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_KEY)) {
+                    return this.tokenNode.getProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_KEY).getString();
                 }
             } catch (RepositoryException e) {
                 LOGGER.warn("Failed to access token validation key for {}: {}", this.loginToken, e.getMessage(), e);
             }
-        } else if (this.tokenTree != null && this.tokenTree.hasProperty(TOKEN_ATTRIBUTE_KEY)) {
-            return this.tokenTree.getProperty(TOKEN_ATTRIBUTE_KEY).getValue(Type.STRING);
+        } else if (this.tokenTree != null && this.tokenTree.hasProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_KEY)) {
+            return this.tokenTree.getProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_KEY).getValue(Type.STRING);
         }
         return null;
     }

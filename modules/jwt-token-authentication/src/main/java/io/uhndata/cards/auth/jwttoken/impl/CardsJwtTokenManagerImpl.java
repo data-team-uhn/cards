@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.jcr.Node;
 
-import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenConfiguration;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -48,7 +47,7 @@ import io.uhndata.cards.auth.token.TokenManager;
  *
  * @version $Id$
  */
-@Component(immediate = true, property = "service.ranking:Integer=50")
+@Component(immediate = true, property = "service.ranking:Integer=50", service = {TokenManager.class})
 public class CardsJwtTokenManagerImpl implements TokenManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CardsJwtTokenManagerImpl.class);
@@ -57,9 +56,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
 
-    @Reference
-    private TokenConfiguration configuration;
-
+    @Override
     public CardsJwtTokenImpl create(final String userId, final Calendar expiration, final Map<String, String> extraData)
     {
         // Get a service session, since this may be called in a background thread without a user-bound session
@@ -81,6 +78,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         return null;
     }
 
+    @Override
     public CardsJwtTokenImpl parse(final String loginToken)
     {
         if (loginToken == null) {
@@ -89,6 +87,10 @@ public class CardsJwtTokenManagerImpl implements TokenManager
 
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
             SecretKey key = getOrCreateSigningKey(resolver);
+            if (key == null) {
+                // Should not happen
+                return null;
+            }
             Jwt<?, ?> jwt = Jwts.parser().verifyWith(key).build().parseSignedClaims(loginToken);
             return new CardsJwtTokenImpl(jwt, loginToken);
         } catch (LoginException e) {
@@ -102,11 +104,15 @@ public class CardsJwtTokenManagerImpl implements TokenManager
 
     private SecretKey getOrCreateSigningKey(ResourceResolver resolver)
     {
-        String resourcePath = "/libs/cards/conf/JWTSigningKey";
+        String resourcePath = "/jcr:system/cards:jwt/JWTSigningKey";
         SecretKey key = null;
         try {
             Resource res = resolver.resolve(resourcePath);
             Node keyNode = res.adaptTo(Node.class);
+            if (keyNode == null) {
+                LOGGER.error("Failed to load JWT Signing key: node {} could not be read", resourcePath);
+                return null;
+            }
             if (keyNode.hasProperty("key")) {
                 key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(keyNode.getProperty("key").getString()));
             } else {

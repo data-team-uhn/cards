@@ -109,6 +109,7 @@ public abstract class AbstractTokenAuthenticationHandler extends DefaultJakartaA
             final Cookie eraseCookie = new Cookie(TOKEN_COOKIE_NAME, "");
             eraseCookie.setMaxAge(0);
             eraseCookie.setHttpOnly(true);
+            eraseCookie.setSecure(request.isSecure());
             final String ctxPath = request.getContextPath();
             final String cookiePath = (ctxPath == null || ctxPath.length() == 0) ? "/" : ctxPath;
             eraseCookie.setPath(cookiePath);
@@ -130,6 +131,7 @@ public abstract class AbstractTokenAuthenticationHandler extends DefaultJakartaA
         final Calendar cookieExpiration = getTokenExpirationDate(credentials.getToken());
         cookie.setPath(cookiePath);
         cookie.setHttpOnly(true);
+        cookie.setSecure(request.isSecure());
         if (cookieExpiration != null) {
             cookie.setMaxAge((int) ChronoUnit.SECONDS.between(Instant.now(), cookieExpiration.toInstant()));
         }

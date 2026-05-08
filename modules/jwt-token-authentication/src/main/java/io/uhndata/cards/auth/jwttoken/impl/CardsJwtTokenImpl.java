@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.jackrabbit.api.security.authentication.token.TokenCredentials;
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
-import org.osgi.service.component.propertytypes.ServiceRanking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,6 @@ import io.uhndata.cards.auth.token.CardsToken;
  *
  * @version $Id$
  */
-@ServiceRanking(50)
 public class CardsJwtTokenImpl implements CardsToken
 {
     /** The name of the parent node where tokens for a user are stored. */
@@ -61,6 +59,12 @@ public class CardsJwtTokenImpl implements CardsToken
      */
     private final Map<String, String> attributes;
 
+    /**
+     * Parse the attributes forming a token from an existing JWT and the login token containing said JWT.
+     * This should generally be used when parsing an inbound JWT from a user.
+     * @param jwt The JWT containing the attributes about the current token
+     * @param token The login token string said JWT was parsed from
+     */
     public CardsJwtTokenImpl(final Jwt<?, ?> jwt, final String token)
     {
         Object payload = jwt.getPayload();
@@ -81,6 +85,14 @@ public class CardsJwtTokenImpl implements CardsToken
         }
     }
 
+    /**
+     * Create a token from the raw attributes desired.
+     * This should generally be used when creating a new token from scratch.
+     * @param jws the signed token string that can be provided to users to authenticate with later
+     * @param userId the userId of encoded within this token
+     * @param expiration the date and time when this token should stop being valid
+     * @param attributes any other attributes that are encoded within this token
+     */
     public CardsJwtTokenImpl(final String jws, final String userId, final Calendar expiration,
         final Map<String, String> attributes)
     {

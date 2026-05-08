@@ -38,7 +38,6 @@ import io.uhndata.cards.auth.token.TokenManager;
 )
 public class CardsJwtTokenConfigurationImpl extends ConfigurationBase implements TokenConfiguration
 {
-
     @Reference(target = "(component.name=io.uhndata.cards.auth.jwttoken.impl.CardsJwtTokenManagerImpl)")
     private TokenManager tokenManager;
 
