@@ -4,7 +4,7 @@
   "description": "CARDS is a software tool providing an easy-to-use Web interface and standardized database back-end for collecting medical data.",
   "repository": {
     "url": "https://github.com/data-team-uhn/cards.git",
-    "directory": "modules/commons/src/main/frontend",
+    "directory": "aggregated-frontend/src/main/frontend",
     "type": "git"
   },
   "author": "UHN DATA",
