@@ -23,12 +23,12 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>cards-modules</artifactId>
-    <version>0.9.39-SNAPSHOT</version>
+    <version>0.9.38-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-token-authentication</artifactId>
+  <artifactId>cards-token-authentication-api</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Token Authentication</name>
+  <name>CARDS - Token Authentication API</name>
 
   <build>
     <plugins>
@@ -44,12 +44,6 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/token.cnd</Sling-Nodetypes>
-            <Sling-Initial-Content>
-              SLING-INF/content/libs/cards/TokenExpired/;path:=/libs/cards/TokenExpired/;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/libs/cards/Subject/;path:=/libs/cards/Subject/;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true,
-            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
@@ -59,7 +53,15 @@
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.component.annotations</artifactId>
+      <artifactId>org.osgi.annotation.versioning</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-security-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-jackrabbit-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
@@ -68,65 +70,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-core-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>jackrabbit-jcr-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-jackrabbit-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-security-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.jcr.resource</artifactId>
       <version>3.3.6</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.commons.scheduler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi.cmpn</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-token-authentication-api</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-permissions</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -136,10 +82,6 @@
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
 </project>

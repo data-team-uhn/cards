@@ -29,8 +29,8 @@ import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenConstant
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenProvider;
 
-import io.uhndata.cards.auth.token.CardsToken;
 import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
+import io.uhndata.cards.auth.token.impl.NodeTokenConstants;
 
 /**
  * Custom token provider that uses {@code cards:Token} nodes to store authentication tokens, to be used with the Oak
@@ -83,7 +83,7 @@ public class CardsTokenProvider implements TokenProvider, TokenConstants
     public TokenInfo getTokenInfo(final String loginToken)
     {
         // The login token has the format <nodeUUID> or <nodeUUID>-<secretKey>, extract the node UUID from it
-        final String nodeId = StringUtils.substringBefore(loginToken, CardsToken.TOKEN_DELIMITER);
+        final String nodeId = StringUtils.substringBefore(loginToken, NodeTokenConstants.TOKEN_DELIMITER);
         // Retrieve the node from the repo
         final Tree tokenTree = this.identifierManager.getTree(nodeId);
         // Check that it is a good token node
@@ -109,8 +109,8 @@ public class CardsTokenProvider implements TokenProvider, TokenConstants
             return false;
         }
         // The expected path is /jcr:system/cards:tokens/<userId>/<tokenNode>
-        return tokenTree.getPath().startsWith(CardsToken.TOKENS_NODE_PATH + "/")
-            && "cards:Token".equals(TreeUtil.getPrimaryTypeName(tokenTree));
+        return tokenTree.getPath().startsWith(NodeTokenConstants.TOKENS_NODE_PATH + "/")
+            && NodeTokenConstants.TOKEN_NT_NAME.equals(TreeUtil.getPrimaryTypeName(tokenTree));
     }
 
     /**
@@ -127,7 +127,7 @@ public class CardsTokenProvider implements TokenProvider, TokenConstants
         // They also used to be stored directly under /jcr:system/cards:tokens/<username>/<token node>
         // To support both kinds of locations, we simply go up until we reach the cards:tokens node
         // and return the name of the node right before that point
-        while (!CardsTokenImpl.TOKENS_NODE_PATH.equals(crt.getPath())) {
+        while (!NodeTokenConstants.TOKENS_NODE_PATH.equals(crt.getPath())) {
             name = crt.getName();
             crt = crt.getParent();
         }

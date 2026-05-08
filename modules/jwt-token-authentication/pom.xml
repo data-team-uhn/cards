@@ -103,7 +103,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>cards-token-authentication</artifactId>
+      <artifactId>cards-token-authentication-api</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>

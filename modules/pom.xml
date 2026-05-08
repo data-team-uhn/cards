@@ -62,6 +62,7 @@
     <module>vocabularies-ignore</module>
     <module>statistics</module>
     <module>email-notifications</module>
+    <module>token-authentication-api</module>
     <module>token-authentication</module>
     <module>jwt-token-authentication</module>
     <module>keycloakdemo-saml</module>

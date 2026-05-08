@@ -18,6 +18,10 @@
 {
   "bundles":[
     {
+      "id":"${project.groupId}:cards-token-authentication-api:${project.version}",
+      "start-order":"25"
+    },
+    {
       "id":"${project.groupId}:cards-jwt-token-authentication:${project.version}",
       "start-order":"27"
     },

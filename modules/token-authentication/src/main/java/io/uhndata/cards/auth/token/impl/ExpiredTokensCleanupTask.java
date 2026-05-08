@@ -33,8 +33,6 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.auth.token.CardsToken;
-
 public class ExpiredTokensCleanupTask implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExpiredTokensCleanupTask.class);
@@ -51,7 +49,7 @@ public class ExpiredTokensCleanupTask implements Runnable
     {
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
             final Iterator<Resource> resources = resolver.findResources("SELECT * FROM [cards:Token] WHERE ["
-                + CardsToken.TOKEN_ATTRIBUTE_EXPIRY + "] < '"
+                + NodeTokenConstants.TOKEN_ATTRIBUTE_EXPIRY + "] < '"
                 + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx")) + "'",
                 Query.JCR_SQL2);
             resources.forEachRemaining(token -> {

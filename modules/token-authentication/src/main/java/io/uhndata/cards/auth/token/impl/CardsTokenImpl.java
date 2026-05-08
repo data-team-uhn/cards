@@ -51,7 +51,7 @@ import io.uhndata.cards.auth.token.CardsToken;
  *
  * @version $Id$
  */
-public class CardsTokenImpl implements CardsToken
+public class CardsTokenImpl implements CardsToken, NodeTokenConstants
 {
     /** The name of the parent node where tokens for a user are stored. */
     public static final String SYSTEM_NODE_NAME = "jcr:system";

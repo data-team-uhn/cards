@@ -100,7 +100,7 @@ public class TokenManagerImpl implements TokenManager
         // The login token has the format <nodeUUID> or <nodeUUID>-<secretKey>
         // Extract the node UUID
         // The secret key does not need to be used/validated now, so just ignore it
-        final String nodeId = StringUtils.substringBefore(loginToken, CardsToken.TOKEN_DELIMITER);
+        final String nodeId = StringUtils.substringBefore(loginToken, NodeTokenConstants.TOKEN_DELIMITER);
 
         try (ResourceResolver srr = this.rrf.getServiceResourceResolver(null)) {
             final Node tokenNode = srr.adaptTo(Session.class).getNodeByIdentifier(nodeId);
@@ -162,28 +162,28 @@ public class TokenManagerImpl implements TokenManager
             final String tokenName = UUID.randomUUID().toString();
             // Create the node holding the token information
             final Node tokenNode = createParents(parent, tokenName)
-                .addNode(tokenName, CardsTokenImpl.TOKEN_NT_NAME);
+                .addNode(tokenName, NodeTokenConstants.TOKEN_NT_NAME);
 
             // Generate a random secret key that the token holder must present in order to be authenticated
             final String secretKey = generateKey();
             // The identifier of the token node that can be used to retrieve it using session.getNodeByIdentifier
             final String nodeIdentifier = tokenNode.getIdentifier();
             // The actual token that will be passed to the user
-            final String loginToken = nodeIdentifier + CardsToken.TOKEN_DELIMITER + secretKey;
+            final String loginToken = nodeIdentifier + NodeTokenConstants.TOKEN_DELIMITER + secretKey;
             // The hash stored in the token itself used to validate the authenticity of the token
             try {
                 final String keyHash =
                     PasswordUtil.buildPasswordHash(getKeyValue(secretKey, userId), this.configuration.getParameters());
-                tokenNode.setProperty(CardsToken.TOKEN_ATTRIBUTE_KEY, keyHash);
+                tokenNode.setProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_KEY, keyHash);
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 LOGGER.warn("Failed to hash token: {}", e.getMessage(), e);
             }
             // Store the expiration date
-            tokenNode.setProperty(CardsToken.TOKEN_ATTRIBUTE_EXPIRY, expiration);
+            tokenNode.setProperty(NodeTokenConstants.TOKEN_ATTRIBUTE_EXPIRY, expiration);
             // Store any other extra data
             if (extraData != null) {
                 for (Map.Entry<String, String> data : extraData.entrySet()) {
-                    if (!CardsToken.RESERVED_ATTRIBUTES.contains(data.getKey())) {
+                    if (!NodeTokenConstants.RESERVED_ATTRIBUTES.contains(data.getKey())) {
                         tokenNode.setProperty(data.getKey(), data.getValue());
                     }
                 }
@@ -216,7 +216,8 @@ public class TokenManagerImpl implements TokenManager
     {
         Node crt = parent;
         for (int i = 0; i <= 4; i += 2) {
-            crt = getOrCreateNode(crt, name.substring(i, i + 2), CardsTokenImpl.TOKENS_NT_NAME, parent.getSession());
+            crt = getOrCreateNode(crt, name.substring(i, i + 2), NodeTokenConstants.TOKENS_NT_NAME,
+                parent.getSession());
         }
         return crt;
     }
@@ -259,8 +260,8 @@ public class TokenManagerImpl implements TokenManager
         }
         try {
             // The expected path is /jcr:system/cards:tokens/<userId>/01/23/45/<tokenNode>
-            return tokenNode.getPath().startsWith(CardsToken.TOKENS_NODE_PATH + "/")
-                && tokenNode.isNodeType(CardsTokenImpl.TOKEN_NT_NAME);
+            return tokenNode.getPath().startsWith(NodeTokenConstants.TOKENS_NODE_PATH + "/")
+                && tokenNode.isNodeType(NodeTokenConstants.TOKEN_NT_NAME);
         } catch (RepositoryException e) {
             return false;
         }
@@ -281,7 +282,7 @@ public class TokenManagerImpl implements TokenManager
             // They also used to be stored directly under /jcr:system/cards:tokens/<username>/<token node>
             // To support both kinds of locations, we simply go up until we reach the cards:tokens node
             // and return the name of the node right before that point
-            while (!CardsTokenImpl.TOKENS_NODE_PATH.equals(crt.getPath())) {
+            while (!NodeTokenConstants.TOKENS_NODE_PATH.equals(crt.getPath())) {
                 name = crt.getName();
                 crt = crt.getParent();
             }
@@ -303,7 +304,8 @@ public class TokenManagerImpl implements TokenManager
     private Node getOrCreateSystemTokensNode(final Session session) throws PathNotFoundException, RepositoryException
     {
         final Node systemNode = session.getRootNode().getNode(CardsTokenImpl.SYSTEM_NODE_NAME);
-        return getOrCreateNode(systemNode, CardsToken.TOKENS_NODE_NAME, CardsToken.TOKENS_NT_NAME, session);
+        return getOrCreateNode(systemNode, NodeTokenConstants.TOKENS_NODE_NAME, NodeTokenConstants.TOKENS_NT_NAME,
+            session);
     }
 
     /**
@@ -319,7 +321,7 @@ public class TokenManagerImpl implements TokenManager
     private Node getOrCreateUserTokensNode(final Node tokensNode, final String userId, final Session session)
         throws PathNotFoundException, RepositoryException
     {
-        return getOrCreateNode(tokensNode, userId, CardsToken.TOKENS_NT_NAME, session);
+        return getOrCreateNode(tokensNode, userId, NodeTokenConstants.TOKENS_NT_NAME, session);
     }
 
     /**

@@ -14,30 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.auth.token;
+package io.uhndata.cards.auth.token.impl;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
-
 /**
- * Custom extension of {@link TokenInfo} with more support for extended attributes.
+ * JCR storage constants for node-based tokens describing how these tokens are persisted as JCR nodes.
  *
  * @version $Id$
  */
-public interface CardsToken extends TokenInfo
-{
 
+@SuppressWarnings("checkstyle:InterfaceIsType")
+public interface NodeTokenConstants
+{
     /** The name of the parent node where tokens for a user are stored. */
     String TOKENS_NODE_NAME = "cards:tokens";
 
-    /** The name of the parent node where tokens for a user are stored. */
+    /** The path of the parent node where tokens for a user are stored. */
     String TOKENS_NODE_PATH = "/jcr:system/cards:tokens";
 
-    /** The node type for the parent ".tokens" node where tokens for a user are stored. */
+    /** The node type for the parent node where tokens for a user are stored. */
     String TOKENS_NT_NAME = "rep:Unstructured";
 
     /** The node type for a token node. */
@@ -55,11 +53,4 @@ public interface CardsToken extends TokenInfo
 
     /** Delimiter between the node identifier and the secret key in the token identifier. */
     String TOKEN_DELIMITER = "_";
-
-    /**
-     * Obtain the expiration time from this token.
-     *
-     * @return the expiration date, or {@code null} if there's no expiration date set
-     */
-    Calendar getExpirationTime();
 }

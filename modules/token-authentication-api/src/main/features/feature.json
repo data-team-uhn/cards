@@ -20,24 +20,6 @@
     {
       "id":"${project.groupId}:cards-token-authentication-api:${project.version}",
       "start-order":"25"
-    },
-    {
-      "id":"${project.groupId}:cards-token-authentication:${project.version}",
-      "start-order":"26"
     }
-  ],
-  "configurations":{
-    "org.apache.sling.jcr.repoinit.RepositoryInitializer~token-authentication":{
-      "service.ranking:Integer":300,
-      "scripts": [
-        "create service user cards-token-manager \n create path (rep:Unstructured) /jcr:system/cards:tokens \n set ACL for cards-token-manager \n     allow jcr:all on /jcr:system/cards:tokens \n     allow jcr:read on / \n end",
-        "create path (cards:TokenExpired) /Expired \n set ACL for everyone \n   allow  jcr:read  on /Expired \n end "
-      ]
-    },
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-token-auth":{
-      "user.mapping":[
-        "io.uhndata.cards.token-authentication=[cards-token-manager]"
-      ]
-    }
-  }
+  ]
 }
