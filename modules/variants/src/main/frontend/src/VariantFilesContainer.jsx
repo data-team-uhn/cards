@@ -839,10 +839,10 @@ export default function VariantFilesContainer() {
               { upprogress?.state != "error" &&
                 <Box display="flex" alignItems="center" className={classes.fileProgress}>
                   <Box width="100%" mr={1}>
-                    <LinearProgress variant="determinate" value={upprogress.percentage} />
+                    <LinearProgress variant="determinate" value={upprogress?.percentage || 0} />
                   </Box>
                   <Box minWidth={35}>
-                    <Typography variant="body2" color="textSecondary">{upprogress.percentage + "%"}</Typography>
+                    <Typography variant="body2" color="textSecondary">{upprogress?.percentage || 0}%</Typography>
                   </Box>
                 </Box>
               }
