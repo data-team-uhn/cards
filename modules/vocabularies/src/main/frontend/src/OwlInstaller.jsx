@@ -121,8 +121,8 @@ export default function OwlInstaller(props) {
           onSubmit={handleSubmit}
         >
           <Grid container
-            alignItems="center"
             spacing={1}
+            sx={{ alignItems: 'center' }}
           >
             <Grid>
               <label htmlFor="owl-file" aria-label="Select OWL file">

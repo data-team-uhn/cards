@@ -303,7 +303,7 @@ function PatientIdentification(props) {
     {/* Patient identification form */}
 
     <form className={classes.form} onSubmit={onSubmit} >
-      <Grid container direction="column" spacing={4} >
+      <Grid container spacing={4} sx={{ flexDirection: 'column' }}>
         <Logo component={Grid} size={12}/>
 
         { /* If we don't have the authentication token yet or we don't need the identification form,
@@ -368,7 +368,7 @@ function PatientIdentification(props) {
                     }}
                   />
                 </LocalizationProvider>
-                <Grid container alignItems="flex-start" wrap="nowrap" spacing={2} justifyContent="space-between">
+                <Grid container spacing={2} sx={{ alignItems: 'flex-start', flexWrap: 'nowrap', justifyContent: 'space-between' }}>
                   <Grid>
                     <FormControl variant="standard" margin="normal" fullWidth>
                       <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
@@ -385,7 +385,7 @@ function PatientIdentification(props) {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid alignSelf="center">or</Grid>
+                  <Grid sx={{ alignSelf: 'center' }}>or</Grid>
                   <Grid>
                     <FormControl variant="standard" margin="normal" fullWidth>
                       <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
@@ -432,7 +432,7 @@ function PatientIdentification(props) {
                     )}</List>
                   </Grid>
                   <Grid className={classes.description}>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                       If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout" underline="hover">close this page</Link>.
                     </Typography>
                   </Grid>

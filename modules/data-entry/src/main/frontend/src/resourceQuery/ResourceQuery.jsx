@@ -267,7 +267,7 @@ function ResourceQuery(props) {
                     key={f}
                     component="div"
                     variant="caption"
-                    color="textSecondary"
+                    sx={{ color: 'text.secondary' }}
                   >
                     {f}
                   </FormattedText>

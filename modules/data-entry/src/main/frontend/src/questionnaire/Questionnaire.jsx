@@ -371,7 +371,7 @@ let QuestionnaireItemSet = (props) => {
   }
 
   return (
-    <Grid container direction="column" spacing={4} wrap="nowrap">
+    <Grid container spacing={4} sx={{ flexDirection: 'column', flexWrap: 'nowrap' }}>
       {children}
       {
         data ?
@@ -379,7 +379,7 @@ let QuestionnaireItemSet = (props) => {
             { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
             { listEntries(generalModels, generalEntryTypes) }
           </>
-          : <Grid><Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid></Grid>
+          : <Grid><Grid container sx={{ justifyContent: 'center' }}><Grid><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
   );

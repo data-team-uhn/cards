@@ -93,7 +93,7 @@ function FormPageNavigation (props) {
 
   // List of page buttons
   let pageList = () => (
-    <Grid container spacing={2} justifyContent="space-evenly">
+    <Grid container spacing={2} sx={{ justifyContent: 'space-evenly' }}>
       { pages.map((p, index) => (
         <Grid key={index}>
           { p.canBeVisible ?
@@ -144,7 +144,7 @@ function FormPageNavigation (props) {
 
   // Render the expanded or condensed view depending on screen width
   return (
-    <Grid container spacing={4} justifyContent="space-between" alignItems="center" flexWrap="nowrap">
+    <Grid container spacing={4} sx={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap' }}>
       {backButton && <Grid>{backButton}</Grid>}
       <Grid>
         { condensedPageList ? pageSelector() : pageList() }

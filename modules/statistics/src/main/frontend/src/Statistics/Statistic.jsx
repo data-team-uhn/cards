@@ -266,9 +266,9 @@ function Statistic(props) {
       />
       <CardContent>
         { allFields.length == 0 ?
-          <Grid container justifyContent="center" alignItems="center" style={{ height: widgetHeight }}>
+          <Grid container style={{ height: widgetHeight }} sx={{ justifyContent: 'center', alignItems: 'center' }}>
             <Grid>
-              <Typography color="textSecondary" variant="caption">No data available for this statistic</Typography>
+              <Typography sx={{ color: 'text.secondary' }} variant="caption">No data available for this statistic</Typography>
             </Grid>
           </Grid>
           :

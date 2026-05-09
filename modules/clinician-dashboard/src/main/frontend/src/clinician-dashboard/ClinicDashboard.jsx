@@ -180,7 +180,7 @@ function ClinicDashboard(props) {
 
   if (defaultsLoading || extensionsLoading || !visitInfo) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <Grid container sx={{ justifyContent: 'center' }}><Grid><CircularProgress/></Grid></Grid>
     );
   }
 

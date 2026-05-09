@@ -144,10 +144,8 @@ export function BioPortalApiKey(props) {
         </Grid>
         <Grid>
           <Grid container
-            alignItems="center"
-            justifyContent="space-between"
-            alignContent="space-between"
             spacing={2}
+            sx={{ alignItems: 'center', justifyContent: 'space-between', alignContent: 'space-between' }}
           >
             <Grid size={10}>
               { getBioportalKeyInfo(!bioPortalApiKey) }

@@ -68,7 +68,7 @@ function QuestionnairePreview (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <Grid container sx={{ justifyContent: 'center' }}><Grid><CircularProgress/></Grid></Grid>
     );
   }
 

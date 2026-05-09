@@ -118,7 +118,7 @@ function Header (props) {
 
   let subtitleBar = subtitle ?
     <Toolbar variant="dense" className={classes.toolbar}>
-      <Typography variant="h6" color="textPrimary">{ subtitle }</Typography>
+      <Typography variant="h6" sx={{ color: 'text.primary' }}>{ subtitle }</Typography>
       { step }
     </Toolbar>
     : <></>;
@@ -137,7 +137,7 @@ function Header (props) {
             { title &&
               <Typography
                 variant="overline"
-                color="textPrimary"
+                sx={{ color: 'text.primary' }}
                 component="div"
                 className="cards-patientPortal-surveyTitle"
               >

@@ -290,7 +290,7 @@ function ExportButton(props) {
 
   let getUserSelector = (label, value, setter) => {
     return (
-      <Grid container alignItems='center' className={classes.container + ' ' + classes.withSelect}>
+      <Grid container className={classes.container + ' ' + classes.withSelect} sx={{ alignItems: 'center' }}>
         <Grid size={4}><Typography variant="subtitle2">{label}</Typography></Grid>
         <Grid size={8}>
           <FormControl variant="standard" fullWidth>
@@ -324,7 +324,7 @@ function ExportButton(props) {
         onClose={closeDialog}
       >
         <DialogContent dividers>
-          <Grid container alignItems='center' className={classes.container}>
+          <Grid container className={classes.container} sx={{ alignItems: 'center' }}>
             <Grid size={4}><Typography variant="subtitle2">File format:</Typography></Grid>
             <Grid size={8}>
               <RadioGroup
@@ -339,7 +339,7 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='center' className={classes.container}>
+          <Grid container className={classes.container} sx={{ alignItems: 'center' }}>
             <Grid size={4}><Typography variant="subtitle2">Header format:</Typography></Grid>
             <Grid size={8}>
               <FormControlLabel
@@ -362,7 +362,7 @@ function ExportButton(props) {
               />
             </Grid>
           </Grid>
-          <Grid container alignItems='center' className={classes.container}>
+          <Grid container className={classes.container} sx={{ alignItems: 'center' }}>
             <Grid size={4}><Typography variant="subtitle2">Header label replacement:</Typography></Grid>
             <Grid size={8}>
               <TextField
@@ -376,7 +376,7 @@ function ExportButton(props) {
               />
             </Grid>
           </Grid>
-          <Grid container alignItems='center' className={classes.container}>
+          <Grid container className={classes.container} sx={{ alignItems: 'center' }}>
             <Grid size={4}><Typography variant="subtitle2">Header Id replacement:</Typography></Grid>
             <Grid size={8}>
               <TextField
@@ -390,7 +390,7 @@ function ExportButton(props) {
               />
             </Grid>
           </Grid>
-          <Grid container alignItems='center' className={classes.container}>
+          <Grid container className={classes.container} sx={{ alignItems: 'center' }}>
             <Grid size={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
             <Grid size={8}>
               <RadioGroup
@@ -409,7 +409,7 @@ function ExportButton(props) {
 
           <Typography variant="h6">Columns</Typography>
 
-          <Grid container alignItems='center' className={classes.container}>
+          <Grid container className={classes.container} sx={{ alignItems: 'center' }}>
             <Grid size={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
             <Grid size={8}>
               <RadioGroup
@@ -424,7 +424,7 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='start' className={classes.container + ' ' + classes.withMultiSelect}>
+          <Grid container className={classes.container + ' ' + classes.withMultiSelect} sx={{ alignItems: 'start' }}>
             <Grid size={4}>
               <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
             </Grid>
@@ -445,7 +445,7 @@ function ExportButton(props) {
 
           { getUserSelector("Created by:", createdBy, setCreatedBy) }
 
-          <Grid container alignItems='baseline' className={classes.container}>
+          <Grid container className={classes.container} sx={{ alignItems: 'baseline' }}>
             <Grid size={4}><Typography variant="subtitle2">Created between:</Typography></Grid>
             <Grid size={8}>
               { getDateRange(createdAfter, setCreatedAfter, createdBefore, setCreatedBefore, createdRangeIsInvalid) }
@@ -454,7 +454,7 @@ function ExportButton(props) {
 
           { getUserSelector("Last modified by:", modifiedBy, setModifiedBy) }
 
-          <Grid container alignItems='baseline' className={classes.container}>
+          <Grid container className={classes.container} sx={{ alignItems: 'baseline' }}>
             <Grid size={4}><Typography variant="subtitle2">Last modified between:</Typography></Grid>
             <Grid size={8}>
               {/* eslint-disable-next-line @stylistic/max-len */}
@@ -462,7 +462,7 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='center' className={classes.container}>
+          <Grid container className={classes.container} sx={{ alignItems: 'center' }}>
             <Grid size={4}><Typography variant="subtitle2">Status flag selection mode:</Typography></Grid>
             <Grid size={8}>
               <RadioGroup
@@ -477,7 +477,7 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='center' className={classes.container + ' ' + classes.withSelect}>
+          <Grid container className={classes.container + ' ' + classes.withSelect} sx={{ alignItems: 'center' }}>
             <Grid size={4}>
               <Typography variant="subtitle2">
                 { statusSelectionMode == "status"

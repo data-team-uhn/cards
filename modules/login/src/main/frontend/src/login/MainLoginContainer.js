@@ -38,10 +38,8 @@ function MainLoginContainer(props) {
     <Paper className={paperClassName} elevation={0}>
       <Grid
         container
-        direction="column"
         spacing={3}
-        alignItems="center"
-        alignContent="center"
+        sx={{ flexDirection: 'column', alignItems: 'center', alignContent: 'center' }}
       >
         <Logo maxWidth="200px" component={Grid}/>
         <Grid>

@@ -71,17 +71,15 @@ export default function GoogleApiKeyAdminPage() {
 
   return (
     <AdminScreen title="Google API key configuration">
-      <Grid container direction="column" spacing={5} justifyContent="space-around">
+      <Grid container spacing={5} sx={{ flexDirection: 'column', justifyContent: 'space-around' }}>
         <Grid>
           <FormattedText>A Google API key enables access to Google services such as address autocomplete. You can obtain an API key at https://developers.google.com/maps/documentation/javascript/get-api-key.</FormattedText>
         </Grid>
         { error && <Grid><Alert severity="error">{error}</Alert></Grid> }
         <Grid>
           <Grid container
-            alignItems="flex-start"
-            justifyContent="space-between"
-            alignContent="space-between"
             spacing={2}
+            sx={{ alignItems: 'flex-start', justifyContent: 'space-between', alignContent: 'space-between' }}
           >
             <Grid size={10}>
               <TextField

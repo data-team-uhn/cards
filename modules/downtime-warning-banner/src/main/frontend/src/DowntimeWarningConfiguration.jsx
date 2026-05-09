@@ -86,8 +86,10 @@ function DowntimeWarningConfiguration() {
           slotProps={{ textField: {
             variant: 'standard',
             helperText: null,
-            InputProps: {
-              className: classes.textField
+            slotProps: {
+              input: {
+                className: classes.textField
+              },
             },
           },
           field: {

@@ -269,7 +269,7 @@ function DateQuestion(props) {
       { pageActive && instructions &&
         <Typography
           component="p"
-          color="textSecondary"
+          sx={{ color: 'text.secondary' }}
           className="cards-answerInstructions"
           variant="caption"
         >

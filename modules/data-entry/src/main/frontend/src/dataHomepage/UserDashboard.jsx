@@ -81,7 +81,7 @@ function UserDashboard(props) {
 
   if (loading) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <Grid container sx={{ justifyContent: 'center' }}><Grid><CircularProgress/></Grid></Grid>
     );
   }
 

@@ -67,8 +67,7 @@ function WelcomeMessageConfiguration(props) {
           <Grid
             container
             spacing={2}
-            justifyContent="center"
-            alignItems="stretch"
+            sx={{ justifyContent: 'center', alignItems: 'stretch' }}
             className={classes.editorContainer}
           >
             <Grid size={{ xs:12, md:6 }} key="markdown-text">

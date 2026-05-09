@@ -73,7 +73,7 @@ function CreateGroupDialog(props) {
     >
       <DialogTitle>Create New Group</DialogTitle>
       <DialogContent>
-        <Grid container direction="column" spacing={2}>
+        <Grid container spacing={2} sx={{ flexDirection: 'column' }}>
           {error && <Grid><Alert severity="error">{error}</Alert></Grid>}
           <Grid>
             <TextField

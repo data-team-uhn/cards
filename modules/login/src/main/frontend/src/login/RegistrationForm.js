@@ -125,7 +125,7 @@ function FormFields(props) {
         required
 
       />
-      <Grid container justifyContent="flex-end" alignItems="center" className={classes.actions}>
+      <Grid container className={classes.actions} sx={{ justifyContent: 'flex-end', alignItems: 'center' }}>
         { !loginOnSuccess &&
             <Grid>
               <Button

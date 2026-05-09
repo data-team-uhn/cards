@@ -393,7 +393,7 @@ function SubjectTimeline(props) {
       }
     </Timeline>
     :
-    <Typography color="textSecondary" variant="caption">No timeline data available</Typography>
+    <Typography sx={{ color: 'text.secondary' }} variant="caption">No timeline data available</Typography>
   )
 }
 

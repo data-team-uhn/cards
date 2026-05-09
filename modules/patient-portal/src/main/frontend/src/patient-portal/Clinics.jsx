@@ -156,7 +156,7 @@ function OnboardNewClinicDialog(props) {
         <DialogTitle>{isNewClinic ? "Create New Clinic Mapping" : "Edit Clinic Mapping"}</DialogTitle>
         <DialogContent>
           {error && <Typography color="error">{error}</Typography>}
-          <Grid container direction="column" spacing={2}>
+          <Grid container spacing={2} sx={{ flexDirection: 'column' }}>
             {
               // We don't want to load the Fields component until we are fully initialized
               // since otherwise the default values will be empty and cannot be assigned

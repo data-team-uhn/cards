@@ -294,8 +294,7 @@ let AnswerOptions = (props) => {
     let option = specialOptionsInfo[index];
     return (
       <Grid container
-        justifyContent="space-between"
-        alignItems="stretch"
+        sx={{ justifyContent: 'space-between', alignItems: 'stretch' }}
         className={classes.answerOption}
         onClick={(event) => option.setter({ ...option.data, [option.label]: true })}
       >

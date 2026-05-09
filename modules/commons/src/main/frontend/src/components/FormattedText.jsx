@@ -41,13 +41,26 @@ const useStyles = makeStyles()(theme => ({
   }
 }));
 
+// MUI v9 removed the textPrimary/textSecondary color aliases; map them to sx equivalents
+const LEGACY_COLORS = {
+  textSecondary: 'text.secondary',
+  textPrimary: 'text.primary',
+};
+
 let FormattedText = (props) => {
   checkPropTypes(FormattedText, props);
-  let { children, ...typographyProps } = props;
+  let { children, color, sx, ...typographyProps } = props;
   const { classes } = useStyles();
 
+  const mappedColor = LEGACY_COLORS[color];
+
   return (
-    <Typography component="div" {...typographyProps} >
+    <Typography
+      component="div"
+      {...typographyProps}
+      color={mappedColor ? undefined : color}
+      sx={mappedColor ? { color: mappedColor, ...sx } : sx}
+    >
       <MDEditor.Markdown classes={classes} className={classes.markdown} source={children} />
     </Typography>
   );

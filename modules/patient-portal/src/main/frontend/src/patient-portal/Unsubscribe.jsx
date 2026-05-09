@@ -127,9 +127,8 @@ function Unsubscribe (props) {
     <Paper className={classes.paper} elevation={0}>
       <Grid
         container
-        direction="column"
-        alignItems="stretch"
         spacing={7}
+        sx={{ flexDirection: 'column', alignItems: 'stretch' }}
       >
         <Logo component={Grid} />
         <Grid>

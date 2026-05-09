@@ -796,7 +796,7 @@ export default function VariantFilesContainer() {
         onSubmit={upload}
         key="file-upload"
         id="variantForm">
-        <Grid container direction="row-reverse" justifyContent="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
+        <Grid container spacing={3} className={classes.dragAndDropContainer} sx={{ flexDirection: 'row-reverse', justifyContent: 'flex-end', alignItems: 'stretch' }}>
           <Grid size={{ xs:12, lg:6 }}>
             <Alert severity="info">
               <AlertTitle>Expected file name format:</AlertTitle>
@@ -825,7 +825,7 @@ export default function VariantFilesContainer() {
         </Grid>
       </form>
 
-      { selectedFiles?.length > 0 && <Grid container direction="column" spacing={4} className={classes.fileList}>
+      { selectedFiles?.length > 0 && <Grid container spacing={4} sx={{ flexDirection: 'column' }} className={classes.fileList}>
         { selectedFiles.map( (file, i) => {
           const upprogress = uploadProgress ? uploadProgress[file.name] : null;
           let subjectPath = file.subject.path?.replace("/Subjects", "Subjects");
@@ -837,12 +837,12 @@ export default function VariantFilesContainer() {
             <Grid key={file.name}>
               <Typography variant="h6">{file.name}</Typography>
               { upprogress?.state != "error" &&
-                <Box display="flex" alignItems="center" className={classes.fileProgress}>
-                  <Box width="100%" mr={1}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }} className={classes.fileProgress}>
+                  <Box sx={{ width: '100%', mr: 1 }}>
                     <LinearProgress variant="determinate" value={upprogress.percentage} />
                   </Box>
-                  <Box minWidth={35}>
-                    <Typography variant="body2" color="textSecondary">{upprogress.percentage + "%"}</Typography>
+                  <Box sx={{ minWidth: 35 }}>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>{upprogress.percentage + "%"}</Typography>
                   </Box>
                 </Box>
               }

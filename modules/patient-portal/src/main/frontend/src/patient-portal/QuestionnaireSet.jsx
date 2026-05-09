@@ -563,7 +563,7 @@ function QuestionnaireSet(props) {
   if (!id) {
     return (
       getMessageScreen(
-        <Typography variant="h4" color="textSecondary">You do not have any pending surveys</Typography>
+        <Typography variant="h4" sx={{ color: 'text.secondary' }}>You do not have any pending surveys</Typography>
       )
     );
   }
@@ -579,7 +579,7 @@ function QuestionnaireSet(props) {
   if (!questionnaireIds || !questionnaires || !subjectData) {
     return (
       getMessageScreen(<>
-        <Typography variant="h4" color="textSecondary">Loading...</Typography>
+        <Typography variant="h4" sx={{ color: 'text.secondary' }}>Loading...</Typography>
         <CircularProgress />
       </>)
     );
@@ -755,16 +755,16 @@ function QuestionnaireSet(props) {
   ] : [
     <Typography variant="h4" key="review-title">Review and Submit</Typography>,
     submitButton("Submit now"),
-    <Grid container direction="column" spacing={8} key="review-list">
+    <Grid container spacing={8} sx={{ flexDirection: 'column' }} key="review-list">
       {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
         <Grid key={q+"Review"}>
           { previews?.[subjectData?.[q]?.["@name"]] ?
             <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
-              <Grid container direction="column" spacing={2}>
+              <Grid container spacing={2} sx={{ flexDirection: 'column' }}>
                 <Grid key="form-preview">
                   <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
                 </Grid>
-                <Grid alignSelf="center" key="change-button">
+                <Grid sx={{ alignSelf: 'center' }} key="change-button">
                   <Button
                     variant="outlined"
                     onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
@@ -803,7 +803,7 @@ function QuestionnaireSet(props) {
     disclaimer,
     <Typography variant="h4" key="summary-intro">Interpreting your results</Typography>,
     displayText("interpretationInstructions", Typography, { color: "textSecondary", key: "summary-interpretation-instructions" }),
-    <Grid container direction="column" spacing={3} key="summary-list">
+    <Grid container spacing={3} sx={{ flexDirection: 'column' }} key="summary-list">
       { (questionnaireIds || []).map((q, i) => (
         <Grid key={q+"Summary"}>
           {
@@ -843,7 +843,7 @@ function QuestionnaireSet(props) {
     <Alert severity="error" key="incomplete-message">
       Your answers are incomplete. Please update your answers by responding to all mandatory questions.
     </Alert>,
-    <Grid container spacing={2} justifyContent="flex-end" key="incomplete-actions">
+    <Grid container spacing={2} sx={{ justifyContent: 'flex-end' }} key="incomplete-actions">
       { canSubmitIncomplete &&
             <Grid>
               <Button variant="outlined" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
@@ -916,7 +916,7 @@ function QuestionnaireSetScreen (props) {
 
   return (
     <Paper elevation={0} className={classes.mainContainer}>
-      <Grid container direction="column" spacing={4} {...rest}>
+      <Grid container spacing={4} sx={{ flexDirection: 'column' }} {...rest}>
         {Array.from(children || []).filter(c => c).map((c, i) =>
           <Grid
             key={i+"MainItem"}

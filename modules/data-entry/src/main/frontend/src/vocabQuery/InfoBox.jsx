@@ -108,7 +108,7 @@ function InfoBox(props) {
             <ClickAwayListener onClickAway={onClickAway}><div>
               <CardHeader
                 avatar={
-                  <Link color="textSecondary"
+                  <Link sx={{ color: 'text.secondary' }}
                     href={vocabulary.url || ""}  target="_blank"
                     component={vocabulary.url ? 'a' : 'span'}
                     underline="none"

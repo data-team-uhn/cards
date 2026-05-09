@@ -49,7 +49,7 @@ let EditorInput = (props) => {
 
   return (
     <Grid>
-      <Grid container alignItems="flex-start" spacing={2}>
+      <Grid container spacing={2} sx={{ alignItems: 'flex-start' }}>
         <Grid size={4} className={classes.labelContainer}>
           <Typography variant="subtitle2" sx={{ display: "flex" }}>
             {camelCaseToWords(name?.concat(':')) || ''}

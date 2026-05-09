@@ -32,7 +32,7 @@ function ParsedNoteSection (props) {
   let hasMatch = tooltips.length > 0;
 
   if (!hasMatch) {
-    return <Typography display="inline">{text}</Typography>;
+    return <Typography sx={{ display: 'inline' }}>{text}</Typography>;
   }
 
   let matches = tooltips.sort( (e1, e2) => (e1.start-e2.start) );
@@ -65,7 +65,7 @@ function ParsedNoteSection (props) {
   }
 
   return (<>
-    <Typography display="inline">{frontMatter}</Typography>
+    <Typography sx={{ display: 'inline' }}>{frontMatter}</Typography>
     <Tooltip title={`Add ${matchName} (${matchID}) to selection`}>
       <Chip
         size="small"
@@ -87,7 +87,7 @@ function ParsedNoteSection (props) {
       offset={firstMatch.end}
       onAddSuggestion={onAddSuggestion}
     />
-    <Typography display="inline">{endMatter}</Typography>
+    <Typography sx={{ display: 'inline' }}>{endMatter}</Typography>
   </>);
 }
 

@@ -140,7 +140,7 @@ function PedigreeQuestion(props) {
       {
         pageActive && <>
           { pedigreeData.image ?
-            <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
+            <Grid container spacing={0} sx={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
               <Grid>
                 <Tooltip title="Edit Pedigree">
                   <Link className={classes.thumbnailLink} onClick={() => setExpanded(true)} underline="hover">

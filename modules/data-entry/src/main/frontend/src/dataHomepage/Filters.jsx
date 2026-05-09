@@ -326,7 +326,7 @@ function Filters(props) {
   return(
     <div className={classes.filterContainer}>
       {/* Place the stuff in one row on the top */}
-      <Typography display="inline" className={classes.filterLabel}>
+      <Typography sx={{ display: 'inline' }} className={classes.filterLabel}>
         Filters:
       </Typography>
       { activeFilters.map( (activeFilter, index) => {
@@ -390,7 +390,7 @@ function Filters(props) {
           { /* If there is no error but also no data, show a progress circle */
             !error && autoselectOptions.length == 0 &&
             <CircularProgress />}
-          <Grid container alignItems="flex-start" spacing={2}>
+          <Grid container spacing={2} sx={{ alignItems: 'flex-start' }}>
             {editingFilters.map( (filterDatum, index) => {
               // We grab focus on the field if we were asked to
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);

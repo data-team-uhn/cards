@@ -147,7 +147,7 @@ function Subject(props) {
         buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
         extensionURL={activeExtensionURL}
       />
-      <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
+      <Grid container spacing={4} sx={{ flexDirection: 'column' }} className={classes.subjectContainer}>
         <SubjectHeader
           id={currentSubjectId}
           key="SubjectHeader"
@@ -168,7 +168,7 @@ function Subject(props) {
             })}
           </Tabs>
           <Card variant="outlined"><CardContent>
-            <Grid container spacing={4} direction="column" wrap="nowrap">
+            <Grid container spacing={4} sx={{ flexDirection: 'column', flexWrap: 'nowrap' }}>
               { activeTab === tabs.indexOf("Chart")
                 ? <SubjectContainer
                   id={currentSubjectId}
@@ -245,7 +245,7 @@ function SubjectContainer(props) {
 
   if (error) {
     return (
-      <Grid container justifyContent="center">
+      <Grid container sx={{ justifyContent: 'center' }}>
         <Grid>
           <Typography variant="h2" color="error">
             Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
@@ -395,7 +395,7 @@ function SubjectHeader(props) {
       >
         {
           subject?.data?.['jcr:created'] ?
-            <Typography variant="overline"  color="textSecondary">
+            <Typography variant="overline" sx={{ color: 'text.secondary' }}>
               {"Entered by " + subject.data['jcr:createdBy'] + " on "}
               <Tooltip title={subject.data['jcr:created']}>
                 <span>{DateTime.fromISO(subject.data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
@@ -480,7 +480,7 @@ function SubjectMemberInternal (props) {
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
     return (
-      <Grid container justifyContent="center">
+      <Grid container sx={{ justifyContent: 'center' }}>
         <Grid>
           <Typography variant="h2" color="error">
             Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
@@ -542,7 +542,7 @@ function SubjectMemberInternal (props) {
       {
         level > 0 &&
         <Grid className={classes.childSubjectHeader}>
-          <Grid container spacing={1} justifyContent="flex-start">
+          <Grid container spacing={1} sx={{ justifyContent: 'flex-start' }}>
             <Grid size="auto">{expandAction}</Grid>
             <Grid size="auto">{avatar}</Grid>
             <Grid size="grow">
@@ -558,7 +558,7 @@ function SubjectMemberInternal (props) {
       { /* If we finished all fetching and have no data or child subjects to display for this subject, inform the user */ }
       { expanded && childSubjects?.length == 0 && subjectGroups && Object.keys(subjectGroups).length == 0 &&
         <Grid>
-          <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
+          <Typography sx={{ color: 'text.secondary' }} variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
         </Grid>
       }
       { expanded && subjectGroups && <>
@@ -636,7 +636,7 @@ function SubjectMemberInternal (props) {
                       },
                     },
                     Cell: ({ row }) => (
-                      <Grid container spacing={1} justifyContent="flex-start" wrap="nowrap">
+                      <Grid container spacing={1} sx={{ justifyContent: 'flex-start', flexWrap: 'nowrap' }}>
                         <Grid size="auto">
                           <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
                         </Grid>
@@ -644,10 +644,10 @@ function SubjectMemberInternal (props) {
                           <Link to={baseURL + row.original["@path"]} underline="hover">
                             {questionnaireTitle}
                           </Link>
-                          <Typography variant="caption" component="div" color="textSecondary">
+                          <Typography variant="caption" component="div" sx={{ color: 'text.secondary' }}>
                             Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
                           </Typography>
-                          <Typography variant="caption" component="div" color="textSecondary">
+                          <Typography variant="caption" component="div" sx={{ color: 'text.secondary' }}>
                             Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
                           </Typography>
                         </Grid>
@@ -789,7 +789,7 @@ function FormData(props) {
             .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
             .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key, handleDisplayQuestion))
         }
-        { !displayed && <Typography variant="caption" color="textSecondary">There is no data in this form</Typography> }
+        { !displayed && <Typography variant="caption" sx={{ color: 'text.secondary' }}>There is no data in this form</Typography> }
       </div>
     );
   }

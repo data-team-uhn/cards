@@ -146,8 +146,7 @@ function DroppableAnswerOption(props) {
     return (
       <Grid container
         data-option-id={value.value}
-        justifyContent="space-between"
-        alignItems="stretch"
+        sx={{ justifyContent: 'space-between', alignItems: 'stretch' }}
         className={classes.answerOption + ' ' + (!isPerview && draggableState.type === "dragging" ? classes.optionDisabled : "")}
         ref={ref}
       >

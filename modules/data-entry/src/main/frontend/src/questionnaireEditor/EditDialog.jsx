@@ -147,7 +147,7 @@ let EditDialog = (props) => {
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
     return (
-      <Grid container justifyContent='center'>
+      <Grid container sx={{ justifyContent: 'center' }}>
         <Grid>
           <Typography variant='h2' color='error'>
             Error obtaining form data: {error.status} {error.statusText}
@@ -163,7 +163,7 @@ let EditDialog = (props) => {
 
   let targetIdField = () => {
     return (
-      <Grid container alignItems='baseline' spacing={2}>
+      <Grid container spacing={2} sx={{ alignItems: 'baseline' }}>
         <Grid size={4}><Typography variant="subtitle2">{`${formattedType} id:` }</Typography></Grid>
         <Grid size={8}>{
           targetExists ?
@@ -217,7 +217,7 @@ let EditDialog = (props) => {
         </DialogTitle>
         <DialogContent>
           { error && <Typography color="error">{error}</Typography>}
-          <Grid container direction="column" spacing={2}>
+          <Grid container spacing={2} sx={{ flexDirection: 'column' }}>
             <Grid>{targetIdField()}</Grid>
             <Fields
               data={dialogData}

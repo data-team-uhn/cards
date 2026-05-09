@@ -54,7 +54,7 @@ function AdminDashboard(props) {
 
   if (loading) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <Grid container sx={{ justifyContent: 'center' }}><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -67,7 +67,7 @@ function AdminDashboard(props) {
             <Grid
               key={route["cards:targetURL"]}
               size={{ xs:12, md:6, xl:4 }}
-              alignContent="center"
+              sx={{ alignContent: 'center' }}
             >
               <ListItemButton
                 onClick={() => navigate(route["cards:targetURL"])}

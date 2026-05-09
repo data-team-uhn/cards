@@ -43,7 +43,7 @@ let LabeledField = (props) => {
   let { classes } = useStyles();
 
   return (
-    <Grid container alignItems='flex-start' spacing={2}>
+    <Grid container spacing={2} sx={{ alignItems: 'flex-start' }}>
       <Grid size={condensed ? "auto" : 4}>
         <Typography variant="subtitle2">{camelCaseToWords(name)}:</Typography>
       </Grid>

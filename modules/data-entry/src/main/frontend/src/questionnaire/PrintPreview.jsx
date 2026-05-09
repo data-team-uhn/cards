@@ -178,8 +178,8 @@ function PrintPreview(props) {
       :
       (breadcrumb || date) ?
         <div className={classes.header}>
-          <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography>
-          <Typography variant="overline" color="textSecondary">{date}</Typography>
+          <Typography variant="overline" sx={{ color: 'text.secondary' }}>{breadcrumb}</Typography>
+          <Typography variant="overline" sx={{ color: 'text.secondary' }}>{date}</Typography>
         </div>
         : ""
   );
@@ -220,7 +220,7 @@ function PrintPreview(props) {
         { (title || subtitle) &&
         <DialogTitle>
           { title && <Typography component="div" variant="h4">{title}</Typography> }
-          { subtitle && <Typography component="div" variant="overline" color="textSecondary">{subtitle}</Typography> }
+          { subtitle && <Typography component="div" variant="overline" sx={{ color: 'text.secondary' }}>{subtitle}</Typography> }
         </DialogTitle>
         }
         <DialogContent dividers>

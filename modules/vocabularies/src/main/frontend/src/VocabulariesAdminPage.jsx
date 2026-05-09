@@ -188,7 +188,7 @@ export default function VocabulariesAdminPage() {
   let wrapSection = (content) => {
     return (
       <Grid>
-        <Grid container direction="column" spacing={2} justifyContent="space-around">
+        <Grid container spacing={2} sx={{ flexDirection: 'column', justifyContent: 'space-around' }}>
           {content}
         </Grid>
       </Grid>
@@ -197,7 +197,7 @@ export default function VocabulariesAdminPage() {
 
   return (
     <AdminScreen title="Vocabularies">
-      <Grid container direction="column" spacing={6} justifyContent="space-around">
+      <Grid container spacing={6} sx={{ flexDirection: 'column', justifyContent: 'space-around' }}>
 
         {wrapSection(<>
           <Grid>
@@ -207,7 +207,7 @@ export default function VocabulariesAdminPage() {
           </Grid>
           { localLoaded && localVocabList.length == 0 &&
           <Grid>
-            <Typography color="textSecondary">No vocabularies have been installed yet.</Typography>
+            <Typography sx={{ color: 'text.secondary' }}>No vocabularies have been installed yet.</Typography>
           </Grid>
           }
           <VocabularyDirectory

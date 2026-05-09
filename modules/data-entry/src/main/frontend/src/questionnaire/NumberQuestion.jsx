@@ -314,7 +314,7 @@ function NumberQuestion(props) {
           { `${initialValue?.[0]} &mdash; ${label}` }
         </FormattedText>
         { (typeof messageForValuesOutsideMinMax != "undefined" && minMaxError) ?
-          <Typography component="div" color="textSecondary" variant="caption">
+          <Typography component="div" sx={{ color: 'text.secondary' }} variant="caption">
             { messageForValuesOutsideMinMax }
           </Typography>
           : (pageActive && (minMaxError || rangeError)) &&
@@ -359,7 +359,7 @@ function NumberQuestion(props) {
     return (
       <div className={sliderClasses.classes[`${sliderOrientation}SliderContainer`]}>
         { minValueLabel &&
-        <Typography variant="caption" color="textSecondary">{minValueLabel}</Typography>
+        <Typography variant="caption" sx={{ color: 'text.secondary' }}>{minValueLabel}</Typography>
         }
         <Slider
           style={customStyle}
@@ -377,7 +377,7 @@ function NumberQuestion(props) {
           }}
         />
         { maxValueLabel &&
-          <Typography variant="caption" color="textSecondary">{maxValueLabel}</Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>{maxValueLabel}</Typography>
         }
       </div>
     );

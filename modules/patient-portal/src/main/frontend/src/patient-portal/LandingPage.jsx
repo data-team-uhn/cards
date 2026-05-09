@@ -84,13 +84,13 @@ function LandingPage(props) {
       open={isOpen}
     >
       <DialogContent className={classes.paper}>
-        <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
+        <Grid container spacing={2} sx={{ flexDirection: 'column', alignItems: 'center', alignContent: 'center' }}>
           <Logo component={Grid} className={classes.logo} maxWidth="200px" />
           <Grid>
             <Typography variant="h6">I am a...</Typography>
           </Grid>
           <Grid>
-            <Grid container spacing={3} direction="column" justifyContent="center" alignItems="stretch">
+            <Grid container spacing={3} sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch' }}>
               <Grid>
                 <Button
                   fullWidth

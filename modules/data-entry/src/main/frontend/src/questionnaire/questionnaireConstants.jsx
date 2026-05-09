@@ -21,9 +21,11 @@
 export const FORM_ENTRY_CONTAINER_PROPS = {
   direction: "column",
   spacing: 4,
-  alignItems: "stretch",
-  justifyContent: "space-between",
   wrap: "nowrap",
+  sx: {
+    alignItems: "stretch",
+    justifyContent: "space-between",
+  },
 };
 
 export const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing / 2;

@@ -217,7 +217,7 @@ function LoginForm(props) {
                   }
                 />
               </FormControl>
-              <Grid container justifyContent="center" alignItems="center" spacing={2} className={classes.actions}>
+              <Grid container spacing={2} className={classes.actions} sx={{ justifyContent: 'center', alignItems: 'center' }}>
                 {  (!singleStepEntry) &&
                   <Grid>
                     <Button
