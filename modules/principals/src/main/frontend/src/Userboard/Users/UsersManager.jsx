@@ -25,13 +25,13 @@ import { MaterialReactTable } from 'material-react-table';
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
-import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
-import { checkPropTypes } from "../../propTypes";
-import userboardStyles from '../userboardStyles.jsx';
-import CreateUserDialog from "./CreateUserDialog.jsx";
-import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
 import ChangeUserPasswordDialog from "./ChangeUserPasswordDialog.jsx";
+import CreateUserDialog from "./CreateUserDialog.jsx";
+import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx";
+import { checkPropTypes } from "../../propTypes";
+import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
+import userboardStyles from '../userboardStyles.jsx';
 
 
 const USER_URL = "/system/userManager/user/";

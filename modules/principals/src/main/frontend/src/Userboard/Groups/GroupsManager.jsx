@@ -32,14 +32,14 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui'
 
-import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
-import { checkPropTypes } from "../../propTypes";
-import userboardStyles from '../userboardStyles.jsx';
-import CreateGroupDialog from "./CreateGroupDialog.jsx";
-import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
 import AddUserToGroupDialog from "./AddUserToGroupDialog.jsx";
-import NewItemButton from "../../components/NewItemButton.jsx"
+import CreateGroupDialog from "./CreateGroupDialog.jsx";
+import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
+import NewItemButton from "../../components/NewItemButton.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
+import { checkPropTypes } from "../../propTypes";
+import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
+import userboardStyles from '../userboardStyles.jsx';
 
 const GROUP_URL = "/system/userManager/group/";
 
