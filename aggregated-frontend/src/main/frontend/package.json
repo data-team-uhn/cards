@@ -55,7 +55,7 @@
     "formik": "2.4.6",
     "history": "5.2.0",
     "tss-react": "4.9.16",
-    "yup": "0.32.11",
+    "yup": "1.7.1",
     "raphael": "2.3.0",
     "remove-markdown": "0.6.2",
     "google-palette": "1.1.1",
