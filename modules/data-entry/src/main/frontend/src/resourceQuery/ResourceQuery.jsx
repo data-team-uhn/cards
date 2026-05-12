@@ -568,7 +568,7 @@ ResourceQuery.propTypes = {
   enableSelection: PropTypes.bool,
   initialSelection: PropTypes.array,
   onRemoveOption: PropTypes.func,
-  infoDisplayer: PropTypes.object,
+  infoDisplayer: PropTypes.elementType,
   fetchSuggestions: PropTypes.func,
   formatSuggestionData: PropTypes.func,
 };
