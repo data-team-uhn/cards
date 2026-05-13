@@ -99,7 +99,7 @@ public class QueryCountHealthCheckTest
     private Property comparatorProp1;
 
     @Mock
-    private Property expectedProp1;
+    private Property compareAgainstProp1;
 
     @Mock
     private Property limitProp1;
@@ -139,15 +139,16 @@ public class QueryCountHealthCheckTest
         when(this.queryProp1.getString()).thenReturn(TEST_QUERY);
         when(this.config1.getProperty(QueryCountHealthCheck.COMPARATOR_PROPERTY)).thenReturn(this.comparatorProp1);
         when(this.comparatorProp1.getString()).thenReturn("=");
-        when(this.config1.getProperty(QueryCountHealthCheck.EXPECTED_COUNT_PROPERTY)).thenReturn(this.expectedProp1);
-        when(this.expectedProp1.getLong()).thenReturn(1L);
+        when(this.config1.getProperty(QueryCountHealthCheck.COMPARE_AGAINST_PROPERTY))
+            .thenReturn(this.compareAgainstProp1);
+        when(this.compareAgainstProp1.getLong()).thenReturn(1L);
         when(this.config1.getName()).thenReturn("check1");
 
         when(this.config2.getProperty(QueryCountHealthCheck.QUERY_PROPERTY)).thenReturn(this.queryProp2);
         when(this.queryProp2.getString()).thenReturn(TEST_QUERY);
         when(this.config2.getProperty(QueryCountHealthCheck.COMPARATOR_PROPERTY)).thenReturn(this.comparatorProp2);
         when(this.comparatorProp2.getString()).thenReturn("=");
-        when(this.config2.getProperty(QueryCountHealthCheck.EXPECTED_COUNT_PROPERTY)).thenReturn(this.expectedProp2);
+        when(this.config2.getProperty(QueryCountHealthCheck.COMPARE_AGAINST_PROPERTY)).thenReturn(this.expectedProp2);
         when(this.expectedProp2.getLong()).thenReturn(99L);
         when(this.config2.getName()).thenReturn("check2");
     }
@@ -166,6 +167,7 @@ public class QueryCountHealthCheckTest
         // actualCount=1, comparator="=", expectedCount=1 → passes
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
+        verify(this.jcrQuery).setLimit(2L);
     }
 
     @Test
@@ -174,6 +176,7 @@ public class QueryCountHealthCheckTest
         // actualCount=1, comparator="=", expectedCount=99 → fails
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config2)));
         Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
+        verify(this.jcrQuery).setLimit(100L);
     }
 
     @Test
@@ -181,12 +184,32 @@ public class QueryCountHealthCheckTest
     {
         when(this.comparatorProp1.getString()).thenReturn("<");
 
-        when(this.expectedProp1.getLong()).thenReturn(2L);
+        when(this.compareAgainstProp1.getLong()).thenReturn(2L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
 
         when(this.rowIterator.hasNext()).thenReturn(true, false);
-        when(this.expectedProp1.getLong()).thenReturn(1L);
+        when(this.compareAgainstProp1.getLong()).thenReturn(1L);
+        when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
+        Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
+    }
+
+    @Test
+    public void testComparatorLessThanOrEqual() throws Exception
+    {
+        when(this.comparatorProp1.getString()).thenReturn("<=");
+
+        when(this.compareAgainstProp1.getLong()).thenReturn(2L);
+        when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
+        Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
+
+        when(this.rowIterator.hasNext()).thenReturn(true, false);
+        when(this.compareAgainstProp1.getLong()).thenReturn(1L);
+        when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
+        Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
+
+        when(this.rowIterator.hasNext()).thenReturn(true, false);
+        when(this.compareAgainstProp1.getLong()).thenReturn(0L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
     }
@@ -196,12 +219,32 @@ public class QueryCountHealthCheckTest
     {
         when(this.comparatorProp1.getString()).thenReturn(">");
 
-        when(this.expectedProp1.getLong()).thenReturn(0L);
+        when(this.compareAgainstProp1.getLong()).thenReturn(0L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
 
         when(this.rowIterator.hasNext()).thenReturn(true, false);
-        when(this.expectedProp1.getLong()).thenReturn(1L);
+        when(this.compareAgainstProp1.getLong()).thenReturn(1L);
+        when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
+        Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
+    }
+
+    @Test
+    public void testComparatorGreaterThanOrEqual() throws Exception
+    {
+        when(this.comparatorProp1.getString()).thenReturn(">=");
+
+        when(this.compareAgainstProp1.getLong()).thenReturn(0L);
+        when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
+        Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
+
+        when(this.rowIterator.hasNext()).thenReturn(true, false);
+        when(this.compareAgainstProp1.getLong()).thenReturn(1L);
+        when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
+        Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
+
+        when(this.rowIterator.hasNext()).thenReturn(true, false);
+        when(this.compareAgainstProp1.getLong()).thenReturn(2L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
     }
@@ -211,12 +254,12 @@ public class QueryCountHealthCheckTest
     {
         when(this.comparatorProp1.getString()).thenReturn("!=");
 
-        when(this.expectedProp1.getLong()).thenReturn(0L);
+        when(this.compareAgainstProp1.getLong()).thenReturn(0L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
 
         when(this.rowIterator.hasNext()).thenReturn(true, false);
-        when(this.expectedProp1.getLong()).thenReturn(1L);
+        when(this.compareAgainstProp1.getLong()).thenReturn(1L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
     }
@@ -234,7 +277,7 @@ public class QueryCountHealthCheckTest
     {
         // actualCount=0 with comparator "=" and expectedCount=0 should pass
         when(this.rowIterator.hasNext()).thenReturn(false);
-        when(this.expectedProp1.getLong()).thenReturn(0L);
+        when(this.compareAgainstProp1.getLong()).thenReturn(0L);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
     }
@@ -254,25 +297,7 @@ public class QueryCountHealthCheckTest
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         this.checker.execute();
         verify(this.queryManager).createQuery(eq(expectedQuery), eq(Query.JCR_SQL2));
-    }
-
-    @Test
-    public void testDefaultLimit() throws Exception
-    {
-        when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
-        this.checker.execute();
-        verify(this.jcrQuery).setLimit(QueryCountHealthCheck.DEFAULT_LIMIT);
-    }
-
-    @Test
-    public void testCustomLimit() throws Exception
-    {
-        when(this.config1.hasProperty(QueryCountHealthCheck.LIMIT_PROPERTY)).thenReturn(true);
-        when(this.config1.getProperty(QueryCountHealthCheck.LIMIT_PROPERTY)).thenReturn(this.limitProp1);
-        when(this.limitProp1.getLong()).thenReturn(5L);
-        when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
-        this.checker.execute();
-        verify(this.jcrQuery).setLimit(5L);
+        verify(this.jcrQuery).setLimit(2L);
     }
 
     @Test

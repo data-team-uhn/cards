@@ -17,9 +17,8 @@
 package io.uhndata.cards.healthcheck.internal;
 
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.BiFunction;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -40,31 +39,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Check that JCR select queries return a number of results that satisfies
- * an expected condition. The list of checks is defined as nodes in the
- * repository, under {@code /libs/cards/healthcheck/queryCountChecks/}, with:
+ * Check that JCR select queries return a number of results that satisfies an expected condition. The list of checks is
+ * defined as nodes in the repository, under {@code /libs/cards/healthcheck/queryCountChecks/}, with the following
+ * properties:
  * <ul>
- * <li>{@code query} — a JCR-SQL2 select query to execute</li>
- * <li>{@code comparator} — one of {@code <}, {@code <=}, {@code =},
- *     {@code >=}, {@code >}, {@code !=}</li>
- * <li>{@code expectedCount} — long value to compare the row count against</li>
- * <li>{@code limit} — (optional) maximum rows to fetch before counting;
- *     defaults to 1</li>
+ * <li>{@code query} - a JCR-SQL2 select query to execute</li>
+ * <li>{@code comparator} - one of {@code <}, {@code <=}, {@code =}, {@code >=}, {@code >}, {@code !=}</li>
+ * <li>{@code compareAgainst} - long value to compare the row count against</li>
  * </ul>
- * The check passes when {@code actualCount comparator expectedCount} is true.
- * The limit caps how many rows are retrieved, so set it to at least
- * {@code expectedCount} when using {@code =}, {@code >=}, or {@code >}.
+ * The check passes when {@code actualCount comparator compareAgainst} is true. The query will only fetch
+ * {@code compareAgainst+1} rows for performance reasons.
  * <p>
  * The query string may contain date placeholders resolved at execution time:
  * <ul>
- * <li>{@code ${today}} — today's date in {@code YYYY-MM-DD} format (UTC)</li>
- * <li>{@code ${yesterday}} — yesterday's date in {@code YYYY-MM-DD}
- *     format (UTC)</li>
+ * <li>{@code ${today}} - today's date at midnight</li>
+ * <li>{@code ${yesterday}} - yesterday's date at midnight</li>
  * </ul>
- * Use them in JCR SQL2 date literals, e.g.
- * {@code CAST('${yesterday}T00:00:00.000Z' AS DATE)}.
+ * Use them in JCR SQL2 date literals, e.g. {@code WHERE form.[jcr:created] > '${today}'}.
+ * </p>
  * <p>
  * Other CARDS modules should provide the actual checks to run.
+ * </p>
  *
  * @version $Id$
  * @since 0.9.38
@@ -86,34 +81,31 @@ public final class QueryCountHealthCheck implements HealthCheck
     public static final String QUERY_PROPERTY = "query";
 
     /**
-     * Configuration property: comparison operator ({@code <}, {@code <=},
-     * {@code =}, {@code >=}, {@code >}, {@code !=}).
+     * Configuration property: comparison operator ({@code <}, {@code <=}, {@code =}, {@code >=}, {@code >},
+     * {@code !=}).
      */
     public static final String COMPARATOR_PROPERTY = "comparator";
 
     /** Configuration property: the expected count to compare against. */
-    public static final String EXPECTED_COUNT_PROPERTY = "expectedCount";
+    public static final String COMPARE_AGAINST_PROPERTY = "compareAgainst";
 
     /**
-     * Configuration property: maximum rows to fetch before counting;
-     * defaults to {@link #DEFAULT_LIMIT}.
+     * Placeholder replaced with today's date ({@code YYYY-MM-DD}, UTC) at query execution time.
      */
-    public static final String LIMIT_PROPERTY = "limit";
-
-    /** Default value for the {@code limit} property. */
-    public static final long DEFAULT_LIMIT = 1L;
-
-    /** Placeholder replaced with today's date ({@code YYYY-MM-DD}, UTC)
-     *  at query execution time. */
     public static final String TODAY_PLACEHOLDER = "${today}";
 
-    /** Placeholder replaced with yesterday's date ({@code YYYY-MM-DD},
-     *  UTC) at query execution time. */
+    /**
+     * Placeholder replaced with yesterday's date ({@code YYYY-MM-DD}, UTC) at query execution time.
+     */
     public static final String YESTERDAY_PLACEHOLDER = "${yesterday}";
 
-    /** Valid comparator strings for the {@code comparator} property. */
-    private static final Set<String> VALID_COMPARATORS =
-        Set.of("<", "<=", "=", ">=", ">", "!=");
+    private static final Map<String, BiFunction<Long, Long, Boolean>> COMPARATORS = Map.of(
+        "<", (a, b) -> a < b,
+        "<=", (a, b) -> a <= b,
+        "=", (a, b) -> a == b,
+        ">=", (a, b) -> a >= b,
+        ">", (a, b) -> a > b,
+        "!=", (a, b) -> a != b);
 
     /** Default logger. */
     private static final Logger LOGGER =
@@ -169,27 +161,22 @@ public final class QueryCountHealthCheck implements HealthCheck
         final FormattingResultLog result, final Session session)
         throws RepositoryException
     {
-        final String query = resolveDatePlaceholders(
-            configuration.getProperty(QUERY_PROPERTY).getString());
-        final String comparator = configuration
-            .getProperty(COMPARATOR_PROPERTY).getString();
-        final long expectedCount = configuration
-            .getProperty(EXPECTED_COUNT_PROPERTY).getLong();
+        final String query = resolveDatePlaceholders(configuration.getProperty(QUERY_PROPERTY).getString());
+        final String comparator = configuration.getProperty(COMPARATOR_PROPERTY).getString();
+        final long compareAgainst = configuration.getProperty(COMPARE_AGAINST_PROPERTY).getLong();
 
-        if (!VALID_COMPARATORS.contains(comparator)) {
+        if (!COMPARATORS.containsKey(comparator)) {
             result.healthCheckError(
                 "Invalid comparator '{}' in configuration '{}'",
                 comparator, configuration.getName());
             return -1;
         }
 
-        final long limit =
-            configuration.hasProperty(LIMIT_PROPERTY)
-            ? configuration.getProperty(LIMIT_PROPERTY).getLong()
-            : DEFAULT_LIMIT;
+        final long limit = compareAgainst + 1;
+
         final Query jcrQuery =
             session.getWorkspace().getQueryManager()
-            .createQuery(query, Query.JCR_SQL2);
+                .createQuery(query, Query.JCR_SQL2);
         jcrQuery.setLimit(limit);
         final RowIterator rows = jcrQuery.execute().getRows();
         long actualCount = 0;
@@ -198,41 +185,27 @@ public final class QueryCountHealthCheck implements HealthCheck
             actualCount++;
         }
 
-        if (evaluate(actualCount, comparator, expectedCount)) {
+        if (COMPARATORS.get(comparator).apply(actualCount, compareAgainst)) {
             result.debug(
                 "Count check passed for '{}': {} {} {}"
-                + " (actual: {})",
+                    + " (actual: {})",
                 configuration.getName(), query,
-                comparator, expectedCount, actualCount);
+                comparator, compareAgainst, actualCount);
             return 1;
         }
         result.critical(
             "Count check failed for '{}': result of {}"
-            + " was {}, expected {} {}",
+                + " was {}, expected {} {}",
             configuration.getName(), query,
-            actualCount, comparator, expectedCount);
+            actualCount, comparator, compareAgainst);
         return 0;
     }
 
     private String resolveDatePlaceholders(final String query)
     {
-        final LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        final LocalDate today = LocalDate.now();
         return query
             .replace(TODAY_PLACEHOLDER, today.toString())
             .replace(YESTERDAY_PLACEHOLDER, today.minusDays(1).toString());
-    }
-
-    private boolean evaluate(
-        final long actual, final String comparator, final long expected)
-    {
-        final int cmp = Long.compare(actual, expected);
-        return Map.of(
-            "<", cmp < 0,
-            "<=", cmp <= 0,
-            "=", cmp == 0,
-            ">=", cmp >= 0,
-            ">", cmp > 0,
-            "!=", cmp != 0
-        ).getOrDefault(comparator, false);
     }
 }
