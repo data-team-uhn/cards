@@ -16,8 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { StrictMode, Suspense } from "react";
-import { useState, useEffect } from "react";
+import { StrictMode, Suspense, useState, useEffect } from "react";
 
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
