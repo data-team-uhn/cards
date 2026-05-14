@@ -172,7 +172,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>yyyy/MM/DD HH:mm</value>
+			<value>yyyy/MM/dd HH:mm</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -196,7 +196,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>yyyy/MM/DD HH:mm:ss</value>
+			<value>yyyy/MM/dd HH:mm:ss</value>
 			<type>String</type>
 		</property>
 	</node>
