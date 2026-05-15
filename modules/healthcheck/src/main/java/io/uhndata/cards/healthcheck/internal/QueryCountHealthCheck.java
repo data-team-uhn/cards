@@ -49,13 +49,13 @@ import org.slf4j.LoggerFactory;
  * The check passes when {@code actualCount comparator compareAgainst} is true. The query will only fetch
  * {@code compareAgainst+1} rows for performance reasons.
  * <p>
- * The query string may contain date placeholders resolved at execution time:
+ * The query string may contain date placeholders resolved at execution time, which you can use in JCR SQL2 date
+ * literals, e.g. {@code WHERE form.[jcr:created] > '${today}'}:
+ * </p>
  * <ul>
  * <li>{@code ${today}} - today's date at midnight</li>
  * <li>{@code ${yesterday}} - yesterday's date at midnight</li>
  * </ul>
- * Use them in JCR SQL2 date literals, e.g. {@code WHERE form.[jcr:created] > '${today}'}.
- * </p>
  * <p>
  * Other CARDS modules should provide the actual checks to run.
  * </p>
