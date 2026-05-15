@@ -19,7 +19,7 @@
   "bundles":[
     {
       "id":"${project.groupId}:${project.artifactId}:${project.version}",
-      "start-order":"15"
+      "start-order":"25"
     }
   ],
   "configurations":{

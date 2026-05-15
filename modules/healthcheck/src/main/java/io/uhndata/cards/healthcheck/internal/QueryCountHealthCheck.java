@@ -16,7 +16,7 @@
  */
 package io.uhndata.cards.healthcheck.internal;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -37,6 +37,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.utils.DateUtils;
+
 /**
  * Check that JCR select queries return a number of results that satisfies an expected condition. The list of checks is
  * defined as nodes in the repository, under {@code /libs/cards/healthcheck/queryCountChecks/}, with the following
@@ -53,8 +55,9 @@ import org.slf4j.LoggerFactory;
  * literals, e.g. {@code WHERE form.[jcr:created] > '${today}'}:
  * </p>
  * <ul>
- * <li>{@code ${today}} - today's date at midnight</li>
  * <li>{@code ${yesterday}} - yesterday's date at midnight</li>
+ * <li>{@code ${today}} - today's date at midnight</li>
+ * <li>{@code ${tomorrow}} - tomorrow's date at midnight</li>
  * </ul>
  * <p>
  * Other CARDS modules should provide the actual checks to run.
@@ -89,6 +92,11 @@ public final class QueryCountHealthCheck implements HealthCheck
     public static final String COMPARE_AGAINST_PROPERTY = "compareAgainst";
 
     /**
+     * Placeholder replaced with yesterday's date ({@code YYYY-MM-DD}, UTC) at query execution time.
+     */
+    public static final String YESTERDAY_PLACEHOLDER = "${yesterday}";
+
+    /**
      * Placeholder replaced with today's date ({@code YYYY-MM-DD}, UTC) at query execution time.
      */
     public static final String TODAY_PLACEHOLDER = "${today}";
@@ -96,7 +104,7 @@ public final class QueryCountHealthCheck implements HealthCheck
     /**
      * Placeholder replaced with yesterday's date ({@code YYYY-MM-DD}, UTC) at query execution time.
      */
-    public static final String YESTERDAY_PLACEHOLDER = "${yesterday}";
+    public static final String TOMORROW_PLACEHOLDER = "${tomorrow}";
 
     @FunctionalInterface
     private interface Checker
@@ -130,27 +138,22 @@ public final class QueryCountHealthCheck implements HealthCheck
             Map.of(ResourceResolverFactory.SUBSERVICE, "healthcheck"))) {
             final Session session = resolver.adaptTo(Session.class);
             if (!session.nodeExists(CONFIGURATION_PATH)) {
-                result.warn("No query count checks configured,"
-                    + " please check the system integrity");
+                result.info("No query count checks configured.");
                 return new Result(result);
             }
-            final NodeIterator configurations =
-                session.getNode(CONFIGURATION_PATH).getNodes();
+            final NodeIterator configurations = session.getNode(CONFIGURATION_PATH).getNodes();
             while (configurations.hasNext()) {
                 try {
                     final int checkResult = runSingleCheck(
                         configurations.nextNode(), result, session);
-                    if (checkResult > 0) {
+                    if (checkResult == 1) {
                         passed++;
-                    } else if (checkResult == 0) {
+                    } else {
                         failed++;
                     }
                 } catch (RepositoryException e) {
-                    LOGGER.error(
-                        "Unexpected exception while running query count check",
-                        e);
-                    result.healthCheckError(
-                        "Cannot run count check: {}", e.getMessage(), e);
+                    LOGGER.error("Unexpected exception while running query count check", e);
+                    result.healthCheckError("Cannot run count check: {}", e.getMessage(), e);
                 }
             }
         } catch (LoginException | RepositoryException e) {
@@ -179,9 +182,7 @@ public final class QueryCountHealthCheck implements HealthCheck
 
         final long limit = compareAgainst + 1;
 
-        final Query jcrQuery =
-            session.getWorkspace().getQueryManager()
-                .createQuery(query, Query.JCR_SQL2);
+        final Query jcrQuery = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
         jcrQuery.setLimit(limit);
         final RowIterator rows = jcrQuery.execute().getRows();
         long actualCount = 0;
@@ -191,26 +192,20 @@ public final class QueryCountHealthCheck implements HealthCheck
         }
 
         if (COMPARATORS.get(comparator).check(actualCount, compareAgainst)) {
-            result.debug(
-                "Count check passed for '{}': {} {} {}"
-                    + " (actual: {})",
-                configuration.getName(), query,
-                comparator, compareAgainst, actualCount);
+            result.debug("Count check passed for '{}'", configuration.getName());
             return 1;
         }
         result.critical(
-            "Count check failed for '{}': result of {}"
-                + " was {}, expected {} {}",
-            configuration.getName(), query,
-            actualCount, comparator, compareAgainst);
+            "Count check failed for '{}': result was {}, expected {} {}",
+            configuration.getName(), actualCount, comparator, compareAgainst);
         return 0;
     }
 
     private String resolveDatePlaceholders(final String query)
     {
-        final LocalDate today = LocalDate.now();
         return query
-            .replace(TODAY_PLACEHOLDER, today.toString())
-            .replace(YESTERDAY_PLACEHOLDER, today.minusDays(1).toString());
+            .replace(YESTERDAY_PLACEHOLDER, DateUtils.toString(DateUtils.atMidnight(ZonedDateTime.now().minusDays(1))))
+            .replace(TODAY_PLACEHOLDER, DateUtils.toString(DateUtils.atMidnight(ZonedDateTime.now())))
+            .replace(TOMORROW_PLACEHOLDER, DateUtils.toString(DateUtils.atMidnight(ZonedDateTime.now().plusDays(1))));
     }
 }

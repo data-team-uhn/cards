@@ -16,8 +16,7 @@
  */
 package io.uhndata.cards.healthcheck.internal;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,6 +45,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import io.uhndata.cards.utils.DateUtils;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -158,7 +159,7 @@ public class QueryCountHealthCheckTest
     {
         when(this.session.nodeExists(QueryCountHealthCheck.CONFIGURATION_PATH)).thenReturn(false);
         Result result = this.checker.execute();
-        Assert.assertEquals(Status.WARN, result.getStatus());
+        Assert.assertEquals(Status.OK, result.getStatus());
     }
 
     @Test
@@ -285,14 +286,17 @@ public class QueryCountHealthCheckTest
     @Test
     public void testDatePlaceholders() throws Exception
     {
-        final String today = LocalDate.now(ZoneOffset.UTC).toString();
-        final String yesterday = LocalDate.now(ZoneOffset.UTC).minusDays(1).toString();
-        final String queryWithPlaceholders = "SELECT * FROM [cards:DateAnswer] WHERE [value] >= CAST('"
-            + QueryCountHealthCheck.YESTERDAY_PLACEHOLDER + "T00:00:00.000Z' AS DATE)"
-            + " AND [value] < CAST('" + QueryCountHealthCheck.TODAY_PLACEHOLDER + "T00:00:00.000Z' AS DATE)";
-        final String expectedQuery = "SELECT * FROM [cards:DateAnswer] WHERE [value] >= CAST('"
-            + yesterday + "T00:00:00.000Z' AS DATE)"
-            + " AND [value] < CAST('" + today + "T00:00:00.000Z' AS DATE)";
+        final String yesterday = DateUtils.toString(DateUtils.atMidnight(ZonedDateTime.now().minusDays(1)));
+        final String today = DateUtils.toString(DateUtils.atMidnight(ZonedDateTime.now()));
+        final String tomorrow = DateUtils.toString(DateUtils.atMidnight(ZonedDateTime.now().plusDays(1)));
+        final String queryWithPlaceholders = "SELECT * FROM [cards:DateAnswer] WHERE [jcr:created] >= '"
+            + QueryCountHealthCheck.YESTERDAY_PLACEHOLDER + "'"
+            + " AND [value] >= '" + QueryCountHealthCheck.TODAY_PLACEHOLDER + "'"
+            + " AND [value] < '" + QueryCountHealthCheck.TOMORROW_PLACEHOLDER + "'";
+        final String expectedQuery = "SELECT * FROM [cards:DateAnswer] WHERE [jcr:created] >= '"
+            + yesterday + "'"
+            + " AND [value] >= '" + today + "'"
+            + " AND [value] < '" + tomorrow + "'";
         when(this.queryProp1.getString()).thenReturn(queryWithPlaceholders);
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         this.checker.execute();
