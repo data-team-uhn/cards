@@ -18,7 +18,6 @@ package io.uhndata.cards.healthcheck.internal;
 
 import java.time.LocalDate;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -99,7 +98,13 @@ public final class QueryCountHealthCheck implements HealthCheck
      */
     public static final String YESTERDAY_PLACEHOLDER = "${yesterday}";
 
-    private static final Map<String, BiFunction<Long, Long, Boolean>> COMPARATORS = Map.of(
+    @FunctionalInterface
+    private interface Checker
+    {
+        boolean check(long actualCount, long compareAgainst);
+    }
+
+    private static final Map<String, Checker> COMPARATORS = Map.of(
         "<", (a, b) -> a < b,
         "<=", (a, b) -> a <= b,
         "=", (a, b) -> a == b,
@@ -185,7 +190,7 @@ public final class QueryCountHealthCheck implements HealthCheck
             actualCount++;
         }
 
-        if (COMPARATORS.get(comparator).apply(actualCount, compareAgainst)) {
+        if (COMPARATORS.get(comparator).check(actualCount, compareAgainst)) {
             result.debug(
                 "Count check passed for '{}': {} {} {}"
                     + " (actual: {})",
