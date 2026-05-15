@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useEffect } from "react";
+import { StrictMode, useState, useEffect } from "react";
 
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
@@ -117,11 +117,13 @@ const cache = createCache({
 
 const root = createRoot(document.querySelector('#patient-portal-container'));
 root.render(
-  <CacheProvider value={cache}>
-    <ThemeProvider theme={portalTheme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
-  </CacheProvider>
+  <StrictMode>
+    <CacheProvider value={cache}>
+      <ThemeProvider theme={portalTheme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </CacheProvider>
+  </StrictMode>
 );
 
 export default PatientPortalHomepage;

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useEffect, useState } from "react";
+import { StrictMode, useEffect, useState } from "react";
 
 import {
   Alert,
@@ -185,11 +185,13 @@ function Unsubscribe (props) {
 
 const root = createRoot(document.querySelector('#patient-portal-unsubscribe-container'));
 root.render(
-  <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={appTheme}>
-      <Unsubscribe />
-    </ThemeProvider>
-  </StyledEngineProvider>
+  <StrictMode>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={appTheme}>
+        <Unsubscribe />
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </StrictMode>
 );
 
 export default Unsubscribe;

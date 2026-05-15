@@ -16,6 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+import { StrictMode } from 'react';
+
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
 
@@ -24,9 +26,11 @@ import { appTheme } from "../themePalette.jsx";
 
 const root = createRoot(document.getElementById('main-404-container'));
 root.render(
-  <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={appTheme}>
-      <PageNotFound />
-    </ThemeProvider>
-  </StyledEngineProvider>
+  <StrictMode>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={appTheme}>
+        <PageNotFound />
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </StrictMode>
 );

@@ -16,8 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { Suspense } from "react";
-import { useState, useEffect } from "react";
+import { StrictMode, Suspense, useState, useEffect } from "react";
 
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
@@ -186,11 +185,13 @@ const cache = createCache({
 
 const root = createRoot(document.querySelector('#main-container'));
 root.render(
-  <CacheProvider value={cache}>
-    <ThemeProvider theme={appTheme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
-  </CacheProvider>
+  <StrictMode>
+    <CacheProvider value={cache}>
+      <ThemeProvider theme={appTheme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </CacheProvider>
+  </StrictMode>
 );
 
 export default MainComponent;

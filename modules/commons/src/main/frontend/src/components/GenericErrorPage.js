@@ -16,6 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+import { StrictMode } from 'react';
+
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
 
@@ -24,13 +26,15 @@ import { appTheme } from "../themePalette.jsx";
 
 const root = createRoot(document.getElementById('main-error-container'));
 root.render(
-  <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={appTheme}>
-      <ErrorPage
-        errorCode={document.querySelector('meta[name="statusCode"]')?.content}
-        title={document.querySelector('meta[name="statusMessage"]')?.content}
-        message=""
-      />
-    </ThemeProvider>
-  </StyledEngineProvider>
+  <StrictMode>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={appTheme}>
+        <ErrorPage
+          errorCode={document.querySelector('meta[name="statusCode"]')?.content}
+          title={document.querySelector('meta[name="statusMessage"]')?.content}
+          message=""
+        />
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </StrictMode>
 );

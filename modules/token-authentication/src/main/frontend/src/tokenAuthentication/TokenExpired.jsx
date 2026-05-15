@@ -16,6 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+import { StrictMode } from 'react';
+
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
 
@@ -34,9 +36,11 @@ export default function TokenExpired() {
 
 const root = createRoot(document.getElementById('token-expired-container'));
 root.render(
-  <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={appTheme}>
-      <TokenExpired />
-    </ThemeProvider>
-  </StyledEngineProvider>
+  <StrictMode>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={appTheme}>
+        <TokenExpired />
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </StrictMode>
 );
