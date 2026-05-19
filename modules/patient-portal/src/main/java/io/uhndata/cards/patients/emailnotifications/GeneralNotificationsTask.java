@@ -31,6 +31,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
 import org.osgi.service.event.EventAdmin;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +74,8 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
      */
     @SuppressWarnings("checkstyle:ParameterNumber")
     public GeneralNotificationsTask(final ResourceResolverFactory resolverFactory,
-        final ThreadResourceResolverProvider resolverProvider, final EventAdmin eventAdmin,
+        final ThreadResourceResolverProvider resolverProvider,
+        final ServiceTracker<EventAdmin, EventAdmin> eventAdmin,
         final TokenManager tokenManager, final MailService mailService,
         final FormUtils formUtils, final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
         final String notificationType, final String clinicId, final String emailTemplatePath, final int daysToVisit,

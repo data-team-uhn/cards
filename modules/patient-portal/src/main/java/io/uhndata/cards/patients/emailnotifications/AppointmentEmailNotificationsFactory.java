@@ -21,6 +21,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -30,6 +31,7 @@ import org.osgi.service.event.EventAdmin;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,8 +56,7 @@ public final class AppointmentEmailNotificationsFactory
     @Reference
     private ThreadResourceResolverProvider resolverProvider;
 
-    @Reference
-    private EventAdmin eventAdmin;
+    private ServiceTracker<EventAdmin, EventAdmin> eventAdmin;
 
     /** The scheduler for rescheduling jobs. */
     @Reference
@@ -117,8 +118,10 @@ public final class AppointmentEmailNotificationsFactory
     }
 
     @Activate
-    private void activate(final Config config)
+    private void activate(final Config config, final BundleContext context)
     {
+        this.eventAdmin = new ServiceTracker<>(context, EventAdmin.class, null);
+        this.eventAdmin.open();
         LOGGER.info("Activating appointment email notifications: {}", config.name());
         final String nightlyNotificationsSchedule = StringUtils.defaultIfEmpty(config.schedule(),
             StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *"));
@@ -152,6 +155,7 @@ public final class AppointmentEmailNotificationsFactory
     private void deactivate(final Config config)
     {
         LOGGER.info("Deactivating appointment email notifications: {}", config.name());
+        this.eventAdmin.close();
         String jobName = "NightlyNotifications-" + config.name();
         if (this.scheduler.unschedule(jobName)) {
             LOGGER.info("Sucessfully unscheduled {}", jobName);

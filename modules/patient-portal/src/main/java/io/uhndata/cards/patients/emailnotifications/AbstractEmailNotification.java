@@ -40,6 +40,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,7 @@ abstract class AbstractEmailNotification
 
     protected final ThreadResourceResolverProvider resolverProvider;
 
-    private final EventAdmin eventAdmin;
+    private final ServiceTracker<EventAdmin, EventAdmin> eventAdmin;
 
     private final TokenManager tokenManager;
 
@@ -83,7 +84,8 @@ abstract class AbstractEmailNotification
     AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
         final ThreadResourceResolverProvider resolverProvider,
         final TokenManager tokenManager, final MailService mailService, final FormUtils formUtils,
-        final PatientAccessConfiguration patientAccessConfiguration, final EventAdmin eventAdmin,
+        final PatientAccessConfiguration patientAccessConfiguration,
+        final ServiceTracker<EventAdmin, EventAdmin> eventAdmin,
         final boolean includePatientName)
     {
         this.resolverFactory = resolverFactory;
@@ -162,7 +164,7 @@ abstract class AbstractEmailNotification
                     Event event = new Event(getNotificationType(), Map.of(
                         "visit", visitSubject.getPath(),
                         "patient", patientSubject.getPath()));
-                    this.eventAdmin.postEvent(event);
+                    this.eventAdmin.getService().postEvent(event);
                     emailsSent += 1;
                 } catch (MessagingException e) {
                     LOGGER.warn("Failed to send Initial Notification Email");
