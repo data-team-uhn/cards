@@ -42,13 +42,18 @@
   </build>
 
   <properties>
-    <coverage.instructionRatio>0.83</coverage.instructionRatio>
+    <coverage.instructionRatio>0.89</coverage.instructionRatio>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>io.uhndata.cards</groupId>
       <artifactId>cards-status</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-utils</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
