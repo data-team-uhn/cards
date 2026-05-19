@@ -92,17 +92,17 @@ public final class QueryCountHealthCheck implements HealthCheck
     public static final String COMPARE_AGAINST_PROPERTY = "compareAgainst";
 
     /**
-     * Placeholder replaced with yesterday's date ({@code YYYY-MM-DD}, UTC) at query execution time.
+     * Placeholder replaced with yesterday's date (at server's midnight) at query execution time.
      */
     public static final String YESTERDAY_PLACEHOLDER = "${yesterday}";
 
     /**
-     * Placeholder replaced with today's date ({@code YYYY-MM-DD}, UTC) at query execution time.
+     * Placeholder replaced with today's date (at server's midnight) at query execution time.
      */
     public static final String TODAY_PLACEHOLDER = "${today}";
 
     /**
-     * Placeholder replaced with yesterday's date ({@code YYYY-MM-DD}, UTC) at query execution time.
+     * Placeholder replaced with yesterday's date (at server's midnigh) at query execution time.
      */
     public static final String TOMORROW_PLACEHOLDER = "${tomorrow}";
 
@@ -121,8 +121,7 @@ public final class QueryCountHealthCheck implements HealthCheck
         "!=", (a, b) -> a != b);
 
     /** Default logger. */
-    private static final Logger LOGGER =
-        LoggerFactory.getLogger(QueryCountHealthCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryCountHealthCheck.class);
 
     /** The resource resolver factory. */
     @Reference
@@ -157,11 +156,9 @@ public final class QueryCountHealthCheck implements HealthCheck
                 }
             }
         } catch (LoginException | RepositoryException e) {
-            result.healthCheckError(
-                "Healthcheck module not set up properly: {}", e.getMessage());
+            result.healthCheckError("Healthcheck module not set up properly: {}", e.getMessage());
         }
-        result.info("{} query count checks passed"
-            + (failed != 0 ? " and {} failed" : ""), passed, failed);
+        result.info("{} query count checks passed" + (failed != 0 ? " and {} failed" : ""), passed, failed);
         return new Result(result);
     }
 
