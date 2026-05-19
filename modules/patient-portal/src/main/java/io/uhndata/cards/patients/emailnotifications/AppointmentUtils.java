@@ -305,7 +305,7 @@ public final class AppointmentUtils
             final Calendar upperBoundDate = (Calendar) lowerBoundDate.clone();
             upperBoundDate.add(Calendar.DAY_OF_YEAR, 1);
             final String upperBoundDateTime = formatter.format(upperBoundDate.getTime());
-            final Calendar lowerBoundDeadlineDate = (Calendar) upperBoundDate.clone();
+            final Calendar lowerBoundDeadlineDate = DateUtils.atMidnight(Calendar.getInstance());
             lowerBoundDeadlineDate.add(Calendar.DAY_OF_YEAR, -1 * surveyDeadline);
             final String lowerBoundDeadlineDateTime = formatter.format(lowerBoundDeadlineDate.getTime());
             LOGGER.info("Querying for appointments for clinic {} between {} and {}.",
