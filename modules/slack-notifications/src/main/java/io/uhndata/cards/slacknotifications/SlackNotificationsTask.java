@@ -61,7 +61,7 @@ public class SlackNotificationsTask implements Runnable
     {
         this.notifications = notifications;
         this.title = config.title();
-        this.endpoint = config.endpoint();
+        this.endpoint = getEndpoint(config.endpoint());
         this.include = (config.include() == null ? Collections.emptyList() : List.of(config.include()));
         this.extraParameters = new HashMap<>();
         if (config.notificationParameters() != null) {
@@ -115,5 +115,14 @@ public class SlackNotificationsTask implements Runnable
         } catch (IOException e) {
             LOGGER.warn("Failed to send performance update to Slack");
         }
+    }
+
+    private String getEndpoint(final String config)
+    {
+        String result = config;
+        if (result != null && result.startsWith("%ENV%")) {
+            result = System.getenv(config.substring("%ENV%".length()));
+        }
+        return result;
     }
 }
