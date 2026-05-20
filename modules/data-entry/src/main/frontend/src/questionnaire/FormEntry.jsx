@@ -341,5 +341,5 @@ export default function FormEntry(props) {
     <>
       {displayedComponent}
     </>
-  )
+  );
 }

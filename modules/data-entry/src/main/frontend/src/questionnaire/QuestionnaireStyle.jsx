@@ -19,17 +19,6 @@
 
 import { grey } from '@mui/material/colors';
 
-// Props used in grid containers for displaying Form entries
-export const FORM_ENTRY_CONTAINER_PROPS = {
-  direction: "column",
-  spacing: 4,
-  alignItems: "stretch",
-  justifyContent: "space-between",
-  wrap: "nowrap"
-};
-
-export const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing/2;
-
 const questionnaireStyle = theme => ({
   questionCard : {
     overflow: "unset",
@@ -731,7 +720,7 @@ const questionnaireStyle = theme => ({
   },
   questionMatrixFullEntry : {
     "& th" : {
-      paggingBottom: theme.spacing(3),
+      paddingBottom: theme.spacing(3),
     },
     "& th, td:not(:last-child)": {
       border: "0 none",

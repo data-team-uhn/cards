@@ -392,8 +392,32 @@ export default function ReorderForm(props) {
   const isLoadingOrError = ['loading', 'error'].includes(reorderState.status);
   const noReorderSource = !reorderSource;
   const sameNewParent = !noReorderSource && nodes[reorderSource]?.parent === newParent;
-  const noNewTarget = sameNewParent && newPosition === nodes[newParent]?.children.indexOf(reorderSource);
   const invalidPosition = newPosition === null || newPosition === "";
+
+  // Compute the actual Sling :order value to send.
+  // For 'other' (After...), newPosition is a 0-based filtered-children index of the reference node.
+  // We need position = refAllIndex + 1 (place after reference), adjusted when the source sits
+  // before that slot in the same parent (removing source shifts subsequent indices down by 1).
+  const computeSlingPosition = () => {
+    if (reorderState.inputs.positionRadio !== 'other') return newPosition;
+    const allChildren = nodes[newParent].children;
+    const filteredChildren = allChildren.filter(id => ENTRY_TYPES.includes(nodes[id]?.jcrPrimaryType));
+    const referenceNodeId = filteredChildren[newPosition];
+    if (!referenceNodeId) return null;
+    const refAllIndex = allChildren.indexOf(referenceNodeId);
+    let slingPos = refAllIndex + 1;
+    if (nodes[reorderSource]?.parent === newParent) {
+      const sourceAllIndex = allChildren.indexOf(reorderSource);
+      if (sourceAllIndex < slingPos) {
+        slingPos -= 1;
+      }
+    }
+    return slingPos;
+  };
+  const slingPosition = (!invalidPosition && newParent) ? computeSlingPosition() : null;
+
+  const noNewTarget = sameNewParent && slingPosition !== null
+    && slingPosition === nodes[newParent]?.children.indexOf(reorderSource);
   const disableSubmit = isLoadingOrError || noReorderSource || noNewTarget || invalidPosition;
 
   const handleError = (e) => {
@@ -403,21 +427,17 @@ export default function ReorderForm(props) {
   const handleSuccess = (data) => {
     treeContext.actions.refreshTree();
     reorderDispatch({ type: 'SET_SUCCESS', payload: data });
-  };
-  const handleClose = () => {
-    reorderDispatch({ type: 'SET_IDLE' });
     onClose();
   };
   const handleSubmit = (e) => {
-    reorderDispatch({ type: 'SET_LOADING' });
-    if (!reorderSource || !newParent || invalidPosition) {
-      throw new Error('Missing required fields for entry reorder');
-    }
     e.preventDefault();
-    treeContext.actions.reorderNode(reorderSource, newParent, newPosition)
+    if (!reorderSource || !newParent || invalidPosition) {
+      return;
+    }
+    reorderDispatch({ type: 'SET_LOADING' });
+    treeContext.actions.reorderNode(reorderSource, newParent, slingPosition)
       .then(handleSuccess)
-      .catch(handleError)
-      .finally(handleClose);
+      .catch(handleError);
   };
 
   return (
@@ -441,5 +461,5 @@ export default function ReorderForm(props) {
         </Button>
       </DialogActions>
     </>
-  )
+  );
 }

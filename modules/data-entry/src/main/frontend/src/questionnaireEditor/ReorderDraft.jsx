@@ -265,11 +265,11 @@ const ReorderSubmitModal = (props) => {
     const processMoves = async (moves) => {
       for (let i = 0; i < moves.length; i++) {
         const move = moves[i];
-        incrementProgressValue();
         try {
           const { reorderSourceId, reorderNewParentId, reorderTargetIndex } = move;
           const rootNodes = await treeContext.actions.fetchRootNodes();
           await treeContext.actions.reorderNode(reorderSourceId, reorderNewParentId, reorderTargetIndex, rootNodes);
+          incrementProgressValue();
         } catch (error) {
           console.error('reorder error', error);
           throw error;
@@ -426,7 +426,7 @@ const TargetPlaceholderDivider = (props) => {
   // Click handler
   const handleClickReorderTargetSelect = () => {
     reorderDispatch({ type: 'SET_TARGET_AND_MOVE', payload: { reorderTargetId: nodeId, insert } });
-  }
+  };
 
   useEffect(() => {
     if (!sourceIsSelected) {

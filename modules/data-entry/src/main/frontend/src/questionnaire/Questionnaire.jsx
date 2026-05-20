@@ -107,7 +107,7 @@ let QuestionnaireComponent = (props) => {
   // First, fetch the questionnaire data
   useEffect(() => {
     treeContext.actions.refreshTree().catch((error) => { setError(error) });
-  }, [editTab]);
+  }, []);
 
   useEffect(() => {
     pageNameWriter(questionnaireTitle);
@@ -122,7 +122,7 @@ let QuestionnaireComponent = (props) => {
     return (() => {
       window.removeEventListener("beforeunload", performCheckIn);
     });
-  }, []);
+  }, [isEdit, isReorder, id]);
 
   let dropdownList = (
     <List>

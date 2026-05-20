@@ -22,8 +22,10 @@ import { ENTRY_TYPES, EXTLINK_TYPES, QUESTION_TYPES, QUESTIONNAIRE_TYPES } from 
 // For storing structure of questionnaire for reordering
 import { useQuestionnaireTreeContext, findTreeEntries } from "../questionnaireEditor/QuestionnaireTreeContext";
 
+const DEFAULT_INVIEW_OPTIONS = { threshold: 0.3 };
+
 // Custom hook to track which item is in view
-export function useInViewTracker(items, options = { threshold: 0.3 }) {
+export function useInViewTracker(items, options = DEFAULT_INVIEW_OPTIONS) {
   const [activeItem, setActiveItem] = useState(null);
 
   // Set up Intersection Observer

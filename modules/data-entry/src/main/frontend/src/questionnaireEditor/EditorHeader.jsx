@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { memo, useMemo, useState } from "react";
+import { Fragment, memo, useMemo, useState } from "react";
 
 import {
   Chip,
@@ -109,7 +109,7 @@ function EditorHeader() {
               const label = `${totalCount} ${stripCardsNamespace(entryType)}${totalCount > 1 ? 's' : ''}`;
 
               return (
-                <React.Fragment key={entryType}>
+                <Fragment key={entryType}>
                   <EntryChip
                     label={label}
                     entryColor={color}
@@ -127,7 +127,7 @@ function EditorHeader() {
                         : 'No missing titles'}
                     </Typography>
                   </Popover>
-                </React.Fragment>
+                </Fragment>
               )
             })
         }
