@@ -401,7 +401,7 @@ function Visit(props) {
   return (
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
       <ResourceHeader
-        title={`Visit ${visitNumber}`}
+        title={`${visit?.type?.label || "Visit"} ${visitNumber}`}
         breadcrumbs={(parents && getHierarchyAsList(parents, true) || "")}
         action={
           <div className={classes.actionsMenu}>

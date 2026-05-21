@@ -200,7 +200,7 @@ function Patient() {
   return (
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
       <ResourceHeader
-        title={`Patient ${patientData?.identifier}`}
+        title={`${patientData?.type?.label || "Patient"} ${patientData?.identifier}`}
         breadcrumbs={
           (patientData?.parents && getHierarchyAsList(patientData.parents, true) || [getHomepageLink(patientData)])
         }
