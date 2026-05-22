@@ -59,10 +59,10 @@ public class HealthCheckStatusReporter implements StatusReporter
             .stream()
             .filter(r -> !r.getHealthCheckResult().isOk())
             .toList();
-        LOGGER.error("{}", failedChecks);
         if (failedChecks.isEmpty()) {
             return new StatusReport(TITLE, StatusReport.Status.SUCCESS, "All is good!");
         }
+        LOGGER.warn("There are {} failed checks!", failedChecks);
         StringBuilder text = new StringBuilder("There are " + failedChecks.size() + " failed checks");
         if (!unprivileged) {
             text.append("\n\n");
