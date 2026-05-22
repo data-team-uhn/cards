@@ -191,4 +191,5 @@ done
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
 export JAVA_OPTS="${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -Djdk.xml.entityExpansionLimit=0"
+chmod +x ./org.apache.sling.feature.launcher/bin/launcher
 ./org.apache.sling.feature.launcher/bin/launcher -u "file://$(realpath ${HOME}/.m2/repository),file://$(realpath ${HOME}/.cards-generic-m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f ./${CARDS_ARTIFACTID}-${CARDS_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}
