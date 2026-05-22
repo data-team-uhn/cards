@@ -390,7 +390,8 @@
             ]
         },
         "org.apache.felix.http":{
-            "org.apache.felix.jetty.relativeredirectallowed":false
+            "org.apache.felix.jetty.relativeredirectallowed":false,
+            "org.eclipse.jetty.UriComplianceMode":"JETTY_11"
         }
     },
     "repoinit:TEXT|true":"@file"
