@@ -17,39 +17,43 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import { createContext, useState } from "react";
 import PropTypes from 'prop-types';
-import PageStart from './PageStart';
 
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 
-let PageStartWrapper = (props) => {
-  let { children, extensionsName } = {...props};
-  const [ contentOffset, setContentOffset ] = useState(0);
+import PageStart from './PageStart';
+
+export const PageStartContext = createContext(0);
+
+const PageStartWrapper = (props) => {
+  const { children, extensionsName } = props;
+  const [contentOffset, setContentOffset] = useState(0);
 
   const theme = useTheme();
   const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
 
-  return (<>
+  return (
+    <PageStartContext.Provider value={contentOffset}>
       <PageStart
         extensionsName={extensionsName}
         setTotalHeight={(th) => {
-              if (contentOffset != th) {
-                setContentOffset(th);
-              }
-            }
-        }
+          if (contentOffset !== th) {
+            setContentOffset(th);
+          }
+        }}
       />
-      <div id="page-start-wrapper-content" style={ { position: appbarExpanded ? 'relative' : 'absolute', top: contentOffset + 'px' } }>
-       { children }
-     </div>
-   </>
+      <div style={{ position: appbarExpanded ? 'relative' : 'absolute', top: contentOffset + 'px' }}>
+        {children}
+      </div>
+    </PageStartContext.Provider>
   );
-}
+};
 
 PageStartWrapper.propTypes = {
   extensionsName: PropTypes.string,
+  children: PropTypes.node,
 };
 
 export default PageStartWrapper;

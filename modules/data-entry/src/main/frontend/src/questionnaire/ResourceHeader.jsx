@@ -22,17 +22,16 @@ import {
   Collapse,
   Grid,
   Typography,
+  useMediaQuery,
   useScrollTrigger
 } from "@mui/material";
 import { grey } from '@mui/material/colors';
+import { useTheme } from '@mui/material/styles';
 import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import { GRID_SPACE_UNIT } from "./questionnaireConstants.jsx";
-
-import { useMediaQuery } from "@mui/material";
-import { useTheme } from '@mui/material/styles';
 
 const useStyles = makeStyles()(theme => ({
   resourceHeader: {
@@ -121,7 +120,7 @@ function ResourceHeader (props) {
 
   return (
     <>
-      <Grid size={12} className={classes.resourceHeader}  style={{ top: appbarExpanded ? contentOffset : 0 }} id="cards-resource-header">
+      <Grid size={12} className={classes.resourceHeader} style={{ top: appbarExpanded ? contentOffset : 0 }} id="cards-resource-header">
         <Grid container justifyContent="space-between" alignItems="center" wrap="nowrap">
           <Grid>
             <Breadcrumbs separator={separator}>

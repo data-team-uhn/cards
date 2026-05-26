@@ -16,6 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+import { useContext } from "react";
+
 import {
   AppBar,
   Breadcrumbs,
@@ -25,14 +27,14 @@ import {
   Link,
   Toolbar,
   Typography,
+  useMediaQuery,
   useScrollTrigger,
 } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 import { makeStyles } from 'tss-react/mui';
 
-import { useMediaQuery } from "@mui/material";
-import { useTheme } from '@mui/material/styles';
-
 import Logo from "../components/Logo";
+import { PageStartContext } from "../PageStartWrapper";
 
 const useStyles = makeStyles()(theme => ({
   appbar : {
@@ -124,7 +126,7 @@ function Header (props) {
 
   const theme = useTheme();
   const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
-  const contentOffset = document?.getElementById('page-start-wrapper-content')?.style.top || 0;
+  const contentOffset = useContext(PageStartContext);
 
   let subtitleBar = subtitle ?
     <Toolbar variant="dense" className={classes.toolbar}>
@@ -140,7 +142,7 @@ function Header (props) {
 
   return (
     <>
-      <AppBar position="sticky" className={classes.appbar} id="patient-portal-header" style={ { top: appbarExpanded ? contentOffset: 0 }}>
+      <AppBar position="sticky" className={classes.appbar} id="patient-portal-header" style={{ top: appbarExpanded ? contentOffset : 0 }}>
         <Collapse in={!subtitle || !(scrollTrigger)}>
           <Toolbar variant="dense" className={toolbarClassNames.join(' ')}>
             <Logo className={classes.logo} maxWidth="160px" />

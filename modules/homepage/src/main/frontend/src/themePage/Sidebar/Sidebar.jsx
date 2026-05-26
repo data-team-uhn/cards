@@ -146,7 +146,7 @@ const Sidebar = ({ ...props }) => {
         slotProps={{ paper: { style: { top: contentOffset + 'px', height: 'calc(100% - ' + contentOffset + 'px)' } } }}
       >
         {brand}
-        <div className={classes.sidebarWrapper} style={ { height: 'calc(100vh - ' + (75 + contentOffset) + 'px)' } }>
+        <div className={classes.sidebarWrapper} style={{ height: 'calc(100vh - ' + (75 + contentOffset) + 'px)' }}>
           <AdminNavbarLinks closeSidebar={props.handleDrawerToggle}/>
           {links}
           {adminLinks}
