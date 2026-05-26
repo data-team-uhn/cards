@@ -26,7 +26,6 @@
   </parent>
 
   <artifactId>cards-integration-tests</artifactId>
-  <packaging>slingstart</packaging>
   <name>CARDS integration tests</name>
   <description>Tests on the full CARDS distribution.</description>
 
@@ -50,58 +49,49 @@
             </goals>
             <phase>process-resources</phase>
             <configuration>
-              <minPortNumber>9000</minPortNumber>
+              <minPortNumber>8080</minPortNumber>
               <portNames>
                 <portName>http.port</portName>
-                <portName>sling.control.port</portName>
               </portNames>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
+      <!-- launch the Sling instances to test -->
       <plugin>
         <groupId>org.apache.sling</groupId>
-        <artifactId>slingstart-maven-plugin</artifactId>
+        <artifactId>feature-launcher-maven-plugin</artifactId>
+        <version>1.0.4</version>
+        <configuration>
+          <launches>
+            <launch>
+              <id>sling-starter-oak-tar</id>
+              <feature>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cards</artifactId>
+                <version>${project.version}</version>
+                <classifier>core_tar</classifier>
+                <type>slingosgifeature</type>
+              </feature>
+              <launcherArguments>
+                <frameworkProperties>
+                  <org.osgi.service.http.port>${http.port}</org.osgi.service.http.port>
+                  <org.apache.felix.http.jetty.responseBufferSize>5000000</org.apache.felix.http.jetty.responseBufferSize>
+                </frameworkProperties>
+              </launcherArguments>
+              <startTimeoutSeconds>60</startTimeoutSeconds>
+            </launch>
+          </launches>
+        </configuration>
         <executions>
-          <!-- This is responsible for starting the server before the tests run, and stopping it afterwards -->
           <execution>
-            <id>start-container</id>
             <goals>
-              <!-- Without specifying a phase for this execution, these goals bind by default to the pre-integration-test and post-integration-test phases -->
               <goal>start</goal>
               <goal>stop</goal>
             </goals>
           </execution>
         </executions>
-        <!-- As a slingstart module, the server will be built by default, so no specific execution needs to be declared for that. Here we just customize the package. -->
-        <configuration>
-          <!--
-              We're adding the CARDS distribution here as a model fragment instead of in a provisioning file because of the way the version is handled.
-              If we just specify io.uhndata.cards/cards//slingstart in a provisioning file, which means "use the version defined in the pom",
-              due to a bug in the slingstart-maven-plugin the dependency itself will be included as well in the final jar, which will be invalid.
-              If, instead, we specify a specific version, then that is duplication and will cause issues during the release.
-              The ideal solution is to specify ${project.version}, which is the recommended Maven way of referencing modules sharing the same version,
-              but that is not allowed in provisioning files.
-              The inline model fragment in the pom file will be interpolated with Maven variables, so we can use ${project.version} as the dependency version.
-          -->
-          <model>
-            [feature name="cards-distribution"]
-            [artifacts]
-            io.uhndata.cards/cards/${project.version}/slingstart
-          </model>
-          <setFeatureVersions>false</setFeatureVersions>
-          <usePomDependencies>true</usePomDependencies>
-          <!-- This configures the server started by the start-container execution above -->
-          <servers>
-            <server>
-              <port>${http.port}</port>
-              <controlPort>${sling.control.port}</controlPort>
-              <contextPath>/</contextPath>
-              <debug>${launchpad.debug}</debug>
-            </server>
-          </servers>
-        </configuration>
       </plugin>
 
       <!-- This is a plugin designed to run integration tests (Surefire is more for unit tests) -->
@@ -148,6 +138,7 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
       <version>4.4.16</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

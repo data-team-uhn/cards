@@ -87,7 +87,7 @@ public class HomepageIT
     {
         SlingHttpResponse response = client.doGet(location, 200);
         assertMimeType(response, "text/html");
-        Assert.assertTrue(response.getContent().contains("<title>Welcome to CARDS</title>"));
+        Assert.assertTrue(response.getContent().contains("<title>Clinical ARchive for Data Science</title>"));
     }
 
     private void assertMimeType(final SlingHttpResponse response, final String expectedMimeType) throws Exception
