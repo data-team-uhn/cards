@@ -54,4 +54,5 @@ process_node(questionnaire)
 with open(RAW_JSON, 'w') as output:
     json.dump(questionnaire, output, indent='\t')
     output.close()
-    os.system("python3 ../JSON-to-XML/json_to_xml.py '" + RAW_JSON + "' > '" + RAW_JSON[:-5] + ".xml'")
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    os.system("python3 " + file_path + "/json_to_xml.py '" + RAW_JSON + "' > '" + RAW_JSON[:-5] + ".xml'")
