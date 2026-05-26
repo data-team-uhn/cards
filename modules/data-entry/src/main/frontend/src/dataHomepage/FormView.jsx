@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import DescriptionIcon from '@mui/icons-material/Description';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -28,8 +28,6 @@ import {
   Divider,
   IconButton,
   LinearProgress,
-  Tab,
-  Tabs,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -40,6 +38,7 @@ import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import LiveTable from "./LiveTable.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
+import TriStateChip from "../components/TriStateChip.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 const useStyles = makeStyles()(theme => ({
@@ -50,6 +49,14 @@ const useStyles = makeStyles()(theme => ({
   },
   formViewAvatar: {
     background: theme.palette.primary.main,
+  },
+  formViewChipsContainer: {
+    padding: theme.spacing(0, 2),
+    marginTop: theme.spacing(-0.5),
+    marginBottom: theme.spacing(0.5),
+    "& .MuiChip-root": {
+      marginRight: theme.spacing(0.5),
+    }
   },
 }));
 
@@ -71,6 +78,8 @@ function FormView(props) {
   const [ subtitle, setSubtitle ] = useState(props.subtitle);
   const [ qFilter, setQFilter ] = useState();
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
+  const defaultStatusFilter = "&includeallstatus=true";
+  const [ statusFilter, setStatusFilter ] = useState(defaultStatusFilter);
 
   const activeExtensionURL = extension?.["cards:extensionURL"] || extensionURL || ""
   const baseURL = "../content.html" + (activeExtensionURL ? "/" + activeExtensionURL : "");
@@ -104,16 +113,18 @@ function FormView(props) {
     Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1])
   , [actionSwitches]);
 
-  const tabFilter = {
-    "Questionnaires" : '&includeallstatus=true',
-    "Completed" : '',
-    "Drafts" : '&fieldnames=statusFlags&fieldvalues=INCOMPLETE&fieldcomparators=%3D',
-  };
-  const tabs = Object.keys(tabFilter);
+  const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED", "PATIENT SURVEY", "LOCKED" ];
+  const [ statusValues, setStatusValues ] = useState(Array(statuses.length).fill(0));
 
-  const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("forms:activeTab");
-  let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
-  const [ activeTab, setActiveTab ] = useState(activeTabIndex);
+  useEffect(() => {
+    let filter = "";
+    statusValues.forEach((value, index) => {
+      if (value != 0) {
+        filter += `&fieldnames=statusFlags&fieldvalues=${statuses[index]}&fieldcomparators=${value == -1 ? "%3C%3E" : "%3D"}`
+      }
+    });
+    setStatusFilter(filter.length == 0 ? defaultStatusFilter : filter);
+  }, [statusValues])
 
   useEffect (() => {
     // If a questionnaire parameter is specified:
@@ -133,6 +144,13 @@ function FormView(props) {
     }
   }, [questionnaire]);
 
+  let setStatusFlagState = (index, value) => {
+    // Set to a new array to trigger useEffects
+    const newStatusValues = statusValues.slice();
+    newStatusValues[index] = value;
+    setStatusValues(newStatusValues);
+  }
+
   return (
     <Card className={classes.formView}>
       {title &&
@@ -148,28 +166,12 @@ function FormView(props) {
       {(!expanded || !disableHeader && !disableAvatar) &&
       <CardHeader
         avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
-        title={
-          <>
-            <Tabs
-              value={activeTab}
-              onChange={(event, value) => setActiveTab(value)}
-              indicatorColor="primary"
-              textColor="inherit"
-            >
-              { tabs.map((value, index) => {
-                return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
-              })}
-            </Tabs>
-          </>
-        }
+        title={<Typography variant="h6">Questionnaires</Typography>}
         action={
           !expanded && isActionEnabled("expand") &&
           <Tooltip title="Expand">
-            <Link
-              to={baseURL + "/Forms#" + new URLSearchParams({ "forms:activeTab" : tabs?.[activeTab] || "",
-                "forms:filters" : filtersJsonString || "" }).toString()}
-              underline="hover"
-            >
+            <Link to={baseURL + "/Forms#" + new URLSearchParams({ "forms:filters" : filtersJsonString || "" })
+              .toString()} underline="hover">
               <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
@@ -180,10 +182,27 @@ function FormView(props) {
       }
       <Divider />
       <CardContent>
+        <div className={classes.formViewChipsContainer}>
+          {
+            statuses.map((value, index) => {
+              return <TriStateChip
+                key={`${value}-${index}`}
+                size="small"
+                label={value}
+                defaultTooltip={`Show or hide ${value.toLowerCase()} forms?`}
+                positiveTooltip={`Showing ${value.toLowerCase()} forms`}
+                negativeTooltip={`Hiding ${value.toLowerCase()} forms`}
+                onSetPositive={() => setStatusFlagState(index, 1)}
+                onSetNegative={() => setStatusFlagState(index, -1)}
+                onClear={() => setStatusFlagState(index, 0)}
+              />
+            })
+          }
+        </div>
         { typeof(qFilter) == "undefined" ? <LinearProgress /> :
           <LiveTable
             columns={props.columns || columns}
-            customUrl={`/Forms.paginate?descending=true${qFilter}${tabFilter[tabs[activeTab]]}`}
+            customUrl={`/Forms.paginate?descending=true${qFilter}${statusFilter}`}
             defaultLimit={10}
             filters
             questionnaire={questionnaire}
