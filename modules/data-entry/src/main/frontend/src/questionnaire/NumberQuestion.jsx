@@ -249,7 +249,7 @@ function NumberQuestion(props) {
   }, [lowerLimit, upperLimit]);
 
   useEffect(() => {
-    if (isRange) return;
+    if (isRange || Array.isArray(sliderValue)) return;
     setMinMaxError(
       getMinMaxValueError(sliderValue)
     );
