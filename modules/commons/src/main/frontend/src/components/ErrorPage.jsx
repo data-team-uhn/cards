@@ -57,6 +57,8 @@ export default function ErrorPage(props) {
         direction="column"
         spacing={7}
         textAlign={textAlign}
+        alignItems="center"
+        alignContent="center"
       >
         <Logo maxWidth="360px" component={Grid}/>
         <Grid>
