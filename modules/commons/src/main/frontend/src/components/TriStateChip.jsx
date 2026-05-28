@@ -52,9 +52,9 @@ function TriStateChip(props) {
 
   useEffect(() => {
     setStates ([
-      new ChipState(new ChipProps(label, "outlined", "primary", <RadioButtonUncheckedIcon/>), 0, defaultTooltip),
-      new ChipState(new ChipProps(label, "outlined", "success", <CheckCircleIcon/>), 1, positiveTooltip),
-      new ChipState(new ChipProps(label, "outlined", "error",  <CancelIcon/>), -1, negativeTooltip)
+      new ChipState(new ChipProps(label, "outlined", "", <RadioButtonUncheckedIcon color="disabled"/>), 0, defaultTooltip),
+      new ChipState(new ChipProps(label, "filled", "success", <CheckCircleIcon/>), 1, positiveTooltip),
+      new ChipState(new ChipProps(label, "filled", "error",  <CancelIcon/>), -1, negativeTooltip)
     ])
   }, [label, defaultTooltip, positiveTooltip, negativeTooltip]);
 
