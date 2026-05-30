@@ -253,25 +253,35 @@ function NumberQuestion(props) {
     return null;
   };
 
+  // No need to validate list, select, slider display modes
   useEffect(() => {
-    if (!isRange) return;
-    // Check for invalid range limits
-    setMinMaxError(
-      getMinMaxValueError(lowerLimit) ||
-      getMinMaxValueError(upperLimit)
-    );
-    setRangeError(
-      typeof(lowerLimit) == 'undefined' && typeof(upperLimit) != 'undefined' ||
-       (Number(lowerLimit) > Number(upperLimit))
-    );
-  }, [lowerLimit, upperLimit]);
-
-  useEffect(() => {
-    if (isRange || Array.isArray(sliderValue)) return;
-    setMinMaxError(
-      getMinMaxValueError(sliderValue)
-    );
-  }, [sliderValue]);
+    if (isListSelectOrSlider) return;
+    if (isRange) {
+      // Check for invalid range limits
+      setMinMaxError(
+        getValidationErrorMessage(lowerRangeValue) ||
+        getValidationErrorMessage(upperRangeValue)
+      );
+      setRangeError(
+        typeof(lowerRangeValue) == 'undefined' && typeof(upperRangeValue) != 'undefined' ||
+         (Number(lowerRangeValue) > Number(upperRangeValue))
+      );
+    } else {
+      if (isMultiValue) {
+        const nextMinMaxErrorObject = initialValue.reduce((accumulator, value, index) => {
+          const displayedItem = Array.isArray(displayedValue) ? displayedValue[index] : value;
+          accumulator[displayedItem] = getValidationErrorMessage(value);
+          return accumulator;
+        }, {});
+        setMinMaxErrorObject(nextMinMaxErrorObject);
+        setMinMaxError(Object.values(nextMinMaxErrorObject).find(Boolean) || null);
+      } else {
+        setMinMaxError(
+          getValidationErrorMessage(existingAnswer?.[1]?.value)
+        );
+      }
+    }
+  }, [ lowerRangeValue, upperRangeValue ]);
 
   const answers = [];
   // Only save ranges that have both limits specified
