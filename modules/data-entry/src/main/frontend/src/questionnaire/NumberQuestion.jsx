@@ -193,13 +193,6 @@ function NumberQuestion(props) {
   const [sliderValue, setSliderValue] = useState(isSlider ? (existingAnswer?.[1]?.value || defaultValue) : undefined);
   // Load slider-specific style
   const sliderClasses = useSliderStyles();
-  // Adjust the height of a vertical slider based on the slider's marks
-  const customSliderStyle = isSlider && sliderOrientation === "vertical" ?
-    { height: Math.max(100, sliderMarks.length*30) + "px" } : undefined;
-  const isSingleSliderSelected = isSlider && isValidNumber(sliderValue);
-
-  const pluralSuffix = isRange ? "s" : "";
-
   // Marks at the minimum and maximum, as well as user specified intervals if provided
   const sliderMarks = useMemo(() => {
     const marks = [{ value: minValue, label: minValue }, { value: maxValue, label: maxValue }];
@@ -212,6 +205,12 @@ function NumberQuestion(props) {
     }
     return marks;
   }, [maxValue, minValue, sliderMarkStep]);
+  // Adjust the height of a vertical slider based on the slider's marks
+  const customSliderStyle = isSlider && sliderOrientation === "vertical" ?
+    { height: Math.max(100, sliderMarks.length*30) + "px" } : undefined;
+  const isSingleSliderSelected = isSlider && isValidNumber(sliderValue);
+
+  const pluralSuffix = isRange ? "s" : "";
 
   const getValidationErrorMessage = (text) => {
     if (typeof(text) === "undefined" || text === "" || Array.isArray(text)) {
