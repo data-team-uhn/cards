@@ -671,6 +671,21 @@
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Proposal resource answers
+[cards:ProposalAnswer] > cards:Answer
+  // The value holds the path to the JCR node storing the proposal file
+  - value (string)
+
+  // The proposal file is in a child nt:file resource
+  + * (nt:file) = nt:file
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/ProposalAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
 // Resource paths, stored as strings.
 [cards:ResourceAnswer] > cards:Answer
   - value (string)

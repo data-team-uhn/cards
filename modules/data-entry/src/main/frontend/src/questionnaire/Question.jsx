@@ -41,7 +41,9 @@ function Question (props) {
     isEdit,
     pageActive,
     preventDefaultView,
-    defaultDisplayFormatter
+    defaultDisplayFormatter,
+    noteComponent = Note,
+    noteProps
   } = props;
   let {
     text,
@@ -78,6 +80,7 @@ function Question (props) {
   if (doHighlight) {
     cardClasses.push("cards-focused");
   }
+  const NoteComponent = noteComponent;
 
   let labels = existingAnswer?.[1].displayedValue;
   if (typeof(labels) == "undefined") {
@@ -137,7 +140,7 @@ function Question (props) {
             children
           }
           { !isEdit && enableNotes &&
-            <Note readonly pageActive={pageActive} existingAnswer={existingAnswer} />
+            <NoteComponent readonly pageActive={pageActive} existingAnswer={existingAnswer} {...noteProps} />
           }
         </div>
       </CardContent>

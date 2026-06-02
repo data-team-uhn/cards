@@ -71,6 +71,7 @@
     <module>embedded-view</module>
     <module>error-tracking</module>
     <module>google-apis</module>
+    <module>claude-apis</module>
     <module>variants</module>
     <module>locking</module>
     <module>healthcheck</module>
