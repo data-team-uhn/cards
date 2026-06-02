@@ -41,12 +41,55 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <!-- Base label processors that specialized question-type modules extend -->
             <Export-Package>io.uhndata.cards.forms.serialize.labels</Export-Package>
+            <Embed-Dependency>
+              pdfbox,
+              pdfbox-io,
+              fontbox,
+              poi,
+              poi-ooxml,
+              jcl-over-slf4j
+            </Embed-Dependency>
+            <Embed-Transitive>true</Embed-Transitive>
+            <Import-Package>
+              !com.graphbuilder.*,
+              !com.microsoft.*,
+              !com.zaxxer.*,
+              !de.rototor.*,
+              !org.apache.batik.*,
+              !org.apache.commons.compress.*,
+              !org.apache.commons.logging.*,
+              !org.apache.fontbox.*,
+              !org.apache.jcp.*,
+              !org.apache.logging.log4j.*,
+              !org.apache.pdfbox.*,
+              !org.apache.poi.*,
+              !org.apache.xml.security.*,
+              !org.apache.xmlbeans.*,
+              !org.bouncycastle.*,
+              !org.etsi.*,
+              !org.openxmlformats.schemas.*,
+              !org.w3.x2000.*,
+              !org.w3c.dom.svg,
+              *
+            </Import-Package>
             <Sling-Initial-Content>
               SLING-INF/content/libs/cards/Form/;path:=/libs/cards/Form/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/Questionnaire/;path:=/libs/cards/Questionnaire/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true
             </Sling-Initial-Content>
           </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <ignoredUnusedDeclaredDependencies>
+            <ignoredUnusedDeclaredDependency>org.apache.pdfbox:pdfbox-io</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>org.apache.pdfbox:fontbox</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>org.apache.poi:poi</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>org.slf4j:jcl-over-slf4j</ignoredUnusedDeclaredDependency>
+          </ignoredUnusedDeclaredDependencies>
         </configuration>
       </plugin>
     </plugins>
@@ -106,6 +149,30 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>fontbox</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

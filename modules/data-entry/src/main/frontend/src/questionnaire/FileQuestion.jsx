@@ -48,7 +48,7 @@ import { registerQuestionEditorConfig } from "../questionnaireEditor/QuestionMod
 function FileQuestion(props) {
   checkPropTypes(FileQuestion, props);
   const { classes, existingAnswer, pageActive, ...rest } = props;
-  const { maxAnswers, namePattern } = { ...props.questionDefinition, ...props }
+  const { maxAnswers, namePattern, accept } = { ...props.questionDefinition, ...props }
   const { onBeforeUpload, onAfterUpload, onDelete, previewRenderer, answerNodeType } = props;
   let initialValues =
     // Check whether or not we have an initial value
@@ -319,6 +319,7 @@ function FileQuestion(props) {
           <DragAndDrop
             handleDrop={addFiles}
             multifile={maxAnswers != 1}
+            accept={accept}
             error={error}
             disabled={disableUploads}
           />
@@ -374,7 +375,8 @@ FileQuestion.propTypes = {
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
   }).isRequired,
-  namePattern: PropTypes.string
+  namePattern: PropTypes.string,
+  accept: PropTypes.string
 };
 
 const StyledFileQuestion = withStyles(FileQuestion, fileStyles);
