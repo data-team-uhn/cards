@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -160,7 +161,8 @@ public class ProposalAnswerEditor extends DefaultEditor
             return null;
         }
         try (InputStream stream = dataBlob.getNewStream()) {
-            return parser.parse(stream, documentId, fileName);
+            final byte[] content = stream.readNBytes((int) blobLength);
+            return parser.parse(new ByteArrayInputStream(content), documentId, fileName);
         } catch (Exception e) {
             LOGGER.warn("Failed to parse proposal file '{}' in document '{}': {}", fileName, documentId,
                 e.getMessage());
