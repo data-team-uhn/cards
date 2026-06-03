@@ -40,7 +40,7 @@
     "cornerstone-wado-image-loader": "4.13.2",
     "dicom-parser": "1.8.21",
     "react-dom": "^19.2.0",
-    "react-number-format": "5.4.3",
+    "react-number-format": "5.4.5",
     "react-phone-input-2": "2.15.1",
     "react-google-autocomplete": "2.7.5",
     "react-router": "7.12.0",
