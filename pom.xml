@@ -69,7 +69,7 @@
     <cards.version>${project.version}</cards.version>
     <app.name>Clinical ARchive for Data Science</app.name>
     <platform.name>CARDS</platform.name>
-    <slf4j.version>2.0.17</slf4j.version>
+    <slf4j.version>2.0.18</slf4j.version>
     <jackrabbit.version>2.22.3</jackrabbit.version>
     <oak.version>1.92.0</oak.version>
     <sling.saml.version>0.2.6.cards.2</sling.saml.version>
