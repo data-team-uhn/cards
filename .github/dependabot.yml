@@ -9,7 +9,23 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      java-dependencies-minor-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "npm"
     directory: "/aggregated-frontend/src/main/frontend"
     schedule:
       interval: "weekly"
+    groups:
+      js-dependencies-minor-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
