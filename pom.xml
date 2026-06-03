@@ -1642,6 +1642,9 @@
               <goals>
                 <goal>yarn</goal>
               </goals>
+              <configuration>
+                <arguments>install --ignore-scripts</arguments>
+              </configuration>
             </execution>
             <!-- Runs webpack to compile the JS source code -->
             <execution>
