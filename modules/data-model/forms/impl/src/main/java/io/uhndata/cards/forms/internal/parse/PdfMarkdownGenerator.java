@@ -27,6 +27,8 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generate markdown output from PDF input.
@@ -35,6 +37,8 @@ import org.apache.pdfbox.text.TextPosition;
  */
 public class PdfMarkdownGenerator
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PdfMarkdownGenerator.class);
+
     private static final float HEADING_BOLD_RATIO = 0.7f;
 
     private static final float HEADING_GAP_RATIO = 1.2f;
@@ -55,6 +59,9 @@ public class PdfMarkdownGenerator
     public String toMarkdown(final InputStream stream, final String documentId, final String fileName)
         throws IOException
     {
+        final long startTimestamp = System.currentTimeMillis();
+        LOGGER.info("PDF markdown parsing started for document '{}' and file '{}' at {}", documentId, fileName,
+            startTimestamp);
         byte[] bytes = stream.readAllBytes();
         try (PDDocument document = Loader.loadPDF(bytes)) {
             StyledPdfTextStripper stripper = new StyledPdfTextStripper();
@@ -76,6 +83,11 @@ public class PdfMarkdownGenerator
             }
 
             return markdown.toString().trim();
+        } finally {
+            final long endTimestamp = System.currentTimeMillis();
+            final long totalMilliseconds = endTimestamp - startTimestamp;
+            LOGGER.info("PDF markdown parsing finished for document '{}' and file '{}' at {} (total {} ms)",
+                documentId, fileName, endTimestamp, totalMilliseconds);
         }
     }
 
