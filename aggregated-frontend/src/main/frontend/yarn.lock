@@ -53,6 +53,15 @@
     bind-event-listener "^3.0.0"
     tiny-invariant "^1.2.0"
 
+"@atlaskit/ds-lib@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/ds-lib/-/ds-lib-7.0.0.tgz#3b0a0628c0e76cc2c9bb2ceff5648db318a4401e"
+  integrity sha512-Uqywr6YMi6uBpD0BtbRmG8f81fteRT7NBf62J8zzWPSs7u3Jq9G3Oruwm3y+57Dxv6IqfRwrS10WJARlCJdBLw==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    bind-event-listener "^3.0.0"
+    tiny-invariant "^1.2.0"
+
 "@atlaskit/feature-gate-js-client@^5.5.0":
   version "5.5.9"
   resolved "https://registry.yarnpkg.com/@atlaskit/feature-gate-js-client/-/feature-gate-js-client-5.5.9.tgz#33f1eab43ab93479d41cf196974f8a2ff27127dd"
@@ -94,24 +103,24 @@
     "@atlaskit/tokens" "^4.5.0"
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/pragmatic-drag-and-drop-hitbox@^1.0.0", "@atlaskit/pragmatic-drag-and-drop-hitbox@^1.0.3":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop-hitbox/-/pragmatic-drag-and-drop-hitbox-1.1.0.tgz#3a031ac295513a394eff116f9b75869e64d3e559"
-  integrity sha512-JWt6eVp6Br2FPHRM8s0dUIHQk/jFInGP1f3ti5CdtM1Ji5/pt8Akm44wDC063Gv2i5RGseixtbW0z/t6RYtbdg==
+"@atlaskit/pragmatic-drag-and-drop-hitbox@^1.0.3", "@atlaskit/pragmatic-drag-and-drop-hitbox@^1.1.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop-hitbox/-/pragmatic-drag-and-drop-hitbox-1.2.0.tgz#d0947aac1cab64083bbb8178491a30a703a6cc27"
+  integrity sha512-eWJvvuHZOC4Yk+Li7QpS+JM2F/I50/3PhMvEcyvcHbXI0FP0kCDD1MiF8Hv7uSOxpk5JNqKoOmK8e1ncOzTgqA==
   dependencies:
-    "@atlaskit/pragmatic-drag-and-drop" "^1.6.0"
+    "@atlaskit/pragmatic-drag-and-drop" "^1.8.0"
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/pragmatic-drag-and-drop-react-drop-indicator@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/-/pragmatic-drag-and-drop-react-drop-indicator-3.0.2.tgz#0a3a2f847a35c91c02946b9c80cbd4897f863df3"
-  integrity sha512-cLmHoH1qTlEL2ZHCZvrT7ThMpkxBs7lld2XJLD55iz4XQEBYoBs4UM7BzsXyaKKgvdBcep2PTkgt4YXLoY6aIg==
+"@atlaskit/pragmatic-drag-and-drop-react-drop-indicator@3.2.16":
+  version "3.2.16"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/-/pragmatic-drag-and-drop-react-drop-indicator-3.2.16.tgz#ac76ba4dbe8016d89d4432afea7cb790f4959691"
+  integrity sha512-A2rcb6cqBFlGFR0cVwAwZKcSqUaYviNLskfBLI6wvDUFD2/dYI7GN56SOC895YC7EMoG/tPHkDB5vZiLa/iyQA==
   dependencies:
-    "@atlaskit/pragmatic-drag-and-drop" "^1.5.0"
-    "@atlaskit/pragmatic-drag-and-drop-hitbox" "^1.0.0"
-    "@atlaskit/tokens" "^4.5.0"
+    "@atlaskit/pragmatic-drag-and-drop" "^1.8.0"
+    "@atlaskit/pragmatic-drag-and-drop-hitbox" "^1.1.0"
+    "@atlaskit/tokens" "^13.0.0"
     "@babel/runtime" "^7.0.0"
-    "@compiled/react" "^0.18.3"
+    "@compiled/react" "^0.20.0"
 
 "@atlaskit/pragmatic-drag-and-drop@1.5.2":
   version "1.5.2"
@@ -122,10 +131,10 @@
     bind-event-listener "^3.0.0"
     raf-schd "^4.0.3"
 
-"@atlaskit/pragmatic-drag-and-drop@^1.5.0", "@atlaskit/pragmatic-drag-and-drop@^1.6.0":
-  version "1.7.9"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-1.7.9.tgz#338138f57bcadeefed34b6a106658aae4e6f1c8b"
-  integrity sha512-m/bcw5flyjfcF/rdX4JeomtIBrWuDNOwcQieiywHv7zkfIRmUC34Q9ZLeNGVoz73UiGsRqxysMuw4tC7lSJ89g==
+"@atlaskit/pragmatic-drag-and-drop@^1.8.0":
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-1.8.1.tgz#fa28f91c8e0f837830eb70565055c7caeb33114f"
+  integrity sha512-uXWNPpL8n4OmTVbduH7nq8pk8htqGo/prR5cYEE8sVCPJGAUMWn6lzvWTfI+4VCeQvHiDRODVz4YzH06OVAxhw==
   dependencies:
     "@babel/runtime" "^7.0.0"
     bind-event-listener "^3.0.0"
@@ -137,6 +146,18 @@
   integrity sha512-JhwthtC047LaLXGL3iUgTGXfIrwecue/RmCbO/sk3yscxy04bbt+LgKwxlv+7l21BkhhvPeE+d34Lz/+uUCJCQ==
   dependencies:
     "@atlaskit/ds-lib" "^6.0.0"
+    "@atlaskit/platform-feature-flags" "^1.1.0"
+    "@babel/runtime" "^7.0.0"
+    "@babel/traverse" "^7.23.2"
+    "@babel/types" "^7.20.0"
+    bind-event-listener "^3.0.0"
+
+"@atlaskit/tokens@^13.0.0":
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-13.1.1.tgz#a22f8b76436d0898d65b27477bd6d0f94771990b"
+  integrity sha512-YNa0EO38NlW7S4xEBFS6mYDB5jDmqBHM9bJflYHM2KuVrEFVHkKd0TiHmUscD4mwvQoI1KK4BgVUIuyP3ZUwfw==
+  dependencies:
+    "@atlaskit/ds-lib" "^7.0.0"
     "@atlaskit/platform-feature-flags" "^1.1.0"
     "@babel/runtime" "^7.0.0"
     "@babel/traverse" "^7.23.2"
@@ -1044,7 +1065,7 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.28.5"
 
-"@compiled/react@^0.18.3", "@compiled/react@^0.18.6":
+"@compiled/react@^0.18.6":
   version "0.18.6"
   resolved "https://registry.yarnpkg.com/@compiled/react/-/react-0.18.6.tgz#70c61786bdf34dd21c5b8d768a690eab2548bc59"
   integrity sha512-Mt6sJOwykeoToEBFbOUNR4xABi2gOr/+X5QSGqGEYiCBMh+XPDAclG2UX94zveiYJXO4AUJIQBCVwa4/lwPMBA==
