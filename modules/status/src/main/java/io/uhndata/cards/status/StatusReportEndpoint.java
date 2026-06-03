@@ -19,11 +19,14 @@
 package io.uhndata.cards.status;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
@@ -48,11 +51,26 @@ public class StatusReportEndpoint extends SlingJakartaSafeMethodsServlet
         throws IOException
     {
         final boolean unprivileged = !("admin".equals(request.getRemoteUser()));
-        JsonArrayBuilder results = Json.createArrayBuilder();
-        this.manager.getReports(unprivileged).stream()
-            .map(StatusReport::toJson)
-            .forEach(r -> results.add(r));
-        response.setContentType("application/json");
-        response.getWriter().print(results.build().toString());
+        final StatusReport.Status targetStatus =
+            StatusReport.Status.valueOf(StringUtils.defaultIfBlank(request.getParameter("targetStatus"), "INFO"));
+        final Set<String> tags = request.getParameterValues("tags") == null ? Collections.emptySet()
+            : Set.of(request.getParameterValues("tags"));
+        final boolean txtOutput = request.getPathInfo().endsWith(".txt");
+        if (txtOutput) {
+            final String result = StringUtils.join(
+                this.manager.getReports(unprivileged, targetStatus, tags).stream()
+                    .map(StatusReport::getText)
+                    .toList(),
+                "\n\n");
+            response.setContentType("text/plain");
+            response.getWriter().print(result);
+        } else {
+            final JsonArrayBuilder results = Json.createArrayBuilder();
+            this.manager.getReports(unprivileged, targetStatus, tags).stream()
+                .map(StatusReport::toJson)
+                .forEach(r -> results.add(r));
+            response.setContentType("application/json");
+            response.getWriter().print(results.build().toString());
+        }
     }
 }
