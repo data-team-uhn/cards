@@ -71,7 +71,7 @@
     <platform.name>CARDS</platform.name>
     <slf4j.version>2.0.18</slf4j.version>
     <jackrabbit.version>2.22.3</jackrabbit.version>
-    <oak.version>1.92.0</oak.version>
+    <oak.version>2.2.0</oak.version>
     <sling.saml.version>0.2.6.cards.2</sling.saml.version>
 
     <!-- Versions to be replaced in the feature files -->
