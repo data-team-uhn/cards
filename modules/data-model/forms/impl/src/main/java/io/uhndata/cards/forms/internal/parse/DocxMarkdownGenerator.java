@@ -27,6 +27,8 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generate markdown output from DOCX input.
@@ -35,6 +37,8 @@ import org.apache.poi.xwpf.usermodel.XWPFTableRow;
  */
 public class DocxMarkdownGenerator
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocxMarkdownGenerator.class);
+
     /**
      * Convert DOCX content to markdown grouped by paragraph blocks.
      *
@@ -47,6 +51,9 @@ public class DocxMarkdownGenerator
     public String toMarkdown(final InputStream stream, final String documentId, final String fileName)
         throws IOException
     {
+        final long startTimestamp = System.currentTimeMillis();
+        LOGGER.info("DOCX markdown parsing started for document '{}' and file '{}' at {}", documentId, fileName,
+            startTimestamp);
         StringBuilder markdown = new StringBuilder();
         markdown.append("<!-- document_id: ").append(escapeComment(documentId)).append(" -->\n");
         markdown.append("<!-- source_file: ").append(escapeComment(fileName)).append(" -->\n");
@@ -77,9 +84,14 @@ public class DocxMarkdownGenerator
                     }
                 }
             }
-        }
 
-        return markdown.toString().trim();
+            return markdown.toString().trim();
+        } finally {
+            final long endTimestamp = System.currentTimeMillis();
+            final long totalMilliseconds = endTimestamp - startTimestamp;
+            LOGGER.info("DOCX markdown parsing finished for document '{}' and file '{}' at {} (total {} ms)",
+                documentId, fileName, endTimestamp, totalMilliseconds);
+        }
     }
 
     private String tableToMarkdown(final XWPFTable table)
