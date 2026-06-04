@@ -51,6 +51,7 @@
               jcl-over-slf4j
             </Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
+            <_fixupmessages>"Classes found in the wrong directory";is:=ignore</_fixupmessages>
             <Import-Package>
               !com.github.javaparser.*,
               !com.graphbuilder.*,
