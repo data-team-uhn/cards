@@ -35,6 +35,10 @@ import org.apache.pdfbox.text.TextPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import technology.tabula.ObjectExtractor;
+import technology.tabula.Table;
+import technology.tabula.extractors.SpreadsheetExtractionAlgorithm;
+
 /**
  * Generate markdown output from PDF input. Detects tables from ruling lines drawn in the PDF
  * and renders them as GitHub-Flavored Markdown tables with the first row as a header.
@@ -115,6 +119,15 @@ public class PdfMarkdownGenerator
     /** Minimum column intervals for a detected grid to qualify as a table (2 cols needs 3 V lines). */
     private static final int MIN_TABLE_COLS = 2;
 
+    /** Maximum characters in a single table cell; more suggests prose was captured as a table row. */
+    private static final int MAX_CELL_CHARS = 300;
+
+    /** Maximum fraction of total table text allowed in a single cell before the row is prose-like. */
+    private static final float MAX_CELL_TEXT_RATIO = 0.7f;
+
+    /** Y-coordinate tolerance (points) for deduplicating overlapping tabula table detections. */
+    private static final float TABLE_DEDUP_TOLERANCE = 10.0f;
+
     private static final String DOUBLE_NEWLINE = "\n\n";
 
     /**
@@ -140,12 +153,18 @@ public class PdfMarkdownGenerator
             markdown.append("<!-- source_file: ").append(escapeComment(fileName)).append(" -->\n");
 
             final int pageCount = document.getNumberOfPages();
+            // TabulaPageParser owns the ObjectExtractor. Its close() delegates to PDDocument.close(),
+            // so we intentionally do not close it — the enclosing try-with-resources handles that.
+            final TabulaPageParser tabulaParser = new TabulaPageParser(document);
             for (int page = 1; page <= pageCount; page++) {
-                final PDPage pdPage = document.getPage(page - 1);
-                final List<RulingLine> rulingLines = extractRulingLinesSafely(pdPage, page, fileName);
                 final List<StyledLine> pageLines = stripper.extractPageLines(document, page);
-                final List<TextToken> tokens = stripper.getLastPageTokens();
-                final List<DetectedTable> tables = detectTables(rulingLines, tokens);
+                List<DetectedTable> tables = tabulaParser.extractTables(page, fileName);
+                if (tables.isEmpty()) {
+                    final PDPage pdPage = document.getPage(page - 1);
+                    final List<RulingLine> rulingLines = extractRulingLinesSafely(pdPage, page, fileName);
+                    final List<TextToken> tokens = stripper.getLastPageTokens();
+                    tables = detectTables(rulingLines, tokens);
+                }
                 final String pageText = renderPage(pageLines, tables);
                 markdown.append("\n\n<!-- page: ").append(page).append(" -->\n");
                 markdown.append("## Page ").append(page).append(DOUBLE_NEWLINE);
@@ -290,6 +309,107 @@ public class PdfMarkdownGenerator
             }
         }
         return false;
+    }
+
+    // ---- Tabula table parser ----
+
+    /**
+     * Encapsulates tabula table extraction for a single PDF document, hiding ObjectExtractor and
+     * SpreadsheetExtractionAlgorithm from the outer class to keep its coupling count within limits.
+     */
+    private static final class TabulaPageParser
+    {
+        private final ObjectExtractor extractor;
+
+        private final SpreadsheetExtractionAlgorithm algorithm;
+
+        TabulaPageParser(final PDDocument document)
+        {
+            this.extractor = new ObjectExtractor(document);
+            this.algorithm = new SpreadsheetExtractionAlgorithm();
+        }
+
+        List<DetectedTable> extractTables(final int pageNum, final String fileName)
+        {
+            try {
+                final technology.tabula.Page tabulaPage = this.extractor.extract(pageNum);
+                if (tabulaPage == null) {
+                    return Collections.emptyList();
+                }
+                final List<Table> tabulaTables = this.algorithm.extract(tabulaPage);
+                if (tabulaTables.isEmpty()) {
+                    return Collections.emptyList();
+                }
+                final List<DetectedTable> result = new ArrayList<>();
+                for (Table tabulaTable : tabulaTables) {
+                    DetectedTable detected = convertTabulaTable(tabulaTable);
+                    if (detected != null) {
+                        detected = detected.trimLeadingProseRows();
+                    }
+                    if (detected != null) {
+                        result.add(detected);
+                    }
+                }
+                return deduplicateByTopY(result);
+            } catch (RuntimeException | NoClassDefFoundError e) {
+                LOGGER.warn("Tabula table extraction failed on page {} of '{}': {}", pageNum, fileName,
+                    e.getMessage());
+                return Collections.emptyList();
+            }
+        }
+
+        private static DetectedTable convertTabulaTable(final Table tabulaTable)
+        {
+            final int rowCount = tabulaTable.getRowCount();
+            final int colCount = tabulaTable.getColCount();
+            if (rowCount < MIN_TABLE_ROWS || colCount < MIN_TABLE_COLS) {
+                return null;
+            }
+            final float top = tabulaTable.getTop();
+            final float bottom = tabulaTable.getBottom();
+            final float left = tabulaTable.getLeft();
+            final float right = tabulaTable.getRight();
+            final float rowHeight = (bottom - top) / rowCount;
+            final float colWidth = (right - left) / colCount;
+            final float[] rowY = new float[rowCount + 1];
+            final float[] colX = new float[colCount + 1];
+            for (int i = 0; i <= rowCount; i++) {
+                rowY[i] = top + i * rowHeight;
+            }
+            for (int i = 0; i <= colCount; i++) {
+                colX[i] = left + i * colWidth;
+            }
+            final DetectedTable result = new DetectedTable(rowY, colX);
+            for (int r = 0; r < rowCount; r++) {
+                for (int c = 0; c < colCount; c++) {
+                    final String text = tabulaTable.getCell(r, c).getText();
+                    result.setCell(r, c, text != null ? text.trim() : "");
+                }
+            }
+            return result;
+        }
+
+        private static List<DetectedTable> deduplicateByTopY(final List<DetectedTable> tables)
+        {
+            final List<DetectedTable> unique = new ArrayList<>();
+            for (DetectedTable table : tables) {
+                if (!isTopYDuplicate(table, unique)) {
+                    unique.add(table);
+                }
+            }
+            return unique;
+        }
+
+        private static boolean isTopYDuplicate(final DetectedTable candidate,
+            final List<DetectedTable> accepted)
+        {
+            for (DetectedTable existing : accepted) {
+                if (Math.abs(candidate.topY() - existing.topY()) < TABLE_DEDUP_TOLERANCE) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     private List<DetectedTable> detectTables(final List<RulingLine> rulingLines,
@@ -785,6 +905,13 @@ public class PdfMarkdownGenerator
                 && y <= this.rowY[this.rowY.length - 1] + CLUSTER_TOLERANCE;
         }
 
+        void setCell(final int row, final int col, final String text)
+        {
+            if (row >= 0 && row < this.cells.length && col >= 0 && col < this.cells[row].length) {
+                this.cells[row][col] = text;
+            }
+        }
+
         void assignToken(final TextToken token)
         {
             final int row = findInterval(this.rowY, token.y);
@@ -904,6 +1031,54 @@ public class PdfMarkdownGenerator
             for (int i = islandStart; i <= islandEnd; i++) {
                 row[i] = mergedText;
             }
+        }
+
+        /**
+         * Returns a copy of this table with leading rows removed where a single cell dominates the
+         * content (prose captured above the actual grid). Returns {@code null} if all rows are prose.
+         */
+        DetectedTable trimLeadingProseRows()
+        {
+            int firstGoodRow = this.rowCount();
+            for (int r = 0; r < this.rowCount(); r++) {
+                if (!isProseRow(this.cells[r])) {
+                    firstGoodRow = r;
+                    break;
+                }
+            }
+            if (firstGoodRow == 0) {
+                return this;
+            }
+            if (firstGoodRow >= this.rowCount()) {
+                return null;
+            }
+            final int newRowCount = this.rowCount() - firstGoodRow;
+            final float[] newRowY = new float[newRowCount + 1];
+            System.arraycopy(this.rowY, firstGoodRow, newRowY, 0, newRowCount + 1);
+            final DetectedTable trimmed = new DetectedTable(newRowY, this.colX);
+            for (int r = 0; r < newRowCount; r++) {
+                for (int c = 0; c < this.colCount(); c++) {
+                    trimmed.setCell(r, c, this.cells[firstGoodRow + r][c]);
+                }
+            }
+            return trimmed;
+        }
+
+        private static boolean isProseRow(final String[] row)
+        {
+            int totalChars = 0;
+            int maxCellChars = 0;
+            for (String cell : row) {
+                totalChars += cell.length();
+                if (cell.length() > maxCellChars) {
+                    maxCellChars = cell.length();
+                }
+            }
+            if (totalChars == 0 || maxCellChars == 0) {
+                return false;
+            }
+            return maxCellChars > MAX_CELL_CHARS
+                || (float) maxCellChars / (float) totalChars > MAX_CELL_TEXT_RATIO;
         }
     }
 
