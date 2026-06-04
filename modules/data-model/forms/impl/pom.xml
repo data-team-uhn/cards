@@ -45,24 +45,31 @@
               pdfbox,
               pdfbox-io,
               fontbox,
-              poi,
-              poi-ooxml,
+              org.apache.servicemix.bundles.poi,
+              log4j-api,
+              commons-compress,
               jcl-over-slf4j
             </Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
             <Import-Package>
+              !com.github.javaparser.*,
               !com.graphbuilder.*,
               !com.microsoft.*,
+              !com.sun.org.apache.xml.internal.*,
               !com.zaxxer.*,
               !de.rototor.*,
+              !net.sf.saxon.*,
               !org.apache.batik.*,
               !org.apache.commons.compress.*,
               !org.apache.commons.logging.*,
               !org.apache.fontbox.*,
               !org.apache.jcp.*,
               !org.apache.logging.log4j.*,
+              !org.apache.maven.*,
               !org.apache.pdfbox.*,
               !org.apache.poi.*,
+              !org.apache.tools.ant.*,
+              !org.apache.xml.resolver.*,
               !org.apache.xml.security.*,
               !org.apache.xmlbeans.*,
               !org.bouncycastle.*,
@@ -70,6 +77,7 @@
               !org.openxmlformats.schemas.*,
               !org.w3.x2000.*,
               !org.w3c.dom.svg,
+              !sun.nio.ch,
               *
             </Import-Package>
             <Sling-Initial-Content>
@@ -87,7 +95,9 @@
           <ignoredUnusedDeclaredDependencies>
             <ignoredUnusedDeclaredDependency>org.apache.pdfbox:pdfbox-io</ignoredUnusedDeclaredDependency>
             <ignoredUnusedDeclaredDependency>org.apache.pdfbox:fontbox</ignoredUnusedDeclaredDependency>
-            <ignoredUnusedDeclaredDependency>org.apache.poi:poi</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>org.apache.servicemix.bundles:org.apache.servicemix.bundles.poi</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>org.apache.logging.log4j:log4j-api</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>org.apache.commons:commons-compress</ignoredUnusedDeclaredDependency>
             <ignoredUnusedDeclaredDependency>org.slf4j:jcl-over-slf4j</ignoredUnusedDeclaredDependency>
           </ignoredUnusedDeclaredDependencies>
         </configuration>
@@ -163,12 +173,16 @@
       <artifactId>fontbox</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.poi</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
