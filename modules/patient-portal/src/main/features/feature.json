@@ -50,7 +50,7 @@
       "start-order":"25"
     },
     {
-      "id":"${project.groupId}:cards-token-authentication:${project.version}",
+      "id":"${project.groupId}:cards-token-authentication-support:${project.version}",
       "start-order":"25"
     },
     {

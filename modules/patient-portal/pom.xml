@@ -176,7 +176,7 @@
     </dependency>
     <dependency>
       <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-token-authentication-api</artifactId>
+      <artifactId>cards-token-authentication-support</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
