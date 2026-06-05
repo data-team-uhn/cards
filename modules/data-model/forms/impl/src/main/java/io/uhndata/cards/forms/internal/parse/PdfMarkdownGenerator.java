@@ -134,22 +134,19 @@ public class PdfMarkdownGenerator
      * Convert PDF content to markdown grouped by pages.
      *
      * @param stream the pdf stream
-     * @param documentId identifier for the parsed document
      * @param fileName source file name
      * @return markdown text
      * @throws IOException when reading fails
      */
-    public String toMarkdown(final InputStream stream, final String documentId, final String fileName)
+    public String toMarkdown(final InputStream stream, final String fileName)
         throws IOException
     {
         final long startTimestamp = System.currentTimeMillis();
-        LOGGER.info("PDF markdown parsing started for document '{}' and file '{}' at {}", documentId, fileName,
-            startTimestamp);
+        LOGGER.info("PDF markdown parsing started for file '{}' at {}", fileName, startTimestamp);
         final byte[] bytes = stream.readAllBytes();
         try (PDDocument document = Loader.loadPDF(bytes)) {
             final StyledPdfTextStripper stripper = new StyledPdfTextStripper();
             final StringBuilder markdown = new StringBuilder();
-            markdown.append("<!-- document_id: ").append(escapeComment(documentId)).append(" -->\n");
             markdown.append("<!-- source_file: ").append(escapeComment(fileName)).append(" -->\n");
 
             final int pageCount = document.getNumberOfPages();
@@ -177,8 +174,8 @@ public class PdfMarkdownGenerator
             return markdown.toString().trim();
         } finally {
             final long endTimestamp = System.currentTimeMillis();
-            LOGGER.info("PDF markdown parsing finished for document '{}' and file '{}' at {} (total {} ms)",
-                documentId, fileName, endTimestamp, endTimestamp - startTimestamp);
+            LOGGER.info("PDF markdown parsing finished for file '{}' at {} (total {} ms)",
+                fileName, endTimestamp, endTimestamp - startTimestamp);
         }
     }
 

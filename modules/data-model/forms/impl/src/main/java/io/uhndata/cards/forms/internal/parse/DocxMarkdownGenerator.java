@@ -109,19 +109,16 @@ public class DocxMarkdownGenerator
      * Convert DOCX content to markdown grouped by paragraph blocks.
      *
      * @param stream the docx stream
-     * @param documentId identifier for the parsed document
      * @param fileName source file name
      * @return markdown text
      * @throws IOException when reading fails
      */
-    public String toMarkdown(final InputStream stream, final String documentId, final String fileName)
+    public String toMarkdown(final InputStream stream, final String fileName)
         throws IOException
     {
         final long startTimestamp = System.currentTimeMillis();
-        LOGGER.info("DOCX markdown parsing started for document '{}' and file '{}' at {}", documentId, fileName,
-            startTimestamp);
+        LOGGER.info("DOCX markdown parsing started for file '{}' at {}", fileName, startTimestamp);
         StringBuilder markdown = new StringBuilder();
-        markdown.append("<!-- document_id: ").append(this.escapeComment(documentId)).append(" -->").append(NEWLINE);
         markdown.append("<!-- source_file: ").append(this.escapeComment(fileName)).append(" -->").append(NEWLINE);
 
         try (XWPFDocument document = new XWPFDocument(stream)) {
@@ -131,8 +128,8 @@ public class DocxMarkdownGenerator
         } finally {
             final long endTimestamp = System.currentTimeMillis();
             final long totalMilliseconds = endTimestamp - startTimestamp;
-            LOGGER.info("DOCX markdown parsing finished for document '{}' and file '{}' at {} (total {} ms)",
-                documentId, fileName, endTimestamp, totalMilliseconds);
+            LOGGER.info("DOCX markdown parsing finished for file '{}' at {} (total {} ms)",
+                fileName, endTimestamp, totalMilliseconds);
         }
     }
 
