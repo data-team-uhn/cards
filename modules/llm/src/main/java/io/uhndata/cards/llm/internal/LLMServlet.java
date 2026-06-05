@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.anthropic.internal;
+package io.uhndata.cards.llm.internal;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -38,14 +38,14 @@ import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import io.uhndata.cards.anthropic.AnthropicClient;
+import io.uhndata.cards.llm.LLMClient;
 import io.uhndata.cards.llm.LLMMessage;
 
 /**
- * Servlet that proxies POST requests to the Anthropic Claude API.
- * The API key stays on the server; clients only send message content.
+ * Servlet that proxies POST requests to the configured LLM provider.
+ * The provider and its credentials stay on the server; clients only send message content.
  *
- * <p>Endpoint: {@code POST /.anthropic}
+ * <p>Endpoint: {@code POST /.llm}
  *
  * <p>Single-turn request:
  * <pre>{"message": "Hello", "system": "(optional)"}</pre>
@@ -62,13 +62,13 @@ import io.uhndata.cards.llm.LLMMessage;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/Homepage" },
     methods = { "POST" },
-    selectors = { "anthropic" })
-public class AnthropicServlet extends SlingJakartaAllMethodsServlet
+    selectors = { "llm" })
+public class LLMServlet extends SlingJakartaAllMethodsServlet
 {
-    private static final long serialVersionUID = 1569945667137440070L;
+    private static final long serialVersionUID = 4938271560024819437L;
 
     @Reference
-    private AnthropicClient anthropicClient;
+    private LLMClient llmClient;
 
     @Override
     protected void doPost(final SlingJakartaHttpServletRequest request,
@@ -91,11 +91,11 @@ public class AnthropicServlet extends SlingJakartaAllMethodsServlet
         try {
             final String reply;
             if (messages != null) {
-                reply = this.anthropicClient.chat(system, toMessageList(messages));
+                reply = this.llmClient.chat(system, toMessageList(messages));
             } else if (StringUtils.isNotBlank(message)) {
                 reply = StringUtils.isNotBlank(system)
-                    ? this.anthropicClient.chat(system, message)
-                    : this.anthropicClient.chat(message);
+                    ? this.llmClient.chat(system, message)
+                    : this.llmClient.chat(message);
             } else {
                 sendError(response, 400, "Request body must include 'message' or 'messages'");
                 return;
