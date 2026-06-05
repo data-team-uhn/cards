@@ -29,9 +29,8 @@ public interface DocumentParser
      * Parse text from the provided stream.
      *
      * @param stream the input document stream
-     * @param documentId identifier for the parsed document
      * @param fileName source file name
      * @return parsed markdown content
      */
-    String parse(InputStream stream, String documentId, String fileName);
+    String parse(InputStream stream, String fileName);
 }

@@ -106,8 +106,7 @@ public class ProposalAnswerEditor extends DefaultEditor
             return;
         }
 
-        final String documentId = StringUtils.defaultIfBlank(nodeBuilder.getString("jcr:uuid"), "unknown-document");
-        final List<String> parsedContents = parseProposalFiles(nodeBuilder, documentId);
+        final List<String> parsedContents = parseProposalFiles(nodeBuilder);
         if (!parsedContents.isEmpty()) {
             nodeBuilder.setProperty("note", String.join("\n\n", parsedContents), Type.STRING);
         }
@@ -119,15 +118,15 @@ public class ProposalAnswerEditor extends DefaultEditor
             return false;
         }
         String note = nodeBuilder.getString("note");
-        return StringUtils.isBlank(note) || note.startsWith("<!-- document_id:");
+        return StringUtils.isBlank(note) || note.startsWith("<!-- source_file:");
     }
 
-    private List<String> parseProposalFiles(final NodeBuilder answerNode, final String documentId)
+    private List<String> parseProposalFiles(final NodeBuilder answerNode)
     {
         final List<String> parsedContents = new ArrayList<>();
         for (String fileName : answerNode.getChildNodeNames()) {
             final NodeBuilder fileNode = answerNode.getChildNode(fileName);
-            final String parsedText = parseFileNode(fileNode, fileName, documentId);
+            final String parsedText = parseFileNode(fileNode, fileName);
             if (StringUtils.isNotBlank(parsedText)) {
                 parsedContents.add(parsedText.trim());
             }
@@ -135,7 +134,7 @@ public class ProposalAnswerEditor extends DefaultEditor
         return parsedContents;
     }
 
-    private String parseFileNode(final NodeBuilder fileNode, final String fileName, final String documentId)
+    private String parseFileNode(final NodeBuilder fileNode, final String fileName)
     {
         if (!NT_FILE.equals(fileNode.getName(JCR_PRIMARY_TYPE))) {
             return null;
@@ -148,24 +147,21 @@ public class ProposalAnswerEditor extends DefaultEditor
         if (dataBlob == null) {
             return null;
         }
-        return parseBlob(dataBlob, parser, fileName, documentId);
+        return parseBlob(dataBlob, parser, fileName);
     }
 
-    private String parseBlob(final Blob dataBlob, final DocumentParser parser,
-        final String fileName, final String documentId)
+    private String parseBlob(final Blob dataBlob, final DocumentParser parser, final String fileName)
     {
         final long blobLength = dataBlob.length();
         if (blobLength > MAX_DOCUMENT_SIZE_BYTES) {
-            LOGGER.warn("Skipping parse of '{}' in document '{}': size {} bytes exceeds limit",
-                fileName, documentId, blobLength);
+            LOGGER.warn("Skipping parse of '{}': size {} bytes exceeds limit", fileName, blobLength);
             return null;
         }
         try (InputStream stream = dataBlob.getNewStream()) {
             final byte[] content = stream.readNBytes((int) blobLength);
-            return parser.parse(new ByteArrayInputStream(content), documentId, fileName);
+            return parser.parse(new ByteArrayInputStream(content), fileName);
         } catch (Exception e) {
-            LOGGER.warn("Failed to parse proposal file '{}' in document '{}': {}", fileName, documentId,
-                e.getMessage());
+            LOGGER.warn("Failed to parse proposal file '{}': {}", fileName, e.getMessage());
             return null;
         }
     }
