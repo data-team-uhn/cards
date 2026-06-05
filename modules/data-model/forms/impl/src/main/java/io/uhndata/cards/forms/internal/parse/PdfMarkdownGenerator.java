@@ -22,6 +22,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.Loader;
@@ -130,6 +133,29 @@ public class PdfMarkdownGenerator
 
     private static final String DOUBLE_NEWLINE = "\n\n";
 
+    private static final String[] TOC_SECTION_HEADINGS = {
+        "TABLE OF CONTENTS",
+        "TABLE OF CONTENT",
+        "CONTENTS",
+    };
+
+    private static final String[] ABBREVIATION_SECTION_HEADINGS = {
+        "LIST OF ABBREVIATIONS",
+        "LIST OF ACRONYMS",
+        "ABBREVIATIONS",
+        "ACRONYMS",
+    };
+
+    private static final String[] TOC_TABLE_HEADER = {"Section", "Page"};
+
+    private static final String[] ABBREVIATION_TABLE_HEADER = {"Abbreviation", "Meaning"};
+
+    private static final Pattern TOC_ENTRY_PATTERN =
+        Pattern.compile("^(.+?)\\s*\\.{4,}\\s*(\\d+)\\s*$");
+
+    private static final Pattern ABBREVIATION_ENTRY_PATTERN =
+        Pattern.compile("^([A-Z][A-Z0-9\\-\\.]{1,7})\\s+(.+)$");
+
     /**
      * Convert PDF content to markdown grouped by pages.
      *
@@ -153,6 +179,7 @@ public class PdfMarkdownGenerator
             // TabulaPageParser owns the ObjectExtractor. Its close() delegates to PDDocument.close(),
             // so we intentionally do not close it — the enclosing try-with-resources handles that.
             final TabulaPageParser tabulaParser = new TabulaPageParser(document);
+            final SpecialSection[] currentSection = {SpecialSection.NONE};
             for (int page = 1; page <= pageCount; page++) {
                 final List<StyledLine> pageLines = stripper.extractPageLines(document, page);
                 List<DetectedTable> tables = tabulaParser.extractTables(page, fileName);
@@ -162,7 +189,7 @@ public class PdfMarkdownGenerator
                     final List<TextToken> tokens = stripper.getLastPageTokens();
                     tables = detectTables(rulingLines, tokens);
                 }
-                final String pageText = renderPage(pageLines, tables);
+                final String pageText = renderPage(pageLines, tables, currentSection);
                 markdown.append("\n\n<!-- page: ").append(page).append(" -->\n");
                 markdown.append("## Page ").append(page).append(DOUBLE_NEWLINE);
                 if (StringUtils.isBlank(pageText)) {
@@ -192,7 +219,8 @@ public class PdfMarkdownGenerator
         }
     }
 
-    private String renderPage(final List<StyledLine> lines, final List<DetectedTable> tables)
+    private String renderPage(final List<StyledLine> lines, final List<DetectedTable> tables,
+        final SpecialSection[] currentSection)
     {
         final List<StyledLine> allNormalized = lines.stream()
             .map(this::normalizedCopy)
@@ -208,10 +236,10 @@ public class PdfMarkdownGenerator
         }
         final float baseGap = estimateBaseGap(proseLines);
         final StringBuilder output = new StringBuilder();
-        final StringBuilder paragraphBuffer = new StringBuilder();
+        final List<String[]> sectionRows = new ArrayList<>();
         final boolean[] emitted = new boolean[sortedTables.size()];
-        renderProseLinesWithTables(proseLines, sortedTables, emitted, baseGap, output, paragraphBuffer);
-        flushParagraph(output, paragraphBuffer);
+        renderProseLinesWithTables(proseLines, sortedTables, emitted, baseGap, output,
+            sectionRows, currentSection);
         for (int t = 0; t < sortedTables.size(); t++) {
             if (!emitted[t]) {
                 if (output.length() > 0) {
@@ -225,10 +253,12 @@ public class PdfMarkdownGenerator
 
     private void renderProseLinesWithTables(final List<StyledLine> proseLines,
         final List<DetectedTable> sortedTables, final boolean[] emitted, final float baseGap,
-        final StringBuilder output, final StringBuilder paragraphBuffer)
+        final StringBuilder output, final List<String[]> sectionRows,
+        final SpecialSection[] currentSection)
     {
         final ListBuffer listBuffer = new ListBuffer();
         final CodeBuffer codeBuffer = new CodeBuffer();
+        final StringBuilder paragraphBuffer = new StringBuilder();
         for (int i = 0; i < proseLines.size(); i++) {
             final StyledLine current = proseLines.get(i);
             emitPendingTables(output, paragraphBuffer, listBuffer, codeBuffer, sortedTables, emitted,
@@ -239,8 +269,19 @@ public class PdfMarkdownGenerator
                 this.flushList(output, listBuffer);
                 this.flushCodeBlock(output, codeBuffer);
                 this.flushParagraph(output, paragraphBuffer);
+                this.flushSectionRows(output, sectionRows, currentSection);
+                this.activateSectionForHeading(current.text, currentSection);
                 this.appendHeading(output, current.text);
                 continue;
+            }
+            if (currentSection[0] != SpecialSection.NONE) {
+                final String[] entry = currentSection[0] == SpecialSection.TOC
+                    ? this.parseTocEntry(current.text)
+                    : this.parseAbbreviationEntry(current.text);
+                if (entry != null) {
+                    sectionRows.add(entry);
+                    continue;
+                }
             }
             if (this.isCodeLine(current)) {
                 this.flushList(output, listBuffer);
@@ -253,6 +294,8 @@ public class PdfMarkdownGenerator
         }
         this.flushList(output, listBuffer);
         this.flushCodeBlock(output, codeBuffer);
+        this.flushSectionRows(output, sectionRows, currentSection);
+        this.flushParagraph(output, paragraphBuffer);
     }
 
     private void handleListOrParagraph(final StyledLine current, final StyledLine previous,
@@ -792,6 +835,102 @@ public class PdfMarkdownGenerator
         return trimmed.contains("=") && trimmed.contains("(") && trimmed.contains(")");
     }
 
+    private boolean isTocSectionHeading(final String text)
+    {
+        final String upper = text.trim().toUpperCase(Locale.ROOT);
+        for (String heading : TOC_SECTION_HEADINGS) {
+            if (upper.equals(heading)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAbbreviationSectionHeading(final String text)
+    {
+        final String upper = text.trim().toUpperCase(Locale.ROOT);
+        for (String heading : ABBREVIATION_SECTION_HEADINGS) {
+            if (upper.equals(heading)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String[] parseTocEntry(final String text)
+    {
+        if (StringUtils.isBlank(text)) {
+            return null;
+        }
+        final Matcher matcher = TOC_ENTRY_PATTERN.matcher(text.trim());
+        if (!matcher.matches()) {
+            return null;
+        }
+        return new String[]{matcher.group(1).trim(), matcher.group(2).trim()};
+    }
+
+    private String[] parseAbbreviationEntry(final String text)
+    {
+        if (StringUtils.isBlank(text)) {
+            return null;
+        }
+        final Matcher matcher = ABBREVIATION_ENTRY_PATTERN.matcher(text.trim());
+        if (!matcher.matches()) {
+            return null;
+        }
+        return new String[]{matcher.group(1).trim(), matcher.group(2).trim()};
+    }
+
+    private void activateSectionForHeading(final String headingText,
+        final SpecialSection[] currentSection)
+    {
+        if (this.isTocSectionHeading(headingText)) {
+            currentSection[0] = SpecialSection.TOC;
+        } else if (this.isAbbreviationSectionHeading(headingText)) {
+            currentSection[0] = SpecialSection.ABBREVIATIONS;
+        } else {
+            currentSection[0] = SpecialSection.NONE;
+        }
+    }
+
+    private void flushSectionRows(final StringBuilder output, final List<String[]> sectionRows,
+        final SpecialSection[] currentSection)
+    {
+        if (sectionRows.isEmpty()) {
+            return;
+        }
+        if (output.length() > 0) {
+            output.append(DOUBLE_NEWLINE);
+        }
+        output.append(this.sectionTableToMarkdown(sectionRows, currentSection[0]));
+        sectionRows.clear();
+    }
+
+    private String sectionTableToMarkdown(final List<String[]> rows, final SpecialSection section)
+    {
+        final String[] header = section == SpecialSection.TOC
+            ? TOC_TABLE_HEADER : ABBREVIATION_TABLE_HEADER;
+        final StringBuilder sb = new StringBuilder();
+        sb.append('|');
+        for (String col : header) {
+            sb.append(' ').append(col).append(" |");
+        }
+        sb.append('\n').append('|');
+        for (int i = 0; i < header.length; i++) {
+            sb.append("---|");
+        }
+        sb.append('\n');
+        for (String[] row : rows) {
+            sb.append('|');
+            for (int c = 0; c < header.length; c++) {
+                final String cell = c < row.length ? this.escapeCellText(row[c]) : " ";
+                sb.append(' ').append(cell).append(" |");
+            }
+            sb.append('\n');
+        }
+        return sb.toString().trim();
+    }
+
     private String escapeComment(final String value)
     {
         if (value == null) {
@@ -801,6 +940,11 @@ public class PdfMarkdownGenerator
     }
 
     // ---- Inner data types ----
+
+    private enum SpecialSection
+    {
+        NONE, TOC, ABBREVIATIONS
+    }
 
     private static final class RulingLine
     {
