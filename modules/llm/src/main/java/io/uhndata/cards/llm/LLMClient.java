@@ -17,20 +17,19 @@
  * under the License.
  */
 
-package io.uhndata.cards.anthropic;
+package io.uhndata.cards.llm;
 
 import java.io.IOException;
 import java.util.List;
 
-import io.uhndata.cards.llm.LLMMessage;
-
 /**
- * OSGi service for sending requests to the Anthropic Claude Messages API.
- * Configure the API key via the {@code ANTHROPIC_API_KEY} environment variable.
+ * OSGi service for sending chat requests to a configured LLM provider.
+ * The active provider is selected via the {@code LLM Router} OSGi configuration.
+ * Providers are registered as {@link LLMProvider} services with the {@code llm.provider} service property.
  *
  * @version $Id$
  */
-public interface AnthropicClient
+public interface LLMClient
 {
     /**
      * Send a single user message and return the assistant's reply.
@@ -44,7 +43,7 @@ public interface AnthropicClient
     /**
      * Send a single user message with a system prompt and return the assistant's reply.
      *
-     * @param systemPrompt optional system instructions (may be null or blank)
+     * @param systemPrompt optional system instructions (may be {@code null} or blank)
      * @param userMessage the user turn content
      * @return the assistant's text response
      * @throws IOException on network failure or a non-200 API response
@@ -54,7 +53,7 @@ public interface AnthropicClient
     /**
      * Send a multi-turn conversation with an optional system prompt.
      *
-     * @param systemPrompt optional system instructions (may be null or blank)
+     * @param systemPrompt optional system instructions (may be {@code null} or blank)
      * @param messages the ordered list of conversation turns; must alternate user/assistant
      * @return the assistant's text response
      * @throws IOException on network failure or a non-200 API response

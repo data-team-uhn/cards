@@ -26,10 +26,10 @@
     <version>0.9.39-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-anthropic</artifactId>
+  <artifactId>cards-llm</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Anthropic API Client</name>
-  <description>OSGi service wrapping the Anthropic Claude Messages API</description>
+  <name>CARDS - LLM Client Abstraction</name>
+  <description>Generic OSGi service abstraction for LLM providers, with routing and a REST endpoint</description>
 
   <build>
     <plugins>
@@ -47,21 +47,6 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-llm</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient-osgi</artifactId>
-      <version>4.5.13</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <version>4.4.10</version>
-    </dependency>
     <dependency>
       <groupId>jakarta.json</groupId>
       <artifactId>jakarta.json-api</artifactId>
