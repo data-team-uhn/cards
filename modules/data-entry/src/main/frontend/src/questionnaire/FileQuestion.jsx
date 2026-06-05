@@ -49,7 +49,7 @@ function FileQuestion(props) {
   checkPropTypes(FileQuestion, props);
   const { classes, existingAnswer, pageActive, ...rest } = props;
   const { maxAnswers, namePattern, accept } = { ...props.questionDefinition, ...props }
-  const { onBeforeUpload, onAfterUpload, onDelete, previewRenderer, answerNodeType } = props;
+  const { onBeforeUpload, onAfterUpload, onDelete, previewRenderer, answerNodeType, validateFiles } = props;
   let initialValues =
     // Check whether or not we have an initial value
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
@@ -108,6 +108,11 @@ function FileQuestion(props) {
   let upload = (files) => {
     // Don't do anything if the context provider says uploads are disabled
     if (disableUploads) {
+      return;
+    }
+    const validationError = validateFiles?.(files);
+    if (validationError) {
+      setError(validationError);
       return;
     }
     // TODO - handle possible logged out situation here - open a login popup
@@ -376,7 +381,8 @@ FileQuestion.propTypes = {
     text: PropTypes.string,
   }).isRequired,
   namePattern: PropTypes.string,
-  accept: PropTypes.string
+  accept: PropTypes.string,
+  validateFiles: PropTypes.func,
 };
 
 const StyledFileQuestion = withStyles(FileQuestion, fileStyles);

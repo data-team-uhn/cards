@@ -28,6 +28,51 @@ import FormattedText from "../components/FormattedText";
 import { checkPropTypes } from "../propTypes";
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 
+const ACCEPTED_PROPOSAL_EXTENSIONS = [".pdf", ".docx", ".doc"];
+
+const ACCEPTED_PROPOSAL_MIME_TYPES =
+  ".pdf,.docx,.doc,application/pdf,application/msword,"
+  + "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+/**
+ * Extract the lowercase file extension including the leading dot.
+ *
+ * @param {string} fileName uploaded file name
+ * @returns {string|null} extension such as ".pdf", or null when absent
+ */
+function extractFileExtension(fileName) {
+  if (!fileName) {
+    return null;
+  }
+  const dotIndex = fileName.lastIndexOf(".");
+  if (dotIndex < 0 || dotIndex === fileName.length - 1) {
+    return null;
+  }
+  return fileName.substring(dotIndex).toLowerCase();
+}
+
+/**
+ * Validate proposal uploads by file extension.
+ *
+ * @param {FileList} files selected files
+ * @returns {string|undefined} user-visible error when any file is unsupported
+ */
+function validateProposalFiles(files) {
+  const errors = [];
+  for (let i = 0; i < files.length; i++) {
+    const file = files.item(i);
+    const extension = extractFileExtension(file.name);
+    if (!extension || !ACCEPTED_PROPOSAL_EXTENSIONS.includes(extension)) {
+      const format = extension || "(unknown)";
+      errors.push(
+        `Unsupported file format ${format}, file ${file.name} can not be processed. `
+        + "Accepted formats: .pdf, .docx, .doc"
+      );
+    }
+  }
+  return errors.length > 0 ? errors.join(" ") : undefined;
+}
+
 function ProposalNote(props) {
   const {
     answerPath,
@@ -97,7 +142,8 @@ function ProposalQuestion(props) {
       questionDefinition={{ ...questionDefinition, maxAnswers: 1, enableNotes: true }}
       {...rest}
       answerNodeType="cards:ProposalAnswer"
-      accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      accept={ACCEPTED_PROPOSAL_MIME_TYPES}
+      validateFiles={validateProposalFiles}
       noteComponent={ProposalNote}
     />
   );
