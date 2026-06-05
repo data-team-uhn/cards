@@ -26,10 +26,10 @@
     <version>0.9.39-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-anthropic</artifactId>
+  <artifactId>cards-local-llm</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Anthropic API Client</name>
-  <description>OSGi service wrapping the Anthropic Claude Messages API</description>
+  <name>CARDS - Local LLM Provider</name>
+  <description>LLM provider for local/self-hosted models via the OpenAI-compatible API (Ollama, LM Studio, etc.)</description>
 
   <build>
     <plugins>
@@ -81,18 +81,6 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.service.metatype.annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.servlets.annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
   </dependencies>
 </project>

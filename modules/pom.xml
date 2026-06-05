@@ -74,6 +74,8 @@
     <module>variants</module>
     <module>locking</module>
     <module>healthcheck</module>
+    <module>llm</module>
     <module>anthropic</module>
+    <module>local-llm</module>
   </modules>
 </project>
