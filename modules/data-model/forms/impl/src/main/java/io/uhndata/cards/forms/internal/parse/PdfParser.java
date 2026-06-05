@@ -18,80 +18,23 @@ package io.uhndata.cards.forms.internal.parse;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Parser for PDF files.
- * <p>
- * Attempts extraction with the primary Java-based {@link PdfMarkdownGenerator} first, enforcing a
- * two-minute timeout. Falls back to {@link DoclingFallbackMarkdownGenerator} when the primary
- * generator fails, times out, or produces insufficient output.
- * </p>
+ * Parser for PDF files. Delegates orchestration to {@link SimpleDocumentParser} and supplies
+ * {@link PdfMarkdownGenerator} as the primary generator.
  *
  * @version $Id$
  */
-public class PdfParser implements DocumentParser
+public class PdfParser extends SimpleDocumentParser
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PdfParser.class);
-
-    private static final long PRIMARY_TIMEOUT_MINUTES = 2L;
-
-    private final PdfMarkdownGenerator markdownGenerator = new PdfMarkdownGenerator();
-
-    private final DoclingFallbackMarkdownGenerator fallbackGenerator = new DoclingFallbackMarkdownGenerator();
+    private final PdfMarkdownGenerator generator = new PdfMarkdownGenerator();
 
     @Override
-    public String parse(final InputStream stream, final String fileName)
-    {
-        final byte[] content;
-        try {
-            content = stream.readAllBytes();
-        } catch (IOException e) {
-            LOGGER.warn("Failed to read PDF stream for '{}': {}", fileName, e.getMessage());
-            return "";
-        }
-        final String primary = tryPrimaryWithTimeout(content, fileName);
-        if (DoclingFallbackMarkdownGenerator.isSufficient(primary)) {
-            return primary;
-        }
-        LOGGER.info("Primary PDF generator produced insufficient output for '{}', using Docling fallback", fileName);
-        return this.fallbackGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
-    }
-
-    private String tryPrimaryWithTimeout(final byte[] content, final String fileName)
-    {
-        final ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
-        final CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-            Thread.currentThread().setContextClassLoader(contextLoader);
-            return runPrimaryGenerator(content, fileName);
-        });
-        try {
-            return future.get(PRIMARY_TIMEOUT_MINUTES, TimeUnit.MINUTES);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            future.cancel(true);
-            LOGGER.warn("Primary PDF generator interrupted for '{}'", fileName);
-            return "";
-        } catch (TimeoutException | ExecutionException e) {
-            future.cancel(true);
-            LOGGER.warn("Primary PDF generator timed out or failed for '{}': {}", fileName, e.getMessage());
-            return "";
-        }
-    }
-
-    private String runPrimaryGenerator(final byte[] content, final String fileName)
+    protected String runPrimaryGenerator(final byte[] content, final String fileName)
     {
         try {
-            return this.markdownGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
+            return this.generator.toMarkdown(new ByteArrayInputStream(content), fileName);
         } catch (IOException | LinkageError e) {
-            LOGGER.debug("Primary PDF generator error for '{}': {}", fileName, e.getMessage());
             return "";
         }
     }
