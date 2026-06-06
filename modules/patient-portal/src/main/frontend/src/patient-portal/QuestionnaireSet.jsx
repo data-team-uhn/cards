@@ -193,6 +193,16 @@ function QuestionnaireSet(props) {
     return formData?.[questionnaireId]?.statusFlags?.includes("SUBMITTED");
   }
 
+  // Whether a form has been handled for flow purposes (offered to the patient and dealt with).
+  // Regular forms are done once they are no longer INCOMPLETE. "Optional" forms have no mandatory
+  // questions, so they are never INCOMPLETE and would otherwise be auto-skipped from creation; instead
+  // they are considered handled only once submitted, ensuring the patient is offered them at least once.
+  const isFormDone = (questionnaireId) => {
+    return questionnaires?.[questionnaireId]?.optional
+      ? isFormSubmitted(questionnaireId)
+      : isFormComplete(questionnaireId);
+  }
+
   const getVisitInformation = (questionName, formatted) => {
     let question = visitInformation?.questionnaire?.[questionName];
     if (!question) return null;
@@ -263,8 +273,8 @@ function QuestionnaireSet(props) {
   // Find the next step : Skip questionnaires that have already been filled out
   const findNextStep = (step) => {
     let next = step + 1;
-    // Skip if the corresponding questionnaire has already been filled out:
-    while (next < questionnaireIds.length && isFormComplete(questionnaireIds[next])) ++next;
+    // Skip if the corresponding questionnaire has already been handled:
+    while (next < questionnaireIds.length && isFormDone(questionnaireIds[next])) ++next;
     return next;
   }
 
@@ -278,6 +288,12 @@ function QuestionnaireSet(props) {
     let nextStep = findNextStep(crtStep);
     return nextStep < questionnaireIds?.length ? questionnaires[questionnaireIds?.[nextStep]] : null;
   }, [crtStep, questionnaires, formData, questionnaireIds]);
+
+  // Whether every questionnaire in the set has been handled (see isFormDone). Used to decide whether
+  // the patient can skip straight to the exit/review screen without going through the surveys.
+  const allFormsDone = useMemo(() => (
+    !!questionnaireIds?.length && questionnaireIds.every(q => isFormDone(q))
+  ), [questionnaireIds, questionnaires, formDataLoadCount]);
 
   const launchNextForm = () => {
     if (formData?.[nextQuestionnaire['@name']]) {
@@ -427,12 +443,16 @@ function QuestionnaireSet(props) {
       .forEach(([key, value]) => {
         let addons = Object.values(value).filter(filterValue => ENTRY_TYPES.includes(filterValue['jcr:primaryType']));
         data[value.questionnaire['@name']] = {
+          // Raw questionnaire title; also used as a key to look up form data in the subject JSON
           'title': value.questionnaire?.title || key,
+          // Title shown to the patient: optional questionnaires are flagged as such in the UI
+          'displayTitle': (value.questionnaire?.title || key) + (value.optional ? " (Optional)" : ""),
           'alias': key,
           '@path': value.questionnaire?.['@path'],
           '@name': value.questionnaire?.['@name'],
           'hasInterpretation': hasInterpretation(value.questionnaire) || addons.some(hasInterpretation),
           'estimate': value.estimate,
+          'optional': !!value.optional,
           'questionnaireAddons': addons
         }
       });
@@ -531,12 +551,14 @@ function QuestionnaireSet(props) {
     }
   }, [formDataLoadCount]);
 
-  // When the user lands on a completed visit that has not been submitted, proceed to the last step
+  // When the user lands on a fully handled visit that has not been submitted, proceed to the last step.
+  // Uses allFormsDone rather than isComplete so that optional surveys the patient has not yet gone
+  // through (which are not INCOMPLETE, but not submitted either) are still offered instead of skipped.
   useEffect(() => {
-    if(isComplete && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
+    if(allFormsDone && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
       setCrtStep(questionnaireIds.length);
     }
-  }, [isComplete, isSubmitted]);
+  }, [allFormsDone, isSubmitted]);
 
   // At the last step, if the configuration specifies to skip the review, automatically submit
   useEffect(() => {
@@ -711,12 +733,12 @@ function QuestionnaireSet(props) {
       { (questionnaireIds || []).map((q, i) => (
         <ListItem key={q+"Welcome"} disablePadding>
           <ListItemAvatar>
-            {isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}
+            {isFormDone(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}
           </ListItemAvatar>
           <ListItemText
-            primary={questionnaires[q]?.title}
+            primary={questionnaires[q]?.displayTitle}
             secondary={isFormSubmitted(q) ? "Submitted" :
-              !isFormComplete(q) && (displayEstimate(q)
+              !isFormDone(q) && (displayEstimate(q)
             + (["patient", "guest-patient"].includes(formData?.[q]?.["jcr:lastModifiedBy"]) ? " (in progress)" : ""))}
           />
         </ListItem>
@@ -842,7 +864,7 @@ function QuestionnaireSet(props) {
         <ListItem key={q+"Exit"} disablePadding>
           <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
           <ListItemText
-            primary={questionnaires[q]?.title}
+            primary={questionnaires[q]?.displayTitle}
             secondary={!isFormComplete(q) && "Incomplete" || isFormSubmitted(q) && "Submitted"}
           />
         </ListItem>
@@ -882,7 +904,7 @@ function QuestionnaireSet(props) {
         greeting={username}
         withSignout={!!(config?.PIIAuthRequired)}
         progress={progress}
-        subtitle={questionnaires[questionnaireIds[crtStep]]?.title}
+        subtitle={questionnaires[questionnaireIds[crtStep]]?.displayTitle}
         step={stepIndicator(crtStep, true)}
       />
       <QuestionnaireSetScreen

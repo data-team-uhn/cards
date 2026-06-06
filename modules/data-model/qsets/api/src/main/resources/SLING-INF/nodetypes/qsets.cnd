@@ -76,6 +76,11 @@
   // An optional frequency for re-taking the questionnaire, in weeks
   - frequency (long)
 
+  // An optional flag marking a questionnaire that the patient may legitimately leave blank (it has no
+  // mandatory questions). Such a questionnaire is always offered to the patient and is only considered
+  // handled once the survey is submitted, rather than being auto-skipped for lacking mandatory answers.
+  - optional (boolean)
+
   //  An optional configuration describing the columns of the livetable that lists the forms corresponding to this questionnaire
   - view (string)
 
