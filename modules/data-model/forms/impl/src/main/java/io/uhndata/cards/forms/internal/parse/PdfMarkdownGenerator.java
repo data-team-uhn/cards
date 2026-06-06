@@ -156,6 +156,11 @@ public class PdfMarkdownGenerator
     private static final Pattern ABBREVIATION_ENTRY_PATTERN =
         Pattern.compile("^([A-Z][A-Z0-9\\-\\.]{1,7})\\s+(.+)$");
 
+    private static final int KEY_VALUE_KEY_MAX_WORDS = 5;
+
+    private static final Pattern KEY_VALUE_ENTRY_PATTERN =
+        Pattern.compile("^([A-Za-z][^:]{0,59}):\\s+(.+)$");
+
     /**
      * Convert PDF content to markdown grouped by pages.
      *
@@ -259,6 +264,7 @@ public class PdfMarkdownGenerator
         final ListBuffer listBuffer = new ListBuffer();
         final CodeBuffer codeBuffer = new CodeBuffer();
         final StringBuilder paragraphBuffer = new StringBuilder();
+        final List<String[]> keyValueRows = new ArrayList<>();
         for (int i = 0; i < proseLines.size(); i++) {
             final StyledLine current = proseLines.get(i);
             emitPendingTables(output, paragraphBuffer, listBuffer, codeBuffer, sortedTables, emitted,
@@ -266,10 +272,8 @@ public class PdfMarkdownGenerator
             final StyledLine previous = i > 0 ? proseLines.get(i - 1) : null;
             final StyledLine next = i + 1 < proseLines.size() ? proseLines.get(i + 1) : null;
             if (this.isHeading(current, previous, next, baseGap)) {
-                this.flushList(output, listBuffer);
-                this.flushCodeBlock(output, codeBuffer);
-                this.flushParagraph(output, paragraphBuffer);
-                this.flushSectionRows(output, sectionRows, currentSection);
+                this.flushAllBuffers(output, listBuffer, codeBuffer, paragraphBuffer,
+                    keyValueRows, sectionRows, currentSection);
                 this.activateSectionForHeading(current.text, currentSection);
                 this.appendHeading(output, current.text);
                 continue;
@@ -283,6 +287,11 @@ public class PdfMarkdownGenerator
                     continue;
                 }
             }
+            if (this.isKeyValueEntry(current.text, next, keyValueRows)) {
+                keyValueRows.add(this.parseKeyValueEntry(current.text));
+                continue;
+            }
+            this.flushKeyValueRows(output, keyValueRows);
             if (this.isCodeLine(current)) {
                 this.flushList(output, listBuffer);
                 this.flushParagraph(output, paragraphBuffer);
@@ -292,10 +301,8 @@ public class PdfMarkdownGenerator
             this.handleListOrParagraph(current, previous, baseGap, output, paragraphBuffer,
                 listBuffer, codeBuffer);
         }
-        this.flushList(output, listBuffer);
-        this.flushCodeBlock(output, codeBuffer);
-        this.flushSectionRows(output, sectionRows, currentSection);
-        this.flushParagraph(output, paragraphBuffer);
+        this.flushAllBuffers(output, listBuffer, codeBuffer, paragraphBuffer,
+            keyValueRows, sectionRows, currentSection);
     }
 
     private void handleListOrParagraph(final StyledLine current, final StyledLine previous,
@@ -902,14 +909,26 @@ public class PdfMarkdownGenerator
         if (output.length() > 0) {
             output.append(DOUBLE_NEWLINE);
         }
-        output.append(this.sectionTableToMarkdown(sectionRows, currentSection[0]));
+        final String[] header = currentSection[0] == SpecialSection.TOC
+            ? TOC_TABLE_HEADER : ABBREVIATION_TABLE_HEADER;
+        output.append(this.sectionTableToMarkdown(sectionRows, header));
         sectionRows.clear();
     }
 
-    private String sectionTableToMarkdown(final List<String[]> rows, final SpecialSection section)
+    private void flushAllBuffers(final StringBuilder output, final ListBuffer listBuffer,
+        final CodeBuffer codeBuffer, final StringBuilder paragraphBuffer,
+        final List<String[]> keyValueRows, final List<String[]> sectionRows,
+        final SpecialSection[] currentSection)
     {
-        final String[] header = section == SpecialSection.TOC
-            ? TOC_TABLE_HEADER : ABBREVIATION_TABLE_HEADER;
+        this.flushList(output, listBuffer);
+        this.flushCodeBlock(output, codeBuffer);
+        this.flushParagraph(output, paragraphBuffer);
+        this.flushKeyValueRows(output, keyValueRows);
+        this.flushSectionRows(output, sectionRows, currentSection);
+    }
+
+    private String sectionTableToMarkdown(final List<String[]> rows, final String[] header)
+    {
         final StringBuilder sb = new StringBuilder();
         sb.append('|');
         for (String col : header) {
@@ -929,6 +948,55 @@ public class PdfMarkdownGenerator
             sb.append('\n');
         }
         return sb.toString().trim();
+    }
+
+    private boolean isKeyValueLine(final String text)
+    {
+        if (StringUtils.isBlank(text)) {
+            return false;
+        }
+        final Matcher matcher = KEY_VALUE_ENTRY_PATTERN.matcher(text.trim());
+        if (!matcher.matches()) {
+            return false;
+        }
+        return StringUtils.split(matcher.group(1)).length <= KEY_VALUE_KEY_MAX_WORDS;
+    }
+
+    private boolean isKeyValueEntry(final String text, final StyledLine next,
+        final List<String[]> keyValueRows)
+    {
+        if (!this.isKeyValueLine(text)) {
+            return false;
+        }
+        return !keyValueRows.isEmpty() || (next != null && this.isKeyValueLine(next.text));
+    }
+
+    private String[] parseKeyValueEntry(final String text)
+    {
+        final Matcher matcher = KEY_VALUE_ENTRY_PATTERN.matcher(text.trim());
+        if (!matcher.matches()) {
+            return null;
+        }
+        return new String[]{matcher.group(1).trim(), matcher.group(2).trim()};
+    }
+
+    private void flushKeyValueRows(final StringBuilder output, final List<String[]> keyValueRows)
+    {
+        if (keyValueRows.isEmpty()) {
+            return;
+        }
+        if (output.length() > 0) {
+            output.append(DOUBLE_NEWLINE);
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (String[] row : keyValueRows) {
+            if (sb.length() > 0) {
+                sb.append(DOUBLE_NEWLINE);
+            }
+            sb.append(row[0]).append(": ").append(row[1]);
+        }
+        output.append(sb.toString());
+        keyValueRows.clear();
     }
 
     private String escapeComment(final String value)
