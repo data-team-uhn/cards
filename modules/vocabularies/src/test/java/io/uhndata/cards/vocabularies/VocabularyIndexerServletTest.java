@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -59,7 +60,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
-import com.google.common.base.Function;
 import io.uhndata.cards.vocabularies.internal.NCITFlatIndexer;
 import io.uhndata.cards.vocabularies.spi.VocabularyIndexer;
 import io.uhndata.cards.vocabularies.spi.VocabularyParserUtils;
