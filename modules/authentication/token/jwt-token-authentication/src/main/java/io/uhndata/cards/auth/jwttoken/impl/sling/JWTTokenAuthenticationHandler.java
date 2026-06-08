@@ -55,4 +55,10 @@ public class JWTTokenAuthenticationHandler extends AbstractTokenAuthenticationHa
         // JWTs consist of 3 base64URL strings separated by `.`
         return token != null && token.matches("^[\\w-_]+\\.[\\w-_]+\\.[\\w-_]+$");
     }
+
+    @Override
+    public String toString()
+    {
+        return "JWT Based Authentication Handler";
+    }
 }

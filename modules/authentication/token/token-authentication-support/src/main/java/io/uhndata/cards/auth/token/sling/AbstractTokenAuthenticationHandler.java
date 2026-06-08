@@ -166,12 +166,6 @@ public abstract class AbstractTokenAuthenticationHandler extends DefaultJakartaA
         showError(request, response);
     }
 
-    @Override
-    public String toString()
-    {
-        return "Token Based Authentication Handler";
-    }
-
     /**
      * Look for a login token sent as a request parameter, process it into a token object, and store it in the request
      * for Oak to use when creating a user session.

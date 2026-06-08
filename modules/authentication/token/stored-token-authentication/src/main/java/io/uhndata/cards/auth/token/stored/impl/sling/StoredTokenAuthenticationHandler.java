@@ -54,4 +54,10 @@ public class TokenAuthenticationHandler extends AbstractTokenAuthenticationHandl
         return token != null && token.matches(
             "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}_[0-9a-f]+$");
     }
+
+    @Override
+    public String toString()
+    {
+        return "Stored Token Based Authentication Handler";
+    }
 }
