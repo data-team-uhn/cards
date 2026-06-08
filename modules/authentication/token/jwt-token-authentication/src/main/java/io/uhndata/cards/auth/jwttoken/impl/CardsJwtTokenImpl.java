@@ -23,8 +23,6 @@ import java.util.Map;
 
 import org.apache.jackrabbit.api.security.authentication.token.TokenCredentials;
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
@@ -41,8 +39,6 @@ public class CardsJwtTokenImpl implements CardsToken
 {
     /** The name of the parent node where tokens for a user are stored. */
     public static final String SYSTEM_NODE_NAME = "jcr:system";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CardsJwtTokenImpl.class);
 
     /** The login token string. */
     private final String loginToken;
