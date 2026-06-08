@@ -539,7 +539,7 @@
               <goal>deploy</goal>
             </goals>
             <configuration>
-              <altDeploymentRepository>localBuild::default::file://.mvnrepo</altDeploymentRepository>
+              <altDeploymentRepository>localBuild::file://.mvnrepo</altDeploymentRepository>
             </configuration>
           </execution>
         </executions>
