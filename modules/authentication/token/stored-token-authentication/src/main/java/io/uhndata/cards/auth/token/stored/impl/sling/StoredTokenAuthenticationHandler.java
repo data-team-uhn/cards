@@ -36,7 +36,7 @@ import io.uhndata.cards.auth.token.sling.AbstractTokenAuthenticationHandler;
 @Component(service = JakartaAuthenticationHandler.class, immediate = true, property = {
     JakartaAuthenticationHandler.TYPE_PROPERTY + "=" + HttpServletRequest.FORM_AUTH,
     "path=/" })
-public class TokenAuthenticationHandler extends AbstractTokenAuthenticationHandler
+public class StoredTokenAuthenticationHandler extends AbstractTokenAuthenticationHandler
 {
     @Reference(target = "(component.name=io.uhndata.cards.auth.token.stored.impl.CardsStoredTokenManagerImpl)")
     private TokenManager tokenManager;
