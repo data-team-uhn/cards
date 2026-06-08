@@ -31,7 +31,7 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface TokenManager
 {
     /**
-     * Create and persist a new token.
+     * Create a new token.
      *
      * @param user local username to associate with the token
      * @param expiration date after which the token becomes invalid
@@ -43,7 +43,7 @@ public interface TokenManager
     /**
      * Parse a token's data from its identifier.
      *
-     * @param token a token identifier, either in the format {@code node-uuid_secret-key}, or just {@code node-uuid}
+     * @param token a token string
      * @return the parsed token data, or {@code null} if the input is invalid
      */
     CardsToken parse(String token);
