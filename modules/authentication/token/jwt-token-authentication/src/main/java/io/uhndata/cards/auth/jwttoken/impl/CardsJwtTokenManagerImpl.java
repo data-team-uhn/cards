@@ -26,11 +26,9 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,83 +45,69 @@ import io.uhndata.cards.auth.token.TokenManager;
  *
  * @version $Id$
  */
-@Component(immediate = true, property = "service.ranking:Integer=50", service = {TokenManager.class})
+@Component(immediate = true, property = "service.ranking:Integer=50", service = { TokenManager.class })
 public class CardsJwtTokenManagerImpl implements TokenManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CardsJwtTokenManagerImpl.class);
 
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    private final SecretKey key;
+
+    @Activate
+    public CardsJwtTokenManagerImpl(@Reference ResourceResolverFactory rrf)
+    {
+        SecretKey result = null;
+        try (ResourceResolver resolver = rrf.getServiceResourceResolver(null)) {
+            String resourcePath = "/jcr:system/cards:jwt/JWTSigningKey";
+            Resource res = resolver.resolve(resourcePath);
+            Node keyNode = res.adaptTo(Node.class);
+            if (keyNode == null) {
+                LOGGER.error("Failed to load JWT Signing key: node {} could not be read", resourcePath);
+                throw new ExceptionInInitializerError(resourcePath);
+            }
+            if (keyNode.hasProperty("key")) {
+                result = Keys.hmacShaKeyFor(Decoders.BASE64.decode(keyNode.getProperty("key").getString()));
+            } else {
+                result = Jwts.SIG.HS512.key().build();
+                String secretString = Encoders.BASE64.encode(result.getEncoded());
+                keyNode.setProperty("key", secretString);
+                resolver.commit();
+            }
+        } catch (LoginException e) {
+            LOGGER.error("Service access not granted: {}", e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to load JWT Signing key from node: {}", e.getMessage(), e);
+        }
+        this.key = result;
+    }
 
     @Override
     public CardsJwtTokenImpl create(final String userId, final Calendar expiration, final Map<String, String> extraData)
     {
-        // Get a service session, since this may be called in a background thread without a user-bound session
-        // FIXME This means that every user can create tokens for another user if they manage to call this service;
-        // Do we need a tighter check on who's calling the service?
-        try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
-            SecretKey key = getOrCreateSigningKey(resolver);
-
-            String jws = Jwts.builder()
-                .subject(userId)
-                .expiration(expiration.getTime())
-                .claims(extraData)
-                .signWith(key)
-                .compact();
-            return new CardsJwtTokenImpl(jws, userId, expiration, extraData);
-        } catch (LoginException e) {
-            LOGGER.error("Service access not granted: {}", e.getMessage());
+        if (this.key == null) {
+            // Should not happen
+            return null;
         }
-        return null;
+        String jws = Jwts.builder()
+            .subject(userId)
+            .expiration(expiration.getTime())
+            .claims(extraData)
+            .signWith(this.key)
+            .compact();
+        return new CardsJwtTokenImpl(jws, userId, expiration, extraData);
     }
 
     @Override
     public CardsJwtTokenImpl parse(final String loginToken)
     {
-        if (loginToken == null) {
+        if (loginToken == null || this.key == null) {
             return null;
         }
-
-        try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
-            SecretKey key = getOrCreateSigningKey(resolver);
-            if (key == null) {
-                // Should not happen
-                return null;
-            }
-            Jwt<?, ?> jwt = Jwts.parser().verifyWith(key).build().parseSignedClaims(loginToken);
+        try {
+            Jwt<?, ?> jwt = Jwts.parser().verifyWith(this.key).build().parseSignedClaims(loginToken);
             return new CardsJwtTokenImpl(jwt, loginToken);
-        } catch (LoginException e) {
-            LOGGER.error("Service access not granted: {}", e.getMessage());
         } catch (JwtException e) {
             // Not a JWT token
-            return null;
         }
         return null;
-    }
-
-    private SecretKey getOrCreateSigningKey(ResourceResolver resolver)
-    {
-        String resourcePath = "/jcr:system/cards:jwt/JWTSigningKey";
-        SecretKey key = null;
-        try {
-            Resource res = resolver.resolve(resourcePath);
-            Node keyNode = res.adaptTo(Node.class);
-            if (keyNode == null) {
-                LOGGER.error("Failed to load JWT Signing key: node {} could not be read", resourcePath);
-                return null;
-            }
-            if (keyNode.hasProperty("key")) {
-                key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(keyNode.getProperty("key").getString()));
-            } else {
-                key = Jwts.SIG.HS512.key().build();
-                String secretString = Encoders.BASE64.encode(key.getEncoded());
-                keyNode.setProperty("key", secretString);
-                resolver.commit();
-            }
-        } catch (Exception e) {
-            LOGGER.error("Failed to load JWT Signing key from node: {}", e.getMessage(), e);
-        }
-        return key;
     }
 }
