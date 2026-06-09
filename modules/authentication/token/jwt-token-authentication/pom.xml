@@ -28,7 +28,7 @@
 
   <artifactId>cards-jwt-token-authentication</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - JWT Tokens</name>
+  <name>CARDS - JWT Token Authentications</name>
 
   <build>
     <plugins>

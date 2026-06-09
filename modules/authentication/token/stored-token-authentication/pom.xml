@@ -28,7 +28,7 @@
 
   <artifactId>cards-stored-token-authentication</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Token Authentication</name>
+  <name>CARDS - Stored Token Authentication</name>
 
   <build>
     <plugins>
