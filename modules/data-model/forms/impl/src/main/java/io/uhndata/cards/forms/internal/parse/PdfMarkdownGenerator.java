@@ -21,8 +21,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -133,6 +137,9 @@ public class PdfMarkdownGenerator
 
     private static final String DOUBLE_NEWLINE = "\n\n";
 
+    /** Fraction of page height defining the header and footer decoration zones (top and bottom). */
+    private static final float DECORATION_ZONE_FRACTION = 0.15f;
+
     private static final String[] TOC_SECTION_HEADINGS = {
         "TABLE OF CONTENTS",
         "TABLE OF CONTENT",
@@ -184,19 +191,24 @@ public class PdfMarkdownGenerator
             // TabulaPageParser owns the ObjectExtractor. Its close() delegates to PDDocument.close(),
             // so we intentionally do not close it — the enclosing try-with-resources handles that.
             final TabulaPageParser tabulaParser = new TabulaPageParser(document);
+            final List<List<StyledLine>> allLines = new ArrayList<>();
+            final List<List<TextToken>> allTokens = new ArrayList<>();
+            this.loadAllPageLines(stripper, document, pageCount, allLines, allTokens);
+            final Set<String> decorations = this.collectDecorations(allLines);
+            final Set<String> seenDecorations = new HashSet<>();
             final SpecialSection[] currentSection = {SpecialSection.NONE};
             for (int page = 1; page <= pageCount; page++) {
-                final List<StyledLine> pageLines = stripper.extractPageLines(document, page);
+                final List<StyledLine> rawLines = allLines.get(page - 1);
                 List<DetectedTable> tables = tabulaParser.extractTables(page, fileName);
                 if (tables.isEmpty()) {
                     final PDPage pdPage = document.getPage(page - 1);
                     final List<RulingLine> rulingLines = extractRulingLinesSafely(pdPage, page, fileName);
-                    final List<TextToken> tokens = stripper.getLastPageTokens();
-                    tables = detectTables(rulingLines, tokens);
+                    tables = detectTables(rulingLines, allTokens.get(page - 1));
                 }
+                final List<StyledLine> pageLines = this.filterDecorations(rawLines, decorations, seenDecorations);
                 final String pageText = renderPage(pageLines, tables, currentSection);
-                markdown.append("\n\n<!-- page: ").append(page).append(" -->\n");
-                markdown.append("## Page ").append(page).append(DOUBLE_NEWLINE);
+                markdown.append("\n\n<!-- page: ").append(page).append(" -->\n")
+                    .append("## Page ").append(page).append(DOUBLE_NEWLINE);
                 if (StringUtils.isBlank(pageText)) {
                     markdown.append("_No extractable text on this page._\n");
                 } else {
@@ -1007,6 +1019,69 @@ public class PdfMarkdownGenerator
         return value.replace("--", "—");
     }
 
+    private String normalizeDecorationText(final String text)
+    {
+        return text.replaceAll("\\s+\\d+\\s*$", "").replaceAll("\\s+", " ").trim().toLowerCase(Locale.ROOT);
+    }
+
+    private Set<String> collectDecorations(final List<List<StyledLine>> allLines)
+    {
+        final Map<String, Integer> counts = new HashMap<>();
+        int contentPages = 0;
+        for (final List<StyledLine> pageLines : allLines) {
+            final Set<String> seenThisPage = new HashSet<>();
+            boolean hasContent = false;
+            for (final StyledLine line : pageLines) {
+                if (line.isDecorationCandidate) {
+                    seenThisPage.add(this.normalizeDecorationText(line.text));
+                } else {
+                    hasContent = true;
+                }
+            }
+            if (hasContent) {
+                contentPages++;
+                for (final String text : seenThisPage) {
+                    counts.merge(text, 1, Integer::sum);
+                }
+            }
+        }
+        final Set<String> result = new HashSet<>();
+        for (final Map.Entry<String, Integer> entry : counts.entrySet()) {
+            if (entry.getValue() >= Math.max(2, contentPages - 1)) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
+    private List<StyledLine> filterDecorations(
+        final List<StyledLine> lines,
+        final Set<String> decorations,
+        final Set<String> alreadySeen)
+    {
+        if (decorations.isEmpty()) {
+            return lines;
+        }
+        final List<StyledLine> result = new ArrayList<>();
+        for (final StyledLine line : lines) {
+            final String normalized = this.normalizeDecorationText(line.text);
+            if (!decorations.contains(normalized) || alreadySeen.add(normalized)) {
+                result.add(line);
+            }
+        }
+        return result;
+    }
+
+    private void loadAllPageLines(final StyledPdfTextStripper stripper, final PDDocument document,
+        final int pageCount, final List<List<StyledLine>> allLines, final List<List<TextToken>> allTokens)
+        throws IOException
+    {
+        for (int page = 1; page <= pageCount; page++) {
+            allLines.add(stripper.extractPageLines(document, page));
+            allTokens.add(new ArrayList<>(stripper.getLastPageTokens()));
+        }
+    }
+
     // ---- Inner data types ----
 
     private enum SpecialSection
@@ -1471,6 +1546,8 @@ public class PdfMarkdownGenerator
         private float startX;
 
         private float monospaceRatio;
+
+        private boolean isDecorationCandidate;
     }
 
     private static final class ListBuffer
@@ -1638,6 +1715,9 @@ public class PdfMarkdownGenerator
                 final StyledLine line = new StyledLine();
                 line.text = cleaned;
                 line.topY = this.currentY;
+                final float pageHeight = this.getCurrentPage().getMediaBox().getHeight();
+                line.isDecorationCandidate = line.topY < pageHeight * DECORATION_ZONE_FRACTION
+                    || line.topY > pageHeight * (1.0f - DECORATION_ZONE_FRACTION);
                 line.boldRatio = this.totalChars == 0 ? 0.0f : (float) this.boldChars / (float) this.totalChars;
                 line.wordCount = StringUtils.split(cleaned).length;
                 line.startX = this.lineStartX;
