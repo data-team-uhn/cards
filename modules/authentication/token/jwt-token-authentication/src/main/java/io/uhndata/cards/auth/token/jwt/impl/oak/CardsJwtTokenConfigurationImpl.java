@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.auth.jwttoken.impl.oak;
+package io.uhndata.cards.auth.token.jwt.impl.oak;
 
 import org.apache.jackrabbit.oak.api.Root;
 import org.apache.jackrabbit.oak.spi.security.ConfigurationBase;
@@ -38,7 +38,7 @@ import io.uhndata.cards.auth.token.TokenManager;
 )
 public class CardsJwtTokenConfigurationImpl extends ConfigurationBase implements TokenConfiguration
 {
-    @Reference(target = "(component.name=io.uhndata.cards.auth.jwttoken.impl.CardsJwtTokenManagerImpl)")
+    @Reference(target = "(component.name=io.uhndata.cards.auth.token.jwt.impl.CardsJwtTokenManagerImpl)")
     private TokenManager tokenManager;
 
     @Override

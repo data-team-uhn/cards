@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.auth.jwttoken.impl.sling;
+package io.uhndata.cards.auth.token.jwt.impl.sling;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -40,7 +40,7 @@ import io.uhndata.cards.auth.token.sling.AbstractTokenAuthenticationHandler;
 })
 public class JWTTokenAuthenticationHandler extends AbstractTokenAuthenticationHandler
 {
-    @Reference(target = "(component.name=io.uhndata.cards.auth.jwttoken.impl.CardsJwtTokenManagerImpl)")
+    @Reference(target = "(component.name=io.uhndata.cards.auth.token.jwt.impl.CardsJwtTokenManagerImpl)")
     private TokenManager tokenManager;
 
     @Override

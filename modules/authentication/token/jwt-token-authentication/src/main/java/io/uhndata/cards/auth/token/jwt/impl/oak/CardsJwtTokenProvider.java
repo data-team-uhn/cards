@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.auth.jwttoken.impl.oak;
+package io.uhndata.cards.auth.token.jwt.impl.oak;
 
 import java.util.Map;
 
