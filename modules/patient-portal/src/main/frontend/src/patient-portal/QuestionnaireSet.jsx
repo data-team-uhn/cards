@@ -22,6 +22,7 @@ import { useState, useEffect, useContext, useMemo } from 'react';
 import SurveyIcon from '@mui/icons-material/Assignment';
 import NextStepIcon from '@mui/icons-material/ChevronRight';
 import DoneIcon from '@mui/icons-material/Done';
+import OptionalIcon from '@mui/icons-material/Remove';
 import WarningIcon from '@mui/icons-material/Warning';
 import {
   Alert,
@@ -645,6 +646,8 @@ function QuestionnaireSet(props) {
 
   const incompleteIndicator = <Avatar className={classes.incompleteIndicator}><WarningIcon /></Avatar>;
 
+  const optionalIndicator = <Avatar className={classes.stepIndicator}><OptionalIcon /></Avatar>;
+
   const greet = (name) => {
     let greeting = displayText("greeting", Typography, { variant: "h6", key: "welcome-greeting" });
     if (!greeting) {
@@ -874,10 +877,12 @@ function QuestionnaireSet(props) {
     <List key="incomplete-list" disablePadding>
       { (questionnaireIds || []).map((q, i) => (
         <ListItem key={q+"Exit"} disablePadding>
-          <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
+          <ListItemAvatar>
+            {isFormDone(q) ? doneIndicator : isFormOptional(q) ? optionalIndicator : incompleteIndicator}
+          </ListItemAvatar>
           <ListItemText
             primary={getDisplayTitle(q)}
-            secondary={!isFormComplete(q) && "Incomplete" || isFormSubmitted(q) && "Submitted"}
+            secondary={!isFormDone(q) && !isFormOptional(q) && "Incomplete" || isFormSubmitted(q) && "Submitted"}
           />
         </ListItem>
       ))}
