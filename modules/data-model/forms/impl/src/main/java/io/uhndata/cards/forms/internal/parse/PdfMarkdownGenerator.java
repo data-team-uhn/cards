@@ -1610,11 +1610,16 @@ public class PdfMarkdownGenerator
         private String toMarkdown()
         {
             final StringBuilder list = new StringBuilder();
+            final boolean isNumbered = this.items.stream()
+                .allMatch(s -> !s.isEmpty() && Character.isDigit(s.charAt(0)));
             for (String item : this.items) {
                 if (list.length() > 0) {
                     list.append('\n');
                 }
-                list.append("- ").append(item);
+                if (!isNumbered) {
+                    list.append("- ");
+                }
+                list.append(item);
             }
             return list.toString();
         }
