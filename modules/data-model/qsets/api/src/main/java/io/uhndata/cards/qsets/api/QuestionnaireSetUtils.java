@@ -51,6 +51,9 @@ public interface QuestionnaireSetUtils
 
     /**
      * Return a {@link QuestionnaireRef} object explicitly referencing a target {@code cards:Questionnaire} node.
+     * Since this overload takes the questionnaire node directly rather than a {@code cards:QuestionnaireRef} definition
+     * node, properties that live on the definition (such as {@code optional}) are not available and will return their
+     * default values. Use {@link #toQuestionnaireRef(Node)} when a definition node is available.
      *
      * @param questionnaire a JCR node of type {@code cards:Questionnaire}
      * @param targetUserType the target user type to use
