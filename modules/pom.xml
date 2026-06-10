@@ -45,8 +45,6 @@
     <module>data-model</module>
     <module>patient-portal</module>
     <module>clinician-dashboard</module>
-    <module>ldap-support</module>
-    <module>saml-support</module>
     <module>utils</module>
     <module>principals</module>
     <module>permissions</module>
@@ -62,15 +60,11 @@
     <module>vocabularies-ignore</module>
     <module>statistics</module>
     <module>email-notifications</module>
-    <module>token-authentication</module>
-    <module>keycloakdemo-saml</module>
-    <module>uhn-saml</module>
-    <module>fetch-requires-saml-login</module>
+    <module>authentication</module>
     <module>metrics</module>
     <module>http-requests</module>
     <module>page-start-header</module>
     <module>webhook-backup</module>
-    <module>saml</module>
     <module>s3-export</module>
     <module>clarity-integration</module>
     <module>torch-import</module>

@@ -16,7 +16,18 @@
 // under the License.
 
 {
-    "prototype":{
-        "id": "io.uhndata.cards:cards-token-authentication-support:slingosgifeature:${project.version}"
+  "bundles":[
+    {
+      "id":"${project.groupId}:cards-token-authentication-support:${project.version}",
+      "start-order":"25"
     }
+  ],
+  "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~cards-token-authentication":{
+      "service.ranking:Integer":300,
+      "scripts": [
+        "create path (cards:TokenExpired) /Expired \n set ACL for everyone \n   allow  jcr:read  on /Expired \n end "
+      ]
+    }
+  }
 }
