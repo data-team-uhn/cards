@@ -140,6 +140,8 @@ public class PdfMarkdownGenerator
     /** Fraction of page height defining the header and footer decoration zones (top and bottom). */
     private static final float DECORATION_ZONE_FRACTION = 0.15f;
 
+    private static final int DIAGRAM_MIN_FILLS = 6;
+
     private static final String[] TOC_SECTION_HEADINGS = {
         "TABLE OF CONTENTS",
         "TABLE OF CONTENT",
@@ -199,12 +201,10 @@ public class PdfMarkdownGenerator
             final SpecialSection[] currentSection = {SpecialSection.NONE};
             for (int page = 1; page <= pageCount; page++) {
                 final List<StyledLine> rawLines = allLines.get(page - 1);
-                List<DetectedTable> tables = tabulaParser.extractTables(page, fileName);
-                if (tables.isEmpty()) {
-                    final PDPage pdPage = document.getPage(page - 1);
-                    final List<RulingLine> rulingLines = extractRulingLinesSafely(pdPage, page, fileName);
-                    tables = detectTables(rulingLines, allTokens.get(page - 1));
-                }
+                final PDPage pdPage = document.getPage(page - 1);
+                final RulingLineExtractor rulingData = extractRulingLinesSafely(pdPage, page, fileName);
+                final List<DetectedTable> tables = detectPageTables(rulingData, tabulaParser, page,
+                    fileName, allTokens.get(page - 1));
                 final List<StyledLine> pageLines = this.filterDecorations(rawLines, decorations, seenDecorations);
                 final String pageText = renderPage(pageLines, tables, currentSection);
                 markdown.append("\n\n<!-- page: ").append(page).append(" -->\n")
@@ -223,17 +223,17 @@ public class PdfMarkdownGenerator
         }
     }
 
-    private List<RulingLine> extractRulingLinesSafely(final PDPage page, final int pageNum,
+    private RulingLineExtractor extractRulingLinesSafely(final PDPage page, final int pageNum,
         final String fileName)
     {
+        final RulingLineExtractor extractor = new RulingLineExtractor(page);
         try {
-            final RulingLineExtractor extractor = new RulingLineExtractor(page);
-            return extractor.extractLines(page);
+            extractor.extractLines(page);
         } catch (IOException e) {
             LOGGER.warn("Could not extract ruling lines from page {} of '{}': {}", pageNum, fileName,
                 e.getMessage());
-            return Collections.emptyList();
         }
+        return extractor;
     }
 
     private String renderPage(final List<StyledLine> lines, final List<DetectedTable> tables,
@@ -469,6 +469,20 @@ public class PdfMarkdownGenerator
             }
             return false;
         }
+    }
+
+    private List<DetectedTable> detectPageTables(final RulingLineExtractor rulingData,
+        final TabulaPageParser tabulaParser, final int page,
+        final String fileName, final List<TextToken> tokens)
+    {
+        if (rulingData.getNonRectFillCount() >= DIAGRAM_MIN_FILLS) {
+            return Collections.emptyList();
+        }
+        final List<DetectedTable> result = tabulaParser.extractTables(page, fileName);
+        if (result.isEmpty()) {
+            return detectTables(rulingData.getLines(), tokens);
+        }
+        return result;
     }
 
     private List<DetectedTable> detectTables(final List<RulingLine> rulingLines,
@@ -1380,6 +1394,8 @@ public class PdfMarkdownGenerator
 
         private final List<float[]> currentSegments = new ArrayList<>();
 
+        private int nonRectFillCount;
+
         private float currentX;
 
         private float currentY;
@@ -1479,6 +1495,7 @@ public class PdfMarkdownGenerator
         public void fillPath(final int windingRule)
             throws IOException
         {
+            this.nonRectFillCount++;
             this.currentSegments.clear();
         }
 
@@ -1486,6 +1503,7 @@ public class PdfMarkdownGenerator
         public void fillAndStrokePath(final int windingRule)
             throws IOException
         {
+            this.nonRectFillCount++;
             // Thin filled rectangles are also used as table borders
             emitRulingLines();
             this.currentSegments.clear();
@@ -1510,6 +1528,15 @@ public class PdfMarkdownGenerator
             throws IOException
         {
             // Gradient shading does not contribute ruling lines
+        }
+
+        int getNonRectFillCount()
+        {
+            return this.nonRectFillCount;
+        }
+        List<RulingLine> getLines()
+        {
+            return new ArrayList<>(this.rulingLines);
         }
 
         private void addSegment(final float x1, final float y1, final float x2, final float y2)
