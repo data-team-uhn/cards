@@ -250,8 +250,18 @@ public class VisitChangeListener implements ResourceChangeListener
             final String uuid = UUID.randomUUID().toString();
             final Node form = visitSubject.getSession().getNode("/Forms").addNode(uuid, FormUtils.FORM_NODETYPE);
             form.setProperty(FormUtils.QUESTIONNAIRE_PROPERTY, questionnaire.getQuestionnaire());
+            final List<String> flags = new LinkedList<>();
             if (questionnaire.isPatientFacing()) {
-                form.setProperty(STATUS_FLAGS, new String[] { "PATIENT SURVEY" });
+                flags.add("PATIENT SURVEY");
+            }
+            // Mark optional questionnaires on the form itself, so that the dashboards can tell them apart
+            // (and require them to be submitted rather than auto-skipping them) without having to cross-reference
+            // the questionnaire set definition.
+            if (questionnaire.isOptional()) {
+                flags.add("OPTIONAL");
+            }
+            if (!flags.isEmpty()) {
+                form.setProperty(STATUS_FLAGS, flags.toArray(EMPTY_ARRAY_OF_STRINGS));
             }
             form.setProperty(FormUtils.SUBJECT_PROPERTY, visitSubject);
             results.add(form.getPath());

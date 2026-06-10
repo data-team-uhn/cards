@@ -297,6 +297,19 @@ function Visit(props) {
     return surveyData?.[questionnaireId]?.statusFlags?.includes("LOCKED");
   }
 
+  // Whether a form is for a questionnaire that was marked optional in the questionnaire set.
+  // This is recorded on the form itself via the OPTIONAL status flag when the form is created.
+  const isFormOptional = (questionnaireId) => {
+    return surveyData?.[questionnaireId]?.statusFlags?.includes("OPTIONAL");
+  }
+
+  // Whether a form has been dealt with for display purposes. Optional forms have no mandatory questions, so
+  // they are never INCOMPLETE; like in the patient portal, they count as done only once submitted, rather than
+  // appearing complete from the moment they are created.
+  const isFormDone = (questionnaireId) => {
+    return isFormOptional(questionnaireId) ? isFormSubmitted(questionnaireId) : isFormComplete(questionnaireId);
+  }
+
   const isFormNavigable = (questionnaireId) => {
     return (surveyData?.[questionnaireId]?.questionnaire?.paginationVariant == "navigable");
   }
@@ -320,7 +333,7 @@ function Visit(props) {
 
   const displayFlags = q => (
     (surveyData?.[q]?.statusFlags ?? [])
-      .filter(f => ["INCOMPLETE", "SUBMITTED", "LOCKED"].includes(f))
+      .filter(f => ["INCOMPLETE", "SUBMITTED", "LOCKED", "OPTIONAL"].includes(f))
       .map(displayFlag)
   );
 
@@ -344,7 +357,7 @@ function Visit(props) {
             <ListItemButton onClick={() => navigate(`/content.html${surveyData?.[q]?.["@path"]}`)}>
               <ListItemAvatar sx={{ alignSelf: "baseline", zoom: 1.2 }}>
                 { isFormLocked(q) ? lockedIndicator : (
-                  isFormComplete(q) ? doneIndicator : (
+                  isFormDone(q) ? doneIndicator : (
                     isFormSubmitted(q) ? incompleteIndicator : surveyIndicator
                   )
                 )}

@@ -193,12 +193,27 @@ function QuestionnaireSet(props) {
     return formData?.[questionnaireId]?.statusFlags?.includes("SUBMITTED");
   }
 
+  // Whether a form is for a questionnaire that was marked optional in the questionnaire set.
+  // This is recorded on the form itself via the OPTIONAL status flag when the form is created,
+  // so we don't need to cross-reference the questionnaire set definition here.
+  const isFormOptional = (questionnaireId) => {
+    return formData?.[questionnaireId]?.statusFlags?.includes("OPTIONAL");
+  }
+
+  // Title shown to the patient: optional questionnaires are flagged as such in the UI.
+  const getDisplayTitle = (questionnaireId) => {
+    const title = questionnaires?.[questionnaireId]?.title || questionnaireId;
+    return title
+      ? title + (isFormOptional(questionnaireId) ? " (Optional)" : "")
+      : title;
+  }
+
   // Whether a form has been handled for flow purposes (offered to the patient and dealt with).
   // Regular forms are done once they are no longer INCOMPLETE. "Optional" forms have no mandatory
   // questions, so they are never INCOMPLETE and would otherwise be auto-skipped from creation; instead
   // they are considered handled only once submitted, ensuring the patient is offered them at least once.
   const isFormDone = (questionnaireId) => {
-    return questionnaires?.[questionnaireId]?.optional
+    return isFormOptional(questionnaireId)
       ? isFormSubmitted(questionnaireId)
       : isFormComplete(questionnaireId);
   }
@@ -445,14 +460,11 @@ function QuestionnaireSet(props) {
         data[value.questionnaire['@name']] = {
           // Raw questionnaire title; also used as a key to look up form data in the subject JSON
           'title': value.questionnaire?.title || key,
-          // Title shown to the patient: optional questionnaires are flagged as such in the UI
-          'displayTitle': (value.questionnaire?.title || key) + (value.optional ? " (Optional)" : ""),
           'alias': key,
           '@path': value.questionnaire?.['@path'],
           '@name': value.questionnaire?.['@name'],
           'hasInterpretation': hasInterpretation(value.questionnaire) || addons.some(hasInterpretation),
           'estimate': value.estimate,
-          'optional': !!value.optional,
           'questionnaireAddons': addons
         }
       });
@@ -736,7 +748,7 @@ function QuestionnaireSet(props) {
             {isFormDone(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}
           </ListItemAvatar>
           <ListItemText
-            primary={questionnaires[q]?.displayTitle}
+            primary={getDisplayTitle(q)}
             secondary={isFormSubmitted(q) ? "Submitted" :
               !isFormDone(q) && (displayEstimate(q)
             + (["patient", "guest-patient"].includes(formData?.[q]?.["jcr:lastModifiedBy"]) ? " (in progress)" : ""))}
@@ -864,7 +876,7 @@ function QuestionnaireSet(props) {
         <ListItem key={q+"Exit"} disablePadding>
           <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
           <ListItemText
-            primary={questionnaires[q]?.displayTitle}
+            primary={getDisplayTitle(q)}
             secondary={!isFormComplete(q) && "Incomplete" || isFormSubmitted(q) && "Submitted"}
           />
         </ListItem>
@@ -904,7 +916,7 @@ function QuestionnaireSet(props) {
         greeting={username}
         withSignout={!!(config?.PIIAuthRequired)}
         progress={progress}
-        subtitle={questionnaires[questionnaireIds[crtStep]]?.displayTitle}
+        subtitle={getDisplayTitle(questionnaireIds[crtStep])}
         step={stepIndicator(crtStep, true)}
       />
       <QuestionnaireSetScreen

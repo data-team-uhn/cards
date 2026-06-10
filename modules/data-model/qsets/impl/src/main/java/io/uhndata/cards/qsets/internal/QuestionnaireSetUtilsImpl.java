@@ -114,14 +114,7 @@ public class QuestionnaireSetUtilsImpl implements QuestionnaireSetUtils
                 final Node node = childNodes.nextNode();
                 if (node.isNodeType(QuestionnaireRef.NODETYPE)
                     && node.hasProperty(QuestionnaireRef.QUESTIONNAIRE_PROPERTY)) {
-                    final Node questionnaire = node.getProperty(QuestionnaireRef.QUESTIONNAIRE_PROPERTY).getNode();
-                    final QuestionnaireRef.TargetUserType targetUserType =
-                        QuestionnaireRef.TargetUserType.valueOf(node);
-                    long frequency = 0;
-                    if (node.hasProperty(QuestionnaireRef.FREQUENCY_PROPERTY)) {
-                        frequency = node.getProperty(QuestionnaireRef.FREQUENCY_PROPERTY).getLong();
-                    }
-                    addQuestionnaire(new QuestionnaireRefImpl(questionnaire, targetUserType, frequency));
+                    addQuestionnaire(new QuestionnaireRefImpl(node));
                 } else if (node.isNodeType(QuestionnaireConflict.NODETYPE)
                     && node.hasProperty(QuestionnaireConflict.QUESTIONNAIRE_PROPERTY)) {
                     addConflict(new QuestionnaireConflictImpl(node));
@@ -297,18 +290,28 @@ public class QuestionnaireSetUtilsImpl implements QuestionnaireSetUtils
 
         private final long frequency;
 
+        private final boolean optional;
+
         QuestionnaireRefImpl(final Node questionnaire, final TargetUserType targetUserType, final long frequency)
+        {
+            this(questionnaire, targetUserType, frequency, false);
+        }
+
+        QuestionnaireRefImpl(final Node questionnaire, final TargetUserType targetUserType, final long frequency,
+            final boolean optional)
         {
             this.questionnaire = questionnaire;
             this.targetUserType = targetUserType;
             this.frequency = frequency;
+            this.optional = optional;
         }
 
         QuestionnaireRefImpl(final Node definition)
             throws ItemNotFoundException, ValueFormatException, PathNotFoundException, RepositoryException
         {
             this(definition.getProperty(QUESTIONNAIRE_PROPERTY).getNode(), TargetUserType.valueOf(definition),
-                definition.hasProperty(FREQUENCY_PROPERTY) ? definition.getProperty(FREQUENCY_PROPERTY).getLong() : 0);
+                definition.hasProperty(FREQUENCY_PROPERTY) ? definition.getProperty(FREQUENCY_PROPERTY).getLong() : 0,
+                definition.hasProperty(OPTIONAL_PROPERTY) && definition.getProperty(OPTIONAL_PROPERTY).getBoolean());
         }
 
         @Override
@@ -327,6 +330,12 @@ public class QuestionnaireSetUtilsImpl implements QuestionnaireSetUtils
         public long getFrequency()
         {
             return this.frequency;
+        }
+
+        @Override
+        public boolean isOptional()
+        {
+            return this.optional;
         }
 
         @Override
