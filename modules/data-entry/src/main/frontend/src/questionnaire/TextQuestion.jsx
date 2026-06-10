@@ -21,7 +21,6 @@ import { Typography } from "@mui/material";
 import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
-import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 
@@ -118,8 +117,8 @@ TextQuestion.propTypes = {
   defaults: PropTypes.array,
 };
 
-export default TextQuestion;
-
-AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+TextQuestion.canProcess = (questionDefinition) => {
   return [TextQuestion, 0];
-});
+};
+
+export default TextQuestion;

@@ -25,7 +25,6 @@ import { Grid } from "@mui/material";
 // self-declaration in a node, like the assets, or even by filtering through assets.
 /* eslint-disable unused-imports/no-unused-imports, no-unused-vars */
 import AddressQuestion from "./AddressQuestion";
-import BooleanQuestion from "./BooleanQuestion";
 import ChromosomeQuestion from "./ChromosomeQuestion";
 import ComputedQuestion from "./ComputedQuestion";
 import DateQuestion from "./DateQuestion";
@@ -39,7 +38,6 @@ import PhoneQuestion from "./PhoneQuestion";
 import ReferenceQuestion from "./ReferenceQuestion";
 import ResourceQuestion from "./ResourceQuestion";
 import SelectableArea from "./SelectableAreaQuestion";
-import TextQuestion from "./TextQuestion";
 import TimeQuestion from "./TimeQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 /* eslint-enable unused-imports/no-unused-imports, no-unused-vars */
