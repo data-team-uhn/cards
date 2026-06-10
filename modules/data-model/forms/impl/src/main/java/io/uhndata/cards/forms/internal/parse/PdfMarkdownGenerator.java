@@ -778,7 +778,7 @@ public class PdfMarkdownGenerator
         if (this.startsWithListMarker(current.text)) {
             return false;
         }
-        if (Math.abs(current.startX - previous.startX) > LIST_LINE_X_TOLERANCE) {
+        if (current.startX < previous.startX - LIST_LINE_X_TOLERANCE) {
             return false;
         }
         return this.lineGap(previous, current) <= baseGap * LIST_CONTINUATION_GAP_RATIO;
