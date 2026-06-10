@@ -36,3 +36,5 @@ mvn:io.uhndata.cards/cards-slack-notifications/${PROJECT_VERSION}/slingosgifeatu
 mvn:io.uhndata.cards/cards-locking/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-patient-portal/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-clinician-dashboard/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-jwt-token-authentication/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-stored-token-authentication/${PROJECT_VERSION}/slingosgifeature
