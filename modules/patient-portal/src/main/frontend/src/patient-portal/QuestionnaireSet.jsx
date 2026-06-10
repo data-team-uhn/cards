@@ -309,7 +309,7 @@ function QuestionnaireSet(props) {
   // the patient can skip straight to the exit/review screen without going through the surveys.
   const allFormsDone = useMemo(() => (
     !!questionnaireIds?.length && questionnaireIds.every(q => isFormDone(q))
-  ), [questionnaireIds, questionnaires, formDataLoadCount]);
+  ), [questionnaireIds, formDataLoadCount]);
 
   const launchNextForm = () => {
     if (formData?.[nextQuestionnaire['@name']]) {
