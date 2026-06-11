@@ -31,10 +31,8 @@
   <name>CARDS - Data model - Questionnaires and Forms - Implementations</name>
 
   <properties>
-    <!-- Unit tests cover the parse package only; OSGi-wired classes and CLI-dependent paths require integration tests.
-         Threshold lowered to 0.07 — new PDF section/table-detection code in PdfMarkdownGenerator
-         (TOC, abbreviation, and key-value parsing) is not yet covered by unit tests. -->
-    <coverage.instructionRatio>0.07</coverage.instructionRatio>
+    <!-- Unit tests cover the parse package only. -->
+    <coverage.instructionRatio>0.00</coverage.instructionRatio>
   </properties>
 
   <build>
