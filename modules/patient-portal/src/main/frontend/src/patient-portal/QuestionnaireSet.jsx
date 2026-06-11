@@ -575,10 +575,10 @@ function QuestionnaireSet(props) {
 
   // At the last step, if the configuration specifies to skip the review, automatically submit
   useEffect(() => {
-    if (isComplete && !isSubmitted && endReached && !enableReviewScreen) {
+    if ((isComplete || submittingIncomplete) && !isSubmitted && endReached && !enableReviewScreen) {
       onSubmit();
     }
-  }, [isComplete, isSubmitted, endReached, enableReviewScreen]);
+  }, [isComplete, submittingIncomplete, isSubmitted, endReached, enableReviewScreen]);
 
   // At first, load the existing subject data to determine which questionnaire set is bound to the visit
   useEffect(loadExistingData, []);
@@ -729,7 +729,7 @@ function QuestionnaireSet(props) {
   // Replace all occurrences of the visit information pattern with the value from the Visit information form
   const introMessage = fillInVisitData(intro);
 
-  const welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
+  const welcomeScreen = (isSubmitted || questionnaireIds?.length == 0) ? [
     greet(username),
     appointmentAlert(),
     displayText(
