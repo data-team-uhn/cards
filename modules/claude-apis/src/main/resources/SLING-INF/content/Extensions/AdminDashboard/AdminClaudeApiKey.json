@@ -1,9 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
-  "cards:extensionName": "Claude API Key",
-  "cards:targetURL": "/content.html/admin/ClaudeApiKey",
-  "cards:icon": "asset:cards-claude-apis.InsightsIcon.js",
-  "cards:defaultOrder": 98,
-  "cards:hint": "Use Claude API services"
-}
