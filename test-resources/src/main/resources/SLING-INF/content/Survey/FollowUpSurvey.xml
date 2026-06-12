@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright 2022-2026 DATA @ UHN. See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<node>
+    <name>FollowUpSurvey</name>
+    <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
+    <property>
+        <name>name</name>
+        <value>Follow Up Survey</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>intro</name>
+        <value>Test 2 part survey with optional forms</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>frequencyIgnoreClinic</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <node>
+        <name>Form1</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/SmallTest1</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>optional</name>
+            <value>True</value>
+            <type>Boolean</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>Form2</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/SmallTest2</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>2</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>Form3</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/SmallTest3</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>3</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>Form4</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/SmallTest4</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>optional</name>
+            <value>True</value>
+            <type>Boolean</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>4</value>
+            <type>Long</type>
+        </property>
+    </node>
+</node>
