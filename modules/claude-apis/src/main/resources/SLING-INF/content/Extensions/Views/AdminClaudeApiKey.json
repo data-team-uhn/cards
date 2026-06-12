@@ -1,7 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/view",
-  "cards:extensionName": "ClaudeApiKey",
-  "cards:extensionRenderURL": "asset:cards-claude-apis.ClaudeApiKey.js",
-  "cards:targetURL": "/content.html/admin/ClaudeApiKey"
-}
