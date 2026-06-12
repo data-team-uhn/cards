@@ -20,9 +20,10 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.version.VersionManager;
 
 import org.apache.sling.api.SlingJakartaHttpServletRequest;
-import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.servlets.post.Modification;
 import org.apache.sling.servlets.post.SlingJakartaPostProcessor;
 import org.apache.sling.servlets.post.SlingPostProcessor;
@@ -43,18 +44,29 @@ public class CheckinSlingPostProcessor implements SlingJakartaPostProcessor
     @Override
     public void process(SlingJakartaHttpServletRequest request, List<Modification> changes) throws RepositoryException
     {
-        RequestParameter doCheckin = request.getRequestParameter(":checkin");
+        String[] doCheckin = request.getParameterValues(":checkin");
         if (doCheckin != null) {
             LOGGER.debug("Running CheckinSlingPostProcessor::process");
             final Node n = request.getResource().adaptTo(Node.class);
             if (n.isNodeType("mix:versionable")) {
+                final Session session = n.getSession();
+                final VersionManager vm = session.getWorkspace().getVersionManager();
                 // At this point, all the changes are done in the session, not yet persisted, and trying to checkin the
                 // node will fail. We must save first, although it is not recommended to do so in a PostProcessor.
-                n.getSession().save();
-                n.getSession().getWorkspace().getVersionManager().checkin(n.getPath());
+                session.save();
+                vm.checkin(n.getPath());
                 changes.add(Modification.onCheckin(n.getPath()));
                 changes.add(Modification.onMoved(n.getProperty("jcr:baseVersion").getPath(),
                     n.getProperty("jcr:baseVersion").getNode().getPath()));
+                for (String alsoCheckin : doCheckin) {
+                    if (alsoCheckin.startsWith("/")) {
+                        try {
+                            vm.checkin(alsoCheckin);
+                        } catch (Exception e) {
+                            LOGGER.warn("Failed to checkin {}: {}", alsoCheckin, e.getMessage());
+                        }
+                    }
+                }
             }
         }
     }
