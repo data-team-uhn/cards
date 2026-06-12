@@ -811,7 +811,7 @@ function QuestionnaireSet(props) {
                 <Grid alignSelf="center" key="change-button">
                   <Button
                     variant="outlined"
-                    onClick={() => {setReviewMode(true); setCrtFormId(formData?.[q]?.["@name"]); setCrtStep(i)}}>
+                    onClick={() => {setReviewMode(true); setCrtFormId(formData?.[q]?.["@name"]); setCrtStep(questionnaireIds.indexOf(q))}}>
                     Change
                   </Button>
                 </Grid>
