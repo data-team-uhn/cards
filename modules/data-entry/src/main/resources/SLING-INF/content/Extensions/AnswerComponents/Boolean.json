@@ -1,6 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/form/answerComponent",
-  "cards:extensionName": "Boolean Questions",
-  "cards:extensionRenderURL": "asset:cards-dataentry.BooleanQuestion.js"
-}

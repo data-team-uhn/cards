@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import { loadExtensions } from "../uiextension/extensionManager";
-
 // This is a utility "class" which helps the Form component decide how each question should be rendered.
 export default class AnswerComponentManager {
   static #registeredComponents = [];
@@ -44,10 +42,3 @@ export default class AnswerComponentManager {
         priority > maxPriority ? [displayer, priority] : [chosenDisplayer, maxPriority]))[0];
   }
 }
-
-async function registerAnswerComponents() {
-  console.log("Loading answers");
-  loadExtensions("AnswerComponents")
-    .then(extensions => extensions.forEach(c => AnswerComponentManager.registerAnswerComponent(c['cards:extensionRender'].canProcess)));
-}
-await registerAnswerComponents();

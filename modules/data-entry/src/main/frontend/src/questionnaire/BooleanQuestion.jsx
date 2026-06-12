@@ -20,6 +20,7 @@
 import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
+import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 
@@ -87,11 +88,10 @@ BooleanQuestion.propTypes = {
   unknownLabel: PropTypes.string
 };
 
-BooleanQuestion.canProcess = (questionDefinition) => {
+export default BooleanQuestion;
+
+AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "boolean") {
     return [BooleanQuestion, 50];
   }
-};
-
-export default BooleanQuestion;
-
+});

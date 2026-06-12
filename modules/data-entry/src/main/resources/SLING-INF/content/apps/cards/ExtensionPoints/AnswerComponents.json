@@ -1,5 +1,0 @@
-{
-  "jcr:primaryType": "cards:ExtensionPoint",
-  "cards:extensionPointId": "cards/form/answerComponent",
-  "cards:extensionPointName": "Components responsible for displaying answers in a form"
-}
