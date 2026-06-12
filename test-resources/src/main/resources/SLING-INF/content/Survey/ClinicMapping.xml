@@ -102,4 +102,62 @@
             <type>Long</type>
         </property>
     </node>
+    <node>
+        <name>InitialSurvey</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>Initial 2 part survey</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>InitialSurvey</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>Small 2-part survey with optional forms (initial)</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>Initial</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>manualTokenLifespanDays</name>
+            <value>14</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>FollowUpSurvey</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>Follow-up 2 part survey</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>FollowUpSurvey</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>Small 2-part survey with optional forms (follow-up)</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>Initial</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>manualTokenLifespanDays</name>
+            <value>14</value>
+            <type>Long</type>
+        </property>
+    </node>
 </node>

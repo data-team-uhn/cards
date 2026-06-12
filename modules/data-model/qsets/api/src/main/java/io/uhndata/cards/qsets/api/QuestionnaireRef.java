@@ -50,6 +50,9 @@ public interface QuestionnaireRef
     /** The name of the property of a QuestionnaireRef node that specifies the target user type. */
     String TARGET_USER_TYPE_PROPERTY = "targetUserType";
 
+    /** The name of the property of a QuestionnaireRef node that marks the questionnaire as optional. */
+    String OPTIONAL_PROPERTY = "optional";
+
     /**
      * Which type of user should fill in this questionnaire.
      */
@@ -131,4 +134,13 @@ public interface QuestionnaireRef
      * @return a number of weeks
      */
     long getFrequency();
+
+    /**
+     * Whether this questionnaire is optional, i.e. the patient may legitimately leave it blank. Such a questionnaire is
+     * always offered to the patient and is only considered handled once the survey is submitted, rather than being
+     * auto-skipped for lacking mandatory answers.
+     *
+     * @return {@code true} if the questionnaire is optional, {@code false} otherwise
+     */
+    boolean isOptional();
 }
