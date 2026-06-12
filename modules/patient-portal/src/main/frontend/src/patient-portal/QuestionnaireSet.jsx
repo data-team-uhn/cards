@@ -204,9 +204,8 @@ function QuestionnaireSet(props) {
   // Title shown to the patient: optional questionnaires are flagged as such in the UI.
   const getDisplayTitle = (questionnaireId) => {
     const title = questionnaires?.[questionnaireId]?.title || questionnaireId;
-    return title
-      ? title + (isFormOptional(questionnaireId) ? " (Optional)" : "")
-      : title;
+    if (!title) return null;
+    return title + (isFormOptional(questionnaireId) ? " (Optional)" : "");
   }
 
   // Whether a form has been handled for flow purposes (offered to the patient and dealt with).
