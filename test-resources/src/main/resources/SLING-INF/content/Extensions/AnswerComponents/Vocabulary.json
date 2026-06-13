@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:defaultDisabled": false,
+  "cards:defaultOrder": 70,
   "cards:extensionPointId": "cards/form/answerComponent",
   "cards:extensionName": "Vocabulary Questions",
   "cards:extensionRenderURL": "asset:cards-dataentry.VocabularyQuestion.js"
