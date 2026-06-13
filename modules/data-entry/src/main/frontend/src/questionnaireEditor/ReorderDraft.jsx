@@ -281,6 +281,10 @@ const ReorderSubmitModal = (props) => {
     try {
       reorderDispatch({ type: 'SET_LOADING' });
       await processMoves(moves);
+      // Reload fresh data in place (without nulling it via refreshTree) so the Edit tab
+      // reflects the saved order. Keeps the editor mounted: no blank flash, the success
+      // Snackbar still fires, and the draft tree resyncs via the SET_TREE effect.
+      await treeContext.actions.fetchRootData();
       reorderDispatch({ type: 'SET_SUCCESS' });
       // Cleanup after success
       reorderDispatch({ type: 'RESET_MOVES' });

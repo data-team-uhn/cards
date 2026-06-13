@@ -484,6 +484,8 @@ const initialState = {
   // Data from JCR used to initialize tree
   data: null,
   timestamp: null,
+  // Bumped on every (re)load of root data; used as a remount key so views re-seed from fresh data
+  revision: 0,
   // Format: { id: { value: id, parent: '...', children: [...], jcrPrimaryType: '...' } }
   // Note: root is node with jcrPrimaryType == 'cards:Questionnaire', parent == null
   nodes: {},
@@ -592,6 +594,7 @@ const treeReducer = (state, action) => {
       newState = { ...state,
         data: jcrData,
         timestamp: jcrData['jcr:lastCheckedOut'],
+        revision: state.revision + 1,
         nodes: initializeRoot(jcrData)
       };
       break;

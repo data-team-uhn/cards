@@ -252,7 +252,7 @@ let QuestionnaireComponent = (props) => {
                   <Divider />
                   { editTab == "edit" &&
                     <QuestionnaireContents
-                      key={treeContext.state.timestamp}
+                      key={treeContext.state.revision}
                       disableDelete
                       data={data}
                       classes={classes}
