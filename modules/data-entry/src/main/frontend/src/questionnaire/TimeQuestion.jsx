@@ -31,7 +31,9 @@ import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
+import questionEditorConfig from './TimeQuestion-editor.json';
 import DateTimeUtilities from "../components/DateTimeUtilities";
+import { registerQuestionEditorConfig } from "../questionnaireEditor/QuestionModelManager";
 
 // Component that renders a time question
 // Selected answers are placed in a series of <input type="hidden"> tags for submission.
@@ -168,6 +170,9 @@ TimeQuestion.propTypes = {
 };
 
 export default TimeQuestion;
+
+// Contribute the "time" dataType to the question editor, in place of a hardcoded entry in Question.json.
+registerQuestionEditorConfig(questionEditorConfig, { order: 700 });
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "time") {

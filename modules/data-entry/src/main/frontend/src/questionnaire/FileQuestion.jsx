@@ -26,6 +26,7 @@ import { withStyles } from 'tss-react/mui';
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
+import questionEditorConfig from './FileQuestion-editor.json';
 import fileStyles from "./fileStyles.jsx";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";
@@ -33,6 +34,7 @@ import Question from "./Question";
 import DragAndDrop from "../components/DragAndDrop";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { registerQuestionEditorConfig } from "../questionnaireEditor/QuestionModelManager";
 
 // Component that renders a file upload question.
 // Filepaths are placed in a series of <input type="hidden"> tags for
@@ -377,6 +379,9 @@ FileQuestion.propTypes = {
 
 const StyledFileQuestion = withStyles(FileQuestion, fileStyles);
 export default StyledFileQuestion;
+
+// Contribute the "file" dataType to the question editor, in place of a hardcoded entry in Question.json.
+registerQuestionEditorConfig(questionEditorConfig, { order: 800 });
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "file") {

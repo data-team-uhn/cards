@@ -25,6 +25,8 @@ import PhoneInput from 'react-phone-input-2';
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
+import questionEditorHints from './PhoneQuestion-editor-hints.json';
+import questionEditorConfig from './PhoneQuestion-editor.json';
 import Question from "./Question";
 
 // Component that renders a phone number question.
@@ -90,5 +92,8 @@ PhoneQuestion.canProcess = (questionDefinition) => {
     return [PhoneQuestion, 50];
   }
 };
+
+PhoneQuestion.questionEditorConfig = questionEditorConfig;
+PhoneQuestion.questionEditorHints = questionEditorHints;
 
 export default PhoneQuestion;

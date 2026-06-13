@@ -1,0 +1,7 @@
+{
+  "file": {
+    "minAnswers": "long",
+    "maxAnswers": "long",
+    "namePattern": "string"
+  }
+}

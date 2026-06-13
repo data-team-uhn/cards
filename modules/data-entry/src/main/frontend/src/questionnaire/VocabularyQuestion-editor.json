@@ -1,0 +1,71 @@
+{
+  "vocabulary": {
+    "sourceVocabularies": {
+      "type": "list",
+      "multiple": true,
+      "primaryType": "cards:Vocabulary",
+      "saveType": "String",
+      "displayProperty": "identifier",
+      "orderProperty": "cards:Vocabulary",
+      "identifierProperty": "identifier"
+    },
+    "entryMode": {
+      "user": {
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "displayMode": {
+          "input": {
+            "enableVocabularyBrowser" : "boolean",
+            "enableUserEntry" : "boolean"
+          },
+          "list": {
+            "compact" : "boolean",
+            "answerOptions" : {
+              "type": "textOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "list+input" : {
+            "enableVocabularyBrowser" : "boolean",
+            "enableUserEntry" : "boolean",
+            "compact" : "boolean",
+            "answerOptions" : {
+              "type": "textOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "select" : {
+            "answerOptions" : {
+              "type": "textOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          }
+        }
+      },
+      "computed": {
+        "minAnswers": {"0":{}, "1":{}},
+        "expression": "code",
+        "displayMode" : {
+          "input" : {},
+          "formatted" : {},
+          "hidden": {}
+        }
+      },
+      "reference": {
+        "question": "string",
+        "displayMode" : {
+          "plain" : {},
+          "formatted" : {},
+          "hidden": {}
+        }
+      },
+      "autocreated": {
+        "displayMode" : {
+          "plain" : {},
+          "formatted" : {},
+          "hidden": {}
+        }
+      }
+    }
+  }
+}

@@ -25,6 +25,7 @@ import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
 
 import Answer from "./Answer";
+import questionEditorConfig from './IdentifierQuestion-editor.json';
 import Question from "./Question";
 
 // Component that renders an identifier question as a plain, read-only string copyable on click, with an optional copy button.
@@ -108,3 +109,5 @@ IdentifierQuestion.canProcess = (questionDefinition) => {
     return [IdentifierQuestion, 50];
   }
 };
+
+IdentifierQuestion.questionEditorConfig = questionEditorConfig;

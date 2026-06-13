@@ -19,10 +19,11 @@
 
 import PropTypes from "prop-types";
 
-import { checkPropTypes } from "../propTypes";
 import MultipleChoice from "./MultipleChoice";
 import NCRNote from "./NCRNote.jsx";
 import Question from "./Question";
+import questionEditorConfig from './VocabularyQuestion-editor.json';
+import { checkPropTypes } from "../propTypes";
 import VocabularyQuery from "../vocabQuery/VocabularyQuery.jsx";
 
 // Component that renders a vocabulary question.
@@ -86,5 +87,7 @@ VocabularyQuestion.canProcess = (questionDefinition) => {
     return [VocabularyQuestion, 50];
   }
 };
+
+VocabularyQuestion.questionEditorConfig = questionEditorConfig;
 
 export default VocabularyQuestion;

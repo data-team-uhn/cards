@@ -25,6 +25,8 @@ import PropTypes from "prop-types";
 import { usePlacesWidget } from "react-google-autocomplete";
 
 import { checkPropTypes } from "../propTypes";
+import questionEditorHints from './AddressQuestion-editor-hints.json';
+import questionEditorConfig from './AddressQuestion-editor.json';
 import Answer from "./Answer";
 import Question from "./Question";
 import StyledTextQuestion from "./TextQuestion";
@@ -178,5 +180,8 @@ AddressQuestion.canProcess = (questionDefinition) => {
     return [AddressQuestion, 50];
   }
 };
+
+AddressQuestion.questionEditorConfig = questionEditorConfig;
+AddressQuestion.questionEditorHints = questionEditorHints;
 
 export default AddressQuestion;
