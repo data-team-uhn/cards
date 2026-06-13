@@ -20,7 +20,6 @@
 import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
-import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import NCRNote from "./NCRNote.jsx";
 import Question from "./Question";
@@ -82,10 +81,10 @@ VocabularyQuestion.propTypes = {
   text: PropTypes.string
 };
 
-export default VocabularyQuestion;
-
-AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+VocabularyQuestion.canProcess = (questionDefinition) => {
   if (questionDefinition.dataType === "vocabulary") {
     return [VocabularyQuestion, 50];
   }
-});
+};
+
+export default VocabularyQuestion;

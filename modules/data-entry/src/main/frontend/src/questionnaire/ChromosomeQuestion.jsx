@@ -20,7 +20,6 @@
 import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
-import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 
@@ -103,10 +102,10 @@ ChromosomeQuestion.propTypes = {
   chromosomeNumber: PropTypes.number
 };
 
-export default ChromosomeQuestion;
-
-AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+ChromosomeQuestion.canProcess = (questionDefinition) => {
   if (questionDefinition.dataType === "chromosome") {
     return [ChromosomeQuestion, 50];
   }
-});
+};
+
+export default ChromosomeQuestion;

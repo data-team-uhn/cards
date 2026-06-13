@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:defaultDisabled": false,
+  "cards:extensionPointId": "cards/form/answerComponent",
+  "cards:extensionName": "Identifier Questions",
+  "cards:extensionRenderURL": "asset:cards-dataentry.IdentifierQuestion.js"
+}

@@ -26,7 +26,6 @@ import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
 import Answer, { LABEL_POS, VALUE_POS } from "./Answer";
-import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
 import FormattedText from "../components/FormattedText.jsx";
@@ -412,10 +411,10 @@ SelectableAreaQuestion.propTypes = {
   maxAnswers: PropTypes.number
 };
 
-export default SelectableAreaQuestion;
-
-AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+SelectableAreaQuestion.canProcess = (questionDefinition) => {
   if (questionDefinition.dataType === "selectableArea") {
     return [SelectableAreaQuestion, 50];
   }
-});
+};
+
+export default SelectableAreaQuestion;
