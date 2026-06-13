@@ -25,7 +25,6 @@ import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
 
 import Answer from "./Answer";
-import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 
 // Component that renders an identifier question as a plain, read-only string copyable on click, with an optional copy button.
@@ -104,8 +103,8 @@ IdentifierQuestion.propTypes = {
   }).isRequired
 };
 
-AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+IdentifierQuestion.canProcess = (questionDefinition) => {
   if (["identifier"].includes(questionDefinition.dataType)) {
     return [IdentifierQuestion, 50];
   }
-});
+};

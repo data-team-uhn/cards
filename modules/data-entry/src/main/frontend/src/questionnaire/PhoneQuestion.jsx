@@ -25,7 +25,6 @@ import PhoneInput from 'react-phone-input-2';
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
-import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 
 // Component that renders a phone number question.
@@ -86,10 +85,10 @@ PhoneQuestion.propTypes = {
 };
 
 
-export default PhoneQuestion;
-
-AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+PhoneQuestion.canProcess = (questionDefinition) => {
   if (questionDefinition.dataType === "phone") {
     return [PhoneQuestion, 50];
   }
-});
+};
+
+export default PhoneQuestion;

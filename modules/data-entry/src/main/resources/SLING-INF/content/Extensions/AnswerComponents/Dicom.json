@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:defaultDisabled": true,
+  "cards:extensionPointId": "cards/form/answerComponent",
+  "cards:extensionName": "DICOM Questions",
+  "cards:extensionRenderURL": "asset:cards-dataentry.DicomQuestion.js"
+}

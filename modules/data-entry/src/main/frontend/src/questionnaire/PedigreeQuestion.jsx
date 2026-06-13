@@ -25,7 +25,6 @@ import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
-import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PedigreeEditor from "../pedigree/pedigree";
@@ -194,10 +193,10 @@ PedigreeQuestion.propTypes = {
   existingAnswer: PropTypes.array,
 }
 
-export default PedigreeQuestion;
-
-AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+PedigreeQuestion.canProcess = (questionDefinition) => {
   if (questionDefinition.dataType === "pedigree") {
     return [PedigreeQuestion, 50];
   }
-});
+};
+
+export default PedigreeQuestion;

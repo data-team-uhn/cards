@@ -26,7 +26,6 @@ import { usePlacesWidget } from "react-google-autocomplete";
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
-import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 import StyledTextQuestion from "./TextQuestion";
 
@@ -174,10 +173,10 @@ AddressQuestion.propTypes = {
   }).isRequired,
 };
 
-export default AddressQuestion;
-
-AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+AddressQuestion.canProcess = (questionDefinition) => {
   if (questionDefinition.dataType === "address" && googleApiKey) {
     return [AddressQuestion, 50];
   }
-});
+};
+
+export default AddressQuestion;
