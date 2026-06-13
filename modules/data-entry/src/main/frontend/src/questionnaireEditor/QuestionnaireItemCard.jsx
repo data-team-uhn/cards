@@ -185,7 +185,15 @@ let QuestionnaireItemCard = (props) => {
     <div
       // If Questionnaire then dont apply left border
       style={{ borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`, position: "relative" }}
-      onClick={() => inView.highlighter.highlight(data['jcr:uuid'])}
+      onClick={(e) => {
+        // Same scoping as onKeyDown: only highlight when the wrapper itself is clicked,
+        // not when the click bubbles up from nested content (card body, action buttons,
+        // or the inline EditDialog). This avoids a highlight re-render on every click
+        // inside the card.
+        if (e.target === e.currentTarget) {
+          inView.highlighter.highlight(data['jcr:uuid']);
+        }
+      }}
       onKeyDown={(e) => {
         // Only activate the card's "button" behaviour when the wrapper itself is
         // focused. Without this guard, space/Enter typed in nested controls (e.g. the
