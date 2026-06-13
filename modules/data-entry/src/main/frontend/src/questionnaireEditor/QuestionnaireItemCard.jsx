@@ -143,7 +143,8 @@ let QuestionnaireItemCard = (props) => {
     data,
     onActionDone,
     doHighlight,
-    model,
+    spec,
+    hints,
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
@@ -284,7 +285,8 @@ let QuestionnaireItemCard = (props) => {
             targetExists
             data={data}
             type={type}
-            model={model}
+            spec={spec}
+            hints={hints}
             isOpen={editDialogOpen}
             onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
             onCancel={() => setEditDialogOpen(false)}
