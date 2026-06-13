@@ -1,0 +1,53 @@
+{
+  "time": {
+    "minAnswers": {
+      "0": {},
+      "1": {}
+    },
+    "dateFormat": {
+      "HH:mm": {},
+      "hh:mm a": {},
+      "HH:mm:ss": {},
+      "hh:mm:ss a": {},
+      "mm:ss": {}
+    },
+    "saveFormat": {
+      "HH:mm:ss.SSS": {},
+      "HH:mm:ss": {},
+      "HH:mm": {},
+      "hh:mm:ss a": {},
+      "hh:mm a": {},
+      "mm:ss": {}
+    },
+    "entryMode": {
+      "user": {
+        "lowerLimit": "string",
+        "upperLimit": "string",
+        "errorText": "string"
+      },
+      "computed": {
+        "expression": "code",
+        "displayMode": {
+          "input": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "reference": {
+        "question": "string",
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "autocreated": {
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      }
+    }
+  }
+}

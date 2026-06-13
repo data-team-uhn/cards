@@ -1,0 +1,12 @@
+{
+  "chromosome": {
+    "minAnswers": {"0":{}, "1":{}},
+    "maxAnswers": "long",
+    "chromosomeNumber": "long",
+    "enableX": "boolean",
+    "enableY": "boolean",
+    "enableZ": "boolean",
+    "enableW": "boolean",
+    "enableMT": "boolean"
+  }
+}

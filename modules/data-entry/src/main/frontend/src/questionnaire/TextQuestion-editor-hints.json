@@ -1,0 +1,3 @@
+{
+  "updateMode": "Specifies when the value of this question should update.\n* always: Whenever the source answer is updated\n* initial_only: Record the source answer when the reference answer is created and never update"
+}

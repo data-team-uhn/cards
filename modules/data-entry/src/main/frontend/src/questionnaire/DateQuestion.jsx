@@ -28,9 +28,11 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
+import questionEditorConfig from './DateQuestion-editor.json';
 import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
 import DateTimeUtilities from "../components/DateTimeUtilities";
+import { registerQuestionEditorConfig } from "../questionnaireEditor/QuestionModelManager";
 
 // Component that renders a date/time question
 // Selected answers are placed in a series of <input type="hidden"> tags for submission.
@@ -319,6 +321,9 @@ function DateQuestion(props) {
 DateQuestion.propTypes = DateTimeUtilities.PROP_TYPES;
 
 export default DateQuestion;
+
+// Contribute the "date" dataType to the question editor.
+registerQuestionEditorConfig(questionEditorConfig, { order: 600 });
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date") {

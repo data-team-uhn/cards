@@ -28,6 +28,8 @@ import { checkPropTypes } from "../propTypes";
 import Answer, { LABEL_POS, VALUE_POS } from "./Answer";
 import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
+import questionEditorHints from './SelectableAreaQuestion-editor-hints.json';
+import questionEditorConfig from './SelectableAreaQuestion-editor.json';
 import FormattedText from "../components/FormattedText.jsx";
 
 // Component that renders an image with clickable areas based on the available
@@ -416,5 +418,8 @@ SelectableAreaQuestion.canProcess = (questionDefinition) => {
     return [SelectableAreaQuestion, 50];
   }
 };
+
+SelectableAreaQuestion.questionEditorConfig = questionEditorConfig;
+SelectableAreaQuestion.questionEditorHints = questionEditorHints;
 
 export default SelectableAreaQuestion;

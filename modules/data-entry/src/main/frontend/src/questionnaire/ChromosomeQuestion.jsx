@@ -20,6 +20,7 @@
 import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
+import questionEditorConfig from './ChromosomeQuestion-editor.json';
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 
@@ -107,5 +108,7 @@ ChromosomeQuestion.canProcess = (questionDefinition) => {
     return [ChromosomeQuestion, 50];
   }
 };
+
+ChromosomeQuestion.questionEditorConfig = questionEditorConfig;
 
 export default ChromosomeQuestion;

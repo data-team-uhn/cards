@@ -1,0 +1,55 @@
+{
+  "resource": {
+    "primaryType": "string",
+    "labelProperty": "string",
+    "entryMode": {
+      "user": {
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "displayMode": {
+          "input": {
+            "propertiesToSearch": "string",
+            "enableUserEntry": "boolean"
+          },
+          "select": {},
+          "list": {
+            "compact": "boolean"
+          },
+          "list+input": {
+            "propertiesToSearch": "string",
+            "enableUserEntry": "boolean",
+            "compact": "boolean",
+            "answerOptions": "textOptions"
+          }
+        }
+      },
+      "computed": {
+        "minAnswers": {
+          "0": {},
+          "1": {}
+        },
+        "expression": "string",
+        "displayMode": {
+          "input": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "reference": {
+        "question": "string",
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "autocreated": {
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      }
+    }
+  }
+}

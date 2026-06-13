@@ -36,8 +36,11 @@ import AnswerComponentManager from "./AnswerComponentManager";
 import AnswerInstructions from "./AnswerInstructions";
 import { useFormReaderContext } from "./FormContext";
 import MultipleChoice from "./MultipleChoice";
+import questionEditorHints from './NumberQuestion-editor-hints.json';
+import questionEditorConfig from './NumberQuestion-editor.json';
 import Question from "./Question";
 import FormattedText from "../components/FormattedText";
+import { registerQuestionEditorConfig } from "../questionnaireEditor/QuestionModelManager";
 
 /** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
 const DATA_TO_NODE_TYPE = {
@@ -584,6 +587,12 @@ NumberQuestion.propTypes = {
 };
 
 export default NumberQuestion;
+
+// Contribute the "long", "decimal" and "double" dataTypes to the question editor.
+registerQuestionEditorConfig(questionEditorConfig, {
+  hints: questionEditorHints,
+  order: { long: 300, decimal: 400, double: 500 }
+});
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (["long", "double", "decimal"].includes(questionDefinition.dataType)) {

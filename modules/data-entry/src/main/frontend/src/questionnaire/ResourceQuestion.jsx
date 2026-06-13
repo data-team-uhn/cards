@@ -26,7 +26,9 @@ import { checkPropTypes } from "../propTypes";
 import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
+import questionEditorConfig from './ResourceQuestion-editor.json';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { registerQuestionEditorConfig } from "../questionnaireEditor/QuestionModelManager";
 import ResourceQuery from "../resourceQuery/ResourceQuery";
 
 // Component that renders a question, where the answer options are children of a given JCR node
@@ -115,6 +117,9 @@ ResourceQuestion.propTypes = {
 };
 
 export default ResourceQuestion;
+
+// Contribute the "resource" dataType to the question editor.
+registerQuestionEditorConfig(questionEditorConfig, { order: 900 });
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "resource") {

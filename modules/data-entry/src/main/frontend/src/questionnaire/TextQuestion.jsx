@@ -24,6 +24,9 @@ import { checkPropTypes } from "../propTypes";
 import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
+import questionEditorHints from './TextQuestion-editor-hints.json';
+import questionEditorConfig from './TextQuestion-editor.json';
+import { registerQuestionEditorConfig } from "../questionnaireEditor/QuestionModelManager";
 
 // Component that renders a multiple choice question, with optional text input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -119,6 +122,9 @@ TextQuestion.propTypes = {
 };
 
 export default TextQuestion;
+
+// Contribute the "text" dataType to the question editor.
+registerQuestionEditorConfig(questionEditorConfig, { hints: questionEditorHints, order: 100 });
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   return [TextQuestion, 0];

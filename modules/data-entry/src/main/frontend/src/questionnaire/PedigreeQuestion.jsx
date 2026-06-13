@@ -25,6 +25,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
+import questionEditorConfig from './PedigreeQuestion-editor.json';
 import Question from "./Question";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PedigreeEditor from "../pedigree/pedigree";
@@ -198,5 +199,7 @@ PedigreeQuestion.canProcess = (questionDefinition) => {
     return [PedigreeQuestion, 50];
   }
 };
+
+PedigreeQuestion.questionEditorConfig = questionEditorConfig;
 
 export default PedigreeQuestion;

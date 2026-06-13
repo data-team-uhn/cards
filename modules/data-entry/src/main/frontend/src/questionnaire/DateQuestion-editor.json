@@ -1,0 +1,42 @@
+{
+  "date": {
+    "minAnswers": {
+      "0": {},
+      "1": {}
+    },
+    "dateFormat": "string",
+    "type": {
+      "timestamp": {},
+      "interval": {}
+    },
+    "entryMode": {
+      "user": {
+        "lowerLimit": "string",
+        "upperLimit": "string"
+      },
+      "computed": {
+        "expression": "code",
+        "displayMode": {
+          "input": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "reference": {
+        "question": "string",
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "autocreated": {
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      }
+    }
+  }
+}

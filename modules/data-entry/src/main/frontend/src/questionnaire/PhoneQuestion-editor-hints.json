@@ -1,0 +1,5 @@
+{
+  "defaultCountry": "The default country code (ISO 3166), for example 'ca'.",
+  "regions": "In the country dropdown, show only countries from certain regions or subregions, specified as a comma-separated list. For example:\n*  Regions - `america, europe, asia, oceania, africa`);\n* Subregions -`north-america, south-america, central-america, carribean, eu-union, ex-ussr, ex-yugos, baltic, middle-east, north-africa`.",
+  "onlyCountries": "Explicit list of comma-separated country codes to be made available in the dropdown, for example `es, fr, it`."
+}

@@ -36,6 +36,7 @@ cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
+import questionEditorConfig from './DicomQuestion-editor.json';
 import FileQuestion from "./FileQuestion";
 import FormattedText from "../components/FormattedText";
 import ResponsiveDialog from "../components/ResponsiveDialog";
@@ -334,5 +335,7 @@ DicomQuestion.canProcess = (questionDefinition) => {
     return [DicomQuestion, 50];
   }
 };
+
+DicomQuestion.questionEditorConfig = questionEditorConfig;
 
 export default DicomQuestion;
