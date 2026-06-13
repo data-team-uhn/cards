@@ -623,7 +623,14 @@ let QuestionnaireEntry = (props) => {
       // Try to reload the data from the server
       fetch(`${data["@path"]}.deep.json`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
-        .then(json => handleDataChange(json))
+        .then(json => {
+          handleDataChange(json);
+          // The update above only refreshes this card's local state; state.data and the
+          // sibling nodes (read by the Edit and Reorder tabs on remount) stay stale.
+          // Reload the whole questionnaire in place so both tabs reflect the saved edit.
+          // Pre-existing bug, fixed opportunistically alongside CARDS-603 reordering.
+          treeContext.actions.fetchRootData();
+        })
         .catch(() => {
           // If it fails, it's because we deleted an item
           // Update the context to remove the deleted item
