@@ -187,7 +187,13 @@ let QuestionnaireItemCard = (props) => {
       style={{ borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`, position: "relative" }}
       onClick={() => inView.highlighter.highlight(data['jcr:uuid'])}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        // Only activate the card's "button" behaviour when the wrapper itself is
+        // focused. Without this guard, space/Enter typed in nested controls (e.g. the
+        // EditDialog text fields, which render inline because the dialog uses
+        // disablePortal) bubble up here and get preventDefault()-ed, making it
+        // impossible to type spaces. It would also block keyboard activation of the
+        // card's own Edit/Delete/Collapse buttons.
+        if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
           e.preventDefault();
           inView.highlighter.highlight(data['jcr:uuid']);
         }
