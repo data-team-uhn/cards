@@ -41,7 +41,6 @@ import { useQuestionnaireTreeContext, getOrdinalString } from './QuestionnaireTr
 import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import { ENTRY_TYPES } from '../questionnaire/FormEntry.jsx';
-import { useQuestionnaireInViewContext } from '../questionnaire/QuestionnaireContext.jsx';
 
 const useStyles = makeStyles()(theme => ({
   root : {
@@ -125,7 +124,6 @@ let QuestionnaireItemCard = (props) => {
 
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
   const treeContext = useQuestionnaireTreeContext();
-  const inView = useQuestionnaireInViewContext();
   const itemRef = useRef();
 
   useEffect(() => {
@@ -185,29 +183,6 @@ let QuestionnaireItemCard = (props) => {
     <div
       // If Questionnaire then dont apply left border
       style={{ borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`, position: "relative" }}
-      onClick={(e) => {
-        // Same scoping as onKeyDown: only highlight when the wrapper itself is clicked,
-        // not when the click bubbles up from nested content (card body, action buttons,
-        // or the inline EditDialog). This avoids a highlight re-render on every click
-        // inside the card.
-        if (e.target === e.currentTarget) {
-          inView.highlighter.highlight(data['jcr:uuid']);
-        }
-      }}
-      onKeyDown={(e) => {
-        // Only activate the card's "button" behaviour when the wrapper itself is
-        // focused. Without this guard, space/Enter typed in nested controls (e.g. the
-        // EditDialog text fields, which render inline because the dialog uses
-        // disablePortal) bubble up here and get preventDefault()-ed, making it
-        // impossible to type spaces. It would also block keyboard activation of the
-        // card's own Edit/Delete/Collapse buttons.
-        if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
-          e.preventDefault();
-          inView.highlighter.highlight(data['jcr:uuid']);
-        }
-      }}
-      role="button"
-      tabIndex={0}
     >
       { !!ordinalPosition &&
         <div
