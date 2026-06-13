@@ -46,7 +46,12 @@ export default class AnswerComponentManager {
 }
 
 async function registerAnswerComponents() {
-  loadExtensions("AnswerComponents")
-    .then(extensions => extensions.forEach(c => AnswerComponentManager.registerAnswerComponent(c['cards:extensionRender'].canProcess)));
+  const extensions = await loadExtensions("AnswerComponents");
+  extensions
+    .map(extension => extension['cards:extensionRender']?.canProcess)
+    .filter(Boolean)
+    .forEach(canProcess => AnswerComponentManager.registerAnswerComponent(canProcess));
 }
-await registerAnswerComponents();
+// Fire-and-forget: registration must not block evaluation of this module, otherwise the surrounding
+// data-entry bundle (which provides the very assets being loaded here) would deadlock on initialization.
+registerAnswerComponents().catch(error => console.error("Failed to register answer components", error));
