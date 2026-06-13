@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:defaultDisabled": true,
+  "cards:defaultOrder": 50,
   "cards:extensionPointId": "cards/form/answerComponent",
   "cards:extensionName": "Pedigree Questions",
   "cards:extensionRenderURL": "asset:cards-dataentry.PedigreeQuestion.js"
