@@ -20,6 +20,7 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useContext, useRef, createContext } from "react";
 
 import { deepPurple, orange, blueGrey, blue, purple, green } from '@mui/material/colors';
+import _ from "lodash";
 import { makeStyles } from 'tss-react/mui';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
@@ -573,6 +574,31 @@ const warningValidators = {
   },
 }
 
+/**
+ * Builds the flat node map from the questionnaire JCR data.
+ * `nodes` is a pure projection of `data`: this is the single derivation used both to
+ * (eventually) expose `nodes` from the provider and to validate the reducer's copy.
+ *
+ * @param {Object|null} data - The questionnaire (root) JCR data, or null before load.
+ * @returns {Object} - The flat node map (empty when data is null).
+ */
+function buildNodes(data) {
+  return data == null ? {} : initializeRoot(data);
+}
+
+/**
+ * Builds the warnings object from the questionnaire JCR data.
+ * Like `nodes`, `warnings` is a pure projection of `data`.
+ *
+ * @param {Object|null} data - The questionnaire (root) JCR data, or null before load.
+ * @returns {Object} - The warnings map (empty when data is null).
+ */
+function buildWarnings(data) {
+  if (data == null) return {};
+  return Object.fromEntries(Object.entries(warningValidators)
+    .map(([key, validator]) => [key, validator(data)]));
+}
+
 // Reducer Function
 const treeReducer = (state, action) => {
   if (!action.type || !ACTIONS.includes(action.type)) {
@@ -626,11 +652,7 @@ const treeReducer = (state, action) => {
     throw new Error("Invalid state in treeReducer");
   }
   // Check for any warnings
-  const warnings = newState.data === null
-    ? {}
-    : Object.fromEntries(Object.entries(warningValidators)
-      .map(([key, validator]) => [key, validator(newState.data)]));
-  return { ...newState, warnings };
+  return { ...newState, warnings: buildWarnings(newState.data) };
 }
 
 export const QuestionnaireTreeContext = createContext();
@@ -733,6 +755,31 @@ export function QuestionnaireTreeProvider(props) {
 
   const [state, dispatch] = useReducer(treeReducer, initialState);
 
+  // --- Refactor step 1 (single source of truth) ---------------------------------
+  // `nodes` and `warnings` are pure projections of `data`. We compute them here from
+  // `data` and, in development, verify they match the copies the reducer maintains
+  // separately. Any divergence logged below is a `data`/`nodes` desync (the class of
+  // bug this refactor removes). Once trusted, step 2 deletes the stored copies and
+  // exposes these derived values instead. Until then this is non-destructive:
+  // consumers still read the reducer's `state.nodes` / `state.warnings`.
+  const derivedNodes = useMemo(() => buildNodes(state.data), [state.data]);
+  const derivedWarnings = useMemo(() => buildWarnings(state.data), [state.data]);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return;
+    if (!_.isEqual(derivedNodes, state.nodes)) {
+      console.warn(
+        "[QuestionnaireTree] derived nodes diverge from stored nodes — data/nodes desync detected",
+        { derived: derivedNodes, stored: state.nodes }
+      );
+    }
+    if (!_.isEqual(derivedWarnings, state.warnings)) {
+      console.warn(
+        "[QuestionnaireTree] derived warnings diverge from stored warnings",
+        { derived: derivedWarnings, stored: state.warnings }
+      );
+    }
+  }, [derivedNodes, derivedWarnings, state.nodes, state.warnings]);
 
   // GlobalLoginContext for fetchWithReLogin
   const globalLoginDisplay = useContext(GlobalLoginContext);
