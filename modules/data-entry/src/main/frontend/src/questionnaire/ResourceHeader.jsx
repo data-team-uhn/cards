@@ -102,7 +102,8 @@ function ResourceHeader (props) {
     tags,
     action,
     children,
-    contentOffset = 0
+    contentOffset = 0,
+    hideBreadcrumbTitle = false
   } = props;
 
   const { classes } = useStyles();
@@ -120,10 +121,12 @@ function ResourceHeader (props) {
         <Grid container justifyContent="space-between" alignItems="center" wrap="nowrap">
           <Grid>
             <Breadcrumbs separator={separator}>
-              {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
-              <Collapse in={fullBreadcrumbTrigger}>
-                <Typography variant="subtitle2">{title}</Typography>
-              </Collapse>
+              {Array.from(breadcrumbs || []).map((item, i) => <Typography variant="overline" key={i}>{item}</Typography>)}
+              {!hideBreadcrumbTitle &&
+                <Collapse in={fullBreadcrumbTrigger}>
+                  <Typography variant="subtitle2">{title}</Typography>
+                </Collapse>
+              }
             </Breadcrumbs>
           </Grid>
           <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid}>
@@ -164,6 +167,7 @@ ResourceHeader.propTypes = {
     PropTypes.node
   ]),
   contentOffset: PropTypes.number,
+  hideBreadcrumbTitle: PropTypes.bool,
 }
 
 export default ResourceHeader;

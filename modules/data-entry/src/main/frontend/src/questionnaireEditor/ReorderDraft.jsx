@@ -140,7 +140,6 @@ const useTargetPlaceholderStyles = makeStyles()((theme, props) => {
 
 const initialReorderState = {
   draftTree: null,
-  tree: null, //not used but could be if you want to decouple the tree and reorder contexts
 
   status: 'idle',
   error: null,

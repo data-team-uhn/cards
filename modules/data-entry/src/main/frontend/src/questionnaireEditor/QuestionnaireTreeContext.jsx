@@ -580,7 +580,8 @@ const treeReducer = (state, action) => {
   if (!action.type || !ACTIONS.includes(action.type)) {
     throw new Error("Invalid action type in treeReducer");
   }
-  let newState = structuredClone(state);
+  // Every case below assigns newState, so no need to initialize.
+  let newState;
   switch (action.type) {
     case CLEAR_TREE: {
       newState = initialState;
@@ -592,7 +593,15 @@ const treeReducer = (state, action) => {
       if (jcrData['jcr:primaryType'] !== 'cards:Questionnaire') {
         throw new Error("QuestionnaireTreeContext initialized with a node that is not a questionnaire");
       }
-
+      // Validate the tree structure when fresh data enters from the server. Mutations
+      // transform already-valid data with structure-preserving helpers, so they don't
+      // need re-validation on every dispatch.
+      const validatorNodes = buildNodes(jcrData);
+      const initialStateIsValid = Object.values(stateValidators)
+        .map(validator => validator(validatorNodes)).reduce((a, b) => a && b, true);
+      if (!initialStateIsValid) {
+        throw new Error("Invalid questionnaire tree structure");
+      }
       newState = { ...state,
         data: jcrData,
         timestamp: jcrData['jcr:lastCheckedOut'],
@@ -619,14 +628,6 @@ const treeReducer = (state, action) => {
     }
     default:
       throw new Error("Invalid action type in treeReducer");
-  }
-  // `nodes` is a pure projection of `data`; validate that derived tree. The reducer
-  // stores only `data` — the provider exposes `nodes`/`warnings`, derived.
-  const nodes = buildNodes(newState.data);
-  const stateIsValid = Object.values(stateValidators)
-    .map(validator => validator(nodes)).reduce((a, b) => a && b, true);
-  if (!stateIsValid) {
-    throw new Error("Invalid state in treeReducer");
   }
   return newState;
 }

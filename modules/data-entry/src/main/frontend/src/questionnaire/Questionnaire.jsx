@@ -28,6 +28,7 @@ import {
   Divider,
   Grid,
   IconButton,
+  Link as MuiLink,
   List,
   ListItem,
   Popover,
@@ -35,6 +36,7 @@ import {
   Tab,
   Tooltip,
   Typography,
+  useScrollTrigger,
 } from "@mui/material";
 import {
   blue,
@@ -53,7 +55,7 @@ import { withStyles } from 'tss-react/mui';
 import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry";
 import formStyles from "./formStyles.jsx";
 import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
-import { QuestionnaireProvider } from "./QuestionnaireContext"; //This is purely computed from QuestionnaireTreeContext now
+import { QuestionnaireProvider, useQuestionnaireInViewContext, getAncestorPath } from "./QuestionnaireContext";
 import QuestionnairePreview from "./QuestionnairePreview";
 import { stripCardsNamespace } from "./QuestionnaireUtilities";
 import ResourceHeader from "./ResourceHeader";
@@ -82,6 +84,65 @@ let Questionnaire = (props) => {
     </QuestionnaireTreeProvider>
   )
 }
+
+// Renders the sticky resource header with a dynamic "location" breadcrumb showing the
+// path of the item currently scrolled to the top of the Edit tab. Isolated as its own
+// component so that scroll-driven activeItem changes re-render only the header, not the
+// questionnaire content.
+let QuestionnaireResourceHeader = (props) => {
+  let { title, action, baseUrl, contentOffset, data, showLocation } = props;
+  const { state: { nodes } } = useQuestionnaireTreeContext();
+  const inView = useQuestionnaireInViewContext();
+  // Only show the location path once the header has collapsed (the big title has scrolled
+  // out of view), so the title isn't shown twice. Same threshold ResourceHeader uses.
+  const collapsed = useScrollTrigger({ target: window, disableHysteresis: true, threshold: 120 });
+
+  // The breadcrumb path is the questionnaire root -> ... -> the current item. The root is
+  // always shown (clicking it scrolls to the top); the section and question are appended
+  // as you scroll. Before anything has scrolled into view, only the root is shown.
+  const renderCrumb = (node) => (
+    <MuiLink
+      key={node.id}
+      component="button"
+      underline="hover"
+      onClick={() => inView.scrollToItem(node.id)}
+    >
+      {node.title || node.name}
+    </MuiLink>
+  );
+  let pathNodes = [];
+  if (showLocation && collapsed) {
+    if (inView.activeItem) {
+      // getAncestorPath already returns the root as its first element.
+      pathNodes = getAncestorPath(nodes, inView.activeItem);
+    } else {
+      // Before anything is scrolled into view, show just the questionnaire root.
+      const root = Object.values(nodes || {}).find(node => node.parent === null);
+      pathNodes = root ? [root] : [];
+    }
+  }
+  const locationCrumbs = pathNodes.map(renderCrumb);
+
+  return (
+    <ResourceHeader
+      title={title || ""}
+      breadcrumbs={[
+        <Link key="questionnaires" to={".." + baseUrl} underline="hover">Questionnaires</Link>,
+        ...locationCrumbs
+      ]}
+      action={action}
+      contentOffset={contentOffset}
+      hideBreadcrumbTitle={showLocation}
+    >
+      { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
+        <Typography variant="overline">
+          Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
+        </Typography>
+      }
+      <EditorHeader />
+    </ResourceHeader>
+  );
+};
 
 // GUI for displaying details about a questionnaire.
 let QuestionnaireComponent = (props) => {
@@ -202,22 +263,6 @@ let QuestionnaireComponent = (props) => {
     </div>
   )
 
-  let questionnaireHeader = (
-    <ResourceHeader
-      title={questionnaireTitle || ""}
-      breadcrumbs={[<Link key="questionnaires" to={".." + baseUrl} underline="hover">Questionnaires</Link>]}
-      action={questionnaireMenu}
-      contentOffset={props.contentOffset}
-    >
-      { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
-        <Typography variant="overline">
-          Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
-        </Typography>
-      }
-      <EditorHeader />
-    </ResourceHeader>
-  );
-
   return (
     <QuestionnaireProvider>
       { error ?
@@ -227,7 +272,14 @@ let QuestionnaireComponent = (props) => {
         :
         data?.["jcr:primaryType"] === "cards:Questionnaire" &&
           <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-            { questionnaireHeader }
+            <QuestionnaireResourceHeader
+              title={questionnaireTitle}
+              action={questionnaireMenu}
+              baseUrl={baseUrl}
+              contentOffset={props.contentOffset}
+              data={data}
+              showLocation={(isEdit || isReorder) && editTab === 'edit'}
+            />
             <Grid>
               { !(isEdit || isReorder)
                 ?
