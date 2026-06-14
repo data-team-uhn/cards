@@ -64,7 +64,7 @@ const useBaseStyles = makeStyles()((theme) => ({
     "& .MuiListItem-root": {
       paddingLeft: 0,
       "&:hover": {
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        backgroundColor: theme.palette.action.selected,
       },
     },
     "& .MuiDivider-root": {
@@ -582,7 +582,7 @@ const ReorderConditionalSubheader = (props) => {
       disableGutters
       disablePadding
       sx={{
-        backgroundColor: ['Question', 'Information'].includes(type) ? 'transparent' : 'rgba(0, 0, 0, 0.04)',
+        backgroundColor: ['Question', 'Information'].includes(type) ? 'transparent' : 'action.hover',
         borderLeft: `3px solid ${ENTRY_TITLE_FIELD_SPEC[`cards:${type}`]?.color}`,
       }}
     >
@@ -708,7 +708,7 @@ function RecursiveDragList(props) {
                   selected={nodeIsSource}
                   sx={{
                     cursor: 'pointer',
-                    bgColor: ['Question', 'Information'].includes(type) ? 'transparent' : 'rgba(0, 0, 0, 0.04)',
+                    bgcolor: ['Question', 'Information'].includes(type) ? 'transparent' : 'action.hover',
                     borderLeft: `3px solid ${ENTRY_TITLE_FIELD_SPEC[`cards:${type}`]?.color}`,
 
                   }}
@@ -768,7 +768,7 @@ function RecursiveDragList(props) {
               disablePadding
               sx={{
                 pl: 4,
-                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                backgroundColor: 'action.hover',
                 ...type === 'Questionnaire' ? { paddingLeft: 0 } : { borderLeft: `3px solid ${ENTRY_TITLE_FIELD_SPEC[`cards:${type}`]?.color}` }
 
               }}
