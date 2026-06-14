@@ -150,7 +150,7 @@ let EditDialog = (props) => {
       <Grid container justifyContent='center'>
         <Grid>
           <Typography variant='h2' color='error'>
-            Error obtaining form data: {error.status} {error.statusText}
+            Error saving form: {error}
           </Typography>
         </Grid>
       </Grid>
