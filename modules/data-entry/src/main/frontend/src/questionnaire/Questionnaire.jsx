@@ -632,11 +632,9 @@ let QuestionnaireEntry = (props) => {
           treeContext.actions.fetchRootData();
         })
         .catch(() => {
-          // If it fails, it's because we deleted an item
-          // Update the context to remove the deleted item
-          if (!!data['jcr:uuid']) {
-            treeContext.actions.removeNode(data['jcr:uuid']);
-          }
+          // The reload failed because the item was deleted; remove it from `data` by
+          // path (works for nodes with or without a jcr:uuid, e.g. conditionals).
+          treeContext.actions.removeNode(data['@path']);
           // Then pass it up to the parent
           onActionDone?.();
         });

@@ -24,7 +24,6 @@ import _ from "lodash";
 import { makeStyles } from 'tss-react/mui';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import { CONDITIONAL_TYPES } from "../questionnaire/FormEntry";
 
 export const ENTRY_TITLE_FIELD_SPEC = {
   'cards:Questionnaire': {
@@ -365,77 +364,6 @@ function initializeRoot(jcrData) {
 
 
 /**
- *
- * @param {Object} jcrData - The jcr data object to update the tree with.
- * @param {Object} nodes - The flat map representing the tree structure.
- * @returns {Object} - Returns a new map with the updated nodes.
- *
- */
-function updateNodesOnData(jcrData, nodes) {
-  if (!jcrData || typeof jcrData !== 'object') {
-    throw new Error("updateNodesOnData called with invalid jcrData");
-  }
-  const noUUID = !jcrData['jcr:uuid'];
-  const noPrimaryType = !jcrData['jcr:primaryType'];
-  if (noPrimaryType) {
-    throw new Error("updateNodesOnData called with invalid jcrData");
-  }
-  if (noUUID && !CONDITIONAL_TYPES.includes(jcrData['jcr:primaryType'])) {
-    throw new Error("updateNodesOnData called with invalid jcrData. No jcr:uuid and not a conditional type");
-  }
-  const rootNode = Object.values(nodes).find(node => node.parent === null);
-  const rootPath = rootNode?.path;
-  const updatedNodes = jcrFindEntries(jcrData, rootPath, {});
-  // Update the tree with the new nodes
-  function updateTree(originalTree, jcrDataSubtree) {
-    const nodes = structuredClone(originalTree);
-    // Find added and updated nodes
-    for (const [id, newNode] of Object.entries(jcrDataSubtree)) {
-      const existingNode = nodes[id];
-      // If the node doesn't exist in the original tree, add it
-      if (!existingNode) {
-        nodes[id] = newNode;
-        const parentId = newNode.parent;
-        if (parentId && nodes[parentId]) {
-          nodes[parentId].children.push(id);
-        }
-      } else {
-        // Update existing node with any changes
-        nodes[id] = newNode;
-      }
-    }
-
-    return nodes;
-  }
-  return updateTree(nodes, updatedNodes);
-}
-
-/**
- * Removes a node from the tree
- *
- * @param {string} nodeId - The ID of the node to be removed.
- * @param {Object} nodes - The flat map representing the tree structure.
- * @returns {Object} - Returns a new map with the node removed.
-*/
-function removeNode(nodeId, nodes) {
-  const newNodes = structuredClone(nodes);
-  const node = newNodes[nodeId];
-  // Remove node from parent's children array
-  const parentId = node.parent;
-  const parent = newNodes[parentId];
-  newNodes[parentId].children = parent.children.filter(childId => childId !== nodeId);
-  // Recursively delete the node and all its descendants
-  const toDelete = [nodeId];
-  while (toDelete.length > 0) {
-    const current = toDelete.pop();
-    (newNodes[current]?.children || []).forEach(childId => toDelete.push(childId));
-    delete newNodes[current];
-  }
-  return newNodes;
-}
-
-
-/**
  * Traverse the tree and return all nodes with matching entryTypes
  *
  * @param {Object} nodes - The flat map representing the tree structure.
@@ -599,6 +527,59 @@ function buildWarnings(data) {
     .map(([key, validator]) => [key, validator(data)]));
 }
 
+/**
+ * Immutably replaces (or inserts) a subtree within the questionnaire `data` tree at the
+ * subtree's own JCR path. Used to keep `data` authoritative on edit/create, so that the
+ * `nodes`/`warnings` derived from it stay correct without a server reload.
+ *
+ * JCR children are nested under object keys equal to their node name (= last @path
+ * segment), so we locate the target by walking the path segments relative to the root.
+ * If the key already exists it is replaced (edit); if not, it is appended to its parent
+ * (create — matching Sling's default "new node goes last" placement).
+ *
+ * @param {Object} data - The questionnaire (root) JCR data.
+ * @param {Object} subtree - A node's deep JCR data; placed at subtree['@path'].
+ * @returns {Object} - New `data` with the subtree spliced in (untouched branches shared).
+ */
+function setSubtreeAtPath(data, subtree) {
+  const rootPath = data['@path'];
+  const segments = subtree['@path'].slice(rootPath.length).split('/').filter(Boolean);
+  // The subtree is the root itself
+  if (segments.length === 0) return subtree;
+  const splice = (node, [head, ...rest]) => {
+    if (rest.length === 0) return { ...node, [head]: subtree };
+    // Intermediate node missing (e.g. stale data): leave the tree unchanged
+    if (!node[head]) return node;
+    return { ...node, [head]: splice(node[head], rest) };
+  };
+  return splice(data, segments);
+}
+
+/**
+ * Immutably removes the subtree at the given JCR path from the questionnaire `data`
+ * tree. Used to keep `data` authoritative on delete.
+ *
+ * @param {Object} data - The questionnaire (root) JCR data.
+ * @param {string} path - The JCR @path of the node to remove.
+ * @returns {Object} - New `data` without that node (untouched branches shared).
+ */
+function removeSubtreeAtPath(data, path) {
+  const rootPath = data['@path'];
+  const segments = path.slice(rootPath.length).split('/').filter(Boolean);
+  // Refuse to remove the root
+  if (segments.length === 0) return data;
+  const splice = (node, [head, ...rest]) => {
+    if (!node[head]) return node; // not found — no-op
+    if (rest.length === 0) {
+      const remaining = { ...node };
+      delete remaining[head];
+      return remaining;
+    }
+    return { ...node, [head]: splice(node[head], rest) };
+  };
+  return splice(data, segments);
+}
+
 // Reducer Function
 const treeReducer = (state, action) => {
   if (!action.type || !ACTIONS.includes(action.type)) {
@@ -626,20 +607,20 @@ const treeReducer = (state, action) => {
       break;
     }
     case UPDATE_ONDATA: {
+      // jcrData is the edited node (field change) or, on create, the parent node that now
+      // contains the new child. Splice it into `data` at its own path — this handles the
+      // root, an edited node, and a newly created child alike — then derive `nodes` from
+      // the updated `data` so the two cannot diverge.
       const { jcrData } = action.payload;
-      const { nodes } = state;
-      const isRootNode = jcrData['jcr:primaryType'] === 'cards:Questionnaire';
-      newState = {
-        ...state,
-        ...isRootNode ? { data: jcrData } : {},
-        nodes: updateNodesOnData(jcrData, nodes)
-      };
+      const data = setSubtreeAtPath(state.data, jcrData);
+      newState = { ...state, data, nodes: buildNodes(data) };
       break;
     }
     case REMOVE_NODE: {
-      const { nodeId } = action.payload;
-      const { nodes } = state;
-      newState = { ...state, nodes: removeNode(nodeId, nodes) };
+      // Remove the deleted node from `data` by its path, then derive `nodes` from it.
+      const { path } = action.payload;
+      const data = removeSubtreeAtPath(state.data, path);
+      newState = { ...state, data, nodes: buildNodes(data) };
       break;
     }
     default:
@@ -811,8 +792,8 @@ export function QuestionnaireTreeProvider(props) {
     return fetchRootData();
   }, [clearTree, fetchRootData]);
 
-  const removeNode = useCallback((nodeId) => {
-    dispatch({ type: REMOVE_NODE, payload: { nodeId } });
+  const removeNode = useCallback((path) => {
+    dispatch({ type: REMOVE_NODE, payload: { path } });
   }, []);
 
   const updateNodeData = useCallback((jcrData) => {
