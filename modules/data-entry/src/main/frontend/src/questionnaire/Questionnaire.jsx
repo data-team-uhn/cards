@@ -40,7 +40,6 @@ import {
 } from "@mui/material";
 import {
   blue,
-  blueGrey,
   deepPurple,
   green,
   orange,
@@ -464,7 +463,6 @@ let QuestionnaireContents = (props) => {
   return <QuestionnaireEntry
     disableCollapse={false}
     type="Questionnaire"
-    entryTypeColor={blueGrey[700]}
     titleField="title"
     model="Questionnaire.json"
     { ...props } />;

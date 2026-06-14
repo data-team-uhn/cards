@@ -42,60 +42,77 @@ import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import { ENTRY_TYPES } from '../questionnaire/FormEntry.jsx';
 
-const useStyles = makeStyles()(theme => ({
-  root : {
-    border: "0 none",
-    background: theme.palette.action.hover,
-    "& .MuiCardHeader-avatar": {
-      alignSelf: "start",
-      zoom: .75,
-      marginTop: theme.spacing(.75),
-      fontWeight: "bold",
+const useStyles = makeStyles()((theme, { entryTypeColor } = {}) => {
+  const accentColor = entryTypeColor || theme.palette.divider;
+  return ({
+    root : {
+      border: "0 none",
+      background: theme.palette.action.hover,
+      "& .MuiCardHeader-avatar": {
+        alignSelf: "start",
+        zoom: .75,
+        marginTop: theme.spacing(.75),
+        fontWeight: "bold",
+      },
+      "& .MuiCardHeader-content .MuiIconButton-root": {
+        display: "none",
+      },
+      marginBottom: theme.spacing(.75),
     },
-    "& .MuiCardHeader-content .MuiIconButton-root": {
-      display: "none",
+    title: {
+      display: "inline",
     },
-    marginBottom: theme.spacing(.75),
-  },
-  title: {
-    display: "inline",
-  },
-  titlePlaceholder: {
-    opacity: "0.6",
-    fontWeight: "300 !important",
-  },
-  collapsed: {
-    "& .MuiCardContent-root": {
-      paddingTop: 0,
-      paddingBottom: 0,
+    titlePlaceholder: {
+      opacity: "0.6",
+      fontWeight: "300 !important",
     },
-    "& .cards-questionnaire-entry-props": {
-      display: "none",
+    collapsed: {
+      "& .MuiCardContent-root": {
+        paddingTop: 0,
+        paddingBottom: 0,
+      },
+      "& .cards-questionnaire-entry-props": {
+        display: "none",
+      },
+      "& .MuiCardContent-root > .MuiGrid-container > .MuiGrid-root:last-child": {
+        marginBottom: theme.spacing(2),
+      },
+      "& .MuiCardHeader-content .MuiIconButton-root": {
+        display: "inline-flex",
+      }
     },
-    "& .MuiCardContent-root > .MuiGrid-container > .MuiGrid-root:last-child": {
-      marginBottom: theme.spacing(2),
+    moreInfo: {
+      "& h6": {
+        whiteSpace: "nowrap",
+      }
     },
-    "& .MuiCardHeader-content .MuiIconButton-root": {
-      display: "inline-flex",
-    }
-  },
-  moreInfo: {
-    "& h6": {
-      whiteSpace: "nowrap",
-    }
-  },
-  withAvatar: {
-    "&.MuiCardContent-root > .cards-questionnaire-entry-props": {
-      paddingLeft: theme.spacing(5.5),
+    withAvatar: {
+      "&.MuiCardContent-root > .cards-questionnaire-entry-props": {
+        paddingLeft: theme.spacing(5.5),
+      },
+      "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root": {
+        paddingLeft: theme.spacing(5.5),
+      },
+      "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root.cards-questionnaire-entry-props": {
+        paddingLeft: theme.spacing(7.5),
+      },
     },
-    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root": {
-      paddingLeft: theme.spacing(5.5),
+    entryWrapper: {
+      position: "relative",
+      borderLeft: `3px solid ${accentColor}`,
     },
-    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root.cards-questionnaire-entry-props": {
-      paddingLeft: theme.spacing(7.5),
+    ordinalBadge: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      zIndex: 1,
+      backgroundColor: accentColor,
+      color: theme.palette.getContrastText(accentColor),
+      fontSize: "x-small",
+      paddingRight: "3px",
     },
-  },
-}));
+  });
+});
 
 // General class or Sections and Questions
 
@@ -143,7 +160,7 @@ let QuestionnaireItemCard = (props) => {
     }
   }, [itemRef]);
 
-  const { classes } = useStyles();
+  const { classes } = useStyles({ entryTypeColor });
 
   let cardClasses = [classes.root];
   if (isCollapsed) {
@@ -180,22 +197,9 @@ let QuestionnaireItemCard = (props) => {
   }, [type, treeContext, data]);
 
   return (
-    <div
-      // If Questionnaire then dont apply left border
-      style={{ borderLeft: type === "Questionnaire" ? "none" : `3px solid ${entryTypeColor || "black"}`, position: "relative" }}
-    >
+    <div className={classes.entryWrapper}>
       { !!ordinalPosition &&
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            backgroundColor: entryTypeColor || "black",
-            fontSize: "9px",
-            color: "white",
-            zIndex: 1
-          }}
-        >
+        <div className={classes.ordinalBadge}>
           {ordinalPosition}
         </div>
       }
