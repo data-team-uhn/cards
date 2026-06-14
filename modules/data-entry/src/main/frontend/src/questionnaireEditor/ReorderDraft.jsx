@@ -582,7 +582,7 @@ const ReorderConditionalSubheader = (props) => {
       disableGutters
       disablePadding
       sx={{
-        backgroundColor: ['Question', 'Information'].includes(type) ? 'transparent' : 'action.hover',
+        bgcolor: ['Question', 'Information'].includes(type) ? 'transparent' : 'action.hover',
         borderLeft: `3px solid ${ENTRY_TITLE_FIELD_SPEC[`cards:${type}`]?.color}`,
       }}
     >
@@ -710,7 +710,6 @@ function RecursiveDragList(props) {
                     cursor: 'pointer',
                     bgcolor: ['Question', 'Information'].includes(type) ? 'transparent' : 'action.hover',
                     borderLeft: `3px solid ${ENTRY_TITLE_FIELD_SPEC[`cards:${type}`]?.color}`,
-
                   }}
                 >
                   {collapsible &&
@@ -768,9 +767,8 @@ function RecursiveDragList(props) {
               disablePadding
               sx={{
                 pl: 4,
-                backgroundColor: 'action.hover',
-                ...type === 'Questionnaire' ? { paddingLeft: 0 } : { borderLeft: `3px solid ${ENTRY_TITLE_FIELD_SPEC[`cards:${type}`]?.color}` }
-
+                bgcolor: 'action.hover',
+                ...type === 'Questionnaire' ? { pl: 0 } : { borderLeft: `3px solid ${ENTRY_TITLE_FIELD_SPEC[`cards:${type}`]?.color}` }
               }}
             >
               {entryChildren.map((childId) => <RecursiveDragList key={childId} nodeId={childId} level={level + 1} />)}
