@@ -224,7 +224,6 @@ let EditDialog = (props) => {
         { dialogTitle() }
       </DialogTitle>
       <DialogContent>
-        { error && <Typography color="error">{error}</Typography>}
         <Grid container direction="column" spacing={2}>
           <Grid>{targetIdField()}</Grid>
           <Fields
