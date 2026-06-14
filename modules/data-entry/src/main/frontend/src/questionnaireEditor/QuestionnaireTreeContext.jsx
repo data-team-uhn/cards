@@ -189,7 +189,7 @@ export const jcrGetConditionalTitle = (jcrDataTitle) => {
 
     return (
       <>
-        <span style={{ fontFamily: 'monospace' }}>
+        <span>
           {stringifyConditionalOperand(operandA)}
           {' '}
           {comparator}
