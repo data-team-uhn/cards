@@ -103,7 +103,7 @@ let QuestionnaireItemCard = (props) => {
   checkPropTypes(QuestionnaireItemCard, props);
   let {
     children,
-    avatarColor,
+    entryTypeColor,
     type,
     title,
     titleField,
@@ -182,7 +182,7 @@ let QuestionnaireItemCard = (props) => {
   return (
     <div
       // If Questionnaire then dont apply left border
-      style={{ borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`, position: "relative" }}
+      style={{ borderLeft: type === "Questionnaire" ? "none" : `3px solid ${entryTypeColor || "black"}`, position: "relative" }}
     >
       { !!ordinalPosition &&
         <div
@@ -190,7 +190,7 @@ let QuestionnaireItemCard = (props) => {
             position: "absolute",
             top: 0,
             left: 0,
-            backgroundColor: avatarColor || "black",
+            backgroundColor: entryTypeColor || "black",
             fontSize: "9px",
             color: "white",
             zIndex: 1

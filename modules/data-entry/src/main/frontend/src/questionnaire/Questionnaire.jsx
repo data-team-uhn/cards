@@ -464,8 +464,7 @@ let QuestionnaireContents = (props) => {
   return <QuestionnaireEntry
     disableCollapse={false}
     type="Questionnaire"
-    avatar="assignment"
-    avatarColor={blueGrey[700]}
+    entryTypeColor={blueGrey[700]}
     titleField="title"
     model="Questionnaire.json"
     { ...props } />;
@@ -476,8 +475,7 @@ QuestionnaireContents.propTypes = {
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string,
-  avatar: PropTypes.string,
-  avatarColor: PropTypes.string,
+  entryTypeColor: PropTypes.string,
   titleField: PropTypes.string,
   model: PropTypes.string
 };
@@ -485,8 +483,7 @@ QuestionnaireContents.propTypes = {
 // Details about an information block displayed in a questionnaire
 let Information = (props) => <QuestionnaireEntry
   type="Information"
-  avatar="info"
-  avatarColor={blue[600]}
+  entryTypeColor={blue[600]}
   model="Information.json"
   {...props} />;
 
@@ -494,16 +491,14 @@ Information.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string,
-  avatar: PropTypes.string,
-  avatarColor: PropTypes.string,
+  entryTypeColor: PropTypes.string,
   model: PropTypes.string
 };
 
 // Details about an id mapping block displayed in a questionnaire
 let ExternalLink = (props) => <QuestionnaireEntry
   type="ExternalLink"
-  avatar="link"
-  avatarColor={purple[300]}
+  entryTypeColor={purple[300]}
   model="ExternalLink.json"
   {...props} />;
 
@@ -511,8 +506,7 @@ ExternalLink.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string,
-  avatar: PropTypes.string,
-  avatarColor: PropTypes.string,
+  entryTypeColor: PropTypes.string,
   model: PropTypes.string
 };
 
@@ -520,7 +514,7 @@ ExternalLink.propTypes = {
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => <QuestionnaireEntry
   type="Question"
-  avatarColor={deepPurple[700]}
+  entryTypeColor={deepPurple[700]}
   titleField="text"
   model="Question.json"
   {...props} />;
@@ -529,8 +523,7 @@ Question.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string,
-  avatar: PropTypes.string,
-  avatarColor: PropTypes.string,
+  entryTypeColor: PropTypes.string,
   titleField: PropTypes.string,
   model: PropTypes.string
 };
@@ -539,8 +532,7 @@ Question.propTypes = {
 // Not to be confused with the public Section component responsible for rendering sections inside a Form.
 let Section = (props) => <QuestionnaireEntry
   type="Section"
-  avatar="view_stream"
-  avatarColor={orange[800]}
+  entryTypeColor={orange[800]}
   titleField="label"
   model="Section.json"
   {...props} />
@@ -549,8 +541,7 @@ Section.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string,
-  avatar: PropTypes.string,
-  avatarColor: PropTypes.string,
+  entryTypeColor: PropTypes.string,
   titleField: PropTypes.string,
   model: PropTypes.string
 };
@@ -559,7 +550,7 @@ Section.propTypes = {
 // Details about a simple condition for displaying a section
 let Conditional = (props) => <QuestionnaireEntry
   type="Conditional"
-  avatarColor={green[800]}
+  entryTypeColor={green[800]}
   model="Conditional.json"
   {...props} />;
 
@@ -567,15 +558,14 @@ Conditional.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string,
-  avatar: PropTypes.string,
-  avatarColor: PropTypes.string,
+  entryTypeColor: PropTypes.string,
   model: PropTypes.string
 };
 
 // Details about a group pf conditions for displaying a section
 let ConditionalGroup = (props) => <QuestionnaireEntry
   type="ConditionalGroup"
-  avatarColor={green[800]}
+  entryTypeColor={green[800]}
   model="ConditionalGroup.json"
   {...props} />;
 
@@ -583,8 +573,7 @@ ConditionalGroup.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string,
-  avatar: PropTypes.string,
-  avatarColor: PropTypes.string,
+  entryTypeColor: PropTypes.string,
   model: PropTypes.string
 };
 
@@ -754,7 +743,7 @@ QuestionnaireEntry.propTypes = {
   type: PropTypes.string.isRequired,
   plain: PropTypes.bool,
   avatar: PropTypes.string,
-  avatarColor: PropTypes.string,
+  entryTypeColor: PropTypes.string,
   title: PropTypes.string,
   titleField: PropTypes.string,
   model: PropTypes.string.isRequired
