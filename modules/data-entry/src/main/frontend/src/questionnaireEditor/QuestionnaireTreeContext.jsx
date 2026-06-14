@@ -577,6 +577,25 @@ function removeSubtreeAtPath(data, path) {
   return splice(data, segments);
 }
 
+/**
+ * Marks the node at the given JCR path with a transient `doHighlight` flag, so its card
+ * highlights and scrolls into view after a reload — the same cue used on create/edit.
+ * Mutates `data`; only call on freshly fetched data before it enters state.
+ *
+ * @param {Object} data - The questionnaire (root) JCR data, freshly fetched.
+ * @param {string} path - The JCR @path of the node to flag.
+ */
+function flagNodeForHighlight(data, path) {
+  const rootPath = data['@path'];
+  const segments = path.slice(rootPath.length).split('/').filter(Boolean);
+  let node = data;
+  for (const segment of segments) {
+    node = node?.[segment];
+    if (!node) return; // path not found — nothing to flag
+  }
+  node.doHighlight = true;
+}
+
 // Reducer Function
 const treeReducer = (state, action) => {
   if (!action.type || !ACTIONS.includes(action.type)) {
@@ -745,10 +764,13 @@ export function QuestionnaireTreeProvider(props) {
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Actions
-  const fetchRootData = useCallback(() => {
+  const fetchRootData = useCallback((highlightPath = null) => {
     return jcrActions.fetchQuestionnaireData(globalLoginDisplay, { id: questionnaireId })
       .then(response => response.json())
       .then(data => {
+        if (highlightPath) {
+          flagNodeForHighlight(data, highlightPath);
+        }
         dispatch({ type: INITIALIZE_ROOT, payload: { jcrData: data } })
       })
   }, [globalLoginDisplay, questionnaireId]);

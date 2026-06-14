@@ -422,7 +422,11 @@ export default function ReorderForm(props) {
     reorderDispatch({ type: 'SET_ERROR', payload: e });
   };
   const handleSuccess = (data) => {
-    treeContext.actions.refreshTree();
+    // Reload in place (fetchRootData, not refreshTree) so the questionnaire doesn't flash
+    // blank. Pass the moved entry's new path (target parent's path + its own name) so its
+    // card highlights and scrolls into view after the reload, the way create/edit do.
+    const movedPath = `${nodes[newParent].path}/${nodes[reorderSource].name}`;
+    treeContext.actions.fetchRootData(movedPath);
     reorderDispatch({ type: 'SET_SUCCESS', payload: data });
     onClose();
   };
