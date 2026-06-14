@@ -20,7 +20,6 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useContext, useRef, createContext } from "react";
 
 import { deepPurple, orange, blueGrey, blue, purple, green } from '@mui/material/colors';
-import _ from "lodash";
 import { makeStyles } from 'tss-react/mui';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
@@ -415,10 +414,6 @@ const initialState = {
   timestamp: null,
   // Bumped on every (re)load of root data; used as a remount key so views re-seed from fresh data
   revision: 0,
-  // Format: { id: { value: id, parent: '...', children: [...], jcrPrimaryType: '...' } }
-  // Note: root is node with jcrPrimaryType == 'cards:Questionnaire', parent == null
-  nodes: {},
-  warnings: {},
 };
 // Action Types
 const INITIALIZE_ROOT = 'INITIALIZE_ROOT';
@@ -601,8 +596,7 @@ const treeReducer = (state, action) => {
       newState = { ...state,
         data: jcrData,
         timestamp: jcrData['jcr:lastCheckedOut'],
-        revision: state.revision + 1,
-        nodes: initializeRoot(jcrData)
+        revision: state.revision + 1
       };
       break;
     }
@@ -613,27 +607,28 @@ const treeReducer = (state, action) => {
       // the updated `data` so the two cannot diverge.
       const { jcrData } = action.payload;
       const data = setSubtreeAtPath(state.data, jcrData);
-      newState = { ...state, data, nodes: buildNodes(data) };
+      newState = { ...state, data };
       break;
     }
     case REMOVE_NODE: {
       // Remove the deleted node from `data` by its path, then derive `nodes` from it.
       const { path } = action.payload;
       const data = removeSubtreeAtPath(state.data, path);
-      newState = { ...state, data, nodes: buildNodes(data) };
+      newState = { ...state, data };
       break;
     }
     default:
       throw new Error("Invalid action type in treeReducer");
   }
-  // Validate newState
+  // `nodes` is a pure projection of `data`; validate that derived tree. The reducer
+  // stores only `data` — the provider exposes `nodes`/`warnings`, derived.
+  const nodes = buildNodes(newState.data);
   const stateIsValid = Object.values(stateValidators)
-    .map(validator => validator(newState.nodes)).reduce((a, b) => a && b, true);
+    .map(validator => validator(nodes)).reduce((a, b) => a && b, true);
   if (!stateIsValid) {
     throw new Error("Invalid state in treeReducer");
   }
-  // Check for any warnings
-  return { ...newState, warnings: buildWarnings(newState.data) };
+  return newState;
 }
 
 export const QuestionnaireTreeContext = createContext();
@@ -737,30 +732,11 @@ export function QuestionnaireTreeProvider(props) {
   const [state, dispatch] = useReducer(treeReducer, initialState);
 
   // --- Refactor step 1 (single source of truth) ---------------------------------
-  // `nodes` and `warnings` are pure projections of `data`. We compute them here from
-  // `data` and, in development, verify they match the copies the reducer maintains
-  // separately. Any divergence logged below is a `data`/`nodes` desync (the class of
-  // bug this refactor removes). Once trusted, step 2 deletes the stored copies and
-  // exposes these derived values instead. Until then this is non-destructive:
-  // consumers still read the reducer's `state.nodes` / `state.warnings`.
+  // `nodes` and `warnings` are pure projections of `data`, computed here and exposed on
+  // the context's `state` (the reducer stores only `data`). Single source of truth:
+  // there is no separate copy to keep in sync.
   const derivedNodes = useMemo(() => buildNodes(state.data), [state.data]);
   const derivedWarnings = useMemo(() => buildWarnings(state.data), [state.data]);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'production') return;
-    if (!_.isEqual(derivedNodes, state.nodes)) {
-      console.warn(
-        "[QuestionnaireTree] derived nodes diverge from stored nodes — data/nodes desync detected",
-        { derived: derivedNodes, stored: state.nodes }
-      );
-    }
-    if (!_.isEqual(derivedWarnings, state.warnings)) {
-      console.warn(
-        "[QuestionnaireTree] derived warnings diverge from stored warnings",
-        { derived: derivedWarnings, stored: state.warnings }
-      );
-    }
-  }, [derivedNodes, derivedWarnings, state.nodes, state.warnings]);
 
   // GlobalLoginContext for fetchWithReLogin
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -801,8 +777,8 @@ export function QuestionnaireTreeProvider(props) {
   }, []);
 
 
-  const nodesRef = useRef(state.nodes);
-  nodesRef.current = state.nodes;
+  const nodesRef = useRef(derivedNodes);
+  nodesRef.current = derivedNodes;
 
   const reorderNode = useCallback((reorderSourceId, newParentId, newPosition, tree = null) => {
     // Add tree as an optional parameter to allow moves in between without resetting tree in context
@@ -896,7 +872,10 @@ export function QuestionnaireTreeProvider(props) {
   }), [checkIn, checkOut, fetchRootData, clearTree, refreshTree, removeNode, updateNodeData, reorderNode,
     fetchRootNodes]);
 
-  const context = useMemo(() => ({ state, dispatch, actions }), [state, actions]);
+  const context = useMemo(
+    () => ({ state: { ...state, nodes: derivedNodes, warnings: derivedWarnings }, dispatch, actions }),
+    [state, derivedNodes, derivedWarnings, actions]
+  );
   return (
     <QuestionnaireTreeContext.Provider value={context} {...rest} />
   );
