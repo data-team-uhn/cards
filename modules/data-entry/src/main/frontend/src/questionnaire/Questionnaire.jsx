@@ -38,13 +38,6 @@ import {
   Typography,
   useScrollTrigger,
 } from "@mui/material";
-import {
-  blue,
-  deepPurple,
-  green,
-  orange,
-  purple
-} from '@mui/material/colors';
 import _ from "lodash";
 import { DateTime } from "luxon";
 import PropTypes from "prop-types";
@@ -66,7 +59,11 @@ import EditorHeader from "../questionnaireEditor/EditorHeader.jsx";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
-import { useQuestionnaireTreeContext, QuestionnaireTreeProvider } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
+import {
+  useQuestionnaireTreeContext,
+  QuestionnaireTreeProvider,
+  ENTRY_TITLE_FIELD_SPEC,
+} from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
 import ReorderDraft from "../questionnaireEditor/ReorderDraft.jsx";
 import { ReorderModal } from "../questionnaireEditor/ReorderModal.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
@@ -481,7 +478,7 @@ QuestionnaireContents.propTypes = {
 // Details about an information block displayed in a questionnaire
 let Information = (props) => <QuestionnaireEntry
   type="Information"
-  entryTypeColor={blue[600]}
+  entryTypeColor={ENTRY_TITLE_FIELD_SPEC['cards:Information'].color}
   model="Information.json"
   {...props} />;
 
@@ -496,7 +493,7 @@ Information.propTypes = {
 // Details about an id mapping block displayed in a questionnaire
 let ExternalLink = (props) => <QuestionnaireEntry
   type="ExternalLink"
-  entryTypeColor={purple[300]}
+  entryTypeColor={ENTRY_TITLE_FIELD_SPEC['cards:ExternalLink'].color}
   model="ExternalLink.json"
   {...props} />;
 
@@ -512,7 +509,7 @@ ExternalLink.propTypes = {
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => <QuestionnaireEntry
   type="Question"
-  entryTypeColor={deepPurple[700]}
+  entryTypeColor={ENTRY_TITLE_FIELD_SPEC['cards:Question'].color}
   titleField="text"
   model="Question.json"
   {...props} />;
@@ -530,7 +527,7 @@ Question.propTypes = {
 // Not to be confused with the public Section component responsible for rendering sections inside a Form.
 let Section = (props) => <QuestionnaireEntry
   type="Section"
-  entryTypeColor={orange[800]}
+  entryTypeColor={ENTRY_TITLE_FIELD_SPEC['cards:Section'].color}
   titleField="label"
   model="Section.json"
   {...props} />
@@ -548,7 +545,7 @@ Section.propTypes = {
 // Details about a simple condition for displaying a section
 let Conditional = (props) => <QuestionnaireEntry
   type="Conditional"
-  entryTypeColor={green[800]}
+  entryTypeColor={ENTRY_TITLE_FIELD_SPEC['cards:Conditional'].color}
   model="Conditional.json"
   {...props} />;
 
@@ -563,7 +560,7 @@ Conditional.propTypes = {
 // Details about a group pf conditions for displaying a section
 let ConditionalGroup = (props) => <QuestionnaireEntry
   type="ConditionalGroup"
-  entryTypeColor={green[800]}
+  entryTypeColor={ENTRY_TITLE_FIELD_SPEC['cards:ConditionalGroup'].color}
   model="ConditionalGroup.json"
   {...props} />;
 
