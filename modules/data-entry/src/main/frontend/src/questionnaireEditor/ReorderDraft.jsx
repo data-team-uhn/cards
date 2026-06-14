@@ -780,7 +780,7 @@ function RecursiveDragList(props) {
         }
       </div>
     </>
-  )
+  );
 }
 
 
@@ -800,5 +800,5 @@ export default function ReorderDraft(props) {
         <ReorderNavigationGuard />
       </ReorderProvider>
     </>
-  )
+  );
 }
