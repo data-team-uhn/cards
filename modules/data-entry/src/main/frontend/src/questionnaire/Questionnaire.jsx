@@ -162,7 +162,10 @@ let QuestionnaireComponent = (props) => {
   let navigate = useNavigate();
   let isEdit = location.pathname.endsWith(".edit");
   let isReorder = location.pathname.endsWith(".reorder");
-  const [ editTab, setEditTab ] = useState(isEdit ? 'edit' : isReorder ? 'reorder' : 'edit');
+  // Derive the active tab from the URL rather than holding it in separate state. This keeps
+  // the Reorder tab mounted when its navigation guard blocks a tab switch: the guard blocks
+  // the URL change, the derived tab stays on "reorder", and no out-of-sync state lingers.
+  const editTab = isReorder ? 'reorder' : 'edit';
   let pageNameWriter = usePageNameWriterContext();
 
   // First, fetch the questionnaire data
@@ -293,9 +296,7 @@ let QuestionnaireComponent = (props) => {
                   <Tabs
                     value={editTab}
                     onChange={(event, newValue) => {
-                      const editSuffix = `.${newValue}`;
-                      setEditTab(newValue);
-                      navigate(questionnaireUrl + editSuffix);
+                      navigate(questionnaireUrl + `.${newValue}`);
                     }}
                   >
                     <Tab label="Edit" value="edit" />

@@ -26,6 +26,7 @@ import {
   Button,
   Collapse,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
@@ -45,6 +46,7 @@ import {
 import { alpha } from '@mui/material/styles';
 import _ from "lodash";
 import { DateTime } from 'luxon';
+import { useBlocker } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { useQuestionnaireTreeContext, ENTRY_TITLE_FIELD_SPEC, jcrGetConditionalTitle } from './QuestionnaireTreeContext';
@@ -366,6 +368,63 @@ const ReorderSubmitModal = (props) => {
     </>
   )
 }
+
+// Warns the user before they leave the Reorder tab with unsaved moves. "Leaving" is always
+// a navigation: clicking the Edit tab changes the URL from `.reorder` to `.edit`, and
+// leaving the page changes it further. A single router blocker covers both, while a
+// `beforeunload` listener covers closing/refreshing the browser tab. Discarding is implicit:
+// proceeding navigates away, which unmounts this provider and drops the draft moves.
+const ReorderNavigationGuard = () => {
+  const { reorderState } = useContext(ReorderContext);
+  const pendingMoves = reorderState.moves.length;
+  const hasPendingMoves = pendingMoves > 0;
+
+  useEffect(() => {
+    if (!hasPendingMoves) return;
+    const warnBeforeUnload = (event) => {
+      event.preventDefault();
+      // Legacy browsers require returnValue to be set to trigger the native prompt.
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warnBeforeUnload);
+    return () => window.removeEventListener('beforeunload', warnBeforeUnload);
+  }, [hasPendingMoves]);
+
+  const navBlocker = useBlocker(
+    useCallback(({ currentLocation, nextLocation }) => {
+      if (!hasPendingMoves) return false;
+      const isLeaving = currentLocation.pathname !== nextLocation.pathname
+        || currentLocation.search !== nextLocation.search
+        || currentLocation.hash !== nextLocation.hash;
+      // Drop focus from whatever triggered the navigation (e.g. the Edit tab) before the
+      // dialog opens. Otherwise that element keeps focus while the dialog marks the rest of
+      // the page aria-hidden, which warns about hiding a focused element from assistive tech.
+      // This runs before the blocked state mounts the dialog, so it wins the race.
+      if (isLeaving) document.activeElement?.blur?.();
+      return isLeaving;
+    }, [hasPendingMoves])
+  );
+
+  const isBlocked = navBlocker.state === 'blocked';
+
+  return (
+    <Dialog open={isBlocked} onClose={() => navBlocker.reset?.()}>
+      <DialogTitle>Discard unsaved changes?</DialogTitle>
+      <DialogContent>
+        <Typography>
+          {`You have ${pendingMoves} unsaved reorder ${pendingMoves === 1 ? 'change' : 'changes'}. `}
+          {`If you leave now, ${pendingMoves === 1 ? 'it' : 'they'} will be lost.`}
+        </Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => navBlocker.reset?.()}>Stay</Button>
+        <Button color="error" variant="contained" onClick={() => navBlocker.proceed?.()}>
+          Leave without saving
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 const TargetPlaceholderDivider = (props) => {
   const { nodeId, insert = false, level = 0 } = props;
@@ -747,6 +806,7 @@ export default function ReorderDraft(props) {
           <RecursiveDragList key={rootNodeId} nodeId={rootNodeId} level={0} />
         </List>
         <ReorderSubmitModal />
+        <ReorderNavigationGuard />
       </ReorderProvider>
     </>
   )
