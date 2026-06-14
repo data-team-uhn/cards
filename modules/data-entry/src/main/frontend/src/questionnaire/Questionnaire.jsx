@@ -281,7 +281,7 @@ let QuestionnaireComponent = (props) => {
               baseUrl={baseUrl}
               contentOffset={props.contentOffset}
               data={data}
-              showLocation={(isEdit || isReorder) && editTab === 'edit'}
+              showLocation={isEdit}
             />
             <Grid>
               { !(isEdit || isReorder)
