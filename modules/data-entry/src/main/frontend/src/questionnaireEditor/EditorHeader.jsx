@@ -17,13 +17,12 @@
 //  under the License.
 //
 
-import { Fragment, memo, useMemo, useState } from "react";
+import { forwardRef, memo, useMemo } from "react";
 
 import {
   Chip,
-  Popover,
   Stack,
-  Typography,
+  Tooltip,
 } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
 
@@ -42,20 +41,21 @@ const useEntryChipStyles = makeStyles()((theme, { color }) => ({
   }
 }));
 
-// Separate component for the chip to properly handle the props-based styles
-const EntryChip = memo(function EntryChip({ label, entryColor, onMouseEnter, onMouseLeave }) {
-  const { classes } = useEntryChipStyles({ color: entryColor });
+// Separate component for the chip to properly handle the props-based styles.
+// forwardRef + spread so a wrapping Tooltip can attach its ref and hover/focus handlers.
+const EntryChip = memo(forwardRef(function EntryChip({ label, entryColor, className, ...rest }, ref) {
+  const { classes, cx } = useEntryChipStyles({ color: entryColor });
   return (
     <Chip
+      ref={ref}
       label={label}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
       variant='outlined'
       size='small'
-      className={classes.entryChip}
+      {...rest}
+      className={cx(classes.entryChip, className)}
     />
   );
-});
+}));
 
 /**
  * Header component for the questionnaire editor that displays counts and warnings for different entry types
@@ -64,8 +64,6 @@ function EditorHeader() {
   const treeContext = useQuestionnaireTreeContext();
 
   const { state: { warnings, nodes } } = treeContext;
-
-  const [anchorEl, setAnchorEl] = useState(null);
 
   const missingTitlesByEntryType = useMemo(() => {
     if (!warnings.missingTitles) return {};
@@ -78,15 +76,6 @@ function EditorHeader() {
       return acc;
     }, {});
   }, [warnings]);
-
-  let handlePopoverOpen = (event, entryType) => {
-    if (!event.currentTarget) return;
-    setAnchorEl({ element: event.currentTarget, type: entryType });
-  }
-
-  let handlePopoverClose = () => {
-    setAnchorEl(null);
-  }
 
   if (!warnings || Object.keys(nodes).length === 0) {
     return null;
@@ -107,27 +96,13 @@ function EditorHeader() {
               const { color } = entrySpec;
               const totalCount = warnings.countEntryTypes[entryType];
               const label = `${totalCount} ${stripCardsNamespace(entryType)}${totalCount > 1 ? 's' : ''}`;
+              const missingCount = missingTitlesByEntryType[entryType]?.length || 0;
+              const tooltip = missingCount > 0 ? `Missing titles: ${missingCount}` : 'No missing titles';
 
               return (
-                <Fragment key={entryType}>
-                  <EntryChip
-                    label={label}
-                    entryColor={color}
-                    onMouseEnter={(event) => handlePopoverOpen(event, entryType)}
-                    onMouseLeave={handlePopoverClose}
-                  />
-                  <Popover
-                    open={Boolean(anchorEl) && anchorEl.type === entryType}
-                    anchorEl={anchorEl?.element}
-                    onClose={handlePopoverClose}
-                  >
-                    <Typography>
-                      {missingTitlesByEntryType[entryType] && missingTitlesByEntryType[entryType].length > 0
-                        ? `${missingTitlesByEntryType[entryType].length} missing titles`
-                        : 'No missing titles'}
-                    </Typography>
-                  </Popover>
-                </Fragment>
+                <Tooltip key={entryType} title={tooltip}>
+                  <EntryChip label={label} entryColor={color} />
+                </Tooltip>
               )
             })
         }
