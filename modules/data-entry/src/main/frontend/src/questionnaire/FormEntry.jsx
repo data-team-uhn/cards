@@ -279,13 +279,11 @@ export default function FormEntry(props) {
     gridProps
   } = props;
   gridProps = gridProps || {};
-
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
-  let displayedComponent = null;
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
-    displayedComponent = displayQuestion(
+    return displayQuestion(
       entryDefinition,
       path,
       existingAnswers,
@@ -302,7 +300,7 @@ export default function FormEntry(props) {
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
     if ("matrix" === entryDefinition["displayMode"]) {
-      displayedComponent = displayMatrix(
+      return displayMatrix(
         entryDefinition,
         path,
         existingAnswers,
@@ -313,7 +311,7 @@ export default function FormEntry(props) {
         gridProps
       );
     } else {
-      displayedComponent = displaySection(
+      return displaySection(
         entryDefinition,
         path,
         depth,
@@ -330,16 +328,6 @@ export default function FormEntry(props) {
       );
     }
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    displayedComponent = displayInformation(entryDefinition, keyProp, pageActive, isEdit, gridProps);
+    return displayInformation(entryDefinition, keyProp, pageActive, isEdit, gridProps);
   }
-
-  if (!displayedComponent) {
-    console.warn("FormEntry: No component to display for entry", entryDefinition);
-  }
-
-  return (
-    <>
-      {displayedComponent}
-    </>
-  );
 }
