@@ -210,7 +210,9 @@ export const jcrGetConditionalTitle = (jcrDataTitle) => {
           return (
             <React.Fragment key={conditionalKey}>
               {i > 0 ? (requireAll ? ' AND ' : ' OR ') : ''}
-              {primaryType === 'cards:Conditional' ? stringifyConditional(jcrData[conditionalKey]) : stringifyConditionalGroup(jcrData[conditionalKey])}
+              {primaryType === 'cards:Conditional'
+                ? stringifyConditional(jcrData[conditionalKey])
+                : <>({stringifyConditionalGroup(jcrData[conditionalKey])})</>}
             </React.Fragment>
           )
         })}
