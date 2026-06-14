@@ -20,6 +20,7 @@
 import { useState, useContext, useRef } from "react";
 
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -77,6 +78,7 @@ let EditDialog = (props) => {
     event.preventDefault();
 
     setSaveInProgress(true);
+    setError('');
     // If the question/section already exists, update it
     if (targetExists) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
@@ -144,19 +146,6 @@ let EditDialog = (props) => {
     setSaveInProgress(false);
   };
 
-  // If an error was returned, do not display a form at all, but report the error
-  if (error) {
-    return (
-      <Grid container justifyContent='center'>
-        <Grid>
-          <Typography variant='h2' color='error'>
-            Error saving form: {error}
-          </Typography>
-        </Grid>
-      </Grid>
-    );
-  }
-
   let dialogTitle = () => {
     return (targetExists ? 'Edit ' : 'New ').concat(formattedType.toLowerCase());
   }
@@ -216,12 +205,17 @@ let EditDialog = (props) => {
           action: data?.['@path'],
           method: 'POST',
           onSubmit: saveData,
-          onChange: () => setLastSaveStatus(undefined),
+          onChange: () => { setLastSaveStatus(undefined); setError(''); },
         }
       }}
     >
       <DialogTitle>
         { dialogTitle() }
+        { error &&
+          <Alert severity="error" sx={{ mb: 2 }}>
+            Error saving form: {error}
+          </Alert>
+        }
       </DialogTitle>
       <DialogContent>
         <Grid container direction="column" spacing={2}>
