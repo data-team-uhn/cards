@@ -44,7 +44,7 @@ import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
-import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry";
+import { ENTRY_TYPES } from "./FormEntry";
 import formStyles from "./formStyles.jsx";
 import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
 import { QuestionnaireProvider, useQuestionnaireInViewContext, getAncestorPath } from "./QuestionnaireContext";
@@ -708,7 +708,7 @@ let QuestionnaireEntry = (props) => {
           // Otherwise render MoveEntryModal with data set
           <ReorderModal />
           :
-          [...QUESTION_TYPES, ...SECTION_TYPES].includes(entryData['jcr:primaryType']) &&
+          ENTRY_TYPES.includes(entryData['jcr:primaryType']) &&
             <ReorderModal entryData={entryData} />
         }
       </>}
