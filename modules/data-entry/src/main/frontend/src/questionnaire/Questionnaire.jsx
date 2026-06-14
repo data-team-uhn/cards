@@ -620,17 +620,12 @@ let QuestionnaireEntry = (props) => {
       setEntryData(newData);
       setDoHighlight(true);
     } else {
-      // Try to reload the data from the server
+      // Reload this entry from the server after an edit (or detect deletion via a 404).
+      // Loading the entry's data dispatches UPDATE_ONDATA, which keeps `state.data` and
+      // the derived nodes in sync, so no full-tree reload is needed.
       fetch(`${data["@path"]}.deep.json`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
-        .then(json => {
-          handleDataChange(json);
-          // The update above only refreshes this card's local state; state.data and the
-          // sibling nodes (read by the Edit and Reorder tabs on remount) stay stale.
-          // Reload the whole questionnaire in place so both tabs reflect the saved edit.
-          // Pre-existing bug, fixed opportunistically alongside CARDS-603 reordering.
-          treeContext.actions.fetchRootData();
-        })
+        .then(json => handleDataChange(json))
         .catch(() => {
           // The reload failed because the item was deleted; remove it from `data` by
           // path (works for nodes with or without a jcr:uuid, e.g. conditionals).
