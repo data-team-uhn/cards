@@ -193,7 +193,7 @@ function QuestionnaireAutocomplete(props) {
             slotProps={{
               input: {
                 ...params.InputProps,
-                startAdornment: !multiple && !!selection.length &&
+                startAdornment: !showSelection && !multiple && !!selection.length &&
                   <InputAdornment position="start">
                     { getAvatar(entities.find(v => selection.includes(getOptionValue(v)))?.type) }
                   </InputAdornment>,
