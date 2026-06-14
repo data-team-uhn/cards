@@ -172,7 +172,6 @@ const reorderReducer = (state, action) => {
     case 'SET_TARGET_AND_MOVE': {
       // Check that reorder source is set
       if (!state.inputs.reorderSourceId) {
-        console.warn('No reorder source set');
         return state;
       }
 
@@ -224,7 +223,6 @@ const reorderReducer = (state, action) => {
         draftTree: action.payload,
       };
     default:
-      console.warn('Unknown action', action);
       return state;
   }
 }
@@ -266,15 +264,10 @@ const ReorderSubmitModal = (props) => {
     const processMoves = async (moves) => {
       for (let i = 0; i < moves.length; i++) {
         const move = moves[i];
-        try {
-          const { reorderSourceId, reorderNewParentId, reorderTargetIndex } = move;
-          const rootNodes = await treeContext.actions.fetchRootNodes();
-          await treeContext.actions.reorderNode(reorderSourceId, reorderNewParentId, reorderTargetIndex, rootNodes);
-          incrementProgressValue();
-        } catch (error) {
-          console.error('reorder error', error);
-          throw error;
-        }
+        const { reorderSourceId, reorderNewParentId, reorderTargetIndex } = move;
+        const rootNodes = await treeContext.actions.fetchRootNodes();
+        await treeContext.actions.reorderNode(reorderSourceId, reorderNewParentId, reorderTargetIndex, rootNodes);
+        incrementProgressValue();
       }
     };
 
@@ -498,7 +491,6 @@ const TargetPlaceholderDivider = (props) => {
 
   // If node not in tree then dont render yet
   if (!reorderState.draftTree) {
-    console.warn('Draft tree not loaded yet, returning null');
     return null;
   }
 
@@ -653,7 +645,6 @@ function RecursiveDragList(props) {
   const [hover, setHover] = useState(false);
 
   if (!nodes) {
-    console.warn('Tree not loaded yet, rendering null recursive list');
     return null;
   }
 

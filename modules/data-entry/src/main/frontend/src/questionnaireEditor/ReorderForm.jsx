@@ -171,8 +171,7 @@ export default function ReorderForm(props) {
 
   useEffect(() => {
     if (Object.keys(nodes).length === 0) {
-      // If no data or not open reset
-      console.warn('No nodes in tree');
+      // Nothing to do until nodes load into context
     } else if (!disableReorderSourceSelect) {
       // If reorderSource select is enabled, check if anything is selected
       if (!reorderSource.length) {
@@ -381,11 +380,9 @@ export default function ReorderForm(props) {
   const nodeNotInTree = disableReorderSourceSelect && !Object.prototype.hasOwnProperty.call(nodes, reorderSource);
   // Wait until nodes is loaded into context
   if (emptyNodes) {
-    console.warn('No nodes, not rendering MoveEntryModal');
     return null;
   }
   if (nodeNotInTree) {
-    console.error('Node not in tree, not rendering MoveEntryModal', data);
     return null;
   }
 
