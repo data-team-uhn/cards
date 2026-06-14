@@ -83,7 +83,7 @@ function EditorHeader() {
 
   return (
     <>
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
         {
           Object.entries(ENTRY_TITLE_FIELD_SPEC)
             .filter(([entryType, entrySpec]) =>
