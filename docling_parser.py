@@ -25,6 +25,7 @@
 import argparse
 import gc
 import os
+import re
 import sys
 from pathlib import Path
 from time import perf_counter
@@ -102,6 +103,22 @@ def build_pdf_options() -> PdfPipelineOptions:
     return pdf_options
 
 
+_EMPTY_HEADING = re.compile(r"^#{1,6}\s*_?\s*$")
+_GARBAGE_LINE = re.compile(r"^(\|{2,}|_{2,}|\.{3,})\s*$")
+
+
+def clean_markdown(md: str) -> str:
+    """Collapse blank lines, remove empty headings, and strip decorative garbage lines."""
+    if not md:
+        return md or ""
+    lines = [
+        line
+        for line in md.split("\n")
+        if not _EMPTY_HEADING.match(line) and not _GARBAGE_LINE.match(line)
+    ]
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(lines)).strip()
+
+
 def build_pdf_converter() -> DocumentConverter:
     """Create a DocumentConverter for PDF processing."""
     return DocumentConverter(
@@ -128,7 +145,7 @@ def convert_docx(input_path: Path, output_file: Path) -> None:
 
     t2 = perf_counter()
 
-    markdown_content = result.document.export_to_markdown()
+    markdown_content = clean_markdown(result.document.export_to_markdown())
 
     t3 = perf_counter()
 
@@ -223,7 +240,7 @@ def convert_pdf(
     t2 = perf_counter()
 
     with open(output_file, "w", encoding="utf-8") as f:
-        f.write("".join(all_markdown))
+        f.write(clean_markdown("".join(all_markdown)))
     t3 = perf_counter()
 
     print(f"\nMarkdown characters: {total_markdown_chars:,}")
