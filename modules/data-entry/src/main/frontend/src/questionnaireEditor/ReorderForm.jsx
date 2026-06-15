@@ -189,13 +189,13 @@ export default function ReorderForm(props) {
       } else {
         // On a reorderSource select, set original parents
         const originalParent = nodes[reorderSource].parent;
-        const originalPosition = nodes[originalParent].children.indexOf(reorderSource);
+        const originalPosition = getEntryChildIds(nodes, originalParent).indexOf(reorderSource);
         setNewParentSelection([originalParent]);
         setNewPositionSelection([originalPosition]);
       }
     } else {
       const originalParent = nodes[reorderSource].parent;
-      const originalPosition = nodes[originalParent].children.indexOf(reorderSource);
+      const originalPosition = getEntryChildIds(nodes, originalParent).indexOf(reorderSource);
       setNewParentSelection([originalParent]);
       setNewPositionSelection([originalPosition]);
     }
