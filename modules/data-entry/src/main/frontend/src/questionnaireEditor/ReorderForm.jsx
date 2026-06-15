@@ -130,9 +130,13 @@ export default function ReorderForm(props) {
   const [newPositionSelection, setNewPositionSelection] = useState([]);
 
   useEffect(() => {
-    const newPosition = !!newPositionSelection.length ? newPositionSelection[0] : '';
+    // Only the "After..." (other) mode takes its position from this autocomplete; First/Last
+    // set newPosition directly via the radio. Without this guard, clearing the selection (e.g.
+    // on a parent change) would blank newPosition even for First/Last and keep Move disabled.
+    if (reorderState.inputs.positionRadio !== 'other') return;
+    const newPosition = newPositionSelection.length ? newPositionSelection[0] : '';
     reorderDispatch({ type: 'SET_NEWPOSITION', payload: newPosition });
-  }, [newPositionSelection]);
+  }, [newPositionSelection, reorderState.inputs.positionRadio]);
 
   const newPosition = reorderState.inputs.newPosition;
 
@@ -332,6 +336,9 @@ export default function ReorderForm(props) {
             const noNewParent = !newParent
             const newParentHasNoEntryChildren =
               !nodes[newParent]?.children.some(child => ENTRY_TYPES.includes(nodes[child].jcrPrimaryType))
+            // First/Last are no-ops only when staying in the same parent; moving into a
+            // different parent, First/Last are always valid (different) destinations.
+            const isSameParent = nodes[reorderSource]?.parent === newParent;
             const filteredChildren = nodes[nodes[reorderSource]?.parent]?.children?.filter(
               nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType));
             const originalPositionIndex = filteredChildren?.indexOf(reorderSource);
@@ -348,9 +355,11 @@ export default function ReorderForm(props) {
                   label={label}
                   disabled={[
                     noNewParent,
-                    newParentHasNoEntryChildren,
-                    (value === 'first' && originalPositionIsFirst),
-                    (value === 'last' && originalPositionIsLast)
+                    // An empty target parent has a single slot, so keep First (which the
+                    // effect auto-selects) enabled and disable After.../Last.
+                    (newParentHasNoEntryChildren && value !== 'first'),
+                    (value === 'first' && isSameParent && originalPositionIsFirst),
+                    (value === 'last' && isSameParent && originalPositionIsLast)
                   ].includes(true)}
                   control={<Radio />}
                 />
