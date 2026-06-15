@@ -39,7 +39,7 @@ export function ReorderModal(props) {
 
   return (
     <>
-      <Tooltip title={"Reorder entries"}>
+      <Tooltip title="Reorder entries">
         <IconButton onClick={() => setOpen(true)} size="large">
           <MoveDownIcon />
         </IconButton>
