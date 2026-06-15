@@ -449,7 +449,7 @@ export default function ReorderForm(props) {
         {reorderFormContent}
         {reorderState.status === 'error' &&
           <Alert severity='error'>
-            {reorderState.error}
+            {reorderState.error?.message || String(reorderState.error)}
           </Alert>
         }
       </DialogContent>
