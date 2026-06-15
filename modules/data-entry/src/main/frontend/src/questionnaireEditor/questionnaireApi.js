@@ -74,9 +74,7 @@ export const jcrActions = {
   // :order=before siblingNodeName || index
   moveEntryNested: (globalLoginDisplay, { reorderSourceNode, newParentNode, newPosition }) => {
     const reorderForm = new FormData();
-    // Use numeric 'order' value to move to specific position
-    // If newPosition -1, then move to top of parent's children
-    // const order = newPosition === -1 ? 'last' : `${newPosition}`
+    // :order is a 0-based index, or -1 to place last
     const order = newPosition;
     const dest = newParentNode.path.concat('/');
     const path = reorderSourceNode.path;
