@@ -161,7 +161,6 @@ function NumberQuestion(props) {
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
   const isListSelectOrSlider = useMemo(() => ["list", "select", "slider"].includes(displayMode), [displayMode]);
   const isMultiValue = Array.isArray(existingAnswer?.[1]?.value);
-  const displayedValue = existingAnswer?.[1]?.displayedValue;
 
   const rawDefaultValue = props.questionDefinition.defaultValue;
   // Keep only the numeric default value(s); a multivalued question may provide a comma-separated list, and any
@@ -175,7 +174,7 @@ function NumberQuestion(props) {
   // A single numeric default for this question's own slider and range inputs.
   const defaultValue = numericDefaultValues.length ? numericDefaultValues[0] : null;
 
-  const [ minMaxError, setMinMaxError ] = useState(false);
+  const [ minMaxError, setMinMaxError ] = useState(null);
   const [ minMaxErrorObject, setMinMaxErrorObject ] = useState({});
 
   const initialValue = Array.from(existingAnswer?.[1]?.value || numericDefaultValues);
@@ -265,22 +264,27 @@ function NumberQuestion(props) {
         typeof(lowerRangeValue) == 'undefined' && typeof(upperRangeValue) != 'undefined' ||
          (Number(lowerRangeValue) > Number(upperRangeValue))
       );
+    } else if (isMultiValue) {
+      const nextMinMaxErrorObject = initialValue.reduce((accumulator, value, index) => {
+        accumulator[index] = getValidationErrorMessage(value);
+        return accumulator;
+      }, {});
+      setMinMaxErrorObject(nextMinMaxErrorObject);
+      setMinMaxError(Object.values(nextMinMaxErrorObject).find(Boolean) || null);
     } else {
-      if (isMultiValue) {
-        const nextMinMaxErrorObject = initialValue.reduce((accumulator, value, index) => {
-          const displayedItem = Array.isArray(displayedValue) ? displayedValue[index] : value;
-          accumulator[displayedItem] = getValidationErrorMessage(value);
-          return accumulator;
-        }, {});
-        setMinMaxErrorObject(nextMinMaxErrorObject);
-        setMinMaxError(Object.values(nextMinMaxErrorObject).find(Boolean) || null);
-      } else {
-        setMinMaxError(
-          getValidationErrorMessage(existingAnswer?.[1]?.value)
-        );
-      }
+      setMinMaxError(getValidationErrorMessage(existingAnswer?.[1]?.value));
     }
-  }, [ lowerRangeValue, upperRangeValue ]);
+  }, [
+    lowerRangeValue,
+    upperRangeValue,
+    isListSelectOrSlider,
+    isRange,
+    isMultiValue,
+    existingAnswer,
+    dataType,
+    minValue,
+    maxValue,
+  ]);
 
   const answers = [];
   // Only save ranges that have both limits specified
@@ -347,7 +351,7 @@ function NumberQuestion(props) {
   }
 
   let markdownFormatter = function(label, idx) {
-    const errorMessage = isMultiValue ? minMaxErrorObject[label] : minMaxError;
+    const errorMessage = isMultiValue ? minMaxErrorObject[idx] : minMaxError;
     return (
       <div>
         <FormattedText color={!disableMinMaxValueEnforcement && pageActive && errorMessage ? "error" : ""}>
@@ -451,11 +455,15 @@ function NumberQuestion(props) {
           { pageActive && (isSlider ?
             makeSlider({
               valueLabelDisplay: (isRangeSelected ? "on" : "off"),
-              value: typeof(lowerRangeValue) === "undefined" ? [minValue, maxValue] : [Number(lowerRangeValue), Number(upperRangeValue)],
+              value: [
+                typeof lowerRangeValue === "undefined" ? minValue : Number(lowerRangeValue),
+                typeof upperRangeValue === "undefined"
+                  ? (typeof lowerRangeValue === "undefined" ? minValue : maxValue)
+                  : Number(upperRangeValue),
+              ],
               onChange: (event, value) => {
                 setValue(setLowerRangeValue, value[0]);
                 setValue(setUpperRangeValue, value[1]);
-                handleFormDataChange?.();
               }
             })
             :
