@@ -198,18 +198,20 @@ def convert_pdf(
             print(f"FAILED {chunk_label}: {error_message}", file=sys.stderr)
             sys.exit(1)
 
-        md = result.document.export_to_markdown()
-        md_len = len(md)
+        chunk_md_chars = 0
+        for page_no in range(start_page, end_page + 1):
+            all_markdown.append(
+                f"\n\n---\n\n# PDF Page {page_no}\n\n---\n\n"
+            )
+            page_md = result.document.export_to_markdown(page_no=page_no)
+            all_markdown.append(page_md)
+            chunk_md_chars += len(page_md)
 
-        all_markdown.append(
-            f"\n\n---\n\n# PDF Pages {start_page}-{end_page}\n\n---\n\n"
-        )
-        all_markdown.append(md)
-        total_markdown_chars += md_len
+        total_markdown_chars += chunk_md_chars
 
         print(
             f"Completed {chunk_label}: status={status}, "
-            f"markdown={md_len:,} chars, time={chunk_elapsed:.2f}s"
+            f"markdown={chunk_md_chars:,} chars, time={chunk_elapsed:.2f}s"
         )
 
         if result.errors:
