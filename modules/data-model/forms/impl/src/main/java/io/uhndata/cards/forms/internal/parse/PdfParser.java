@@ -21,19 +21,28 @@ import java.io.IOException;
 
 /**
  * Parser for PDF files. Delegates orchestration to {@link SimpleDocumentParser} and supplies
- * {@link PdfMarkdownGenerator} as the primary generator.
+ * {@link DoclingFallbackMarkdownGenerator} as the primary generator, with
+ * {@link PdfMarkdownGenerator} (PDFBox) as the fallback.
  *
  * @version $Id$
  */
 public class PdfParser extends SimpleDocumentParser
 {
-    private final PdfMarkdownGenerator generator = new PdfMarkdownGenerator();
+    private final DoclingFallbackMarkdownGenerator doclingGenerator = new DoclingFallbackMarkdownGenerator();
+
+    private final PdfMarkdownGenerator pdfBoxGenerator = new PdfMarkdownGenerator();
 
     @Override
     protected String runPrimaryGenerator(final byte[] content, final String fileName)
     {
+        return this.doclingGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
+    }
+
+    @Override
+    protected String runFallbackGenerator(final byte[] content, final String fileName)
+    {
         try {
-            return this.generator.toMarkdown(new ByteArrayInputStream(content), fileName);
+            return this.pdfBoxGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
         } catch (IOException | LinkageError e) {
             return "";
         }
