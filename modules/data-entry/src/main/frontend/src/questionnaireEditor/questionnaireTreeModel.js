@@ -137,8 +137,11 @@ function jcrToNode(jcrData, rootPath, nodeParent) {
     ['@name']: name,
     ['@path']: path,
   } = jcrData;
-  // value should be unique and not null/undefined
+  // id must be unique and not null/undefined
   const id = jcrGetUniqueId(jcrData);
+  // `value` is a duplicate of `id`, kept only because some consumers still read node.value
+  // (notably ReorderForm's autocomplete getOptionValue). Prefer `id`; `value` can be dropped
+  // once those callers are switched over.
   let value = id;
   // title may be null
   let { title } = getTitleField(jcrData);
@@ -146,7 +149,7 @@ function jcrToNode(jcrData, rootPath, nodeParent) {
   const nodeChildren = jcrGetChildren(jcrData).map(jcrChild => jcrGetUniqueId(jcrChild));
   const isRootNode = !nodeParent && rootPath === path;
   return {
-    value, //remove
+    value,
     id,
     ...isRootNode ? {
       parent: null,
