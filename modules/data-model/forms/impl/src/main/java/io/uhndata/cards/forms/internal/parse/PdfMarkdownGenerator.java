@@ -169,7 +169,7 @@ public class PdfMarkdownGenerator
                     markdown.append(pageText).append('\n');
                 }
             }
-            return markdown.toString().trim();
+            return MarkdownCleanup.clean(markdown.toString());
         } finally {
             final long endTimestamp = System.currentTimeMillis();
             LOGGER.info("PDF markdown parsing finished for file '{}' at {} (total {} ms)",

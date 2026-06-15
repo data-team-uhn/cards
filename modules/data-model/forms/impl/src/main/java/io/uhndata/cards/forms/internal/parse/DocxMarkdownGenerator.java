@@ -124,7 +124,7 @@ public class DocxMarkdownGenerator
         try (XWPFDocument document = new XWPFDocument(stream)) {
             ParseState state = new ParseState(markdown);
             this.walkDocumentParts(document, state);
-            return markdown.toString().trim();
+            return MarkdownCleanup.clean(markdown.toString());
         } finally {
             final long endTimestamp = System.currentTimeMillis();
             final long totalMilliseconds = endTimestamp - startTimestamp;
