@@ -176,7 +176,6 @@ def convert_pdf(
 
     all_markdown: list[str] = []
     total_markdown_chars = 0
-    failed_chunks: list[tuple[int, int, str]] = []
 
     for start_page, end_page in chunks:
         chunk_label = f"pages {start_page}-{end_page}"
@@ -188,26 +187,23 @@ def convert_pdf(
                 page_range=(start_page, end_page),
             )
         except Exception as exc:
-            failed_chunks.append((start_page, end_page, str(exc)))
-            print(f"FAILED {chunk_label}: {exc}")
-            gc.collect()
-            continue
+            print(f"FAILED {chunk_label}: {exc}", file=sys.stderr)
+            sys.exit(1)
 
         chunk_elapsed = perf_counter() - chunk_start
         status = str(getattr(result, "status", "unknown"))
 
         if getattr(result, "document", None) is None:
             error_message = getattr(result, "errors", None) or "No document returned"
-            failed_chunks.append((start_page, end_page, str(error_message)))
-            print(f"FAILED {chunk_label}: {error_message}")
-            gc.collect()
-            continue
+            print(f"FAILED {chunk_label}: {error_message}", file=sys.stderr)
+            sys.exit(1)
 
         md = result.document.export_to_markdown()
         md_len = len(md)
 
-        for page_no in range(start_page, end_page + 1):
-            all_markdown.append(f"\n\n---\n\n# PDF Page {page_no}\n\n---\n\n")
+        all_markdown.append(
+            f"\n\n---\n\n# PDF Pages {start_page}-{end_page}\n\n---\n\n"
+        )
         all_markdown.append(md)
         total_markdown_chars += md_len
 
@@ -224,26 +220,11 @@ def convert_pdf(
 
     t2 = perf_counter()
 
-    if not all_markdown and failed_chunks:
-        print("\nConversion failed for all chunks.")
-        for start_page, end_page, message in failed_chunks:
-            print(f"  pages {start_page}-{end_page}: {message}")
-        sys.exit(1)
-
-    for start_page, end_page, message in failed_chunks:
-        for page_no in range(start_page, end_page + 1):
-            all_markdown.append(f"\n\n---\n\n# PDF Page {page_no}\n\n---\n\n")
-        all_markdown.append(
-            f"FAILED TO PROCESS PAGES {start_page}-{end_page}: {message}\n\n"
-        )
-
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("".join(all_markdown))
     t3 = perf_counter()
 
     print(f"\nMarkdown characters: {total_markdown_chars:,}")
-    if failed_chunks:
-        print(f"Failed chunks: {len(failed_chunks)}")
 
     print("\n=== Timing ===")
     print(f"Converter init:      {t1 - t0:.2f}s")
