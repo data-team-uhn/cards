@@ -49,10 +49,15 @@ import { DateTime } from 'luxon';
 import { useBlocker } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import { useQuestionnaireTreeContext, ENTRY_TITLE_FIELD_SPEC, jcrGetConditionalTitle } from './QuestionnaireTreeContext';
+import {
+  useQuestionnaireTreeContext,
+  ENTRY_TITLE_FIELD_SPEC,
+  jcrGetConditionalTitle,
+  getEntryChildIds,
+} from './QuestionnaireTreeContext';
 import ErrorDialog from '../components/ErrorDialog';
 import MainActionButton from "../components/MainActionButton";
-import { QUESTIONNAIRE_TYPES, SECTION_TYPES, CONDITIONAL_TYPES, ENTRY_TYPES } from '../questionnaire/FormEntry';
+import { QUESTIONNAIRE_TYPES, SECTION_TYPES, CONDITIONAL_TYPES } from '../questionnaire/FormEntry';
 import { useQuestionnaireInViewContext } from '../questionnaire/QuestionnaireContext';
 import { stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
 
@@ -664,7 +669,7 @@ function RecursiveDragList(props) {
   const nodeIsSource = reorderState.inputs.reorderSourceId === nodeId;
   const conditionalChildren = node.children.filter(childId =>
     CONDITIONAL_TYPES.includes(nodes[childId].jcrPrimaryType));
-  const entryChildren = node.children.filter(childId => ENTRY_TYPES.includes(nodes[childId].jcrPrimaryType));
+  const entryChildren = getEntryChildIds(nodes, nodeId);
   const handleClickReorderSourceSelect = () => {
     // Unhighlight all
     inView.highlighter.unhighlightAll();

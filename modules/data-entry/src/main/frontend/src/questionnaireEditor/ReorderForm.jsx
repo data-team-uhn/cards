@@ -31,7 +31,12 @@ import {
   Radio,
 } from '@mui/material';
 
-import { useQuestionnaireTreeContext, isDescendant, getOrdinalString } from './QuestionnaireTreeContext';
+import {
+  useQuestionnaireTreeContext,
+  isDescendant,
+  getOrdinalString,
+  getEntryChildIds,
+} from './QuestionnaireTreeContext';
 import { ENTRY_TYPES } from '../questionnaire/FormEntry';
 import QuestionnaireAutocomplete from '../questionnaire/QuestionnaireAutocomplete';
 import { stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
@@ -158,18 +163,17 @@ export default function ReorderForm(props) {
 
   const positionOptions = useMemo(() => {
     if (!newParent) return [];
-    const parent = nodes[newParent];
-    return parent.children
-      .map(id => nodes[id])
-      .filter(node => ENTRY_TYPES.includes(node.jcrPrimaryType))
-      .map((node, index) => ({
+    return getEntryChildIds(nodes, newParent).map((id, index) => {
+      const node = nodes[id];
+      return ({
         value: index,
         name: node.name,
         text: node.title,
         path: node.path,
         relativePath: node.relativePath,
         type: stripCardsNamespace(node.jcrPrimaryType)
-      }));
+      });
+    });
   }, [nodes, newParent]);
 
 
@@ -201,10 +205,7 @@ export default function ReorderForm(props) {
     setNewPositionSelection([]);
     // If newParent has empty children is empty of entry types (conditionals not included)
     // then set positionRadio to first
-    const newParentChildrenPrimaryTypes =
-      nodes[newParent]?.children.map(child => nodes[child].jcrPrimaryType);
-    const newParentHasNoEntryChildren =
-      newParentChildrenPrimaryTypes?.filter(primaryType => ENTRY_TYPES.includes(primaryType))?.length === 0;
+    const newParentHasNoEntryChildren = !!newParent && getEntryChildIds(nodes, newParent).length === 0;
 
     if (newParentHasNoEntryChildren) {
       reorderDispatch({ type: 'SET_POSITIONRADIO', payload: 'first' });
@@ -286,9 +287,7 @@ export default function ReorderForm(props) {
           <Grid size={9}>
             <Typography>
               {getOrdinalString(
-                nodes[nodes[reorderSource].parent].children
-                  .filter(nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType))
-                  .indexOf(reorderSource)
+                getEntryChildIds(nodes, nodes[reorderSource].parent).indexOf(reorderSource)
               )}
             </Typography>
           </Grid>
@@ -334,16 +333,14 @@ export default function ReorderForm(props) {
         >
           {(() => {
             const noNewParent = !newParent
-            const newParentHasNoEntryChildren =
-              !nodes[newParent]?.children.some(child => ENTRY_TYPES.includes(nodes[child].jcrPrimaryType))
+            const newParentHasNoEntryChildren = getEntryChildIds(nodes, newParent).length === 0
             // First/Last are no-ops only when staying in the same parent; moving into a
             // different parent, First/Last are always valid (different) destinations.
             const isSameParent = nodes[reorderSource]?.parent === newParent;
-            const filteredChildren = nodes[nodes[reorderSource]?.parent]?.children?.filter(
-              nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType));
-            const originalPositionIndex = filteredChildren?.indexOf(reorderSource);
+            const filteredChildren = getEntryChildIds(nodes, nodes[reorderSource]?.parent);
+            const originalPositionIndex = filteredChildren.indexOf(reorderSource);
             const originalPositionIsFirst = originalPositionIndex === 0;
-            const originalPositionIsLast = originalPositionIndex === filteredChildren?.length - 1;
+            const originalPositionIsLast = originalPositionIndex === filteredChildren.length - 1;
             return (
               [ { value: 'first', label: 'First' },
                 { value: 'other', label: 'After...' },
@@ -407,7 +404,7 @@ export default function ReorderForm(props) {
   const computeSlingPosition = () => {
     if (reorderState.inputs.positionRadio !== 'other') return newPosition;
     const allChildren = nodes[newParent].children;
-    const filteredChildren = allChildren.filter(id => ENTRY_TYPES.includes(nodes[id]?.jcrPrimaryType));
+    const filteredChildren = getEntryChildIds(nodes, newParent);
     const referenceNodeId = filteredChildren[newPosition];
     if (!referenceNodeId) return null;
     const refAllIndex = allChildren.indexOf(referenceNodeId);

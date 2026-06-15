@@ -23,6 +23,7 @@ import { deepPurple, orange, blueGrey, blue, purple, green } from '@mui/material
 import { makeStyles } from 'tss-react/mui';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { ENTRY_TYPES } from "../questionnaire/FormEntry";
 
 export const ENTRY_TITLE_FIELD_SPEC = {
   'cards:Questionnaire': {
@@ -391,6 +392,19 @@ export function findTreeEntries(nodes, entryTypes = []) {
   if (!rootNode) return entries;
   traverseTree(rootNode, entries);
   return entries;
+}
+
+/**
+ * Returns the IDs of a parent's children that are reorderable entries (questions, sections,
+ * information), in order — filtering out conditionals and conditional groups. Used wherever
+ * the reorder UIs need a parent's entry children, e.g. to index, count, or build options.
+ *
+ * @param {Object} nodes - The flat node map from the tree.
+ * @param {string} parentId - The ID of the parent node.
+ * @returns {Array.<string>} - The entry child IDs, in order (empty if the parent is unknown).
+ */
+export function getEntryChildIds(nodes, parentId) {
+  return (nodes[parentId]?.children || []).filter(id => ENTRY_TYPES.includes(nodes[id]?.jcrPrimaryType));
 }
 
 
