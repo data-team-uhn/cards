@@ -20,6 +20,7 @@
 import { useState, useContext, useRef } from "react";
 
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -77,6 +78,7 @@ let EditDialog = (props) => {
     event.preventDefault();
 
     setSaveInProgress(true);
+    setError('');
     // If the question/section already exists, update it
     if (targetExists) {
       // currentTarget is the element on which the event listener was placed and invoked, thus the <form> element
@@ -144,19 +146,6 @@ let EditDialog = (props) => {
     setSaveInProgress(false);
   };
 
-  // If an error was returned, do not display a form at all, but report the error
-  if (error) {
-    return (
-      <Grid container justifyContent='center'>
-        <Grid>
-          <Typography variant='h2' color='error'>
-            Error obtaining form data: {error.status} {error.statusText}
-          </Typography>
-        </Grid>
-      </Grid>
-    );
-  }
-
   let dialogTitle = () => {
     return (targetExists ? 'Edit ' : 'New ').concat(formattedType.toLowerCase());
   }
@@ -196,60 +185,71 @@ let EditDialog = (props) => {
     }
   }
 
+  // Render the Dialog's Paper as the <form> so DialogTitle/Content/Actions stay direct
+  // children of the scroll container: only DialogContent scrolls while the title and
+  // actions remain fixed. The form still wraps every field and the submit button
+  // (onSubmit/FormData intact), and the dialog portals normally — avoiding both the
+  // broken scrolling of a form-inside-Dialog and the aria-hidden-on-focused-ancestor
+  // warning that the form-wrapping-Dialog + disablePortal structure caused.
   return (
-    <form
-      action={data?.['@path']}
-      method='POST'
-      onSubmit={saveData}
-      onChange={() => setLastSaveStatus(undefined) }
+    <Dialog
       key={id}
+      id='editDialog'
+      open={open}
+      onClose={() => { setOpen(false); onCancel?.();} }
+      fullWidth
+      maxWidth='md'
+      slotProps={{
+        paper: {
+          component: 'form',
+          action: data?.['@path'],
+          method: 'POST',
+          onSubmit: saveData,
+          onChange: () => { setLastSaveStatus(undefined); setError(''); },
+        }
+      }}
     >
-      <Dialog
-        disablePortal
-        id='editDialog'
-        open={open}
-        onClose={() => { setOpen(false); onCancel?.();} }
-        fullWidth
-        maxWidth='md'
-      >
-        <DialogTitle>
-          { dialogTitle() }
-        </DialogTitle>
-        <DialogContent>
-          { error && <Typography color="error">{error}</Typography>}
-          <Grid container direction="column" spacing={2}>
-            <Grid>{targetIdField()}</Grid>
-            <Fields
-              data={dialogData}
-              hints={hints}
-              JSON={json[0]}
-              edit={true}
-              path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
-              saveButtonRef={saveButtonRef}
-            />
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant='outlined'
-            onClick={() => { setOpen(false); onCancel?.();}}
-          >
-            Cancel
-          </Button>
-          <Button
-            ref={saveButtonRef}
-            type='submit'
-            variant='contained'
-            disabled={saveInProgress || !!variableNameError}
-          >
-            {saveInProgress ? 'Saving' :
-              lastSaveStatus === true ? 'Saved' :
-                lastSaveStatus === false ? 'Save failed, log in and try again?' :
-                  'Save'}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </form>
+      <DialogTitle>
+        { dialogTitle() }
+        { error &&
+          <Alert severity="error" sx={{ mb: 2 }}>
+            Error saving form: {error}
+          </Alert>
+        }
+      </DialogTitle>
+      <DialogContent>
+        <Grid container direction="column" spacing={2}>
+          <Grid>{targetIdField()}</Grid>
+          <Fields
+            data={dialogData}
+            hints={hints}
+            JSON={json[0]}
+            edit={true}
+            path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
+            saveButtonRef={saveButtonRef}
+          />
+        </Grid>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          variant='outlined'
+          onClick={() => { setOpen(false); onCancel?.();}}
+        >
+          Cancel
+        </Button>
+        <Button
+          ref={saveButtonRef}
+          type='submit'
+          variant='contained'
+          disabled={saveInProgress || !!variableNameError}
+        >
+          {saveInProgress ? 'Saving' :
+            lastSaveStatus === true ? 'Saved' :
+              lastSaveStatus === false ? 'Save failed, log in and try again?' :
+                'Save'}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 
