@@ -37,10 +37,11 @@ import { makeStyles } from 'tss-react/mui';
 import { checkPropTypes } from "../propTypes";
 import EditDialog from "./EditDialog";
 import { camelCaseToWords } from "./LabeledField";
-import { useQuestionnaireTreeContext, getOrdinalString } from './QuestionnaireTreeContext.jsx';
+import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext.jsx';
 import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import { ENTRY_TYPES } from '../questionnaire/FormEntry.jsx';
+import { getOrdinalString } from '../questionnaire/QuestionnaireUtilities.jsx';
 
 const useStyles = makeStyles()((theme, { entryTypeColor } = {}) => {
   const accentColor = entryTypeColor || theme.palette.divider;

@@ -47,7 +47,7 @@ import { withStyles } from 'tss-react/mui';
 import { ENTRY_TYPES } from "./FormEntry";
 import formStyles from "./formStyles.jsx";
 import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
-import { QuestionnaireProvider, useQuestionnaireInViewContext, getAncestorPath } from "./QuestionnaireContext";
+import { QuestionnaireProvider, useQuestionnaireInViewContext } from "./QuestionnaireContext";
 import QuestionnairePreview from "./QuestionnairePreview";
 import { stripCardsNamespace } from "./QuestionnaireUtilities";
 import ResourceHeader from "./ResourceHeader";
@@ -56,16 +56,17 @@ import ExportButton from "../dataHomepage/ExportButton";
 import { checkPropTypes } from "../propTypes";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import EditorHeader from "../questionnaireEditor/EditorHeader.jsx";
+import { ENTRY_TITLE_FIELD_SPEC } from "../questionnaireEditor/entryDisplay";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import {
   useQuestionnaireTreeContext,
   QuestionnaireTreeProvider,
-  ENTRY_TITLE_FIELD_SPEC,
 } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
 import ReorderDraft from "../questionnaireEditor/ReorderDraft.jsx";
 import { ReorderModal } from "../questionnaireEditor/ReorderModal.jsx";
+import { getAncestorPath } from "../questionnaireEditor/treeQueries";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));

@@ -26,8 +26,8 @@ import {
 } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
 
+import { ENTRY_TITLE_FIELD_SPEC } from "./entryDisplay";
 import { useQuestionnaireTreeContext } from "./QuestionnaireTreeContext.jsx";
-import { ENTRY_TITLE_FIELD_SPEC } from "./QuestionnaireTreeContext.jsx";
 import { CONDITIONAL_TYPES } from "../questionnaire/FormEntry.jsx";
 import { stripCardsNamespace } from "../questionnaire/QuestionnaireUtilities.jsx";
 

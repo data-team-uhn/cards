@@ -49,12 +49,9 @@ import { DateTime } from 'luxon';
 import { useBlocker } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
-import {
-  useQuestionnaireTreeContext,
-  ENTRY_TITLE_FIELD_SPEC,
-  jcrGetConditionalTitle,
-  getEntryChildIds,
-} from './QuestionnaireTreeContext';
+import { ENTRY_TITLE_FIELD_SPEC, jcrGetConditionalTitle } from './entryDisplay';
+import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext';
+import { getEntryChildIds } from './treeQueries';
 import ErrorDialog from '../components/ErrorDialog';
 import MainActionButton from "../components/MainActionButton";
 import { QUESTIONNAIRE_TYPES, SECTION_TYPES, CONDITIONAL_TYPES } from '../questionnaire/FormEntry';

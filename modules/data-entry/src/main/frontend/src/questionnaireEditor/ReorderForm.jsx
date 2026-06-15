@@ -31,15 +31,11 @@ import {
   Radio,
 } from '@mui/material';
 
-import {
-  useQuestionnaireTreeContext,
-  isDescendant,
-  getOrdinalString,
-  getEntryChildIds,
-} from './QuestionnaireTreeContext';
+import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext';
+import { getEntryChildIds, isDescendant } from './treeQueries';
 import { ENTRY_TYPES } from '../questionnaire/FormEntry';
 import QuestionnaireAutocomplete from '../questionnaire/QuestionnaireAutocomplete';
-import { stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
+import { getOrdinalString, stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
 
 // State for reorder submission
 const initialReorderState = {
