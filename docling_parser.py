@@ -18,9 +18,8 @@
 #
 
 # Converts PDF and DOCX files into Markdown.
-# PDF conversion processes explicit page-range batches.
-# PDF batches are processed in parallel using separate processes.
-# Each PDF batch creates a fresh DocumentConverter to avoid retained backend caches.
+# PDF conversion splits the document into page-range batches processed in parallel.
+# Each worker process loads the converter once via _init_worker(); page batches are reused.
 
 import argparse
 import gc
@@ -33,6 +32,7 @@ from time import perf_counter
 from pypdf import PdfReader
 
 from docling.datamodel.base_models import InputFormat
+from docling.datamodel.accelerator_options import AcceleratorOptions
 from docling.datamodel.pipeline_options import (
     PdfPipelineOptions,
     TableFormerMode,
@@ -44,33 +44,71 @@ from docling.document_converter import (
     PdfFormatOption,
     WordFormatOption,
 )
+# Profiling
+from docling.datamodel.settings import settings
+settings.debug.profile_pipeline_timings = True
 
 
-PDF_BATCH_PAGES = 5
-PDF_BATCH_WORKERS = 2
+PDF_BATCH_PAGES = 1
+
+_cpu_count = os.cpu_count() or 4
+# Each worker holds the full Docling model stack in memory (~1.5 GB) and uses
+# exactly 1 inference thread, so worker count == cores used == pages in flight.
+# Cap by RAM so we don't OOM on memory-constrained machines.
+try:
+    import psutil as _psutil
+    _ram_gb = _psutil.virtual_memory().total / (1024 ** 3)
+    _max_by_ram = max(2, int(_ram_gb // 1.5))
+except ImportError:
+    _max_by_ram = _cpu_count  # no psutil: trust CPU heuristic alone
+PDF_BATCH_WORKERS = min(_cpu_count, _max_by_ram)
 
 # These environment variables are most useful when set before Python starts,
 # but keeping defaults here is convenient for local runs.
-os.environ.setdefault("OMP_NUM_THREADS", "2")
-os.environ.setdefault("DOCLING_NUM_THREADS", "2")
+# Use 1 thread per library since parallelism comes from ProcessPoolExecutor.
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("DOCLING_NUM_THREADS", "1")
 
 # Docling internal batching/concurrency.
 # Keep conservative when also using ProcessPoolExecutor, otherwise memory can spike.
 settings.perf.doc_batch_concurrency = 1 # Number of docs processed in parallel
 settings.perf.page_batch_concurrency = 1 # Number of page batches processed in parallel
 settings.perf.page_batch_size = 1 # Number of pages Docling groups together internally for page-level processing
-settings.perf.elements_batch_size = 8 # Number of extracted elements are processed together internally
+settings.perf.elements_batch_size = 16 # Number of extracted elements are processed together internally
 
 
 def build_pdf_options() -> PdfPipelineOptions:
-    """Create PDF pipeline options for each batch/converter."""
+    """Create PDF pipeline options optimised for speed: no OCR, no images."""
     pdf_options = PdfPipelineOptions()
+
+    # --- Features: disable everything not needed ---
     pdf_options.do_ocr = False
     pdf_options.do_table_structure = True
-    pdf_options.generate_page_images = False
-    pdf_options.generate_picture_images = False
     pdf_options.do_code_enrichment = False
     pdf_options.do_formula_enrichment = False
+    pdf_options.do_picture_classification = False
+    pdf_options.do_picture_description = False
+    pdf_options.do_chart_extraction = False
+
+    # --- Image/page generation: all off ---
+    pdf_options.generate_page_images = False
+    pdf_options.generate_picture_images = False
+    pdf_options.generate_table_images = False
+    pdf_options.generate_parsed_pages = False
+
+    # Use the PDF's embedded text layer directly instead of re-extracting via
+    # the layout model. The layout model still runs for structure detection;
+    # this only skips the redundant text recognition pass.
+    pdf_options.force_backend_text = True
+
+    # 1 thread per worker keeps total threads = PDF_BATCH_WORKERS, within core budget.
+    pdf_options.accelerator_options = AcceleratorOptions(num_threads=1, device="cpu")
+
+    # --- Batch sizes: 1 page per call; no internal batching needed.
+    pdf_options.layout_batch_size = 1
+    pdf_options.table_batch_size = 1
+    # Reduce pipeline-stage polling latency (default 0.5 s) for short pages.
+    pdf_options.batch_polling_interval_seconds = 0.1
 
     # IMPORTANT: no trailing comma here. A trailing comma would create a tuple.
     pdf_options.table_structure_options = TableStructureOptions(
@@ -82,7 +120,7 @@ def build_pdf_options() -> PdfPipelineOptions:
 
 
 def build_pdf_converter() -> DocumentConverter:
-    """Create a fresh converter. Called once per PDF page batch."""
+    """Create a DocumentConverter for PDF processing."""
     return DocumentConverter(
         format_options={
             InputFormat.PDF: PdfFormatOption(
@@ -90,6 +128,17 @@ def build_pdf_converter() -> DocumentConverter:
             )
         }
     )
+
+
+# Per-worker converter. Populated once by _init_worker() so ML models are loaded
+# once per process rather than once per page.
+_converter: DocumentConverter | None = None
+
+
+def _init_worker() -> None:
+    """Load the DocumentConverter exactly once per worker process."""
+    global _converter
+    _converter = build_pdf_converter()
 
 
 def convert_docx(input_path: Path, output_file: Path) -> None:
@@ -130,17 +179,19 @@ def convert_docx(input_path: Path, output_file: Path) -> None:
 def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int, float, str | None]:
     """
     Parse one page-range batch in a separate process.
+    Reuses the per-process converter loaded by _init_worker().
 
     Returns:
         start_page, end_page, status, markdown, markdown_length, elapsed_seconds, error
     """
+    global _converter
     input_file, start_page, end_page = args
     chunk_start = perf_counter()
-    converter = None
 
     try:
-        converter = build_pdf_converter()
-        result = converter.convert(
+        if _converter is None:
+            _converter = build_pdf_converter()
+        result = _converter.convert(
             input_file,
             page_range=(start_page, end_page),
         )
@@ -160,8 +211,6 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
         return start_page, end_page, "failed", "", 0, elapsed, str(e)
 
     finally:
-        if converter is not None:
-            del converter
         gc.collect()
 
 
@@ -188,8 +237,9 @@ def convert_pdf(
     completed_results = []
 
     # Use processes, not threads, so each batch has isolated Docling state.
+    # _init_worker loads the converter once per worker; chunks reuse it.
     # On Windows, this must run under if __name__ == "__main__".
-    with ProcessPoolExecutor(max_workers=PDF_BATCH_WORKERS) as executor:
+    with ProcessPoolExecutor(max_workers=PDF_BATCH_WORKERS, initializer=_init_worker) as executor:
         future_to_chunk = {
             executor.submit(parse_pdf_chunk, chunk): chunk
             for chunk in chunks
@@ -215,9 +265,9 @@ def convert_pdf(
 
             r_start, r_end, status, _md, md_len, elapsed, error = result
             if error:
-                print(f"FAILED pages {r_start}-{r_end}: {error}")
+                print(f"FAILED page {r_start}: {error}")
             else:
-                print(f"Completed pages {r_start}-{r_end}: status={status}, markdown={md_len:,} chars, time={elapsed:.2f}s")
+                print(f"Completed page {r_start}: status={status}, markdown={md_len:,} chars, time={elapsed:.2f}s")
 
     # as_completed returns chunks out of order, so sort before writing Markdown.
     completed_results.sort(key=lambda item: item[0])
@@ -226,20 +276,17 @@ def convert_pdf(
     total_markdown_chars = 0
 
     for start_page, end_page, _status, md, md_len, _elapsed, error in completed_results:
-        all_markdown.append(
-            f"\n\n---\n\n# PDF Pages {start_page}-{end_page}\n\n---\n\n"
-        )
+        for page_no in range(start_page, end_page + 1):
+            all_markdown.append(f"\n\n---\n\n# PDF Page {page_no}\n\n---\n\n")
         if error:
-            all_markdown.append(
-                f"FAILED TO PROCESS PAGES {start_page}-{end_page}: {error}\n\n"
-            )
+            all_markdown.append(f"FAILED TO PROCESS PAGE {start_page}: {error}\n\n")
         else:
             all_markdown.append(md)
             total_markdown_chars += md_len
 
     write_start = perf_counter()
     with open(output_file, "w", encoding="utf-8") as f:
-        f.write("\n".join(all_markdown))
+        f.write("".join(all_markdown))
     write_end = perf_counter()
 
     t2 = perf_counter()
