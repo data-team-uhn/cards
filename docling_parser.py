@@ -45,10 +45,10 @@ from docling.document_converter import (
 )
 
 _cpu_count = os.cpu_count() or 4
-_INFERENCE_THREADS = min(4, max(1, _cpu_count // 2))
+_INFERENCE_THREADS = min(4, max(4, _cpu_count // 2))
 
 # Pages per convert() call. Keeps peak memory bounded while still allowing
-# modest batching inside the threaded pipeline.
+# modest batching inside the threaded pipeline. Try x2 for next 3 params for prod
 PDF_PAGE_CHUNK_SIZE = 8
 
 # Limit how many pages can sit between pipeline stages at once (default is 100).
