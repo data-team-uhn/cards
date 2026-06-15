@@ -199,8 +199,8 @@ export default function ReorderForm(props) {
 
   useEffect(() => {
     setNewPositionSelection([]);
-    // If newParent has empty children is empty of entry types (conditionals not included)
-    // then set positionRadio to first
+    // If newParent has no entry-type children (conditionals excluded), default positionRadio
+    // to 'first'
     const newParentHasNoEntryChildren = !!newParent && getEntryChildIds(nodes, newParent).length === 0;
 
     if (newParentHasNoEntryChildren) {

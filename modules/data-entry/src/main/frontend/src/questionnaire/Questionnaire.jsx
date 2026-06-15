@@ -705,8 +705,8 @@ let QuestionnaireEntry = (props) => {
           />
         }
         { !!menuProps?.isMainAction ?
-          // If this is the main action, render MoveEntryModal without data to select reorder source
-          // Otherwise render MoveEntryModal with data set
+          // If this is the main action, render ReorderModal without data to select reorder source
+          // Otherwise render ReorderModal with data set
           <ReorderModal />
           :
           ENTRY_TYPES.includes(entryData['jcr:primaryType']) &&

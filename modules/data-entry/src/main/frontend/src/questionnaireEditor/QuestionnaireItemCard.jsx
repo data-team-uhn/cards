@@ -159,8 +159,8 @@ let QuestionnaireItemCard = (props) => {
     }
   }, [data]);
 
-  // If autofocus is needed and specified in the url
-  // create a ref to store the question container DOM element
+  // When this card is highlighted (created/edited/moved, or targeted via the url hash),
+  // scroll it into view shortly after render.
   useEffect(() => {
     if (highlight) {
       const timer = setTimeout(() => {

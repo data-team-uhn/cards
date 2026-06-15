@@ -81,8 +81,6 @@ export const jcrActions = {
     reorderForm.set(":operation", "move");
     reorderForm.set(":order", order);
     reorderForm.set(":dest", dest);
-    // For the case of reordering within same parent
-    // reorderForm.set(":replace", "true");
     reorderForm.set(":http-equiv-accept", "application/json");
     return fetchWithReLogin(globalLoginDisplay, path, {
       method: "POST",

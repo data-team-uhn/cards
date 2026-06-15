@@ -30,7 +30,8 @@ const QuestionnaireReaderContext = createContext(DEFAULT_STATE);
 const QuestionnaireInViewContext = createContext();
 
 /**
- * A context provider for a questionnaire, which contains questions data and a way to set them
+ * A context provider for a questionnaire, exposing the (derived, read-only) list of questions
+ * and an in-view tracker used by the location breadcrumb.
  * @param {Object} props the props to pass onwards to the child, generally its children
  * @returns {Object} a React component with the questionnaire provider
  */
