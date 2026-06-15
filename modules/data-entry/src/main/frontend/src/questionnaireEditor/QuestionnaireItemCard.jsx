@@ -58,6 +58,15 @@ const useStyles = makeStyles()((theme, { entryTypeColor } = {}) => {
         display: "none",
       },
       marginBottom: theme.spacing(.75),
+      // When highlighted, use the entry-type colour for the outline instead of the default
+      // primary colour (the 2px solid outline itself comes from .cards-focused in formStyles).
+      "&.cards-focused": {
+        outlineColor: `${accentColor} !important`,
+        // Square the left corners so the outline lines up with the straight left accent
+        // border of the wrapper (the outline follows the card's border-radius).
+        borderTopLeftRadius: 0,
+        borderBottomLeftRadius: 0,
+      },
     },
     title: {
       display: "inline",
