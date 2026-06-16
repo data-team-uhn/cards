@@ -73,11 +73,30 @@ function SelectableAreaQuestion(props) {
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
   const defaultValue = questionDefinition.defaultValue;
+  // The valid values for this question are its answer options, as [label, value] pairs.
+  const answerOptions = Object.values(questionDefinition)
+    .filter(value => value?.['jcr:primaryType'] === 'cards:AnswerOption')
+    .map(answerOption => [answerOption.label || answerOption.value, answerOption.value]);
+
+  // Parse the configured default value(s). A multivalued question (maxAnswers !== 1) accepts a comma-separated
+  // list of distinct values; a single-valued question takes the value as-is. Only values matching an answer
+  // option are kept (others are discarded), capped at maxAnswers.
+  let defaultValueList = [];
+  if (defaultValue != null && String(defaultValue) !== "") {
+    defaultValueList = maxAnswers === 1
+      ? [String(defaultValue)]
+      : Array.from(new Set(String(defaultValue).split(",").map(value => value.trim()).filter(Boolean)));
+  }
+  const defaultSelection = defaultValueList
+    .map(value => answerOptions.find(option => String(option[VALUE_POS]) === String(value)))
+    .filter(Boolean)
+    .slice(0, maxAnswers || undefined);
+
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined)
       ?
-      (defaultValue ? [[defaultValue, defaultValue]] : [])
+      defaultSelection
       :
     // The value can either be a single value or an array of values; force it into an array
       Array.of(existingAnswer[1].value).flat()
