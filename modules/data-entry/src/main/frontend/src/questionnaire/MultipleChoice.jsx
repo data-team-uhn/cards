@@ -111,23 +111,31 @@ function MultipleChoice(props) {
   const isSelect = displayMode === "select";
   const isNumeric = ["cards:LongAnswer", "cards:DecimalAnswer", "cards:DoubleAnswer"].includes(answerNodeType);
 
+  // A defaultValue that matches one of the predefined options pre-selects that option below; a defaultValue
+  // that doesn't match any option is treated as a custom value, filled into the free-text input (the "ghost").
+  const defaultOption = defaultValue && defaults.find(item => String(item[VALUE_POS]) === String(defaultValue));
+  const customDefaultValue = (defaultValue && !defaultOption) ? defaultValue : undefined;
+
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined)
       ?
-      (defaultValue ? [[defaultValue, defaultValue]] : [])
+      []
       :
     // The value can either be a single value or an array of values; force it into an array
       Array.of(existingAnswer[1].value).flat()
       // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
         .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
-  // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
-  // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
+  // When opening a form with no existing answer, pre-select default answers so they get saved unless modified
+  // by the user: a defaultValue matching a predefined option takes precedence, otherwise the answer options
+  // flagged as default values are used.
   if (!existingAnswer) {
-    initialSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
-    // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
-      .slice(0, maxAnswers || defaults.length)
-      .map(item => [item[LABEL_POS], item[VALUE_POS]]);
+    initialSelection = defaultOption
+      ? [[defaultOption[LABEL_POS], defaultOption[VALUE_POS]]]
+      : defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
+      // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
+        .slice(0, maxAnswers || defaults.length)
+        .map(item => [item[LABEL_POS], item[VALUE_POS]]);
   }
   let default_values = defaults.map((thisDefault) => thisDefault[VALUE_POS]);
   let all_options =
@@ -151,9 +159,9 @@ function MultipleChoice(props) {
   // Prefill the input with the displayed value, unless the answer type is numeric,
   // which means the displayed value may contain a unit of measurement, or with a default value (if available)
   const [ghostName, setGhostName] = useState(
-    isNumeric ? inputPrefill?.value || defaultValue : inputPrefill?.displayedValue || defaultValue
+    (isNumeric ? inputPrefill?.value : inputPrefill?.displayedValue) || customDefaultValue
   );
-  const [ghostValue, setGhostValue] = useState(inputPrefill?.value ?? (defaultValue || GHOST_SENTINEL));
+  const [ghostValue, setGhostValue] = useState(inputPrefill?.value ?? (customDefaultValue || GHOST_SENTINEL));
   const ghostSelected = selection.some(
     element => {return String(element[VALUE_POS]) === String(ghostValue) || element[LABEL_POS] === ghostName}
   );
