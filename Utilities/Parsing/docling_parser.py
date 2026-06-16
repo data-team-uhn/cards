@@ -98,8 +98,8 @@ def build_pdf_options() -> PdfPipelineOptions:
 
     # IMPORTANT: no trailing comma here. A trailing comma would create a tuple.
     pdf_options.table_structure_options = TableStructureOptions(
-        mode=TableFormerMode.ACCURATE,
-        do_cell_matching=False,
+        mode=TableFormerMode.FAST, # ACCURATE x4 slow down for table parsing
+        do_cell_matching=False, # Cell matching x2 slow down for table parsing
     )
 
     return pdf_options
