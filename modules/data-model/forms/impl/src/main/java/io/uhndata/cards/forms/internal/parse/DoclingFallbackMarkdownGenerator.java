@@ -39,12 +39,12 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Invoked when the primary Java generators fail, produce empty or insufficient output, or exceed the
  * configured time limit, and for formats not handled by any primary Java generator (DOC, PPTX, XLSX,
- * HTML, CSV). Calls {@code docling_parse.py} via the configured Python interpreter.
+ * HTML, CSV). Calls {@code Utilities/Parsing/docling_parser.py} via the configured Python interpreter.
  * </p>
  * <p>
  * The script path and Python command can be customised via system properties
  * {@code cards.docling.script} and {@code cards.docling.python}; they default to
- * {@code docling_parse.py} and {@code python} respectively.
+ * {@code Utilities/Parsing/docling_parser.py} and {@code python} respectively.
  * </p>
  *
  * @version $Id$
@@ -59,7 +59,7 @@ public class DoclingFallbackMarkdownGenerator
 
     private static final int MIN_CONTENT_CHARS = 50;
 
-    private static final String DEFAULT_SCRIPT_NAME = "docling_parser.py";
+    private static final String DEFAULT_SCRIPT_NAME = "Utilities/Parsing/docling_parser.py";
 
     private static final String SCRIPT_PATH_PROPERTY = "cards.docling.script";
 
