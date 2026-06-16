@@ -157,10 +157,19 @@ function NumberQuestion(props) {
   const [ minMaxError, setMinMaxError ] = useState(false);
   const [ rangeError, setRangeError ] = useState(false);
 
-  let defaultValue = props.questionDefinition.defaultValue;
-  defaultValue = isNaN(Number(defaultValue)) ? null : Number(defaultValue);
+  const rawDefaultValue = props.questionDefinition.defaultValue;
+  // Keep only the numeric default value(s); a multivalued question may provide a comma-separated list, and any
+  // value that cannot be parsed as a number is discarded.
+  const numericDefaultValues = (rawDefaultValue == null || String(rawDefaultValue) === "")
+    ? []
+    : String(rawDefaultValue).split(",")
+      .map(value => value.trim())
+      .filter(value => value !== "" && !isNaN(Number(value)))
+      .map(value => Number(value));
+  // A single numeric default for this question's own slider and range inputs.
+  const defaultValue = numericDefaultValues.length ? numericDefaultValues[0] : null;
 
-  const initialValue = Array.from(existingAnswer?.[1]?.value || defaultValue || []);
+  const initialValue = Array.from(existingAnswer?.[1]?.value || numericDefaultValues);
 
   // The following two are only used for range answers
   const [lowerLimit, setLowerLimit] = useState(initialValue[0]);
@@ -535,7 +544,7 @@ function NumberQuestion(props) {
               validate={disableMinMaxValueEnforcement ? value => !getMinMaxValueError(value) : undefined}
               validationErrorText={minMaxMessage}
               softValidation={disableMinMaxValueEnforcement}
-              defaultValue={defaultValue}
+              defaultValue={numericDefaultValues.join(",") || undefined}
               {...rest}
             />
           }
