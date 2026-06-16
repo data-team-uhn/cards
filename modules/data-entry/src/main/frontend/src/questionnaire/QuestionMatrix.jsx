@@ -117,8 +117,16 @@ let QuestionMatrix = (props) => {
     if (!defaultValue) {
       return null;
     }
-    let option = defaults.find(item => String(item[VALUE_POS]) === String(defaultValue));
-    return option ? [[option[LABEL_POS], option[VALUE_POS]]] : null;
+    // A multivalued matrix (maxAnswers !== 1) accepts a comma-separated list of distinct values.
+    let values = maxAnswers === 1
+      ? [String(defaultValue)]
+      : Array.from(new Set(String(defaultValue).split(",").map(value => value.trim()).filter(Boolean)));
+    let selection = values
+      .map(value => defaults.find(item => String(item[VALUE_POS]) === String(value)))
+      .filter(Boolean)
+      .map(option => [option[LABEL_POS], option[VALUE_POS]])
+      .slice(0, maxAnswers || undefined);
+    return selection.length ? selection : null;
   };
 
   let initialSelection = {};
