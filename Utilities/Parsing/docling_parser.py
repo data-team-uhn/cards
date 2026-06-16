@@ -18,14 +18,14 @@
 #
 
 # Converts PDF and DOCX files into Markdown.
-# PDF conversion uses Docling's threaded StandardPdfPipeline in a single process.
-# Large PDFs are processed in sequential page-range chunks to cap peak memory
-# (full-document convert can OOM when many rasterized pages sit in pipeline queues).
+# PDF conversion splits the document into page-range batches processed in parallel.
+# Each worker process loads the converter once via _init_worker(); page batches are reused.
 
 import argparse
 import gc
 import os
 import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from time import perf_counter
 
@@ -38,6 +38,7 @@ from docling.datamodel.pipeline_options import (
     TableFormerMode,
     TableStructureOptions,
 )
+from docling.datamodel.settings import settings
 from docling.document_converter import (
     DocumentConverter,
     PdfFormatOption,
@@ -47,19 +48,33 @@ from docling.document_converter import (
 from markdown_cleanup import clean_markdown
 from toc_cleanup import TOC_CLEANUP_MAX_PAGE, cleanup_toc_tables
 
+PDF_BATCH_PAGES = 2 # 1,2,4 page per call; no internal batching needed.
+
 _cpu_count = os.cpu_count() or 4
-_INFERENCE_THREADS = min(4, max(4, _cpu_count // 2))
+# Each worker holds the full Docling model stack in memory (~1.5 GB) and uses
+# exactly 1 inference thread, so worker count == cores used == pages in flight.
+# Cap by RAM so we don't OOM on memory-constrained machines.
+try:
+    import psutil as _psutil
+    _ram_gb = _psutil.virtual_memory().total / (1024 ** 3)
+    _max_by_ram = max(2, int(_ram_gb // 1.5))
+except ImportError:
+    _max_by_ram = _cpu_count  # no psutil: trust CPU heuristic alone
+PDF_BATCH_WORKERS = min(_cpu_count, _max_by_ram)
 
-# Pages per convert() call. Keeps peak memory bounded while still allowing
-# modest batching inside the threaded pipeline. Try x2 for next 3 params for prod
-PDF_PAGE_CHUNK_SIZE = 8
+# These environment variables are most useful when set before Python starts,
+# but keeping defaults here is convenient for local runs.
+# Use 1 thread per library since parallelism comes from ProcessPoolExecutor.
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("DOCLING_NUM_THREADS", "1")
 
-# Limit how many pages can sit between pipeline stages at once (default is 100).
-_PIPELINE_QUEUE_MAX_SIZE = 4
+# Docling internal batching/concurrency.
+# Keep conservative when also using ProcessPoolExecutor, otherwise memory can spike.
+settings.perf.doc_batch_concurrency = 1 # Number of docs processed in parallel
+settings.perf.page_batch_concurrency = 1 # Number of page batches processed in parallel
+settings.perf.page_batch_size = 1 # Number of pages Docling groups together internally for page-level processing
+settings.perf.elements_batch_size = 16 # Number of extracted elements are processed together internally
 
-# Batch sizes for StandardPdfPipeline threaded layout/table stages.
-_LAYOUT_BATCH_SIZE = 2
-_TABLE_BATCH_SIZE = 2
 
 
 def build_pdf_options() -> PdfPipelineOptions:
@@ -86,15 +101,14 @@ def build_pdf_options() -> PdfPipelineOptions:
     # this only skips the redundant text recognition pass.
     pdf_options.force_backend_text = True
 
-    pdf_options.accelerator_options = AcceleratorOptions(
-        num_threads=_INFERENCE_THREADS,
-        device="cpu",
-    )
+    # 1 thread per worker keeps total threads = PDF_BATCH_WORKERS, within core budget.
+    pdf_options.accelerator_options = AcceleratorOptions(num_threads=1, device="cpu")
 
-    pdf_options.layout_batch_size = _LAYOUT_BATCH_SIZE
-    pdf_options.table_batch_size = _TABLE_BATCH_SIZE
+    # --- Batch sizes: 1 page per call; no internal batching needed.
+    pdf_options.layout_batch_size = 1
+    pdf_options.table_batch_size = 1
+    # Reduce pipeline-stage polling latency (default 0.5 s) for short pages.
     pdf_options.batch_polling_interval_seconds = 0.1
-    pdf_options.queue_max_size = _PIPELINE_QUEUE_MAX_SIZE
 
     # IMPORTANT: no trailing comma here. A trailing comma would create a tuple.
     pdf_options.table_structure_options = TableStructureOptions(
@@ -114,6 +128,17 @@ def build_pdf_converter() -> DocumentConverter:
             )
         }
     )
+
+
+# Per-worker converter. Populated once by _init_worker() so ML models are loaded
+# once per process rather than once per page.
+_converter: DocumentConverter | None = None
+
+
+def _init_worker() -> None:
+    """Load the DocumentConverter exactly once per worker process."""
+    global _converter
+    _converter = build_pdf_converter()
 
 
 def convert_docx(input_path: Path, output_file: Path) -> None:
@@ -151,6 +176,55 @@ def convert_docx(input_path: Path, output_file: Path) -> None:
     print(f"Total:               {t4 - t0:.2f}s")
 
 
+def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int, float, str | None]:
+    """
+    Parse one page-range batch in a separate process.
+    Reuses the per-process converter loaded by _init_worker().
+
+    Returns:
+        start_page, end_page, status, markdown, markdown_length, elapsed_seconds, error
+    """
+    global _converter
+    input_file, start_page, end_page = args
+    chunk_start = perf_counter()
+
+    try:
+        if _converter is None:
+            _converter = build_pdf_converter()
+        result = _converter.convert(
+            input_file,
+            page_range=(start_page, end_page),
+        )
+
+        status = str(getattr(result, "status", "unknown"))
+
+        if getattr(result, "document", None) is None:
+            error_message = getattr(result, "errors", None) or "No document returned"
+            raise RuntimeError(error_message)
+
+        chunk_parts: list[str] = []
+        md_len = 0
+        for page_no in range(start_page, end_page + 1):
+            chunk_parts.append(f"\n\n---\n\n# PDF Page {page_no}\n\n---\n\n")
+            page_md = result.document.export_to_markdown(page_no=page_no)
+            if page_no < TOC_CLEANUP_MAX_PAGE:
+                page_md = cleanup_toc_tables(page_md)
+            chunk_parts.append(page_md)
+            md_len += len(page_md)
+
+        md = "".join(chunk_parts)
+        elapsed = perf_counter() - chunk_start
+        return start_page, end_page, status, md, md_len, elapsed, None
+
+    except Exception as e:
+        elapsed = perf_counter() - chunk_start
+        return start_page, end_page, "failed", "", 0, elapsed, str(e)
+
+    finally:
+        if PDF_BATCH_PAGES > 1:
+            gc.collect()
+
+
 def convert_pdf(
     input_path: Path,
     output_file: Path,
@@ -159,86 +233,92 @@ def convert_pdf(
     total_pages = len(reader.pages)
 
     print(f"Detected {total_pages} pages")
-    print(f"Page chunk size: {PDF_PAGE_CHUNK_SIZE}")
-    print(f"Inference threads: {_INFERENCE_THREADS}")
-    print(f"Pipeline queue max: {_PIPELINE_QUEUE_MAX_SIZE}")
-    print(f"Layout batch size: {_LAYOUT_BATCH_SIZE}")
-    print(f"Table batch size: {_TABLE_BATCH_SIZE}")
+    print(f"PDF batch pages: {PDF_BATCH_PAGES}")
+    print(f"PDF batch workers: {PDF_BATCH_WORKERS}")
+    print(f"Docling perf settings: {settings.perf}")
 
-    chunks: list[tuple[int, int]] = []
-    for start_page in range(1, total_pages + 1, PDF_PAGE_CHUNK_SIZE):
-        end_page = min(start_page + PDF_PAGE_CHUNK_SIZE - 1, total_pages)
-        chunks.append((start_page, end_page))
+    chunks: list[tuple[str, int, int]] = []
+    for start_page in range(1, total_pages + 1, PDF_BATCH_PAGES):
+        end_page = min(start_page + PDF_BATCH_PAGES - 1, total_pages)
+        chunks.append((str(input_path), start_page, end_page))
 
+    active_workers = min(PDF_BATCH_WORKERS, len(chunks))
     print(f"Chunks scheduled: {len(chunks)}")
+    print(f"Active workers: {active_workers}")
 
     t0 = perf_counter()
+    completed_results = []
 
-    converter = build_pdf_converter()
-    t1 = perf_counter()
+    # Use processes, not threads, so each batch has isolated Docling state.
+    # _init_worker loads the converter once per worker; chunks reuse it.
+    # On Windows, this must run under if __name__ == "__main__".
+    with ProcessPoolExecutor(max_workers=active_workers, initializer=_init_worker) as executor:
+        future_to_chunk = {
+            executor.submit(parse_pdf_chunk, chunk): chunk
+            for chunk in chunks
+        }
+
+        for future in as_completed(future_to_chunk):
+            _, start_page, end_page = future_to_chunk[future]
+            try:
+                result = future.result()
+            except Exception as e:
+                # This catches executor-level failures, not normal conversion failures.
+                result = (
+                    start_page,
+                    end_page,
+                    "failed",
+                    "",
+                    0,
+                    0.0,
+                    f"Executor failure: {e}",
+                )
+
+            completed_results.append(result)
+
+            r_start, r_end, status, _md, md_len, elapsed, error = result
+            if error:
+                print(f"FAILED pages {r_start}-{r_end}: {error}")
+            else:
+                print(
+                    f"Completed pages {r_start}-{r_end}: status={status}, "
+                    f"markdown={md_len:,} chars, time={elapsed:.2f}s"
+                )
+
+    # as_completed returns chunks out of order, so sort before writing Markdown.
+    completed_results.sort(key=lambda item: item[0])
 
     all_markdown: list[str] = []
     total_markdown_chars = 0
+    had_failure = False
 
-    for start_page, end_page in chunks:
-        chunk_label = f"pages {start_page}-{end_page}"
-        chunk_start = perf_counter()
-
-        try:
-            result = converter.convert(
-                str(input_path),
-                page_range=(start_page, end_page),
-            )
-        except Exception as exc:
-            print(f"FAILED {chunk_label}: {exc}", file=sys.stderr)
-            sys.exit(1)
-
-        chunk_elapsed = perf_counter() - chunk_start
-        status = str(getattr(result, "status", "unknown"))
-
-        if getattr(result, "document", None) is None:
-            error_message = getattr(result, "errors", None) or "No document returned"
-            print(f"FAILED {chunk_label}: {error_message}", file=sys.stderr)
-            sys.exit(1)
-
-        chunk_md_chars = 0
-        for page_no in range(start_page, end_page + 1):
+    for start_page, end_page, _status, md, md_len, _elapsed, error in completed_results:
+        if error:
+            had_failure = True
             all_markdown.append(
-                f"\n\n---\n\n# PDF Page {page_no}\n\n---\n\n"
+                f"FAILED TO PROCESS PAGES {start_page}-{end_page}: {error}\n\n"
             )
-            page_md = result.document.export_to_markdown(page_no=page_no)
-            if page_no < TOC_CLEANUP_MAX_PAGE:
-                page_md = cleanup_toc_tables(page_md)
-            all_markdown.append(page_md)
-            chunk_md_chars += len(page_md)
+        else:
+            all_markdown.append(md)
+            total_markdown_chars += md_len
 
-        total_markdown_chars += chunk_md_chars
+    if had_failure:
+        print("One or more page batches failed.", file=sys.stderr)
+        sys.exit(1)
 
-        print(
-            f"Completed {chunk_label}: status={status}, "
-            f"markdown={chunk_md_chars:,} chars, time={chunk_elapsed:.2f}s"
-        )
-
-        if result.errors:
-            for err in result.errors:
-                print(f"  warning: {err.error_message}")
-
-        gc.collect()
+    write_start = perf_counter()
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(clean_markdown("".join(all_markdown)))
+    write_end = perf_counter()
 
     t2 = perf_counter()
 
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(clean_markdown("".join(all_markdown)))
-    t3 = perf_counter()
-
-    print(f"\nMarkdown characters: {total_markdown_chars:,}")
-
     print("\n=== Timing ===")
-    print(f"Converter init:      {t1 - t0:.2f}s")
-    print(f"Document convert:    {t2 - t1:.2f}s")
-    print(f"File write:          {t3 - t2:.2f}s")
-    print(f"Total:               {t3 - t0:.2f}s")
-    print(f"Chunks attempted:    {len(chunks)}")
+    print(f"Parallel processing:  {write_start - t0:.2f}s")
+    print(f"File write:           {write_end - write_start:.2f}s")
+    print(f"Total:                {t2 - t0:.2f}s")
+    print(f"Chunks attempted:     {len(chunks)}")
+    print(f"Markdown characters:  {total_markdown_chars:,}")
 
 
 def parse_args():

@@ -207,7 +207,7 @@ public class DoclingFallbackMarkdownGenerator
                 LOGGER.error("Docling output file not found for '{}': {}", fileName, outputFile.getAbsolutePath());
                 return "";
             }
-            return MarkdownCleanup.clean(Files.readString(outputFile.toPath(), StandardCharsets.UTF_8));
+            return Files.readString(outputFile.toPath(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             LOGGER.error("Failed to read Docling output file for '{}': {}", fileName, e.getMessage());
             return "";
