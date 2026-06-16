@@ -51,16 +51,26 @@ from toc_cleanup import TOC_CLEANUP_MAX_PAGE, cleanup_toc_tables
 PDF_BATCH_PAGES = 4 # 1,2,4 page per call; no internal batching needed.
 
 _cpu_count = os.cpu_count() or 4
-# Each worker holds the full Docling model stack in memory (~1.5 GB) and uses
-# exactly 1 inference thread, so worker count == cores used == pages in flight.
-# Cap by RAM so we don't OOM on memory-constrained machines.
-try:
-    import psutil as _psutil
-    _ram_gb = _psutil.virtual_memory().total / (1024 ** 3)
-    _max_by_ram = max(2, int(_ram_gb // 1.5))
-except ImportError:
-    _max_by_ram = _cpu_count  # no psutil: trust CPU heuristic alone
-PDF_BATCH_WORKERS = min(_cpu_count, _max_by_ram)
+# Each worker holds the full Docling model stack plus preprocess buffers (~3 GB).
+_GB_PER_WORKER = 3.0
+
+
+def default_pdf_workers() -> int:
+    """Cap workers by free RAM so parallel model loads don't trigger std::bad_alloc."""
+    try:
+        import psutil as _psutil
+
+        mem = _psutil.virtual_memory()
+        # Use available RAM (not total): many cores + 34 GB total can still OOM when
+        # only ~16 GB is free and every worker loads the full model stack at once.
+        usable_gb = mem.available / (1024 ** 3) * 0.75
+        max_by_ram = max(1, int(usable_gb // _GB_PER_WORKER))
+    except ImportError:
+        max_by_ram = max(1, _cpu_count // 4)  # no psutil: stay conservative
+    return min(_cpu_count, max_by_ram)
+
+
+PDF_BATCH_WORKERS = default_pdf_workers()
 
 # These environment variables are most useful when set before Python starts,
 # but keeping defaults here is convenient for local runs.
@@ -221,28 +231,32 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
         return start_page, end_page, "failed", "", 0, elapsed, str(e)
 
     finally:
-        if PDF_BATCH_PAGES > 1:
+        if end_page > start_page:
             gc.collect()
 
 
 def convert_pdf(
     input_path: Path,
     output_file: Path,
+    *,
+    batch_pages: int = PDF_BATCH_PAGES,
+    workers: int | None = None,
 ) -> None:
     reader = PdfReader(str(input_path))
     total_pages = len(reader.pages)
+    worker_count = workers if workers is not None else PDF_BATCH_WORKERS
 
     print(f"Detected {total_pages} pages")
-    print(f"PDF batch pages: {PDF_BATCH_PAGES}")
-    print(f"PDF batch workers: {PDF_BATCH_WORKERS}")
+    print(f"PDF batch pages: {batch_pages}")
+    print(f"PDF batch workers: {worker_count}")
     print(f"Docling perf settings: {settings.perf}")
 
     chunks: list[tuple[str, int, int]] = []
-    for start_page in range(1, total_pages + 1, PDF_BATCH_PAGES):
-        end_page = min(start_page + PDF_BATCH_PAGES - 1, total_pages)
+    for start_page in range(1, total_pages + 1, batch_pages):
+        end_page = min(start_page + batch_pages - 1, total_pages)
         chunks.append((str(input_path), start_page, end_page))
 
-    active_workers = min(PDF_BATCH_WORKERS, len(chunks))
+    active_workers = min(worker_count, len(chunks))
     print(f"Chunks scheduled: {len(chunks)}")
     print(f"Active workers: {active_workers}")
 
@@ -326,6 +340,23 @@ def parse_args():
         description="Convert PDF or DOCX files to Markdown using Docling."
     )
     parser.add_argument("input_file", help="Path to a .pdf or .docx file")
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=None,
+        metavar="N",
+        help=(
+            f"parallel PDF worker processes (default: {PDF_BATCH_WORKERS}, "
+            f"derived from available RAM / {_GB_PER_WORKER:.0f} GB per worker)"
+        ),
+    )
+    parser.add_argument(
+        "--batch-pages",
+        type=int,
+        default=PDF_BATCH_PAGES,
+        metavar="N",
+        help=f"pages per worker batch (default: {PDF_BATCH_PAGES})",
+    )
     return parser.parse_args()
 
 
@@ -347,9 +378,17 @@ def main() -> None:
     output_file = input_path.with_suffix(".md")
 
     if suffix == ".pdf":
+        if args.batch_pages < 1:
+            print("--batch-pages must be at least 1")
+            sys.exit(1)
+        if args.workers is not None and args.workers < 1:
+            print("--workers must be at least 1")
+            sys.exit(1)
         convert_pdf(
             input_path,
             output_file,
+            batch_pages=args.batch_pages,
+            workers=args.workers,
         )
     elif suffix == ".docx":
         convert_docx(input_path, output_file)
