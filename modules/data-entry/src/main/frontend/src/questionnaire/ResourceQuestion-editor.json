@@ -6,7 +6,6 @@
       "user": {
         "minAnswers": "long",
         "maxAnswers": "long",
-        "defaultValue": "string",
         "displayMode": {
           "input": {
             "propertiesToSearch": "string",
@@ -22,7 +21,8 @@
             "compact": "boolean",
             "answerOptions": "textOptions"
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {

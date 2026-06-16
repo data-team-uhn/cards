@@ -2,7 +2,6 @@
   "selectableArea": {
     "minAnswers": {"0":{}, "1":{}},
     "maxAnswers": "long",
-    "defaultValue": "string",
     "variant": {
       "type": "list",
       "primaryType": "cards:SelectableAreaVariant",
@@ -16,6 +15,7 @@
       "type": "textOptions",
       "childrenType": "cards:AnswerOption"
     },
+    "defaultValue": "string",
     "unselectedColor": "string",
     "selectedColor": "string",
     "hoverColor": "string",

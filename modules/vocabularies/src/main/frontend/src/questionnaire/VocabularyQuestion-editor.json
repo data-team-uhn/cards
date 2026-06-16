@@ -13,7 +13,6 @@
       "user": {
         "minAnswers": "long",
         "maxAnswers": "long",
-        "defaultValue": "string",
         "displayMode": {
           "input": {
             "enableVocabularyBrowser" : "boolean",
@@ -41,7 +40,8 @@
               "childrenType": "cards:AnswerOption"
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {"0":{}, "1":{}},

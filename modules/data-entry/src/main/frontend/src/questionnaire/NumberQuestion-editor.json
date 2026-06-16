@@ -8,7 +8,6 @@
         "disableNegativeInput": "boolean",
         "minValue": "double",
         "maxValue": "double",
-        "defaultValue": "string",
         "disableMinMaxValueEnforcement": "boolean",
         "messageForValuesOutsideMinMax": "markdown",
         "displayMode": {
@@ -46,7 +45,8 @@
               "vertical": {}
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {
@@ -86,7 +86,6 @@
         "disableNegativeInput": "boolean",
         "minValue": "double",
         "maxValue": "double",
-        "defaultValue": "string",
         "disableMinMaxValueEnforcement": "boolean",
         "messageForValuesOutsideMinMax": "markdown",
         "displayMode": {
@@ -126,7 +125,8 @@
               "vertical": {}
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {
@@ -166,7 +166,6 @@
         "disableNegativeInput": "boolean",
         "minValue": "double",
         "maxValue": "double",
-        "defaultValue": "string",
         "disableMinMaxValueEnforcement": "boolean",
         "messageForValuesOutsideMinMax": "markdown",
         "displayMode": {
@@ -185,7 +184,8 @@
               "vertical": {}
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {

@@ -4,7 +4,6 @@
       "user": {
         "minAnswers": "long",
         "maxAnswers": "long",
-        "defaultValue": "string",
         "validationRegexp": "string",
         "validationErrorText": "markdown",
         "liveValidation": "boolean",
@@ -32,7 +31,8 @@
               "childrenType": "cards:AnswerOption"
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {

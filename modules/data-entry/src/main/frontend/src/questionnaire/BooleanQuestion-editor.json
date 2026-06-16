@@ -3,7 +3,6 @@
     "minAnswers": {"0":{}, "1":{}},
     "yesLabel": "string",
     "noLabel": "string",
-    "defaultValue": "string",
     "enableUnknown": {
       "true" : {
         "unknownLabel": "string"
@@ -11,6 +10,7 @@
       "false" : {}
     },
     "compact" : "boolean",
+    "defaultValue": "string",
     "entryMode": {
       "user": {
       },
