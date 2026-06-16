@@ -108,6 +108,19 @@ let QuestionMatrix = (props) => {
   const naOption = Object.values(sectionDefinition).find((value) => value['notApplicable'])?.["value"];
   const noneOption = Object.values(sectionDefinition).find((value) => value['noneOfTheAbove'])?.["value"];
 
+  // Determine the default selection for a matrix question from a defaultValue specified either on the
+  // question entry itself (cards:QuestionMatrixEntry) or, across the board, on the parent section
+  // (cards:Section). The entry-level value overrides the section-wide one. The value must match one of
+  // the answer options to be applied; a value that doesn't match any option is discarded.
+  let getDefaultValueSelection = (subquestionDefinition) => {
+    let defaultValue = subquestionDefinition.defaultValue || sectionDefinition.defaultValue;
+    if (!defaultValue) {
+      return null;
+    }
+    let option = defaults.find(item => String(item[VALUE_POS]) === String(defaultValue));
+    return option ? [[option[LABEL_POS], option[VALUE_POS]]] : null;
+  };
+
   let initialSelection = {};
   existingAnswers?.filter(answer => answer[1]["displayedValue"])
     // The value can either be a single value or an array of values; force it into an array
@@ -115,15 +128,18 @@ let QuestionMatrix = (props) => {
       .map( (item, index) => [Array.of(answer[1].displayedValue).flat()[index], item] );
     });
 
-  // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
-  // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
+  // When opening a form with no existing answers, pre-select default answers so they get saved unless
+  // modified by the user. Per question, a defaultValue (on the entry or the section) takes precedence;
+  // otherwise we fall back to the answer options flagged as default values.
   if (!existingAnswers) {
-    let defaultSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
+    let optionDefaultSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
     // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
       .slice(0, maxAnswers || defaults.length)
       .map(item => [item[LABEL_POS], item[VALUE_POS]]);
 
-    subquestions.map(subquestion => { initialSelection[subquestion[0]] = defaultSelection; });
+    subquestions.map(subquestion => {
+      initialSelection[subquestion[0]] = getDefaultValueSelection(subquestion[1]) || optionDefaultSelection;
+    });
   }
 
   // Stores the current matrix answer state in a form of object where question variable id corresponds to the array of selected
