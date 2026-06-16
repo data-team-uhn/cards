@@ -48,7 +48,7 @@ from docling.document_converter import (
 from markdown_cleanup import clean_markdown
 from toc_cleanup import TOC_CLEANUP_MAX_PAGE, cleanup_toc_tables
 
-PDF_BATCH_PAGES = 2 # 1,2,4 page per call; no internal batching needed.
+PDF_BATCH_PAGES = 4 # 1,2,4 page per call; no internal batching needed.
 
 _cpu_count = os.cpu_count() or 4
 # Each worker holds the full Docling model stack in memory (~1.5 GB) and uses
