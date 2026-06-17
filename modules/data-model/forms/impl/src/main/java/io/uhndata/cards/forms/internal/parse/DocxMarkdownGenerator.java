@@ -498,7 +498,7 @@ public class DocxMarkdownGenerator
         if (state.tabularBuffer.isEmpty()) {
             return;
         }
-        List<String[]> rows = state.tabularBuffer.getRows();
+        final List<String[]> rows = new ArrayList<>(state.tabularBuffer.getRows());
         state.tabularBuffer.clear();
         if (this.looksLikeTabularTable(rows)) {
             String tableMarkdown = this.buildMarkdownTable(rows);

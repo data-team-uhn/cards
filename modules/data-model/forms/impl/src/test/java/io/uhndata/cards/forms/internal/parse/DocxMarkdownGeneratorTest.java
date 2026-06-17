@@ -99,6 +99,25 @@ public class DocxMarkdownGeneratorTest
         Assert.assertTrue(markdown.contains("<!-- source_file: my—report.docx -->"));
     }
 
+    @Test
+    public void testTabSeparatedTableOfContentsEntriesArePreserved() throws IOException
+    {
+        final String markdown = this.generator.toMarkdown(docxWithTabSeparatedToc(), "toc.docx");
+        Assert.assertTrue(markdown.contains("TABLE OF CONTENTS"));
+        Assert.assertTrue(markdown.contains("Introduction"));
+        Assert.assertTrue(markdown.contains("Methods"));
+        Assert.assertTrue(markdown.contains("|"));
+    }
+
+    @Test
+    public void testDotLeaderTableOfContentsEntriesArePreserved() throws IOException
+    {
+        final String markdown = this.generator.toMarkdown(docxWithDotLeaderToc(), "toc.docx");
+        Assert.assertTrue(markdown.contains("TABLE OF CONTENTS"));
+        Assert.assertTrue(markdown.contains("Introduction"));
+        Assert.assertTrue(markdown.contains("12"));
+    }
+
     private static ByteArrayInputStream docxWithText(final String text) throws IOException
     {
         try (XWPFDocument doc = new XWPFDocument()) {
@@ -152,6 +171,45 @@ public class DocxMarkdownGeneratorTest
             table.getRow(1).getCell(1).setText("Cell 2");
             return toStream(doc);
         }
+    }
+
+    private static ByteArrayInputStream docxWithTabSeparatedToc() throws IOException
+    {
+        try (XWPFDocument doc = new XWPFDocument()) {
+            doc.createParagraph().createRun().setText("Title Page");
+            doc.createParagraph().createRun().setText("TABLE OF CONTENTS");
+            addTabSeparatedEntry(doc, "Introduction", "1");
+            addTabSeparatedEntry(doc, "Methods", "5");
+            addTabSeparatedEntry(doc, "Results", "12");
+            doc.createParagraph().createRun().setText("1 INTRODUCTION");
+            doc.createParagraph().createRun().setText(
+                "This is the introduction with enough content to be meaningful in the parsed output.");
+            return toStream(doc);
+        }
+    }
+
+    private static ByteArrayInputStream docxWithDotLeaderToc() throws IOException
+    {
+        try (XWPFDocument doc = new XWPFDocument()) {
+            doc.createParagraph().createRun().setText("Title Page");
+            doc.createParagraph().createRun().setText("TABLE OF CONTENTS");
+            doc.createParagraph().createRun().setText("Introduction .................... 1");
+            doc.createParagraph().createRun().setText("Methods .................... 5");
+            doc.createParagraph().createRun().setText("Results .................... 12");
+            doc.createParagraph().createRun().setText("1 INTRODUCTION");
+            doc.createParagraph().createRun().setText(
+                "This is the introduction with enough content to be meaningful in the parsed output.");
+            return toStream(doc);
+        }
+    }
+
+    private static void addTabSeparatedEntry(final XWPFDocument doc, final String title, final String page)
+    {
+        final XWPFParagraph paragraph = doc.createParagraph();
+        final XWPFRun run = paragraph.createRun();
+        run.setText(title);
+        run.addTab();
+        run.setText(page);
     }
 
     private static ByteArrayInputStream toStream(final XWPFDocument doc) throws IOException
