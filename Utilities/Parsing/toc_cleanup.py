@@ -29,7 +29,7 @@ normalized.
 
 When it runs
 ------------
-Called from docling_parser during PDF conversion on pages 1-9 only
+Called from docling_pdf_parser during PDF conversion on pages 1-9 only
 (page_no < TOC_CLEANUP_MAX_PAGE, where TOC_CLEANUP_MAX_PAGE = 10).
 DOCX conversion does not apply TOC cleanup.
 
