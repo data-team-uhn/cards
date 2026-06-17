@@ -19,16 +19,18 @@ package io.uhndata.cards.forms.internal.parse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import io.uhndata.cards.forms.internal.parse.pdf.PdfMarkdownGenerator;
+
 /**
  * Parser for PDF files. Delegates orchestration to {@link SimpleDocumentParser} and supplies
- * {@link DoclingFallbackMarkdownGenerator} as the primary generator, with
+ * {@link DoclingMarkdownGenerator} as the primary generator, with
  * {@link PdfMarkdownGenerator} (PDFBox) as the fallback.
  *
  * @version $Id$
  */
 public class PdfParser extends SimpleDocumentParser
 {
-    private final DoclingFallbackMarkdownGenerator doclingGenerator = new DoclingFallbackMarkdownGenerator();
+    private final DoclingMarkdownGenerator doclingGenerator = new DoclingMarkdownGenerator();
 
     private final PdfMarkdownGenerator pdfBoxGenerator = new PdfMarkdownGenerator();
 

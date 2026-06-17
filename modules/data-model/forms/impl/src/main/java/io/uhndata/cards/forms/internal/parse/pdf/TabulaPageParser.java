@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.forms.internal.parse;
+package io.uhndata.cards.forms.internal.parse.pdf;
 
 import java.util.ArrayList;
 import java.util.Collections;

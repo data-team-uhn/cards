@@ -18,43 +18,35 @@ package io.uhndata.cards.forms.internal.parse;
 
 import java.util.Locale;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Factory returning the appropriate parser for a given file extension.
  * <p>
  * Routing rules:
  * </p>
  * <ul>
- *   <li>PDF, DOCX — primary Java generator with a two-minute timeout and Docling fallback</li>
+ *   <li>PDF — Docling primary with PDFBox fallback; DOCX — Java primary with Docling fallback</li>
  *   <li>DOC — LibreOffice conversion to DOCX, then processed with DocxMarkdownGenerator</li>
- *   <li>any other extension — logs an error and returns {@code null} (file skipped)</li>
+ *   <li>any other extension — returns {@code null} (caller skips the file)</li>
  * </ul>
  *
  * @version $Id$
  */
-public class DocumentParserFactory
+public class FileParserFactory
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentParserFactory.class);
+    private final FileParser pdfParser = new PdfParser();
 
-    private final DocumentParser pdfParser = new PdfParser();
+    private final FileParser docxParser = new DocxParser();
 
-    private final DocumentParser docxParser = new DocxParser();
-
-    private final DocumentParser docParser = new DocParser();
+    private final FileParser docParser = new DocParser();
 
     /**
      * Choose parser by filename extension.
      *
-     * @param fileName the uploaded filename
+     * @param fileName the uploaded filename; must not be {@code null} or blank
      * @return matching parser, or {@code null} if the format is unsupported
      */
-    public DocumentParser getParser(final String fileName)
+    public FileParser getParser(final String fileName)
     {
-        if (fileName == null || fileName.isBlank()) {
-            return null;
-        }
         final String normalizedName = fileName.toLowerCase(Locale.ROOT);
         if (normalizedName.endsWith(".pdf")) {
             return this.pdfParser;
@@ -65,7 +57,6 @@ public class DocumentParserFactory
         if (normalizedName.endsWith(".doc")) {
             return this.docParser;
         }
-        LOGGER.error("Unsupported file format, skipping: '{}'", fileName);
         return null;
     }
 }

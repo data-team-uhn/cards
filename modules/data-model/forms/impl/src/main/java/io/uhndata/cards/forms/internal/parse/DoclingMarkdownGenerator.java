@@ -35,11 +35,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Fallback markdown generator that delegates to the Docling Python script via CLI.
+ * Markdown generator that delegates file parsing to the Docling Python script via CLI.
  * <p>
- * Invoked when the primary Java generators fail, produce empty or insufficient output, or exceed the
- * configured time limit, and for formats not handled by any primary Java generator (DOC, PPTX, XLSX,
- * HTML, CSV). Calls {@code Utilities/Parsing/docling_parser.py} via the configured Python interpreter.
+ * Used as the primary generator for PDF files and as a fallback when other Java generators fail,
+ * produce empty or insufficient output, or exceed the configured time limit. Calls
+ * {@code Utilities/Parsing/docling_parser.py} via the configured Python interpreter.
  * </p>
  * <p>
  * The script path and Python command can be customised via system properties
@@ -49,15 +49,13 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
-public class DoclingFallbackMarkdownGenerator
+public class DoclingMarkdownGenerator
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DoclingFallbackMarkdownGenerator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DoclingMarkdownGenerator.class);
 
     private static final long TIMEOUT_MINUTES = 2L;
 
     private static final long OUTPUT_COLLECT_TIMEOUT_SECONDS = 10L;
-
-    private static final int MIN_CONTENT_CHARS = 50;
 
     private static final String DEFAULT_SCRIPT_NAME = "Utilities/Parsing/docling_parser.py";
 
@@ -77,39 +75,34 @@ public class DoclingFallbackMarkdownGenerator
      */
     public String toMarkdown(final InputStream stream, final String fileName)
     {
-        final byte[] content;
+        final long startTimestamp = System.currentTimeMillis();
+        LOGGER.info("Docling parse request started for '{}'", fileName);
+        String result = "";
         try {
-            content = stream.readAllBytes();
-        } catch (IOException e) {
-            LOGGER.warn("Failed to read document stream for '{}': {}", fileName, e.getMessage());
-            return "";
-        }
-        final String extension = extractExtension(fileName);
-        File tmpFile = null;
-        try {
-            tmpFile = writeToTempFile(content, extension);
-            return runDocling(tmpFile, fileName);
-        } catch (IOException e) {
-            LOGGER.warn("Failed to create temp file for Docling fallback on '{}': {}", fileName, e.getMessage());
-            return "";
+            final byte[] content;
+            try {
+                content = stream.readAllBytes();
+            } catch (IOException e) {
+                LOGGER.warn("Failed to read document stream for '{}': {}", fileName, e.getMessage());
+                return "";
+            }
+            final String extension = extractExtension(fileName);
+            File tmpFile = null;
+            try {
+                tmpFile = writeToTempFile(content, extension);
+                result = runDocling(tmpFile, fileName);
+                return result;
+            } catch (IOException e) {
+                LOGGER.warn("Failed to create temp file for Docling on '{}': {}", fileName, e.getMessage());
+                return "";
+            } finally {
+                deleteSilently(tmpFile);
+            }
         } finally {
-            deleteSilently(tmpFile);
+            final long endTimestamp = System.currentTimeMillis();
+            LOGGER.info("Docling parse response received for '{}' at {} (total {} ms, result {} chars)",
+                fileName, endTimestamp, endTimestamp - startTimestamp, result.length());
         }
-    }
-
-    /**
-     * Determine whether a generated markdown result contains enough content to be considered useful.
-     *
-     * @param result the markdown string to evaluate
-     * @return {@code true} if the result contains at least the minimum required amount of content
-     */
-    static boolean isSufficient(final String result)
-    {
-        if (StringUtils.isBlank(result)) {
-            return false;
-        }
-        final String stripped = result.replaceAll("<!--.*?-->", "").replaceAll("## Page \\d+", "").trim();
-        return stripped.length() >= MIN_CONTENT_CHARS;
     }
 
     private File writeToTempFile(final byte[] content, final String extension)
