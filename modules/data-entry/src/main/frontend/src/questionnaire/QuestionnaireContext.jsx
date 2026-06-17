@@ -16,24 +16,43 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useMemo } from "react";
+
+import { ENTRY_TYPES, EXTLINK_TYPES, QUESTION_TYPES, QUESTIONNAIRE_TYPES } from "./FormEntry";
+import { useInViewTracker } from "./useInViewTracker";
+// For storing structure of questionnaire for reordering
+import { useQuestionnaireTreeContext } from "../questionnaireEditor/QuestionnaireTreeContext";
+import { findTreeEntries } from "../questionnaireEditor/treeQueries";
 
 const DEFAULT_STATE = [];
 
 const QuestionnaireReaderContext = createContext(DEFAULT_STATE);
-const QuestionnaireWriterContext = createContext();
+const QuestionnaireInViewContext = createContext();
 
 /**
- * A context provider for a questionnaire, which contains questions data and a way to set them
+ * A context provider for a questionnaire, exposing the (derived, read-only) list of questions
+ * and an in-view tracker used by the location breadcrumb.
  * @param {Object} props the props to pass onwards to the child, generally its children
  * @returns {Object} a React component with the questionnaire provider
  */
 export function QuestionnaireProvider(props) {
-  const [questions, setQuestions] = useState(DEFAULT_STATE);
+  const treeContext = useQuestionnaireTreeContext();
 
+  const questions = useMemo(() => {
+    return findTreeEntries(treeContext.state.nodes, QUESTION_TYPES);
+  }, [treeContext.state.nodes]);
+
+  const inViewEntries = useMemo(() => {
+    return findTreeEntries(treeContext.state.nodes,
+      ENTRY_TYPES.concat(QUESTIONNAIRE_TYPES).concat(EXTLINK_TYPES)
+    )
+  }, [treeContext.state.nodes]);
+
+  // Use useInViewTracker for breadcrumb
+  const inViewTracker = useInViewTracker(inViewEntries);
   return (
     <QuestionnaireReaderContext.Provider value={questions}>
-      <QuestionnaireWriterContext.Provider value={setQuestions} {...props}/>
+      <QuestionnaireInViewContext.Provider value={inViewTracker} {...props}/>
     </QuestionnaireReaderContext.Provider>
   );
 }
@@ -54,15 +73,13 @@ export function useQuestionnaireReaderContext() {
 }
 
 /**
- * Obtain a writer to the context of the parent questionnaire.
- * @returns {Object} a React context of values from the parent questionnaire
- * @throws an error if it is not within a QuestionnaireProvider
+ * Obtain the inView state of the parent questionnaire
  */
-export function useQuestionnaireWriterContext() {
-  const context = useContext(QuestionnaireWriterContext);
+export function useQuestionnaireInViewContext() {
+  const context = useContext(QuestionnaireInViewContext);
 
   if (context == undefined) {
-    throw new Error("useQuestionnaireWriterContext must be used within a QuestionnaireProvider")
+    throw new Error("useQuestionnaireInViewContext must be used within a QuestionnaireProvider")
   }
 
   return context;

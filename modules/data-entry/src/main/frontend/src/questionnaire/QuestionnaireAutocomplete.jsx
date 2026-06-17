@@ -25,6 +25,7 @@ import {
   FormControl,
   Icon,
   IconButton,
+  InputAdornment,
   List,
   ListItem,
   ListItemAvatar,
@@ -72,6 +73,9 @@ let entitySpecs = {
   Section: {
     icon: "view_stream",
     color: orange[800]
+  },
+  Questionnaire: {
+    icon: "assignment",
   }
 }
 
@@ -83,7 +87,7 @@ let entitySpecs = {
 // * entities: an array of objects describing questionnaire entries; the object shape is expected to be:
 //   { uuid: string, name: string, text: string, path: string, relativePath: string }
 // * selection: an array of strings representing the values of the selected option (according to getOptionValue)
-// * onValueChanged: handler for when selection changes; passed to the Autocomplete component's `onChange` handler
+// * onSelectionChanged: handler for when selection changes; passed to the Autocomplete component's `onChange` handler
 // * getOptionValue: a function that takes an option and retrieves its value; defaults to (option) => option.path
 // Any other props are passed directly to the Autocomplete component.
 
@@ -95,6 +99,7 @@ function QuestionnaireAutocomplete(props) {
     multiple = false,
     entities,
     selection = [],
+    showSelection = true,
     onSelectionChanged = () => {},
     getOptionValue = DEFAULT_GET_OPTION_VALUE,
     placeholderText = 'Select an option',
@@ -119,13 +124,13 @@ function QuestionnaireAutocomplete(props) {
       <ListItemAvatar>
         <Tooltip title={type}>
           <Avatar
-            style={{ color: entitySpecs[type].color, backgroundColor: selected ? "transparent" : undefined }}
+            style={{ color: entitySpecs[type]?.color, backgroundColor: selected ? "transparent" : undefined }}
             className={classes.avatar}
           >
             { selected ?
               <Icon>check_box</Icon>
               :
-              entitySpecs[type].icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0)
+              entitySpecs[type]?.icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0)
             }
           </Avatar>
         </Tooltip>
@@ -167,7 +172,7 @@ function QuestionnaireAutocomplete(props) {
           onSelectionChanged(multiple ? value?.map(item => getOptionValue(item)) : [getOptionValue(value)]);
         }}
         renderTags={() => null}
-        getOptionLabel={(option) => option?.name}
+        getOptionLabel={(option) => option?.name ?? ''}
         options={entities || []}
         renderOption={({ key: propKey, ...rest } = {}, option) =>
           <ListItemButton
@@ -185,13 +190,22 @@ function QuestionnaireAutocomplete(props) {
             variant="standard"
             placeholder={placeholderText}
             {...params}
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                startAdornment: !showSelection && !multiple && !!selection.length &&
+                  <InputAdornment position="start">
+                    { getAvatar(entities.find(v => selection.includes(getOptionValue(v)))?.type) }
+                  </InputAdornment>,
+              } }
+            }
           />
         }
         {...rest}
       />
     </FormControl>
     {/* List the entered values */}
-    <List dense className={classes.selectionList}>
+    { showSelection && <List dense className={classes.selectionList}>
       { entities?.filter(v => selection.includes(getOptionValue(v))).map((value, index) =>
         <Fragment key={`selection-list-item-${index}`}>
           { !!index && <Divider key={`divider-${index}`} variant="inset" component="li" /> }
@@ -210,7 +224,7 @@ function QuestionnaireAutocomplete(props) {
           </ListItem>
         </Fragment>
       )}
-    </List>
+    </List> }
   </>);
 }
 
@@ -218,8 +232,10 @@ QuestionnaireAutocomplete.propTypes = {
   multiple: PropTypes.bool,
   entities: PropTypes.array.isRequired,
   selection: PropTypes.array,
+  showSelection: PropTypes.bool,
   onSelectionChanged: PropTypes.func,
   getOptionValue: PropTypes.func,
+  placeholderText: PropTypes.string,
 }
 
 export default QuestionnaireAutocomplete;

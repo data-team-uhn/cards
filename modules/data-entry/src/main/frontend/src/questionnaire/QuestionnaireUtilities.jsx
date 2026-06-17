@@ -66,3 +66,16 @@ export function findQuestionnaireEntries(
   }
   return result;
 }
+
+// Formats a 0-based child index into a 1-based ordinal string (0 -> "1st", 1 -> "2nd", ...).
+// Returns null for a negative index, used by the reorder UIs for not-found / no-position cases.
+export function getOrdinalString(number) {
+  if (number < 0) return null; // Ensure the number is positive or zero
+
+  number += 1; // Offset the number by 1
+
+  const suffixes = ["th", "st", "nd", "rd"];
+  const value = number % 100;
+
+  return number + (suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]);
+}

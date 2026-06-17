@@ -50,6 +50,9 @@ import QuestionMatrix from "./QuestionMatrix";
 import Section from "./Section";
 /* eslint-enable import/order */
 
+export const QUESTIONNAIRE_TYPES = ["cards:Questionnaire"];
+export const CONDITIONAL_TYPES = ["cards:Conditional", "cards:ConditionalGroup"];
+export const EXTLINK_TYPES = ["cards:ExternalLink"];
 export const QUESTION_TYPES = ["cards:Question"];
 export const SECTION_TYPES = ["cards:Section"];
 export const INFO_TYPES = ["cards:Information"];
