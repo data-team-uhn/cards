@@ -19,7 +19,7 @@
 
 import { useEffect, useState } from "react";
 
-import { Typography } from "@mui/material";
+import { Alert, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -73,6 +73,21 @@ function validateProposalFiles(files) {
   return errors.length > 0 ? errors.join(" ") : undefined;
 }
 
+const PARSE_ERROR_PREFIX = "<!-- parse_error: ";
+
+/**
+ * Extract a user-visible parse error from a persisted proposal note.
+ *
+ * @param {string} note answer note value
+ * @returns {string|null} error message when the note encodes a parse failure
+ */
+function extractParseError(note) {
+  if (!note?.startsWith(PARSE_ERROR_PREFIX)) {
+    return null;
+  }
+  return note.slice(PARSE_ERROR_PREFIX.length).replace(/\s*-->$/, "");
+}
+
 function ProposalNote(props) {
   const {
     answerPath,
@@ -93,24 +108,40 @@ function ProposalNote(props) {
 
   useEffect(() => onChangeNote?.(note), [note, onChangeNote]);
 
+  const parseError = extractParseError(note);
+
   if (!pageActive) {
     return <></>;
   }
 
   if (readonly) {
-    return note ? (
-      <div>
-        <Typography variant="subtitle1">Notes</Typography>
-        <FormattedText>{note}</FormattedText>
-      </div>
-    ) : null;
+    return (
+      <>
+        {parseError && (
+          <Alert severity="error" sx={{ mb: 1 }}>
+            {parseError}
+          </Alert>
+        )}
+        {note && !parseError ? (
+          <div>
+            <Typography variant="subtitle1">Notes</Typography>
+            <FormattedText>{note}</FormattedText>
+          </div>
+        ) : null}
+      </>
+    );
   }
 
   return (
     <>
+      {parseError && (
+        <Alert severity="error" sx={{ mb: 1 }}>
+          {parseError}
+        </Alert>
+      )}
       <Typography variant="subtitle1">Notes</Typography>
       <MarkdownText
-        value={note}
+        value={parseError ? "" : note}
         preview="edit"
         height={260}
         onChange={(newValue) => setNote(newValue || "")}
@@ -118,7 +149,8 @@ function ProposalNote(props) {
       {note
         ? <input type="hidden" name={`${answerPath}/note`} value={note} />
         : <input type="hidden" name={`${answerPath}/note@Delete`} value="0" />}
-      {(!note || note.trim().length === 0) && <Typography variant="caption" color="textSecondary">{placeholder}</Typography>}
+      {(!note || note.trim().length === 0) && !parseError
+        && <Typography variant="caption" color="textSecondary">{placeholder}</Typography>}
     </>
   );
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.forms.internal.parse;
+package io.uhndata.cards.forms.internal.parse.pdf;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +35,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.forms.internal.parse.MarkdownCleanup;
 
 /**
  * Generate markdown output from PDF input. Detects tables from ruling lines drawn in the PDF

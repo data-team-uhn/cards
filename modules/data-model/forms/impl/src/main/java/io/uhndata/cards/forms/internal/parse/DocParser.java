@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * Converts the DOC file to DOCX by invoking LibreOffice in headless mode, then processes the
  * resulting DOCX with {@link DocxMarkdownGenerator}. If the LibreOffice conversion itself fails
  * or times out, the original DOC content is passed directly to
- * {@link DoclingFallbackMarkdownGenerator}.
+ * {@link DoclingMarkdownGenerator}.
  * </p>
  * <p>
  * The LibreOffice executable path can be overridden via the system property
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
-public class DocParser implements DocumentParser
+public class DocParser implements FileParser
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocParser.class);
 

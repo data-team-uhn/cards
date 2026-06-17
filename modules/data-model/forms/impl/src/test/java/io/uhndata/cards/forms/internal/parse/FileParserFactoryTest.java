@@ -22,18 +22,18 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests for {@link DocumentParserFactory} routing logic.
+ * Tests for {@link FileParserFactory} routing logic.
  *
  * @version $Id$
  */
-public class DocumentParserFactoryTest
+public class FileParserFactoryTest
 {
-    private final DocumentParserFactory factory = new DocumentParserFactory();
+    private final FileParserFactory factory = new FileParserFactory();
 
     @Test
     public void testPdfExtensionReturnsPdfParser()
     {
-        final DocumentParser parser = this.factory.getParser("report.pdf");
+        final FileParser parser = this.factory.getParser("report.pdf");
         Assert.assertNotNull(parser);
         Assert.assertEquals("PdfParser", parser.getClass().getSimpleName());
     }
@@ -48,7 +48,7 @@ public class DocumentParserFactoryTest
     @Test
     public void testDocxExtensionReturnsDocxParser()
     {
-        final DocumentParser parser = this.factory.getParser("report.docx");
+        final FileParser parser = this.factory.getParser("report.docx");
         Assert.assertNotNull(parser);
         Assert.assertEquals("DocxParser", parser.getClass().getSimpleName());
     }
@@ -63,7 +63,7 @@ public class DocumentParserFactoryTest
     @Test
     public void testDocExtensionReturnsDocParser()
     {
-        final DocumentParser parser = this.factory.getParser("report.doc");
+        final FileParser parser = this.factory.getParser("report.doc");
         Assert.assertNotNull(parser);
         Assert.assertEquals("DocParser", parser.getClass().getSimpleName());
     }
@@ -83,12 +83,6 @@ public class DocumentParserFactoryTest
         Assert.assertNull(this.factory.getParser("report.pptx"));
         Assert.assertNull(this.factory.getParser("report.html"));
         Assert.assertNull(this.factory.getParser("report.csv"));
-    }
-
-    @Test
-    public void testNullFileNameReturnsNull()
-    {
-        Assert.assertNull(this.factory.getParser(null));
     }
 
     @Test

@@ -23,7 +23,7 @@ import java.io.InputStream;
  *
  * @version $Id$
  */
-public interface DocumentParser
+public interface FileParser
 {
     /**
      * Parse text from the provided stream.
@@ -31,6 +31,7 @@ public interface DocumentParser
      * @param stream the input document stream
      * @param fileName source file name
      * @return parsed markdown content
+     * @throws DocumentParseException when the document stream cannot be read
      */
     String parse(InputStream stream, String fileName);
 }

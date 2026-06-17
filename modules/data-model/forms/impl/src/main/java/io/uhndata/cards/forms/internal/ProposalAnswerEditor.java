@@ -17,6 +17,7 @@
 package io.uhndata.cards.forms.internal;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.forms.internal.parse.DocumentParser;
-import io.uhndata.cards.forms.internal.parse.DocumentParserFactory;
+import io.uhndata.cards.forms.internal.parse.DocumentParseException;
+import io.uhndata.cards.forms.internal.parse.FileParser;
+import io.uhndata.cards.forms.internal.parse.FileParserFactory;
 
 /**
  * Parse uploaded proposal files and place extracted text into answer notes.
@@ -52,7 +54,7 @@ public class ProposalAnswerEditor extends DefaultEditor
 
     private static final long MAX_DOCUMENT_SIZE_BYTES = 50L * 1024L * 1024L;
 
-    private static final DocumentParserFactory PARSER_FACTORY = new DocumentParserFactory();
+    private static final FileParserFactory PARSER_FACTORY = new FileParserFactory();
 
     private final FormUtils formUtils;
 
@@ -118,14 +120,21 @@ public class ProposalAnswerEditor extends DefaultEditor
             return false;
         }
         String note = nodeBuilder.getString("note");
-        return StringUtils.isBlank(note) || note.startsWith("<!-- source_file:");
+        return StringUtils.isBlank(note) || note.startsWith("<!-- source_file:")
+            || DocumentParseException.isParseErrorNote(note);
     }
 
     private List<String> parseProposalFiles(final NodeBuilder answerNode)
     {
         final List<String> parsedContents = new ArrayList<>();
         for (String fileName : answerNode.getChildNodeNames()) {
+            if (fileName == null || fileName.isBlank()) {
+                continue;
+            }
             final NodeBuilder fileNode = answerNode.getChildNode(fileName);
+            if (!NT_FILE.equals(fileNode.getName(JCR_PRIMARY_TYPE))) {
+                continue;
+            }
             final String parsedText = parseFileNode(fileNode, fileName);
             if (StringUtils.isNotBlank(parsedText)) {
                 parsedContents.add(parsedText.trim());
@@ -136,21 +145,24 @@ public class ProposalAnswerEditor extends DefaultEditor
 
     private String parseFileNode(final NodeBuilder fileNode, final String fileName)
     {
-        if (!NT_FILE.equals(fileNode.getName(JCR_PRIMARY_TYPE))) {
-            return null;
-        }
-        final DocumentParser parser = PARSER_FACTORY.getParser(fileName);
+        final FileParser parser = PARSER_FACTORY.getParser(fileName);
         if (parser == null) {
+            LOGGER.error("Unsupported file format, skipping: '{}'", fileName);
             return null;
         }
         final Blob dataBlob = getFileDataBlob(fileNode);
         if (dataBlob == null) {
             return null;
         }
-        return parseBlob(dataBlob, parser, fileName);
+        try {
+            return parseBlob(dataBlob, parser, fileName);
+        } catch (DocumentParseException e) {
+            LOGGER.warn("Failed to parse proposal file '{}': {}", fileName, e.getMessage());
+            return DocumentParseException.toNote(fileName, e.getMessage());
+        }
     }
 
-    private String parseBlob(final Blob dataBlob, final DocumentParser parser, final String fileName)
+    private String parseBlob(final Blob dataBlob, final FileParser parser, final String fileName)
     {
         final long blobLength = dataBlob.length();
         if (blobLength > MAX_DOCUMENT_SIZE_BYTES) {
@@ -160,6 +172,10 @@ public class ProposalAnswerEditor extends DefaultEditor
         try (InputStream stream = dataBlob.getNewStream()) {
             final byte[] content = stream.readNBytes((int) blobLength);
             return parser.parse(new ByteArrayInputStream(content), fileName);
+        } catch (DocumentParseException e) {
+            throw e;
+        } catch (IOException e) {
+            throw new DocumentParseException("Failed to read document stream", e);
         } catch (Exception e) {
             LOGGER.warn("Failed to parse proposal file '{}': {}", fileName, e.getMessage());
             return null;
