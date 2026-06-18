@@ -29,7 +29,7 @@
   },
   "bundles":[
     {
-      "id":"jakarta.mail:jakarta.mail-api:2.0.1",
+      "id":"jakarta.mail:jakarta.mail-api:2.0.2",
       "start-order":"25"
     },
     {
@@ -37,7 +37,7 @@
       "start-order":"25"
     },
     {
-      "id":"com.sun.mail:jakarta.mail:2.0.1",
+      "id":"com.sun.mail:jakarta.mail:2.0.2",
       "start-order":"25"
     },
     {
