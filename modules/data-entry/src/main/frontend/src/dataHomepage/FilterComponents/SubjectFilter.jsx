@@ -49,10 +49,11 @@ const useStyles = makeStyles()(theme => ({
  *
  * @param {object} initial Object containing the initial value and label to place in the subject filter
  * @param {func} onChangeInput Function to call when this filter has chosen a new subject
+ * @param {object} questionDefinition The filter definition; if it contains a typeUuid, only subjects of that type are shown
  */
 const SubjectFilter = (props, ref) => {
   checkPropTypes(SubjectFilter, props);
-  const { initial, onChangeInput } = props;
+  const { initial, onChangeInput, questionDefinition } = props;
   const [ error, setError ] = useState();
   const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
 
@@ -74,7 +75,10 @@ const SubjectFilter = (props, ref) => {
     let url = new URL("/query", window.location.origin);
     let formattedQuery = query?.toLowerCase()?.replace(/\s*\/\s*/g, " / ");
     let safeQuery = escapeJQL(formattedQuery || "");
-    let sqlquery = "SELECT s.* FROM [cards:Subject] as s" + (query.search ? ` WHERE lower(s.'fullIdentifier') LIKE '%25${safeQuery}%25'` : "");
+    let typeFilter = questionDefinition?.typeUuid ? `s.'type' = '${questionDefinition.typeUuid}'` : null;
+    let searchFilter = query.search ? `lower(s.'fullIdentifier') LIKE '%25${safeQuery}%25'` : null;
+    let whereClause = [typeFilter, searchFilter].filter(Boolean).join(" AND ");
+    let sqlquery = "SELECT s.* FROM [cards:Subject] as s" + (whereClause ? ` WHERE ${whereClause}` : "");
     sqlquery += " order by s.'fullIdentifier'";
     url.searchParams.set("query", sqlquery);
     url.searchParams.set("limit", query.pageSize);
@@ -123,7 +127,10 @@ SubjectFilter.propTypes = {
     value: PropTypes.string,
     label: PropTypes.string,
   }),
-  onChangeInput: PropTypes.func
+  onChangeInput: PropTypes.func,
+  questionDefinition: PropTypes.shape({
+    typeUuid: PropTypes.string,
+  }),
 }
 
 export default SubjectFilter;
