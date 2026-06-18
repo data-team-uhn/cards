@@ -37,7 +37,6 @@ import { checkPropTypes } from "../propTypes";
 function TriStateChip(props) {
   checkPropTypes(TriStateChip, props);
   const {
-    key,
     size,
     label,
     defaultTooltip = "Clear",
@@ -45,7 +44,8 @@ function TriStateChip(props) {
     negativeTooltip = "Exclude",
     onSetPositive,
     onSetNegative,
-    onClear
+    onClear,
+    initialState
   } = props;
 
   const [ states, setStates ] = useState([]);
@@ -71,15 +71,14 @@ function TriStateChip(props) {
   }
 
   return MultiStateChip({
-    "key": key,
     "size": size,
     "states": states,
     "onChange": onChange,
+    "initialState": initialState == -1 ? 2 : initialState,
   });
 }
 
 TriStateChip.propTypes = {
-  key: PropTypes.string,
   size: PropTypes.oneOf(["small", "medium"]),
   label: PropTypes.string.isRequired,
   defaultTooltip: PropTypes.string,
@@ -87,7 +86,8 @@ TriStateChip.propTypes = {
   negativeTooltip: PropTypes.string,
   onSetPositive: PropTypes.func,
   onSetNegative: PropTypes.func,
-  onClear: PropTypes.func
+  onClear: PropTypes.func,
+  initialState: PropTypes.number,
 }
 
 export default TriStateChip;
