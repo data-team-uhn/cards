@@ -209,6 +209,7 @@ function FormView(props) {
                 onSetPositive={() => setStatusFlagState(index, 1)}
                 onSetNegative={() => setStatusFlagState(index, -1)}
                 onClear={() => setStatusFlagState(index, 0)}
+                initialState={statusValues[index]}
               />
             })
           }
