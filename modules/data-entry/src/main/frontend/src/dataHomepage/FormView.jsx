@@ -40,6 +40,7 @@ import LiveTable from "./LiveTable.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
 import TriStateChip from "../components/TriStateChip.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { loadExtensions } from "../uiextension/extensionManager";
 
 const useStyles = makeStyles()(theme => ({
   formView: {
@@ -113,18 +114,31 @@ function FormView(props) {
     Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1])
   , [actionSwitches]);
 
-  const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED", "PATIENT SURVEY", "LOCKED" ];
-  const [ statusValues, setStatusValues ] = useState(Array(statuses.length).fill(0));
+  const [ statuses, setStatuses ] = useState([]);
+  const [ statusValues, setStatusValues ] = useState([]);
+
+  useEffect(() => {
+    loadExtensions("FormStatusFlags")
+      .then(extensions => {
+        const flags = extensions.map(e => ({
+          key: e["cards:statusFlagKey"],
+          label: e["cards:statusFlagLabel"],
+        }));
+        setStatuses(flags);
+        setStatusValues(Array(flags.length).fill(0));
+      })
+      .catch(err => console.error("Failed to load status flags", err));
+  }, []);
 
   useEffect(() => {
     let filter = "";
     statusValues.forEach((value, index) => {
       if (value != 0) {
-        filter += `&fieldnames=statusFlags&fieldvalues=${statuses[index]}&fieldcomparators=${value == -1 ? "%3C%3E" : "%3D"}`
+        filter += `&fieldnames=statusFlags&fieldvalues=${statuses[index].key}&fieldcomparators=${value == -1 ? "%3C%3E" : "%3D"}`
       }
     });
     setStatusFilter(filter.length == 0 ? defaultStatusFilter : filter);
-  }, [statusValues])
+  }, [statusValues, statuses])
 
   useEffect (() => {
     // If a questionnaire parameter is specified:
@@ -184,14 +198,14 @@ function FormView(props) {
       <CardContent>
         <div className={classes.formViewChipsContainer}>
           {
-            statuses.map((value, index) => {
+            statuses.map((status, index) => {
               return <TriStateChip
-                key={`${value}-${index}`}
+                key={`${status.key}-${index}`}
                 size="small"
-                label={value}
-                defaultTooltip={`Show or hide ${value.toLowerCase()} forms?`}
-                positiveTooltip={`Showing ${value.toLowerCase()} forms`}
-                negativeTooltip={`Hiding ${value.toLowerCase()} forms`}
+                label={status.label}
+                defaultTooltip={`Show or hide ${status.label.toLowerCase()} forms?`}
+                positiveTooltip={`Showing ${status.label.toLowerCase()} forms`}
+                negativeTooltip={`Hiding ${status.label.toLowerCase()} forms`}
                 onSetPositive={() => setStatusFlagState(index, 1)}
                 onSetNegative={() => setStatusFlagState(index, -1)}
                 onClear={() => setStatusFlagState(index, 0)}

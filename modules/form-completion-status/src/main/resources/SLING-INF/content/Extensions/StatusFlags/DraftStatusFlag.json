@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-entry/status-flags",
+  "cards:extensionName": "Draft Status Flag",
+  "cards:statusFlagKey": "DRAFT",
+  "cards:statusFlagLabel": "Draft",
+  "cards:defaultOrder": 20
+}
