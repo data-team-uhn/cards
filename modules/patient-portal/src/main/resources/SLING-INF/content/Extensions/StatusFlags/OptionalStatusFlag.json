@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-entry/status-flags",
+  "cards:extensionName": "Optional Form Status Flag",
+  "cards:statusFlagKey": "OPTIONAL",
+  "cards:statusFlagLabel": "Optional",
+  "cards:defaultOrder": 45
+}

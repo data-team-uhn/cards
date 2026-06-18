@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-entry/status-flags",
+  "cards:extensionName": "Locked Status Flag",
+  "cards:statusFlagKey": "LOCKED",
+  "cards:statusFlagLabel": "Locked",
+  "cards:defaultOrder": 50
+}
