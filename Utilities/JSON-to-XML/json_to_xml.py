@@ -95,6 +95,9 @@ def save_as_xml(d, node_name="XmlQuestionnaire", indentation_level=0):
 xml_name = JSON_QUESTIONNAIRE
 if (xml_name.endswith('.json')):
     xml_name = xml_name[:-1*len('.json')]
+if ("/" in xml_name):
+    # Only use the base filename, not the path to the file
+    xml_name = xml_name[xml_name.rfind("/") + 1:]
 
 print("""<!--
   Licensed to the Apache Software Foundation (ASF) under one
