@@ -111,12 +111,20 @@
     "@atlaskit/tokens" "^14.0.0"
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/pragmatic-drag-and-drop-hitbox@^1.0.3", "@atlaskit/pragmatic-drag-and-drop-hitbox@^1.1.0":
+"@atlaskit/pragmatic-drag-and-drop-hitbox@^1.1.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop-hitbox/-/pragmatic-drag-and-drop-hitbox-1.2.0.tgz#d0947aac1cab64083bbb8178491a30a703a6cc27"
   integrity sha512-eWJvvuHZOC4Yk+Li7QpS+JM2F/I50/3PhMvEcyvcHbXI0FP0kCDD1MiF8Hv7uSOxpk5JNqKoOmK8e1ncOzTgqA==
   dependencies:
     "@atlaskit/pragmatic-drag-and-drop" "^1.8.0"
+    "@babel/runtime" "^7.0.0"
+
+"@atlaskit/pragmatic-drag-and-drop-hitbox@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop-hitbox/-/pragmatic-drag-and-drop-hitbox-2.0.0.tgz#0e224ff4fa48d427cf3247521d55c2c1654001f8"
+  integrity sha512-vkXCB/23pT8YgYU8biGmR9uu0fr9oWoaq2GMSKyiNPk3reA12XVrCdgB2SLBoB24Ic1FOm9PdaQJ9ZSUQdCVpw==
+  dependencies:
+    "@atlaskit/pragmatic-drag-and-drop" "^2.0.0"
     "@babel/runtime" "^7.0.0"
 
 "@atlaskit/pragmatic-drag-and-drop-react-drop-indicator@3.2.16":
@@ -130,7 +138,7 @@
     "@babel/runtime" "^7.0.0"
     "@compiled/react" "^0.20.0"
 
-"@atlaskit/pragmatic-drag-and-drop@2.0.1":
+"@atlaskit/pragmatic-drag-and-drop@2.0.1", "@atlaskit/pragmatic-drag-and-drop@^2.0.0":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-2.0.1.tgz#efd62720a8710af311a4990f7fbcb4c0f2f37848"
   integrity sha512-5iSbCveKuWYh0HijDxfSsYKD2VE0UPObI9jO1pqq+RBk9LzaoOYeKyW0Fobv/6db8HAPcyT3vhRy8bmk5TMcMw==
