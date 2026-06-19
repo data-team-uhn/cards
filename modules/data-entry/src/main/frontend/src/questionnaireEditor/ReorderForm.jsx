@@ -66,7 +66,8 @@ const reorderReducer = (state, action) => {
       return { ...state, inputs: { ...state.inputs, newParent: action.payload } };
     case 'SET_POSITIONRADIO': {
       const positionRadio = action.payload;
-      const newPosition = positionRadio === 'first' ? 0 : positionRadio === 'last' ? -1 : null;
+      // 'last' is sent verbatim as Sling's :order keyword
+      const newPosition = positionRadio === 'first' ? 0 : positionRadio === 'last' ? 'last' : null;
       return {
         ...state,
         inputs: {

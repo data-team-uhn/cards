@@ -208,10 +208,14 @@ export function QuestionnaireTreeProvider(props) {
         return true;
       },
       isValidNewPosition: (reorderSourceId, newParentId, newPosition) => {
-        // Return error if newPosition is not a valid index
+        // newPosition is either the literal 'last' (Sling :order keyword) or a 0-based index
+        // within the new parent's children.
+        if (newPosition === 'last') {
+          return true;
+        }
         const newParentNode = nodes[newParentId];
         const childrenCount = newParentNode.children.length;
-        if (newPosition < -1 || newPosition > childrenCount) {
+        if (newPosition < 0 || newPosition > childrenCount) {
           return 'Invalid new position.';
         }
         return true;
