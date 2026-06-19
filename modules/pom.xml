@@ -75,5 +75,6 @@
     <module>variants</module>
     <module>locking</module>
     <module>healthcheck</module>
+    <module>chromosome</module>
   </modules>
 </project>

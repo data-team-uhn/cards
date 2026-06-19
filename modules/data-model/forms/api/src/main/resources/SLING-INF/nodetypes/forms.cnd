@@ -665,17 +665,6 @@
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
-// Chromosome answers, stored as strings
-[cards:ChromosomeAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/ChromosomeAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
 // Computed answers, stored as strings
 [cards:ComputedAnswer] > cards:Answer
   - value (string)
