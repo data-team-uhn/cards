@@ -106,6 +106,8 @@ function Filters(props) {
         };
         if (title) {
           option.category = title;
+        } else if (entry.groupBy) {
+          option.category = entry.groupBy;
         }
         newAutoselectOptions.push(option);
       }

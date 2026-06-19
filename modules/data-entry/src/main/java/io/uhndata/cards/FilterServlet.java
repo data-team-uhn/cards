@@ -38,6 +38,7 @@ import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -84,13 +85,14 @@ public class FilterServlet extends SlingJakartaSafeMethodsServlet
         // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
+        ResourceResolver resolver = request.getResourceResolver();
+
         // Generate the metadata filters
         if (includeMetadata) {
-            builder.add("metadataFilters", getMetadataFilters(questionnaire == null));
+            builder.add("metadataFilters", getMetadataFilters(questionnaire == null, resolver));
         }
 
         if (includeQuestions) {
-            ResourceResolver resolver = request.getResourceResolver();
 
             // If a questionnaire is specified, return all fields by the given questionnaire
             // Otherwise, we return all questionnaires under this node that are visible by the user
@@ -111,20 +113,57 @@ public class FilterServlet extends SlingJakartaSafeMethodsServlet
      * Builds the metadata filters associated with questionnaire resources.
      *
      * @param includeQuestionnaireFilter a flag whether filtering by Questionnaire should be enabled
-     * @return a the filters definitions in a JsonArrayBuilder
+     * @param resolver a reference to a ResourceResolver for querying SubjectTypes
+     * @return the filters definitions in a JsonArrayBuilder
      */
-    private JsonArrayBuilder getMetadataFilters(final boolean includeQuestionnaireFilter)
+    private JsonArrayBuilder getMetadataFilters(final boolean includeQuestionnaireFilter,
+        final ResourceResolver resolver)
     {
         JsonArrayBuilder builder = Json.createArrayBuilder();
         if (includeQuestionnaireFilter) {
             builder.add(getMetadataFilter("Questionnaire", "Questionnaire", "questionnaire"));
         }
-        builder.add(getMetadataFilter("Subject", "Subject", "subject"));
         builder.add(getMetadataFilter("Created date", "Created", "datetime"));
         builder.add(getMetadataFilter("Created by", "CreatedBy", "user"));
         builder.add(getMetadataFilter("Last modification date", "LastModified", "datetime"));
         builder.add(getMetadataFilter("Last modified by", "LastModifiedBy", "user"));
+        builder.add(getMetadataFilter("Subject", "Subject", "subject"));
+        // Subject Type Filters needs to be after all the non-grouped options:
+        // If there are non-grouped options between groups, then Autocomplete warns about duplicate headers
+        addSubjectTypeFilters(builder, resolver);
         return builder;
+    }
+
+    /**
+     * Adds one metadata filter per {@code cards:SubjectType} to the provided builder. Each filter targets only
+     * subjects of that specific type, ordered by {@code cards:defaultOrder}.
+     *
+     * @param builder the JsonArrayBuilder to add filters to
+     * @param resolver a reference to a ResourceResolver used to obtain the available Subject Types
+     */
+    private void addSubjectTypeFilters(final JsonArrayBuilder builder, final ResourceResolver resolver)
+    {
+        final String query =
+            "SELECT n.* FROM [cards:SubjectType] as n ORDER BY n.'cards:defaultOrder'";
+        final Iterator<Resource> results = resolver.findResources(query, Query.JCR_SQL2);
+        while (results.hasNext()) {
+            final Resource resource = results.next();
+            final ValueMap properties = resource.getValueMap();
+            final String uuid = properties.get("jcr:uuid", String.class);
+            if (uuid != null) {
+                final String name = resource.getName();
+                final String label = properties.get("label", name);
+                JsonObjectBuilder filterBuilder = Json.createObjectBuilder();
+                filterBuilder.add("@path", "Subject/" + name);
+                filterBuilder.add("jcr:uuid", "cards:Subject");
+                filterBuilder.add("text", label);
+                filterBuilder.add("dataType", "subject");
+                filterBuilder.add("typeUuid", uuid);
+                // Group by a Subject Type header
+                filterBuilder.add("groupBy", "Subject Types");
+                builder.add(filterBuilder);
+            }
+        }
     }
 
     /**
