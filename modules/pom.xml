@@ -76,5 +76,6 @@
     <module>locking</module>
     <module>healthcheck</module>
     <module>chromosome</module>
+    <module>identifier</module>
   </modules>
 </project>

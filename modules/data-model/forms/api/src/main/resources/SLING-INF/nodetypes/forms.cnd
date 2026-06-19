@@ -750,17 +750,6 @@
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
-// Identifier answers, stored as strings
-[cards:IdentifierAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/IdentifierAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
 
 
 // Section object, which can contain multiple other answers and nested subsections.

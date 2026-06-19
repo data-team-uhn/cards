@@ -1,8 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
-  "cards:defaultDisabled": true,
   "cards:defaultOrder": 80,
   "cards:extensionPointId": "cards/form/answerComponent",
   "cards:extensionName": "Identifier Questions",
-  "cards:extensionRenderURL": "asset:cards-dataentry.IdentifierQuestion.js"
+  "cards:extensionRenderURL": "asset:cards-identifier.IdentifierQuestion.js"
 }
