@@ -123,12 +123,14 @@ public class FilterServlet extends SlingJakartaSafeMethodsServlet
         if (includeQuestionnaireFilter) {
             builder.add(getMetadataFilter("Questionnaire", "Questionnaire", "questionnaire"));
         }
-        builder.add(getMetadataFilter("Subject", "Subject", "subject"));
-        addSubjectTypeFilters(builder, resolver);
         builder.add(getMetadataFilter("Created date", "Created", "datetime"));
         builder.add(getMetadataFilter("Created by", "CreatedBy", "user"));
         builder.add(getMetadataFilter("Last modification date", "LastModified", "datetime"));
         builder.add(getMetadataFilter("Last modified by", "LastModifiedBy", "user"));
+        builder.add(getMetadataFilter("Subject", "Subject", "subject"));
+        // Subject Type Filters needs to be after all the non-grouped options:
+        // If there are non-grouped options between groups, then Autocomplete warns about duplicate headers
+        addSubjectTypeFilters(builder, resolver);
         return builder;
     }
 
