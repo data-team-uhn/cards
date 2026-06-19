@@ -22,35 +22,47 @@
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-codec-http:4.1.94.Final",
+      "id":"io.netty:netty-codec-http:4.2.15.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-codec:4.1.94.Final",
+      "id":"io.netty:netty-codec:4.2.15.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-handler:4.1.94.Final",
+      "id":"io.netty:netty-codec-base:4.2.15.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-buffer:4.1.94.Final",
+      "id":"io.netty:netty-codec-compression:4.2.15.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-common:4.1.94.Final",
+      "id":"io.netty:netty-handler:4.2.15.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-transport:4.1.94.Final",
+      "id":"io.netty:netty-buffer:4.2.15.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-transport-native-unix-common:4.1.94.Final",
+      "id":"io.netty:netty-common:4.2.15.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-resolver:4.1.94.Final",
+      "id":"io.netty:netty-transport:4.2.15.Final",
+      "start-order":"25"
+    },
+    {
+      "id":"io.netty:netty-transport-native-unix-common:4.2.15.Final",
+      "start-order":"25"
+    },
+    {
+      "id":"io.netty:netty-resolver:4.2.15.Final",
+      "start-order":"25"
+    },
+    {
+      "id":"io.netty:netty-tcnative-classes:2.0.79.Final",
       "start-order":"25"
     },
     {
@@ -59,10 +71,6 @@
     },
     {
       "id":"joda-time:joda-time:2.14.0",
-      "start-order":"25"
-    },
-    {
-      "id":"io.netty:netty-tcnative-classes:2.0.61.Final",
       "start-order":"25"
     },
     {
