@@ -32,6 +32,11 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+      </plugin>
+
       <!-- This is an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -40,6 +45,11 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
+            <Sling-Nodetypes>SLING-INF/nodetypes/pedigree.cnd</Sling-Nodetypes>
+            <!-- Initial content to be loaded on bundle installation -->
+            <Sling-Initial-Content>
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

@@ -639,21 +639,6 @@
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
-// Pedigree, stored mainly as a JSON representation, but also as a cached SVG image
-[cards:PedigreeAnswer] > cards:Answer
-  // The pedigree data is stored here, as a JSON
-  - value (string)
-
-  // The pedigree image is stored here, as a SVG file
-  - image (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/PedigreeAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
 // Computed answers, stored as strings
 [cards:ComputedAnswer] > cards:Answer
   - value (string)
