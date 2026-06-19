@@ -344,6 +344,12 @@ export default function ReorderForm(props) {
               && isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, { type: 'first' }));
             const lastIsNoOp = canEvaluate
               && isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, { type: 'last' }));
+            // "After..." is only useful if some reference position yields a real move. Within the
+            // same parent every "after" slot can be a no-op (e.g. moving the last of two children:
+            // "after the first" is its current spot, "after itself" is excluded), so disable it
+            // when no offered position would actually move the source.
+            const afterHasViableTarget = canEvaluate && getEntryChildIds(nodes, newParent).some(refId =>
+              !isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, { type: 'after', refId })));
             return (
               [ { value: 'first', label: 'First' },
                 { value: 'other', label: 'After...' },
@@ -359,7 +365,8 @@ export default function ReorderForm(props) {
                     // effect auto-selects) enabled and disable After.../Last.
                     (newParentHasNoEntryChildren && value !== 'first'),
                     (value === 'first' && firstIsNoOp),
-                    (value === 'last' && lastIsNoOp)
+                    (value === 'last' && lastIsNoOp),
+                    (value === 'other' && !afterHasViableTarget)
                   ].includes(true)}
                   control={<Radio />}
                 />
