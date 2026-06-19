@@ -39,6 +39,8 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
+            <!-- Base label processors that specialized question-type modules extend -->
+            <Export-Package>io.uhndata.cards.forms.serialize.labels</Export-Package>
             <Sling-Initial-Content>
               SLING-INF/content/libs/cards/Form/;path:=/libs/cards/Form/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/Questionnaire/;path:=/libs/cards/Questionnaire/;overwriteProperties:=true;uninstall:=true,

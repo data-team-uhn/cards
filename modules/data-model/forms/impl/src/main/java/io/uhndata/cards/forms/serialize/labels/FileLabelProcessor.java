@@ -16,12 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.forms.internal.serialize.labels;
+package io.uhndata.cards.forms.serialize.labels;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
@@ -32,25 +36,37 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Gets the pedigree question answer as svg picture.
+ * Gets the file name of the file question answer.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
     @Override
     public String getDescription()
     {
-        return "Get the answers for pedigree questions as an svg picture.";
+        return "Get the human readable answer for file questions by outputting the file name instead of the path.";
     }
 
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("cards:PedigreeAnswer")) {
+            if (node.isNodeType("cards:FileAnswer")) {
                 addProperty(node, json, serializeNode);
+            }
+        } catch (RepositoryException e) {
+            // Really shouldn't happen
+        }
+    }
+
+    @Override
+    public void addProperty(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
+    {
+        try {
+            if (node.hasProperty("value")) {
+                json.add(PROP_DISPLAYED_VALUE, getAnswerLabel(node, null));
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen
@@ -61,8 +77,20 @@ public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implement
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            return Json.createValue(node.getProperty("image").getValue().toString());
-        } catch (RepositoryException e) {
+            String fullPath = node.getPath() + "/";
+            Property property = node.getProperty("value");
+            if (property.isMultiple()) {
+                List<String> names = new ArrayList<>();
+                for (Value item : property.getValues()) {
+                    String fileName = item.getString().replace(fullPath, "");
+                    names.add(fileName);
+                }
+                return createJsonArrayFromList(names);
+            } else {
+                String fileName = property.getValue().getString().replace(fullPath, "");
+                return Json.createValue(fileName);
+            }
+        } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }
         return null;

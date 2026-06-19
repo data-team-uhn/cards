@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.forms.internal.serialize.labels;
+package io.uhndata.cards.vocabularies.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -27,33 +27,27 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
-import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonValue;
 
 import org.osgi.service.component.annotations.Component;
 
+import io.uhndata.cards.forms.serialize.labels.AnswerOptionsLabelProcessor;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Gets the file name of the file question answer.
+ * Gets the question answer for vocabulary questions.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implements ResourceJsonProcessor
 {
-    @Override
-    public String getDescription()
-    {
-        return "Get the human readable answer for file questions by outputting the file name instead of the path.";
-    }
-
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("cards:FileAnswer")) {
+            if (node.isNodeType("cards:VocabularyAnswer")) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
@@ -62,37 +56,52 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     }
 
     @Override
-    public void addProperty(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
+    public int getPriority()
     {
-        try {
-            if (node.hasProperty("value")) {
-                json.add(PROP_DISPLAYED_VALUE, getAnswerLabel(node, null));
-            }
-        } catch (RepositoryException e) {
-            // Really shouldn't happen
-        }
+        return 90;
     }
 
     @Override
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            String fullPath = node.getPath() + "/";
-            Property property = node.getProperty("value");
-            if (property.isMultiple()) {
-                List<String> names = new ArrayList<>();
-                for (Value item : property.getValues()) {
-                    String fileName = item.getString().replace(fullPath, "");
-                    names.add(fileName);
+            final Map<String, String> propsMap = new LinkedHashMap<>();
+            final Property nodeProp = node.getProperty(PROP_VALUE);
+            final boolean multivalued = nodeProp.isMultiple();
+            if (multivalued) {
+                for (Value value : nodeProp.getValues()) {
+                    propsMap.put(value.getString(), value.getString());
                 }
-                return createJsonArrayFromList(names);
             } else {
-                String fileName = property.getValue().getString().replace(fullPath, "");
-                return Json.createValue(fileName);
+                propsMap.put(nodeProp.getString(), nodeProp.getString());
             }
+
+            if (question == null) {
+                return createJsonValue(propsMap.values(), multivalued);
+            }
+
+            processVocabularyLabels(node, question, propsMap);
+
+            super.processOptions(question, propsMap);
+
+            return createJsonValue(propsMap.values(), multivalued);
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }
         return null;
+    }
+
+    private void processVocabularyLabels(final Node node, final Node question, final Map<String, String> propsMap)
+        throws RepositoryException
+    {
+        for (String value : propsMap.keySet()) {
+            if (value.startsWith("/Vocabularies/") && node.getSession().nodeExists(value)) {
+                Node term = node.getSession().getNode(value);
+                String label = term.getProperty(PROP_LABEL).getValue().toString();
+                if (label != null) {
+                    propsMap.put(value, label);
+                }
+            }
+        }
     }
 }

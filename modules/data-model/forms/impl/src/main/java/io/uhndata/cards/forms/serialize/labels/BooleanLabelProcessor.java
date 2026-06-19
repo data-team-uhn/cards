@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.forms.internal.serialize.labels;
+package io.uhndata.cards.forms.serialize.labels;
 
 import java.util.function.Function;
 
