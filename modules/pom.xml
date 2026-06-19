@@ -78,5 +78,6 @@
     <module>chromosome</module>
     <module>identifier</module>
     <module>contact-info</module>
+    <module>dicom</module>
   </modules>
 </project>
