@@ -168,6 +168,7 @@ export default function ReorderForm(props) {
       const node = nodes[id];
       return ({
         value: index,
+        id: id,
         name: node.name,
         text: node.title,
         path: node.path,
@@ -176,6 +177,13 @@ export default function ReorderForm(props) {
       });
     });
   }, [nodes, newParent]);
+
+  // Disable any "After..." reference whose slot wouldn't move the item: the item itself, and
+  // (within the same parent) its current predecessor — placing it after either leaves it put.
+  const getPositionOptionDisabled = useCallback((option) =>
+    isNoOpMove(nodes, reorderSource, newParent,
+      resolveTargetIndex(nodes, reorderSource, newParent, { type: 'after', refId: option.id })),
+  [nodes, reorderSource, newParent]);
 
   // Which position radios are selectable, computed once and shared by the radio render and the
   // effect that clears a selection once it stops being valid. A radio is disabled when there is
@@ -383,7 +391,7 @@ export default function ReorderForm(props) {
             showSelection={false}
             multiple={false}
             entities={positionOptions}
-            getOptionDisabled={(option) => option.path === nodes[reorderSource]?.path}
+            getOptionDisabled={getPositionOptionDisabled}
             selection={newPositionSelection}
             onSelectionChanged={setNewPositionSelection}
             placeholderText="... other questionnaire entry"
