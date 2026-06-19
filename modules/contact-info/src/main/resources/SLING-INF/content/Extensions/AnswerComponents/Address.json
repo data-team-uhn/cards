@@ -1,8 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
-  "cards:defaultDisabled": true,
   "cards:defaultOrder": 10,
   "cards:extensionPointId": "cards/form/answerComponent",
   "cards:extensionName": "Address Questions",
-  "cards:extensionRenderURL": "asset:cards-dataentry.AddressQuestion.js"
+  "cards:extensionRenderURL": "asset:cards-contact-info.AddressQuestion.js"
 }

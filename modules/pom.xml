@@ -77,5 +77,6 @@
     <module>healthcheck</module>
     <module>chromosome</module>
     <module>identifier</module>
+    <module>contact-info</module>
   </modules>
 </project>

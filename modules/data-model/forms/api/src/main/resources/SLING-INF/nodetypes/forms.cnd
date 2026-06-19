@@ -717,28 +717,6 @@
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
-// Telephone number answers, stored as strings
-[cards:PhoneAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/PhoneAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
-// Postal address answers, stored as strings
-[cards:AddressAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/AddressAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
 // Selectable area answers, stored as strings
 [cards:SelectableAreaAnswer] > cards:Answer
   - value (string)

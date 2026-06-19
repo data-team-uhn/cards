@@ -1,8 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
-  "cards:defaultDisabled": false,
   "cards:defaultOrder": 20,
   "cards:extensionPointId": "cards/form/answerComponent",
   "cards:extensionName": "Phone Questions",
-  "cards:extensionRenderURL": "asset:cards-dataentry.PhoneQuestion.js"
+  "cards:extensionRenderURL": "asset:cards-contact-info.PhoneQuestion.js"
 }
