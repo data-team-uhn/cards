@@ -116,8 +116,7 @@ public class DocxMarkdownGenerator
     public String toMarkdown(final InputStream stream, final String fileName)
         throws IOException
     {
-        final long startTimestamp = System.currentTimeMillis();
-        LOGGER.info("DOCX markdown parsing started for file '{}' at {}", fileName, startTimestamp);
+        LOGGER.info("ApachePOI parse request started for '{}'", fileName);
         StringBuilder markdown = new StringBuilder();
         markdown.append("<!-- source_file: ").append(this.escapeComment(fileName)).append(" -->").append(NEWLINE);
 
@@ -125,11 +124,6 @@ public class DocxMarkdownGenerator
             ParseState state = new ParseState(markdown);
             this.walkDocumentParts(document, state);
             return MarkdownCleanup.clean(markdown.toString());
-        } finally {
-            final long endTimestamp = System.currentTimeMillis();
-            final long totalMilliseconds = endTimestamp - startTimestamp;
-            LOGGER.info("DOCX markdown parsing finished for file '{}' at {} (total {} ms)",
-                fileName, endTimestamp, totalMilliseconds);
         }
     }
 

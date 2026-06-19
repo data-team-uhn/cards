@@ -39,6 +39,8 @@ from pypdf import PdfReader
 from docling.datamodel.base_models import InputFormat
 from docling.document_converter import DocumentConverter, PdfFormatOption
 
+from typing import Callable
+
 from docling_batch_sizing import (
     calc_active_workers,
     calc_batch_pages,
@@ -75,6 +77,150 @@ def _init_worker() -> None:
     """Load the DocumentConverter exactly once per worker process."""
     global _converter
     _converter = build_pdf_converter()
+
+
+def _warm_worker() -> bool:
+    """Touch the per-worker converter so model weights are loaded at daemon startup."""
+    return _converter is not None
+
+
+LogFn = Callable[[str], None]
+
+
+def _run_pdf_chunks(
+    chunks: list[tuple[str, int, int]],
+    executor: ProcessPoolExecutor,
+    *,
+    log: LogFn,
+) -> list[tuple[int, int, str, str, int, float, str | None]]:
+    """Submit page batches to executor and collect results in page order."""
+    completed_results: list[tuple[int, int, str, str, int, float, str | None]] = []
+    had_failure = False
+
+    future_to_chunk = {
+        executor.submit(parse_pdf_chunk, chunk): chunk
+        for chunk in chunks
+    }
+
+    for future in as_completed(future_to_chunk):
+        _, start_page, end_page = future_to_chunk[future]
+        try:
+            result = future.result()
+        except Exception as e:
+            result = (
+                start_page,
+                end_page,
+                "failed",
+                "",
+                0,
+                0.0,
+                f"Executor failure: {e}",
+            )
+
+        completed_results.append(result)
+
+        r_start, r_end, status, _md, md_len, elapsed, error = result
+        if error:
+            had_failure = True
+            log(f"FAILED pages {r_start}-{r_end}: {error}")
+            for pending in future_to_chunk:
+                pending.cancel()
+            break
+        log(
+            f"Completed pages {r_start}-{r_end}: status={status}, "
+            f"markdown={md_len:,} chars, time={elapsed:.2f}s"
+        )
+
+    if had_failure:
+        raise RuntimeError("One or more page batches failed.")
+
+    completed_results.sort(key=lambda item: item[0])
+    return completed_results
+
+
+def convert_pdf_to_markdown(
+    input_path: Path,
+    *,
+    batch_pages: int | None = None,
+    workers: int | None = None,
+    executor: ProcessPoolExecutor | None = None,
+    log: LogFn | None = None,
+) -> str:
+    """
+    Convert a PDF file to Markdown and return the text.
+
+    @param input_path: path to the source .pdf file
+    @param batch_pages: optional override for pages per worker batch
+    @param workers: optional override for parallel worker process count
+    @param executor: optional persistent ProcessPoolExecutor (daemon mode)
+    @param log: optional log sink; defaults to print
+    @return: cleaned Markdown text
+    """
+    log_fn = log if log is not None else print
+
+    reader = PdfReader(str(input_path))
+    total_pages = len(reader.pages)
+
+    workers_override = workers is not None
+    batch_pages_override = batch_pages is not None
+
+    worker_count = calc_workers(workers)
+    batch_page_count = calc_batch_pages(total_pages, worker_count, batch_pages)
+    chunk_count = calc_chunk_count(total_pages, batch_page_count)
+    active_workers = calc_active_workers(worker_count, chunk_count)
+
+    log_fn(f"Detected {total_pages} pages")
+    print_parallelism_summary(
+        total_pages=total_pages,
+        workers=worker_count,
+        batch_pages=batch_page_count,
+        chunk_count=chunk_count,
+        active_workers=active_workers,
+        workers_override=workers_override,
+        batch_pages_override=batch_pages_override,
+    )
+
+    chunks: list[tuple[str, int, int]] = []
+    for start_page in range(1, total_pages + 1, batch_page_count):
+        end_page = min(start_page + batch_page_count - 1, total_pages)
+        chunks.append((str(input_path), start_page, end_page))
+
+    if len(chunks) != chunk_count:
+        raise RuntimeError(
+            f"Chunk count mismatch: scheduled {len(chunks)}, expected {chunk_count}"
+        )
+
+    t0 = perf_counter()
+
+    if executor is None:
+        with ProcessPoolExecutor(max_workers=active_workers, initializer=_init_worker) as pool:
+            completed_results = _run_pdf_chunks(chunks, pool, log=log_fn)
+    else:
+        completed_results = _run_pdf_chunks(chunks, executor, log=log_fn)
+
+    all_markdown: list[str] = []
+    for _start_page, _end_page, _status, md, _md_len, _elapsed, _error in completed_results:
+        all_markdown.append(md)
+
+    markdown_content = clean_markdown("".join(all_markdown))
+    write_end = perf_counter()
+    t2 = perf_counter()
+
+    log_fn("\n=== Timing ===")
+    log_fn(f"Parallel processing:  {write_end - t0:.2f}s")
+    log_fn(f"Total:                {t2 - t0:.2f}s")
+    log_fn(f"Chunks attempted:     {chunk_count}")
+    log_fn(f"Markdown characters:  {len(markdown_content):,}")
+
+    return markdown_content
+
+
+def warm_pdf_workers(executor: ProcessPoolExecutor, worker_count: int) -> None:
+    """Run a no-op task in each worker process to load Docling models eagerly."""
+    futures = [executor.submit(_warm_worker) for _ in range(worker_count)]
+    for future in futures:
+        if not future.result():
+            raise RuntimeError("PDF worker warm-up failed: converter not initialized")
 
 
 def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int, float, str | None]:
@@ -145,103 +291,18 @@ def convert_pdf(
     @param batch_pages: optional override for pages per worker batch
     @param workers: optional override for parallel worker process count
     """
-    reader = PdfReader(str(input_path))
-    total_pages = len(reader.pages)
-
-    workers_override = workers is not None
-    batch_pages_override = batch_pages is not None
-
-    worker_count = calc_workers(workers)
-    batch_page_count = calc_batch_pages(total_pages, worker_count, batch_pages)
-    chunk_count = calc_chunk_count(total_pages, batch_page_count)
-    active_workers = calc_active_workers(worker_count, chunk_count)
-
-    print(f"Detected {total_pages} pages")
-    print_parallelism_summary(
-        total_pages=total_pages,
-        workers=worker_count,
-        batch_pages=batch_page_count,
-        chunk_count=chunk_count,
-        active_workers=active_workers,
-        workers_override=workers_override,
-        batch_pages_override=batch_pages_override,
-    )
-
-    chunks: list[tuple[str, int, int]] = []
-    for start_page in range(1, total_pages + 1, batch_page_count):
-        end_page = min(start_page + batch_page_count - 1, total_pages)
-        chunks.append((str(input_path), start_page, end_page))
-
-    if len(chunks) != chunk_count:
-        raise RuntimeError(
-            f"Chunk count mismatch: scheduled {len(chunks)}, expected {chunk_count}"
+    try:
+        markdown_content = convert_pdf_to_markdown(
+            input_path,
+            batch_pages=batch_pages,
+            workers=workers,
         )
-
-    t0 = perf_counter()
-    completed_results = []
-    had_failure = False
-
-    # Use processes, not threads, so each batch has isolated Docling state.
-    # _init_worker loads the converter once per worker; chunks reuse it.
-    # On Windows, the caller must run under if __name__ == "__main__".
-    with ProcessPoolExecutor(max_workers=active_workers, initializer=_init_worker) as executor:
-        future_to_chunk = {
-            executor.submit(parse_pdf_chunk, chunk): chunk
-            for chunk in chunks
-        }
-
-        for future in as_completed(future_to_chunk):
-            _, start_page, end_page = future_to_chunk[future]
-            try:
-                result = future.result()
-            except Exception as e:
-                # This catches executor-level failures, not normal conversion failures.
-                result = (
-                    start_page,
-                    end_page,
-                    "failed",
-                    "",
-                    0,
-                    0.0,
-                    f"Executor failure: {e}",
-                )
-
-            completed_results.append(result)
-
-            r_start, r_end, status, _md, md_len, elapsed, error = result
-            if error:
-                had_failure = True
-                print(f"FAILED pages {r_start}-{r_end}: {error}", file=sys.stderr)
-                for pending in future_to_chunk:
-                    pending.cancel()
-                break
-            print(
-                f"Completed pages {r_start}-{r_end}: status={status}, "
-                f"markdown={md_len:,} chars, time={elapsed:.2f}s"
-            )
-
-    if had_failure:
-        print("One or more page batches failed.", file=sys.stderr)
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
         sys.exit(1)
 
-    # as_completed returns chunks out of order, so sort before writing Markdown.
-    completed_results.sort(key=lambda item: item[0])
-
-    all_markdown: list[str] = []
-    for _start_page, _end_page, _status, md, _md_len, _elapsed, _error in completed_results:
-        all_markdown.append(md)
-
     write_start = perf_counter()
-    markdown_content = clean_markdown("".join(all_markdown))
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(markdown_content)
     write_end = perf_counter()
-
-    t2 = perf_counter()
-
-    print("\n=== Timing ===")
-    print(f"Parallel processing:  {write_start - t0:.2f}s")
     print(f"File write:           {write_end - write_start:.2f}s")
-    print(f"Total:                {t2 - t0:.2f}s")
-    print(f"Chunks attempted:     {chunk_count}")
-    print(f"Markdown characters:  {len(markdown_content):,}")

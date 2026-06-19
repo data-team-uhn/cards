@@ -183,6 +183,12 @@ public class SimpleDocumentParserTest
                 capturedName[0] = fileName;
                 return SUFFICIENT_CONTENT;
             }
+
+            @Override
+            protected String runFallbackGenerator(final byte[] content, final String fileName)
+            {
+                return "";
+            }
         };
         parser.parse(new ByteArrayInputStream(DUMMY_BYTES), "my-document.pdf");
         Assert.assertEquals("my-document.pdf", capturedName[0]);
@@ -200,6 +206,12 @@ public class SimpleDocumentParserTest
             {
                 capturedContent[0] = content;
                 return SUFFICIENT_CONTENT;
+            }
+
+            @Override
+            protected String runFallbackGenerator(final byte[] content, final String fileName)
+            {
+                return "";
             }
         };
         parser.parse(new ByteArrayInputStream(input), "test.pdf");
@@ -236,6 +248,12 @@ public class SimpleDocumentParserTest
             {
                 return primaryResult;
             }
+
+            @Override
+            protected String runFallbackGenerator(final byte[] content, final String fileName)
+            {
+                return FALLBACK_CONTENT;
+            }
         };
     }
 
@@ -247,6 +265,12 @@ public class SimpleDocumentParserTest
             protected String runPrimaryGenerator(final byte[] content, final String fileName)
             {
                 throw new IllegalStateException("simulated primary failure");
+            }
+
+            @Override
+            protected String runFallbackGenerator(final byte[] content, final String fileName)
+            {
+                return FALLBACK_CONTENT;
             }
         };
     }

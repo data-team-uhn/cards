@@ -38,7 +38,7 @@ import io.uhndata.cards.forms.internal.parse.FileParser;
 import io.uhndata.cards.forms.internal.parse.FileParserFactory;
 
 /**
- * Parse uploaded proposal files and place extracted text into answer notes.
+ * Parse uploaded files and place extracted text into answer notes.
  *
  * @version $Id$
  */
@@ -157,28 +157,39 @@ public class ProposalAnswerEditor extends DefaultEditor
         try {
             return parseBlob(dataBlob, parser, fileName);
         } catch (DocumentParseException e) {
-            LOGGER.warn("Failed to parse proposal file '{}': {}", fileName, e.getMessage());
+            LOGGER.warn("Failed to parse file '{}': {}", fileName, e.getMessage());
             return DocumentParseException.toNote(fileName, e.getMessage());
         }
     }
 
     private String parseBlob(final Blob dataBlob, final FileParser parser, final String fileName)
     {
-        final long blobLength = dataBlob.length();
-        if (blobLength > MAX_DOCUMENT_SIZE_BYTES) {
-            LOGGER.warn("Skipping parse of '{}': size {} bytes exceeds limit", fileName, blobLength);
-            return null;
-        }
-        try (InputStream stream = dataBlob.getNewStream()) {
-            final byte[] content = stream.readNBytes((int) blobLength);
-            return parser.parse(new ByteArrayInputStream(content), fileName);
+        final long startTimestamp = System.currentTimeMillis();
+        LOGGER.info("<>File parsing started for '{}'", fileName);
+        String result = null;
+        try {
+            final long blobLength = dataBlob.length();
+            if (blobLength > MAX_DOCUMENT_SIZE_BYTES) {
+                LOGGER.warn("Skipping parse of '{}': size {} bytes exceeds limit", fileName, blobLength);
+                return null;
+            }
+            try (InputStream stream = dataBlob.getNewStream()) {
+                final byte[] content = stream.readNBytes((int) blobLength);
+                result = parser.parse(new ByteArrayInputStream(content), fileName);
+                return result;
+            }
         } catch (DocumentParseException e) {
             throw e;
         } catch (IOException e) {
             throw new DocumentParseException("Failed to read document stream", e);
         } catch (Exception e) {
-            LOGGER.warn("Failed to parse proposal file '{}': {}", fileName, e.getMessage());
+            LOGGER.warn("Failed to parse file '{}': {}", fileName, e.getMessage());
             return null;
+        } finally {
+            final long endTimestamp = System.currentTimeMillis();
+            final int resultLength = result == null ? 0 : result.length();
+            LOGGER.info("<>File parsing finished for '{}' at {} (total {} ms, result {} chars)",
+                fileName, endTimestamp, endTimestamp - startTimestamp, resultLength);
         }
     }
 
