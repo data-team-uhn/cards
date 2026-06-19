@@ -215,11 +215,14 @@ def convert_pdf_to_markdown(
     return markdown_content
 
 
+WORKER_WARMUP_TIMEOUT_SECONDS = 120
+
+
 def warm_pdf_workers(executor: ProcessPoolExecutor, worker_count: int) -> None:
     """Run a no-op task in each worker process to load Docling models eagerly."""
     futures = [executor.submit(_warm_worker) for _ in range(worker_count)]
     for future in futures:
-        if not future.result():
+        if not future.result(timeout=WORKER_WARMUP_TIMEOUT_SECONDS):
             raise RuntimeError("PDF worker warm-up failed: converter not initialized")
 
 

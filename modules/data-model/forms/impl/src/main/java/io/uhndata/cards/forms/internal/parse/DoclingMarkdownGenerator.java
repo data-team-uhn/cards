@@ -269,7 +269,9 @@ public class DoclingMarkdownGenerator
                 LOGGER.error("Docling process exited with code {} for '{}':\n{}", exitCode, fileName, output);
                 return false;
             }
-            LOGGER.debug("Docling process output for '{}':\n{}", fileName, collectOutputSilently(progressFuture));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Docling process output for '{}':\n{}", fileName, collectOutputSilently(progressFuture));
+            }
             return true;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
