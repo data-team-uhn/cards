@@ -32,7 +32,13 @@ import {
 } from '@mui/material';
 
 import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext';
-import { getEntryChildIds, isDescendant } from './treeQueries';
+import {
+  getMoveValidity,
+  isNoOpMove,
+  resolveTargetIndex,
+  MOVE_INVALID,
+} from './reorderModel';
+import { getEntryChildIds } from './treeQueries';
 import { ENTRY_TYPES } from '../questionnaire/FormEntry';
 import QuestionnaireAutocomplete from '../questionnaire/QuestionnaireAutocomplete';
 import { getOrdinalString, stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
@@ -150,12 +156,10 @@ export default function ReorderForm(props) {
   }, [nodes, reorderSource]);
 
   const getParentOptionDisabled = useCallback((option) => {
-    // Exclude current node (can't reassign node as parent to itself)
-    // Exclude children of current node (can't reassign parent to child)
-    const isReorderSource = reorderSource === option.value;
-    const isDescendantOfReorderSource = isDescendant(nodes, reorderSource, option.value);
-    const disabled = isReorderSource || isDescendantOfReorderSource;
-    return disabled;
+    // Exclude the source itself and any of its descendants — neither can be its parent.
+    // Name collisions are intentionally not pre-checked here; they surface on submit, as before.
+    const { code } = getMoveValidity(nodes, reorderSource, option.value);
+    return code === MOVE_INVALID.SELF || code === MOVE_INVALID.DESCENDANT;
   }, [nodes, reorderSource]);
 
   const positionOptions = useMemo(() => {
@@ -331,13 +335,15 @@ export default function ReorderForm(props) {
           {(() => {
             const noNewParent = !newParent
             const newParentHasNoEntryChildren = getEntryChildIds(nodes, newParent).length === 0
-            // First/Last are no-ops only when staying in the same parent; moving into a
-            // different parent, First/Last are always valid (different) destinations.
-            const isSameParent = nodes[reorderSource]?.parent === newParent;
-            const filteredChildren = getEntryChildIds(nodes, nodes[reorderSource]?.parent);
-            const originalPositionIndex = filteredChildren.indexOf(reorderSource);
-            const originalPositionIsFirst = originalPositionIndex === 0;
-            const originalPositionIsLast = originalPositionIndex === filteredChildren.length - 1;
+            // First/Last are no-ops only when the source would land back in its current slot.
+            // isNoOpMove already returns false across different parents, so no same-parent guard
+            // is needed here. It works in the full-children index space (the space :order uses),
+            // so it stays consistent with the submit-time noNewTarget guard below.
+            const canEvaluate = !!nodes[reorderSource] && !!nodes[newParent];
+            const firstIsNoOp = canEvaluate
+              && isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, { type: 'first' }));
+            const lastIsNoOp = canEvaluate
+              && isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, { type: 'last' }));
             return (
               [ { value: 'first', label: 'First' },
                 { value: 'other', label: 'After...' },
@@ -352,8 +358,8 @@ export default function ReorderForm(props) {
                     // An empty target parent has a single slot, so keep First (which the
                     // effect auto-selects) enabled and disable After.../Last.
                     (newParentHasNoEntryChildren && value !== 'first'),
-                    (value === 'first' && isSameParent && originalPositionIsFirst),
-                    (value === 'last' && isSameParent && originalPositionIsLast)
+                    (value === 'first' && firstIsNoOp),
+                    (value === 'last' && lastIsNoOp)
                   ].includes(true)}
                   control={<Radio />}
                 />
@@ -391,33 +397,24 @@ export default function ReorderForm(props) {
 
   const isLoadingOrError = ['loading', 'error'].includes(reorderState.status);
   const noReorderSource = !reorderSource;
-  const sameNewParent = !noReorderSource && nodes[reorderSource]?.parent === newParent;
   const invalidPosition = newPosition === null || newPosition === "";
 
-  // Compute the actual Sling :order value to send.
-  // For 'other' (After...), newPosition is a 0-based filtered-children index of the reference node.
-  // We need position = refAllIndex + 1 (place after reference), adjusted when the source sits
-  // before that slot in the same parent (removing source shifts subsequent indices down by 1).
+  // Resolve the Sling :order value to send, from the selected radio:
+  //  - First/Last become the 0 / 'last' slot; resolveTargetIndex returns 'last' verbatim.
+  //  - 'other' (After...) places the source after the entry child at the selected index.
+  // resolveTargetIndex handles the same-parent shift (removing the source moves later siblings up).
   const computeSlingPosition = () => {
-    if (reorderState.inputs.positionRadio !== 'other') return newPosition;
-    const allChildren = nodes[newParent].children;
-    const filteredChildren = getEntryChildIds(nodes, newParent);
-    const referenceNodeId = filteredChildren[newPosition];
+    if (!nodes[reorderSource] || !newParent) return null;
+    const radio = reorderState.inputs.positionRadio;
+    if (radio === 'first') return resolveTargetIndex(nodes, reorderSource, newParent, { type: 'first' });
+    if (radio === 'last') return resolveTargetIndex(nodes, reorderSource, newParent, { type: 'last' });
+    const referenceNodeId = getEntryChildIds(nodes, newParent)[newPosition];
     if (!referenceNodeId) return null;
-    const refAllIndex = allChildren.indexOf(referenceNodeId);
-    let slingPos = refAllIndex + 1;
-    if (nodes[reorderSource]?.parent === newParent) {
-      const sourceAllIndex = allChildren.indexOf(reorderSource);
-      if (sourceAllIndex < slingPos) {
-        slingPos -= 1;
-      }
-    }
-    return slingPos;
+    return resolveTargetIndex(nodes, reorderSource, newParent, { type: 'after', refId: referenceNodeId });
   };
   const slingPosition = (!invalidPosition && newParent) ? computeSlingPosition() : null;
 
-  const noNewTarget = sameNewParent && slingPosition !== null
-    && slingPosition === nodes[newParent]?.children.indexOf(reorderSource);
+  const noNewTarget = slingPosition !== null && isNoOpMove(nodes, reorderSource, newParent, slingPosition);
   const disableSubmit = isLoadingOrError || noReorderSource || noNewTarget || invalidPosition;
 
   const handleError = (e) => {
