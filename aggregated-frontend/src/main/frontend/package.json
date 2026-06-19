@@ -8,13 +8,22 @@
     "type": "git"
   },
   "author": "UHN DATA",
+  "browserslist": [
+    "Chrome >= 79",
+    "Edge >= 106",
+    "Firefox >= 109",
+    "Opera >= 85",
+    "not IE 11"
+  ],
   "babel": {
     "presets": [
-      "@babel/preset-env",
+      ["@babel/preset-env", {
+        "bugfixes": true
+      }],
       ["@babel/preset-react", {
         "runtime": "automatic"
       }],
-     "@babel/preset-typescript"
+      "@babel/preset-typescript"
     ]
   },
   "scripts": {
