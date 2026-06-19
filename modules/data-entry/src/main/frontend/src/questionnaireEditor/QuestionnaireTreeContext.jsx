@@ -29,6 +29,7 @@ import {
   setSubtreeAtPath,
   stateValidators,
 } from "./questionnaireTreeModel";
+import { getMoveValidity, isValidIndex } from "./reorderModel";
 import { GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 // React context
@@ -189,56 +190,14 @@ export function QuestionnaireTreeProvider(props) {
     // Add tree as an optional parameter to allow moves in between without resetting tree in context
     // Otherwise uses the latest tree via ref to avoid stale closure
     const nodes = tree || nodesRef.current;
-    const reorderValidators = {
-      sourceNodeExists: (reorderSourceId, newParentId, newPosition) => {
-        return nodes[reorderSourceId] ? true : 'Source node does not exist.';
-      },
-      newParentExists: (reorderSourceId, newParentId, newPosition) => {
-        return nodes[newParentId] ? true : 'New parent node does not exist.';
-      },
-      notMovingToSelfOrDescendant: (reorderSourceId, newParentId, newPosition) => {
-        let currentNodeId = newParentId;
-
-        while (currentNodeId) {
-          if (currentNodeId === reorderSourceId) {
-            return 'Cannot move to self or a descendant.';
-          }
-          currentNodeId = nodes[currentNodeId]?.parent; // Move up to the parent
-        }
-        return true;
-      },
-      isValidNewPosition: (reorderSourceId, newParentId, newPosition) => {
-        // newPosition is either the literal 'last' (Sling :order keyword) or a 0-based index
-        // within the new parent's children.
-        if (newPosition === 'last') {
-          return true;
-        }
-        const newParentNode = nodes[newParentId];
-        const childrenCount = newParentNode.children.length;
-        if (newPosition < 0 || newPosition > childrenCount) {
-          return 'Invalid new position.';
-        }
-        return true;
-      },
-      newParentHasChildWithSameName: (reorderSourceId, newParentId, newPosition) => {
-        const sourceNode = nodes[reorderSourceId];
-        const newParentNode = nodes[newParentId];
-        const newParentChildren = newParentNode.children.map(id => nodes[id]?.name);
-        const sourceNodeName = sourceNode.name;
-        const isNewParent = sourceNode.parent !== newParentId;
-        if (isNewParent && newParentChildren.includes(sourceNodeName)) {
-          return 'New parent node already has a child with the same name.';
-        }
-        return true;
-      },
-    };
-    // Check if any validators return strings, indicating an error
-    const validation = Object.values(reorderValidators)
-      .map(validator => validator(reorderSourceId, newParentId, newPosition));
-    const isNotValid = validation.some(result => typeof result === 'string');
-    if (isNotValid) {
-      const validationErrors = validation.filter(result => typeof result === 'string').join('\n');
-      throw new Error("Invalid reorder operation ".concat(validationErrors));
+    // Structural legality (source/parent exist, not into self or a descendant, no name clash)
+    // is checked first; it also guarantees both nodes exist before the position is range-checked.
+    const validity = getMoveValidity(nodes, reorderSourceId, newParentId);
+    if (!validity.valid) {
+      throw new Error("Invalid reorder operation: ".concat(validity.message));
+    }
+    if (!isValidIndex(nodes, newParentId, newPosition)) {
+      throw new Error("Invalid reorder operation: Invalid new position.");
     }
 
     const reorderSourceParentId = nodes[reorderSourceId].parent;
