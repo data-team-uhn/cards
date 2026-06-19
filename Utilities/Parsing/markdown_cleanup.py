@@ -21,6 +21,8 @@
 
 import re
 
+from line_number_cleanup import cleanup_margin_line_numbers
+
 _EMPTY_HEADING = re.compile(r"^#{1,6}\s*_?\s*$")
 _GARBAGE_LINE = re.compile(r"^(\|{2,}|_{2,}|\.{3,})\s*$")
 
@@ -29,6 +31,7 @@ def clean_markdown(md: str) -> str:
     """Collapse blank lines, remove empty headings, and strip decorative garbage lines."""
     if not md:
         return md or ""
+    md = cleanup_margin_line_numbers(md)
     lines = [
         line
         for line in md.split("\n")
