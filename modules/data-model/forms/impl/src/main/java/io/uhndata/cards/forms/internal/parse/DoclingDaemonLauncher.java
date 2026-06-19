@@ -16,12 +16,17 @@
  */
 package io.uhndata.cards.forms.internal.parse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +41,11 @@ import org.slf4j.LoggerFactory;
  * <p>
  * If a healthy daemon is already listening at {@code cards.docling.daemon.url}, this component does
  * not start a second process. Disable auto-start with {@code cards.docling.daemon.autostart=false}.
+ * </p>
+ * <p>
+ * The {@code @Activate} method returns immediately; stdout draining and health polling run on
+ * background threads owned by an internal {@link ExecutorService} so the OSGi SCR thread is never
+ * blocked during model loading (which can take several minutes on a cold host).
  * </p>
  *
  * @version $Id$
@@ -69,20 +79,40 @@ public class DoclingDaemonLauncher
 
     private static final long SHUTDOWN_TIMEOUT_SECONDS = 15L;
 
-    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
-        .connectTimeout(Duration.ofSeconds(HEALTH_TIMEOUT_SECONDS))
-        .build();
+    /** HTTP client used for /health and /shutdown calls; created in activate, closed in deactivate. */
+    private HttpClient httpClient;
 
-    private Process daemonProcess;
+    /** The daemon process started by this component, if any. Volatile for cross-thread visibility. */
+    private volatile Process daemonProcess;
 
-    private boolean ownsProcess;
+    /** True iff this component started the daemon process and is responsible for stopping it. */
+    private volatile boolean ownsProcess;
+
+    /**
+     * Set to true at the start of deactivate() so background tasks can detect shutdown
+     * and stop polling without needing to wait for the executor to deliver an interrupt.
+     */
+    private volatile boolean deactivated;
+
+    /** ExecutorService that owns the stdout-drainer and startup-poller background tasks. */
+    private ExecutorService backgroundExecutor;
 
     /**
      * Start the daemon when auto-start is enabled and no healthy daemon is already running.
+     * Returns immediately; stdout draining and health polling run on background threads.
      */
     @Activate
     public void activate()
     {
+        this.httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(HEALTH_TIMEOUT_SECONDS))
+            .build();
+        this.backgroundExecutor = Executors.newCachedThreadPool(runnable -> {
+            final Thread thread = new Thread(runnable, "docling-daemon-launcher");
+            thread.setDaemon(true);
+            return thread;
+        });
+
         if (!isAutoStartEnabled()) {
             LOGGER.info("Docling daemon auto-start is disabled");
             return;
@@ -97,31 +127,32 @@ public class DoclingDaemonLauncher
         try {
             this.daemonProcess = startDaemonProcess(daemonUrl);
             this.ownsProcess = true;
-            if (waitForHealthyDaemon(daemonUrl)) {
-                LOGGER.info("Docling daemon started at {}", daemonUrl);
-            } else {
-                LOGGER.error("Docling daemon failed to become healthy at {}", daemonUrl);
-                stopOwnedProcess();
-            }
+            drainProcessStdout(this.daemonProcess);
+            scheduleDaemonStartupCheck(daemonUrl);
         } catch (IOException e) {
             LOGGER.error("Failed to start Docling daemon: {}", e.getMessage());
-            stopOwnedProcess();
         }
     }
 
     /**
-     * Stop the daemon process started by this component.
+     * Stop the daemon process started by this component and release all resources.
      */
     @Deactivate
     public void deactivate()
     {
+        this.deactivated = true;
+        if (this.backgroundExecutor != null) {
+            this.backgroundExecutor.shutdownNow();
+        }
         if (!this.ownsProcess) {
+            closeHttpClient();
             return;
         }
 
         final String daemonUrl = resolveDaemonUrl();
         requestDaemonShutdown(daemonUrl);
         stopOwnedProcess();
+        closeHttpClient();
     }
 
     private Process startDaemonProcess(final String daemonUrl) throws IOException
@@ -142,31 +173,70 @@ public class DoclingDaemonLauncher
             .start();
     }
 
-    private boolean waitForHealthyDaemon(final String daemonUrl)
+    /**
+     * Submit a background task that continuously reads and logs the daemon process's stdout.
+     * This prevents the OS pipe buffer from filling up and blocking the daemon during model loading.
+     *
+     * @param process the daemon process whose stdout is drained
+     */
+    private void drainProcessStdout(final Process process)
     {
-        final long deadline = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(STARTUP_TIMEOUT_SECONDS);
-        while (System.currentTimeMillis() < deadline) {
-            if (isDaemonHealthy(daemonUrl)) {
-                return true;
+        this.backgroundExecutor.submit(() -> {
+            try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                String line = reader.readLine();
+                while (line != null) {
+                    LOGGER.debug("Docling daemon: {}", line);
+                    line = reader.readLine();
+                }
+            } catch (IOException e) {
+                LOGGER.debug("Docling daemon stdout closed: {}", e.getMessage());
             }
-            if (this.daemonProcess != null && !this.daemonProcess.isAlive()) {
-                LOGGER.error("Docling daemon process exited during startup with code {}",
-                    this.daemonProcess.exitValue());
-                return false;
+        });
+    }
+
+    /**
+     * Submit a background task that polls the daemon's /health endpoint until it becomes ready,
+     * the process exits, the timeout is reached, or deactivation is signalled.
+     *
+     * @param daemonUrl the base URL of the daemon
+     */
+    private void scheduleDaemonStartupCheck(final String daemonUrl)
+    {
+        this.backgroundExecutor.submit(() -> {
+            final long deadline = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(STARTUP_TIMEOUT_SECONDS);
+            while (!this.deactivated && System.currentTimeMillis() < deadline) {
+                if (isDaemonHealthy(daemonUrl)) {
+                    LOGGER.info("Docling daemon started at {}", daemonUrl);
+                    return;
+                }
+                final Process process = this.daemonProcess;
+                if (process != null && !process.isAlive()) {
+                    LOGGER.error("Docling daemon process exited during startup with code {}",
+                        process.exitValue());
+                    return;
+                }
+                sleepQuietly(STARTUP_POLL_MILLIS);
             }
-            sleepQuietly(STARTUP_POLL_MILLIS);
-        }
-        return false;
+            if (!this.deactivated) {
+                LOGGER.error("Docling daemon failed to become healthy within {} seconds at {}",
+                    STARTUP_TIMEOUT_SECONDS, daemonUrl);
+            }
+        });
     }
 
     private void requestDaemonShutdown(final String daemonUrl)
     {
+        final HttpClient client = this.httpClient;
+        if (client == null) {
+            return;
+        }
         try {
             final HttpRequest request = HttpRequest.newBuilder(URI.create(daemonUrl + "/shutdown"))
                 .timeout(Duration.ofSeconds(HEALTH_TIMEOUT_SECONDS))
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
-            HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.discarding());
+            client.send(request, HttpResponse.BodyHandlers.discarding());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (IOException e) {
@@ -184,11 +254,13 @@ public class DoclingDaemonLauncher
             if (this.daemonProcess.isAlive()) {
                 final boolean finished = this.daemonProcess.waitFor(SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS);
                 if (!finished) {
+                    this.daemonProcess.descendants().forEach(ProcessHandle::destroyForcibly);
                     this.daemonProcess.destroyForcibly();
                 }
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            this.daemonProcess.descendants().forEach(ProcessHandle::destroyForcibly);
             this.daemonProcess.destroyForcibly();
         } finally {
             this.daemonProcess = null;
@@ -196,15 +268,32 @@ public class DoclingDaemonLauncher
         }
     }
 
-    private static boolean isDaemonHealthy(final String daemonUrl)
+    private void closeHttpClient()
     {
+        if (this.httpClient != null) {
+            try {
+                this.httpClient.close();
+            } catch (RuntimeException e) {
+                LOGGER.debug("Error closing Docling HTTP client: {}", e.getMessage());
+            } finally {
+                this.httpClient = null;
+            }
+        }
+    }
+
+    private boolean isDaemonHealthy(final String daemonUrl)
+    {
+        final HttpClient client = this.httpClient;
+        if (client == null) {
+            return false;
+        }
         try {
             final HttpRequest request = HttpRequest.newBuilder(URI.create(daemonUrl + "/health"))
                 .timeout(Duration.ofSeconds(HEALTH_TIMEOUT_SECONDS))
                 .GET()
                 .build();
             final HttpResponse<String> response =
-                HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+                client.send(request, HttpResponse.BodyHandlers.ofString());
             return response.statusCode() == 200 && response.body().contains("\"ready\": true");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
