@@ -30,15 +30,7 @@ import io.uhndata.cards.forms.internal.parse.pdf.PdfMarkdownGenerator;
  */
 public class PdfParser extends SimpleDocumentParser
 {
-    private final DoclingMarkdownGenerator doclingGenerator = new DoclingMarkdownGenerator();
-
     private final PdfMarkdownGenerator pdfBoxGenerator = new PdfMarkdownGenerator();
-
-    @Override
-    protected String runPrimaryGenerator(final byte[] content, final String fileName)
-    {
-        return this.doclingGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
-    }
 
     @Override
     protected String runFallbackGenerator(final byte[] content, final String fileName)

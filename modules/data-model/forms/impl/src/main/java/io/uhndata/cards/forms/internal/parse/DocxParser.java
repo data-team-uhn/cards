@@ -21,19 +21,20 @@ import java.io.IOException;
 
 /**
  * Parser for DOCX files. Delegates orchestration to {@link SimpleDocumentParser} and supplies
- * {@link DocxMarkdownGenerator} as the primary generator.
+ * {@link DoclingMarkdownGenerator} as the primary generator, with
+ * {@link DocxMarkdownGenerator} (Apache POI) as the fallback.
  *
  * @version $Id$
  */
 public class DocxParser extends SimpleDocumentParser
 {
-    private final DocxMarkdownGenerator generator = new DocxMarkdownGenerator();
+    private final DocxMarkdownGenerator poiGenerator = new DocxMarkdownGenerator();
 
     @Override
-    protected String runPrimaryGenerator(final byte[] content, final String fileName)
+    protected String runFallbackGenerator(final byte[] content, final String fileName)
     {
         try {
-            return this.generator.toMarkdown(new ByteArrayInputStream(content), fileName);
+            return this.poiGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
         } catch (IOException | LinkageError e) {
             return "";
         }

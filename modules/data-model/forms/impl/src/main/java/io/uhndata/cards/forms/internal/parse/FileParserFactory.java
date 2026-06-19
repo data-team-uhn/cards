@@ -24,7 +24,7 @@ import java.util.Locale;
  * Routing rules:
  * </p>
  * <ul>
- *   <li>PDF — Docling primary with PDFBox fallback; DOCX — Java primary with Docling fallback</li>
+ *   <li>PDF — Docling primary with PDFBox fallback; DOCX — Docling primary with Apache POI fallback</li>
  *   <li>DOC — LibreOffice conversion to DOCX, then processed with DocxMarkdownGenerator</li>
  *   <li>any other extension — returns {@code null} (caller skips the file)</li>
  * </ul>

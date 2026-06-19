@@ -31,6 +31,38 @@ from docling.document_converter import DocumentConverter, WordFormatOption
 from docling_error_detection import ensure_conversion_ok
 from markdown_cleanup import clean_markdown
 
+_docx_converter: DocumentConverter | None = None
+
+
+def get_docx_converter() -> DocumentConverter:
+    """Return a process-wide DOCX converter, creating it on first use."""
+    global _docx_converter
+    if _docx_converter is None:
+        _docx_converter = DocumentConverter(
+            format_options={
+                InputFormat.DOCX: WordFormatOption()
+            }
+        )
+    return _docx_converter
+
+
+def convert_docx_to_markdown(
+    input_path: Path,
+    *,
+    converter: DocumentConverter | None = None,
+) -> str:
+    """
+    Convert a DOCX file to Markdown and return the text.
+
+    @param input_path: path to the source .docx file
+    @param converter: optional reusable converter instance
+    @return: cleaned Markdown text
+    """
+    active_converter = converter if converter is not None else get_docx_converter()
+    result = active_converter.convert(str(input_path))
+    ensure_conversion_ok(result)
+    return clean_markdown(result.document.export_to_markdown())
+
 
 def convert_docx(input_path: Path, output_file: Path) -> None:
     """
@@ -41,26 +73,17 @@ def convert_docx(input_path: Path, output_file: Path) -> None:
     """
     t0 = perf_counter()
 
-    converter = DocumentConverter(
-        format_options={
-            InputFormat.DOCX: WordFormatOption()
-        }
-    )
+    converter = get_docx_converter()
 
     t1 = perf_counter()
 
-    result = converter.convert(str(input_path))
-
-    t2 = perf_counter()
-
     try:
-        ensure_conversion_ok(result)
+        markdown_content = convert_docx_to_markdown(input_path, converter=converter)
     except RuntimeError as exc:
         print(f"Conversion failed: {exc}", file=sys.stderr)
         sys.exit(1)
 
-    markdown_content = clean_markdown(result.document.export_to_markdown())
-
+    t2 = perf_counter()
     t3 = perf_counter()
 
     with open(output_file, "w", encoding="utf-8") as f:
@@ -68,7 +91,6 @@ def convert_docx(input_path: Path, output_file: Path) -> None:
 
     t4 = perf_counter()
 
-    print(f"Status: {getattr(result, 'status', 'unknown')}")
     print(f"Markdown length: {len(markdown_content):,} characters")
 
     print("\n=== Timing ===")

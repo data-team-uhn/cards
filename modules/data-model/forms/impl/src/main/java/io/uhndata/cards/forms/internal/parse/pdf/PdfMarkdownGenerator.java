@@ -137,8 +137,7 @@ public class PdfMarkdownGenerator
     public String toMarkdown(final InputStream stream, final String fileName)
         throws IOException
     {
-        final long startTimestamp = System.currentTimeMillis();
-        LOGGER.info("PDF markdown parsing started for file '{}' at {}", fileName, startTimestamp);
+        LOGGER.info("PDFBox parse request started for '{}'", fileName);
         final byte[] bytes = stream.readAllBytes();
         try (PDDocument document = Loader.loadPDF(bytes)) {
             final StyledPdfTextStripper stripper = new StyledPdfTextStripper();
@@ -172,10 +171,6 @@ public class PdfMarkdownGenerator
                 }
             }
             return MarkdownCleanup.clean(markdown.toString());
-        } finally {
-            final long endTimestamp = System.currentTimeMillis();
-            LOGGER.info("PDF markdown parsing finished for file '{}' at {} (total {} ms)",
-                fileName, endTimestamp, endTimestamp - startTimestamp);
         }
     }
 

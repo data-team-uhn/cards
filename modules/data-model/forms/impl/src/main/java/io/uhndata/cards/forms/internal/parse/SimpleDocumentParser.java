@@ -28,9 +28,7 @@ import org.slf4j.LoggerFactory;
  * Base class for document parsers that apply a primary generator and fall back to a secondary
  * generator when the primary fails, returns empty output, or produces insufficient content.
  * <p>
- * Subclasses implement {@link #runPrimaryGenerator} to plug in the format-specific primary generator.
- * Subclasses may also override {@link #runFallbackGenerator} to supply a custom fallback; the default
- * fallback delegates to {@link DoclingMarkdownGenerator}.
+ * Subclasses implement {@link #runFallbackGenerator} to supply a format-specific fallback.
  * All shared orchestration logic — stream reading, error handling, and sufficiency check — lives here.
  * </p>
  *
@@ -48,7 +46,6 @@ public abstract class SimpleDocumentParser implements FileParser
     public final String parse(final InputStream stream, final String fileName)
     {
         final long startTimestamp = System.currentTimeMillis();
-        this.logger.info("Document parsing started for '{}'", fileName);
         final byte[] content;
         try {
             content = stream.readAllBytes();
@@ -104,28 +101,28 @@ public abstract class SimpleDocumentParser implements FileParser
     }
 
     /**
-     * Run the format-specific primary generator against the document bytes.
+     * Run the primary generator against the document bytes.
+     * The default implementation delegates to {@link DoclingMarkdownGenerator}.
+     * Subclasses may override to supply a format-specific primary generator.
      * Must not throw — return an empty string on any generator error.
      *
      * @param content raw document bytes
      * @param fileName source file name
      * @return markdown text, or an empty string on failure
      */
-    protected abstract String runPrimaryGenerator(byte[] content, String fileName);
+    protected String runPrimaryGenerator(final byte[] content, final String fileName)
+    {
+        return this.doclingGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
+    }
 
     /**
      * Run the fallback generator when the primary fails, returns empty output, or produces
      * insufficient content.
-     * The default implementation delegates to {@link DoclingMarkdownGenerator}.
-     * Subclasses may override to supply a format-specific fallback.
      * Must not throw — return an empty string on any generator error.
      *
      * @param content raw document bytes
      * @param fileName source file name
      * @return markdown text, or an empty string on failure
      */
-    protected String runFallbackGenerator(final byte[] content, final String fileName)
-    {
-        return this.doclingGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
-    }
+    protected abstract String runFallbackGenerator(byte[] content, String fileName);
 }
