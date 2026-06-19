@@ -177,6 +177,30 @@ export default function ReorderForm(props) {
     });
   }, [nodes, newParent]);
 
+  // Which position radios are selectable, computed once and shared by the radio render and the
+  // effect that clears a selection once it stops being valid. A radio is disabled when there is
+  // no new parent, or when picking it wouldn't actually move the source:
+  //  - First/Last: the source already sits in that slot (no-op).
+  //  - After...: every offered reference position is a no-op (e.g. moving the last of two
+  //    children — "after the first" is its current spot, "after itself" is excluded).
+  // An empty target parent has only a single slot, so only First stays enabled there.
+  const positionRadioDisabled = useMemo(() => {
+    const canEvaluate = !!nodes[reorderSource] && !!newParent && !!nodes[newParent];
+    const noNewParent = !newParent;
+    const newParentHasNoEntryChildren = canEvaluate && getEntryChildIds(nodes, newParent).length === 0;
+    const isNoOp = (slot) =>
+      isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, slot));
+    const firstIsNoOp = canEvaluate && isNoOp({ type: 'first' });
+    const lastIsNoOp = canEvaluate && isNoOp({ type: 'last' });
+    const afterHasViableTarget = canEvaluate
+      && getEntryChildIds(nodes, newParent).some(refId => !isNoOp({ type: 'after', refId }));
+    return {
+      first: noNewParent || firstIsNoOp,
+      other: noNewParent || newParentHasNoEntryChildren || !afterHasViableTarget,
+      last: noNewParent || newParentHasNoEntryChildren || lastIsNoOp,
+    };
+  }, [nodes, reorderSource, newParent]);
+
 
   useEffect(() => {
     if (Object.keys(nodes).length === 0) {
@@ -204,14 +228,22 @@ export default function ReorderForm(props) {
 
   useEffect(() => {
     setNewPositionSelection([]);
-    // If newParent has no entry-type children (conditionals excluded), default positionRadio
-    // to 'first'
-    const newParentHasNoEntryChildren = !!newParent && getEntryChildIds(nodes, newParent).length === 0;
-
+    if (!newParent) return;
+    // If the target parent has no entry-type children (conditionals excluded), First is the only
+    // slot, so default to it.
+    const newParentHasNoEntryChildren = getEntryChildIds(nodes, newParent).length === 0;
     if (newParentHasNoEntryChildren) {
       reorderDispatch({ type: 'SET_POSITIONRADIO', payload: 'first' });
+      return;
     }
-  }, [newParent]);
+    // Otherwise, if the current choice is no longer selectable (e.g. "After..." lost all viable
+    // targets after a parent change), drop it so a stale, unusable selection and its dropdown
+    // can't linger — falling back to First when that one is still valid.
+    const current = reorderState.inputs.positionRadio;
+    if (current && positionRadioDisabled[current]) {
+      reorderDispatch({ type: 'SET_POSITIONRADIO', payload: positionRadioDisabled.first ? '' : 'first' });
+    }
+  }, [newParent, nodes, positionRadioDisabled, reorderState.inputs.positionRadio]);
 
   const selectReorderSourceContent = (
     <>
@@ -332,47 +364,19 @@ export default function ReorderForm(props) {
           value={reorderState.inputs.positionRadio}
           onChange={(e) => reorderDispatch({ type: 'SET_POSITIONRADIO', payload: e.target.value })}
         >
-          {(() => {
-            const noNewParent = !newParent
-            const newParentHasNoEntryChildren = getEntryChildIds(nodes, newParent).length === 0
-            // First/Last are no-ops only when the source would land back in its current slot.
-            // isNoOpMove already returns false across different parents, so no same-parent guard
-            // is needed here. It works in the full-children index space (the space :order uses),
-            // so it stays consistent with the submit-time noNewTarget guard below.
-            const canEvaluate = !!nodes[reorderSource] && !!nodes[newParent];
-            const firstIsNoOp = canEvaluate
-              && isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, { type: 'first' }));
-            const lastIsNoOp = canEvaluate
-              && isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, { type: 'last' }));
-            // "After..." is only useful if some reference position yields a real move. Within the
-            // same parent every "after" slot can be a no-op (e.g. moving the last of two children:
-            // "after the first" is its current spot, "after itself" is excluded), so disable it
-            // when no offered position would actually move the source.
-            const afterHasViableTarget = canEvaluate && getEntryChildIds(nodes, newParent).some(refId =>
-              !isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, { type: 'after', refId })));
-            return (
-              [ { value: 'first', label: 'First' },
-                { value: 'other', label: 'After...' },
-                { value: 'last', label: 'Last' },
-              ].map(({ value, label }) =>
-                <FormControlLabel
-                  key={value}
-                  value={value}
-                  label={label}
-                  disabled={[
-                    noNewParent,
-                    // An empty target parent has a single slot, so keep First (which the
-                    // effect auto-selects) enabled and disable After.../Last.
-                    (newParentHasNoEntryChildren && value !== 'first'),
-                    (value === 'first' && firstIsNoOp),
-                    (value === 'last' && lastIsNoOp),
-                    (value === 'other' && !afterHasViableTarget)
-                  ].includes(true)}
-                  control={<Radio />}
-                />
-              )
-            )
-          })()}
+          {[
+            { value: 'first', label: 'First' },
+            { value: 'other', label: 'After...' },
+            { value: 'last', label: 'Last' },
+          ].map(({ value, label }) =>
+            <FormControlLabel
+              key={value}
+              value={value}
+              label={label}
+              disabled={positionRadioDisabled[value]}
+              control={<Radio />}
+            />
+          )}
         </RadioGroup>
         { reorderState.inputs.positionRadio === 'other' &&
           <QuestionnaireAutocomplete
