@@ -35,10 +35,10 @@ os.environ.setdefault("DOCLING_NUM_THREADS", "1")
 
 # Docling internal batching/concurrency.
 # Keep conservative when also using ProcessPoolExecutor, otherwise memory can spike.
-settings.perf.doc_batch_concurrency = 1
-settings.perf.page_batch_concurrency = 1
-settings.perf.page_batch_size = 1
-settings.perf.elements_batch_size = 16
+settings.perf.doc_batch_concurrency = 1  # Number of docs processed in parallel
+settings.perf.page_batch_concurrency = 1  # Number of page batches processed in parallel
+settings.perf.page_batch_size = 1  # Number of pages Docling groups together internally for page-level processing
+settings.perf.elements_batch_size = 16  # Number of extracted elements are processed together internally
 
 PDF_PIPELINE_OPTIONS = PdfPipelineOptions(
     do_ocr=False,
@@ -58,7 +58,7 @@ PDF_PIPELINE_OPTIONS = PdfPipelineOptions(
     table_batch_size=1,
     batch_polling_interval_seconds=0.1,
     table_structure_options=TableStructureOptions(
-        mode=TableFormerMode.FAST,
-        do_cell_matching=False,
+        mode=TableFormerMode.ACCURATE,
+        do_cell_matching=True,
     ),
 )
