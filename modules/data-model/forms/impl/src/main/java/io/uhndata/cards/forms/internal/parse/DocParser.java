@@ -62,7 +62,7 @@ public class DocParser implements FileParser
     private final DocxParser docxParser = new DocxParser();
 
     @Override
-    public String parse(final InputStream stream, final String fileName)
+    public String parse(final InputStream stream, final String fileName, final String outputSubfolder)
     {
         final byte[] content;
         try {
@@ -71,10 +71,10 @@ public class DocParser implements FileParser
             LOGGER.error("Failed to read DOC stream for '{}': {}", fileName, e.getMessage());
             return "";
         }
-        return processDocAsDocx(content, fileName);
+        return processDocAsDocx(content, fileName, outputSubfolder);
     }
 
-    private String processDocAsDocx(final byte[] content, final String fileName)
+    private String processDocAsDocx(final byte[] content, final String fileName, final String outputSubfolder)
     {
         File docFile = null;
         File outputDir = null;
@@ -83,7 +83,7 @@ public class DocParser implements FileParser
             outputDir = Files.createTempDirectory("cards-doc-out-").toFile();
             final File docxFile = convertToDocx(docFile, outputDir);
             final byte[] docxContent = Files.readAllBytes(docxFile.toPath());
-            return this.docxParser.parse(new ByteArrayInputStream(docxContent), fileName);
+            return this.docxParser.parse(new ByteArrayInputStream(docxContent), fileName, outputSubfolder);
         } catch (IOException | SecurityException e) {
             LOGGER.warn("DOC to DOCX conversion failed for '{}': {}", fileName, e.getMessage());
             return "";

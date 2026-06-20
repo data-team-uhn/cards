@@ -26,12 +26,29 @@ import java.io.InputStream;
 public interface FileParser
 {
     /**
-     * Parse text from the provided stream.
+     * Parse text from the provided stream, saving the resulting markdown under the default output
+     * directory (no per-answer subfolder).
      *
      * @param stream the input document stream
      * @param fileName source file name
      * @return parsed markdown content
      * @throws DocumentParseException when the document stream cannot be read
      */
-    String parse(InputStream stream, String fileName);
+    default String parse(InputStream stream, String fileName)
+    {
+        return parse(stream, fileName, null);
+    }
+
+    /**
+     * Parse text from the provided stream, saving the resulting markdown into the given subfolder of
+     * the output directory.
+     *
+     * @param stream the input document stream
+     * @param fileName source file name
+     * @param outputSubfolder subfolder of the output directory to save the markdown into (typically
+     *            the owning answer's UUID); when {@code null} or blank, the output directory root is used
+     * @return parsed markdown content
+     * @throws DocumentParseException when the document stream cannot be read
+     */
+    String parse(InputStream stream, String fileName, String outputSubfolder);
 }

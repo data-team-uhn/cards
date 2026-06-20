@@ -60,6 +60,8 @@ public class ProposalAnswerEditor extends DefaultEditor
 
     private final NodeBuilder currentNodeBuilder;
 
+    private final String nodeName;
+
     private boolean hasNewFile;
 
     /**
@@ -70,8 +72,21 @@ public class ProposalAnswerEditor extends DefaultEditor
      */
     public ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils)
     {
+        this(nodeBuilder, formUtils, null);
+    }
+
+    /**
+     * Constructor that also records the name of the node the builder represents.
+     *
+     * @param nodeBuilder the builder for the current node
+     * @param formUtils helper for checking form nodes
+     * @param name the name of the node the builder represents, used as the parse output folder name
+     */
+    private ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils, final String name)
+    {
         this.currentNodeBuilder = nodeBuilder;
         this.formUtils = formUtils;
+        this.nodeName = name;
     }
 
     @Override
@@ -80,7 +95,7 @@ public class ProposalAnswerEditor extends DefaultEditor
         if (this.formUtils.isFormsHomepage(after) || this.formUtils.isForm(after)
             || this.formUtils.isAnswerSection(after)
             || PROPOSAL_ANSWER_NODETYPE.equals(after.getName(JCR_PRIMARY_TYPE))) {
-            return new ProposalAnswerEditor(this.currentNodeBuilder.child(name), this.formUtils);
+            return new ProposalAnswerEditor(this.currentNodeBuilder.child(name), this.formUtils, name);
         }
         if (NT_FILE.equals(after.getName(JCR_PRIMARY_TYPE))) {
             this.hasNewFile = true;
@@ -108,10 +123,19 @@ public class ProposalAnswerEditor extends DefaultEditor
             return;
         }
 
-        final List<String> parsedContents = parseProposalFiles(nodeBuilder);
+        final List<String> parsedContents = parseProposalFiles(nodeBuilder, resolveAnswerFolder(nodeBuilder));
         if (!parsedContents.isEmpty()) {
             nodeBuilder.setProperty("note", String.join("\n\n", parsedContents), Type.STRING);
         }
+    }
+
+    private String resolveAnswerFolder(final NodeBuilder nodeBuilder)
+    {
+        final String uuid = nodeBuilder.getString("jcr:uuid");
+        if (StringUtils.isNotBlank(uuid)) {
+            return uuid;
+        }
+        return this.nodeName;
     }
 
     private boolean isEligibleProposalAnswer(final NodeBuilder nodeBuilder)
@@ -124,7 +148,7 @@ public class ProposalAnswerEditor extends DefaultEditor
             || DocumentParseException.isParseErrorNote(note);
     }
 
-    private List<String> parseProposalFiles(final NodeBuilder answerNode)
+    private List<String> parseProposalFiles(final NodeBuilder answerNode, final String answerFolder)
     {
         final List<String> parsedContents = new ArrayList<>();
         for (String fileName : answerNode.getChildNodeNames()) {
@@ -135,7 +159,7 @@ public class ProposalAnswerEditor extends DefaultEditor
             if (!NT_FILE.equals(fileNode.getName(JCR_PRIMARY_TYPE))) {
                 continue;
             }
-            final String parsedText = parseFileNode(fileNode, fileName);
+            final String parsedText = parseFileNode(fileNode, fileName, answerFolder);
             if (StringUtils.isNotBlank(parsedText)) {
                 parsedContents.add(parsedText.trim());
             }
@@ -143,7 +167,7 @@ public class ProposalAnswerEditor extends DefaultEditor
         return parsedContents;
     }
 
-    private String parseFileNode(final NodeBuilder fileNode, final String fileName)
+    private String parseFileNode(final NodeBuilder fileNode, final String fileName, final String answerFolder)
     {
         final FileParser parser = PARSER_FACTORY.getParser(fileName);
         if (parser == null) {
@@ -155,14 +179,15 @@ public class ProposalAnswerEditor extends DefaultEditor
             return null;
         }
         try {
-            return parseBlob(dataBlob, parser, fileName);
+            return parseBlob(dataBlob, parser, fileName, answerFolder);
         } catch (DocumentParseException e) {
             LOGGER.warn("Failed to parse file '{}': {}", fileName, e.getMessage());
             return DocumentParseException.toNote(fileName, e.getMessage());
         }
     }
 
-    private String parseBlob(final Blob dataBlob, final FileParser parser, final String fileName)
+    private String parseBlob(final Blob dataBlob, final FileParser parser, final String fileName,
+        final String answerFolder)
     {
         final long startTimestamp = System.currentTimeMillis();
         LOGGER.info("<>File parsing started for '{}'", fileName);
@@ -175,7 +200,7 @@ public class ProposalAnswerEditor extends DefaultEditor
             }
             try (InputStream stream = dataBlob.getNewStream()) {
                 final byte[] content = stream.readNBytes((int) blobLength);
-                result = parser.parse(new ByteArrayInputStream(content), fileName);
+                result = parser.parse(new ByteArrayInputStream(content), fileName, answerFolder);
                 return result;
             }
         } catch (DocumentParseException e) {
