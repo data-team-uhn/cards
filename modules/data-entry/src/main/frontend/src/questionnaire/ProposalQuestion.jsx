@@ -171,7 +171,7 @@ function ProposalQuestion(props) {
 
   return (
     <FileQuestion
-      questionDefinition={{ ...questionDefinition, maxAnswers: 1, enableNotes: true }}
+      questionDefinition={{ maxAnswers: 0, ...questionDefinition, enableNotes: true }}
       {...rest}
       answerNodeType="cards:ProposalAnswer"
       accept={ACCEPTED_PROPOSAL_MIME_TYPES}
