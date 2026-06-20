@@ -19,10 +19,6 @@ package io.uhndata.cards.forms.internal.parse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,10 +37,6 @@ import org.slf4j.LoggerFactory;
 public abstract class SimpleDocumentParser implements FileParser
 {
     private static final int MIN_CONTENT_CHARS = 50;
-
-    private static final String OUTPUT_DIR_PROPERTY = "cards.parse.output.dir";
-
-    private static final String DEFAULT_OUTPUT_SUBDIR = "cards-parsed-markdown";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -67,7 +59,7 @@ public abstract class SimpleDocumentParser implements FileParser
         }
         final String primary = runPrimaryGeneratorSafely(content, fileName);
         if (isSufficient(primary)) {
-            saveResult(fileName, primary, "primary", outputSubfolder);
+            ParsedMarkdownStore.save(outputSubfolder, fileName, primary);
             logParseFinished(fileName, startTimestamp, primary, "primary");
             return primary;
         }
@@ -75,7 +67,7 @@ public abstract class SimpleDocumentParser implements FileParser
             fileName);
         final String fallback = runFallbackGenerator(content, fileName);
         if (isSufficient(fallback)) {
-            saveResult(fileName, fallback, "fallback", outputSubfolder);
+            ParsedMarkdownStore.save(outputSubfolder, fileName, fallback);
             logParseFinished(fileName, startTimestamp, fallback, "fallback");
             return fallback;
         }
@@ -108,88 +100,6 @@ public abstract class SimpleDocumentParser implements FileParser
         final long endTimestamp = System.currentTimeMillis();
         this.logger.info("Document parsing finished for '{}' via {} at {} (total {} ms, result {} chars)",
             fileName, path, endTimestamp, endTimestamp - startTimestamp, result.length());
-    }
-
-    /**
-     * Persist the chosen parse result to disk as a {@code .md} file.
-     * <p>
-     * The output directory defaults to {@code <user.dir>/cards-parsed-markdown} (i.e. the
-     * {@code cards-parsed-markdown} folder under the working directory CARDS was launched from,
-     * which is the project root) and can be overridden with the {@code cards.parse.output.dir}
-     * system property. The file name is derived
-     * from the source file name with its extension replaced by {@code .md}. Any existing {@code .md}
-     * file for the same source name is deleted first, so re-parsing the same file always replaces the
-     * previous output rather than leaving stale content. A failure to save never interrupts parsing —
-     * it is logged and swallowed.
-     * </p>
-     *
-     * @param fileName source file name
-     * @param result the markdown content to persist
-     * @param path which generator produced the result ("primary" or "fallback"), for logging
-     * @param outputSubfolder subfolder to save into (typically the owning answer's UUID); when
-     *            {@code null} or blank, the output directory root is used
-     */
-    private void saveResult(final String fileName, final String result, final String path,
-        final String outputSubfolder)
-    {
-        try {
-            final Path outputDir = resolveOutputDir(outputSubfolder);
-            Files.createDirectories(outputDir);
-            final Path outputFile = outputDir.resolve(buildOutputFileName(fileName));
-            if (Files.deleteIfExists(outputFile)) {
-                this.logger.info("Deleted previous parse result for '{}' at {}", fileName, outputFile);
-            }
-            Files.writeString(outputFile, result, StandardCharsets.UTF_8);
-            this.logger.info("Saved {} parse result for '{}' to {}", path, fileName, outputFile);
-        } catch (IOException | RuntimeException e) {
-            this.logger.warn("Could not save parse result for '{}': {}", fileName, e.getMessage());
-        }
-    }
-
-    private static Path resolveOutputDir(final String outputSubfolder)
-    {
-        final String configured = System.getProperty(OUTPUT_DIR_PROPERTY);
-        final Path baseDir = StringUtils.isNotBlank(configured)
-            ? Paths.get(configured)
-            : Paths.get(System.getProperty("user.dir"), DEFAULT_OUTPUT_SUBDIR);
-        final String sanitizedSubfolder = sanitizeSubfolder(outputSubfolder);
-        if (sanitizedSubfolder != null) {
-            return baseDir.resolve(sanitizedSubfolder);
-        }
-        return baseDir;
-    }
-
-    private static String sanitizeSubfolder(final String outputSubfolder)
-    {
-        if (StringUtils.isBlank(outputSubfolder)) {
-            return null;
-        }
-        String sanitized = outputSubfolder.trim();
-        final int separator = Math.max(sanitized.lastIndexOf('/'), sanitized.lastIndexOf('\\'));
-        if (separator >= 0) {
-            sanitized = sanitized.substring(separator + 1);
-        }
-        if (StringUtils.isBlank(sanitized) || ".".equals(sanitized) || "..".equals(sanitized)) {
-            return null;
-        }
-        return sanitized;
-    }
-
-    private static String buildOutputFileName(final String fileName)
-    {
-        String baseName = fileName;
-        final int separator = Math.max(baseName.lastIndexOf('/'), baseName.lastIndexOf('\\'));
-        if (separator >= 0) {
-            baseName = baseName.substring(separator + 1);
-        }
-        final int dot = baseName.lastIndexOf('.');
-        if (dot > 0) {
-            baseName = baseName.substring(0, dot);
-        }
-        if (StringUtils.isBlank(baseName)) {
-            baseName = "document";
-        }
-        return baseName + ".md";
     }
 
     /**
