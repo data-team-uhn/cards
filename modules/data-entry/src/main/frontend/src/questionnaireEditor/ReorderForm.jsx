@@ -185,9 +185,15 @@ export default function ReorderForm(props) {
       resolveTargetIndex(nodes, reorderSource, newParent, { type: 'after', refId: option.id })),
   [nodes, reorderSource, newParent]);
 
+  // A different target parent must not already contain a child with the same node name (JCR
+  // siblings need unique names). Detected up front so the radios and Move stay disabled and we can
+  // warn inline, rather than letting reorderNode throw on submit.
+  const nameCollision = !!nodes[reorderSource] && !!nodes[newParent]
+    && getMoveValidity(nodes, reorderSource, newParent).code === MOVE_INVALID.NAME_COLLISION;
+
   // Which position radios are selectable, computed once and shared by the radio render and the
   // effect that clears a selection once it stops being valid. A radio is disabled when there is
-  // no new parent, or when picking it wouldn't actually move the source:
+  // no new parent, a name collision blocks the whole move, or picking it wouldn't move the source:
   //  - First/Last: the source already sits in that slot (no-op).
   //  - After...: every offered reference position is a no-op (e.g. moving the last of two
   //    children — "after the first" is its current spot, "after itself" is excluded).
@@ -203,11 +209,11 @@ export default function ReorderForm(props) {
     const afterHasViableTarget = canEvaluate
       && getEntryChildIds(nodes, newParent).some(refId => !isNoOp({ type: 'after', refId }));
     return {
-      first: noNewParent || firstIsNoOp,
-      other: noNewParent || newParentHasNoEntryChildren || !afterHasViableTarget,
-      last: noNewParent || newParentHasNoEntryChildren || lastIsNoOp,
+      first: noNewParent || nameCollision || firstIsNoOp,
+      other: noNewParent || nameCollision || newParentHasNoEntryChildren || !afterHasViableTarget,
+      last: noNewParent || nameCollision || newParentHasNoEntryChildren || lastIsNoOp,
     };
-  }, [nodes, reorderSource, newParent]);
+  }, [nodes, reorderSource, newParent, nameCollision]);
 
 
   useEffect(() => {
@@ -361,6 +367,11 @@ export default function ReorderForm(props) {
           id="newParent"
           disabled={!reorderSource}
         />
+        {nameCollision &&
+          <Typography variant="caption" color="error" sx={{ display: 'block', mt: 0.5 }}>
+            This destination already contains an item with the same name. Choose a different destination.
+          </Typography>
+        }
       </Grid>
 
       <Grid size={3}>
@@ -434,7 +445,7 @@ export default function ReorderForm(props) {
   const slingPosition = (!invalidPosition && newParent) ? computeSlingPosition() : null;
 
   const noNewTarget = slingPosition !== null && isNoOpMove(nodes, reorderSource, newParent, slingPosition);
-  const disableSubmit = isLoadingOrError || noReorderSource || noNewTarget || invalidPosition;
+  const disableSubmit = isLoadingOrError || noReorderSource || noNewTarget || invalidPosition || nameCollision;
 
   const handleError = (e) => {
     console.warn('Reorder error', e);
@@ -451,13 +462,19 @@ export default function ReorderForm(props) {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!reorderSource || !newParent || invalidPosition) {
+    if (disableSubmit) {
       return;
     }
     reorderDispatch({ type: 'SET_LOADING' });
-    treeContext.actions.reorderNode(reorderSource, newParent, slingPosition)
-      .then(handleSuccess)
-      .catch(handleError);
+    // reorderNode validates synchronously and can throw before it returns a promise, so a
+    // try/catch is needed alongside .catch() for the async (server) failure path.
+    try {
+      treeContext.actions.reorderNode(reorderSource, newParent, slingPosition)
+        .then(handleSuccess)
+        .catch(handleError);
+    } catch (err) {
+      handleError(err);
+    }
   };
 
   return (
