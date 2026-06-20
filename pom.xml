@@ -544,6 +544,9 @@
             <exclude>project_name.txt</exclude>
             <!-- Content with non-Apache Licenses -->
             <exclude>**/fullBody.svg</exclude>
+            <!-- Tabula auto generated file -->
+            <exclude>/technology/tabula/ObjectExtractor.java</exclude>
+            <exclude>/Parsing/prompter*.py</exclude>
           </inputExcludes>
         </configuration>
         <executions>
