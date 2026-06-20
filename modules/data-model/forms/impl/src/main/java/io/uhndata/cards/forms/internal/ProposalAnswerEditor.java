@@ -36,6 +36,7 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.internal.parse.DocumentParseException;
 import io.uhndata.cards.forms.internal.parse.FileParser;
 import io.uhndata.cards.forms.internal.parse.FileParserFactory;
+import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
 
 /**
  * Parse uploaded files and place extracted text into answer notes.
@@ -123,10 +124,12 @@ public class ProposalAnswerEditor extends DefaultEditor
             return;
         }
 
-        final List<String> parsedContents = parseProposalFiles(nodeBuilder, resolveAnswerFolder(nodeBuilder));
+        final String answerFolder = resolveAnswerFolder(nodeBuilder);
+        final List<String> parsedContents = parseProposalFiles(nodeBuilder, answerFolder);
         if (!parsedContents.isEmpty()) {
             nodeBuilder.setProperty("note", String.join("\n\n", parsedContents), Type.STRING);
         }
+        ParsedMarkdownStore.writeAggregate(answerFolder);
     }
 
     private String resolveAnswerFolder(final NodeBuilder nodeBuilder)
