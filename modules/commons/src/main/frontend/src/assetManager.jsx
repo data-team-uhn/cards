@@ -147,16 +147,7 @@ var loadModule = async function(assetURL) {
   if (realURL === "") {
     return null;
   }
-  return modules[realURL] ??= fetch(realURL)
-    .then(response => response.ok ? response.text() : Promise.reject(response))
-    .then(remoteComponentSrc => {
-      var returnVal = window.eval(remoteComponentSrc);
-      if (!returnVal) {
-        console.error("Failed to load asset", assetURL);
-        return "";
-      }
-      return returnVal;
-    });
+  return modules[realURL] ??= await import(/* webpackIgnore: true */realURL);
 };
 
 // Load a React component from a URL.

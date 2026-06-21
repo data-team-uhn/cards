@@ -93,12 +93,12 @@ if ("application/json".equals(request.getHeader("Accept"))) {
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" class="next-head"/>
     <script src="/system/sling.js"></script>
-    <script src="/libs/cards/resources/${assets['vendor.js']}"></script>
-    <script src="/libs/cards/resources/${assets['runtime.js']}"></script>
+    <script type="module" src="/libs/cards/resources/${assets['vendor.js']}"></script>
+    <script type="module" src="/libs/cards/resources/${assets['runtime.js']}"></script>
   </head>
   <body>
     <div id="main-error-container"></div>
-    <script src="/libs/cards/resources/${assets['cards-commons.GenericErrorPage.js']}"></script>
+    <script type="module" src="/libs/cards/resources/${assets['cards-commons.GenericErrorPage.js']}"></script>
   </body>
 </html>
 <%

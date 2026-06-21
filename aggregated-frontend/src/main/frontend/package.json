@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "license": "Apache-2.0",
   "name": "cards-aggregated-frontend",
   "description": "CARDS is a software tool providing an easy-to-use Web interface and standardized database back-end for collecting medical data.",
