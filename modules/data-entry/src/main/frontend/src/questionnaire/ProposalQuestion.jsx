@@ -17,16 +17,12 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
-
-import { Alert, Typography } from "@mui/material";
+import { Alert } from "@mui/material";
 import PropTypes from "prop-types";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import FileQuestion from "./FileQuestion";
-import FormattedText from "../components/FormattedText";
 import { checkPropTypes } from "../propTypes";
-import MarkdownText from "../questionnaireEditor/MarkdownText";
 
 const ACCEPTED_PROPOSAL_EXTENSIONS = [".pdf", ".docx", ".doc"];
 
@@ -90,79 +86,26 @@ function extractParseError(note) {
 
 function ProposalNote(props) {
   const {
-    answerPath,
     existingAnswer,
-    onChangeNote,
     pageActive,
-    readonly,
-    value,
-    placeholder = "Parsed markdown notes",
   } = props;
-  const [ note, setNote ] = useState(existingAnswer?.[1]?.note || "");
 
-  useEffect(() => {
-    if (typeof(value) != "undefined") {
-      setNote(value || "");
-    }
-  }, [value]);
+  const parseError = extractParseError(existingAnswer?.[1]?.note);
 
-  useEffect(() => onChangeNote?.(note), [note, onChangeNote]);
-
-  const parseError = extractParseError(note);
-
-  if (!pageActive) {
+  if (!pageActive || !parseError) {
     return <></>;
   }
 
-  if (readonly) {
-    return (
-      <>
-        {parseError && (
-          <Alert severity="error" sx={{ mb: 1 }}>
-            {parseError}
-          </Alert>
-        )}
-        {note && !parseError ? (
-          <div>
-            <Typography variant="subtitle1">Notes</Typography>
-            <FormattedText>{note}</FormattedText>
-          </div>
-        ) : null}
-      </>
-    );
-  }
-
   return (
-    <>
-      {parseError && (
-        <Alert severity="error" sx={{ mb: 1 }}>
-          {parseError}
-        </Alert>
-      )}
-      <Typography variant="subtitle1">Notes</Typography>
-      <MarkdownText
-        value={parseError ? "" : note}
-        preview="edit"
-        height={260}
-        onChange={(newValue) => setNote(newValue || "")}
-      />
-      {note
-        ? <input type="hidden" name={`${answerPath}/note`} value={note} />
-        : <input type="hidden" name={`${answerPath}/note@Delete`} value="0" />}
-      {(!note || note.trim().length === 0) && !parseError
-        && <Typography variant="caption" color="textSecondary">{placeholder}</Typography>}
-    </>
+    <Alert severity="error" sx={{ mb: 1 }}>
+      {parseError}
+    </Alert>
   );
 }
 
 ProposalNote.propTypes = {
-  answerPath: PropTypes.string,
   existingAnswer: PropTypes.array,
-  onChangeNote: PropTypes.func,
   pageActive: PropTypes.bool,
-  readonly: PropTypes.bool,
-  value: PropTypes.string,
-  placeholder: PropTypes.string,
 };
 
 function ProposalQuestion(props) {
