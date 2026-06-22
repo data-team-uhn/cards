@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -43,6 +43,7 @@ import { makeStyles } from 'tss-react/mui';
 import { checkPropTypes } from "../propTypes";
 import DroppableAnswerOptionList from "./DroppableAnswerOptionList.jsx";
 import EditorInput from "./EditorInput";
+import { useFieldsReaderContext } from "./FieldsContext";
 import MarkdownText from "./MarkdownText";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
@@ -116,6 +117,11 @@ let AnswerOptions = (props) => {
   const { objectKey, value, data, path, saveButtonRef, hint } = props;
   const { classes } = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
+  // Whether the answer options are suggested / pre-filled for a certain
+  //   question type and props (true) or user-entered (false)
+  const usesDefaultOptions = useRef(false);
+  const optionsRef = useRef(options);
+  useEffect(() => { optionsRef.current = options; });
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
@@ -127,6 +133,8 @@ let AnswerOptions = (props) => {
   let [ descriptionLabel, setDescriptionLabel ] = useState('');
   let [ isSpecialOption, setIsSpecialOption ] = useState(false);
   const [clickSaveAfterBlur, setClickSaveAfterBlur] = useState(false);
+
+  const fieldsReader = useFieldsReaderContext();
 
   const notApplicable  = Object.values(data)
     .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
@@ -172,6 +180,41 @@ let AnswerOptions = (props) => {
     setClickSaveAfterBlur(false);
   }, [clickSaveAfterBlur]);
 
+  // Pre-populate answer options with options suggested by the properties already filled in, if any.
+  // If more than one property suggests options, only use the first available.
+  useEffect(() => {
+    // Don't overwrite user-entered/curated options
+    if (optionsRef.current?.length > 0 && !usesDefaultOptions.current) return;
+
+    let prefilledOptions = [];
+    let optionSuggestions = Object.values(fieldsReader)
+      // Out of all properties available in the context,
+      //   find the first one that has `defaultOptions` present
+      //   as a field at least one of its values (stored as an array)
+      .find(
+        v => v.find(e => e?.defaultOptions)
+      )?.reduce(
+        // If found, consolidate all `defaultOptions` in one object
+        (obj, item) => Object.assign(obj, item?.defaultOptions || {}),
+        {}
+      );
+    if (optionSuggestions) {
+      prefilledOptions = Object.entries(optionSuggestions)
+        .filter(([key]) => !key.startsWith("@") && !key.startsWith("jcr:"))
+        .map(([key, option]) => ({
+          label: option.label,
+          value: key,
+          "@path": path + "/AnswerOption" + stringToHash(key),
+          defaultOrder: option.defaultOrder,
+          isNew: true,
+        }))
+        .sort((a, b) => a.defaultOrder - b.defaultOrder);
+    }
+
+    setOptions(prefilledOptions);
+    usesDefaultOptions.current = true;
+  }, [fieldsReader]);
+
   let specialOptionsInfo = [
     {
       tooltip : "This option behaves as 'None' or 'N/A', and unselects/removes all other options upon selection.",
@@ -198,6 +241,7 @@ let AnswerOptions = (props) => {
   // Clear local state when data changes
   useEffect(() => {
     setOptions(extractSortedOptions(data));
+    usesDefaultOptions.current = false;
     setDeletedOptions([]);
     setTempValue('');
     setIsDuplicate(false);
@@ -215,6 +259,7 @@ let AnswerOptions = (props) => {
       newOptions.splice(index, 1);
       return newOptions;
     });
+    usesDefaultOptions.current = false;
   }
 
   let validateOption = (optionInput, setter, specialOption) => {
@@ -257,6 +302,7 @@ let AnswerOptions = (props) => {
         value.push(newOption);
         return value;
       });
+      usesDefaultOptions.current = false;
     }
 
     tempValue && setTempValue('');
@@ -376,6 +422,7 @@ let AnswerOptions = (props) => {
         value[descriptionIndex].description = description;
         return value;
       });
+      usesDefaultOptions.current = false;
     }
     handlePopoverClose();
   }

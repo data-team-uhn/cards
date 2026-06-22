@@ -37,8 +37,9 @@ let ListInput = (props) => {
   const changeFieldsContext = useFieldsWriterContext();
 
   let changeValue = (val) => {
-    changeFieldsContext((oldContext) => ({ ...oldContext, [objectKey]: val }));
-    setSelection(Array.of(val ?? []).flat().filter(v => v?.[type.identifierProperty] != ''));
+    let value = Array.of(val ?? []).flat();
+    changeFieldsContext((oldContext) => ({ ...oldContext, [objectKey]: value }));
+    setSelection(value.filter(v => v?.[type.identifierProperty] != ''));
   }
 
   let handleError = () => {
@@ -55,12 +56,14 @@ let ListInput = (props) => {
       return;
     }
 
-    fetch(
+    let url = new URL(
       '/query?query='
       + encodeURIComponent(
-        `select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`
-      )
-    )
+        `select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`),
+      window.location.origin
+    );
+    url.searchParams.set("resourceSelectors", ".includeDefaultOptions");
+    fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let listOptions = Array.from(json?.rows ?? []);
@@ -104,6 +107,10 @@ let ListInput = (props) => {
     changeValue(event.target.value);
   };
 
+  // Prevent a MUI Select warning when options haven't loaded yet; otherwise pass the full
+  // selection array (multi) or the first selected value (single).
+  const selectValue = options.length === 0 ? "" : (type.multiple ? selection : (selection?.[0] ?? ''));
+
   return (
     <EditorInput name={objectKey} hint={hint}>
       <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType + (type.multiple ? '[]' : '') } />
@@ -120,7 +127,7 @@ let ListInput = (props) => {
           variant="standard"
           id={objectKey}
           multiple={type.multiple}
-          value={type.multiple ? selection : (selection?.[0] ?? '')}
+          value={selectValue}
           onChange={handleChange}
           input={<Input id={objectKey} />}
           renderValue={type.multiple ? () => (

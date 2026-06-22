@@ -923,3 +923,8 @@
 
   // If the colors provided above should take priority over non-prioritized colors
   - overrideMapColors (boolean)
+
+  //Children
+
+  // Container for the selectable zones names corresponding to the variant
+  + defaultOptions (nt:unstructured)

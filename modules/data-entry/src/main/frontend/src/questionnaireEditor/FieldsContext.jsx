@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 
 const DEFAULT_STATE = {};
 
@@ -32,8 +32,13 @@ export function FieldsProvider(props) {
   const [answers, setAnswers] = useState(DEFAULT_STATE);
   const { additionalFieldData, ...rest } = props;
 
+  const readerValue = useMemo(
+    () => ({ ...answers, ...additionalFieldData }),
+    [answers, additionalFieldData]
+  );
+
   return (
-    <FieldsReaderContext.Provider value={{ ...answers, ...additionalFieldData }}>
+    <FieldsReaderContext.Provider value={readerValue}>
       <FieldsWriterContext.Provider value={setAnswers} {...rest}/>
     </FieldsReaderContext.Provider>
   );
