@@ -36,5 +36,6 @@
     <module>contact-info</module>
     <module>dicom</module>
     <module>selectable-area</module>
+    <module>pedigree</module>
   </modules>
 </project>

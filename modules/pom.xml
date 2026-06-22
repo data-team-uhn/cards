@@ -39,7 +39,6 @@
     <module>ui-extension</module>
     <module>login</module>
     <module>homepage</module>
-    <module>pedigree</module>
     <module>export</module>
     <module>data-entry</module>
     <module>data-model</module>
