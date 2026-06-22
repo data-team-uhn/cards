@@ -75,10 +75,5 @@
     <module>variants</module>
     <module>locking</module>
     <module>healthcheck</module>
-    <module>chromosome</module>
-    <module>identifier</module>
-    <module>contact-info</module>
-    <module>dicom</module>
-    <module>selectable-area</module>
   </modules>
 </project>

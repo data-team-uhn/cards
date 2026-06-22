@@ -22,13 +22,13 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-modules</artifactId>
+    <artifactId>cards-data-model-forms-questiontypes</artifactId>
     <version>0.9.40-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-dicom</artifactId>
+  <artifactId>cards-chromosome</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - DICOM question type</name>
+  <name>CARDS - Chromosome question type</name>
 
   <build>
     <plugins>
@@ -44,7 +44,7 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/dicom.cnd</Sling-Nodetypes>
+            <Sling-Nodetypes>SLING-INF/nodetypes/chromosome.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true
@@ -54,29 +54,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-data-model-forms-impl</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-utils</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.json</groupId>
-      <artifactId>jakarta.json-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.component.annotations</artifactId>
-    </dependency>
-  </dependencies>
 </project>

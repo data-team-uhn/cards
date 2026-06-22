@@ -22,36 +22,19 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-modules</artifactId>
+    <artifactId>cards-data-model-forms</artifactId>
     <version>0.9.40-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-chromosome</artifactId>
-  <packaging>bundle</packaging>
-  <name>CARDS - Chromosome question type</name>
+  <artifactId>cards-data-model-forms-questiontypes</artifactId>
+  <packaging>pom</packaging>
+  <name>CARDS - Data Model - Questionnaires and Forms - Optional question types</name>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingfeature-maven-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Include-Resource>{maven-resources}</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/chromosome.cnd</Sling-Nodetypes>
-            <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>
-              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true
-            </Sling-Initial-Content>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <modules>
+    <module>chromosome</module>
+    <module>identifier</module>
+    <module>contact-info</module>
+    <module>dicom</module>
+    <module>selectable-area</module>
+  </modules>
 </project>

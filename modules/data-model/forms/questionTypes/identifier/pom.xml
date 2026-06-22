@@ -22,13 +22,13 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-modules</artifactId>
+    <artifactId>cards-data-model-forms-questiontypes</artifactId>
     <version>0.9.40-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-selectable-area</artifactId>
+  <artifactId>cards-identifier</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Selectable area question type</name>
+  <name>CARDS - Identifier question type</name>
 
   <build>
     <plugins>
@@ -43,12 +43,10 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Include-Resource>{maven-resources},src/main/media</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/selectablearea.cnd</Sling-Nodetypes>
+            <Include-Resource>{maven-resources}</Include-Resource>
+            <Sling-Nodetypes>SLING-INF/nodetypes/identifier.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
-              SLING-INF/content/libs/cards/resources/media/dataEntry/;path:=/libs/cards/resources/media/dataEntry/;overwrite:=true;uninstall:=true;ignoreImportProviders:=json,
-              SLING-INF/content/libs/cards/dataEntry/SelectableArea/;path:=/libs/cards/dataEntry/SelectableArea/;overwrite:=false,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true
             </Sling-Initial-Content>
           </instructions>
@@ -56,4 +54,28 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-data-model-forms-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-store-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
+    </dependency>
+  </dependencies>
 </project>

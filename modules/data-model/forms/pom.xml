@@ -33,5 +33,6 @@
   <modules>
     <module>api</module>
     <module>impl</module>
+    <module>questionTypes</module>
   </modules>
 </project>
