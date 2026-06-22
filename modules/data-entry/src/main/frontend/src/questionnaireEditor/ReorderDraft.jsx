@@ -44,13 +44,19 @@ import {
   Typography,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import _ from "lodash";
 import { DateTime } from 'luxon';
 import { useBlocker } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
 import { ENTRY_TITLE_FIELD_SPEC, jcrGetConditionalTitle } from './entryDisplay';
 import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext';
+import {
+  applyMove,
+  getMoveValidity,
+  isNoOpMove,
+  resolveTargetIndex,
+  MOVE_INVALID,
+} from './reorderModel';
 import { getEntryChildIds } from './treeQueries';
 import ErrorDialog from '../components/ErrorDialog';
 import MainActionButton from "../components/MainActionButton";
@@ -179,41 +185,22 @@ const reorderReducer = (state, action) => {
 
       const { reorderTargetId, insert } = action.payload;
       const reorderSourceId = state.inputs.reorderSourceId;
-      // Determine source and target parent
-      const sourceParent = state.draftTree[reorderSourceId].parent;
-      // If insert then target parent is target node
+      // An "insert" placeholder appends into the target node itself; otherwise the source lands
+      // just before the target sibling, inside that sibling's parent.
       const targetParent = insert ? reorderTargetId : state.draftTree[reorderTargetId].parent;
-      // Determine new position of source node in targetParent
-      const getTargetPosition = (sourceParent, targetParent, reorderTargetId, insert) => {
-        const targetParentChildren = state.draftTree[targetParent].children;
-        let targetIndex = insert ? (targetParentChildren?.length || 0) : targetParentChildren.indexOf(reorderTargetId);
-
-        const sourceIndex = state.draftTree[sourceParent].children.indexOf(state.inputs.reorderSourceId);
-        if ((sourceParent == targetParent) && (sourceIndex < targetIndex)) {
-          targetIndex = targetIndex - 1;
-        }
-        return targetIndex;
-      };
-      const reorderTargetIndex = getTargetPosition(sourceParent, targetParent, reorderTargetId, insert);
+      const slot = insert ? { type: 'last' } : { type: 'before', refId: reorderTargetId };
+      const reorderTargetIndex = resolveTargetIndex(state.draftTree, reorderSourceId, targetParent, slot);
       // Define move and clear inputs
       const move = { reorderSourceId, reorderTargetId, reorderTargetIndex, reorderNewParentId: targetParent, insert };
       const newMoves = [...state.moves, move];
       const newInputs = { reorderSourceId: null, reorderTargetId: null };
 
-      // Reflect move in the draft tree
-      const newDraftTree = _.cloneDeep(state.draftTree);
-
-      const sourceNode = newDraftTree[reorderSourceId];
-      const sourceParentNode = newDraftTree[sourceParent];
-
-      // Remove source node
-      const sourceParentChildren = sourceParentNode.children.filter(childId => childId != reorderSourceId);
-      newDraftTree[sourceParent].children = sourceParentChildren;
-      // Insert source node into target parent
-      const targetParentNode = newDraftTree[targetParent];
-      targetParentNode.children.splice(reorderTargetIndex, 0, reorderSourceId); //splice is in place
-
-      sourceNode.parent = targetParent;
+      // Reflect the move in the draft tree so the list re-renders in its new order.
+      const newDraftTree = applyMove(state.draftTree, {
+        sourceId: reorderSourceId,
+        targetParentId: targetParent,
+        index: reorderTargetIndex,
+      });
       return { ...state, moves: newMoves, inputs: newInputs, draftTree: newDraftTree };
     }
     case 'RESET_MOVES':
@@ -445,40 +432,30 @@ const TargetPlaceholderDivider = (props) => {
   const isInvalidTarget = useCallback(
     (nodeId) => {
       if (!sourceIsSelected) return INVALID_REASONS['NO_SOURCE'];
-      // Check is not source
-      if (reorderSourceId === nodeId) return INVALID_REASONS['CIRCULAR'];
-      // Check is not descendent of source
-      if (getDescendents(reorderSourceId, reorderState.draftTree).includes(nodeId)) return INVALID_REASONS['DESCENDENT'];
+      const draftTree = reorderState.draftTree;
+      // The placeholder either inserts into nodeId (as its last child) or sits just before
+      // nodeId (inside nodeId's parent).
+      const targetParentId = insert ? nodeId : draftTree[nodeId].parent;
 
-      // Check is not next sibling of source
-      const node = reorderState.draftTree[nodeId];
-      if (insert) {
-        // Check that source is not the last child of this node
-        const sourceIsLastChild = (node.children.length > 0) &&
-          (node.children[node.children.length - 1] === reorderSourceId);
-        if (sourceIsLastChild) return INVALID_REASONS['LAST_CHILD'];
-      } else {
-        const nodeParent = reorderState.draftTree[nodeId].parent;
-        const sourceParent = reorderState.draftTree[reorderSourceId].parent;
-        const sourceIndex = reorderState.draftTree[sourceParent].children.indexOf(reorderSourceId);
-        const targetIndex = reorderState.draftTree[nodeParent].children.indexOf(nodeId);
-
-        const isSameParent = sourceParent === nodeParent;
-        if (isSameParent && (sourceIndex === targetIndex - 1)) return INVALID_REASONS['SAME_PARENT'];
+      // Structural legality: into itself, into a descendant, or a name clash in a new parent.
+      const validity = getMoveValidity(draftTree, reorderSourceId, targetParentId);
+      if (!validity.valid) {
+        if (validity.code === MOVE_INVALID.SELF) return INVALID_REASONS['CIRCULAR'];
+        if (validity.code === MOVE_INVALID.DESCENDANT) return INVALID_REASONS['DESCENDENT'];
+        if (validity.code === MOVE_INVALID.NAME_COLLISION) return INVALID_REASONS['EXISTING_CHILD'];
+        return INVALID_REASONS['NO_SOURCE'];
       }
 
-      // Check if containing parent of this target placeholder has no existing children with the same name as reorder source
-      const sourceName = reorderState.draftTree[reorderSourceId].name;
-      const sourceParentId = reorderState.draftTree[reorderSourceId].parent;
-      const nodeParentId = insert ? nodeId : reorderState.draftTree[nodeId].parent;
-      if (nodeParentId !== sourceParentId) {
-        const nodeParentChildren = reorderState.draftTree[nodeParentId].children.map(id => reorderState.draftTree[id]);
-        const sameNameExists = nodeParentChildren.some(child => child.name === sourceName);
-        if (sameNameExists) return INVALID_REASONS['EXISTING_CHILD'];
+      // A move that leaves the source in its current slot is a no-op: already the last child for
+      // an insert, or dropping onto its own next-sibling divider otherwise.
+      const slot = insert ? { type: 'last' } : { type: 'before', refId: nodeId };
+      const index = resolveTargetIndex(draftTree, reorderSourceId, targetParentId, slot);
+      if (isNoOpMove(draftTree, reorderSourceId, targetParentId, index)) {
+        return insert ? INVALID_REASONS['LAST_CHILD'] : INVALID_REASONS['SAME_PARENT'];
       }
 
       return '';
-    }, [reorderSourceId, reorderState.draftTree, sourceIsSelected]);
+    }, [reorderSourceId, reorderState.draftTree, sourceIsSelected, insert]);
 
   // Click handler
   const handleClickReorderTargetSelect = () => {
@@ -611,11 +588,6 @@ const ReorderConditionalSubheader = (props) => {
   );
 }
 
-
-function getDescendents(id, nodes) {
-  const node = nodes[id];
-  return [id, ...node.children.flatMap(childId => getDescendents(childId, nodes))];
-}
 
 function RecursiveDragList(props) {
   const { nodeId, level = 0, } = props;

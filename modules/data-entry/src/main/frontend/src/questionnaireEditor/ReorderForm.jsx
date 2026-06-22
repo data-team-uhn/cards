@@ -32,7 +32,13 @@ import {
 } from '@mui/material';
 
 import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext';
-import { getEntryChildIds, isDescendant } from './treeQueries';
+import {
+  getMoveValidity,
+  isNoOpMove,
+  resolveTargetIndex,
+  MOVE_INVALID,
+} from './reorderModel';
+import { getEntryChildIds } from './treeQueries';
 import { ENTRY_TYPES } from '../questionnaire/FormEntry';
 import QuestionnaireAutocomplete from '../questionnaire/QuestionnaireAutocomplete';
 import { getOrdinalString, stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
@@ -150,12 +156,10 @@ export default function ReorderForm(props) {
   }, [nodes, reorderSource]);
 
   const getParentOptionDisabled = useCallback((option) => {
-    // Exclude current node (can't reassign node as parent to itself)
-    // Exclude children of current node (can't reassign parent to child)
-    const isReorderSource = reorderSource === option.value;
-    const isDescendantOfReorderSource = isDescendant(nodes, reorderSource, option.value);
-    const disabled = isReorderSource || isDescendantOfReorderSource;
-    return disabled;
+    // Exclude the source itself and any of its descendants — neither can be its parent.
+    // Name collisions are intentionally not pre-checked here; they surface on submit, as before.
+    const { code } = getMoveValidity(nodes, reorderSource, option.value);
+    return code === MOVE_INVALID.SELF || code === MOVE_INVALID.DESCENDANT;
   }, [nodes, reorderSource]);
 
   const positionOptions = useMemo(() => {
@@ -164,6 +168,7 @@ export default function ReorderForm(props) {
       const node = nodes[id];
       return ({
         value: index,
+        id: id,
         name: node.name,
         text: node.title,
         path: node.path,
@@ -172,6 +177,43 @@ export default function ReorderForm(props) {
       });
     });
   }, [nodes, newParent]);
+
+  // Disable any "After..." reference whose slot wouldn't move the item: the item itself, and
+  // (within the same parent) its current predecessor — placing it after either leaves it put.
+  const getPositionOptionDisabled = useCallback((option) =>
+    isNoOpMove(nodes, reorderSource, newParent,
+      resolveTargetIndex(nodes, reorderSource, newParent, { type: 'after', refId: option.id })),
+  [nodes, reorderSource, newParent]);
+
+  // A different target parent must not already contain a child with the same node name (JCR
+  // siblings need unique names). Detected up front so the radios and Move stay disabled and we can
+  // warn inline, rather than letting reorderNode throw on submit.
+  const nameCollision = !!nodes[reorderSource] && !!nodes[newParent]
+    && getMoveValidity(nodes, reorderSource, newParent).code === MOVE_INVALID.NAME_COLLISION;
+
+  // Which position radios are selectable, computed once and shared by the radio render and the
+  // effect that clears a selection once it stops being valid. A radio is disabled when there is
+  // no new parent, a name collision blocks the whole move, or picking it wouldn't move the source:
+  //  - First/Last: the source already sits in that slot (no-op).
+  //  - After...: every offered reference position is a no-op (e.g. moving the last of two
+  //    children — "after the first" is its current spot, "after itself" is excluded).
+  // An empty target parent has only a single slot, so only First stays enabled there.
+  const positionRadioDisabled = useMemo(() => {
+    const canEvaluate = !!nodes[reorderSource] && !!newParent && !!nodes[newParent];
+    const noNewParent = !newParent;
+    const newParentHasNoEntryChildren = canEvaluate && getEntryChildIds(nodes, newParent).length === 0;
+    const isNoOp = (slot) =>
+      isNoOpMove(nodes, reorderSource, newParent, resolveTargetIndex(nodes, reorderSource, newParent, slot));
+    const firstIsNoOp = canEvaluate && isNoOp({ type: 'first' });
+    const lastIsNoOp = canEvaluate && isNoOp({ type: 'last' });
+    const afterHasViableTarget = canEvaluate
+      && getEntryChildIds(nodes, newParent).some(refId => !isNoOp({ type: 'after', refId }));
+    return {
+      first: noNewParent || nameCollision || firstIsNoOp,
+      other: noNewParent || nameCollision || newParentHasNoEntryChildren || !afterHasViableTarget,
+      last: noNewParent || nameCollision || newParentHasNoEntryChildren || lastIsNoOp,
+    };
+  }, [nodes, reorderSource, newParent, nameCollision]);
 
 
   useEffect(() => {
@@ -200,14 +242,22 @@ export default function ReorderForm(props) {
 
   useEffect(() => {
     setNewPositionSelection([]);
-    // If newParent has no entry-type children (conditionals excluded), default positionRadio
-    // to 'first'
-    const newParentHasNoEntryChildren = !!newParent && getEntryChildIds(nodes, newParent).length === 0;
-
+    if (!newParent) return;
+    // If the target parent has no entry-type children (conditionals excluded), First is the only
+    // slot, so default to it.
+    const newParentHasNoEntryChildren = getEntryChildIds(nodes, newParent).length === 0;
     if (newParentHasNoEntryChildren) {
       reorderDispatch({ type: 'SET_POSITIONRADIO', payload: 'first' });
+      return;
     }
-  }, [newParent]);
+    // Otherwise, if the current choice is no longer selectable (e.g. "After..." lost all viable
+    // targets after a parent change), drop it so a stale, unusable selection and its dropdown
+    // can't linger — falling back to First when that one is still valid.
+    const current = reorderState.inputs.positionRadio;
+    if (current && positionRadioDisabled[current]) {
+      reorderDispatch({ type: 'SET_POSITIONRADIO', payload: positionRadioDisabled.first ? '' : 'first' });
+    }
+  }, [newParent, nodes, positionRadioDisabled, reorderState.inputs.positionRadio]);
 
   const selectReorderSourceContent = (
     <>
@@ -317,6 +367,11 @@ export default function ReorderForm(props) {
           id="newParent"
           disabled={!reorderSource}
         />
+        {nameCollision &&
+          <Typography variant="caption" color="error" sx={{ display: 'block', mt: 0.5 }}>
+            This destination already contains an item with the same name. Choose a different destination.
+          </Typography>
+        }
       </Grid>
 
       <Grid size={3}>
@@ -328,45 +383,26 @@ export default function ReorderForm(props) {
           value={reorderState.inputs.positionRadio}
           onChange={(e) => reorderDispatch({ type: 'SET_POSITIONRADIO', payload: e.target.value })}
         >
-          {(() => {
-            const noNewParent = !newParent
-            const newParentHasNoEntryChildren = getEntryChildIds(nodes, newParent).length === 0
-            // First/Last are no-ops only when staying in the same parent; moving into a
-            // different parent, First/Last are always valid (different) destinations.
-            const isSameParent = nodes[reorderSource]?.parent === newParent;
-            const filteredChildren = getEntryChildIds(nodes, nodes[reorderSource]?.parent);
-            const originalPositionIndex = filteredChildren.indexOf(reorderSource);
-            const originalPositionIsFirst = originalPositionIndex === 0;
-            const originalPositionIsLast = originalPositionIndex === filteredChildren.length - 1;
-            return (
-              [ { value: 'first', label: 'First' },
-                { value: 'other', label: 'After...' },
-                { value: 'last', label: 'Last' },
-              ].map(({ value, label }) =>
-                <FormControlLabel
-                  key={value}
-                  value={value}
-                  label={label}
-                  disabled={[
-                    noNewParent,
-                    // An empty target parent has a single slot, so keep First (which the
-                    // effect auto-selects) enabled and disable After.../Last.
-                    (newParentHasNoEntryChildren && value !== 'first'),
-                    (value === 'first' && isSameParent && originalPositionIsFirst),
-                    (value === 'last' && isSameParent && originalPositionIsLast)
-                  ].includes(true)}
-                  control={<Radio />}
-                />
-              )
-            )
-          })()}
+          {[
+            { value: 'first', label: 'First' },
+            { value: 'other', label: 'After...' },
+            { value: 'last', label: 'Last' },
+          ].map(({ value, label }) =>
+            <FormControlLabel
+              key={value}
+              value={value}
+              label={label}
+              disabled={positionRadioDisabled[value]}
+              control={<Radio />}
+            />
+          )}
         </RadioGroup>
         { reorderState.inputs.positionRadio === 'other' &&
           <QuestionnaireAutocomplete
             showSelection={false}
             multiple={false}
             entities={positionOptions}
-            getOptionDisabled={(option) => option.path === nodes[reorderSource]?.path}
+            getOptionDisabled={getPositionOptionDisabled}
             selection={newPositionSelection}
             onSelectionChanged={setNewPositionSelection}
             placeholderText="... other questionnaire entry"
@@ -391,34 +427,25 @@ export default function ReorderForm(props) {
 
   const isLoadingOrError = ['loading', 'error'].includes(reorderState.status);
   const noReorderSource = !reorderSource;
-  const sameNewParent = !noReorderSource && nodes[reorderSource]?.parent === newParent;
   const invalidPosition = newPosition === null || newPosition === "";
 
-  // Compute the actual Sling :order value to send.
-  // For 'other' (After...), newPosition is a 0-based filtered-children index of the reference node.
-  // We need position = refAllIndex + 1 (place after reference), adjusted when the source sits
-  // before that slot in the same parent (removing source shifts subsequent indices down by 1).
+  // Resolve the Sling :order value to send, from the selected radio:
+  //  - First/Last become the 0 / 'last' slot; resolveTargetIndex returns 'last' verbatim.
+  //  - 'other' (After...) places the source after the entry child at the selected index.
+  // resolveTargetIndex handles the same-parent shift (removing the source moves later siblings up).
   const computeSlingPosition = () => {
-    if (reorderState.inputs.positionRadio !== 'other') return newPosition;
-    const allChildren = nodes[newParent].children;
-    const filteredChildren = getEntryChildIds(nodes, newParent);
-    const referenceNodeId = filteredChildren[newPosition];
+    if (!nodes[reorderSource] || !newParent) return null;
+    const radio = reorderState.inputs.positionRadio;
+    if (radio === 'first') return resolveTargetIndex(nodes, reorderSource, newParent, { type: 'first' });
+    if (radio === 'last') return resolveTargetIndex(nodes, reorderSource, newParent, { type: 'last' });
+    const referenceNodeId = getEntryChildIds(nodes, newParent)[newPosition];
     if (!referenceNodeId) return null;
-    const refAllIndex = allChildren.indexOf(referenceNodeId);
-    let slingPos = refAllIndex + 1;
-    if (nodes[reorderSource]?.parent === newParent) {
-      const sourceAllIndex = allChildren.indexOf(reorderSource);
-      if (sourceAllIndex < slingPos) {
-        slingPos -= 1;
-      }
-    }
-    return slingPos;
+    return resolveTargetIndex(nodes, reorderSource, newParent, { type: 'after', refId: referenceNodeId });
   };
   const slingPosition = (!invalidPosition && newParent) ? computeSlingPosition() : null;
 
-  const noNewTarget = sameNewParent && slingPosition !== null
-    && slingPosition === nodes[newParent]?.children.indexOf(reorderSource);
-  const disableSubmit = isLoadingOrError || noReorderSource || noNewTarget || invalidPosition;
+  const noNewTarget = slingPosition !== null && isNoOpMove(nodes, reorderSource, newParent, slingPosition);
+  const disableSubmit = isLoadingOrError || noReorderSource || noNewTarget || invalidPosition || nameCollision;
 
   const handleError = (e) => {
     console.warn('Reorder error', e);
@@ -435,13 +462,19 @@ export default function ReorderForm(props) {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!reorderSource || !newParent || invalidPosition) {
+    if (disableSubmit) {
       return;
     }
     reorderDispatch({ type: 'SET_LOADING' });
-    treeContext.actions.reorderNode(reorderSource, newParent, slingPosition)
-      .then(handleSuccess)
-      .catch(handleError);
+    // reorderNode validates synchronously and can throw before it returns a promise, so a
+    // try/catch is needed alongside .catch() for the async (server) failure path.
+    try {
+      treeContext.actions.reorderNode(reorderSource, newParent, slingPosition)
+        .then(handleSuccess)
+        .catch(handleError);
+    } catch (err) {
+      handleError(err);
+    }
   };
 
   return (
