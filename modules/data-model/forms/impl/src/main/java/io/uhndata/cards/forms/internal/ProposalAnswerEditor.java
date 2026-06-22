@@ -39,7 +39,7 @@ import io.uhndata.cards.forms.internal.parse.FileParserFactory;
 import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
 
 /**
- * Parse uploaded files and place extracted text into answer notes.
+ * Parse uploaded files and store any parse errors in the answer note.
  *
  * @version $Id$
  */
@@ -120,14 +120,15 @@ public class ProposalAnswerEditor extends DefaultEditor
 
     private void handleAnswer(final NodeBuilder nodeBuilder)
     {
-        if (!isEligibleProposalAnswer(nodeBuilder)) {
+        if (!PROPOSAL_ANSWER_NODETYPE.equals(nodeBuilder.getName(JCR_PRIMARY_TYPE))) {
             return;
         }
 
         final String answerFolder = resolveAnswerFolder(nodeBuilder);
-        final List<String> parsedContents = parseProposalFiles(nodeBuilder, answerFolder);
-        if (!parsedContents.isEmpty()) {
-            nodeBuilder.setProperty("note", String.join("\n\n", parsedContents), Type.STRING);
+        final List<String> parseErrors = parseProposalFiles(nodeBuilder, answerFolder);
+        nodeBuilder.removeProperty("note");
+        if (!parseErrors.isEmpty()) {
+            nodeBuilder.setProperty("note", String.join("\n\n", parseErrors), Type.STRING);
         }
         ParsedMarkdownStore.writeAggregate(answerFolder);
     }
@@ -141,19 +142,9 @@ public class ProposalAnswerEditor extends DefaultEditor
         return this.nodeName;
     }
 
-    private boolean isEligibleProposalAnswer(final NodeBuilder nodeBuilder)
-    {
-        if (!PROPOSAL_ANSWER_NODETYPE.equals(nodeBuilder.getName(JCR_PRIMARY_TYPE))) {
-            return false;
-        }
-        String note = nodeBuilder.getString("note");
-        return StringUtils.isBlank(note) || note.startsWith("<!-- source_file:")
-            || DocumentParseException.isParseErrorNote(note);
-    }
-
     private List<String> parseProposalFiles(final NodeBuilder answerNode, final String answerFolder)
     {
-        final List<String> parsedContents = new ArrayList<>();
+        final List<String> parseErrors = new ArrayList<>();
         for (String fileName : answerNode.getChildNodeNames()) {
             if (fileName == null || fileName.isBlank()) {
                 continue;
@@ -162,12 +153,12 @@ public class ProposalAnswerEditor extends DefaultEditor
             if (!NT_FILE.equals(fileNode.getName(JCR_PRIMARY_TYPE))) {
                 continue;
             }
-            final String parsedText = parseFileNode(fileNode, fileName, answerFolder);
-            if (StringUtils.isNotBlank(parsedText)) {
-                parsedContents.add(parsedText.trim());
+            final String result = parseFileNode(fileNode, fileName, answerFolder);
+            if (DocumentParseException.isParseErrorNote(result)) {
+                parseErrors.add(result.trim());
             }
         }
-        return parsedContents;
+        return parseErrors;
     }
 
     private String parseFileNode(final NodeBuilder fileNode, final String fileName, final String answerFolder)
