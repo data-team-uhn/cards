@@ -23,9 +23,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * OSGi service for sending chat requests to a configured LLM provider.
- * The active provider is selected via the {@code LLM Router} OSGi configuration.
- * Providers are registered as {@link LLMProvider} services with the {@code llm.provider} service property.
+ * Interface for sending chat requests to an LLM. Concrete clients (see {@link DefaultLLMClient}) are registered
+ * as OSGi services with an {@code llm.provider} property naming the provider they serve, and are resolved by
+ * the {@link LLMClientFactory}. The active provider and model are selected in the JCR LLM configuration
+ * (see {@link LLMConfigurationService}).
  *
  * @version $Id$
  */

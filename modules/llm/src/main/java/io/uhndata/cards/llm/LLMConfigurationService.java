@@ -19,20 +19,24 @@
 
 package io.uhndata.cards.llm;
 
+import java.io.IOException;
+
 /**
- * SPI interface for LLM backend implementations. Register as an OSGi service with the
- * {@code llm.provider} service property set to a unique name (e.g. {@code "anthropic"} or {@code "local"}).
- * The {@link LLMClient} router will delegate to the provider whose name matches the configured
- * {@code activeProvider} value.
+ * Service that resolves the active LLM provider and model from the JCR configuration stored under
+ * {@code /apps/cards/config/LLM}. The catalog of available providers and models is seeded from initial
+ * content; the active selection is set through the administration UI. Providers and the router use this
+ * service to obtain the settings for the currently selected provider and model.
  *
  * @version $Id$
  */
-public interface LLMProvider extends LLMClient
+public interface LLMConfigurationService
 {
     /**
-     * Returns the provider's unique identifier. Must match the {@code llm.provider} OSGi service property.
+     * Resolve the settings for the currently active provider and model.
      *
-     * @return a short, stable name such as {@code "anthropic"} or {@code "local"}
+     * @return the resolved settings for the active provider and model
+     * @throws IOException if the configuration is missing, the active selection is not set, or it points to a
+     *             provider or model that does not exist
      */
-    String getProviderName();
+    LLMSettings getActiveSettings() throws IOException;
 }

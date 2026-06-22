@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "LLM Configuration",
+  "cards:targetURL": "/content.html/admin/LLMConfiguration",
+  "cards:extensionRenderURL": "asset:cards-llm.LLMConfiguration.js"
+}

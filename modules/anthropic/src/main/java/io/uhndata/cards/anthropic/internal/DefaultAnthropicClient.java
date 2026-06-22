@@ -19,11 +19,8 @@
 
 package io.uhndata.cards.anthropic.internal;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.Collections;
 import java.util.List;
 
 import jakarta.json.Json;
@@ -34,146 +31,84 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.metatype.annotations.Designate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.osgi.service.component.annotations.Reference;
 
-import io.uhndata.cards.anthropic.AnthropicClient;
+import io.uhndata.cards.llm.DefaultLLMClient;
+import io.uhndata.cards.llm.LLMClient;
+import io.uhndata.cards.llm.LLMConfigurationService;
 import io.uhndata.cards.llm.LLMMessage;
-import io.uhndata.cards.llm.LLMProvider;
+import io.uhndata.cards.llm.LLMSettings;
 
+/**
+ * Client for the Anthropic Claude Messages API. It implements the Anthropic wire format on top of
+ * {@link DefaultLLMClient}: the endpoint is used as-is, the API key is sent in the {@code x-api-key} header
+ * together with the required {@code anthropic-version} header, the system prompt is a top-level {@code system}
+ * field, and the reply is read from the first {@code text} block in {@code content}. It serves the
+ * {@code "claude"} provider; all settings come from the active provider and model in the JCR LLM
+ * configuration.
+ *
+ * @version $Id$
+ */
 @Component(
-    service = { AnthropicClient.class, LLMProvider.class },
-    property = { "llm.provider=anthropic" },
+    service = LLMClient.class,
+    property = { "llm.provider=claude" },
     immediate = true)
-@Designate(ocd = AnthropicConfiguration.class)
-public class DefaultAnthropicClient implements AnthropicClient, LLMProvider
+public class DefaultAnthropicClient extends DefaultLLMClient
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAnthropicClient.class);
+    private static final String API_VERSION = "apiVersion";
 
-    private static final String PROVIDER_NAME = "anthropic";
+    @Reference
+    private LLMConfigurationService configurationService;
 
-    private String apiKeyEnvVar;
-
-    private String apiEndpoint;
-
-    private String model;
-
-    private int maxTokens;
-
-    private String apiVersion;
-
-    @Activate
-    @Modified
-    protected void activate(final AnthropicConfiguration config)
+    @Override
+    protected LLMConfigurationService getConfigurationService()
     {
-        this.apiKeyEnvVar = config.apiKeyEnvVar();
-        this.apiEndpoint = config.apiEndpoint();
-        this.model = config.model();
-        this.maxTokens = config.maxTokens();
-        this.apiVersion = config.apiVersion();
-        if (StringUtils.isBlank(System.getenv(this.apiKeyEnvVar))) {
-            LOGGER.warn("Anthropic API key not found in environment variable: {}", this.apiKeyEnvVar);
-        }
+        return this.configurationService;
     }
 
     @Override
-    public String getProviderName()
+    protected String resolveEndpoint(final String configuredEndpoint)
     {
-        return PROVIDER_NAME;
+        return configuredEndpoint;
     }
 
     @Override
-    public String chat(final String userMessage) throws IOException
+    protected void configureRequest(final HttpPost post, final LLMSettings settings) throws IOException
     {
-        return doChat(null, Collections.singletonList(new LLMMessage("user", userMessage)));
-    }
-
-    @Override
-    public String chat(final String systemPrompt, final String userMessage) throws IOException
-    {
-        return doChat(systemPrompt, Collections.singletonList(new LLMMessage("user", userMessage)));
-    }
-
-    @Override
-    public String chat(final String systemPrompt, final List<LLMMessage> messages) throws IOException
-    {
-        return doChat(systemPrompt, messages);
-    }
-
-    private String doChat(final String systemPrompt, final List<LLMMessage> messages) throws IOException
-    {
-        final String apiKey = System.getenv(this.apiKeyEnvVar);
+        final String apiKeyEnvVar = settings.getApiKeyEnvVar();
+        final String apiKey = StringUtils.isNotBlank(apiKeyEnvVar) ? System.getenv(apiKeyEnvVar) : null;
         if (StringUtils.isBlank(apiKey)) {
-            throw new IOException("Anthropic API key not set (env var: " + this.apiKeyEnvVar + ")");
+            throw new IOException("Anthropic API key not set (env var: " + apiKeyEnvVar + ")");
         }
-        final String responseBody = sendRequest(apiKey, buildRequestBody(systemPrompt, messages));
-        return extractTextContent(responseBody);
+        final String apiVersion = settings.getProviderProperty(API_VERSION);
+        if (StringUtils.isBlank(apiVersion)) {
+            throw new IOException("Anthropic provider is missing the required 'apiVersion' property");
+        }
+        post.setHeader("x-api-key", apiKey);
+        post.setHeader("anthropic-version", apiVersion);
     }
 
-    private String buildRequestBody(final String systemPrompt, final List<LLMMessage> messages)
+    @Override
+    protected String buildRequestBody(final LLMSettings settings, final String systemPrompt,
+        final List<LLMMessage> messages)
     {
-        final JsonObjectBuilder body = Json.createObjectBuilder()
-            .add("model", this.model)
-            .add("max_tokens", this.maxTokens);
+        final JsonObjectBuilder body = baseRequestBody(settings);
 
         if (StringUtils.isNotBlank(systemPrompt)) {
             body.add("system", systemPrompt);
         }
 
         final JsonArrayBuilder turns = Json.createArrayBuilder();
-        for (final LLMMessage msg : messages) {
-            turns.add(Json.createObjectBuilder()
-                .add("role", msg.getRole())
-                .add("content", msg.getContent()));
-        }
+        addTurns(turns, messages);
         body.add("messages", turns);
 
         return body.build().toString();
     }
 
-    private String sendRequest(final String apiKey, final String requestBody) throws IOException
-    {
-        final HttpPost post = new HttpPost(this.apiEndpoint);
-        post.setHeader("x-api-key", apiKey);
-        post.setHeader("anthropic-version", this.apiVersion);
-        post.setHeader("content-type", "application/json");
-        post.setEntity(new StringEntity(requestBody, "UTF-8"));
-
-        try (CloseableHttpClient client = HttpClients.createDefault();
-            CloseableHttpResponse response = client.execute(post)) {
-            final int statusCode = response.getStatusLine().getStatusCode();
-            final String body = readResponse(response);
-            if (statusCode != 200) {
-                LOGGER.error("Anthropic API returned {}: {}", statusCode, body);
-                throw new IOException("Anthropic API error " + statusCode + ": " + body);
-            }
-            return body;
-        }
-    }
-
-    private String readResponse(final CloseableHttpResponse response) throws IOException
-    {
-        try (BufferedReader reader =
-            new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"))) {
-            final StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            return sb.toString();
-        }
-    }
-
-    private String extractTextContent(final String responseBody) throws IOException
+    @Override
+    protected String extractContent(final String responseBody) throws IOException
     {
         try (JsonReader reader = Json.createReader(new StringReader(responseBody))) {
             final JsonObject response = reader.readObject();
@@ -188,5 +123,11 @@ public class DefaultAnthropicClient implements AnthropicClient, LLMProvider
             }
             throw new IOException("No text content block in Anthropic response");
         }
+    }
+
+    @Override
+    protected String errorLabel()
+    {
+        return "Anthropic API";
     }
 }
