@@ -30,35 +30,11 @@
       "start-order":"15"
     },
     {
-      "id":"org.apache.commons:commons-compress:1.21",
-      "start-order":"25"
-    },
-    {
       "id":"org.apache.commons:commons-csv:1.9.0",
       "start-order":"25"
     },
     {
-      "id":"org.apache.commons:commons-rdf-api:0.5.0",
-      "start-order":"25"
-    },
-    {
       "id":"org.apache.sling:org.apache.sling.api:3.0.2",
-      "start-order":"25"
-    },
-    {
-      "id":"org.apache.jena:jena-osgi:4.1.0",
-      "start-order":"25"
-    },
-    {
-      "id":"org.apache.thrift:libthrift:0.14.1",
-      "start-order":"25"
-    },
-    {
-      "id":"com.github.andrewoma.dexx:collection:0.7",
-      "start-order":"25"
-    },
-    {
-      "id":"com.github.jsonld-java:jsonld-java:0.13.4",
       "start-order":"25"
     },
     {
