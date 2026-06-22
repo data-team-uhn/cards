@@ -39,10 +39,11 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.llm.LLMClient;
+import io.uhndata.cards.llm.LLMClientFactory;
 import io.uhndata.cards.llm.LLMMessage;
 
 /**
- * Servlet that proxies POST requests to the configured LLM provider.
+ * Servlet that proxies POST requests to the active LLM provider's client.
  * The provider and its credentials stay on the server; clients only send message content.
  *
  * <p>Endpoint: {@code POST /.llm}
@@ -68,7 +69,7 @@ public class LLMServlet extends SlingJakartaAllMethodsServlet
     private static final long serialVersionUID = 4938271560024819437L;
 
     @Reference
-    private LLMClient llmClient;
+    private LLMClientFactory llmClientFactory;
 
     @Override
     protected void doPost(final SlingJakartaHttpServletRequest request,
@@ -89,13 +90,14 @@ public class LLMServlet extends SlingJakartaAllMethodsServlet
         final JsonArray messages = body.getJsonArray("messages");
 
         try {
+            final LLMClient client = this.llmClientFactory.getActiveClient();
             final String reply;
             if (messages != null) {
-                reply = this.llmClient.chat(system, toMessageList(messages));
+                reply = client.chat(system, toMessageList(messages));
             } else if (StringUtils.isNotBlank(message)) {
                 reply = StringUtils.isNotBlank(system)
-                    ? this.llmClient.chat(system, message)
-                    : this.llmClient.chat(message);
+                    ? client.chat(system, message)
+                    : client.chat(message);
             } else {
                 sendError(response, 400, "Request body must include 'message' or 'messages'");
                 return;

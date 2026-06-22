@@ -23,13 +23,13 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>cards-modules</artifactId>
-    <version>0.9.39-SNAPSHOT</version>
+    <version>0.9.40-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-local-llm</artifactId>
+  <artifactId>cards-openai</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Local LLM Provider</name>
-  <description>LLM provider for local/self-hosted models via the OpenAI-compatible API (Ollama, LM Studio, etc.)</description>
+  <name>CARDS - OpenAI Provider</name>
+  <description>LLM clients for OpenAI-compatible chat APIs (Prompter, Ollama, LM Studio, etc.)</description>
 
   <build>
     <plugins>
@@ -58,11 +58,6 @@
       <version>4.5.13</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <version>4.4.10</version>
-    </dependency>
-    <dependency>
       <groupId>jakarta.json</groupId>
       <artifactId>jakarta.json-api</artifactId>
     </dependency>
@@ -71,16 +66,8 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.service.component.annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.metatype.annotations</artifactId>
     </dependency>
   </dependencies>
 </project>

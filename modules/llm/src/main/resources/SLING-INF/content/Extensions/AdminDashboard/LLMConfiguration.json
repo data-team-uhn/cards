@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "LLM Configuration",
+  "cards:targetURL": "/content.html/admin/LLMConfiguration",
+  "cards:icon": "asset:cards-llm.LLMConfigurationIcon.js",
+  "cards:hint": "Select the active LLM provider and model",
+  "cards:defaultOrder": 203
+}

@@ -1,0 +1,143 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<cards = 'https://cards.uhndata.io/'>
+
+//-----------------------------------------------------------------------------
+//
+// LLM configuration: the catalog of available LLM providers and models,
+// plus the currently active selection.
+//
+// The structure is two levels deep:
+//   cards:LLMConfiguration  (the catalog root, holds the active selection)
+//     +-- cards:Provider    (an endpoint, e.g. Prompter or Claude)
+//           +-- cards:Model  (a model offered by that provider)
+//
+// The catalog is seeded from initial content and is not edited at runtime;
+// only the active selection (activeProvider / activeModel) is mutable.
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// The catalog root. Holds the list of providers and the active selection.
+[cards:LLMConfiguration] > sling:Folder
+  // Attributes:
+
+  // The list of providers is orderable.
+  orderable
+  // We can use this in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/LLMConfiguration" mandatory autocreated protected
+
+  // Hardcode the resource supertype: this is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // A title for this configuration.
+  - title (String)
+
+  // The name of the currently selected provider child node.
+  - activeProvider (String)
+
+  // The name of the currently selected model child node, within the active provider.
+  - activeModel (String)
+
+  // Children:
+
+  // The available providers.
+  + * (cards:Provider) = cards:Provider
+
+//-----------------------------------------------------------------------------
+// An LLM provider, i.e. an API endpoint such as Prompter or Claude.
+// One provider can serve many models.
+[cards:Provider] > sling:Folder
+  // Attributes:
+
+  // The list of models is orderable.
+  orderable
+  // We can use providers in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/LLMProvider" mandatory autocreated protected
+
+  // Hardcode the resource supertype: this is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // A human-readable label for this provider.
+  // The provider's node name is matched against the 'llm.provider' service property of a registered client
+  // to determine which backend handles it.
+  - label (String)
+
+  // The base URL of the API (the chat completions path is appended for OpenAI-compatible providers).
+  - endpoint (String) mandatory
+
+  // The name of the environment variable holding the API key for this provider.
+  - apiKeyEnvVar (String)
+
+  // Maximum time to wait for a request to this provider, in seconds.
+  - timeoutSeconds (LONG) = '120'
+
+  // Allow provider-specific extra properties (for example projectId for Prompter, or apiVersion for Claude).
+  - * (undefined)
+
+  // Children:
+
+  // The models offered by this provider.
+  + * (cards:Model) = cards:Model
+
+//-----------------------------------------------------------------------------
+// A model offered by a provider.
+[cards:Model] > sling:Folder
+  // Attributes:
+
+  // We can use models in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/LLMModel" mandatory autocreated protected
+
+  // Hardcode the resource supertype: this is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // A human-readable label for this model.
+  - label (String)
+
+  // The model identifier sent to the API in the request body.
+  - modelId (String) mandatory
+
+  // The model's maximum context window, in tokens.
+  - contextLimitTokens (LONG)
+
+  // The maximum number of tokens to generate in the response.
+  - maxOutputTokens (LONG) = '2000'
+
+  // The sampling temperature passed to the model.
+  - temperature (DOUBLE) = '0.0'
+
+  // Allow model-specific extra properties.
+  - * (undefined)

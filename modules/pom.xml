@@ -76,6 +76,6 @@
     <module>healthcheck</module>
     <module>llm</module>
     <module>anthropic</module>
-    <module>local-llm</module>
+    <module>openai</module>
   </modules>
 </project>
