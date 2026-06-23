@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-data-model-forms-questiontypes</artifactId>
+    <version>0.9.40-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>cards-selectable-area</artifactId>
+  <packaging>bundle</packaging>
+  <name>CARDS - Selectable area question type</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Include-Resource>{maven-resources},src/main/media</Include-Resource>
+            <Sling-Nodetypes>SLING-INF/nodetypes/selectablearea.cnd</Sling-Nodetypes>
+            <!-- Initial content to be loaded on bundle installation -->
+            <Sling-Initial-Content>
+              SLING-INF/content/libs/cards/resources/media/dataEntry/;path:=/libs/cards/resources/media/dataEntry/;overwrite:=true;uninstall:=true;ignoreImportProviders:=json,
+              SLING-INF/content/libs/cards/dataEntry/SelectableArea/;path:=/libs/cards/dataEntry/SelectableArea/;overwrite:=false,
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true
+            </Sling-Initial-Content>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

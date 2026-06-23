@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:defaultOrder": 60,
+  "cards:extensionPointId": "cards/form/answerComponent",
+  "cards:extensionName": "Selectable Area Questions",
+  "cards:extensionRenderURL": "asset:cards-selectable-area.SelectableAreaQuestion.js"
+}

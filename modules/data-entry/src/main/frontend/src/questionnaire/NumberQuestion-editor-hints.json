@@ -1,0 +1,5 @@
+{
+  "disableMinMaxValueEnforcement": "If set, the value is not _required_ to be within the specified (**Min value**, **Max value**) limits, and an out of answer value will NOT be marked as invalid. A message will be displayed under the input, warning the user that the value they entered appears abnormal, without further consequences.",
+  "disableNegativeInput": "If set, the user is prevented from entering negative numbers in the numeric question input. Negative numbers can still be values of predefined answer options.",
+  "messageForValuesOutsideMinMax": "Message that guides the user to enter values between **Min value** and **Max value**, displayed when **Min value** and/or **Max value** are specified but not enforced. If absent, a generic message 'Please enter values between ...' will be displayed."
+}

@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:defaultOrder": 30,
+  "cards:extensionPointId": "cards/form/answerComponent",
+  "cards:extensionName": "Chromosome Questions",
+  "cards:extensionRenderURL": "asset:cards-chromosome.ChromosomeQuestion.js"
+}

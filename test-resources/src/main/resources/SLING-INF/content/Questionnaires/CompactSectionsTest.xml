@@ -71,7 +71,7 @@
 		<property>
 			<name>variant</name>
 			<value>/libs/cards/dataEntry/SelectableArea/FullBody</value>
-			<type>String</type>
+			<type>Path</type>
 		</property>
 	</node>
 	<node>

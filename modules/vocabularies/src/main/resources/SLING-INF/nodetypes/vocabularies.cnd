@@ -134,3 +134,14 @@
 
   // The vocabulary nodes indexed by the homepage are its children.
   + * (cards:Vocabulary) = cards:Vocabulary
+
+//-----------------------------------------------------------------------------
+// Vocabulary identifiers, stored as strings.
+[cards:VocabularyAnswer] > cards:Answer
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/VocabularyAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected

@@ -1,0 +1,25 @@
+{
+  "selectableArea": {
+    "minAnswers": {"0":{}, "1":{}},
+    "maxAnswers": "long",
+    "variant": {
+      "type": "list",
+      "primaryType": "cards:SelectableAreaVariant",
+      "saveType": "Reference",
+      "displayProperty": "name",
+      "orderProperty": "cards:SelectableAreaVariant",
+      "identifierProperty": "jcr:uuid",
+      "isRequired": true
+    },
+    "answerOptions" : {
+      "type": "textOptions",
+      "childrenType": "cards:AnswerOption"
+    },
+    "unselectedColor": "string",
+    "selectedColor": "string",
+    "hoverColor": "string",
+    "selectedHoverColor": "string",
+    "strokeColor": "string",
+    "overrideMapColors": "boolean"
+  }
+}

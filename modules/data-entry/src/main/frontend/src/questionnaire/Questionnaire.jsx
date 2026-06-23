@@ -59,6 +59,7 @@ import EditorHeader from "../questionnaireEditor/EditorHeader.jsx";
 import { ENTRY_TITLE_FIELD_SPEC } from "../questionnaireEditor/entryDisplay";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
+import { getQuestionHints, getQuestionSpec, onQuestionSpecUpdate } from "../questionnaireEditor/QuestionModelManager";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import {
   useQuestionnaireTreeContext,
@@ -508,12 +509,18 @@ ExternalLink.propTypes = {
 
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
-let Question = (props) => <QuestionnaireEntry
-  type="Question"
-  entryTypeColor={ENTRY_TITLE_FIELD_SPEC['cards:Question'].color}
-  titleField="text"
-  model="Question.json"
-  {...props} />;
+let Question = (props) => {
+  let [spec, setSpec] = useState(getQuestionSpec);
+  useEffect(() => onQuestionSpecUpdate(setSpec), []);
+
+  return <QuestionnaireEntry
+    type="Question"
+    entryTypeColor={ENTRY_TITLE_FIELD_SPEC['cards:Question'].color}
+    titleField="text"
+    spec={spec}
+    hints={getQuestionHints()}
+    {...props} />;
+};
 
 Question.propTypes = {
   onActionDone: PropTypes.func,
@@ -577,7 +584,18 @@ ConditionalGroup.propTypes = {
 
 let QuestionnaireEntry = (props) => {
   checkPropTypes(QuestionnaireEntry, props);
-  let { onActionDone, data, type, titleField, model, classes, menuProps, ...rest } = props;
+  let {
+    onActionDone,
+    data,
+    type,
+    titleField,
+    model,
+    spec: specProp,
+    hints,
+    classes,
+    menuProps,
+    ...rest
+  } = props;
   let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
@@ -595,7 +613,7 @@ let QuestionnaireEntry = (props) => {
   // -------------------------------------------------------------
   // Find child item specifications
 
-  let spec = require(`../questionnaireEditor/${model}`)[0];
+  let spec = specProp ?? (model ? require(`../questionnaireEditor/${model}`)[0] : null);
 
   // If this entry type has any children by default, they should be specified in the `//CHILDREN` field
   let childModels = spec["//CHILDREN"];
@@ -701,6 +719,8 @@ let QuestionnaireEntry = (props) => {
             onCreated={onCreated}
             menuItems={menuItems}
             models={childModels}
+            specOverrides={{ Question: getQuestionSpec() }}
+            hintsOverrides={{ Question: getQuestionHints() }}
             {...menuProps}
           />
         }
@@ -714,7 +734,8 @@ let QuestionnaireEntry = (props) => {
         }
       </>}
       onActionDone={handleDataChange}
-      model={model}
+      spec={spec}
+      hints={hints}
       {...rest}
     >
       { childModels ?
@@ -742,5 +763,7 @@ QuestionnaireEntry.propTypes = {
   entryTypeColor: PropTypes.string,
   title: PropTypes.string,
   titleField: PropTypes.string,
-  model: PropTypes.string.isRequired
+  model: PropTypes.string,
+  spec: PropTypes.object,
+  hints: PropTypes.object,
 };

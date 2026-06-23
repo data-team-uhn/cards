@@ -21,8 +21,10 @@ import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
 import AnswerComponentManager from "./AnswerComponentManager";
+import questionEditorConfig from './BooleanQuestion-editor.json';
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
+import { registerQuestionEditorConfig } from "../questionnaireEditor/QuestionModelManager";
 
 // Component that renders a yes/no question, with optional "unknown" option.
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -89,6 +91,9 @@ BooleanQuestion.propTypes = {
 };
 
 export default BooleanQuestion;
+
+// Contribute the "boolean" dataType to the question editor.
+registerQuestionEditorConfig(questionEditorConfig, { order: 200 });
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "boolean") {

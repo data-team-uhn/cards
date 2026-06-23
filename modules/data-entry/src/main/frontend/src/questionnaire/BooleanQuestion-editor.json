@@ -1,0 +1,26 @@
+{
+  "boolean": {
+    "minAnswers": {"0":{}, "1":{}},
+    "yesLabel": "string",
+    "noLabel": "string",
+    "enableUnknown": {
+      "true" : {
+        "unknownLabel": "string"
+      },
+      "false" : {}
+    },
+    "compact" : "boolean",
+    "entryMode": {
+      "user": {
+      },
+      "computed": {
+        "expression": "code",
+        "displayMode" : {
+          "input" : {},
+          "formatted" : {},
+          "hidden": {}
+        }
+      }
+    }
+  }
+}

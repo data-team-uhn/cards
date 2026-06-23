@@ -1,0 +1,70 @@
+{
+  "text": {
+    "entryMode": {
+      "user": {
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "validationRegexp": "string",
+        "validationErrorText": "markdown",
+        "liveValidation": "boolean",
+        "enableSeparatorDetection": "boolean",
+        "displayMode": {
+          "input": {},
+          "textbox": {},
+          "list": {
+            "compact": "boolean",
+            "answerOptions": {
+              "type": "textOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "list+input": {
+            "compact": "boolean",
+            "answerOptions": {
+              "type": "textOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "select": {
+            "answerOptions": {
+              "type": "textOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          }
+        }
+      },
+      "computed": {
+        "minAnswers": {
+          "0": {},
+          "1": {}
+        },
+        "expression": "code",
+        "displayMode": {
+          "input": {},
+          "formatted": {},
+          "hidden": {},
+          "summary": {}
+        }
+      },
+      "reference": {
+        "question": "string",
+        "updateMode": {
+          "always": {},
+          "initial_only": {}
+        },
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "autocreated": {
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      }
+    }
+  }
+}

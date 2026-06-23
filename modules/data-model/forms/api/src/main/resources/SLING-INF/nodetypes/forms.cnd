@@ -639,43 +639,6 @@
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
-// Pedigree, stored mainly as a JSON representation, but also as a cached SVG image
-[cards:PedigreeAnswer] > cards:Answer
-  // The pedigree data is stored here, as a JSON
-  - value (string)
-
-  // The pedigree image is stored here, as a SVG file
-  - image (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/PedigreeAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
-// Vocabulary identifiers, stored as strings.
-[cards:VocabularyAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/VocabularyAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
-// Chromosome answers, stored as strings
-[cards:ChromosomeAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/ChromosomeAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
 // Computed answers, stored as strings
 [cards:ComputedAnswer] > cards:Answer
   - value (string)
@@ -702,71 +665,12 @@
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
-// DICOM resource answers
-[cards:DicomAnswer] > cards:Answer
-  // The value holds the path to the JCR node storing the DICOM file
-  - value (string)
-
-  // The DICOM file is in a child nt:file resource
-  + * (nt:file) = nt:file
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/DicomAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
 // Resource paths, stored as strings.
 [cards:ResourceAnswer] > cards:Answer
   - value (string)
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/ResourceAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
-// Telephone number answers, stored as strings
-[cards:PhoneAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/PhoneAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
-// Postal address answers, stored as strings
-[cards:AddressAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/AddressAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
-// Selectable area answers, stored as strings
-[cards:SelectableAreaAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/SelectableAreaAnswer" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
-// Identifier answers, stored as strings
-[cards:IdentifierAnswer] > cards:Answer
-  - value (string)
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/IdentifierAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
@@ -881,50 +785,3 @@
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
-
-//-----------------------------------------------------------------------------
-// The configuration for a selectable area question variant
-[cards:SelectableAreaVariant] > cards:Resource
-  // Attributes:
-
-  // We can use this in a query.
-  query
-
-  // Properties:
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/SelectableAreaVariant" mandatory autocreated protected
-
-  // The name of this variant used to select it when designing a form
-  - name (STRING) mandatory
-
-  // The image that should be displayed for this variant
-  - image (STRING) mandatory
-
-  // The raw dimensions of the svg image used
-  - imageWidth (long) mandatory
-  - imageHeight (long) mandatory
-
-  // The data map that should be applied to this variant
-  - map (PATH) mandatory
-
-  // The maximum width that the svg area should be displayed with
-  - maxWidth (long)
-
-  // The area of the svg image and map that should be displayed
-  - viewbox (STRING)
-
-  // Optional colors defining how areas should be displayed based on their status
-  - unselectedColor (STRING)
-  - selectedColor (STRING)
-  - hoverColor (STRING)
-  - selectedHoverColor (STRING)
-  - strokeColor (STRING)
-
-  // If the colors provided above should take priority over non-prioritized colors
-  - overrideMapColors (boolean)
-
-  //Children
-
-  // Container for the selectable zones names corresponding to the variant
-  + defaultOptions (nt:unstructured)

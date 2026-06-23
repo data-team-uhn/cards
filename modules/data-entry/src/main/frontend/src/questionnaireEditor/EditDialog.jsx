@@ -41,7 +41,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js"
 
 let EditDialog = (props) => {
   checkPropTypes(EditDialog, props);
-  const { data, type, targetExists, isOpen, onSaved, onCancel, id, model } = props;
+  const { data, type, targetExists, isOpen, onSaved, onCancel, id, spec, hints: hintsProp } = props;
   let [ targetId, setTargetId ] = useState('');
   const dialogData = targetExists ? data : {};
   // Marks that a save operation is in progress
@@ -57,14 +57,14 @@ let EditDialog = (props) => {
   let [ error, setError ] = useState('');
   let [ variableNameError, setVariableNameError ] = useState('');
 
-  // Dynamic require - webpack warning is expected for this pattern
-  // Critical dependency: the request of a dependency is an expression
-  let json = model ? require(`./${model}`) : require(`./${type}.json`);
-  let hints = null;
-  try {
-    hints = require(`./${type}-hints.json`);
-  } catch (e) {
-    // do nothing
+  let json = [spec];
+  let hints = hintsProp;
+  if (!hints) {
+    try {
+      hints = require(`./${type}-hints.json`);
+    } catch (e) {
+      hints = null;
+    }
   }
 
 

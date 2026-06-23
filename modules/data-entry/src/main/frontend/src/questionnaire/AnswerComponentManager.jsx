@@ -17,17 +17,19 @@
 //  under the License.
 //
 
-let _registeredComponents = [];
+import { loadExtensions } from "../uiextension/extensionManager";
 
 // This is a utility "class" which helps the Form component decide how each question should be rendered.
 export default class AnswerComponentManager {
+  static #registeredComponents = [];
+
   // Registers a new question displayer. This method is only supposed to be called by each question displayer.
   //
   // @param component A function which can be called to determine how well suited the registered component can display a specific question.
   //     The function receives the JSON of a question definition, and returns a tuple (array with 2 items), the actual React Component that can display the question, and the confidence that it is the right displayer.
   //     The confidence is a number between 0 and 100, with a bigger number indicating more confidence. The registered component with the highest confidence will be used to display the question.
   static registerAnswerComponent(component) {
-    _registeredComponents.push(component);
+    AnswerComponentManager.#registeredComponents.push(component);
   }
 
   // Picks and returns the registered component with the highest confidence that it can display the given question,
@@ -35,10 +37,21 @@ export default class AnswerComponentManager {
   // @param questionDefinition the full JSON of the question definition, as obtained from the storage
   // @return a React Component that can render the question and its answers
   static getAnswerComponent(questionDefinition) {
-    return (_registeredComponents
+    return (AnswerComponentManager.#registeredComponents
       .map(component => (component)(questionDefinition))
       .filter(displayer => displayer)
       .reduce(([chosenDisplayer, maxPriority], [displayer, priority]) =>
         priority > maxPriority ? [displayer, priority] : [chosenDisplayer, maxPriority]))[0];
   }
 }
+
+async function registerAnswerComponents() {
+  const extensions = await loadExtensions("AnswerComponents");
+  extensions
+    .map(extension => extension['cards:extensionRender']?.canProcess)
+    .filter(Boolean)
+    .forEach(canProcess => AnswerComponentManager.registerAnswerComponent(canProcess));
+}
+// Fire-and-forget: registration must not block evaluation of this module, otherwise the surrounding
+// data-entry bundle (which provides the very assets being loaded here) would deadlock on initialization.
+registerAnswerComponents().catch(error => console.error("Failed to register answer components", error));

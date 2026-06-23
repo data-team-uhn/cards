@@ -1,0 +1,216 @@
+{
+  "long": {
+    "unitOfMeasurement": "string",
+    "entryMode": {
+      "user": {
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "disableNegativeInput": "boolean",
+        "minValue": "double",
+        "maxValue": "double",
+        "disableMinMaxValueEnforcement": "boolean",
+        "messageForValuesOutsideMinMax": "markdown",
+        "displayMode": {
+          "input": {
+            "isRange": "boolean"
+          },
+          "list": {
+            "compact": "boolean",
+            "answerOptions": {
+              "type": "numberOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "list+input": {
+            "compact": "boolean",
+            "answerOptions": {
+              "type": "numberOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "select": {
+            "answerOptions": {
+              "type": "numberOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "slider": {
+            "isRange": "boolean",
+            "minValueLabel": "string",
+            "maxValueLabel": "string",
+            "sliderStep": "double",
+            "sliderMarkStep": "double",
+            "sliderOrientation": {
+              "horizontal": {},
+              "vertical": {}
+            }
+          }
+        }
+      },
+      "computed": {
+        "minAnswers": {
+          "0": {},
+          "1": {}
+        },
+        "expression": "code",
+        "displayMode": {
+          "input": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "reference": {
+        "question": "string",
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "autocreated": {
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      }
+    }
+  },
+  "decimal": {
+    "unitOfMeasurement": "string",
+    "entryMode": {
+      "user": {
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "disableNegativeInput": "boolean",
+        "minValue": "double",
+        "maxValue": "double",
+        "disableMinMaxValueEnforcement": "boolean",
+        "messageForValuesOutsideMinMax": "markdown",
+        "displayMode": {
+          "input": {
+            "decimalScale": "long",
+            "isRange": "boolean"
+          },
+          "list": {
+            "compact": "boolean",
+            "answerOptions": {
+              "type": "numberOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "list+input": {
+            "decimalScale": "long",
+            "compact": "boolean",
+            "answerOptions": {
+              "type": "numberOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "select": {
+            "answerOptions": {
+              "type": "numberOptions",
+              "childrenType": "cards:AnswerOption"
+            }
+          },
+          "slider": {
+            "isRange": "boolean",
+            "minValueLabel": "string",
+            "maxValueLabel": "string",
+            "sliderStep": "double",
+            "sliderMarkStep": "double",
+            "sliderOrientation": {
+              "horizontal": {},
+              "vertical": {}
+            }
+          }
+        }
+      },
+      "computed": {
+        "minAnswers": {
+          "0": {},
+          "1": {}
+        },
+        "expression": "code",
+        "displayMode": {
+          "input": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "reference": {
+        "question": "string",
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "autocreated": {
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      }
+    }
+  },
+  "double": {
+    "unitOfMeasurement": "string",
+    "entryMode": {
+      "user": {
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "disableNegativeInput": "boolean",
+        "minValue": "double",
+        "maxValue": "double",
+        "disableMinMaxValueEnforcement": "boolean",
+        "messageForValuesOutsideMinMax": "markdown",
+        "displayMode": {
+          "input": {
+            "decimalScale": "long",
+            "isRange": "boolean"
+          },
+          "slider": {
+            "isRange": "boolean",
+            "minValueLabel": "string",
+            "maxValueLabel": "string",
+            "sliderStep": "double",
+            "sliderMarkStep": "double",
+            "sliderOrientation": {
+              "horizontal": {},
+              "vertical": {}
+            }
+          }
+        }
+      },
+      "computed": {
+        "minAnswers": {
+          "0": {},
+          "1": {}
+        },
+        "expression": "code",
+        "displayMode": {
+          "input": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "reference": {
+        "question": "string",
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      },
+      "autocreated": {
+        "displayMode": {
+          "plain": {},
+          "formatted": {},
+          "hidden": {}
+        }
+      }
+    }
+  }
+}

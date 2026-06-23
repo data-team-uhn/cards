@@ -39,11 +39,15 @@ let CreationMenu = (props) => {
     data,
     menuItems,
     models,
+    specOverrides,
+    hintsOverrides,
     onCreated
   } = props;
   let [ anchorEl, setAnchorEl ] = useState(null);
   let [ entityType, setEntityType ] = useState('Question');
   let [ dialogOpen, setDialogOpen ] = useState(false);
+  let [ dialogSpec, setDialogSpec ] = useState(null);
+  let [ dialogHints, setDialogHints ] = useState(null);
 
   let handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -55,6 +59,11 @@ let CreationMenu = (props) => {
 
   let openDialog = (type) => {
     setEntityType(type);
+    // Dynamic require - webpack warning is expected for this pattern
+    // Critical dependency: the request of a dependency is an expression
+    const typeModel = models?.[type];
+    setDialogSpec(specOverrides?.[type] ?? (typeModel ? require(`./${typeModel}`)[0] : require(`./${type}.json`)[0]));
+    setDialogHints(hintsOverrides?.[type] ?? null);
     setDialogOpen(true);
   }
 
@@ -82,7 +91,8 @@ let CreationMenu = (props) => {
         targetExists={false}
         data={data}
         type={entityType}
-        model={models?.[entityType]}
+        spec={dialogSpec}
+        hints={dialogHints}
         isOpen={dialogOpen}
         onSaved={(newData) => { setDialogOpen(false); onCreated?.(newData); }}
         onCancel={() => setDialogOpen(false)}
@@ -96,6 +106,8 @@ CreationMenu.propTypes = {
   isMainAction: PropTypes.bool,
   data: PropTypes.object.isRequired,
   menuItems: PropTypes.array.isRequired,
+  specOverrides: PropTypes.object,
+  hintsOverrides: PropTypes.object,
   onCreated: PropTypes.func
 };
 
