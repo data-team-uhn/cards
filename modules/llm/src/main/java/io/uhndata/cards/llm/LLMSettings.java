@@ -39,13 +39,15 @@ public final class LLMSettings
 
     private static final String TIMEOUT_SECONDS = "timeoutSeconds";
 
-    private static final String MODEL_ID = "modelId";
-
     private static final String MAX_OUTPUT_TOKENS = "maxOutputTokens";
 
     private static final String TEMPERATURE = "temperature";
 
     private static final String CONTEXT_LIMIT_TOKENS = "contextLimitTokens";
+
+    private static final String CHUNK_TOKEN_SIZE = "chunkTokenSize";
+
+    private static final String DEVELOPER = "developer";
 
     private static final long DEFAULT_TIMEOUT_SECONDS = 120;
 
@@ -130,12 +132,13 @@ public final class LLMSettings
 
     /**
      * The identifier of the active model, as sent to the API in the request body.
+     * This is the model's node name in the JCR configuration.
      *
-     * @return the model identifier, or {@code null} if not set
+     * @return the model identifier
      */
     public String getModelId()
     {
-        return string(this.modelProperties, MODEL_ID);
+        return this.modelName;
     }
 
     /**
@@ -177,6 +180,26 @@ public final class LLMSettings
     public long getContextLimitTokens()
     {
         return number(this.modelProperties, CONTEXT_LIMIT_TOKENS, 0);
+    }
+
+    /**
+     * The number of input tokens to send per chunk when the input exceeds the context window.
+     *
+     * @return the chunk token size, or 0 if not set
+     */
+    public long getChunkTokenSize()
+    {
+        return number(this.modelProperties, CHUNK_TOKEN_SIZE, 0);
+    }
+
+    /**
+     * The organization that developed the active model (e.g. {@code google}, {@code anthropic}, {@code alibaba}).
+     *
+     * @return the developer name, or {@code null} if not set
+     */
+    public String getDeveloper()
+    {
+        return string(this.modelProperties, DEVELOPER);
     }
 
     /**
