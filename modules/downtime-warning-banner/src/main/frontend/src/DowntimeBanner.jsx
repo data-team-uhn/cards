@@ -62,9 +62,10 @@ export default function DowntimeWarning(props) {
       });
   }, []);
 
+  // Report the height on mount and re-report whenever the banner appears, disappears or changes.
   useEffect(() => {
     props.onRender?.(appBarRef.current);
-  }, [props.onRender]);
+  }, [props.onRender, enabled, fromDate, toDate]);
 
   if (!enabled || !fromDate || !toDate) {
     return null;
