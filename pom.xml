@@ -126,7 +126,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.9.0</version>
+        <version>1.13.0</version>
       </dependency>
       <!-- Everybody logs -->
       <dependency>
@@ -1522,7 +1522,7 @@
         <plugin>
           <groupId>org.apache.sling</groupId>
           <artifactId>slingfeature-maven-plugin</artifactId>
-          <version>1.9.4</version>
+          <version>1.9.6</version>
           <extensions>true</extensions>
           <configuration>
             <replacePropertyVariables>asm.version,jackrabbit.version,oak.version,sling.saml.version,slf4j.version,composum.nodes.version,jackson.version,cards.version</replacePropertyVariables>
@@ -1626,7 +1626,7 @@
         <plugin>
           <groupId>com.github.eirslett</groupId>
           <artifactId>frontend-maven-plugin</artifactId>
-          <version>2.0.0</version>
+          <version>2.0.1</version>
           <executions>
             <!-- Installs NodeJS and Yarn locally -->
             <execution>
@@ -1706,7 +1706,7 @@
         <plugin>
           <groupId>org.sonatype.central</groupId>
           <artifactId>central-publishing-maven-plugin</artifactId>
-          <version>0.10.0</version>
+          <version>0.11.0</version>
           <extensions>true</extensions>
           <configuration>
             <publishingServerId>central</publishingServerId>

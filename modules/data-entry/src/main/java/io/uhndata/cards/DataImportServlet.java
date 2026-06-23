@@ -208,7 +208,7 @@ public class DataImportServlet extends SlingJakartaAllMethodsServlet
             throw new IllegalArgumentException("Invalid questionnaire name " + questionnaireName);
         }
 
-        CSVFormat format = CSVFormat.TDF.builder().setHeader().setSkipHeaderRecord(true).build();
+        CSVFormat format = CSVFormat.TDF.builder().setHeader().setSkipHeaderRecord(true).get();
         try (CSVParser data = CSVParser.parse(dataFile.getInputStream(), StandardCharsets.UTF_8, format)) {
             data.forEach(row -> {
                 try {

@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -115,12 +114,8 @@ public class NCITFlatIndexer extends AbstractNCITIndexer
         // The NCIT source is an unquoted tab-delimited file
         // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
         try (CSVParser csvParser = CSVParser.parse(source, DEFAULT_CHARSET,
-                CSVFormat.TDF.builder().setQuote(null).build())) {
-            Iterator<CSVRecord> csvIterator = csvParser.iterator();
-
-            while (csvIterator.hasNext()) {
-                CSVRecord row = csvIterator.next();
-
+            CSVFormat.TDF.builder().setQuote(null).get())) {
+            for (CSVRecord row : csvParser) {
                 String identifier = row.get(IDENTIFIER_COLUMN);
                 String description = row.get(DESCRIPTION_COLUMN);
                 String synonymString = row.get(SYNONYMS_COLUMN);
@@ -162,14 +157,10 @@ public class NCITFlatIndexer extends AbstractNCITIndexer
         // The NCIT source is an unquoted tab-delimited file
         // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
         try (CSVParser csvParser = CSVParser.parse(source, DEFAULT_CHARSET,
-                CSVFormat.TDF.builder().setQuote(null).build())) {
-            Iterator<CSVRecord> csvIterator = csvParser.iterator();
-
+            CSVFormat.TDF.builder().setQuote(null).get())) {
             Map<String, String[]> parents = new HashMap<>();
 
-            while (csvIterator.hasNext()) {
-                CSVRecord row = csvIterator.next();
-
+            for (CSVRecord row : csvParser) {
                 String identifier = row.get(IDENTIFIER_COLUMN);
 
                 String parentString = row.get(PARENTS_COLUMN);

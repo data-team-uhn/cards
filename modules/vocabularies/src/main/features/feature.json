@@ -22,7 +22,7 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.commons:commons-csv:1.9.0",
+      "id":"org.apache.commons:commons-csv:1.13.0",
       "start-order":"25"
     },
     {
