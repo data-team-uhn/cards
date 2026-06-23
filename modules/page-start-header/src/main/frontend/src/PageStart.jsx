@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { loadExtensions } from "./uiextension/extensionManager";
 
@@ -29,11 +29,57 @@ export default function PageStart(props) {
   const [ isInitialized, setIsInitialized ] = useState(false);
   const [ pageStartHeight, setPageStartHeight ] = useState(0);
 
+  // Tracks the DOM node and its ResizeObserver for each extension, keyed by index, so heights stay
+  // correct when a banner appears asynchronously or reflows when the window is resized.
+  const observed = useRef({});
+
   const extensionsName = props.extensionsName || "PageStart";
 
   useEffect(() => {
     props.setTotalHeight?.(pageStartHeight);
   }, [props.setTotalHeight, pageStartHeight]);
+
+  // Stop observing every extension when this component goes away.
+  useEffect(() => {
+    return () => {
+      Object.values(observed.current).forEach(entry => entry.observer.disconnect());
+      observed.current = {};
+    };
+  }, []);
+
+  // Records the measured height of the extension at the given index, ignoring no-op updates.
+  const setHeight = (index, height) => {
+    setComponentHeights(prev => {
+      if (prev[index] === height) {
+        return prev;
+      }
+      const next = prev.slice();
+      next[index] = height;
+      return next;
+    });
+  };
+
+  // Called by each extension with its rendered DOM node (or null when it renders nothing). Measures
+  // the node now and keeps a ResizeObserver on it so later size changes update the stored height.
+  const measure = (index, node) => {
+    const previous = observed.current[index];
+    if (previous?.node === node) {
+      // Same node as last time: re-measure only (e.g. the extension re-reported on a state change).
+      node && setHeight(index, node.getBoundingClientRect().height);
+      return;
+    }
+    // The node changed (mounted, replaced or unmounted): stop watching the old one.
+    previous?.observer.disconnect();
+    if (node == null) {
+      delete observed.current[index];
+      setHeight(index, 0);
+      return;
+    }
+    const observer = new ResizeObserver(() => setHeight(index, node.getBoundingClientRect().height));
+    observer.observe(node);
+    observed.current[index] = { node, observer };
+    setHeight(index, node.getBoundingClientRect().height);
+  };
 
   const arrayEquals = (a, b) => {
     return (
@@ -97,17 +143,7 @@ export default function PageStart(props) {
               {...props}
               key={index}
               style={{ top: (componentPositions[index]) + 'px' }}
-              onRender={(node) => {
-                if (node != null) {
-                  let n = node.getBoundingClientRect().height;
-                  if (componentHeights[index] != n) {
-                    let newComponentHeights = componentHeights.slice();
-                    newComponentHeights[index] = n;
-                    setComponentHeights(newComponentHeights);
-                  }
-                }
-              }
-              }
+              onRender={(node) => measure(index, node)}
             />
           );
         })
