@@ -70,7 +70,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FormUtilsImplTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";

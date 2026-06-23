@@ -58,7 +58,7 @@ import static org.mockito.Mockito.when;
  * @version $Id$
  */
 @SuppressWarnings("unchecked")
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ComputedAnswersEditorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";

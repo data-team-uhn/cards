@@ -18,6 +18,10 @@
  */
 package io.uhndata.cards.forms.internal.serialize;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -35,6 +39,8 @@ import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 
+import org.apache.jackrabbit.commons.cnd.CndImporter;
+import org.apache.jackrabbit.commons.cnd.ParseException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceMetadata;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -215,6 +221,14 @@ public class QuestionnaireToCsvProcessorTest
             .commit();
 
         Session session = this.context.resourceResolver().adaptTo(Session.class);
+        // cards:PedigreeAnswer is defined in the pedigree module, which cannot be a dependency here,
+        // so register it from a test-only copy for the serialization tests below.
+        try (Reader cnd = new InputStreamReader(
+            getClass().getResourceAsStream("/PedigreeAnswer.cnd"), StandardCharsets.UTF_8)) {
+            CndImporter.registerNodeTypes(cnd, session);
+        } catch (IOException | ParseException e) {
+            throw new RepositoryException("Failed to register test node types", e);
+        }
 
         Node subject = session.getNode(TEST_SUBJECT_PATH);
         Node questionnaire = session.getNode(TEST_QUESTIONNAIRE_PATH);

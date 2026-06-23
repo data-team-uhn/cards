@@ -49,7 +49,7 @@ import io.uhndata.cards.spi.SearchParametersFactory;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FormsQuickSearchEngineTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";

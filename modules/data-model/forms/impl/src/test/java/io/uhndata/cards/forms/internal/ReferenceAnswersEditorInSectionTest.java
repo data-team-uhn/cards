@@ -53,7 +53,7 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ReferenceAnswersEditorInSectionTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
