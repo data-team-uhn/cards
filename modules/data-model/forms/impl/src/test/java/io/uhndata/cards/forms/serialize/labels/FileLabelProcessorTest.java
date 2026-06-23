@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.forms.internal.serialize.labels;
+package io.uhndata.cards.forms.serialize.labels;
 
 import java.util.List;
 import java.util.function.Function;
@@ -24,11 +24,10 @@ import java.util.function.Function;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
-import org.apache.jackrabbit.value.LongValue;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
@@ -38,18 +37,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link DefaultLabelProcessor}.
+ * Unit tests for {@link FileLabelProcessor}.
  *
  * @version $Id $
  */
+@SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
-public class DefaultLabelProcessorTest
+public class FileLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
 
@@ -57,11 +57,11 @@ public class DefaultLabelProcessorTest
 
     private static final String SUBJECT_TYPE = "cards:Subject";
 
-    private static final String ANSWER_TYPE = "cards:TextAnswer";
+    private static final String ANSWER_FILE_TYPE = "cards:FileAnswer";
 
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
-    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_4";
+    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/question_6";
 
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
 
@@ -79,7 +79,7 @@ public class DefaultLabelProcessorTest
 
     private static final String NAME = "labels";
 
-    private static final int PRIORITY = 70;
+    private static final int PRIORITY = 75;
 
     private static final boolean ENABLED = true;
 
@@ -87,62 +87,60 @@ public class DefaultLabelProcessorTest
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     @InjectMocks
-    private DefaultLabelProcessor defaultLabelProcessor;
+    private FileLabelProcessor fileLabelProcessor;
 
     @Test
     public void getNameTest()
     {
-        Assert.assertEquals(NAME, this.defaultLabelProcessor.getName());
+        Assert.assertEquals(NAME, this.fileLabelProcessor.getName());
     }
 
     @Test
     public void getDescriptionReturnsSomething()
     {
-        Assert.assertNotNull(this.defaultLabelProcessor.getDescription());
+        Assert.assertNotNull(this.fileLabelProcessor.getDescription());
     }
 
     @Test
     public void getPriorityTest()
     {
-        Assert.assertEquals(PRIORITY, this.defaultLabelProcessor.getPriority());
+        Assert.assertEquals(PRIORITY, this.fileLabelProcessor.getPriority());
     }
 
     @Test
     public void isEnabledByDefaultReturnsTrue()
     {
-        Assert.assertEquals(ENABLED, this.defaultLabelProcessor.isEnabledByDefault(mock(Resource.class)));
+        Assert.assertEquals(ENABLED, this.fileLabelProcessor.isEnabledByDefault(mock(Resource.class)));
     }
 
     @Test
     public void canProcessForFormReturnsTrue()
     {
         Resource form = this.context.resourceResolver().getResource(TEST_FORM_PATH);
-        Assert.assertTrue(this.defaultLabelProcessor.canProcess(form));
+        Assert.assertTrue(this.fileLabelProcessor.canProcess(form));
     }
 
     @Test
     public void canProcessForQuestionnaireReturnsFalse()
     {
         Resource questionnaire = this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH);
-        Assert.assertFalse(this.defaultLabelProcessor.canProcess(questionnaire));
+        Assert.assertFalse(this.fileLabelProcessor.canProcess(questionnaire));
     }
 
     @Test
-    public void leaveForAnswerNode() throws RepositoryException
+    public void leaveForFileAnswerNode() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, 2);
-        Node question = session.getNode(TEST_QUESTION_PATH);
-        question.setProperty("unitOfMeasurement", "kg");
+        node.setProperty(VALUE_PROPERTY, "/Forms/f1/a1/answer_path.txt");
 
-        this.defaultLabelProcessor.leave(node, json, mock(Function.class));
+        this.fileLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
 
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
-        Assert.assertEquals("2 kg", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+        Assert.assertEquals("answer_path.txt", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
     }
 
     @Test
@@ -151,45 +149,54 @@ public class DefaultLabelProcessorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, new LongValue[] {
-            new LongValue(1), new LongValue(2)
+        node.setProperty(VALUE_PROPERTY, new String[] {
+            "/Forms/f1/a1/answer_path.txt", "/Forms/f1/a1/answer_path.txt"
         });
-        Node question = session.getNode(TEST_QUESTION_PATH);
-        question.setProperty("unitOfMeasurement", "kg");
 
-        this.defaultLabelProcessor.leave(node, json, mock(Function.class));
+        this.fileLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
 
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
         Assert.assertEquals(2, jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).size());
-        Assert.assertEquals("1 kg", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
-        Assert.assertEquals("2 kg", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
+        Assert.assertEquals("answer_path.txt", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
+        Assert.assertEquals("answer_path.txt", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
     }
 
     @Test
-    public void leaveForAnswerNodeWithValuePropertyThrowsException() throws RepositoryException
+    public void leaveForFileAnswerNodeWithValuePropertyThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
+        when(node.isNodeType(ANSWER_FILE_TYPE)).thenReturn(true);
         when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
-        when(node.hasProperty(QUESTION_PROPERTY)).thenReturn(false);
-        when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
+        when(node.getPath()).thenThrow(new RepositoryException());
 
-        this.defaultLabelProcessor.leave(node, json, mock(Function.class));
+        Assert.assertThrows(NullPointerException.class,
+            () -> this.fileLabelProcessor.leave(node, json, mock(Function.class)));
+    }
+
+    @Test
+    public void leaveForFileAnswerNodeWithoutValuePropertyThrowsException() throws RepositoryException
+    {
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        Node node = mock(Node.class);
+        when(node.isNodeType(ANSWER_FILE_TYPE)).thenReturn(true);
+        when(node.hasProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
+
+        this.fileLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
 
     @Test
-    public void leaveForNotAnswerNodeThrowsException() throws RepositoryException
+    public void leaveForNotFileAnswerNodeThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType("cards:Answer")).thenThrow(new RepositoryException());
+        when(node.isNodeType(ANSWER_FILE_TYPE)).thenThrow(new RepositoryException());
 
-        this.defaultLabelProcessor.leave(node, json, mock(Function.class));
+        this.fileLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
@@ -223,7 +230,7 @@ public class DefaultLabelProcessorTest
                 SUBJECT_PROPERTY, subject,
                 "relatedSubjects", List.of(subject).toArray())
             .resource("/Forms/f1/a1",
-                NODE_TYPE, ANSWER_TYPE,
+                NODE_TYPE, ANSWER_FILE_TYPE,
                 QUESTION_PROPERTY, question)
             .commit();
     }

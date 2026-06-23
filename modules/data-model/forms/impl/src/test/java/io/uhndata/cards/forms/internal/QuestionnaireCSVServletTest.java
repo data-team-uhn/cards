@@ -20,10 +20,9 @@ import java.io.IOException;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.request.builder.impl.SlingHttpServletRequestImpl;
-import org.apache.sling.api.request.builder.impl.SlingHttpServletResponseImpl;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.request.builder.Builders;
+import org.apache.sling.api.request.builder.SlingJakartaHttpServletResponseResult;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
@@ -34,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import io.uhndata.cards.serialize.CSVString;
 
@@ -60,8 +59,8 @@ public class QuestionnaireCSVServletTest
     public void doGetTest() throws IOException
     {
         Resource questionnaire = this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH);
-        SlingHttpServletRequest request = new SlingHttpServletRequestImpl(questionnaire);
-        SlingHttpServletResponse response = new SlingHttpServletResponseImpl();
+        SlingJakartaHttpServletRequest request = Builders.newRequestBuilder(questionnaire).buildJakartaRequest();
+        SlingJakartaHttpServletResponseResult response = Builders.newResponseBuilder().buildJakartaResponseResult();
         this.questionnaireCSVServlet.doGet(request, response);
 
         Assert.assertEquals("UTF-8", response.getCharacterEncoding());

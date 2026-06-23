@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.forms.internal.serialize.labels;
+package io.uhndata.cards.forms.serialize.labels;
 
 import java.util.List;
 import java.util.function.Function;
@@ -24,9 +24,10 @@ import java.util.function.Function;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -37,18 +38,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link FileLabelProcessor}.
+ * Unit tests for {@link BooleanLabelProcessor}.
  *
- * @version $Id $
+ * @version $Id$
  */
+@SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
-public class FileLabelProcessorTest
+public class BooleanLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
 
@@ -56,11 +58,11 @@ public class FileLabelProcessorTest
 
     private static final String SUBJECT_TYPE = "cards:Subject";
 
-    private static final String ANSWER_FILE_TYPE = "cards:FileAnswer";
+    private static final String ANSWER_BOOLEAN_TYPE = "cards:BooleanAnswer";
 
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
-    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/question_6";
+    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/question_5";
 
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
 
@@ -86,116 +88,123 @@ public class FileLabelProcessorTest
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     @InjectMocks
-    private FileLabelProcessor fileLabelProcessor;
+    private BooleanLabelProcessor booleanLabelProcessor;
 
     @Test
     public void getNameTest()
     {
-        Assert.assertEquals(NAME, this.fileLabelProcessor.getName());
+        Assert.assertEquals(NAME, this.booleanLabelProcessor.getName());
     }
 
     @Test
     public void getDescriptionReturnsSomething()
     {
-        Assert.assertNotNull(this.fileLabelProcessor.getDescription());
+        Assert.assertNotNull(this.booleanLabelProcessor.getDescription());
     }
 
     @Test
     public void getPriorityTest()
     {
-        Assert.assertEquals(PRIORITY, this.fileLabelProcessor.getPriority());
+        Assert.assertEquals(PRIORITY, this.booleanLabelProcessor.getPriority());
     }
 
     @Test
     public void isEnabledByDefaultReturnsTrue()
     {
-        Assert.assertEquals(ENABLED, this.fileLabelProcessor.isEnabledByDefault(mock(Resource.class)));
+        Assert.assertEquals(ENABLED, this.booleanLabelProcessor.isEnabledByDefault(mock(Resource.class)));
     }
 
     @Test
     public void canProcessForFormReturnsTrue()
     {
         Resource form = this.context.resourceResolver().getResource(TEST_FORM_PATH);
-        Assert.assertTrue(this.fileLabelProcessor.canProcess(form));
+        Assert.assertTrue(this.booleanLabelProcessor.canProcess(form));
     }
 
     @Test
     public void canProcessForQuestionnaireReturnsFalse()
     {
         Resource questionnaire = this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH);
-        Assert.assertFalse(this.fileLabelProcessor.canProcess(questionnaire));
+        Assert.assertFalse(this.booleanLabelProcessor.canProcess(questionnaire));
     }
 
     @Test
-    public void leaveForFileAnswerNode() throws RepositoryException
+    public void leaveForBooleanAnswerNode() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, "/Forms/f1/a1/answer_path.txt");
+        Node question = session.getNode(TEST_QUESTION_PATH);
+        question.setProperty("yesLabel", "yes");
+        question.setProperty("noLabel", "no");
+        question.setProperty("unknownLabel", "unknown");
 
-        this.fileLabelProcessor.leave(node, json, mock(Function.class));
+        this.booleanLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
 
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
-        Assert.assertEquals("answer_path.txt", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+        Assert.assertEquals("yes", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
     }
 
     @Test
-    public void leaveForAnswerNodeWithMultipleValue() throws RepositoryException
+    public void leaveForMultivaluedBooleanAnswerNode() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, new String[] {
-            "/Forms/f1/a1/answer_path.txt", "/Forms/f1/a1/answer_path.txt"
-        });
+        Node node = session.getNode("/Forms/f1/a2");
+        Node question = session.getNode(TEST_QUESTION_PATH);
+        question.setProperty("yesLabel", "yes");
+        question.setProperty("noLabel", "no");
+        question.setProperty("unknownLabel", "unknown");
 
-        this.fileLabelProcessor.leave(node, json, mock(Function.class));
+        this.booleanLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
 
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
-        Assert.assertEquals(2, jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).size());
-        Assert.assertEquals("answer_path.txt", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
-        Assert.assertEquals("answer_path.txt", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
+        JsonArray values = jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY);
+        Assert.assertEquals(2, values.size());
+        Assert.assertEquals("yes", values.getString(0));
+        Assert.assertEquals("no", values.getString(1));
     }
 
     @Test
-    public void leaveForFileAnswerNodeWithValuePropertyThrowsException() throws RepositoryException
+    public void leaveForBooleanAnswerNodeWithValuePropertyThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_FILE_TYPE)).thenReturn(true);
+        when(node.isNodeType(ANSWER_BOOLEAN_TYPE)).thenReturn(true);
         when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
-        when(node.getPath()).thenThrow(new RepositoryException());
+        when(node.hasProperty(QUESTION_PROPERTY)).thenThrow(new RepositoryException());
+        when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
 
-        Assert.assertThrows(NullPointerException.class,
-            () -> this.fileLabelProcessor.leave(node, json, mock(Function.class)));
-    }
-
-    @Test
-    public void leaveForFileAnswerNodeWithoutValuePropertyThrowsException() throws RepositoryException
-    {
-        JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_FILE_TYPE)).thenReturn(true);
-        when(node.hasProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
-
-        this.fileLabelProcessor.leave(node, json, mock(Function.class));
+        this.booleanLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
 
     @Test
-    public void leaveForNotFileAnswerNodeThrowsException() throws RepositoryException
+    public void leaveForBooleanAnswerNodeWithoutValuePropertyThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_FILE_TYPE)).thenThrow(new RepositoryException());
+        when(node.isNodeType(ANSWER_BOOLEAN_TYPE)).thenReturn(true);
+        when(node.hasProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
 
-        this.fileLabelProcessor.leave(node, json, mock(Function.class));
+        this.booleanLabelProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+        Assert.assertTrue(jsonObject.isEmpty());
+    }
+
+    @Test
+    public void leaveForNotBooleanAnswerNodeThrowsException() throws RepositoryException
+    {
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        Node node = mock(Node.class);
+        when(node.isNodeType(ANSWER_BOOLEAN_TYPE)).thenThrow(new RepositoryException());
+
+        this.booleanLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
@@ -229,8 +238,13 @@ public class FileLabelProcessorTest
                 SUBJECT_PROPERTY, subject,
                 "relatedSubjects", List.of(subject).toArray())
             .resource("/Forms/f1/a1",
-                NODE_TYPE, ANSWER_FILE_TYPE,
-                QUESTION_PROPERTY, question)
+                NODE_TYPE, ANSWER_BOOLEAN_TYPE,
+                QUESTION_PROPERTY, question,
+                VALUE_PROPERTY, 1)
+            .resource("/Forms/f1/a2",
+                NODE_TYPE, ANSWER_BOOLEAN_TYPE,
+                QUESTION_PROPERTY, question,
+                VALUE_PROPERTY, List.of(1, 0).toArray())
             .commit();
     }
 }

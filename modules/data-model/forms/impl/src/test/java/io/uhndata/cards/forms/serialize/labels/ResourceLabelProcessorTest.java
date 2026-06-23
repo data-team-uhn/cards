@@ -16,20 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.forms.internal.serialize.labels;
+
+package io.uhndata.cards.forms.serialize.labels;
 
 import java.util.List;
 import java.util.function.Function;
 
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Assert;
@@ -38,18 +39,23 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link AnswerOptionsLabelProcessor}.
+ * Unit tests for {@link ResourceLabelProcessor}.
  *
  * @version $Id$
  */
+@SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
-public class AnswerOptionsLabelProcessorTest
+public class ResourceLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
 
@@ -57,19 +63,15 @@ public class AnswerOptionsLabelProcessorTest
 
     private static final String SUBJECT_TYPE = "cards:Subject";
 
-    private static final String ANSWER_OPTION_TYPE = "cards:AnswerOption";
-
-    private static final String ANSWER_TYPE = "cards:TextAnswer";
+    private static final String ANSWER_RESOURCE_TYPE = "cards:ResourceAnswer";
 
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
-    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/question_7";
+    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/question_8";
 
-    private static final String TEST_QUESTION_OPTION_1_PATH = "/Questionnaires/TestQuestionnaire/question_7/o1";
+    private static final String TEST_SUBJECT_PATH = "/Subjects/TestRoot";
 
-    private static final String TEST_QUESTION_OPTION_2_PATH = "/Questionnaires/TestQuestionnaire/question_7/o2";
-
-    private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+    private static final String TEST_BRANCH_SUBJECT_PATH = "/Subjects/TestBranch";
 
     private static final String TEST_FORM_PATH = "/Forms/f1";
 
@@ -81,13 +83,11 @@ public class AnswerOptionsLabelProcessorTest
 
     private static final String VALUE_PROPERTY = "value";
 
-    private static final String LABEL_PROPERTY = "label";
-
     private static final String DISPLAYED_VALUE_PROPERTY = "displayedValue";
 
     private static final String NAME = "labels";
 
-    private static final int PRIORITY = 75;
+    private static final int PRIORITY = 90;
 
     private static final boolean ENABLED = true;
 
@@ -95,188 +95,179 @@ public class AnswerOptionsLabelProcessorTest
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     @InjectMocks
-    private AnswerOptionsLabelProcessor answerOptionsLabelProcessor;
+    private ResourceLabelProcessor resourceLabelProcessor;
+
+    @Mock
+    private ThreadResourceResolverProvider rrp;
 
     @Test
     public void getNameTest()
     {
-        Assert.assertEquals(NAME, this.answerOptionsLabelProcessor.getName());
+        Assert.assertEquals(NAME, this.resourceLabelProcessor.getName());
     }
 
     @Test
     public void getDescriptionReturnsSomething()
     {
-        Assert.assertNotNull(this.answerOptionsLabelProcessor.getDescription());
+        Assert.assertNotNull(this.resourceLabelProcessor.getDescription());
     }
 
     @Test
     public void getPriorityTest()
     {
-        Assert.assertEquals(PRIORITY, this.answerOptionsLabelProcessor.getPriority());
+        Assert.assertEquals(PRIORITY, this.resourceLabelProcessor.getPriority());
     }
 
     @Test
     public void isEnabledByDefaultReturnsTrue()
     {
-        Assert.assertEquals(ENABLED, this.answerOptionsLabelProcessor.isEnabledByDefault(mock(Resource.class)));
+        Assert.assertEquals(ENABLED, this.resourceLabelProcessor.isEnabledByDefault(mock(Resource.class)));
     }
 
     @Test
     public void canProcessForFormReturnsTrue()
     {
         Resource form = this.context.resourceResolver().getResource(TEST_FORM_PATH);
-        Assert.assertTrue(this.answerOptionsLabelProcessor.canProcess(form));
+        Assert.assertTrue(this.resourceLabelProcessor.canProcess(form));
     }
 
     @Test
     public void canProcessForQuestionnaireReturnsFalse()
     {
         Resource questionnaire = this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH);
-        Assert.assertFalse(this.answerOptionsLabelProcessor.canProcess(questionnaire));
+        Assert.assertFalse(this.resourceLabelProcessor.canProcess(questionnaire));
     }
 
     @Test
-    public void leaveForAnswerNode() throws RepositoryException
+    public void leaveForResourceAnswerNode() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, "/Vocabularies/Option1");
+        node.setProperty(VALUE_PROPERTY, TEST_SUBJECT_PATH);
+        Node subject = session.getNode(TEST_SUBJECT_PATH);
+        subject.setProperty("level", "root");
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
-        this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
+        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
 
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
-        Assert.assertEquals("/Vocabularies/Option1", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+        Assert.assertEquals("root", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
     }
 
     @Test
-    public void leaveForAnswerNodeWithMultipleValue() throws RepositoryException
+    public void leaveForResourceAnswerNodeWithMultipleValue() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
         node.setProperty(VALUE_PROPERTY, new String[] {
-            "/Vocabularies/Option1", "/Vocabularies/Option2"
+            TEST_SUBJECT_PATH, TEST_BRANCH_SUBJECT_PATH
         });
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
-        this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
+        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
 
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
         Assert.assertEquals(2, jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).size());
-        Assert.assertEquals("/Vocabularies/Option1", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
-        Assert.assertEquals("/Vocabularies/Option2", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
+        Assert.assertEquals("TestRoot", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
+        Assert.assertEquals("TestBranch", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
     }
 
     @Test
-    public void leaveForAnswerNodeWithQuestionWithoutChildren() throws RepositoryException
+    public void leaveForResourceAnswerNodeWithNullResourceResolver() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
-        session.getNode(TEST_QUESTION_OPTION_1_PATH).remove();
-        session.getNode(TEST_QUESTION_OPTION_2_PATH).remove();
-        node.setProperty(VALUE_PROPERTY, "/Vocabularies/Option1");
+        node.setProperty(VALUE_PROPERTY, TEST_SUBJECT_PATH);
+        Node subject = session.getNode(TEST_SUBJECT_PATH);
+        subject.setProperty("level", "root");
 
-        this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
+        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
 
     @Test
-    public void leaveForAnswerNodeWithOptionsWithLabelProperty() throws RepositoryException
+    public void leaveForResourceAnswerNodeWithNonExistingValuePath() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, "/Vocabularies/Option1");
-        session.getNode(TEST_QUESTION_OPTION_1_PATH).setProperty(LABEL_PROPERTY, "Option 1");
+        node.setProperty(VALUE_PROPERTY, "/Subjects/Non-existing");
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
-        this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
+        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
-
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
-        Assert.assertEquals("Option 1", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+        Assert.assertEquals("/Subjects/Non-existing", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
     }
 
     @Test
-    public void leaveForAnswerNodeThrowsRepositoryException() throws RepositoryException
+    public void leaveForResourceAnswerNodeWithoutLabelPropertyThrowsException() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        Node node = session.getNode("/Forms/f1/a1");
+        node.setProperty(VALUE_PROPERTY, TEST_SUBJECT_PATH);
+        ResourceResolver resolver = mock(ResourceResolver.class);
+        Resource resource = mock(Resource.class);
+        Node nodeFromResource = mock(Node.class);
+        when(this.rrp.getThreadResourceResolver()).thenReturn(resolver);
+        when(resolver.getResource(Mockito.anyString())).thenReturn(resource);
+        when(resource.adaptTo(Node.class)).thenReturn(nodeFromResource);
+        when(nodeFromResource.hasProperty(Mockito.anyString())).thenThrow(new RepositoryException());
+
+        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+        Assert.assertFalse(jsonObject.isEmpty());
+        Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
+        Assert.assertEquals(TEST_SUBJECT_PATH, jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+    }
+
+    @Test
+    public void leaveForResourceAnswerNodeWithValuePropertyThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
+        when(node.isNodeType(ANSWER_RESOURCE_TYPE)).thenReturn(true);
         when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
         when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
-        this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
+        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
 
     @Test
-    public void leaveForAnswerNodeWithQuestionWithoutChildrenThrowsRepositoryException() throws RepositoryException
+    public void leaveForResourceAnswerNodeWithoutValuePropertyThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        Property questionProperty = mock(Property.class);
-        Node questionNode = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
-        when(node.hasProperty(QUESTION_PROPERTY)).thenReturn(true);
-        when(node.getProperty(QUESTION_PROPERTY)).thenReturn(questionProperty);
-        when(questionProperty.getNode()).thenReturn(questionNode);
-        when(questionNode.getNodes()).thenThrow(new RepositoryException());
+        when(node.isNodeType(ANSWER_RESOURCE_TYPE)).thenReturn(true);
+        when(node.hasProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
 
-        this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
+        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
 
     @Test
-    public void leaveForVocabularyAnswerNodeWithValuePropertyThrowsRepositoryException() throws RepositoryException
+    public void leaveForNotResourceAnswerNodeThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        Property questionProperty = mock(Property.class);
-        Node questionNode = this.context.resourceResolver().getResource(TEST_QUESTION_PATH).adaptTo(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
-        when(node.hasProperty(QUESTION_PROPERTY)).thenReturn(true);
-        when(node.getProperty(QUESTION_PROPERTY)).thenReturn(questionProperty);
-        when(questionProperty.getNode()).thenReturn(questionNode);
-        when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
-        when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
+        when(node.isNodeType(ANSWER_RESOURCE_TYPE)).thenThrow(new RepositoryException());
 
-        this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
+        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
-        Assert.assertTrue(jsonObject.isEmpty());
-    }
-
-    @Test
-    public void leaveForAnswerNodeWithNullQuestionThrowsRepositoryException() throws RepositoryException
-    {
-        JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
-        when(node.hasProperty(QUESTION_PROPERTY)).thenThrow(new RepositoryException());
-
-        this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
-        JsonObject jsonObject = json.build();
-        Assert.assertTrue(jsonObject.isEmpty());
-    }
-
-    @Test
-    public void leaveForNotAnswerNodeThrowsRepositoryException() throws RepositoryException
-    {
-        JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenThrow(new RepositoryException());
-
-        this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
-        JsonObject jsonObject = json.build();
-
         Assert.assertTrue(jsonObject.isEmpty());
     }
 
@@ -288,13 +279,14 @@ public class AnswerOptionsLabelProcessorTest
             .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
             .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
             .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-            .resource("/Vocabularies", NODE_TYPE, "cards:FormsHomepage")
             .commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
             .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
                 this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+            .resource(TEST_BRANCH_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
+                this.context.resourceResolver().getResource("/SubjectTypes/Root/Branch").adaptTo(Node.class))
             .commit();
 
         Session session = this.context.resourceResolver().adaptTo(Session.class);
@@ -304,19 +296,13 @@ public class AnswerOptionsLabelProcessorTest
         Node question = session.getNode(TEST_QUESTION_PATH);
 
         this.context.build()
-            .resource("/Vocabularies/Option1",
-                NODE_TYPE, ANSWER_OPTION_TYPE,
-                VALUE_PROPERTY, "O1")
-            .resource("/Vocabularies/Option2",
-                NODE_TYPE, ANSWER_OPTION_TYPE,
-                VALUE_PROPERTY, "O2")
             .resource(TEST_FORM_PATH,
                 NODE_TYPE, FORM_TYPE,
                 QUESTIONNAIRE_PROPERTY, questionnaire,
                 SUBJECT_PROPERTY, subject,
                 "relatedSubjects", List.of(subject).toArray())
             .resource("/Forms/f1/a1",
-                NODE_TYPE, ANSWER_TYPE,
+                NODE_TYPE, ANSWER_RESOURCE_TYPE,
                 QUESTION_PROPERTY, question)
             .commit();
     }
