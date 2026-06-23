@@ -1,0 +1,18 @@
+{
+  "jcr:primaryType": "cards:SubjectType",
+  "label": "Root",
+  "subjectListLabel" : "Roots",
+  "cards:defaultOrder": 0,
+  "Branch": {
+    "jcr:primaryType": "cards:SubjectType",
+    "label": "Branch",
+    "subjectListLabel" : "Branches",
+    "cards:defaultOrder": 1,
+    "Leaf": {
+      "jcr:primaryType": "cards:SubjectType",
+      "label": "Leaf",
+      "subjectListLabel" : "Leafs",
+      "cards:defaultOrder": 2
+    }
+  }
+}
