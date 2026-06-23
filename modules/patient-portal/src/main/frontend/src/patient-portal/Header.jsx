@@ -27,10 +27,8 @@ import {
   Link,
   Toolbar,
   Typography,
-  useMediaQuery,
   useScrollTrigger,
 } from "@mui/material";
-import { useTheme } from '@mui/material/styles';
 import { makeStyles } from 'tss-react/mui';
 
 import Logo from "../components/Logo";
@@ -124,8 +122,6 @@ function Header (props) {
     threshold: 200,
   });
 
-  const theme = useTheme();
-  const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
   const contentOffset = useContext(PageStartContext);
 
   let subtitleBar = subtitle ?
@@ -142,7 +138,7 @@ function Header (props) {
 
   return (
     <>
-      <AppBar position="sticky" className={classes.appbar} id="patient-portal-header" style={{ top: appbarExpanded ? contentOffset : 0 }}>
+      <AppBar position="sticky" className={classes.appbar} id="patient-portal-header" style={{ top: contentOffset }}>
         <Collapse in={!subtitle || !(scrollTrigger)}>
           <Toolbar variant="dense" className={toolbarClassNames.join(' ')}>
             <Logo className={classes.logo} maxWidth="160px" />
