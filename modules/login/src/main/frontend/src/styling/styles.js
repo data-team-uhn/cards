@@ -33,7 +33,10 @@ const styles = theme => ({
     padding: theme.spacing(2, 3, 3),
   },
   selfContained: {
-    marginTop: theme.spacing(10),
+    // Extra top margin so the login box and logo stay visible below up to two
+    // stacked LoginPageStart banners (CARDS-1930). This is a fixed value because
+    // the login page renders PageStart without the offset wrapper used elsewhere.
+    marginTop: theme.spacing(14),
     marginBottom: theme.spacing(2),
   },
   form: {
