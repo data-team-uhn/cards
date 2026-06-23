@@ -52,7 +52,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  * @version $Id$
  */
 @SuppressWarnings("unchecked")
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SubjectHierarchyValidatorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
