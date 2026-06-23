@@ -73,10 +73,10 @@ function DateQuestion(props) {
   } = { ...props.questionDefinition, ...props };
 
   let defaultValue = props.questionDefinition.defaultValue;
-  let dateObj = DateTime.fromISO(defaultValue);
-  if (!dateObj.isValid) {
-    defaultValue = null;
-  }
+  // Parse the configured default using the question's own date format, then normalize it to ISO so
+  // the rest of the date pipeline consumes it like a stored value. An unparseable default is ignored.
+  const parsedDefault = defaultValue ? DateTime.fromFormat(String(defaultValue), dateFormat) : null;
+  defaultValue = parsedDefault?.isValid ? parsedDefault.toISO() : null;
 
   const existingValues = existingAnswer && existingAnswer[1].value || defaultValue || "";
   const upperLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(upperLimit));
