@@ -136,6 +136,7 @@ function MultipleChoice(props) {
     : undefined;
   let defaultSelection = [];
   if (maxAnswers !== 1) {
+    const seenValues = new Set();
     defaultSelection = defaultValueList
       .map(value => {
         const option = findDefaultOption(value);
@@ -145,6 +146,15 @@ function MultipleChoice(props) {
         return allowsCustomInput ? [value, value] : null;
       })
       .filter(Boolean)
+      // Drop entries resolving to a value already selected, so a default that lists both an option's label
+      // and its value does not pre-select the same option twice.
+      .filter(entry => {
+        if (seenValues.has(String(entry[VALUE_POS]))) {
+          return false;
+        }
+        seenValues.add(String(entry[VALUE_POS]));
+        return true;
+      })
       .slice(0, maxAnswers || undefined);
   } else if (singleDefaultOption) {
     defaultSelection = [[singleDefaultOption[LABEL_POS], singleDefaultOption[VALUE_POS]]];

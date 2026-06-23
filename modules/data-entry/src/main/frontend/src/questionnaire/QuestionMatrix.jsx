@@ -122,11 +122,21 @@ let QuestionMatrix = (props) => {
     let values = maxAnswers === 1
       ? [String(defaultValue)]
       : Array.from(new Set(String(defaultValue).split(",").map(value => value.trim()).filter(Boolean)));
+    let seenValues = new Set();
     let selection = values
       .map(value => defaults.find(item =>
         String(item[VALUE_POS]) === String(value) || String(item[LABEL_POS]) === String(value)))
       .filter(Boolean)
       .map(option => [option[LABEL_POS], option[VALUE_POS]])
+      // Drop entries resolving to a value already selected, so a default that lists both an option's label
+      // and its value does not pre-select the same option twice.
+      .filter(entry => {
+        if (seenValues.has(String(entry[VALUE_POS]))) {
+          return false;
+        }
+        seenValues.add(String(entry[VALUE_POS]));
+        return true;
+      })
       .slice(0, maxAnswers || undefined);
     return selection.length ? selection : null;
   };
