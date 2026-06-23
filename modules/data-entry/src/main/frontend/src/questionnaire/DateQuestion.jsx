@@ -78,7 +78,7 @@ function DateQuestion(props) {
     defaultValue = null;
   }
 
-  const existingValues = existingAnswer && existingAnswer[1].value || "";
+  const existingValues = existingAnswer && existingAnswer[1].value || defaultValue || "";
   const upperLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(upperLimit));
   const lowerLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(lowerLimit));
 
