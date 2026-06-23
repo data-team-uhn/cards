@@ -124,12 +124,6 @@
   // Hardcode the resource supertype: this is a resource.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
-  // A human-readable label for this model.
-  - label (String)
-
-  // The model identifier sent to the API in the request body.
-  - modelId (String) mandatory
-
   // The model's maximum context window, in tokens.
   - contextLimitTokens (LONG)
 
@@ -138,6 +132,12 @@
 
   // The sampling temperature passed to the model.
   - temperature (DOUBLE) = '0.0'
+
+  // The number of input tokens to send per chunk when the input exceeds the context window.
+  - chunkTokenSize (LONG)
+
+  // The organization that developed this model (e.g. google, anthropic, alibaba).
+  - developer (String)
 
   // Allow model-specific extra properties.
   - * (undefined)
