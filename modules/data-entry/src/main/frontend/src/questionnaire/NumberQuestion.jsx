@@ -160,7 +160,8 @@ function NumberQuestion(props) {
   const formContext = useFormReaderContext();
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
   const isListSelectOrSlider = useMemo(() => ["list", "select", "slider"].includes(displayMode), [displayMode]);
-  const isMultiValue = Array.isArray(existingAnswer?.[1]?.value);
+  const existingValue = existingAnswer?.[1]?.value;
+  const isMultiValue = Array.isArray(existingValue);
 
   const rawDefaultValue = props.questionDefinition.defaultValue;
   // Keep only the numeric default value(s); a multivalued question may provide a comma-separated list, and any
@@ -177,7 +178,7 @@ function NumberQuestion(props) {
   const [ minMaxError, setMinMaxError ] = useState(null);
   const [ minMaxErrorObject, setMinMaxErrorObject ] = useState({});
 
-  const initialValue = Array.from(existingAnswer?.[1]?.value || numericDefaultValues);
+  const initialValue = Array.from(existingValue || numericDefaultValues);
 
   // The following two are only used for range answers
   const [lowerRangeValue, setLowerRangeValue] = useState(isRange ? initialValue[0] : undefined);
@@ -189,7 +190,7 @@ function NumberQuestion(props) {
   // Default to an empty string, which results in a "no data"
   // selection as close to 0 as possible within the valid range
   const isSlider = displayMode === "slider" && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined';
-  const [sliderValue, setSliderValue] = useState(isSlider ? (existingAnswer?.[1]?.value || defaultValue) : undefined);
+  const [sliderValue, setSliderValue] = useState(isSlider ? (existingValue || defaultValue) : undefined);
   // Load slider-specific style
   const sliderClasses = useSliderStyles();
   // Marks at the minimum and maximum, as well as user specified intervals if provided
@@ -272,7 +273,7 @@ function NumberQuestion(props) {
       setMinMaxErrorObject(nextMinMaxErrorObject);
       setMinMaxError(Object.values(nextMinMaxErrorObject).find(Boolean) || null);
     } else {
-      setMinMaxError(getValidationErrorMessage(existingAnswer?.[1]?.value));
+      setMinMaxError(getValidationErrorMessage(existingValue));
     }
   }, [
     lowerRangeValue,
@@ -280,7 +281,7 @@ function NumberQuestion(props) {
     isListSelectOrSlider,
     isRange,
     isMultiValue,
-    existingAnswer,
+    existingValue,
     dataType,
     minValue,
     maxValue,
