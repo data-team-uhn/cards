@@ -110,8 +110,9 @@ let QuestionMatrix = (props) => {
 
   // Determine the default selection for a matrix question from a defaultValue specified either on the
   // question entry itself (cards:QuestionMatrixEntry) or, across the board, on the parent section
-  // (cards:Section). The entry-level value overrides the section-wide one. The value must match one of
-  // the answer options to be applied; a value that doesn't match any option is discarded.
+  // (cards:Section). The entry-level value overrides the section-wide one. To be applied, the value must
+  // match one of the answer options by either internal value or displayed label; a value that matches no
+  // option is discarded.
   let getDefaultValueSelection = (subquestionDefinition) => {
     let defaultValue = subquestionDefinition.defaultValue || sectionDefinition.defaultValue;
     if (!defaultValue) {
@@ -122,7 +123,8 @@ let QuestionMatrix = (props) => {
       ? [String(defaultValue)]
       : Array.from(new Set(String(defaultValue).split(",").map(value => value.trim()).filter(Boolean)));
     let selection = values
-      .map(value => defaults.find(item => String(item[VALUE_POS]) === String(value)))
+      .map(value => defaults.find(item =>
+        String(item[VALUE_POS]) === String(value) || String(item[LABEL_POS]) === String(value)))
       .filter(Boolean)
       .map(option => [option[LABEL_POS], option[VALUE_POS]])
       .slice(0, maxAnswers || undefined);

@@ -120,7 +120,11 @@ function MultipleChoice(props) {
       ? [String(defaultValue)]
       : Array.from(new Set(String(defaultValue).split(",").map(value => value.trim()).filter(Boolean)));
   }
-  const findDefaultOption = (value) => defaults.find(item => String(item[VALUE_POS]) === String(value));
+  // Match a default value against the predefined options by either internal value or displayed label, mirroring
+  // how an option is considered selected when rendered. This way a default given as an option's label resolves to
+  // that option (and is stored as its value) instead of being kept as a separate custom value.
+  const findDefaultOption = (value) => defaults.find(item =>
+    String(item[VALUE_POS]) === String(value) || String(item[LABEL_POS]) === String(value));
 
   // Resolve the parsed defaults to pre-selected answers. For a multivalued question, each value matching a
   // predefined option is selected, and a value matching none is kept as a custom selection only when the
