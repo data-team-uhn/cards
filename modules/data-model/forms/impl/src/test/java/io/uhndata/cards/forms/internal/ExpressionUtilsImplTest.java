@@ -54,7 +54,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ExpressionUtilsImplTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -115,7 +115,7 @@ public class ExpressionUtilsImplTest
         ScriptEngine engine = Mockito.mock(ScriptEngine.class);
         Mockito.when(this.manager.getEngineByName("JavaScript")).thenReturn(engine);
         Mockito.when(engine.createBindings()).thenReturn(new SimpleBindings());
-        Mockito.when(engine.eval(Mockito.eq("(function(){return (arg0 ? arg1 + arg2 : arg1)})()"),
+        Mockito.when(engine.eval(Mockito.contains("(function(){return (arg0 ? arg1 + arg2 : arg1)})()"),
             Mockito.any(Bindings.class))).thenReturn(300L);
         Object computedAnswer = this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG,
             Collections.emptySet()).getResult();
@@ -137,7 +137,7 @@ public class ExpressionUtilsImplTest
             "/Questionnaires/TestComputedQuestionnaire/from_double_to_computed_section/double_computed_question");
         Bindings filledBindings = emptyBindings;
         filledBindings.put("arg0", String.valueOf(result));
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(filledBindings)))
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(filledBindings)))
             .thenReturn(result);
         Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE,
             Collections.emptySet()).getResult());
@@ -152,7 +152,7 @@ public class ExpressionUtilsImplTest
         question = session.getNode(
             "/Questionnaires/TestComputedQuestionnaire/from_double_to_computed_section/double_long_computed_question");
         filledBindings.put("arg0", "100.0");
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(filledBindings)))
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(filledBindings)))
             .thenReturn(100.0);
         Assert.assertEquals("100", this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING,
             Collections.emptySet()).getResult());
@@ -173,7 +173,7 @@ public class ExpressionUtilsImplTest
             "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question");
         Bindings bindings = emptyBindings;
         bindings.put("arg0", String.valueOf(result));
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
         Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG,
             Collections.emptySet()).getResult());
     }
@@ -192,7 +192,7 @@ public class ExpressionUtilsImplTest
             "/Questionnaires/TestComputedQuestionnaire/from_decimal_to_computed_section/computed_question");
         Bindings bindings = emptyBindings;
         bindings.put("arg0", String.valueOf(result));
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
         Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL,
             Collections.emptySet()).getResult());
     }
@@ -211,7 +211,7 @@ public class ExpressionUtilsImplTest
             "/Questionnaires/TestComputedQuestionnaire/from_text_to_computed_section/number_computed_question");
         Bindings bindings = emptyBindings;
         bindings.put("arg0", result);
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
         Assert.assertEquals(100L, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG,
             Collections.emptySet()).getResult());
         Assert.assertEquals(100.0, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE,
@@ -237,13 +237,13 @@ public class ExpressionUtilsImplTest
         Node question = session.getNode(
             "/Questionnaires/TestComputedQuestionnaire/from_text_to_computed_section/date_computed_question");
 
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(calendar);
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(calendar);
         Assert.assertEquals(DateTimeFormatter.ISO_OFFSET_DATE_TIME
             .format(calendar.getTime().toInstant().atZone(ZoneId.systemDefault())),
             this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING,
                 Collections.emptySet()).getResult());
 
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings)))
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings)))
             .thenReturn(calendar.getTime());
         Assert.assertEquals(DateTimeFormatter.ISO_OFFSET_DATE_TIME
             .format(calendar.getTime().toInstant().atZone(ZoneId.systemDefault())),
