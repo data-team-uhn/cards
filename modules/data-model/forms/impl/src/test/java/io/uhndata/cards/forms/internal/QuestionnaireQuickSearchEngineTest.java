@@ -21,8 +21,8 @@ package io.uhndata.cards.forms.internal;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
-import javax.json.Json;
-import javax.json.JsonObject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
@@ -34,7 +34,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import io.uhndata.cards.serialize.ResourceToJsonAdapterFactory;
 import io.uhndata.cards.spi.QuickSearchEngine;

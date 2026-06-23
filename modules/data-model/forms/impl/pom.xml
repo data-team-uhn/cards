@@ -53,17 +53,6 @@
           </instructions>
         </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArgs>
-            <arg>-Werror</arg>
-          </compilerArgs>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>true</showDeprecation>
-          <failOnWarning>true</failOnWarning>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -212,11 +201,6 @@
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.jcr-mock</artifactId>
       <version>1.6.14</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

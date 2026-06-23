@@ -16,21 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package io.uhndata.cards.forms.serialize.labels;
 
-package io.uhndata.cards.forms.internal.serialize.labels;
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
+import org.apache.jackrabbit.value.DateValue;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Assert;
@@ -39,22 +42,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link ResourceLabelProcessor}.
+ * Unit tests for {@link DateLabelProcessor}.
  *
- * @version $Id$
+ * @version $Id $
  */
+@SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
-public class ResourceLabelProcessorTest
+public class DateLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
 
@@ -62,21 +62,25 @@ public class ResourceLabelProcessorTest
 
     private static final String SUBJECT_TYPE = "cards:Subject";
 
-    private static final String ANSWER_RESOURCE_TYPE = "cards:ResourceAnswer";
+    private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
+
+    private static final String ANSWER_DATE_TYPE = "cards:DateAnswer";
 
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
-    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/question_8";
+    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_1";
 
-    private static final String TEST_SUBJECT_PATH = "/Subjects/TestRoot";
+    private static final String TEST_SECTION_PATH = "/Questionnaires/TestQuestionnaire/section_1";
 
-    private static final String TEST_BRANCH_SUBJECT_PATH = "/Subjects/TestBranch";
+    private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
 
     private static final String TEST_FORM_PATH = "/Forms/f1";
 
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
 
     private static final String QUESTION_PROPERTY = "question";
+
+    private static final String SECTION_PROPERTY = "section";
 
     private static final String SUBJECT_PROPERTY = "subject";
 
@@ -86,7 +90,7 @@ public class ResourceLabelProcessorTest
 
     private static final String NAME = "labels";
 
-    private static final int PRIORITY = 90;
+    private static final int PRIORITY = 75;
 
     private static final boolean ENABLED = true;
 
@@ -94,178 +98,165 @@ public class ResourceLabelProcessorTest
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     @InjectMocks
-    private ResourceLabelProcessor resourceLabelProcessor;
-
-    @Mock
-    private ThreadResourceResolverProvider rrp;
+    private DateLabelProcessor dateLabelProcessor;
 
     @Test
     public void getNameTest()
     {
-        Assert.assertEquals(NAME, this.resourceLabelProcessor.getName());
+        Assert.assertEquals(NAME, this.dateLabelProcessor.getName());
     }
 
     @Test
     public void getDescriptionReturnsSomething()
     {
-        Assert.assertNotNull(this.resourceLabelProcessor.getDescription());
+        Assert.assertNotNull(this.dateLabelProcessor.getDescription());
     }
 
     @Test
     public void getPriorityTest()
     {
-        Assert.assertEquals(PRIORITY, this.resourceLabelProcessor.getPriority());
+        Assert.assertEquals(PRIORITY, this.dateLabelProcessor.getPriority());
     }
 
     @Test
     public void isEnabledByDefaultReturnsTrue()
     {
-        Assert.assertEquals(ENABLED, this.resourceLabelProcessor.isEnabledByDefault(mock(Resource.class)));
+        Assert.assertEquals(ENABLED, this.dateLabelProcessor.isEnabledByDefault(mock(Resource.class)));
     }
 
     @Test
     public void canProcessForFormReturnsTrue()
     {
         Resource form = this.context.resourceResolver().getResource(TEST_FORM_PATH);
-        Assert.assertTrue(this.resourceLabelProcessor.canProcess(form));
+        Assert.assertTrue(this.dateLabelProcessor.canProcess(form));
     }
 
     @Test
     public void canProcessForQuestionnaireReturnsFalse()
     {
         Resource questionnaire = this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH);
-        Assert.assertFalse(this.resourceLabelProcessor.canProcess(questionnaire));
+        Assert.assertFalse(this.dateLabelProcessor.canProcess(questionnaire));
     }
 
     @Test
-    public void leaveForResourceAnswerNode() throws RepositoryException
+    public void leaveForDateAnswerNodeWithYearMonthDayDateFormat() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Calendar date = Calendar.getInstance();
+        date.set(2023, Calendar.JANUARY, 1);
+        Node node = session.getNode("/Forms/f1/s1/a1");
+        node.setProperty(VALUE_PROPERTY, new DateValue(date), PropertyType.DATE);
         JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, TEST_SUBJECT_PATH);
-        Node subject = session.getNode(TEST_SUBJECT_PATH);
-        subject.setProperty("level", "root");
-        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
-        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
+        this.dateLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
 
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
-        Assert.assertEquals("root", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+        Assert.assertEquals("2023-01-01", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
     }
 
     @Test
-    public void leaveForResourceAnswerNodeWithMultipleValue() throws RepositoryException
+    public void leaveForDateAnswerNodeWithMultipleValueAndYearMonthDayDateFormat() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Calendar date = Calendar.getInstance();
+        date.set(2023, Calendar.JANUARY, 1);
+        Calendar datePlusOne = Calendar.getInstance();
+        datePlusOne.set(2023, Calendar.JANUARY, 2);
+        Node node = session.getNode("/Forms/f1/s1/a1");
+        node.setProperty(VALUE_PROPERTY, new DateValue[] {
+            new DateValue(date), new DateValue(datePlusOne)
+        }, PropertyType.DATE);
         JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, new String[] {
-            TEST_SUBJECT_PATH, TEST_BRANCH_SUBJECT_PATH
-        });
-        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
-        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
+        this.dateLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
 
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
         Assert.assertEquals(2, jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).size());
-        Assert.assertEquals("TestRoot", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
-        Assert.assertEquals("TestBranch", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
+        Assert.assertEquals("2023-01-01", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
+        Assert.assertEquals("2023-01-02", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
     }
 
     @Test
-    public void leaveForResourceAnswerNodeWithNullResourceResolver() throws RepositoryException
+    public void leaveForDateAnswerNodeWithYearDateFormat() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Calendar date = Calendar.getInstance();
+        date.set(2023, Calendar.JANUARY, 1);
         JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, TEST_SUBJECT_PATH);
-        Node subject = session.getNode(TEST_SUBJECT_PATH);
-        subject.setProperty("level", "root");
+        Node node = session.getNode("/Forms/f1/s1/a1");
+        node.setProperty(VALUE_PROPERTY, new DateValue(date), PropertyType.DATE);
+        Node question = session.getNode(TEST_QUESTION_PATH);
+        question.setProperty("dateFormat", "yyyy");
 
-        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
+        this.dateLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
-        Assert.assertTrue(jsonObject.isEmpty());
-    }
 
-    @Test
-    public void leaveForResourceAnswerNodeWithNonExistingValuePath() throws RepositoryException
-    {
-        Session session = this.context.resourceResolver().adaptTo(Session.class);
-        JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, "/Subjects/Non-existing");
-        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
-
-        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
-        JsonObject jsonObject = json.build();
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
-        Assert.assertEquals("/Subjects/Non-existing", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        Assert.assertEquals(format.format(date.getTime()), jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
     }
 
     @Test
-    public void leaveForResourceAnswerNodeWithoutLabelPropertyThrowsException() throws RepositoryException
+    public void leaveForDateAnswerNodeWithMultipleValueAndYearDateFormat() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Calendar date = Calendar.getInstance();
+        date.set(2023, Calendar.JANUARY, 1);
+        Calendar datePlusOne = Calendar.getInstance();
+        datePlusOne.set(2023, Calendar.JANUARY, 2);
+        Node node = session.getNode("/Forms/f1/s1/a1");
+        node.setProperty(VALUE_PROPERTY, new DateValue[] {
+            new DateValue(date), new DateValue(datePlusOne)
+        }, PropertyType.DATE);
+        Node question = session.getNode(TEST_QUESTION_PATH);
+        question.setProperty("dateFormat", "yyyy");
         JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = session.getNode("/Forms/f1/a1");
-        node.setProperty(VALUE_PROPERTY, TEST_SUBJECT_PATH);
-        ResourceResolver resolver = mock(ResourceResolver.class);
-        Resource resource = mock(Resource.class);
-        Node nodeFromResource = mock(Node.class);
-        when(this.rrp.getThreadResourceResolver()).thenReturn(resolver);
-        when(resolver.getResource(Mockito.anyString())).thenReturn(resource);
-        when(resource.adaptTo(Node.class)).thenReturn(nodeFromResource);
-        when(nodeFromResource.hasProperty(Mockito.anyString())).thenThrow(new RepositoryException());
 
-        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
+        this.dateLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
+
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
-        Assert.assertEquals(TEST_SUBJECT_PATH, jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+        Assert.assertEquals(2, jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).size());
+        Assert.assertEquals(format.format(date.getTime()),
+            jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
+        Assert.assertEquals(format.format(datePlusOne.getTime()),
+            jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
     }
 
     @Test
-    public void leaveForResourceAnswerNodeWithValuePropertyThrowsException() throws RepositoryException
+    public void leaveForDateAnswerNodeWithValuePropertyThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_RESOURCE_TYPE)).thenReturn(true);
+        when(node.isNodeType(ANSWER_DATE_TYPE)).thenReturn(true);
         when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
+        when(node.hasProperty(QUESTION_PROPERTY)).thenReturn(true);
+        Property property = mock(Property.class);
+        when(node.getProperty(QUESTION_PROPERTY)).thenReturn(property);
+        when(property.getNode()).thenReturn(mock(Node.class));
         when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
-        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
-        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
+        this.dateLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
 
     @Test
-    public void leaveForResourceAnswerNodeWithoutValuePropertyThrowsException() throws RepositoryException
+    public void leaveForNotDateAnswerNodeThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_RESOURCE_TYPE)).thenReturn(true);
-        when(node.hasProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
+        when(node.isNodeType(ANSWER_DATE_TYPE)).thenThrow(new RepositoryException());
 
-        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
-        JsonObject jsonObject = json.build();
-        Assert.assertTrue(jsonObject.isEmpty());
-    }
-
-    @Test
-    public void leaveForNotResourceAnswerNodeThrowsException() throws RepositoryException
-    {
-        JsonObjectBuilder json = Json.createObjectBuilder();
-        Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_RESOURCE_TYPE)).thenThrow(new RepositoryException());
-
-        this.resourceLabelProcessor.leave(node, json, mock(Function.class));
+        this.dateLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
         Assert.assertTrue(jsonObject.isEmpty());
     }
@@ -284,14 +275,13 @@ public class ResourceLabelProcessorTest
         this.context.build()
             .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
                 this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
-            .resource(TEST_BRANCH_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                this.context.resourceResolver().getResource("/SubjectTypes/Root/Branch").adaptTo(Node.class))
             .commit();
 
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         Node subject = session.getNode(TEST_SUBJECT_PATH);
         Node questionnaire = session.getNode(TEST_QUESTIONNAIRE_PATH);
+        Node section = session.getNode(TEST_SECTION_PATH);
         Node question = session.getNode(TEST_QUESTION_PATH);
 
         this.context.build()
@@ -300,8 +290,9 @@ public class ResourceLabelProcessorTest
                 QUESTIONNAIRE_PROPERTY, questionnaire,
                 SUBJECT_PROPERTY, subject,
                 "relatedSubjects", List.of(subject).toArray())
-            .resource("/Forms/f1/a1",
-                NODE_TYPE, ANSWER_RESOURCE_TYPE,
+            .resource("/Forms/f1/s1", NODE_TYPE, ANSWER_SECTION_TYPE, SECTION_PROPERTY, section)
+            .resource("/Forms/f1/s1/a1",
+                NODE_TYPE, ANSWER_DATE_TYPE,
                 QUESTION_PROPERTY, question)
             .commit();
     }

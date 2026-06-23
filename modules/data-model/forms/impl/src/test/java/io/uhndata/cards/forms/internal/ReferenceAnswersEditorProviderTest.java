@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import io.uhndata.cards.forms.api.ExpressionUtils;
 import io.uhndata.cards.forms.api.FormUtils;

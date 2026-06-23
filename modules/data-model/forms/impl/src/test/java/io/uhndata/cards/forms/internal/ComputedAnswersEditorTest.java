@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 import org.mockito.AdditionalMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import io.uhndata.cards.forms.api.ExpressionUtils;
 import io.uhndata.cards.forms.api.FormUtils;
@@ -57,6 +57,7 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
+@SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
 public class ComputedAnswersEditorTest
 {
