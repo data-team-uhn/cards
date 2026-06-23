@@ -22,6 +22,7 @@ import PropTypes from "prop-types";
 import MultipleChoice from "./MultipleChoice";
 import NCRNote from "./NCRNote.jsx";
 import Question from "./Question";
+import questionEditorHints from './VocabularyQuestion-editor-hints.json';
 import questionEditorConfig from './VocabularyQuestion-editor.json';
 import { checkPropTypes } from "../propTypes";
 import VocabularyQuery from "../vocabQuery/VocabularyQuery.jsx";
@@ -90,5 +91,6 @@ VocabularyQuestion.canProcess = (questionDefinition) => {
 };
 
 VocabularyQuestion.questionEditorConfig = questionEditorConfig;
+VocabularyQuestion.questionEditorHints = questionEditorHints;
 
 export default VocabularyQuestion;
