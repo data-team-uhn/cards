@@ -29,7 +29,7 @@ import { makeStyles } from 'tss-react/mui';
 import { loadExtensions } from "../uiextension/extensionManager";
 
 async function getFooterExtensions() {
-  return loadExtensions("Footer")
+  return loadExtensions("PatientPortalFooter")
     .then(extensions => extensions.slice()
       .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
     );

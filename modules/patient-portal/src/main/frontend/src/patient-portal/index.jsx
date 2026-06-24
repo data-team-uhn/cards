@@ -82,7 +82,7 @@ function PatientPortalHomepage (props) {
 
   if (!subject) {
     return (<>
-      <PageStartWrapper extensionsName="SurveyPageStart">
+      <PageStartWrapper extensionsName="PatientPortalPageStart">
         <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
         <Footer />
       </PageStartWrapper>
@@ -90,7 +90,7 @@ function PatientPortalHomepage (props) {
   }
 
   return (
-    <PageStartWrapper extensionsName="SurveyPageStart">
+    <PageStartWrapper extensionsName="PatientPortalPageStart">
       <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
         ...accessConfig,
         ...surveyInstructions
