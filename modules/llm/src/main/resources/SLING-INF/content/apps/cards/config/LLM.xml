@@ -27,14 +27,74 @@
 	</property>
 	<property>
 		<name>activeProvider</name>
-		<value>prompter</value>
+		<value>local</value>
 		<type>String</type>
 	</property>
 	<property>
 		<name>activeModel</name>
-		<value>gemma-4-26B-A4B-it</value>
+		<value>llama3.2-3b</value>
 		<type>String</type>
 	</property>
+
+	<node>
+		<name>local</name>
+		<primaryNodeType>cards:Provider</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Local (Ollama)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>api</name>
+			<value>openai</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>endpoint</name>
+			<value>http://localhost:11434/v1</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>timeoutSeconds</name>
+			<value>600</value>
+			<type>Long</type>
+		</property>
+
+		<node>
+			<name>llama3.2-3b</name>
+			<primaryNodeType>cards:Model</primaryNodeType>
+			<property>
+				<name>modelId</name>
+				<value>llama3.2:3b</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>contextLimitTokens</name>
+				<value>131072</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxOutputTokens</name>
+				<value>1024</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>temperature</name>
+				<value>0.0</value>
+				<type>Double</type>
+			</property>
+			<property>
+				<name>chunkTokenSize</name>
+				<value>8000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>developer</name>
+				<value>meta</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
 
 	<node>
 		<name>prompter</name>
@@ -42,6 +102,11 @@
 		<property>
 			<name>label</name>
 			<value>Prompter</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>api</name>
+			<value>openai</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -151,126 +216,6 @@
 			<property>
 				<name>developer</name>
 				<value>qwen</value>
-				<type>String</type>
-			</property>
-		</node>
-	</node>
-
-	<node>
-		<name>claude</name>
-		<primaryNodeType>cards:Provider</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>Claude</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>endpoint</name>
-			<value>https://api.anthropic.com/v1/messages</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>apiKeyEnvVar</name>
-			<value>ANTHROPIC_API_KEY</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>timeoutSeconds</name>
-			<value>120</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>apiVersion</name>
-			<value>2023-06-01</value>
-			<type>String</type>
-		</property>
-
-		<node>
-			<name>claude-opus-4-8</name>
-			<primaryNodeType>cards:Model</primaryNodeType>
-			<property>
-				<name>contextLimitTokens</name>
-				<value>200000</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxOutputTokens</name>
-				<value>2000</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>temperature</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>chunkTokenSize</name>
-				<value>30000</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>developer</name>
-				<value>anthropic</value>
-				<type>String</type>
-			</property>
-		</node>
-
-		<node>
-			<name>claude-sonnet-4-6</name>
-			<primaryNodeType>cards:Model</primaryNodeType>
-			<property>
-				<name>contextLimitTokens</name>
-				<value>200000</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxOutputTokens</name>
-				<value>2000</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>temperature</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>chunkTokenSize</name>
-				<value>30000</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>developer</name>
-				<value>anthropic</value>
-				<type>String</type>
-			</property>
-		</node>
-
-		<node>
-			<name>claude-haiku-4-5-20251001</name>
-			<primaryNodeType>cards:Model</primaryNodeType>
-			<property>
-				<name>contextLimitTokens</name>
-				<value>200000</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxOutputTokens</name>
-				<value>2000</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>temperature</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>chunkTokenSize</name>
-				<value>30000</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>developer</name>
-				<value>anthropic</value>
 				<type>String</type>
 			</property>
 		</node>

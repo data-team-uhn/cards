@@ -24,8 +24,7 @@ import java.io.IOException;
 /**
  * Resolves the {@link LLMClient} that handles a given provider. Each client is registered as an OSGi service
  * with an {@code llm.provider} property naming the provider it serves; this factory looks them up by that
- * name. The provider names match the provider node names in the JCR LLM configuration (e.g. {@code "prompter"}
- * or {@code "claude"}).
+ * name. The provider names match the provider node api property in the JCR LLM configuration (e.g. {@code "openai"}).
  *
  * @version $Id$
  */
@@ -34,10 +33,10 @@ public interface LLMClientFactory
     /**
      * Return the client registered for the given provider name.
      *
-     * @param providerName the provider name, matching a client's {@code llm.provider} service property
+     * @param providerApi the provider api property, matching a client's {@code llm.provider} service property
      * @return the matching client, or {@code null} if no client is registered for that provider
      */
-    LLMClient getClient(String providerName);
+    LLMClient getClient(String providerApi);
 
     /**
      * Return the client for the provider that is currently active in the JCR LLM configuration.

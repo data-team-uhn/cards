@@ -26,8 +26,8 @@ import java.util.Map;
 /**
  * Immutable snapshot of the settings for the active LLM provider and model, resolved from the JCR
  * configuration. A provider carries connection-level settings (endpoint, credentials, timeout) plus
- * format-specific extras (such as {@code projectId} for Prompter or {@code apiVersion} for Claude),
- * while a model carries generation settings (the model identifier, token limits and temperature).
+ * format-specific extras (such as {@code projectId} for Prompter), while a model carries generation
+ * settings (the model identifier, token limits and temperature).
  *
  * @version $Id$
  */
