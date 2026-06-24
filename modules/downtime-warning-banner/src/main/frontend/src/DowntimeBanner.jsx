@@ -45,11 +45,11 @@ export default function DowntimeWarning(props) {
         setEnabled(json.enabled == 'true');
         if (json.fromDate) {
           let date = new Date(json.fromDate);
-          setFromDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
+          !isNaN(date.getTime()) && setFromDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
         }
         if (json.toDate) {
           let date = new Date(json.toDate);
-          setToDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
+          !isNaN(date.getTime()) && setToDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
 
           // Check if the downtime period ended
           if (new Date() > date) {
@@ -62,9 +62,10 @@ export default function DowntimeWarning(props) {
       });
   }, []);
 
+  // Report the height on mount and re-report whenever the banner appears, disappears or changes.
   useEffect(() => {
     props.onRender?.(appBarRef.current);
-  }, [props.onRender]);
+  }, [props.onRender, enabled, fromDate, toDate]);
 
   if (!enabled || !fromDate || !toDate) {
     return null;

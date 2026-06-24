@@ -22,9 +22,11 @@ import {
   Collapse,
   Grid,
   Typography,
+  useMediaQuery,
   useScrollTrigger
 } from "@mui/material";
 import { grey } from '@mui/material/colors';
+import { useTheme } from '@mui/material/styles';
 import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
@@ -107,6 +109,8 @@ function ResourceHeader (props) {
   } = props;
 
   const { classes } = useStyles();
+  const theme = useTheme();
+  const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
 
   // Scroll trigger for collapsing the Title and action into the breadcrumbs
   const fullBreadcrumbTrigger = useScrollTrigger({
@@ -117,7 +121,7 @@ function ResourceHeader (props) {
 
   return (
     <>
-      <Grid size={12} className={classes.resourceHeader} style={{ top: contentOffset }} id="cards-resource-header">
+      <Grid size={12} className={classes.resourceHeader} style={{ top: appbarExpanded ? contentOffset : 0 }} id="cards-resource-header">
         <Grid container justifyContent="space-between" alignItems="center" wrap="nowrap">
           <Grid>
             <Breadcrumbs separator={separator}>

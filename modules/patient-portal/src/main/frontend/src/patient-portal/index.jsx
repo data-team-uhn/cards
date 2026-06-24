@@ -28,6 +28,7 @@ import Footer from "./Footer.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import { portalTheme } from "./portalTheme.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
+import PageStartWrapper from '../PageStartWrapper';
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
 const CONFIG = "/Survey/PatientAccess.json";
@@ -81,16 +82,20 @@ function PatientPortalHomepage (props) {
 
   if (!subject) {
     return (<>
-      <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
-      <Footer />
+      <PageStartWrapper extensionsName="PatientPortalPageStart">
+        <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
+        <Footer />
+      </PageStartWrapper>
     </>);
   }
 
   return (
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
-      ...accessConfig,
-      ...surveyInstructions
-    }} />
+    <PageStartWrapper extensionsName="PatientPortalPageStart">
+      <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
+        ...accessConfig,
+        ...surveyInstructions
+      }} />
+    </PageStartWrapper>
   );
 }
 

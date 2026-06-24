@@ -16,6 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+import { useContext } from "react";
+
 import {
   AppBar,
   Breadcrumbs,
@@ -30,10 +32,14 @@ import {
 import { makeStyles } from 'tss-react/mui';
 
 import Logo from "../components/Logo";
+import { PageStartContext } from "../PageStartWrapper";
 
 const useStyles = makeStyles()(theme => ({
   appbar : {
     margin: theme.spacing(-1, -1, 4),
+    [theme.breakpoints.down('md')]: {
+      margin: theme.spacing(0, -1),
+    },
     padding: theme.spacing(0, 1),
     boxSizing: "content-box",
     background: theme.palette.background.paper,
@@ -116,6 +122,8 @@ function Header (props) {
     threshold: 200,
   });
 
+  const contentOffset = useContext(PageStartContext);
+
   let subtitleBar = subtitle ?
     <Toolbar variant="dense" className={classes.toolbar}>
       <Typography variant="h6" color="textPrimary">{ subtitle }</Typography>
@@ -130,7 +138,7 @@ function Header (props) {
 
   return (
     <>
-      <AppBar position="sticky" className={classes.appbar} id="patient-portal-header">
+      <AppBar position="sticky" className={classes.appbar} id="patient-portal-header" style={{ top: contentOffset }}>
         <Collapse in={!subtitle || !(scrollTrigger)}>
           <Toolbar variant="dense" className={toolbarClassNames.join(' ')}>
             <Logo className={classes.logo} maxWidth="160px" />
