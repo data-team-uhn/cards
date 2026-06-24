@@ -20,14 +20,6 @@
         {
             "id":"${project.groupId}:cards-llm:${project.version}",
             "start-order":"25"
-        },
-        {
-            "id":"${project.groupId}:cards-anthropic:${project.version}",
-            "start-order":"26"
-        },
-        {
-            "id":"${project.groupId}:cards-openai:${project.version}",
-            "start-order":"26"
         }
     ],
     "configurations":{
