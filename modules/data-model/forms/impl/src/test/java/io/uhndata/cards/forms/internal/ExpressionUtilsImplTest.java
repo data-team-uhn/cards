@@ -173,7 +173,8 @@ public class ExpressionUtilsImplTest
             "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question");
         Bindings bindings = emptyBindings;
         bindings.put("arg0", String.valueOf(result));
-        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings)))
+            .thenReturn(result);
         Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG,
             Collections.emptySet()).getResult());
     }
@@ -192,7 +193,8 @@ public class ExpressionUtilsImplTest
             "/Questionnaires/TestComputedQuestionnaire/from_decimal_to_computed_section/computed_question");
         Bindings bindings = emptyBindings;
         bindings.put("arg0", String.valueOf(result));
-        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings)))
+            .thenReturn(result);
         Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL,
             Collections.emptySet()).getResult());
     }
@@ -211,7 +213,8 @@ public class ExpressionUtilsImplTest
             "/Questionnaires/TestComputedQuestionnaire/from_text_to_computed_section/number_computed_question");
         Bindings bindings = emptyBindings;
         bindings.put("arg0", result);
-        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings)))
+            .thenReturn(result);
         Assert.assertEquals(100L, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG,
             Collections.emptySet()).getResult());
         Assert.assertEquals(100.0, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE,
@@ -237,7 +240,8 @@ public class ExpressionUtilsImplTest
         Node question = session.getNode(
             "/Questionnaires/TestComputedQuestionnaire/from_text_to_computed_section/date_computed_question");
 
-        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(calendar);
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(bindings)))
+            .thenReturn(calendar);
         Assert.assertEquals(DateTimeFormatter.ISO_OFFSET_DATE_TIME
             .format(calendar.getTime().toInstant().atZone(ZoneId.systemDefault())),
             this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING,
