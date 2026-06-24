@@ -182,25 +182,25 @@
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.core</artifactId>
-      <version>3.5.6</version>
+      <version>4.0.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.junit4</artifactId>
-      <version>3.5.6</version>
+      <version>4.0.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock-oak</artifactId>
-      <version>3.2.0-1.22.15</version>
+      <version>4.1.0-1.86.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.jcr-mock</artifactId>
-      <version>1.6.14</version>
+      <version>1.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
