@@ -23,21 +23,26 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.llm.LLMClient;
 import io.uhndata.cards.llm.LLMClientFactory;
 import io.uhndata.cards.llm.LLMConfigurationService;
+import io.uhndata.cards.llm.LLMSettings;
+import io.uhndata.cards.llm.LLMInteractionLogger;
 
 /**
  * Default {@link LLMClientFactory}. Collects all {@link LLMClient} services that declare an
  * {@code llm.provider} property, keyed by that name, and resolves the active provider's client using the
- * {@link LLMConfigurationService}.
+ * {@link LLMConfigurationService}. When an {@link LLMInteractionLogger} is available the resolved client is
+ * wrapped in a {@link LoggingLLMClient} so that interactions are recorded for observability.
  *
  * @version $Id$
  */
@@ -52,6 +57,11 @@ public class LLMClientFactoryImpl implements LLMClientFactory
 
     @Reference
     private LLMConfigurationService configurationService;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+        policy = ReferencePolicy.DYNAMIC,
+        policyOption = ReferencePolicyOption.GREEDY)
+    private volatile LLMInteractionLogger interactionLogger;
 
     @Reference(service = LLMClient.class,
         cardinality = ReferenceCardinality.MULTIPLE,
@@ -76,20 +86,45 @@ public class LLMClientFactoryImpl implements LLMClientFactory
     }
 
     @Override
-    public LLMClient getClient(final String providerName)
+    public LLMClient getClient(final String providerApi)
     {
-        return providerName == null ? null : this.clients.get(providerName);
+        return wrap(providerApi == null ? null : this.clients.get(providerApi));
     }
 
     @Override
     public LLMClient getActiveClient() throws IOException
     {
-        final String providerName = this.configurationService.getActiveSettings().getProviderName();
-        final LLMClient client = getClient(providerName);
+        final LLMSettings settings = this.configurationService.getActiveSettings();
+        final String key = clientKey(settings);
+        final LLMClient client = key == null ? null : this.clients.get(key);
         if (client == null) {
-            throw new IOException("No LLM client is registered for the active provider '" + providerName
-                + "'. Registered providers: " + this.clients.keySet());
+            throw new IOException("No LLM client is registered for the active provider '"
+                + settings.getProviderName() + "' (api '" + key + "'). Registered providers: "
+                + this.clients.keySet());
         }
-        return client;
+        return wrap(client);
+    }
+
+    /**
+     * The key used to look up the client for a provider: its {@code api} property when set (so several providers
+     * can share one client, e.g. every OpenAI-compatible provider uses {@code api=openai}), otherwise the
+     * provider's own name.
+     *
+     * @param settings the active settings
+     * @return the client lookup key
+     */
+    private static String clientKey(final LLMSettings settings)
+    {
+        final String api = settings.getProviderProperty("api");
+        return StringUtils.isNotBlank(api) ? api : settings.getProviderName();
+    }
+
+    private LLMClient wrap(final LLMClient client)
+    {
+        final LLMInteractionLogger logger = this.interactionLogger;
+        if (client == null || logger == null) {
+            return client;
+        }
+        return new LoggingLLMClient(client, logger, this.configurationService);
     }
 }
