@@ -80,7 +80,9 @@ function FormView(props) {
   const [ qFilter, setQFilter ] = useState();
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
   const defaultStatusFilter = "&includeallstatus=true";
-  const [ statusFilter, setStatusFilter ] = useState(defaultStatusFilter);
+  const [ statusFilter, setStatusFilter ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:statusFlags") || defaultStatusFilter);
+  const [ statuses, setStatuses ] = useState([]);
+  const [ statusValues, setStatusValues ] = useState([]);
 
   const activeExtensionURL = extension?.["cards:extensionURL"] || extensionURL || ""
   const baseURL = "../content.html" + (activeExtensionURL ? "/" + activeExtensionURL : "");
@@ -114,18 +116,33 @@ function FormView(props) {
     Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1])
   , [actionSwitches]);
 
-  const [ statuses, setStatuses ] = useState([]);
-  const [ statusValues, setStatusValues ] = useState([]);
-
   useEffect(() => {
     loadExtensions("FormStatusFlags")
       .then(extensions => {
+        // Load any status flag filter information from the URL
+        let previousFilters = {};
+        if (statusFilter != defaultStatusFilter) {
+          let filters = statusFilter.split("&").slice(1);
+          let i = 0;
+          while (i+2 < filters.length) {
+            previousFilters[filters[i + 1].split("=")[1]] = filters[i + 2].split("=")[1] == "%3C%3E" ? -1 : 1;
+            i += 3;
+          }
+        }
+        // Load the available status flags from the extension
+        let values = Array(extensions.length).fill(0);
         const flags = extensions.map(e => ({
           key: e["cards:statusFlagKey"],
           label: e["cards:statusFlagLabel"],
         }));
+        // Fill in the available status flags with the URL filter information
+        for (let i = 0; i < flags.length; i++) {
+          if (previousFilters[flags[i].key]) {
+            values[i] = previousFilters[flags[i].key];
+          }
+        }
         setStatuses(flags);
-        setStatusValues(Array(flags.length).fill(0));
+        setStatusValues(values);
       })
       .catch(err => console.error("Failed to load status flags", err));
   }, []);
@@ -184,8 +201,10 @@ function FormView(props) {
         action={
           !expanded && isActionEnabled("expand") &&
           <Tooltip title="Expand">
-            <Link to={baseURL + "/Forms#" + new URLSearchParams({ "forms:filters" : filtersJsonString || "" })
-              .toString()} underline="hover">
+            <Link underline="hover" to={baseURL + "/Forms#"
+              + new URLSearchParams({ "forms:statusFlags": statusFilter }).toString() + "&"
+              + new URLSearchParams({ "forms:filters" : filtersJsonString || "" }).toString()
+            }>
               <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
