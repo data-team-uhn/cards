@@ -176,10 +176,12 @@ function FormView(props) {
   }, [questionnaire]);
 
   let setStatusFlagState = (index, value) => {
-    // Set to a new array to trigger useEffects
-    const newStatusValues = statusValues.slice();
-    newStatusValues[index] = value;
-    setStatusValues(newStatusValues);
+    setStatusValues(oldStatusValues => {
+      // Set to a new array to trigger useEffects
+      const newStatusValues = statusValues.slice();
+      newStatusValues[index] = value;
+      return newStatusValues;
+    })
   }
 
   return (
