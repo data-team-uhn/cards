@@ -26,6 +26,14 @@
         "start-order":"25"
       },
       {
+        "id":"commons-validator:commons-validator:1.10.1",
+        "start-order":"25"
+      },
+      {
+        "id":"commons-beanutils:commons-beanutils:1.11.0",
+        "start-order":"25"
+      },
+      {
         "id":"${project.groupId}:${project.artifactId}:${project.version}",
         "start-order":"25"
       }
