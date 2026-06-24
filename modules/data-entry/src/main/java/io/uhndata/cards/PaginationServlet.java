@@ -386,13 +386,7 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
             final String[] fieldComparators = fieldParameters.get(FIELDCOMPARATORS);
 
             for (int i = 0; i < fieldNames.length; i++) {
-                if (StringUtils.isNotBlank(fieldNames[i])) {
-                    query.append(String.format(
-                        " and n.'%s'%s'%s'",
-                        this.sanitizeValue(fieldNames[i]),
-                        this.sanitizeComparator(fieldComparators[i]),
-                        this.sanitizeValue(fieldValues[i])));
-                }
+                addFieldConditionToQuery(query, fieldNames[i], fieldComparators[i], fieldValues[i]);
             }
         }
 
@@ -454,6 +448,27 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
         }
 
         return fieldParameters;
+    }
+
+    protected void addFieldConditionToQuery(final StringBuilder query, final String field, final String comparator,
+        final String value)
+    {
+        if (StringUtils.isNotBlank(field)) {
+            if ("<>".equals(comparator)) {
+                // `x <> y` does not work intuitively when y is an array as it is run on each array entry
+                // and does not match empty arrays. Convert to `not x = y`
+                query.append(String.format(
+                    " and not n.'%s'='%s'",
+                    this.sanitizeValue(field),
+                    this.sanitizeValue(value)));
+            } else {
+                query.append(String.format(
+                    " and n.'%s'%s'%s'",
+                    this.sanitizeValue(field),
+                    this.sanitizeComparator(comparator),
+                    this.sanitizeValue(value)));
+            }
+        }
     }
 
     /**
