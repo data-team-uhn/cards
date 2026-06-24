@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -129,7 +130,7 @@ public class FormToTextAdapterFactoryTest
         assertNotNull(markdown);
         assertEquals(subjectFullIdentifier + NEXT_LINE
             + "TEST SERIALIZABLE QUESTIONNAIRE" + NEXT_LINE
-            + java.time.LocalDate.now() + NEXT_LINE
+            + getExpectedCreationDate(TEST_FORM_PATH) + NEXT_LINE
             + NEXT_LINE
             + "---------------------------------------------" + NEXT_LINE
             + NEXT_LINE
@@ -162,7 +163,7 @@ public class FormToTextAdapterFactoryTest
         assertNotNull(markdown);
         assertEquals(subjectFullIdentifier + NEXT_LINE
             + "TEST SERIALIZABLE QUESTIONNAIRE" + NEXT_LINE
-            + java.time.LocalDate.now() + NEXT_LINE
+            + getExpectedCreationDate("/Forms/f2") + NEXT_LINE
             + NEXT_LINE
             + "SECTION 3" + NEXT_LINE
             + NEXT_LINE
@@ -183,7 +184,7 @@ public class FormToTextAdapterFactoryTest
         assertNotNull(markdown);
         assertEquals(subjectFullIdentifier + NEXT_LINE
             + "TEST SERIALIZABLE QUESTIONNAIRE" + NEXT_LINE
-            + java.time.LocalDate.now() + NEXT_LINE
+            + getExpectedCreationDate("/Forms/f3") + NEXT_LINE
             + NEXT_LINE
             + "SECTION 3" + NEXT_LINE
             + NEXT_LINE
@@ -367,5 +368,20 @@ public class FormToTextAdapterFactoryTest
     private String getResourcePathByItsIdentifier(String identifier) throws RepositoryException
     {
         return this.context.resourceResolver().adaptTo(Session.class).getNodeByIdentifier(identifier).getPath();
+    }
+
+    /**
+     * Compute the creation date the serializer is expected to print for a form. This mirrors
+     * {@code AbstractFormToStringSerializer}, which outputs the date part (before the {@code T}) of the form's
+     * {@code jcr:created} property. Deriving it from the actual stored timestamp keeps the assertion deterministic,
+     * instead of comparing against {@code LocalDate.now()} which depends on the wall clock and the default time zone.
+     */
+    private String getExpectedCreationDate(String formPath) throws RepositoryException
+    {
+        Calendar created = this.context.resourceResolver().getResource(formPath).adaptTo(Node.class)
+            .getProperty("jcr:created").getDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(created.getTimeZone());
+        return sdf.format(created.getTime());
     }
 }
