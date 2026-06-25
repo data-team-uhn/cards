@@ -117,7 +117,7 @@ function FormView(props) {
   , [actionSwitches]);
 
   useEffect(() => {
-    loadExtensions("FormStatusFlags")
+    loadExtensions("Tags")
       .then(extensions => {
         // Load any status flag filter information from the URL
         let previousFilters = {};
@@ -131,10 +131,13 @@ function FormView(props) {
         }
         // Load the available status flags from the extension
         let values = Array(extensions.length).fill(0);
-        const flags = extensions.map(e => ({
-          key: e["cards:statusFlagKey"],
-          label: e["cards:statusFlagLabel"],
-        }));
+        const flags = extensions
+          .filter(e => e["cards:tagTarget"]?.includes("cards:Form"))
+          .filter(e => e["cards:tagKey"] && e["cards:tagLabel"])
+          .map(e => ({
+            key: e["cards:tagKey"],
+            label: e["cards:tagLabel"],
+          }));
         // Fill in the available status flags with the URL filter information
         for (let i = 0; i < flags.length; i++) {
           if (previousFilters[flags[i].key]) {

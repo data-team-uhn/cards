@@ -1,0 +1,5 @@
+{
+  "jcr:primaryType": "cards:ExtensionPoint",
+  "cards:extensionPointId": "cards/data-model/tags",
+  "cards:extensionPointName": "Tag definitions"
+}

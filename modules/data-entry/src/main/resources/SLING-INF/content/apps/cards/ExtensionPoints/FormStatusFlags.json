@@ -1,5 +1,0 @@
-{
-  "jcr:primaryType": "cards:ExtensionPoint",
-  "cards:extensionPointId": "cards/data-entry/status-flags",
-  "cards:extensionPointName": "Status flags"
-}

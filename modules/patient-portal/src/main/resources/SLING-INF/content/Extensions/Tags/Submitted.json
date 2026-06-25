@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-model/tags",
+  "cards:extensionName": "Form is Submitted",
+  "cards:tagKey": "SUBMITTED",
+  "cards:tagLabel": "Submitted",
+  "cards:tagTarget": ["cards:Form"],
+  "cards:defaultOrder": 10
+}

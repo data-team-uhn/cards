@@ -1,8 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/data-entry/status-flags",
-  "cards:extensionName": "Patient Survey Form Status Flag",
-  "cards:statusFlagKey": "PATIENT SURVEY",
-  "cards:statusFlagLabel": "Patient Survey",
-  "cards:defaultOrder": 40
-}

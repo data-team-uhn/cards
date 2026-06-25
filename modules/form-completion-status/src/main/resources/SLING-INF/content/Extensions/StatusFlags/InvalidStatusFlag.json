@@ -1,8 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/data-entry/status-flags",
-  "cards:extensionName": "Invalid Form Status Flag",
-  "cards:statusFlagKey": "INVALID",
-  "cards:statusFlagLabel": "Invalid",
-  "cards:defaultOrder": 30
-}

@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-model/tags",
+  "cards:extensionName": "Clinician Survey",
+  "cards:tagKey": "CLINICIAN SURVEY",
+  "cards:tagLabel": "Clinician Survey",
+  "cards:tagTarget": ["cards:Form"],
+  "cards:defaultOrder": 41
+}

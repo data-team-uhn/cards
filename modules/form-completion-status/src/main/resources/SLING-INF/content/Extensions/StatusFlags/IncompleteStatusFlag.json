@@ -1,8 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/data-entry/status-flags",
-  "cards:extensionName": "Incomplete Status Flag",
-  "cards:statusFlagKey": "INCOMPLETE",
-  "cards:statusFlagLabel": "Incomplete",
-  "cards:defaultOrder": 25
-}

@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-model/tags",
+  "cards:extensionName": "Patient Survey",
+  "cards:tagKey": "PATIENT SURVEY",
+  "cards:tagLabel": "Patient Survey",
+  "cards:tagTarget": ["cards:Form"],
+  "cards:defaultOrder": 40
+}

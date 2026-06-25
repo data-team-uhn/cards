@@ -48,6 +48,7 @@
               SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
               SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/PrintHeader/;path:=/Extensions/PrintHeader/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/Tags/;path:=/Extensions/Tags/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>

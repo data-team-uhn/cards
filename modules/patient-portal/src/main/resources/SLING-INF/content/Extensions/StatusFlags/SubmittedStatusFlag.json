@@ -1,8 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/data-entry/status-flags",
-  "cards:extensionName": "Submitted Status Flag",
-  "cards:statusFlagKey": "SUBMITTED",
-  "cards:statusFlagLabel": "Submitted",
-  "cards:defaultOrder": 10
-}
