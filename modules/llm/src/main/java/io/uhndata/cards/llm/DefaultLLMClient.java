@@ -57,6 +57,13 @@ public abstract class DefaultLLMClient implements LLMClient
 
     private static final int HTTP_OK = 200;
 
+    /**
+     * The configuration service used to resolve the active settings. It is bound by each concrete component
+     * (via its own {@code @Reference}), because OSGi Declarative Services does not inherit references declared
+     * in a superclass that lives in a different bundle.
+     */
+    protected LLMConfigurationService configurationService;
+
     @Override
     public String chat(final String userMessage) throws IOException
     {
@@ -176,12 +183,15 @@ public abstract class DefaultLLMClient implements LLMClient
     }
 
     /**
-     * Provide the configuration service used to resolve the active settings. Implemented by the concrete
-     * component, which holds the OSGi reference.
+     * The configuration service used to resolve the active settings, injected as an OSGi reference and shared
+     * by all concrete clients.
      *
      * @return the configuration service
      */
-    protected abstract LLMConfigurationService getConfigurationService();
+    protected LLMConfigurationService getConfigurationService()
+    {
+        return this.configurationService;
+    }
 
     /**
      * Resolve the configured endpoint to the URL that requests are POSTed to.
