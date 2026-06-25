@@ -350,11 +350,27 @@ public class DataProcessorTest
         selectorsActual.set(generateResolutionPathInfo());
 
         ThreadLocal<DataFilters> filters = (ThreadLocal<DataFilters>) getAccessedField("filters");
-        DataFilters mockFilters = mock(DataFilters.class);
-        when(mockFilters.getExtraQuerySelectors()).thenReturn("");
-        when(mockFilters.getExtraQueryConditions()).thenReturn("");
-        when(mockFilters.getFilters()).thenReturn(java.util.Collections.emptyList());
-        filters.set(mockFilters);
+        DataFilters noFilters = new DataFilters()
+        {
+            @Override
+            public List<DataFilter> getFilters()
+            {
+                return List.of();
+            }
+
+            @Override
+            public String getExtraQuerySelectors()
+            {
+                return "";
+            }
+
+            @Override
+            public String getExtraQueryConditions()
+            {
+                return "";
+            }
+        };
+        filters.set(noFilters);
 
         ThreadLocal<Map<String, String>> optionsActual = (ThreadLocal<Map<String, String>>) getAccessedField("options");
         optionsActual.set(Map.of("descendantData", "0", "formSelectors", "formSelectors=-dereference%5C"));
