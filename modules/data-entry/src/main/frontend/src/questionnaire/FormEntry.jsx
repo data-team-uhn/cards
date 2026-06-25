@@ -28,6 +28,7 @@ import BooleanQuestion from "./BooleanQuestion";
 import ComputedQuestion from "./ComputedQuestion";
 import DateQuestion from "./DateQuestion";
 import DateQuestionYear from "./DateQuestionYear";
+import ExtractedTextQuestion from "./ExtractedTextQuestion";
 import FileQuestion from "./FileQuestion";
 import NumberQuestion from "./NumberQuestion";
 import ProposalQuestion from "./ProposalQuestion";
