@@ -1,0 +1,287 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+	<name>PrompterDemoQuestionnaire</name>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
+	<property>
+		<name>title</name>
+		<value>Prompter Demo</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>
+Page 1: **Research Proposal** — upload the proposal document
+Page 2: **Extracted Data** — review and confirm fields extracted from the proposal
+		</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>paginate</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>0</value>
+		<type>Long</type>
+	</property>
+	<node>
+		<name>proposal_section</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Research Proposal</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>proposal</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Research Proposal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Upload a research proposal document (.pdf, .docx, or .doc)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>proposal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>extracted_data_section</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Extracted Data</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>extractFromProposal</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>categoriesDocument</name>
+			<value>
+# Project Categories
+
+## Retrospective
+No direct interactions with individual participants.
+
+### Negligible Risk
+
+#### Retrospective Data
+- De-identified data from repository
+- Identifiable data from repository
+
+#### Retrospective Biospecimen
+- Anonymous cell lines
+- De-identified biospecimens from repository
+- Identifiable biospecimens from repository
+
+## Prospective Observational
+Minimal direct interactions with non-patient or patient participants.
+
+### Minimal Risk
+
+#### Surveys / Education
+- Anonymous surveys
+- Identifiable surveys (non-sensitive data)
+- Research involving non-patient healthcare providers and educators
+
+### More than Minimal Risk
+
+#### Sensitive Data / Clinical Interactions
+- Identifiable surveys (sensitive data)
+- Vulnerable populations
+- Participant interactions limited to blood testing, imaging, etc.
+
+## Prospective Interventional
+Health-related interventions involving non-patient or patient participants.
+
+### More than Minimal Risk
+
+#### Lower Risk
+- Benign behavioural interventions
+- Trials and other studies testing standard-of-care (SOC) products or techniques
+
+#### Higher Risk
+- Clinical trials involving experimental products
+			</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>category</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Category</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>classification</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Classify this study using the Project Categories.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- Classify this study using the Project Categories.
+- Return the best matching project_category, risk_level, and subcategory.
+- Support the classification with direct evidence from the study.
+- If this chunk does not contain enough information to classify, return found_answer=false for classification.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>study_title</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Study Title</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>study_title</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine the Study Title.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- The study title is usually located on the cover page, application summary, protocol title section, or research project title field.
+- Prefer the official protocol title.
+- If both a short title and full title exist, return the full title.
+- Prefer titles that describe the research project.
+- Ignore file names, document names, generic headers, footers, version labels, and form titles unless no official study title exists.
+- Do not invent a title.
+- If no title is present in this chunk, return found_answer=false for study_title.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>principal_investigator</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Principal Investigator</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>principal_investigator</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine the Principal Investigator.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- The Principal Investigator is usually located on the study team page, application form, investigator information section, signature page, or REB submission form.
+- The PI may appear as Principal Investigator, PI, Principal Applicant, Lead Investigator, Qualified Investigator, Study Chair, or Principal Researcher.
+- Prefer the individual explicitly identified as responsible for the study.
+- Return the person's full name exactly as written.
+- Exclude credentials from the value field unless they are part of the displayed name.
+- Do not return research coordinators, co-investigators, students, sponsors, institutions, departments, or study teams unless no individual PI can be identified.
+- If multiple names are listed, select only the person explicitly identified by one of the PI-equivalent roles.
+- If no PI can be determined from this chunk, return found_answer=false for principal_investigator.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+</node>
