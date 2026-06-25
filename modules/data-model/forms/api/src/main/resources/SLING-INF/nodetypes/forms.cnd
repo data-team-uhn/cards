@@ -697,6 +697,30 @@
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// Extracted text answers, stored as strings
+[cards:ExtractedTextAnswer] > cards:Answer
+  - value (string)
+
+  // Whether the value was produced by the AI extraction phase. Turns false once the user edits the value.
+  - extracted (boolean) = false autocreated
+
+  // The LLM's argumentation for the extracted value.
+  - reasoning (string)
+
+  // A JSON array of short, direct supporting quotes from the document (stored as a JSON string).
+  // Set only when extracted is true; cleared once the user edits the value.
+  - evidence (string)
+
+  // The LLM's confidence in the value. Set only when extracted is true; cleared once the user edits the value.
+  - confidence (double)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/ExtractedTextAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
 
 
 // Section object, which can contain multiple other answers and nested subsections.
