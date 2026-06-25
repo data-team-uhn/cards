@@ -163,25 +163,23 @@ function MultipleChoice(props) {
     ? defaultValueList[0]
     : undefined;
 
-  let initialSelection =
-    // If there's no existing answer, there's no initial selection
-    (!existingAnswer || existingAnswer[1].value === undefined)
-      ?
-      []
-      :
-    // The value can either be a single value or an array of values; force it into an array
-      Array.of(existingAnswer[1].value).flat()
-      // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
-        .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
-  // When opening a form with no existing answer, pre-select the provided default value(s); otherwise pre-select
-  // the answer options flagged as default values.
-  if (!existingAnswer) {
+  let initialSelection;
+  // When there is no saved value yet — a brand new form, or one whose answers were pre-created without a value —
+  // pre-select the provided default value(s), otherwise the answer options flagged as default values, so the
+  // defaults show and get saved unless the user changes them. (An empty answer node is not "no answer", so this
+  // must key off the value being undefined, not off existingAnswer being absent.)
+  if (!existingAnswer || existingAnswer[1].value === undefined) {
     initialSelection = defaultSelection.length
       ? defaultSelection
+      // If there are more defaults than maxAnswers, only keep the first maxAnswers of them.
       : defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
-      // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
         .slice(0, maxAnswers || defaults.length)
         .map(item => [item[LABEL_POS], item[VALUE_POS]]);
+  } else {
+    // The value can either be a single value or an array of values; force it into an array.
+    // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue.
+    initialSelection = Array.of(existingAnswer[1].value).flat()
+      .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
   }
   let default_values = defaults.map((thisDefault) => thisDefault[VALUE_POS]);
   let all_options =

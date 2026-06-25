@@ -148,19 +148,20 @@ let QuestionMatrix = (props) => {
       .map( (item, index) => [Array.of(answer[1].displayedValue).flat()[index], item] );
     });
 
-  // When opening a form with no existing answers, pre-select default answers so they get saved unless
-  // modified by the user. Per question, a defaultValue (on the entry or the section) takes precedence;
-  // otherwise we fall back to the answer options flagged as default values.
-  if (!existingAnswers) {
-    let optionDefaultSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
-    // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
-      .slice(0, maxAnswers || defaults.length)
-      .map(item => [item[LABEL_POS], item[VALUE_POS]]);
-
-    subquestions.map(subquestion => {
+  // For every subquestion that has no saved value yet, pre-select its default so it shows and gets saved unless
+  // the user changes it. This must run even when the form already has (empty) answer nodes, not only on a brand
+  // new form, so we apply it per row to any row not already populated above from an existing answer. Per question,
+  // a defaultValue (on the entry or the section) takes precedence; otherwise we fall back to the answer options
+  // flagged as default values.
+  let optionDefaultSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
+  // If there are more defaults than maxAnswers, only keep the first maxAnswers of them.
+    .slice(0, maxAnswers || defaults.length)
+    .map(item => [item[LABEL_POS], item[VALUE_POS]]);
+  subquestions.forEach(subquestion => {
+    if (!initialSelection[subquestion[0]]) {
       initialSelection[subquestion[0]] = getDefaultValueSelection(subquestion[1]) || optionDefaultSelection;
-    });
-  }
+    }
+  });
 
   // Stores the current matrix answer state in a form of object where question variable id corresponds to the array of selected
   // [item[LABEL_POS], item[VALUE_POS]]
