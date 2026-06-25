@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.llm.LLMClient;
 import io.uhndata.cards.llm.LLMClientFactory;
 import io.uhndata.cards.llm.LLMConfigurationService;
-import io.uhndata.cards.llm.LLMSettings;
 import io.uhndata.cards.llm.LLMInteractionLogger;
+import io.uhndata.cards.llm.LLMSettings;
 
 /**
  * Default {@link LLMClientFactory}. Collects all {@link LLMClient} services that declare an
