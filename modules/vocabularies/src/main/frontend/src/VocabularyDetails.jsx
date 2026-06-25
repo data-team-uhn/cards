@@ -31,10 +31,9 @@ import {
 } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
 
+import Phase from "./phaseCodes.json";
 import VocabularyBrowser from "./vocabQuery/VocabularyBrowser";
 import VocabularyAction from "./VocabularyAction";
-
-const Phase = require("./phaseCodes.json");
 
 const useStyles = makeStyles()(theme => ({
   about: {
