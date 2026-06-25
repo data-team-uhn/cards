@@ -66,6 +66,32 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 // TODO Try to move the save-failed code somewhere more generic instead of the Form component
 
+// Prefix the backend writes into a proposal answer's note when the uploaded document fails to parse.
+// Kept in sync with ProposalQuestion.jsx.
+const PROPOSAL_PARSE_ERROR_PREFIX = "<!-- parse_error: ";
+
+// Recursively check whether a form JSON tree contains a proposal answer whose note records a parse error.
+const formHasProposalParseError = (node) => {
+  if (!node || typeof node !== "object") {
+    return false;
+  }
+  if (typeof node["note"] === "string" && node["note"].startsWith(PROPOSAL_PARSE_ERROR_PREFIX)) {
+    return true;
+  }
+  return Object.values(node).some(value => formHasProposalParseError(value));
+};
+
+// Recursively check whether a questionnaire definition contains a proposal-type question.
+const questionnaireHasProposalQuestion = (node) => {
+  if (!node || typeof node !== "object") {
+    return false;
+  }
+  if (node["jcr:primaryType"] === "cards:Question" && node["dataType"] === "proposal") {
+    return true;
+  }
+  return Object.values(node).some(value => questionnaireHasProposalQuestion(value));
+};
+
 /**
  * Component that displays an editable Form.
  *
@@ -147,6 +173,13 @@ function Form (props) {
   const paginationEnabled = useMemo(() =>
     (isEdit && !!data?.questionnaire?.paginate)
   , [isEdit, data]);
+
+  // Whether this form's questionnaire includes a proposal question whose document is parsed on the server.
+  // When it does, forward navigation is held after each save until we confirm the document parsed cleanly.
+  const hasProposalQuestion = useMemo(
+    () => questionnaireHasProposalQuestion(data?.questionnaire),
+    [data?.questionnaire]
+  );
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -238,8 +271,11 @@ function Form (props) {
   // the questionnaire definition,
   // and all the existing answers.
   // Once the data arrives from the server, it will be stored in the `data` state variable.
+  // Returns the fetch promise so callers (e.g. the proposal extraction reload exposed as `/Reload`) can chain
+  // on completion. It intentionally does not set `fetchInProgress`, so a reload refreshes the data in place
+  // without unmounting and remounting the form body (the initial load sets `fetchInProgress` separately).
   let fetchData = () => {
-    fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
+    return fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
       .catch(handleFetchError)
@@ -346,14 +382,24 @@ function Form (props) {
         // If the form is required to be complete or if we need to display the page completion status
         // in nagivable pagination, re-fetch it after save to check the updated status flags
         // However, skip any completion checks if this is an autosave
-        if ((requireCompletion || paginationVariant == 'navigable') && !(event?.type == "autosave")) {
-          // Disable progress until we figure out if it's ok to proceed
-          requireCompletion && setDisableProgress(true);
+        if ((requireCompletion || paginationVariant == 'navigable' || hasProposalQuestion) &&
+          !(event?.type == "autosave")) {
+          // Disable progress until we figure out if it's ok to proceed. Pre-disabling synchronously here
+          // ensures the page does not auto-advance before the re-fetched form has been inspected below.
+          (requireCompletion || hasProposalQuestion) && setDisableProgress(true);
           fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then(json => {
               setData(json);
-              if (!requireCompletion) return;
+              // Do not let the user leave a page whose uploaded proposal document failed to parse.
+              if (hasProposalQuestion && formHasProposalParseError(json)) {
+                setDisableProgress(true);
+                return;
+              }
+              if (!requireCompletion) {
+                setDisableProgress(false);
+                return;
+              }
               let incompleteEl = getFirstIncompleteQuestionEl(json);
               if (!!incompleteEl) {
                 setIncompleteQuestionEl(incompleteEl);
@@ -746,6 +792,7 @@ function Form (props) {
         <FormProvider additionalFormData={{
           ['/Save']: saveData,
           ['/URL']: formURL,
+          ['/Reload']: fetchData,
           ['/OnFormDataChanged']: handleFormDataChange
         }}>
           <FormUpdateProvider>

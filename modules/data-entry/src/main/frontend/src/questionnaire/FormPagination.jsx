@@ -53,6 +53,7 @@ class Page {
     this.keys = [ key ];
   }
   conditionalVisible = [];
+  hasProposal = false;
 
   addConditionalVisible(visible, index) {
     this.conditionalVisible[index] = visible;
@@ -96,8 +97,24 @@ function FormPagination (props) {
 
   const previousEntryTypeRef = useRef(null);
   const questionIndexRef = useRef(0);
+  // Set once a save actually starts after a page change is requested, so the page only advances after the save
+  // completes — not in the window between the page click (sets pendingSubmission) and the form submit (starts
+  // the save), when saveInProgress is still false.
+  const saveStartedRef = useRef(false);
 
   const { classes } = useStyles();
+
+  // Whether a questionnaire entry (a question, or a section and its descendants) includes a proposal-type
+  // question, used to show a document-processing label while it is being parsed on the server.
+  let entryHasProposal = (entryDefinition) => {
+    if (!entryDefinition || typeof entryDefinition !== "object") {
+      return false;
+    }
+    if (entryDefinition["dataType"] === "proposal") {
+      return true;
+    }
+    return Object.values(entryDefinition).some(value => entryHasProposal(value));
+  };
 
   let addPage = (entryDefinition, pagesArray) => {
     if (enabled) {
@@ -117,6 +134,9 @@ function FormPagination (props) {
         questionIndexRef.current = 0;
       }
       previousEntryTypeRef.current = entryDefinition["jcr:primaryType"];
+      if (entryHasProposal(entryDefinition)) {
+        page.hasProposal = true;
+      }
 
       const currentQuestionIndex = questionIndexRef.current;
       return {
@@ -167,6 +187,7 @@ function FormPagination (props) {
     if (enableSave) {
       // If we must save the page before going, we make sure to not move to the new page
       // until the submission process is complete.
+      saveStartedRef.current = false;
       setPendingSubmission(true);
       setNextActivePage(pageIndex);
       setDirection(undefined);
@@ -181,6 +202,7 @@ function FormPagination (props) {
     if (enableSave) {
       // If we must save the page before going, we make sure to not call handlePageChange
       // until the submission process is complete.
+      saveStartedRef.current = false;
       setPendingSubmission(true);
       setDirection(changeDirection);
       setNextActivePage(undefined);
@@ -216,8 +238,14 @@ function FormPagination (props) {
   }
 
   useEffect(() => {
-    if (!saveInProgress && pendingSubmission &&
+    if (saveInProgress) {
+      // A save has started for the requested page change; only advance once it has finished.
+      saveStartedRef.current = true;
+      return;
+    }
+    if (pendingSubmission && saveStartedRef.current &&
       !(disableProgress && (nextActivePage > activePage || direction === DIRECTION_NEXT))) {
+      saveStartedRef.current = false;
       setPendingSubmission(false);
       if (activePage === lastValidPage() && direction === DIRECTION_NEXT) {
         setSavedLastPage(true);
@@ -243,6 +271,8 @@ function FormPagination (props) {
     }
   }, [activePage, pages, savedLastPage]);
 
+  const activePageHasProposal = pages[activePage]?.hasProposal;
+
   let saveButton =
     <Button
       startIcon={activePage === lastValidPage() ? doneIcon : undefined}
@@ -253,12 +283,13 @@ function FormPagination (props) {
       onClick={handleNext}
     >
       {
-        ((lastValidPage() === 0 || activePage === lastValidPage()) && saveInProgress) ? 'Saving' :
-          lastSaveStatus === false ? 'Save failed, log in and try again?' :
-            activePage < lastValidPage() ? "Next" :
-              !enableSave ? (doneLabel || "Close") :
-                lastSaveStatus && savedLastPage ? 'Saved' :
-                  (doneLabel || 'Save')}
+        (saveInProgress && activePageHasProposal) ? 'Processing document...' :
+          ((lastValidPage() === 0 || activePage === lastValidPage()) && saveInProgress) ? 'Saving' :
+            lastSaveStatus === false ? 'Save failed, log in and try again?' :
+              activePage < lastValidPage() ? "Next" :
+                !enableSave ? (doneLabel || "Close") :
+                  lastSaveStatus && savedLastPage ? 'Saved' :
+                    (doneLabel || 'Save')}
     </Button>
 
   let backButton = navMode == "only_next" ? undefined : (

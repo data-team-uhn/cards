@@ -39,6 +39,7 @@ import ConditionalSingle from "./ConditionalSingle";
 import { useFormReaderContext, useFormWriterContext } from "./FormContext";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { hasWarningFlags } from "./FormUtilities";
+import ProposalSectionExtraction from "./ProposalSectionExtraction";
 import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
 import sectionStyles from "./sectionStyles.jsx";
 import FormattedText from "../components/FormattedText.jsx";
@@ -299,6 +300,14 @@ function Section(props) {
                         : undefined
                     }
                   >
+                    {isEdit && sectionDefinition['extractFromProposal'] &&
+                      <Grid size={12}>
+                        <ProposalSectionExtraction
+                          pageActive={pageActive}
+                          existingSectionAnswer={existingSectionAnswer}
+                        />
+                      </Grid>
+                    }
                     {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                       sectionEntries.map(([key, definition]) =>
                         <FormEntry
