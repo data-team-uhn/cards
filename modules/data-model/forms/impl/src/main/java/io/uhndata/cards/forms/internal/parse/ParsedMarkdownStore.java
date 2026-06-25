@@ -48,6 +48,9 @@ public final class ParsedMarkdownStore
     /** Name of the aggregated markdown file written into each answer's subfolder. */
     public static final String AGGREGATED_FILE_NAME = "aggregated.md";
 
+    /** Name of the subfolder, within an answer's subfolder, that holds the markdown chunks. */
+    public static final String CHUNKS_SUBDIR = "chunks";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ParsedMarkdownStore.class);
 
     private static final String OUTPUT_DIR_PROPERTY = "cards.parse.output.dir";
@@ -123,6 +126,226 @@ public final class ParsedMarkdownStore
         } catch (IOException | RuntimeException e) {
             LOGGER.warn("Could not write aggregated markdown in {}: {}", dir.toAbsolutePath(), e.getMessage());
         }
+    }
+
+    /**
+     * Split the aggregated markdown of an answer into chunk files under a {@value #CHUNKS_SUBDIR}
+     * subfolder, sized for the given token budget. Chunking is skipped when no answer subfolder is
+     * provided, the token budget is not positive, or the aggregated file does not exist. A failure
+     * never throws — it is logged and swallowed.
+     *
+     * @param outputSubfolder the answer's subfolder; chunking is skipped when {@code null} or blank
+     * @param chunkTokenSize the approximate maximum number of tokens per chunk; must be positive
+     */
+    public static void chunkAggregate(final String outputSubfolder, final int chunkTokenSize)
+    {
+        if (sanitizeSubfolder(outputSubfolder) == null || chunkTokenSize <= 0) {
+            LOGGER.debug("Skipping markdown chunking: no answer subfolder or non-positive token size");
+            return;
+        }
+        final Path dir = resolveOutputDir(outputSubfolder);
+        final Path aggregated = dir.resolve(AGGREGATED_FILE_NAME);
+        try {
+            if (!Files.isRegularFile(aggregated)) {
+                LOGGER.warn("Cannot chunk markdown: {} does not exist", aggregated.toAbsolutePath());
+                return;
+            }
+            final Path chunksDir = dir.resolve(CHUNKS_SUBDIR);
+            final List<String> chunks = MarkdownChunker.chunk(aggregated, chunksDir, chunkTokenSize);
+            LOGGER.info("Wrote {} markdown chunk(s) from {} to {}",
+                chunks.size(), AGGREGATED_FILE_NAME, chunksDir.toAbsolutePath());
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not chunk aggregated markdown in {}: {}", dir.toAbsolutePath(), e.getMessage());
+        }
+    }
+
+    /**
+     * Delete all files in an answer's {@value #CHUNKS_SUBDIR} folder so stale chunks are not served
+     * after a failed parse. A failure never throws — it is logged and swallowed.
+     *
+     * @param outputSubfolder the answer's subfolder; clearing is skipped when {@code null} or blank
+     */
+    public static void clearChunks(final String outputSubfolder)
+    {
+        if (sanitizeSubfolder(outputSubfolder) == null) {
+            return;
+        }
+        final Path chunksDir = resolveOutputDir(outputSubfolder).resolve(CHUNKS_SUBDIR);
+        try {
+            if (!Files.isDirectory(chunksDir)) {
+                return;
+            }
+            try (Stream<Path> entries = Files.list(chunksDir)) {
+                for (final Path entry : entries.toList()) {
+                    Files.deleteIfExists(entry);
+                }
+            }
+            LOGGER.info("Cleared markdown chunks in {}", chunksDir.toAbsolutePath());
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not clear markdown chunks in {}: {}", chunksDir.toAbsolutePath(), e.getMessage());
+        }
+    }
+
+    /**
+     * Check whether a parsed {@code .md} file already exists for a given source file in an answer's subfolder.
+     *
+     * @param outputSubfolder the answer's subfolder; treated as absent when {@code null} or blank
+     * @param fileName the source file name whose parsed output is looked up
+     * @return {@code true} if the corresponding {@code .md} file exists
+     */
+    public static boolean hasParsedFile(final String outputSubfolder, final String fileName)
+    {
+        if (sanitizeSubfolder(outputSubfolder) == null || StringUtils.isBlank(fileName)) {
+            return false;
+        }
+        return Files.isRegularFile(resolveOutputDir(outputSubfolder).resolve(buildOutputFileName(fileName)));
+    }
+
+    /**
+     * Delete the parsed {@code .md} file for a single source file. A failure never throws — it is logged and
+     * swallowed.
+     *
+     * @param outputSubfolder the answer's subfolder; deletion is skipped when {@code null} or blank
+     * @param fileName the source file name whose parsed output should be removed
+     */
+    public static void deleteParsedFile(final String outputSubfolder, final String fileName)
+    {
+        if (sanitizeSubfolder(outputSubfolder) == null || StringUtils.isBlank(fileName)) {
+            return;
+        }
+        final Path file = resolveOutputDir(outputSubfolder).resolve(buildOutputFileName(fileName));
+        try {
+            if (Files.deleteIfExists(file)) {
+                LOGGER.info("Deleted parsed markdown for '{}' at {}", fileName, file.toAbsolutePath());
+            }
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not delete parsed markdown for '{}': {}", fileName, e.getMessage());
+        }
+    }
+
+    /**
+     * Delete an answer's entire parse output subfolder, including the aggregate and chunks. Used when the
+     * owning answer or all of its files are removed. A failure never throws — it is logged and swallowed.
+     *
+     * @param outputSubfolder the answer's subfolder; deletion is skipped when {@code null} or blank
+     */
+    public static void deleteFolder(final String outputSubfolder)
+    {
+        if (sanitizeSubfolder(outputSubfolder) == null) {
+            return;
+        }
+        final Path dir = resolveOutputDir(outputSubfolder);
+        if (!Files.isDirectory(dir)) {
+            return;
+        }
+        try (Stream<Path> entries = Files.walk(dir)) {
+            final List<Path> paths = entries.sorted(Comparator.reverseOrder())
+                .collect(Collectors.toCollection(ArrayList::new));
+            for (final Path path : paths) {
+                Files.deleteIfExists(path);
+            }
+            LOGGER.info("Deleted parse output folder {}", dir.toAbsolutePath());
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not delete parse output folder {}: {}", dir.toAbsolutePath(), e.getMessage());
+        }
+    }
+
+    /**
+     * Read the aggregated markdown for an answer.
+     *
+     * @param outputSubfolder the answer's subfolder; ignored when {@code null} or blank
+     * @return the aggregated markdown content, or {@code null} when no answer subfolder is provided or the
+     *         {@value #AGGREGATED_FILE_NAME} file does not exist or cannot be read
+     */
+    public static String readAggregate(final String outputSubfolder)
+    {
+        if (sanitizeSubfolder(outputSubfolder) == null) {
+            return null;
+        }
+        final Path aggregated = resolveOutputDir(outputSubfolder).resolve(AGGREGATED_FILE_NAME);
+        try {
+            if (!Files.isRegularFile(aggregated)) {
+                return null;
+            }
+            return Files.readString(aggregated, StandardCharsets.UTF_8);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not read aggregated markdown in {}: {}", aggregated.toAbsolutePath(), e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Read the last-modified time of an answer's aggregated markdown file. Callers use this to decide whether
+     * the document was re-parsed after a previous extraction.
+     *
+     * @param outputSubfolder the answer's subfolder; ignored when {@code null} or blank
+     * @return the file's last-modified time in epoch milliseconds, or {@code 0} when no answer subfolder is
+     *         provided or the {@value #AGGREGATED_FILE_NAME} file does not exist or cannot be read
+     */
+    public static long aggregateLastModified(final String outputSubfolder)
+    {
+        if (sanitizeSubfolder(outputSubfolder) == null) {
+            return 0L;
+        }
+        final Path aggregated = resolveOutputDir(outputSubfolder).resolve(AGGREGATED_FILE_NAME);
+        try {
+            if (!Files.isRegularFile(aggregated)) {
+                return 0L;
+            }
+            return Files.getLastModifiedTime(aggregated).toMillis();
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not read modified time of aggregated markdown in {}: {}",
+                aggregated.toAbsolutePath(), e.getMessage());
+            return 0L;
+        }
+    }
+
+    /**
+     * Read every chunk file for an answer, in chunk-index order. When no chunks have been written yet, the
+     * aggregated markdown is returned as a single element so callers always have something to send.
+     *
+     * @param outputSubfolder the answer's subfolder; ignored when {@code null} or blank
+     * @return the ordered chunk contents, or an empty list when nothing is available
+     */
+    public static List<String> readChunks(final String outputSubfolder)
+    {
+        if (sanitizeSubfolder(outputSubfolder) == null) {
+            return List.of();
+        }
+        final Path chunksDir = resolveOutputDir(outputSubfolder).resolve(CHUNKS_SUBDIR);
+        final List<String> chunks = readChunkFiles(chunksDir);
+        if (!chunks.isEmpty()) {
+            return chunks;
+        }
+        final String aggregated = readAggregate(outputSubfolder);
+        return aggregated == null ? List.of() : List.of(aggregated);
+    }
+
+    private static List<String> readChunkFiles(final Path chunksDir)
+    {
+        if (!Files.isDirectory(chunksDir)) {
+            return List.of();
+        }
+        try (Stream<Path> entries = Files.list(chunksDir)) {
+            final List<Path> chunkFiles = entries
+                .filter(Files::isRegularFile)
+                .filter(path -> isChunkFile(path.getFileName().toString()))
+                .sorted(Comparator.comparing(path -> path.getFileName().toString()))
+                .collect(Collectors.toCollection(ArrayList::new));
+            final List<String> contents = new ArrayList<>(chunkFiles.size());
+            for (final Path chunkFile : chunkFiles) {
+                contents.add(Files.readString(chunkFile, StandardCharsets.UTF_8));
+            }
+            return contents;
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not read markdown chunks in {}: {}", chunksDir.toAbsolutePath(), e.getMessage());
+            return List.of();
+        }
+    }
+
+    private static boolean isChunkFile(final String name)
+    {
+        return name.startsWith("chunk_") && name.toLowerCase(Locale.ROOT).endsWith(".md");
     }
 
     private static List<Path> listMarkdownFiles(final Path dir)
