@@ -23,6 +23,7 @@ import { withStyles } from 'tss-react/mui';
 
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
+import FormattedText from '../components/FormattedText';
 import Logo from "../components/Logo";
 import styles from "../styling/styles";
 
@@ -32,6 +33,8 @@ function MainLoginContainer(props) {
 
   const isLongForm = !!window.location.pathname.startsWith("/login");
   const title = document.querySelector('meta[name="title"]').content;
+  const loginTitle = document.querySelector('meta[name="loginTitle"]')?.content;
+  const loginDescription = document.querySelector('meta[name="loginDescription"]')?.content;
   const paperClassName = `${classes.paper} ${selfContained ? classes.selfContained : ''}`.trim();
 
   return (
@@ -44,6 +47,16 @@ function MainLoginContainer(props) {
         alignContent="center"
       >
         <Logo maxWidth="200px" component={Grid}/>
+        { isLongForm && (loginTitle || loginDescription) &&
+          <Grid className={classes.appIntro}>
+            { loginTitle &&
+              <Typography variant="h6" component="h1" gutterBottom>{loginTitle}</Typography>
+            }
+            { loginDescription &&
+              <FormattedText variant="body2" color="textSecondary">{loginDescription}</FormattedText>
+            }
+          </Grid>
+        }
         <Grid>
           { signInShown ?
             <LoginForm handleLogin={handleLogin} redirectOnLogin={redirectOnLogin}/>

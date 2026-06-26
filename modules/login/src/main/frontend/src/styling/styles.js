@@ -63,6 +63,10 @@ const styles = theme => ({
       display: "inline-block",
     },
   },
+  appIntro: {
+    textAlign: "center",
+    maxWidth: "450px",
+  },
   closeButton: {
     float: 'right',
     marginLeft: theme.spacing(2),
