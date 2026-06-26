@@ -1,8 +1,6 @@
 # CARDS (Clinical Archive for Data Science)
 ###### Based on Apache Sling
 
-[![Build Status](https://travis-ci.com/ccmbioinfo/lfs.svg?branch=dev)](https://travis-ci.com/ccmbioinfo/lfs)
-
 ## Prerequisites:
 * Java 21
 * Maven 3.9+
