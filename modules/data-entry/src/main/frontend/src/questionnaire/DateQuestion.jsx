@@ -24,6 +24,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTime } from "luxon";
 
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
@@ -71,7 +72,13 @@ function DateQuestion(props) {
     upperLimit
   } = { ...props.questionDefinition, ...props };
 
-  const existingValues = existingAnswer && existingAnswer[1].value || "";
+  let defaultValue = props.questionDefinition.defaultValue;
+  // Parse the configured default using the question's own date format, then normalize it to ISO so
+  // the rest of the date pipeline consumes it like a stored value. An unparseable default is ignored.
+  const parsedDefault = defaultValue ? DateTime.fromFormat(String(defaultValue), dateFormat) : null;
+  defaultValue = parsedDefault?.isValid ? parsedDefault.toISO() : null;
+
+  const existingValues = existingAnswer && existingAnswer[1].value || defaultValue || "";
   const upperLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(upperLimit));
   const lowerLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(lowerLimit));
 

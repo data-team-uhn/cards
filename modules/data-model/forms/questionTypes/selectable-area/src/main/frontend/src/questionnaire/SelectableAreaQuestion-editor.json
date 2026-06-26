@@ -15,6 +15,7 @@
       "type": "textOptions",
       "childrenType": "cards:AnswerOption"
     },
+    "defaultValue": "string",
     "unselectedColor": "string",
     "selectedColor": "string",
     "hoverColor": "string",

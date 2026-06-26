@@ -157,7 +157,19 @@ function NumberQuestion(props) {
   const [ minMaxError, setMinMaxError ] = useState(false);
   const [ rangeError, setRangeError ] = useState(false);
 
-  const initialValue = Array.from(existingAnswer?.[1]?.value ?? []);
+  const rawDefaultValue = props.questionDefinition.defaultValue;
+  // Keep only the numeric default value(s); a multivalued question may provide a comma-separated list, and any
+  // value that cannot be parsed as a number is discarded.
+  const numericDefaultValues = (rawDefaultValue == null || String(rawDefaultValue) === "")
+    ? []
+    : String(rawDefaultValue).split(",")
+      .map(value => value.trim())
+      .filter(value => value !== "" && !isNaN(Number(value)))
+      .map(value => Number(value));
+  // A single numeric default for this question's own slider and range inputs.
+  const defaultValue = numericDefaultValues.length ? numericDefaultValues[0] : null;
+
+  const initialValue = Array.from(existingAnswer?.[1]?.value || numericDefaultValues);
 
   // The following two are only used for range answers
   const [lowerLimit, setLowerLimit] = useState(initialValue[0]);
@@ -166,7 +178,7 @@ function NumberQuestion(props) {
   // The following is only used for non-range sliders.
   // Default to an empty string, which results in a "no data"
   // selection as close to 0 as possible within the valid range
-  const [sliderValue, setSliderValue] = useState(existingAnswer?.[1]?.value);
+  const [sliderValue, setSliderValue] = useState(existingAnswer?.[1]?.value || defaultValue);
 
   // The following is only used for ranged sliders.
   // Setting a default of "" leads to an error, unlike the non-range case.
@@ -532,6 +544,7 @@ function NumberQuestion(props) {
               validate={disableMinMaxValueEnforcement ? value => !getMinMaxValueError(value) : undefined}
               validationErrorText={minMaxMessage}
               softValidation={disableMinMaxValueEnforcement}
+              defaultValue={numericDefaultValues.join(",") || undefined}
               {...rest}
             />
           }

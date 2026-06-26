@@ -108,6 +108,39 @@ let QuestionMatrix = (props) => {
   const naOption = Object.values(sectionDefinition).find((value) => value['notApplicable'])?.["value"];
   const noneOption = Object.values(sectionDefinition).find((value) => value['noneOfTheAbove'])?.["value"];
 
+  // Determine the default selection for a matrix question from a defaultValue specified either on the
+  // question entry itself (cards:QuestionMatrixEntry) or, across the board, on the parent section
+  // (cards:Section). The entry-level value overrides the section-wide one. To be applied, the value must
+  // match one of the answer options by either internal value or displayed label; a value that matches no
+  // option is discarded.
+  let getDefaultValueSelection = (subquestionDefinition) => {
+    let defaultValue = subquestionDefinition.defaultValue || sectionDefinition.defaultValue;
+    if (!defaultValue) {
+      return null;
+    }
+    // A multivalued matrix (maxAnswers !== 1) accepts a comma-separated list of distinct values.
+    let values = maxAnswers === 1
+      ? [String(defaultValue)]
+      : Array.from(new Set(String(defaultValue).split(",").map(value => value.trim()).filter(Boolean)));
+    let seenValues = new Set();
+    let selection = values
+      .map(value => defaults.find(item =>
+        String(item[VALUE_POS]) === String(value) || String(item[LABEL_POS]) === String(value)))
+      .filter(Boolean)
+      .map(option => [option[LABEL_POS], option[VALUE_POS]])
+      // Drop entries resolving to a value already selected, so a default that lists both an option's label
+      // and its value does not pre-select the same option twice.
+      .filter(entry => {
+        if (seenValues.has(String(entry[VALUE_POS]))) {
+          return false;
+        }
+        seenValues.add(String(entry[VALUE_POS]));
+        return true;
+      })
+      .slice(0, maxAnswers || undefined);
+    return selection.length ? selection : null;
+  };
+
   let initialSelection = {};
   existingAnswers?.filter(answer => answer[1]["displayedValue"])
     // The value can either be a single value or an array of values; force it into an array
@@ -115,16 +148,20 @@ let QuestionMatrix = (props) => {
       .map( (item, index) => [Array.of(answer[1].displayedValue).flat()[index], item] );
     });
 
-  // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
-  // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
-  if (!existingAnswers) {
-    let defaultSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
-    // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
-      .slice(0, maxAnswers || defaults.length)
-      .map(item => [item[LABEL_POS], item[VALUE_POS]]);
-
-    subquestions.map(subquestion => { initialSelection[subquestion[0]] = defaultSelection; });
-  }
+  // For every subquestion that has no saved value yet, pre-select its default so it shows and gets saved unless
+  // the user changes it. This must run even when the form already has (empty) answer nodes, not only on a brand
+  // new form, so we apply it per row to any row not already populated above from an existing answer. Per question,
+  // a defaultValue (on the entry or the section) takes precedence; otherwise we fall back to the answer options
+  // flagged as default values.
+  let optionDefaultSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
+  // If there are more defaults than maxAnswers, only keep the first maxAnswers of them.
+    .slice(0, maxAnswers || defaults.length)
+    .map(item => [item[LABEL_POS], item[VALUE_POS]]);
+  subquestions.forEach(subquestion => {
+    if (!initialSelection[subquestion[0]]) {
+      initialSelection[subquestion[0]] = getDefaultValueSelection(subquestion[1]) || optionDefaultSelection;
+    }
+  });
 
   // Stores the current matrix answer state in a form of object where question variable id corresponds to the array of selected
   // [item[LABEL_POS], item[VALUE_POS]]

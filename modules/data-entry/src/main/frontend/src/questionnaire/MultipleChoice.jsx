@@ -85,6 +85,7 @@ function MultipleChoice(props) {
     noneOfTheAboveValue,
     error,
     questionName,
+    defaultValue,
     ...rest
   } = props;
   let { maxAnswers, displayMode, enableSeparatorDetection } = { ...props.questionDefinition, ...props };
@@ -110,20 +111,80 @@ function MultipleChoice(props) {
   const isSelect = displayMode === "select";
   const isNumeric = ["cards:LongAnswer", "cards:DecimalAnswer", "cards:DoubleAnswer"].includes(answerNodeType);
 
-  let initialSelection =
-    // If there's no existing answer, there's no initial selection
-    (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
-    // The value can either be a single value or an array of values; force it into an array
-      Array.of(existingAnswer[1].value).flat()
-      // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
-        .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
-  // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
-  // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
-  if (!existingAnswer) {
-    initialSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
-    // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
-      .slice(0, maxAnswers || defaults.length)
-      .map(item => [item[LABEL_POS], item[VALUE_POS]]);
+  const allowsCustomInput = !!(input || textbox || customInput);
+  // Parse the configured default value(s). A multivalued question (maxAnswers !== 1) accepts a comma-separated
+  // list of distinct values; a single-valued question takes the value as-is.
+  let defaultValueList = [];
+  if (defaultValue != null && String(defaultValue) !== "") {
+    defaultValueList = maxAnswers === 1
+      ? [String(defaultValue)]
+      : Array.from(new Set(String(defaultValue).split(",").map(value => value.trim()).filter(Boolean)));
+  }
+  // Match a default value against the predefined options by either internal value or displayed label, mirroring
+  // how an option is considered selected when rendered. This way a default given as an option's label resolves to
+  // that option (and is stored as its value) instead of being kept as a separate custom value.
+  const findDefaultOption = (value) => defaults.find(item =>
+    String(item[VALUE_POS]) === String(value) || String(item[LABEL_POS]) === String(value));
+
+  // Resolve the parsed defaults to pre-selected answers. For a multivalued question, each value matching a
+  // predefined option is selected, and a value matching none is kept as a custom selection only when the
+  // question allows free-text entry (otherwise discarded), capped at maxAnswers. For a single-valued question a
+  // value matching an option is pre-selected; a non-matching value is, when free-text entry is allowed, kept as a
+  // custom (ghost) selection so it is both shown in the input and saved.
+  const singleDefaultOption = (maxAnswers === 1 && defaultValueList.length)
+    ? findDefaultOption(defaultValueList[0])
+    : undefined;
+  // A single-valued default that matches no option is a custom free-text value, used only when the question
+  // allows free-text entry; otherwise it is discarded (mirroring the multivalued case).
+  const customDefaultValue = (maxAnswers === 1 && allowsCustomInput && defaultValueList.length && !singleDefaultOption)
+    ? defaultValueList[0]
+    : undefined;
+  let defaultSelection = [];
+  if (maxAnswers !== 1) {
+    const seenValues = new Set();
+    defaultSelection = defaultValueList
+      .map(value => {
+        const option = findDefaultOption(value);
+        if (option) {
+          return [option[LABEL_POS], option[VALUE_POS]];
+        }
+        return allowsCustomInput ? [value, value] : null;
+      })
+      .filter(Boolean)
+      // Drop entries resolving to a value already selected, so a default that lists both an option's label
+      // and its value does not pre-select the same option twice.
+      .filter(entry => {
+        if (seenValues.has(String(entry[VALUE_POS]))) {
+          return false;
+        }
+        seenValues.add(String(entry[VALUE_POS]));
+        return true;
+      })
+      .slice(0, maxAnswers || undefined);
+  } else if (singleDefaultOption) {
+    defaultSelection = [[singleDefaultOption[LABEL_POS], singleDefaultOption[VALUE_POS]]];
+  } else if (customDefaultValue) {
+    // Select the custom value (the "ghost") so it is shown as selected and saved, not just filled into the input.
+    defaultSelection = [[customDefaultValue, customDefaultValue]];
+  }
+
+  let initialSelection;
+  // When there is no saved value yet — a brand new form, or one whose answers were pre-created without a value —
+  // pre-select the provided default value(s), otherwise the answer options flagged as default values, so the
+  // defaults show and get saved unless the user changes them. (An empty answer node is not "no answer", so this
+  // must key off the value being undefined, not off existingAnswer being absent.)
+  if (!existingAnswer || existingAnswer[1].value === undefined) {
+    initialSelection = defaultSelection.length
+      ? defaultSelection
+      // If there are more defaults than maxAnswers, only keep the first maxAnswers of them.
+      : defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
+        .slice(0, maxAnswers || defaults.length)
+        .map(item => [item[LABEL_POS], item[VALUE_POS]]);
+  } else {
+    // The value can either be a single value or an array of values; force it into an array.
+    // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue.
+    initialSelection = Array.of(existingAnswer[1].value).flat()
+      .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
   }
   let default_values = defaults.map((thisDefault) => thisDefault[VALUE_POS]);
   let all_options =
@@ -145,9 +206,11 @@ function MultipleChoice(props) {
   // If this is a bare input or radio input, we need to pre-populate the blank input with the custom answer (if available)
   let inputPrefill = (isBare || (isRadio && default_values.indexOf(String(initialSelection[0]?.[VALUE_POS])) < 0)) && existingAnswer?.[1] || '';
   // Prefill the input with the displayed value, unless the answer type is numeric,
-  // which means the displayed value may contain a unit of measurement
-  const [ghostName, setGhostName] = useState(isNumeric ? inputPrefill?.value : inputPrefill?.displayedValue);
-  const [ghostValue, setGhostValue] = useState(inputPrefill?.value ?? GHOST_SENTINEL);
+  // which means the displayed value may contain a unit of measurement, or with a default value (if available)
+  const [ghostName, setGhostName] = useState(
+    (isNumeric ? inputPrefill?.value : inputPrefill?.displayedValue) || customDefaultValue
+  );
+  const [ghostValue, setGhostValue] = useState(inputPrefill?.value ?? (customDefaultValue || GHOST_SENTINEL));
   const ghostSelected = selection.some(
     element => {return String(element[VALUE_POS]) === String(ghostValue) || element[LABEL_POS] === ghostName}
   );

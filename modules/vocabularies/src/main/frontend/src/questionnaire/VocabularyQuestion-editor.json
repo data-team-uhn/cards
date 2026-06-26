@@ -40,7 +40,8 @@
               "childrenType": "cards:AnswerOption"
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {"0":{}, "1":{}},

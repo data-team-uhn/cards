@@ -72,7 +72,8 @@
               "identifierProperty": "identifier"
             }
           }
-        }
+        },
+        "defaultValue": "string"
       }
     }
   }

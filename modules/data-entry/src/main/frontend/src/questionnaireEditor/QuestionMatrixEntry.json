@@ -1,6 +1,7 @@
 [
   {
     "text": "markdown",
-    "description": "markdown"
+    "description": "markdown",
+    "defaultValue": "string"
   }
 ]

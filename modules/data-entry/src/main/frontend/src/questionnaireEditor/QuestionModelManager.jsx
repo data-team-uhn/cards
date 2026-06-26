@@ -58,18 +58,29 @@ function mergeDataTypeConfig(config, order) {
   listeners.forEach(listener => listener(getQuestionSpec()));
 }
 
+// Merge field hints contributed by a question type into the current hints. When a field already has a hint
+// (such as the shared `defaultValue` description in Question-hints.json), the contributed hint is appended to
+// it rather than replacing it, so each question type can add its own note to a field shared across types.
+function mergeHints(extraHints) {
+  if (!extraHints) {
+    return;
+  }
+  hints = Object.entries(extraHints).reduce((merged, [field, hint]) => ({
+    ...merged,
+    [field]: merged[field] ? `${merged[field]}\n${hint}` : hint,
+  }), hints);
+}
+
 // Registers a dataType configuration contributed by a statically-loaded (built-in) question type, so that the
 // question editor offers it without it needing to be hardcoded in Question.json. This is the static counterpart
 // to the `questionEditorConfig` that extension-based question types expose.
 //
 // @param config the dataType configuration, an object keyed by dataType name (e.g. `{ boolean: {...} }`)
-// @param options.hints optional field hints to merge, keyed by field name
+// @param options.hints optional field hints to merge (appended to any existing hint for the same field)
 // @param options.order optional display order for the contributed dataType(s) in the editor dropdown; either a
 //   single number applied to all, or an object mapping each dataType name to its own order
 export function registerQuestionEditorConfig(config, { hints: extraHints, order } = {}) {
-  if (extraHints) {
-    hints = { ...hints, ...extraHints };
-  }
+  mergeHints(extraHints);
   mergeDataTypeConfig(config, order);
 }
 
@@ -84,9 +95,7 @@ async function loadQuestionEditorConfigs() {
           // Keep extension-contributed dataTypes after the built-in ones, ordered among themselves by cards:defaultOrder.
           mergeDataTypeConfig(component.questionEditorConfig, EXTENSION_ORDER_OFFSET + (ext['cards:defaultOrder'] || 0));
         }
-        if (component?.questionEditorHints) {
-          hints = { ...hints, ...component.questionEditorHints };
-        }
+        mergeHints(component?.questionEditorHints);
       });
   } catch (e) {
     console.error("Failed to load question editor configs from extensions", e);

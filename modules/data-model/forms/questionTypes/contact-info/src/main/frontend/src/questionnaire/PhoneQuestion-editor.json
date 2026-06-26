@@ -3,6 +3,7 @@
     "minAnswers": {"0":{}, "1":{}},
     "defaultCountry": "string",
     "onlyCountries": "string",
-    "regions": "string"
+    "regions": "string",
+    "defaultValue": "string"
   }
 }

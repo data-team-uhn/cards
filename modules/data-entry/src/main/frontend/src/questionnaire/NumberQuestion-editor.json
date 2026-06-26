@@ -45,7 +45,8 @@
               "vertical": {}
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {
@@ -124,7 +125,8 @@
               "vertical": {}
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {
@@ -182,7 +184,8 @@
               "vertical": {}
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {

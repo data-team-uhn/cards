@@ -10,6 +10,7 @@
       "false" : {}
     },
     "compact" : "boolean",
+    "defaultValue": "string",
     "entryMode": {
       "user": {
       },

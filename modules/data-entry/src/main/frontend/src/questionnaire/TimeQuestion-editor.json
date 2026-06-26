@@ -23,7 +23,8 @@
       "user": {
         "lowerLimit": "string",
         "upperLimit": "string",
-        "errorText": "string"
+        "errorText": "string",
+        "defaultValue": "string"
       },
       "computed": {
         "expression": "code",

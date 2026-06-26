@@ -21,7 +21,8 @@
             "compact": "boolean",
             "answerOptions": "textOptions"
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {

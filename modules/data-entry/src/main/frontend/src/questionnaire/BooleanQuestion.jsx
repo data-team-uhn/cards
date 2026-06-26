@@ -64,6 +64,29 @@ function BooleanQuestion(props) {
     options.push([unknownLabel || "Unknown", "-1", true]);
   }
 
+  // A boolean default may be written as the stored 1/0/-1, as true/false, as yes/no, or as the configured
+  // Yes/No/Unknown labels, in any letter case. Normalize any of those to the stored value; anything else is
+  // left as-is and still matched against the option values and labels by MultipleChoice.
+  let normalizeDefault = (value) => {
+    if (value == null || value === "") {
+      return value;
+    }
+    let normalized = value.toString().trim().toLowerCase();
+    let matches = (...candidates) => candidates
+      .filter(Boolean)
+      .some(candidate => candidate.toString().trim().toLowerCase() === normalized);
+    if (matches("1", "true", "yes", yesLabel)) {
+      return "1";
+    }
+    if (matches("0", "false", "no", noLabel)) {
+      return "0";
+    }
+    if (matches("-1", "unknown", unknownLabel)) {
+      return "-1";
+    }
+    return value;
+  };
+
   return (
     <Question
       disableInstructions
@@ -74,6 +97,7 @@ function BooleanQuestion(props) {
         valueType="Long" /* Notably not "Boolean", since we need it to be stored as a long in the backend */
         maxAnswers={1}
         defaults={options}
+        defaultValue={normalizeDefault(props.questionDefinition.defaultValue)}
         {...props}
       />
     </Question>);

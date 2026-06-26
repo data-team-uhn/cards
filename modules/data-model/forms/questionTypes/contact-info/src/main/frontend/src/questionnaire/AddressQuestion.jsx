@@ -96,7 +96,8 @@ function AddressQuestion(props) {
   checkPropTypes(AddressQuestion, props);
   const { existingAnswer, pageActive, questionDefinition, ...rest } = props;
 
-  let currentStartValue = existingAnswer && existingAnswer[1].value || "";
+  const defaultValue = questionDefinition.defaultValue;
+  let currentStartValue = existingAnswer && existingAnswer[1].value || defaultValue || "";
   const [address, setAddress] = useState(currentStartValue);
   const [isValidApi, setIsValidApi] = useState(true);
 

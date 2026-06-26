@@ -31,7 +31,8 @@
               "childrenType": "cards:AnswerOption"
             }
           }
-        }
+        },
+        "defaultValue": "string"
       },
       "computed": {
         "minAnswers": {
