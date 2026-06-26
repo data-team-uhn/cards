@@ -43,10 +43,10 @@ function MainLoginContainer(props) {
         container
         direction="column"
         spacing={3}
-        alignItems="center"
-        alignContent="center"
+        alignItems="stretch"
+        alignContent="stretch"
       >
-        <Logo maxWidth="200px" component={Grid}/>
+        <Logo component={Grid} />
         { isLongForm && (loginTitle || loginDescription) &&
           <Grid className={classes.appIntro}>
             { loginTitle &&

@@ -18,19 +18,16 @@
 //
 const styles = theme => ({
   main: {
-    width: 'auto',
-    display: 'block', // Fix IE 11 issue.
-    [theme.breakpoints.up(400 + theme.spacing(6))]: {
-      width: 400,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
+    width: '100%',
   },
   paper: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'stretch',
     padding: theme.spacing(2, 3, 3),
+    maxWidth: "450px",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   selfContained: {
     // Extra top margin so the login box and logo stay visible below up to two
@@ -42,7 +39,7 @@ const styles = theme => ({
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
-    textAlign: "center",
+    textAlign: "left",
   },
   formAction: {
     float: 'right',
@@ -58,14 +55,9 @@ const styles = theme => ({
   },
   appInfo: {
     marginTop: theme.spacing(6),
-    textAlign: "center",
     "& ol, li": {
       display: "inline-block",
     },
-  },
-  appIntro: {
-    textAlign: "center",
-    maxWidth: "450px",
   },
   closeButton: {
     float: 'right',
