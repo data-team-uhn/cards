@@ -905,28 +905,20 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
                     filter.source,
                     this.sanitizeValue(filter.value)));
         } else {
-            condition.append(" and");
-            if ("<>".equals(filter.comparator)) {
-                condition.append("(")
-                    .append(getValueComparisonString(filter))
-                    .append(
-                        String.format(
-                            " or %s.'value' IS NULL)",
-                            filter.source));
-            } else {
-                condition.append(getValueComparisonString(filter));
-            }
+            condition.append(getValueComparisonString(filter));
         }
         return condition.toString();
     }
 
     private String getValueComparisonString(Filter filter)
     {
+        boolean notEqual = "<>".equals(filter.comparator);
         return String.format(
-            " %s.'value'%s" + ("boolean".equals(filter.type) ? "%s"
+            " and %s%s.'value'%s" + ("boolean".equals(filter.type) ? "%s"
                 : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
+            notEqual ? "not " : "",
             filter.source,
-            this.sanitizeComparator(filter.comparator),
+            this.sanitizeComparator(notEqual ? "=" : filter.comparator),
             this.sanitizeValue(filter.value));
     }
 
