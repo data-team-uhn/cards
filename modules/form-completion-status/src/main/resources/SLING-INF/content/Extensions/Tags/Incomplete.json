@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-model/tags",
+  "cards:extensionName": "Incomplete Tag",
+  "cards:tagKey": "INCOMPLETE",
+  "cards:tagLabel": "Incomplete",
+  "cards:tagTarget": ["cards:Form", "cards:AnswerSection", "cards:Answer"],
+  "cards:defaultOrder": 25
+}

@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-model/tags",
+  "cards:extensionName": "Form is Optional",
+  "cards:tagKey": "OPTIONAL",
+  "cards:tagLabel": "Optional",
+  "cards:tagTarget": ["cards:Form"],
+  "cards:defaultOrder": 45
+}

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 import { Chip, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
@@ -42,12 +42,17 @@ export class ChipProps {
 
 function MultiStateChip(props) {
   checkPropTypes(MultiStateChip, props);
-  const { size, states, onChange } = props;
+  const {
+    size,
+    states,
+    onChange,
+    initialState = 0
+  } = props;
 
-  const [ currentStateIndex, setCurrentState ] = useState(0);
+  const [ currentStateIndex, setCurrentState ] = useState(initialState);
 
-  useMemo(() => {
-    if (currentStateIndex >= states?.length) {
+  useEffect(() => {
+    if (states?.length > 0 && currentStateIndex >= states?.length) {
       setCurrentState(0);
     }
   }, [states])
@@ -67,10 +72,10 @@ function MultiStateChip(props) {
 }
 
 MultiStateChip.propTypes = {
-  key: PropTypes.string,
   size: PropTypes.oneOf(["small", "medium"]),
   states: PropTypes.arrayOf(PropTypes.instanceOf(ChipState)).isRequired,
   onChange: PropTypes.func.isRequired,
+  initialState: PropTypes.number,
 }
 
 export default MultiStateChip;

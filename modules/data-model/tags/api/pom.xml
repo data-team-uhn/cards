@@ -22,22 +22,29 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-modules</artifactId>
+    <artifactId>cards-data-model-tags</artifactId>
     <version>0.9.40-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-data-model</artifactId>
-  <packaging>pom</packaging>
-  <name>CARDS Data Model elements</name>
+  <artifactId>cards-data-model-tags-api</artifactId>
+  <packaging>bundle</packaging>
+  <name>CARDS - Data model - Tags - Definitions, APIs and SPIs</name>
 
-  <modules>
-    <module>items</module>
-    <module>links</module>
-    <module>resources</module>
-    <module>forms</module>
-    <module>subjects</module>
-    <module>qsets</module>
-    <module>tags</module>
-    <module>migrators</module>
-  </modules>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Include-Resource>{maven-resources}</Include-Resource>
+            <Sling-Initial-Content>
+              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/content/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
+            </Sling-Initial-Content>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

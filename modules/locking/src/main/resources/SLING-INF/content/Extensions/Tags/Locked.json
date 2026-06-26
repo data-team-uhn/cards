@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-model/tags",
+  "cards:extensionName": "Locked",
+  "cards:tagKey": "LOCKED",
+  "cards:tagLabel": "Locked",
+  "cards:tagTarget": ["cards:Form", "cards:Subject"],
+  "cards:defaultOrder": 50
+}

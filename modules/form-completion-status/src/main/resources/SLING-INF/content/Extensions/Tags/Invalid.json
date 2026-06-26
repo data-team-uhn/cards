@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-model/tags",
+  "cards:extensionName": "Invalid Tag",
+  "cards:tagKey": "INVALID",
+  "cards:tagLabel": "Invalid",
+  "cards:tagTarget": ["cards:Form", "cards:AnswerSection", "cards:Answer"],
+  "cards:defaultOrder": 30
+}

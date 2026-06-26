@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/data-model/tags",
+  "cards:extensionName": "Draft Tag",
+  "cards:tagKey": "DRAFT",
+  "cards:tagLabel": "Draft",
+  "cards:tagTarget": ["cards:Form", "cards:AnswerSection"],
+  "cards:defaultOrder": 20
+}
