@@ -20,7 +20,7 @@
 const RuntimeGlobals = require("webpack/lib/RuntimeGlobals");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { WebpackAssetsManifest } = require('webpack-assets-manifest');
-const TerserPlugin = require('terser-webpack-plugin');
+const MinimizerPlugin = require('minimizer-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const { defineReactCompilerLoaderOption, reactCompilerLoader } = require('react-compiler-webpack');
 
@@ -161,8 +161,8 @@ ENTRY_CONTENT
       usedExports: false,
       minimize: isProduction,
       minimizer: [
-        new TerserPlugin({
-          terserOptions: {
+        new MinimizerPlugin({
+          minimizerOptions: {
             mangle: {
               reserved: ['$super']
             }
