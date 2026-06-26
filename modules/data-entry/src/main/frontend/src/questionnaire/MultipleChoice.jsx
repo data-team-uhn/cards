@@ -128,11 +128,16 @@ function MultipleChoice(props) {
 
   // Resolve the parsed defaults to pre-selected answers. For a multivalued question, each value matching a
   // predefined option is selected, and a value matching none is kept as a custom selection only when the
-  // question allows free-text entry (otherwise discarded), capped at maxAnswers. For a single-valued question
-  // only a value matching an option is pre-selected; a non-matching value is filled into the input (the
-  // "ghost") below instead.
+  // question allows free-text entry (otherwise discarded), capped at maxAnswers. For a single-valued question a
+  // value matching an option is pre-selected; a non-matching value is, when free-text entry is allowed, kept as a
+  // custom (ghost) selection so it is both shown in the input and saved.
   const singleDefaultOption = (maxAnswers === 1 && defaultValueList.length)
     ? findDefaultOption(defaultValueList[0])
+    : undefined;
+  // A single-valued default that matches no option is a custom free-text value, used only when the question
+  // allows free-text entry; otherwise it is discarded (mirroring the multivalued case).
+  const customDefaultValue = (maxAnswers === 1 && allowsCustomInput && defaultValueList.length && !singleDefaultOption)
+    ? defaultValueList[0]
     : undefined;
   let defaultSelection = [];
   if (maxAnswers !== 1) {
@@ -158,10 +163,10 @@ function MultipleChoice(props) {
       .slice(0, maxAnswers || undefined);
   } else if (singleDefaultOption) {
     defaultSelection = [[singleDefaultOption[LABEL_POS], singleDefaultOption[VALUE_POS]]];
+  } else if (customDefaultValue) {
+    // Select the custom value (the "ghost") so it is shown as selected and saved, not just filled into the input.
+    defaultSelection = [[customDefaultValue, customDefaultValue]];
   }
-  const customDefaultValue = (maxAnswers === 1 && defaultValueList.length && !singleDefaultOption)
-    ? defaultValueList[0]
-    : undefined;
 
   let initialSelection;
   // When there is no saved value yet — a brand new form, or one whose answers were pre-created without a value —
