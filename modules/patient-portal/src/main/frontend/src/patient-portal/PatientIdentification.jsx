@@ -48,9 +48,8 @@ import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 
 const useStyles = makeStyles()(theme => ({
   form : {
-    maxWidth: "500px",
     margin: "auto",
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
   },
   description : {
     "& > *" : {
@@ -253,7 +252,7 @@ function PatientIdentification(props) {
     let message = `${welcomeMessage || ""}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
     return (
       <ErrorPage
-        sx={{ maxWidth: 500, margin: "0 auto" }}
+        sx={ theme => ({ maxWidth: theme.width.intro + "px !important" }) }
         title=""
         message={message}
         messageColor="textPrimary"
