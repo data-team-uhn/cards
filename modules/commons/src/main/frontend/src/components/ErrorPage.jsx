@@ -17,7 +17,7 @@
 //  under the License.
 //
 import NavigationIcon from '@mui/icons-material/Navigation';
-import { Fab, Grid, Paper, Typography } from '@mui/material';
+import { Divider, Fab, Grid, Paper, Stack, Typography } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
 import FormattedText from "./FormattedText";
@@ -27,8 +27,13 @@ const useStyles = makeStyles()(theme => ({
   paper: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'stretch',
     padding: theme.spacing(12, 3, 3),
+    maxWidth: 450,
+    margin: '0 auto',
+  },
+  logo: {
+    textAlign: 'left',
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
@@ -37,6 +42,7 @@ const useStyles = makeStyles()(theme => ({
 
 export default function ErrorPage(props) {
   const {
+    disableAppName,
     errorCode,
     errorCodeColor,
     title,
@@ -45,32 +51,42 @@ export default function ErrorPage(props) {
     messageColor,
     buttonLink,
     buttonLabel,
-    textAlign="center",
+    textAlign="left",
     ...rest
   } = props;
   const { classes } = useStyles();
+
+  const appName = !disableAppName && document.querySelector('meta[name="title"]')?.content;
 
   return (
     <Paper className={classes.paper} elevation={0} {...rest}>
       <Grid
         container
         direction="column"
-        spacing={7}
+        spacing={6}
         textAlign={textAlign}
-        alignItems="center"
-        alignContent="center"
+        alignItems="stretch"
+        alignContent="stretch"
       >
-        <Logo maxWidth="360px" component={Grid}/>
+        <Logo component={Grid} className={classes.logo}/>
         <Grid>
-          {errorCode && <Typography variant="h1" color={errorCodeColor || "primary"}>
-            {errorCode}
-          </Typography> }
-          {title && <Typography variant="h1" color={titleColor || "primary"} gutterBottom>
-            {title}
-          </Typography> }
-          {message && <FormattedText variant="subtitle1" color={messageColor || "textSecondary"}>
-            {message}
-          </FormattedText> }
+          <Stack spacing={2}>
+            {appName && <>
+              <Typography variant="overline" component="h1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
+                {appName}
+              </Typography>
+              <Divider />
+            </> }
+            {errorCode && <Typography variant="h3" component="h2" color={errorCodeColor || "secondary"}>
+              {errorCode}
+            </Typography> }
+            {title && <Typography variant="h4" color={titleColor || "secondary"} sx={{ fontWeight: 'bold' }}>
+              {title}
+            </Typography> }
+            {message && <FormattedText variant="subtitle1" color={messageColor || "textSecondary"}>
+              {message}
+            </FormattedText> }
+          </Stack>
         </Grid>
         { buttonLabel &&
             <Grid>

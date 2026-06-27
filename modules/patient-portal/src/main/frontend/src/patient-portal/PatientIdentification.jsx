@@ -252,6 +252,7 @@ function PatientIdentification(props) {
     let message = `${welcomeMessage || ""}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
     return (
       <ErrorPage
+        disableAppName
         sx={ theme => ({ maxWidth: theme.width.intro + "px !important" }) }
         title=""
         message={message}
