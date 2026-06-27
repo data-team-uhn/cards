@@ -23,7 +23,8 @@ import {
   AlertTitle,
   Button,
   Grid,
-  Paper
+  Paper,
+  Typography
 } from '@mui/material';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
@@ -132,6 +133,11 @@ function Unsubscribe (props) {
         spacing={7}
       >
         <Logo component={Grid} />
+        { appName &&
+          <Grid>
+            <Typography variant="h6" component="h1" gutterBottom>{appName}</Typography>
+          </Grid>
+        }
         <Grid>
           { error && <Alert severity="error">
             <AlertTitle>An error occurred</AlertTitle>
