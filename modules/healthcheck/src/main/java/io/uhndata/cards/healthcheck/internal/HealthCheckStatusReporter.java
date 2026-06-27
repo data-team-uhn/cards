@@ -22,6 +22,8 @@ package io.uhndata.cards.healthcheck.internal;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.felix.hc.api.Result.Status;
+import org.apache.felix.hc.api.execution.HealthCheckExecutionOptions;
 import org.apache.felix.hc.api.execution.HealthCheckExecutionResult;
 import org.apache.felix.hc.api.execution.HealthCheckExecutor;
 import org.apache.felix.hc.api.execution.HealthCheckSelector;
@@ -55,20 +57,28 @@ public class HealthCheckStatusReporter implements StatusReporter
     public StatusReport report(boolean unprivileged)
     {
         LOGGER.debug("Gathering errors for the Slack notification");
-        List<HealthCheckExecutionResult> failedChecks = this.hc.execute(HealthCheckSelector.empty().withTags("*"))
+        List<HealthCheckExecutionResult> failedChecks = this.hc
+            .execute(HealthCheckSelector.empty().withTags("*"),
+                new HealthCheckExecutionOptions().setOverrideGlobalTimeout(10_000).setForceInstantExecution(true))
             .stream()
             .filter(r -> !r.getHealthCheckResult().isOk())
             .toList();
         if (failedChecks.isEmpty()) {
             return new StatusReport(TITLE, StatusReport.Status.SUCCESS, "All is good!");
         }
-        LOGGER.warn("There are {} failed checks!", failedChecks);
+        LOGGER.warn("There are {} failed checks! {}", failedChecks.size(),
+            failedChecks.stream().map(r -> r.getHealthCheckMetadata().getName()).toList());
         StringBuilder text = new StringBuilder("There are " + failedChecks.size() + " failed checks");
         if (!unprivileged) {
             text.append("\n\n");
             failedChecks.forEach(error -> text.append(error.getHealthCheckMetadata().getName()).append("\n"));
         }
-        return new StatusReport(TITLE, StatusReport.Status.ERROR, text.toString());
+        Status status = failedChecks.stream().map(r -> r.getHealthCheckResult().getStatus()).reduce(Status.OK,
+            (o, n) -> o.compareTo(n) < 0 ? n : o);
+        return new StatusReport(TITLE,
+            status.ordinal() >= Status.TEMPORARILY_UNAVAILABLE.ordinal() ? StatusReport.Status.ERROR
+                : StatusReport.Status.WARNING,
+            text.toString());
     }
 
     @Override
