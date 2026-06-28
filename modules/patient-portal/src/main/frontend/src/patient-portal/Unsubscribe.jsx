@@ -22,8 +22,10 @@ import {
   Alert,
   AlertTitle,
   Button,
+  Divider,
   Grid,
   Paper,
+  Stack,
   Typography
 } from '@mui/material';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
@@ -135,7 +137,12 @@ function Unsubscribe (props) {
         <Logo component={Grid} />
         { appName &&
           <Grid>
-            <Typography variant="h6" component="h1" gutterBottom>{appName}</Typography>
+            <Stack spacing={2}>
+              <Typography variant="overline" component="h1" color="textSecondary" sx={{ fontWeight: "bold" }}>
+                { appName }
+              </Typography>
+              <Divider />
+            </Stack>
           </Grid>
         }
         <Grid>
