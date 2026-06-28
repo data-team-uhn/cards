@@ -29,9 +29,9 @@ import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
 import { makeStyles } from 'tss-react/mui';
 
+import { portalTheme } from "./portalTheme.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
 import Logo from "../components/Logo.jsx";
-import { appTheme } from "../themePalette.jsx";
 
 const useStyles = makeStyles()(theme => ({
   paper: {
@@ -40,11 +40,11 @@ const useStyles = makeStyles()(theme => ({
     alignItems: 'stretch',
     padding: theme.spacing(12, 0, 3),
     margin: "0 auto",
-    width: 500,
-    // Magic number 532 = 500 (width on wider screens) + 16px on each side
-    [theme.breakpoints.down(532)]: {
+    width: theme.width.compact,
+    // Magic number = content width + 16px on each side
+    [theme.breakpoints.down(theme.width.compact + 32)]: {
       // 8px on each side are the `body` padding
-      // subtract 16 more to achieve smooth transition when resizing the window to under 532px wide
+      // subtract 16 more to achieve smooth transition when resizing the window below the content width
       width: "calc(100% - 16px)",
     },
   },
@@ -187,7 +187,7 @@ const root = createRoot(document.querySelector('#patient-portal-unsubscribe-cont
 root.render(
   <StrictMode>
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={appTheme}>
+      <ThemeProvider theme={portalTheme}>
         <Unsubscribe />
       </ThemeProvider>
     </StyledEngineProvider>

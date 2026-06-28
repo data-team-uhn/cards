@@ -37,6 +37,7 @@ const portalTheme = createTheme({
     },
   },
   width: {
+    compact: 500,
     intro: 540,
     main: 780,
   },
