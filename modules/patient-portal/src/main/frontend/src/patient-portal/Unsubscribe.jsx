@@ -152,10 +152,17 @@ function Unsubscribe (props) {
           }
           { alreadyUnsubscribed ?
             <>
-              <Alert icon={false} severity="info">{ `You are already unsubscribed from ${appName}.` }</Alert>
+              <div>
+                <Typography variant="subtitle1" color="secondary" sx={{ fontWeight: "bold" }}>
+                  { `You are already unsubscribed from all ${appName} emails.`}
+                </Typography>
+                <Typography variant="subtitle1" color="textSecondary">
+                  You can resubscribe any time using this link.
+                </Typography>
+              </div>
               <Button
                 type="submit"
-                variant="contained"
+                variant="outlined"
                 color="secondary"
                 className={classes.submit}
                 onClick={() => unsubscribe(0)}
@@ -180,7 +187,14 @@ function Unsubscribe (props) {
               </>
               :
               <>
-                <Alert icon={false} severity="info">{`This will unsubscribe you from all ${appName} emails.`}</Alert>
+                <div>
+                  <Typography variant="subtitle1" color="secondary" sx={{ fontWeight: "bold" }}>
+                    { `This will unsubscribe you from all ${appName} emails.`}
+                  </Typography>
+                  <Typography variant="subtitle1" color="textSecondary">
+                    You can resubscribe any time using this link.
+                  </Typography>
+                </div>
                 <Button
                   type="submit"
                   variant="contained"
