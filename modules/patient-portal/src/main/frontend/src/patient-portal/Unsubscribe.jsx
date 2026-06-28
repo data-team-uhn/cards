@@ -52,8 +52,7 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   submit : {
-    marginTop: theme.spacing(5),
-    float: 'right',
+    marginTop: theme.spacing(4),
   }
 }));
 
@@ -132,7 +131,7 @@ function Unsubscribe (props) {
         container
         direction="column"
         alignItems="stretch"
-        spacing={7}
+        spacing={4}
       >
         <Logo component={Grid} />
         { appName &&
@@ -157,6 +156,7 @@ function Unsubscribe (props) {
               <Button
                 type="submit"
                 variant="contained"
+                color="secondary"
                 className={classes.submit}
                 onClick={() => unsubscribe(0)}
               >
@@ -171,6 +171,7 @@ function Unsubscribe (props) {
                 <Button
                   type="submit"
                   variant="contained"
+                  color="secondary"
                   className={classes.submit}
                   onClick={() => unsubscribe(1-confirmed)}
                 >
@@ -183,6 +184,7 @@ function Unsubscribe (props) {
                 <Button
                   type="submit"
                   variant="contained"
+                  color="secondary"
                   className={classes.submit}
                   onClick={() => unsubscribe(1)}
                 >
