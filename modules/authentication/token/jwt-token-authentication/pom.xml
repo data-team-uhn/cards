@@ -30,6 +30,12 @@
   <packaging>bundle</packaging>
   <name>CARDS - JWT Token Authentications</name>
 
+  <properties>
+    <!-- Module-aggregate (BUNDLE-scoped) minimum instruction coverage enforced by jacoco:check under -Ptests.
+         Actual is ~57%; this floor sits just under that, with headroom. Raise it as coverage grows. -->
+    <coverage.instructionRatio>0.50</coverage.instructionRatio>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -119,6 +125,30 @@
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt-api</artifactId>
       <version>0.13.0</version>
+    </dependency>
+
+    <!-- TEST -->
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>0.13.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-jackson</artifactId>
+      <version>0.13.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
