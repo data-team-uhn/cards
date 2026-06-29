@@ -51,6 +51,12 @@ public final class ParsedMarkdownStore
     /** Name of the subfolder, within an answer's subfolder, that holds the markdown chunks. */
     public static final String CHUNKS_SUBDIR = "chunks";
 
+    /** Name of the subfolder that holds section-aware chat chunks for the proposal chat feature. */
+    public static final String CHAT_CHUNKS_SUBDIR = "ChatChunks";
+
+    /** Name of the aggregate rebuilt with embedded chat chunk markers. */
+    public static final String CHUNKED_AGGREGATE_FILE_NAME = "aggregated_chunked.md";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ParsedMarkdownStore.class);
 
     private static final String OUTPUT_DIR_PROPERTY = "cards.parse.output.dir";
@@ -160,8 +166,8 @@ public final class ParsedMarkdownStore
     }
 
     /**
-     * Delete all files in an answer's {@value #CHUNKS_SUBDIR} folder so stale chunks are not served
-     * after a failed parse. A failure never throws — it is logged and swallowed.
+     * Delete field-extraction chunks, chat chunks, and the chunked aggregate so stale output is not
+     * served after a failed parse. A failure never throws — it is logged and swallowed.
      *
      * @param outputSubfolder the answer's subfolder; clearing is skipped when {@code null} or blank
      */
@@ -170,19 +176,52 @@ public final class ParsedMarkdownStore
         if (sanitizeSubfolder(outputSubfolder) == null) {
             return;
         }
-        final Path chunksDir = resolveOutputDir(outputSubfolder).resolve(CHUNKS_SUBDIR);
+        final Path answerDir = resolveOutputDir(outputSubfolder);
+        clearFieldExtractionChunks(answerDir);
+        clearChatChunkOutput(answerDir);
+    }
+
+    /**
+     * Resolve the base directory where per-answer parse output is stored. Matches the location used by
+     * {@link #resolveOutputDir(String)} before a subfolder is appended.
+     *
+     * @return the absolute base parse output directory
+     */
+    public static Path resolveBaseOutputDir()
+    {
+        return baseOutputDir().toAbsolutePath();
+    }
+
+    /**
+     * Delete an answer's {@value #CHAT_CHUNKS_SUBDIR} tree and {@value #CHUNKED_AGGREGATE_FILE_NAME}.
+     * Used when a stale asynchronous chat chunk job completes after a parse failure. A failure never
+     * throws — it is logged and swallowed.
+     *
+     * @param answerDir the absolute answer parse folder; ignored when {@code null}
+     */
+    public static void clearChatChunkOutput(final Path answerDir)
+    {
+        if (answerDir == null) {
+            return;
+        }
+        final Path chatChunksDir = answerDir.resolve(CHAT_CHUNKS_SUBDIR);
         try {
-            if (!Files.isDirectory(chunksDir)) {
-                return;
-            }
-            try (Stream<Path> entries = Files.list(chunksDir)) {
-                for (final Path entry : entries.toList()) {
-                    Files.deleteIfExists(entry);
+            if (Files.isDirectory(chatChunksDir)) {
+                try (Stream<Path> entries = Files.walk(chatChunksDir)) {
+                    final List<Path> paths = entries.sorted(Comparator.reverseOrder())
+                        .collect(Collectors.toCollection(ArrayList::new));
+                    for (final Path path : paths) {
+                        Files.deleteIfExists(path);
+                    }
                 }
+                LOGGER.info("Cleared chat chunks in {}", chatChunksDir.toAbsolutePath());
             }
-            LOGGER.info("Cleared markdown chunks in {}", chunksDir.toAbsolutePath());
+            final Path chunkedAggregate = answerDir.resolve(CHUNKED_AGGREGATE_FILE_NAME);
+            if (Files.deleteIfExists(chunkedAggregate)) {
+                LOGGER.info("Deleted chat chunked aggregate at {}", chunkedAggregate.toAbsolutePath());
+            }
         } catch (IOException | RuntimeException e) {
-            LOGGER.warn("Could not clear markdown chunks in {}: {}", chunksDir.toAbsolutePath(), e.getMessage());
+            LOGGER.warn("Could not clear chat chunk output in {}: {}", answerDir.toAbsolutePath(), e.getMessage());
         }
     }
 
@@ -319,6 +358,41 @@ public final class ParsedMarkdownStore
         }
         final String aggregated = readAggregate(outputSubfolder);
         return aggregated == null ? List.of() : List.of(aggregated);
+    }
+
+    /**
+     * Resolve the absolute parse output directory for an answer, the folder that holds its per-file
+     * markdown, {@value #AGGREGATED_FILE_NAME} and chunk output. Callers that hand the path to an
+     * external process (such as the Docling chat chunker) use this so they target the exact same
+     * folder this store reads and writes.
+     *
+     * @param outputSubfolder the answer's subfolder; treated as absent when {@code null} or blank
+     * @return the absolute answer directory, or {@code null} when no valid subfolder is provided
+     */
+    public static Path resolveAnswerDir(final String outputSubfolder)
+    {
+        if (sanitizeSubfolder(outputSubfolder) == null) {
+            return null;
+        }
+        return resolveOutputDir(outputSubfolder).toAbsolutePath();
+    }
+
+    private static void clearFieldExtractionChunks(final Path answerDir)
+    {
+        final Path chunksDir = answerDir.resolve(CHUNKS_SUBDIR);
+        try {
+            if (!Files.isDirectory(chunksDir)) {
+                return;
+            }
+            try (Stream<Path> entries = Files.list(chunksDir)) {
+                for (final Path entry : entries.toList()) {
+                    Files.deleteIfExists(entry);
+                }
+            }
+            LOGGER.info("Cleared markdown chunks in {}", chunksDir.toAbsolutePath());
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not clear markdown chunks in {}: {}", chunksDir.toAbsolutePath(), e.getMessage());
+        }
     }
 
     private static List<String> readChunkFiles(final Path chunksDir)
