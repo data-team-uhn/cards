@@ -16,11 +16,11 @@
  */
 package io.uhndata.cards.auth.token.jwt.impl;
 
+import java.security.KeyPair;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import javax.crypto.SecretKey;
 import javax.jcr.Node;
 import javax.jcr.Property;
 
@@ -74,19 +74,25 @@ public class CardsJwtTokenManagerImplTest
     @Mock
     private Property keyProperty;
 
+    @Mock
+    private Property verifyProperty;
+
     private CardsJwtTokenManagerImpl manager;
 
     @Before
     public void setUp() throws Exception
     {
-        // Generate a real, valid HS512 secret and expose it exactly as the component reads it from the repository.
-        final SecretKey key = Jwts.SIG.HS512.key().build();
+        // Generate a RS256 keypair and expose it exactly as the component reads it from the repository.
+        final KeyPair keypair = Jwts.SIG.RS256.keyPair().build();
         when(this.resolverFactory.getServiceResourceResolver(any())).thenReturn(this.resolver);
         when(this.resolver.resolve(KEY_PATH)).thenReturn(this.keyResource);
         when(this.keyResource.adaptTo(Node.class)).thenReturn(this.keyNode);
         when(this.keyNode.hasProperty("key")).thenReturn(true);
         when(this.keyNode.getProperty("key")).thenReturn(this.keyProperty);
-        when(this.keyProperty.getString()).thenReturn(Encoders.BASE64.encode(key.getEncoded()));
+        when(this.keyNode.hasProperty("verify")).thenReturn(true);
+        when(this.keyNode.getProperty("verify")).thenReturn(this.verifyProperty);
+        when(this.keyProperty.getString()).thenReturn(Encoders.BASE64.encode(keypair.getPrivate().getEncoded()));
+        when(this.verifyProperty.getString()).thenReturn(Encoders.BASE64.encode(keypair.getPublic().getEncoded()));
 
         // Activate the component via its @Activate constructor.
         this.manager = new CardsJwtTokenManagerImpl(this.resolverFactory);
@@ -140,7 +146,7 @@ public class CardsJwtTokenManagerImplTest
         final String foreign = Jwts.builder()
             .subject("attacker")
             .expiration(new Date(System.currentTimeMillis() + 3_600_000L))
-            .signWith(Jwts.SIG.HS512.key().build())
+            .signWith(Jwts.SIG.RS256.keyPair().build().getPrivate())
             .compact();
         Assert.assertNull("A token signed with a different key must not parse", this.manager.parse(foreign));
     }

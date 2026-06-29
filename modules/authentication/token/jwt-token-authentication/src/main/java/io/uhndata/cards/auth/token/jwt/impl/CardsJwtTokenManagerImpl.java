@@ -16,10 +16,15 @@
  */
 package io.uhndata.cards.auth.token.jwt.impl;
 
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
 import java.util.Map;
 
-import javax.crypto.SecretKey;
 import javax.jcr.Node;
 
 import org.apache.sling.api.resource.LoginException;
@@ -37,7 +42,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
-import io.jsonwebtoken.security.Keys;
 import io.uhndata.cards.auth.token.TokenManager;
 
 /**
@@ -50,12 +54,15 @@ public class CardsJwtTokenManagerImpl implements TokenManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CardsJwtTokenManagerImpl.class);
 
-    private final SecretKey key;
+    private final PrivateKey signingKey;
+
+    private final PublicKey verificationKey;
 
     @Activate
     public CardsJwtTokenManagerImpl(@Reference ResourceResolverFactory rrf)
     {
-        SecretKey result = null;
+        PrivateKey result = null;
+        PublicKey verification = null;
         try (ResourceResolver resolver = rrf.getServiceResourceResolver(null)) {
             String resourcePath = "/jcr:system/cards:jwt/JWTSigningKey";
             Resource res = resolver.resolve(resourcePath);
@@ -64,26 +71,38 @@ public class CardsJwtTokenManagerImpl implements TokenManager
                 LOGGER.error("Failed to load JWT Signing key: node {} could not be read", resourcePath);
                 throw new ExceptionInInitializerError(resourcePath);
             }
-            if (keyNode.hasProperty("key")) {
-                result = Keys.hmacShaKeyFor(Decoders.BASE64.decode(keyNode.getProperty("key").getString()));
+            if (keyNode.hasProperty("key") && keyNode.hasProperty("verify")) {
+                // Private key is PKCS-encoded
+                byte[] privBytes = Decoders.BASE64.decode(keyNode.getProperty("key").getString());
+                result = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(privBytes));
+
+                // Public key is X.509-encoded
+                byte[] pubBytes = Decoders.BASE64.decode(keyNode.getProperty("verify").getString());
+                verification = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubBytes));
             } else {
-                result = Jwts.SIG.HS512.key().build();
-                String secretString = Encoders.BASE64.encode(result.getEncoded());
+                KeyPair newPair = Jwts.SIG.RS256.keyPair().build();
+                String secretString = Encoders.BASE64.encode(newPair.getPrivate().getEncoded());
+                String signingString = Encoders.BASE64.encode(newPair.getPublic().getEncoded());
                 keyNode.setProperty("key", secretString);
+                keyNode.setProperty("verify", signingString);
                 resolver.commit();
+
+                result = newPair.getPrivate();
+                verification = newPair.getPublic();
             }
         } catch (LoginException e) {
             LOGGER.error("Service access not granted: {}", e.getMessage());
         } catch (Exception e) {
             LOGGER.error("Failed to load JWT Signing key from node: {}", e.getMessage(), e);
         }
-        this.key = result;
+        this.signingKey = result;
+        this.verificationKey = verification;
     }
 
     @Override
     public CardsJwtTokenImpl create(final String userId, final Calendar expiration, final Map<String, String> extraData)
     {
-        if (this.key == null) {
+        if (this.signingKey == null || this.verificationKey == null) {
             // Should not happen
             return null;
         }
@@ -91,7 +110,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             .subject(userId)
             .expiration(expiration.getTime())
             .claims(extraData)
-            .signWith(this.key)
+            .signWith(this.signingKey)
             .compact();
         return new CardsJwtTokenImpl(jws, userId, expiration, extraData);
     }
@@ -99,11 +118,11 @@ public class CardsJwtTokenManagerImpl implements TokenManager
     @Override
     public CardsJwtTokenImpl parse(final String loginToken)
     {
-        if (loginToken == null || this.key == null) {
+        if (loginToken == null || this.verificationKey == null) {
             return null;
         }
         try {
-            Jwt<?, ?> jwt = Jwts.parser().verifyWith(this.key).build().parseSignedClaims(loginToken);
+            Jwt<?, ?> jwt = Jwts.parser().verifyWith(this.verificationKey).build().parseSignedClaims(loginToken);
             return new CardsJwtTokenImpl(jwt, loginToken);
         } catch (JwtException e) {
             // Not a JWT token
