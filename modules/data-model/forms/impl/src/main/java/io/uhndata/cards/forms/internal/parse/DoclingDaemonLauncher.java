@@ -163,12 +163,14 @@ public class DoclingDaemonLauncher
         final String pythonCmd = resolvePythonCommand();
         final String scriptPath = resolveDaemonScriptPath();
 
-        LOGGER.info("Starting Docling daemon with '{}' '{}' --host {} --port {}", pythonCmd, scriptPath, host, port);
+        LOGGER.info("Starting Docling daemon with '{}' '{}' --host {} --port {} --parse-output-dir {}",
+            pythonCmd, scriptPath, host, port, ParsedMarkdownStore.resolveBaseOutputDir());
         return new ProcessBuilder(
             pythonCmd,
             scriptPath,
             "--host", host,
-            "--port", String.valueOf(port))
+            "--port", String.valueOf(port),
+            "--parse-output-dir", ParsedMarkdownStore.resolveBaseOutputDir().toString())
             .redirectErrorStream(true)
             .start();
     }

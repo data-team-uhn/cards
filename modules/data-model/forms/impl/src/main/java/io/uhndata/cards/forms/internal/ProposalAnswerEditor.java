@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.forms.internal.parse.DoclingChatChunker;
 import io.uhndata.cards.forms.internal.parse.DocumentParseException;
 import io.uhndata.cards.forms.internal.parse.FileParser;
 import io.uhndata.cards.forms.internal.parse.FileParserFactory;
@@ -194,7 +195,11 @@ public class ProposalAnswerEditor extends DefaultEditor
         ParsedMarkdownStore.writeAggregate(answerFolder);
         if (parseErrors.isEmpty()) {
             this.chunkAggregate(answerFolder);
+            // The aggregate is ready, so kick off the section-aware chat chunker. This runs
+            // asynchronously and independently of the field-extraction chunks above.
+            DoclingChatChunker.requestChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder));
         } else {
+            DoclingChatChunker.invalidateChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder));
             ParsedMarkdownStore.clearChunks(answerFolder);
         }
     }

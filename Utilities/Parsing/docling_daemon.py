@@ -48,19 +48,26 @@ from typing import Any
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 
 from docling_batch_sizing import GB_PER_WORKER, calc_workers
+from docling_chunker import chunk_answer_folder
 from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
 from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
 
 SUPPORTED_SUFFIXES = (".pdf", ".docx")
+
+# Marker file that identifies a directory as a CARDS parse folder eligible for chunking.
+AGGREGATE_MARKER = "aggregated.md"
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 18765
+DEFAULT_PARSE_OUTPUT_SUBDIR = "cards-parsed-markdown"
+PARSE_OUTPUT_DIR_ENV = "CARDS_PARSE_OUTPUT_DIR"
 
 
 class DaemonState:
     """Shared daemon resources."""
 
-    def __init__(self, workers: int | None) -> None:
+    def __init__(self, workers: int | None, parse_output_root: Path) -> None:
         self.worker_count = calc_workers(workers)
+        self.parse_output_root = parse_output_root.resolve()
         self.pdf_executor = ProcessPoolExecutor(
             max_workers=self.worker_count,
             initializer=_init_worker,
@@ -113,6 +120,23 @@ def _read_json_body(handler: BaseHTTPRequestHandler) -> dict[str, Any]:
     return parsed
 
 
+def _is_under_root(path: Path, root: Path) -> bool:
+    resolved = path.resolve()
+    try:
+        return resolved.is_relative_to(root)
+    except AttributeError:
+        return str(resolved).startswith(str(root) + os.sep)
+
+
+def _resolve_parse_output_root(explicit: str | None) -> Path:
+    if explicit:
+        return Path(explicit).resolve()
+    env_value = os.environ.get(PARSE_OUTPUT_DIR_ENV)
+    if env_value:
+        return Path(env_value).resolve()
+    return (Path.cwd() / DEFAULT_PARSE_OUTPUT_SUBDIR).resolve()
+
+
 def _is_allowed_path(path: Path) -> bool:
     resolved = path.resolve()
     if not resolved.is_file():
@@ -124,6 +148,15 @@ def _is_allowed_path(path: Path) -> bool:
         return resolved.is_relative_to(temp_root)
     except AttributeError:
         return str(resolved).startswith(str(temp_root) + os.sep)
+
+
+def _is_allowed_chunk_dir(path: Path) -> bool:
+    if _STATE is None:
+        return False
+    resolved = path.resolve()
+    if not resolved.is_dir() or not (resolved / AGGREGATE_MARKER).is_file():
+        return False
+    return _is_under_root(resolved, _STATE.parse_output_root)
 
 
 def _convert_file(input_path: Path) -> tuple[str, str]:
@@ -182,6 +215,10 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             _json_response(self, HTTPStatus.OK, {"status": "shutting_down"})
             return
 
+        if self.path == "/chunk":
+            self._handle_chunk()
+            return
+
         if self.path != "/convert":
             _json_response(self, HTTPStatus.NOT_FOUND, {"error": "not found"})
             return
@@ -211,6 +248,33 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
                 },
             )
         except ValueError as exc:
+            _json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+        except Exception as exc:
+            _json_response(self, HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(exc)})
+
+    def _handle_chunk(self) -> None:
+        """Build the ChatChunks tree for a parse folder. Unlike PDF/DOCX conversion this does
+        not need the warm worker pool, so it is served even while the pool is unavailable."""
+        try:
+            body = _read_json_body(self)
+            folder_value = body.get("folder_path")
+            if not folder_value or not isinstance(folder_value, str):
+                raise ValueError("folder_path is required")
+
+            folder_path = Path(folder_value)
+            if not _is_allowed_chunk_dir(folder_path):
+                raise ValueError(
+                    f"folder_path must be a directory containing {AGGREGATE_MARKER} "
+                    f"under the CARDS parse output directory"
+                )
+
+            kwargs: dict[str, Any] = {}
+            if isinstance(body.get("max_tokens"), int) and body["max_tokens"] > 0:
+                kwargs["max_tokens"] = body["max_tokens"]
+
+            summary = chunk_answer_folder(str(folder_path), **kwargs)
+            _json_response(self, HTTPStatus.OK, {"status": "ok", **summary})
+        except (ValueError, FileNotFoundError) as exc:
             _json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})
         except Exception as exc:
             _json_response(self, HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(exc)})
@@ -253,6 +317,15 @@ def parse_args() -> argparse.Namespace:
             f"and RAM budget / {GB_PER_WORKER:.1f} GB per worker)"
         ),
     )
+    parser.add_argument(
+        "--parse-output-dir",
+        default=None,
+        metavar="DIR",
+        help=(
+            "root directory for CARDS parse output (default: "
+            f"${PARSE_OUTPUT_DIR_ENV} or ./{DEFAULT_PARSE_OUTPUT_SUBDIR})"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -260,8 +333,9 @@ def main() -> None:
     global _STATE, _SERVER
 
     args = parse_args()
+    parse_output_root = _resolve_parse_output_root(args.parse_output_dir)
     try:
-        _STATE = DaemonState(args.workers)
+        _STATE = DaemonState(args.workers, parse_output_root)
     except Exception as e:
         print(f"Docling daemon initialization failed: {e}", file=sys.stderr, flush=True)
         sys.exit(1)
@@ -272,7 +346,8 @@ def main() -> None:
     _SERVER = ThreadingHTTPServer((args.host, args.port), DoclingDaemonHandler)
     print(
         f"Docling daemon listening on http://{args.host}:{args.port} "
-        f"with {_STATE.worker_count} warm PDF workers",
+        f"with {_STATE.worker_count} warm PDF workers "
+        f"(parse output root: {parse_output_root})",
         flush=True,
     )
 
