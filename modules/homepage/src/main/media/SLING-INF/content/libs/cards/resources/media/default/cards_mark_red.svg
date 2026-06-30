@@ -15,7 +15,7 @@
   under the License.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <rect x="5" y="5" width="38" height="6" rx="2" fill="#F94900"/>
-  <rect x="5" y="21" width="16" height="6" rx="2" fill="#F94900"/>
-  <rect x="5" y="37" width="27" height="6" rx="2" fill="#F94900"/>
+  <rect x="5" y="8" width="38" height="8" rx="1" fill="#F94900"/>
+  <rect x="5" y="20" width="16" height="8" rx="1" fill="#F94900"/>
+  <rect x="5" y="32" width="27" height="8" rx="1" fill="#F94900"/>
 </svg>

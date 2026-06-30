@@ -25,9 +25,9 @@
     </style>
   </defs>
   <rect x="0" y="0" width="300" height="120" fill="#003366"/>
-  <rect x="20" y="48" width="34" height="8" rx="2" fill="#F94900"/>
-  <rect x="20" y="61" width="14" height="8" rx="2" fill="#F94900"/>
-  <rect x="20" y="74" width="24" height="8" rx="2" fill="#F94900"/>
+  <rect x="20" y="48" width="34" height="10" rx="1" fill="#F94900"/>
+  <rect x="20" y="60" width="14" height="10" rx="1" fill="#F94900"/>
+  <rect x="20" y="72" width="24" height="10" rx="1" fill="#F94900"/>
   <text x="64" y="82" font-family="'Urbanist'" font-weight="800" font-size="46" fill="#ffffff" letter-spacing="-1">
     <tspan>c</tspan><tspan dx="-2">a</tspan><tspan>r</tspan><tspan dx="-2">d</tspan><tspan dx="-.5">s</tspan>
   </text>
