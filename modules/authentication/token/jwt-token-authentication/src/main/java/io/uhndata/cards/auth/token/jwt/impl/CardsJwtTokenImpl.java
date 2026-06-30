@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.authentication.token.TokenCredentials;
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
 
@@ -48,6 +49,10 @@ public class CardsJwtTokenImpl implements CardsToken
 
     /** The expiration time of the token. */
     private final Calendar expirationTime;
+
+    /** Our own internal ID */
+    public static final String SELF_ID =
+        StringUtils.defaultIfEmpty(System.getenv("CARDS_HOST_AND_PORT"), "localhost:8080");
 
     /**
      * Public attributes stored in the token, that, once successfully authenticated, will also be exposed as session

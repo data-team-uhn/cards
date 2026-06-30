@@ -24,6 +24,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 
@@ -37,9 +38,12 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.ClaimsMutator.AudienceCollection;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.uhndata.cards.auth.token.TokenManager;
@@ -100,13 +104,41 @@ public class CardsJwtTokenManagerImpl implements TokenManager
     }
 
     @Override
-    public CardsJwtTokenImpl create(final String userId, final Calendar expiration, final Map<String, String> extraData)
+    public CardsJwtTokenImpl create(final String userId, final Calendar expiration,
+            final Map<String, String> extraData)
     {
         if (this.signingKey == null || this.verificationKey == null) {
             // Should not happen
             return null;
         }
         String jws = Jwts.builder()
+            .issuer(CardsJwtTokenImpl.SELF_ID)
+            .audience().add(CardsJwtTokenImpl.SELF_ID).and() // Assume, for now, we're making tokens for ourselves
+            .subject(userId)
+            .expiration(expiration.getTime())
+            .claims(extraData)
+            .signWith(this.signingKey)
+            .compact();
+        return new CardsJwtTokenImpl(jws, userId, expiration, extraData);
+    }
+
+    // Override of the above create that allows for multiple audiences to be set
+    public CardsJwtTokenImpl create(final String userId, final Calendar expiration, final Map<String, String> extraData,
+            Set<String> audiences)
+    {
+        if (this.signingKey == null || this.verificationKey == null) {
+            // Should not happen
+            return null;
+        }
+        AudienceCollection<JwtBuilder> audBuilder = Jwts.builder()
+                .issuer(CardsJwtTokenImpl.SELF_ID)
+                .audience();
+
+        for (String aud : audiences) {
+            audBuilder.add(aud);
+        }
+
+        String jws = audBuilder.and()
             .subject(userId)
             .expiration(expiration.getTime())
             .claims(extraData)
@@ -122,10 +154,26 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             return null;
         }
         try {
+            // TODO: check with every verification key
             Jwt<?, ?> jwt = Jwts.parser().verifyWith(this.verificationKey).build().parseSignedClaims(loginToken);
-            return new CardsJwtTokenImpl(jwt, loginToken);
+            Object payload = jwt.getPayload();
+            if (payload instanceof Claims) {
+                Claims claims = (Claims) payload;
+                // Double-check that we're the intended audience for this JWT
+                if (claims.getAudience() == null) {
+                    // No audience found, but the token was from a verified source -- assume we're
+                    // OK
+                    return new CardsJwtTokenImpl(jwt, loginToken);
+                } else if (claims.getAudience().contains(CardsJwtTokenImpl.SELF_ID)) {
+                    // Audience found, and we're in it -- OK
+                    return new CardsJwtTokenImpl(jwt, loginToken);
+                } else {
+                    LOGGER.error("Our server ({}) is not in the list of JWT audiences for the given JWT.");
+                }
+            }
         } catch (JwtException e) {
             // Not a JWT token
+            LOGGER.error("A non-JWT token was passed to JWTTokenManager");
         }
         return null;
     }

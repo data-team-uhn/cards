@@ -19,6 +19,7 @@ package io.uhndata.cards.auth.token.jwt.impl;
 import java.security.KeyPair;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -41,20 +42,32 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
- * Tests for {@link CardsJwtTokenManagerImpl}, the JWT-backed {@code TokenManager}.
+ * Tests for {@link CardsJwtTokenManagerImpl}, the JWT-backed
+ * {@code TokenManager}.
  *
- * <p>These pin the current behaviour of self-issued, symmetric (HMAC) tokens so that future changes to
- * {@code parse()} -- such as adding support for tokens issued by trusted external providers -- can be made without
- * regressing the existing patient-portal flow, where a token minted by {@code create()} must round-trip back through
- * {@code parse()} and yield the same user and session subject.</p>
+ * <p>
+ * These pin the current behaviour of self-issued, symmetric (HMAC) tokens so
+ * that future changes to
+ * {@code parse()} -- such as adding support for tokens issued by trusted
+ * external providers -- can be made without
+ * regressing the existing patient-portal flow, where a token minted by
+ * {@code create()} must round-trip back through
+ * {@code parse()} and yield the same user and session subject.
+ * </p>
  *
- * <p>On activation the manager reads its HMAC signing key from {@code /jcr:system/cards:jwt/JWTSigningKey}; here that
- * lookup is mocked to return a freshly generated, valid HS512 key, so no repository is needed.</p>
+ * <p>
+ * On activation the manager reads its HMAC signing key from
+ * {@code /jcr:system/cards:jwt/JWTSigningKey}; here that
+ * lookup is mocked to return a freshly generated, valid HS512 key, so no
+ * repository is needed.
+ * </p>
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CardsJwtTokenManagerImplTest
 {
-    /** The public claim used by the patient portal to carry the visit/subject path. */
+    /**
+     * The public claim used by the patient portal to carry the visit/subject path.
+     */
     private static final String SESSION_SUBJECT = "cards:sessionSubject";
 
     private static final String KEY_PATH = "/jcr:system/cards:jwt/JWTSigningKey";
@@ -82,7 +95,8 @@ public class CardsJwtTokenManagerImplTest
     @Before
     public void setUp() throws Exception
     {
-        // Generate a RS256 keypair and expose it exactly as the component reads it from the repository.
+        // Generate a RS256 keypair and expose it exactly as the component reads it from
+        // the repository.
         final KeyPair keypair = Jwts.SIG.RS256.keyPair().build();
         when(this.resolverFactory.getServiceResourceResolver(any())).thenReturn(this.resolver);
         when(this.resolver.resolve(KEY_PATH)).thenReturn(this.keyResource);
@@ -101,13 +115,14 @@ public class CardsJwtTokenManagerImplTest
     @Test
     public void createThenParseRoundTripsUserIdAndSubject()
     {
-        final CardsJwtTokenImpl created =
-            this.manager.create("guest-patient", oneHourFromNow(), Map.of(SESSION_SUBJECT, "/Subjects/v1"));
+        final CardsJwtTokenImpl created = this.manager.create("guest-patient", oneHourFromNow(),
+                Map.of(SESSION_SUBJECT, "/Subjects/v1"));
         final String token = created.getToken();
 
-        // A JWT is three base64url segments separated by dots (the same check the auth handler applies).
+        // A JWT is three base64url segments separated by dots (the same check the auth
+        // handler applies).
         Assert.assertTrue("Issued token is not a well-formed JWT",
-            token.matches("^[\\w-_]+\\.[\\w-_]+\\.[\\w-_]+$"));
+                token.matches("^[\\w-_]+\\.[\\w-_]+\\.[\\w-_]+$"));
 
         final CardsJwtTokenImpl parsed = this.manager.parse(token);
         Assert.assertNotNull("A freshly issued token must parse back", parsed);
@@ -133,22 +148,42 @@ public class CardsJwtTokenManagerImplTest
     {
         final Calendar past = Calendar.getInstance();
         past.add(Calendar.HOUR_OF_DAY, -1);
-        final String expired =
-            this.manager.create("guest-patient", past, Map.of(SESSION_SUBJECT, "/Subjects/v1")).getToken();
+        final String expired = this.manager.create("guest-patient", past, Map.of(SESSION_SUBJECT, "/Subjects/v1"))
+                .getToken();
         Assert.assertNull("An expired token must not parse", this.manager.parse(expired));
     }
 
     @Test
     public void parseRejectsTokenSignedWithForeignKey()
     {
-        // A well-formed token signed with some other key must be rejected: verification uses this instance's own
-        // secret. This is exactly the boundary that cross-provider support would later have to open up deliberately.
+        // A well-formed token signed with some other key must be rejected: verification
+        // uses this instance's own
+        // secret. This is exactly the boundary that cross-provider support would later
+        // have to open up deliberately.
         final String foreign = Jwts.builder()
-            .subject("attacker")
-            .expiration(new Date(System.currentTimeMillis() + 3_600_000L))
-            .signWith(Jwts.SIG.RS256.keyPair().build().getPrivate())
-            .compact();
+                .subject("attacker")
+                .expiration(new Date(System.currentTimeMillis() + 3_600_000L))
+                .signWith(Jwts.SIG.RS256.keyPair().build().getPrivate())
+                .compact();
         Assert.assertNull("A token signed with a different key must not parse", this.manager.parse(foreign));
+    }
+
+    @Test
+    public void createThenParseRejectsInvalidAudience()
+    {
+        // Create a real token, but exclude ourselves from the audience, and then make sure we fail to parse
+        HashSet<String> fakeAudience = new HashSet<String>();
+        fakeAudience.add("not_you");
+        final CardsJwtTokenImpl created = this.manager.create("guest-patient", oneHourFromNow(),
+                Map.of(SESSION_SUBJECT, "/Subjects/v1"), fakeAudience);
+        final String token = created.getToken();
+
+        // A JWT is three base64url segments separated by dots (the same check the auth
+        // handler applies).
+        Assert.assertTrue("Issued token is not a well-formed JWT",
+                token.matches("^[\\w-_]+\\.[\\w-_]+\\.[\\w-_]+$"));
+        Assert.assertNull("A token signed with an audience that does not include us must not parse",
+                this.manager.parse(token));
     }
 
     private static Calendar oneHourFromNow()
