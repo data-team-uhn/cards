@@ -41,6 +41,10 @@ public class CardsJwtTokenImpl implements CardsToken
     /** The name of the parent node where tokens for a user are stored. */
     public static final String SYSTEM_NODE_NAME = "jcr:system";
 
+    /** The ID of this CARDS instance, used to determine the `iss` field when minting tokens. */
+    public static final String SELF_ID =
+        StringUtils.defaultIfEmpty(System.getenv("CARDS_HOST_AND_PORT"), "localhost:8080");
+
     /** The login token string. */
     private final String loginToken;
 
@@ -49,10 +53,6 @@ public class CardsJwtTokenImpl implements CardsToken
 
     /** The expiration time of the token. */
     private final Calendar expirationTime;
-
-    /** Our own internal ID */
-    public static final String SELF_ID =
-        StringUtils.defaultIfEmpty(System.getenv("CARDS_HOST_AND_PORT"), "localhost:8080");
 
     /**
      * Public attributes stored in the token, that, once successfully authenticated, will also be exposed as session

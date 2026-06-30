@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -72,6 +73,10 @@ public class CardsJwtTokenManagerImplTest
 
     private static final String KEY_PATH = "/jcr:system/cards:jwt/JWTSigningKey";
 
+    private static final String PEER_ID = "localhost8081";
+
+    private static final String PEER_KEY_PATH = "/jcr:system/cards:jwt/" + PEER_ID;
+
     @Mock
     private ResourceResolverFactory resolverFactory;
 
@@ -90,14 +95,25 @@ public class CardsJwtTokenManagerImplTest
     @Mock
     private Property verifyProperty;
 
+    @Mock
+    private Resource peerResource;
+
+    @Mock
+    private Node peerNode;
+
+    @Mock
+    private Property peerVerifyProperty;
+
     private CardsJwtTokenManagerImpl manager;
+
+    private KeyPair peerPair;
 
     @Before
     public void setUp() throws Exception
     {
         // Generate a RS256 keypair and expose it exactly as the component reads it from
         // the repository.
-        final KeyPair keypair = Jwts.SIG.RS256.keyPair().build();
+        final KeyPair keyPair = Jwts.SIG.RS256.keyPair().build();
         when(this.resolverFactory.getServiceResourceResolver(any())).thenReturn(this.resolver);
         when(this.resolver.resolve(KEY_PATH)).thenReturn(this.keyResource);
         when(this.keyResource.adaptTo(Node.class)).thenReturn(this.keyNode);
@@ -105,8 +121,16 @@ public class CardsJwtTokenManagerImplTest
         when(this.keyNode.getProperty("key")).thenReturn(this.keyProperty);
         when(this.keyNode.hasProperty("verify")).thenReturn(true);
         when(this.keyNode.getProperty("verify")).thenReturn(this.verifyProperty);
-        when(this.keyProperty.getString()).thenReturn(Encoders.BASE64.encode(keypair.getPrivate().getEncoded()));
-        when(this.verifyProperty.getString()).thenReturn(Encoders.BASE64.encode(keypair.getPublic().getEncoded()));
+        when(this.keyProperty.getString()).thenReturn(Encoders.BASE64.encode(keyPair.getPrivate().getEncoded()));
+        when(this.verifyProperty.getString()).thenReturn(Encoders.BASE64.encode(keyPair.getPublic().getEncoded()));
+
+        this.peerPair = Jwts.SIG.RS256.keyPair().build();
+        when(this.resolver.resolve(PEER_KEY_PATH)).thenReturn(this.peerResource);
+        when(this.peerResource.adaptTo(Node.class)).thenReturn(this.peerNode);
+        when(this.peerNode.hasProperty("verify")).thenReturn(true);
+        when(this.peerNode.getProperty("verify")).thenReturn(this.peerVerifyProperty);
+        when(this.peerVerifyProperty.getString()).thenReturn(
+            Encoders.BASE64.encode(this.peerPair.getPublic().getEncoded()));
 
         // Activate the component via its @Activate constructor.
         this.manager = new CardsJwtTokenManagerImpl(this.resolverFactory);
@@ -172,7 +196,7 @@ public class CardsJwtTokenManagerImplTest
     public void createThenParseRejectsInvalidAudience()
     {
         // Create a real token, but exclude ourselves from the audience, and then make sure we fail to parse
-        HashSet<String> fakeAudience = new HashSet<String>();
+        Set<String> fakeAudience = new HashSet<String>();
         fakeAudience.add("not_you");
         final CardsJwtTokenImpl created = this.manager.create("guest-patient", oneHourFromNow(),
                 Map.of(SESSION_SUBJECT, "/Subjects/v1"), fakeAudience);
@@ -184,6 +208,22 @@ public class CardsJwtTokenManagerImplTest
                 token.matches("^[\\w-_]+\\.[\\w-_]+\\.[\\w-_]+$"));
         Assert.assertNull("A token signed with an audience that does not include us must not parse",
                 this.manager.parse(token));
+    }
+
+    @Test
+    public void createForeignKeyThenAccept()
+    {
+        // Test using a second set of keys
+        String selfID = CardsJwtTokenImpl.SELF_ID.replaceAll("\\P{Alnum}", "");
+
+        final String foreign = Jwts.builder()
+            .issuer("localhost8081")
+            .audience().add(selfID).and()
+            .expiration(oneHourFromNow().getTime())
+            .header().keyId("localhost8081").and()
+            .signWith(this.peerPair.getPrivate())
+            .compact();
+        Assert.assertNotNull("A foreign, trusted issued token must parse back", this.manager.parse(foreign));
     }
 
     private static Calendar oneHourFromNow()
