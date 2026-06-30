@@ -98,7 +98,8 @@
         },
         "org.apache.felix.hc.core.impl.servlet.HealthCheckExecutorServlet~default":{
             "servletPath":"/system/health",
-            "servletContextName":"org.osgi.service.http"
+            "servletContextName":"org.osgi.service.http",
+            "timeout":10000
         },
         "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~hc-support":{
             "user.mapping":[
