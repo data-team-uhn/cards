@@ -51,10 +51,27 @@ const useStyles = makeStyles()(theme => ({
       width: "calc(100% - 16px)",
     },
   },
-  submit : {
-    marginTop: theme.spacing(4),
-  }
 }));
+
+// The two informational lines shown before the subscribe / unsubscribe action.
+// The bold headline is passed as children; the resubscribe hint is always the same.
+const StatusMessage = ({ children }) => (
+  <div>
+    <Typography variant="subtitle1" color="secondary" sx={{ fontWeight: "bold" }}>
+      { children }
+    </Typography>
+    <Typography variant="subtitle1" color="textSecondary">
+      You can resubscribe any time using this link.
+    </Typography>
+  </div>
+);
+
+// Submit-style action button; all variants share the same type, color and top margin.
+const SubmitButton = ({ variant = "contained", onClick, children }) => (
+  <Button type="submit" variant={variant} color="secondary" onClick={onClick} sx={{ mt: 4 }}>
+    { children }
+  </Button>
+);
 
 function Unsubscribe (props) {
   // Current user and associated subject
@@ -152,58 +169,30 @@ function Unsubscribe (props) {
           }
           { alreadyUnsubscribed ?
             <>
-              <div>
-                <Typography variant="subtitle1" color="secondary" sx={{ fontWeight: "bold" }}>
-                  { `You are already unsubscribed from all ${appName} emails.`}
-                </Typography>
-                <Typography variant="subtitle1" color="textSecondary">
-                  You can resubscribe any time using this link.
-                </Typography>
-              </div>
-              <Button
-                type="submit"
-                variant="outlined"
-                color="secondary"
-                className={classes.submit}
-                onClick={() => unsubscribe(0)}
-              >
+              <StatusMessage>
+                { `You are already unsubscribed from all ${appName} emails.`}
+              </StatusMessage>
+              <SubmitButton variant="outlined" onClick={() => unsubscribe(0)}>
                 Resubscribe
-              </Button>
+              </SubmitButton>
             </>
             : confirmed !== null ?
               <>
                 <Alert severity="success">
                   You have been {confirmed ? "unsubscribed from" : "resubscribed to"} {appName}.
                 </Alert>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="secondary"
-                  className={classes.submit}
-                  onClick={() => unsubscribe(1-confirmed)}
-                >
+                <SubmitButton onClick={() => unsubscribe(1 - confirmed)}>
                   {confirmed ? "Resubscribe" : "Unsubscribe"}
-                </Button>
+                </SubmitButton>
               </>
               :
               <>
-                <div>
-                  <Typography variant="subtitle1" color="secondary" sx={{ fontWeight: "bold" }}>
-                    { `This will unsubscribe you from all ${appName} emails.`}
-                  </Typography>
-                  <Typography variant="subtitle1" color="textSecondary">
-                    You can resubscribe any time using this link.
-                  </Typography>
-                </div>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="secondary"
-                  className={classes.submit}
-                  onClick={() => unsubscribe(1)}
-                >
+                <StatusMessage>
+                  { `This will unsubscribe you from all ${appName} emails.`}
+                </StatusMessage>
+                <SubmitButton onClick={() => unsubscribe(1)}>
                   Unsubscribe
-                </Button>
+                </SubmitButton>
               </>
           }
         </Grid>
