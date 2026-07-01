@@ -113,7 +113,7 @@ function Unsubscribe (props) {
       })
       .catch(error => {
         // error now has access to a custom backend error data
-        let errMsg = "Cannot unsubscribe: ";
+        const errMsg = "Cannot unsubscribe: ";
         setError(errMsg + (error.error || error));
       });
   }, [patient, authToken]);
@@ -127,20 +127,20 @@ function Unsubscribe (props) {
     );
   }
 
-  let unsubscribe = (value) => {
-    let request_data = new FormData();
+  const unsubscribe = (value) => {
+    const request_data = new FormData();
     request_data.append("unsubscribe", value);
     patient && request_data.append("patient", patient);
     fetch("/Survey.unsubscribe", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? (setConfirmed(json.unsubscribed), setAlreadyUnsubscribed(null)) : Promise.reject(json.error))
       .catch((response) => {
-        let errMsg = "Unsubscribing failed";
+        const errMsg = "Unsubscribing failed";
         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
       });
   }
 
-  let appName = document.querySelector('meta[name="title"]')?.content;
+  const appName = document.querySelector('meta[name="title"]')?.content;
 
   return (
     <Paper className={classes.paper} elevation={0}>
