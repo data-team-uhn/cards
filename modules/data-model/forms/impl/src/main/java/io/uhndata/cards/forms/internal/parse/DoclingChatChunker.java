@@ -26,10 +26,11 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiConsumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -91,6 +92,15 @@ public final class DoclingChatChunker
     /** Per-answer generation counters used to discard stale asynchronous chunk results. */
     private static final ConcurrentHashMap<String, AtomicLong> CHUNK_GENERATIONS = new ConcurrentHashMap<>();
 
+    /**
+     * Optional summarization callback invoked with the answer folder and the chunk generation once chunking
+     * completes successfully. Set by the summarization service while it is active (see its {@code @Activate});
+     * {@code null} when no such service is registered, in which case chunking simply produces a tree with empty
+     * summaries. {@code volatile} because it is written from the service's lifecycle thread and read from the
+     * async chunking threads.
+     */
+    private static volatile BiConsumer<Path, Long> summarizationHook;
+
     private DoclingChatChunker()
     {
         // Utility class, never instantiated.
@@ -109,6 +119,31 @@ public final class DoclingChatChunker
         }
         nextGeneration(answerDir);
         LOGGER.debug("Invalidated in-flight Docling chat chunking for {}", answerDir);
+    }
+
+    /**
+     * Register (or clear) the callback run with the answer folder and chunk generation once chunking completes
+     * successfully. The summarization service sets this while active and clears it on deactivation, coupling
+     * chunking completion to summary generation without the chunker depending on that service directly.
+     *
+     * @param hook the callback to invoke after successful chunking, or {@code null} to clear it
+     */
+    public static void setSummarizationHook(final BiConsumer<Path, Long> hook)
+    {
+        summarizationHook = hook;
+    }
+
+    /**
+     * Whether a summarization job started for the given chunk generation is still current. Summarization should
+     * abort when this returns {@code false}, for example after a re-parse or a newer chunking request.
+     *
+     * @param answerDir the absolute parse output folder of the answer
+     * @param generation the generation captured when chunking completed
+     * @return {@code true} when no newer chunking has superseded this generation
+     */
+    public static boolean isSummarizationCurrent(final Path answerDir, final long generation)
+    {
+        return isCurrentGeneration(folderKey(answerDir), generation);
     }
 
     /**
@@ -161,6 +196,7 @@ public final class DoclingChatChunker
                 return;
             }
             LOGGER.info("Docling chat chunking finished for {}: {}", folder, response.body());
+            runSummarization(answerDir, folder, generation);
             return;
         }
         final String reason = error != null ? error.getMessage()
@@ -171,6 +207,29 @@ public final class DoclingChatChunker
         }
         LOGGER.warn("Docling chat chunking via daemon failed for {} ({}); falling back to CLI", folder, reason);
         runCliFallback(answerDir, folder, generation);
+    }
+
+    private static void runSummarization(final Path answerDir, final String folder, final long generation)
+    {
+        final BiConsumer<Path, Long> hook = summarizationHook;
+        if (hook == null) {
+            LOGGER.warn("Chunking finished for {} but no summarization hook is registered; summaries will NOT be "
+                + "generated. Is the CatalogSummarizationService active?", folder);
+            return;
+        }
+        LOGGER.info("Chunking finished for {}; scheduling catalog summarization (generation {})", folder,
+            generation);
+        CLI_DRAIN_EXECUTOR.submit(() -> {
+            if (!isCurrentGeneration(folder, generation)) {
+                LOGGER.warn("Skipping stale Docling chat summarization for {}", folder);
+                return;
+            }
+            try {
+                hook.accept(answerDir, generation);
+            } catch (RuntimeException e) {
+                LOGGER.warn("Docling chat summarization failed for {}: {}", folder, e.getMessage(), e);
+            }
+        });
     }
 
     private static void runCliFallback(final Path answerDir, final String folder, final long generation)
@@ -205,6 +264,8 @@ public final class DoclingChatChunker
                 ParsedMarkdownStore.clearChatChunkOutput(answerDir);
             } else if (exitCode != 0) {
                 LOGGER.warn("Docling chat chunker CLI exited with code {} for {}", exitCode, folder);
+            } else {
+                runSummarization(answerDir, folder, generation);
             }
         });
     }

@@ -30,16 +30,22 @@ for one proposal answer and lays the result out as a browsable tree under a
         ChatChunks/
             catalog.json         (one entry per File-* folder)
             File-apps/
-                catalog.json     (one entry per Section* folder)
-                Section1/
-                    catalog.json (one entry per Chunk*.md file)
-                    Chunk1.md
-                    Chunk2.md
+                catalog.json     (one entry per Section*.md file)
+                Sections-1-2-3.md   (consecutive heading-sections united to a token budget)
+                Sections-4.md
+                Section5.1.md       (a single section larger than the budget, split in parts)
+                Section5.2.md
         aggregated_chunked.md    (the aggregate rebuilt with embedded markers)
+
+Sections are the deepest level: each ``.md`` file directly under ``File-*`` holds one
+section unit and there is no chunk level. Consecutive heading-sections are united into a
+single ``Sections-<i-j-...>.md`` file as large as the token budget (:data:`DEFAULT_MAX_TOKENS`)
+allows; a single heading-section larger than the budget is split into ``Section<n>.<k>.md``
+parts, honouring sub-headings first and then paragraph boundaries.
 
 Each ``catalog.json`` is an array of objects shaped like::
 
-    {"id": "Chunk1", "summary": "", "pages": [88, 89], "sectionId": "Section1", "fileId": "apps"}
+    {"id": "Sections-1-2-3", "summary": "", "pages": [88, 89], "sectionId": null, "fileId": "apps"}
 
 ``summary`` is always left empty here so it can be filled in by an LLM later.
 
@@ -80,9 +86,10 @@ NON_INPUT_NAMES = {"aggregated.md", CHUNKED_AGGREGATE_NAME}
 # tokenizer; it is intentionally not configurable so every proposal is chunked identically.
 MODEL_ID = "Qwen/Qwen3-8B"
 
-# Default maximum tokens per chunk. Consecutive small chunks are united up to this token budget so
-# the output is not fragmented into many tiny chunks.
-DEFAULT_MAX_TOKENS = 1500
+# Default maximum tokens per section unit. Consecutive heading-sections are united up to this token
+# budget so the output is not fragmented into many tiny files; a single heading-section larger than
+# this is split into parts.
+DEFAULT_MAX_TOKENS = 2000
 
 # Deepest Markdown heading level emitted for the heading-path prefix.
 MAX_HEADING_LEVEL = 6
@@ -330,12 +337,123 @@ def _merge_chunks(records: list[dict[str, Any]], levels: dict[str, int],
     return chunks
 
 
-def _chunk_file(input_path: Path, chunker: HybridChunker,
+def _render_records(records: list[dict[str, Any]], levels: dict[str, int]) -> tuple[str, list[int]]:
+    """Render all of one heading-section's records to a single Markdown string, sharing heading
+    prefixes across consecutive records so a repeated parent heading is printed once, and return that
+    text together with the union of the records' pages."""
+    parts: list[str] = []
+    previous_path: Optional[list[str]] = None
+    for record in records:
+        parts.append(_render_record(record, levels, previous_path))
+        previous_path = record["path"]
+    pages = _union_pages(*[record["pages"] for record in records]) if records else []
+    return "\n\n".join(parts), pages
+
+
+def _split_by_paragraphs(text: str, pages: list[int], count_tokens: Callable[[str], int],
+    max_tokens: int) -> list[dict[str, Any]]:
+    """Split a Markdown string into parts no larger than the token budget at blank-line (paragraph)
+    boundaries. A single paragraph larger than the budget is kept whole (nothing is split mid-paragraph).
+    Every part inherits the same page list, since paragraph-level page attribution is not tracked."""
+    parts: list[dict[str, Any]] = []
+    current: Optional[str] = None
+    for paragraph in text.split("\n\n"):
+        if paragraph.strip() == "":
+            continue
+        candidate = paragraph if current is None else current + "\n\n" + paragraph
+        if current is None or count_tokens(candidate) <= max_tokens:
+            current = candidate
+            continue
+        parts.append({"text": current, "pages": list(pages)})
+        current = paragraph
+    if current is not None:
+        parts.append({"text": current, "pages": list(pages)})
+    return parts
+
+
+def _split_section(section: dict[str, Any], levels: dict[str, int],
+    count_tokens: Callable[[str], int], max_tokens: int) -> list[dict[str, Any]]:
+    """Split one oversized heading-section into ``Section<n>.<k>`` parts. Sub-headings are honoured
+    first by uniting the section's records up to the budget (:func:`_merge_chunks`); any resulting part
+    that is still too large is then split at paragraph boundaries."""
+    subparts: list[dict[str, Any]] = []
+    for part in _merge_chunks(section["records"], levels, count_tokens, max_tokens):
+        if count_tokens(part["text"]) > max_tokens:
+            subparts.extend(_split_by_paragraphs(part["text"], part["pages"], count_tokens, max_tokens))
+        else:
+            subparts.append(part)
+    units: list[dict[str, Any]] = []
+    for part_index, subpart in enumerate(subparts, start=1):
+        units.append({
+            "id": f"Section{section['index']}.{part_index}",
+            "title": section["title"],
+            "text": subpart["text"],
+            "pages": subpart["pages"],
+        })
+    return units
+
+
+def _finish_whole_unit(accumulator: dict[str, Any]) -> dict[str, Any]:
+    """Turn an accumulator of one or more whole heading-sections into a ``Sections-<i-j-...>`` unit."""
+    joined = "-".join(str(index) for index in accumulator["indices"])
+    return {
+        "id": f"Sections-{joined}",
+        "title": accumulator["title"],
+        "text": accumulator["text"],
+        "pages": accumulator["pages"],
+    }
+
+
+def _pack_sections(sections: list[dict[str, Any]], levels: dict[str, int],
+    count_tokens: Callable[[str], int], max_tokens: int) -> list[dict[str, Any]]:
+    """Pack consecutive heading-sections into output units no larger than the token budget. A section
+    that alone exceeds the budget breaks the current run and is split via :func:`_split_section`;
+    every other section is united with its neighbours into a ``Sections-<...>`` unit.
+
+    @param sections rendered heading-sections, each ``{"index", "title", "text", "pages", "records"}``
+    @return the output units in order, each ``{"id", "title", "text", "pages"}``
+    """
+    units: list[dict[str, Any]] = []
+    accumulator: Optional[dict[str, Any]] = None
+    for section in sections:
+        if count_tokens(section["text"]) > max_tokens:
+            if accumulator is not None:
+                units.append(_finish_whole_unit(accumulator))
+                accumulator = None
+            units.extend(_split_section(section, levels, count_tokens, max_tokens))
+            continue
+        if accumulator is None:
+            accumulator = _start_accumulator(section)
+            continue
+        candidate = accumulator["text"] + "\n\n" + section["text"]
+        if count_tokens(candidate) <= max_tokens:
+            accumulator["text"] = candidate
+            accumulator["indices"].append(section["index"])
+            accumulator["pages"] = _union_pages(accumulator["pages"], section["pages"])
+        else:
+            units.append(_finish_whole_unit(accumulator))
+            accumulator = _start_accumulator(section)
+    if accumulator is not None:
+        units.append(_finish_whole_unit(accumulator))
+    return units
+
+
+def _start_accumulator(section: dict[str, Any]) -> dict[str, Any]:
+    """Begin a new whole-section accumulator seeded with one heading-section."""
+    return {
+        "indices": [section["index"]],
+        "title": section["title"],
+        "text": section["text"],
+        "pages": list(section["pages"]),
+    }
+
+
+def _chunk_file(input_path: Path, chunker: HybridChunker, max_tokens: int,
     log: Callable[[str], None]) -> dict[str, Any]:
-    """Chunk one Markdown file into an in-memory file/section/chunk structure.
+    """Chunk one Markdown file into an in-memory file/section structure.
 
     Returns a dict: ``{"fileId", "folder", "sections": [...], "pages": [...]}`` where each
-    section is ``{"id", "title", "pages", "chunks": [{"id", "text", "pages"}]}``.
+    section is a leaf output unit ``{"id", "title", "text", "pages"}`` (no chunk level).
     """
     file_id = input_path.stem
     dl_doc = DocumentConverter().convert(source=str(input_path)).document
@@ -366,22 +484,26 @@ def _chunk_file(input_path: Path, chunker: HybridChunker,
             })
 
     count_tokens = _token_counter(chunker)
-    sections = _sections_from_headings(records)
-    for section_index, section in enumerate(sections, start=1):
-        section["id"] = f"Section{section_index}"
-        chunks = _merge_chunks(section["records"], levels, count_tokens)
-        for chunk_index, chunk in enumerate(chunks, start=1):
-            chunk["id"] = f"Chunk{chunk_index}"
-        section["chunks"] = chunks
-        section["pages"] = _union_pages(*[chunk["pages"] for chunk in chunks]) if chunks else []
+    heading_sections = _sections_from_headings(records)
+    rendered: list[dict[str, Any]] = []
+    for section_index, section in enumerate(heading_sections, start=1):
+        text, pages = _render_records(section["records"], levels)
+        rendered.append({
+            "index": section_index,
+            "title": section["title"],
+            "text": text,
+            "pages": pages,
+            "records": section["records"],
+        })
+    units = _pack_sections(rendered, levels, count_tokens, max_tokens)
 
-    file_pages = _union_pages(*[section["pages"] for section in sections]) if sections else []
-    log(f"Chunked '{input_path.name}': {len(sections)} section(s), "
-        f"{sum(len(section['chunks']) for section in sections)} chunk(s)")
+    file_pages = _union_pages(*[unit["pages"] for unit in units]) if units else []
+    log(f"Chunked '{input_path.name}': {len(heading_sections)} heading-section(s) "
+        f"packed into {len(units)} section unit(s)")
     return {
         "fileId": file_id,
         "folder": f"File-{file_id}",
-        "sections": sections,
+        "sections": units,
         "pages": file_pages,
     }
 
@@ -401,7 +523,9 @@ def _write_json(path: Path, payload: Any) -> None:
 
 
 def _write_tree(chat_dir: Path, files: list[dict[str, Any]]) -> None:
-    """Write the File-*/Section*/Chunk*.md tree and a catalog.json into every folder."""
+    """Write the File-*/Section*.md tree and a catalog.json into the ChatChunks root and every File
+    folder. Sections are the deepest level: each section unit is one ``.md`` file directly under its
+    File folder, and the File folder's catalog has one entry per such file."""
     file_catalog: list[dict[str, Any]] = []
     for file_data in files:
         file_id = file_data["fileId"]
@@ -411,16 +535,8 @@ def _write_tree(chat_dir: Path, files: list[dict[str, Any]]) -> None:
 
         section_catalog: list[dict[str, Any]] = []
         for section in file_data["sections"]:
-            section_dir = file_dir / section["id"]
-            section_dir.mkdir(parents=True, exist_ok=True)
+            (file_dir / f"{section['id']}.md").write_text(section["text"] + "\n", encoding="utf-8")
             section_catalog.append(_catalog_entry(section["id"], section["pages"], None, file_id))
-
-            chunk_catalog: list[dict[str, Any]] = []
-            for chunk in section["chunks"]:
-                (section_dir / f"{chunk['id']}.md").write_text(chunk["text"] + "\n", encoding="utf-8")
-                chunk_catalog.append(_catalog_entry(chunk["id"], chunk["pages"], section["id"], file_id))
-            _write_json(section_dir / CATALOG_NAME, chunk_catalog)
-
         _write_json(file_dir / CATALOG_NAME, section_catalog)
 
     _write_json(chat_dir / CATALOG_NAME, file_catalog)
@@ -436,7 +552,7 @@ def _marker(**fields: Any) -> str:
 
 
 def _write_chunked_aggregate(target: Path, files: list[dict[str, Any]]) -> None:
-    """Rebuild the aggregate as Markdown with embedded file/section/chunk reference markers."""
+    """Rebuild the aggregate as Markdown with embedded file/section reference markers."""
     lines: list[str] = []
     for file_data in files:
         file_id = file_data["fileId"]
@@ -447,16 +563,8 @@ def _write_chunked_aggregate(target: Path, files: list[dict[str, Any]]) -> None:
             marker = _marker(file_id=file_id, section_id=section["id"], pages=_format_pages(section["pages"]))
             lines.append(f"## {title} {marker}")
             lines.append("")
-            for chunk in section["chunks"]:
-                chunk_marker = _marker(
-                    file_id=file_id,
-                    section_id=section["id"],
-                    chunk_id=chunk["id"],
-                    pages=_format_pages(chunk["pages"]),
-                )
-                lines.append(chunk_marker)
-                lines.append(chunk["text"].strip())
-                lines.append("")
+            lines.append(section["text"].strip())
+            lines.append("")
     target.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
 
 
@@ -473,7 +581,7 @@ def chunk_answer_folder(
 ) -> dict[str, Any]:
     """Chunk every per-source-file Markdown in an answer folder into the ChatChunks tree.
 
-    Returns a summary dict: ``{"files", "sections", "chunks", "logs"}``. Raises
+    Returns a summary dict: ``{"files", "sections", "logs"}``. Raises
     :class:`FileNotFoundError` when the folder or its inputs are missing.
     """
     messages: list[str] = []
@@ -492,7 +600,7 @@ def chunk_answer_folder(
     files: list[dict[str, Any]] = []
     for input_path in inputs:
         try:
-            files.append(_chunk_file(input_path, chunker, log))
+            files.append(_chunk_file(input_path, chunker, max_tokens, log))
         except Exception as exc:  # noqa: BLE001 — one bad file must not abort the whole answer
             log(f"Failed to chunk '{input_path.name}': {exc}")
 
@@ -513,7 +621,6 @@ def chunk_answer_folder(
     return {
         "files": len(files),
         "sections": sum(len(file_data["sections"]) for file_data in files),
-        "chunks": sum(len(section["chunks"]) for file_data in files for section in file_data["sections"]),
         "logs": "\n".join(messages),
     }
 
@@ -530,7 +637,7 @@ def main() -> None:
         "--max-tokens",
         type=int,
         default=DEFAULT_MAX_TOKENS,
-        help=f"Maximum tokens per chunk (default: {DEFAULT_MAX_TOKENS})",
+        help=f"Maximum tokens per section unit (default: {DEFAULT_MAX_TOKENS})",
     )
     args = parser.parse_args()
 
@@ -546,8 +653,7 @@ def main() -> None:
     if summary["logs"]:
         print(summary["logs"], flush=True)
     print(
-        f"Created {summary['chunks']} chunk(s) across {summary['sections']} section(s) "
-        f"in {summary['files']} file(s).",
+        f"Created {summary['sections']} section unit(s) in {summary['files']} file(s).",
         flush=True,
     )
 
