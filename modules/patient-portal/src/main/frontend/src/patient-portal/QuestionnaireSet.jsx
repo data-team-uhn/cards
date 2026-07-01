@@ -66,7 +66,7 @@ const useStyles = makeStyles()(theme => ({
   screen : {
     alignItems: "flex-start",
     margin: "auto",
-    maxWidth: "780px",
+    maxWidth: theme.width.main,
     width: "100%",
     "& > .mainItem" : {
       paddingLeft: 0,
@@ -105,7 +105,7 @@ const useStyles = makeStyles()(theme => ({
     justify: "space-between",
     flexWrap: "nowrap",
     "& form" : {
-      maxWidth: "780px",
+      maxWidth: theme.width.main,
       margin: "auto",
     },
   },

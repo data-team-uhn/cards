@@ -20,6 +20,7 @@ import { StrictMode, useState, useEffect } from "react";
 
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
+import { Stack } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
@@ -81,12 +82,14 @@ function PatientPortalHomepage (props) {
   }
 
   if (!subject) {
-    return (<>
+    return (
       <PageStartWrapper extensionsName="PatientPortalPageStart">
-        <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
-        <Footer />
+        <Stack sx={ theme => ({ maxWidth: theme.width.intro, mx: "auto" }) }>
+          <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
+          <Footer />
+        </Stack>
       </PageStartWrapper>
-    </>);
+    );
   }
 
   return (

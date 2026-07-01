@@ -36,6 +36,11 @@ const portalTheme = createTheme({
       fontSize: "1rem",
     },
   },
+  width: {
+    compact: 500,
+    intro: 540,
+    main: 780,
+  },
 });
 
 export { portalTheme };
