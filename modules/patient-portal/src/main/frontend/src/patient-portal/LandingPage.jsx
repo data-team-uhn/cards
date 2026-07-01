@@ -61,6 +61,7 @@ function LandingPage(props) {
   const [ isOpen, setIsOpen ] = useState(true);
 
   const appInfo = document.querySelector('meta[name="title"]').content;
+  const loginTitle = document.querySelector('meta[name="loginTitle"]')?.content;
 
   const USER_TYPE_PARAM = "usertype";
   const USER_TYPE_HCP = "hcp";
@@ -86,6 +87,11 @@ function LandingPage(props) {
       <DialogContent className={classes.paper}>
         <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
           <Logo component={Grid} className={classes.logo} maxWidth="200px" />
+          { loginTitle &&
+            <Grid>
+              <Typography variant="h6" component="h1">{loginTitle}</Typography>
+            </Grid>
+          }
           <Grid>
             <Typography variant="h6">I am a...</Typography>
           </Grid>

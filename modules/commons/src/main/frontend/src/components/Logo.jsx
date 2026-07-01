@@ -36,6 +36,7 @@ const useStyles = makeStyles()(theme => ({
   },
   doubleLogo : {
     display: "flex",
+    gap: theme.spacing(4),
     justifyContent: "space-between",
     alignItems: "center",
     flexWrap: "wrap-reverse",
@@ -43,7 +44,7 @@ const useStyles = makeStyles()(theme => ({
     "& > img" : {
       width: `calc(50% - ${theme.spacing(4)})`,
       minWidth: "100px",
-      margin: theme.spacing(1, 2),
+      margin: theme.spacing(1, 0),
     },
   },
 }));

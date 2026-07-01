@@ -38,6 +38,14 @@
         <meta name="appVersion" content="${config['AppVersion']}">
       </sly>
     </sly>
+    <sly data-sly-use.config="/libs/cards/conf/LoginPage">
+      <sly data-sly-test="${config.loginTitle}">
+        <meta name="loginTitle" content="${config['loginTitle']}">
+      </sly>
+      <sly data-sly-test="${config.loginDescription}">
+        <meta name="loginDescription" content="${config['loginDescription']}">
+      </sly>
+    </sly>
     <sly data-sly-use.config="/libs/cards/conf/ThemeColor">
       <sly data-sly-repeat="${config.valueMap.entrySet.iterator}">
         <meta name="${item.key}" content="${item.value}">
