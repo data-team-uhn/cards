@@ -61,7 +61,7 @@ const StatusMessage = ({ children }) => (
       { children }
     </Typography>
     <Typography variant="subtitle1" color="textSecondary">
-      You can resubscribe any time using this link.
+      You can unsubscribe or resubscribe any time using this link.
     </Typography>
   </div>
 );
