@@ -140,6 +140,10 @@ function Unsubscribe (props) {
       });
   }
 
+  const returnToSurvey = () => {
+    window.location = "/Survey.html/" + (authToken ? `?auth_token=${authToken}` : "");
+  };
+
   const appName = document.querySelector('meta[name="title"]')?.content;
 
   return (
@@ -162,21 +166,23 @@ function Unsubscribe (props) {
           </Grid>
         }
         <Grid>
-          { error && <Alert severity="error">
-            <AlertTitle>An error occurred</AlertTitle>
-            {error}
-          </Alert>
-          }
-          { alreadyUnsubscribed ?
+          { error ?
             <>
+              <Alert severity="error">
+                <AlertTitle>An error occurred</AlertTitle>
+                {error}
+              </Alert>
+              {authToken && <SubmitButton onClick={returnToSurvey}>
+                Return to survey
+              </SubmitButton>}
+            </> : alreadyUnsubscribed ? <>
               <StatusMessage>
                 { `You are already unsubscribed from all ${appName} emails.`}
               </StatusMessage>
               <SubmitButton variant="outlined" onClick={() => unsubscribe(0)}>
                 Resubscribe
               </SubmitButton>
-            </>
-            : confirmed !== null ?
+            </> : confirmed !== null ?
               <>
                 <Alert severity="success">
                   You have been {confirmed ? "unsubscribed from" : "resubscribed to"} {appName}.
