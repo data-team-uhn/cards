@@ -22,8 +22,11 @@ import {
   Alert,
   AlertTitle,
   Button,
+  Divider,
   Grid,
-  Paper
+  Paper,
+  Stack,
+  Typography
 } from '@mui/material';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
@@ -48,11 +51,27 @@ const useStyles = makeStyles()(theme => ({
       width: "calc(100% - 16px)",
     },
   },
-  submit : {
-    marginTop: theme.spacing(5),
-    float: 'right',
-  }
 }));
+
+// The two informational lines shown before the subscribe / unsubscribe action.
+// The bold headline is passed as children; the resubscribe hint is always the same.
+const StatusMessage = ({ children }) => (
+  <div>
+    <Typography variant="subtitle1" color="primary" sx={{ fontWeight: "bold" }}>
+      { children }
+    </Typography>
+    <Typography variant="subtitle1" color="textSecondary">
+      You can unsubscribe or resubscribe any time using this link.
+    </Typography>
+  </div>
+);
+
+// Submit-style action button; all variants share the same type, color and top margin.
+const SubmitButton = ({ variant = "contained", onClick, children }) => (
+  <Button type="submit" variant={variant} color="primary" onClick={onClick} sx={{ mt: 4 }}>
+    { children }
+  </Button>
+);
 
 function Unsubscribe (props) {
   // Current user and associated subject
@@ -94,7 +113,7 @@ function Unsubscribe (props) {
       })
       .catch(error => {
         // error now has access to a custom backend error data
-        let errMsg = "Cannot unsubscribe: ";
+        const errMsg = "Cannot unsubscribe: ";
         setError(errMsg + (error.error || error));
       });
   }, [patient, authToken]);
@@ -108,20 +127,24 @@ function Unsubscribe (props) {
     );
   }
 
-  let unsubscribe = (value) => {
-    let request_data = new FormData();
+  const unsubscribe = (value) => {
+    const request_data = new FormData();
     request_data.append("unsubscribe", value);
     patient && request_data.append("patient", patient);
     fetch("/Survey.unsubscribe", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? (setConfirmed(json.unsubscribed), setAlreadyUnsubscribed(null)) : Promise.reject(json.error))
       .catch((response) => {
-        let errMsg = "Unsubscribing failed";
+        const errMsg = "Unsubscribing failed";
         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
       });
   }
 
-  let appName = document.querySelector('meta[name="title"]')?.content;
+  const returnToSurvey = () => {
+    window.location = "/Survey.html/" + (authToken ? `?auth_token=${authToken}` : "");
+  };
+
+  const appName = document.querySelector('meta[name="title"]')?.content;
 
   return (
     <Paper className={classes.paper} elevation={0}>
@@ -129,52 +152,53 @@ function Unsubscribe (props) {
         container
         direction="column"
         alignItems="stretch"
-        spacing={7}
+        spacing={4}
       >
         <Logo component={Grid} />
+        { appName &&
+          <Grid>
+            <Stack spacing={2}>
+              <Typography variant="overline" component="h1" color="textSecondary" sx={{ fontWeight: "bold" }}>
+                { appName }
+              </Typography>
+              <Divider />
+            </Stack>
+          </Grid>
+        }
         <Grid>
-          { error && <Alert severity="error">
-            <AlertTitle>An error occurred</AlertTitle>
-            {error}
-          </Alert>
-          }
-          { alreadyUnsubscribed ?
+          { error ?
             <>
-              <Alert icon={false} severity="info">{ `You are already unsubscribed from ${appName}.` }</Alert>
-              <Button
-                type="submit"
-                variant="contained"
-                className={classes.submit}
-                onClick={() => unsubscribe(0)}
-              >
+              <Alert severity="error">
+                <AlertTitle>An error occurred</AlertTitle>
+                {error}
+              </Alert>
+              {authToken && <SubmitButton onClick={returnToSurvey}>
+                Return to survey
+              </SubmitButton>}
+            </> : alreadyUnsubscribed ? <>
+              <StatusMessage>
+                { `You are already unsubscribed from all ${appName} emails.`}
+              </StatusMessage>
+              <SubmitButton variant="outlined" onClick={() => unsubscribe(0)}>
                 Resubscribe
-              </Button>
-            </>
-            : confirmed !== null ?
+              </SubmitButton>
+            </> : confirmed !== null ?
               <>
                 <Alert severity="success">
                   You have been {confirmed ? "unsubscribed from" : "resubscribed to"} {appName}.
                 </Alert>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className={classes.submit}
-                  onClick={() => unsubscribe(1-confirmed)}
-                >
+                <SubmitButton onClick={() => unsubscribe(1 - confirmed)}>
                   {confirmed ? "Resubscribe" : "Unsubscribe"}
-                </Button>
+                </SubmitButton>
               </>
               :
               <>
-                <Alert icon={false} severity="info">{`This will unsubscribe you from all ${appName} emails.`}</Alert>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className={classes.submit}
-                  onClick={() => unsubscribe(1)}
-                >
+                <StatusMessage>
+                  { `This will unsubscribe you from all ${appName} emails.`}
+                </StatusMessage>
+                <SubmitButton onClick={() => unsubscribe(1)}>
                   Unsubscribe
-                </Button>
+                </SubmitButton>
               </>
           }
         </Grid>
