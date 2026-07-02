@@ -14,7 +14,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="2 2 44 44" width="48" height="48">
   <rect x="5" y="8" width="38" height="8" rx="1" fill="#F94900"/>
   <rect x="5" y="20" width="16" height="8" rx="1" fill="#F94900"/>
   <rect x="5" y="32" width="27" height="8" rx="1" fill="#F94900"/>
