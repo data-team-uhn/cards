@@ -57,7 +57,7 @@ const useStyles = makeStyles()(theme => ({
 // The bold headline is passed as children; the resubscribe hint is always the same.
 const StatusMessage = ({ children }) => (
   <div>
-    <Typography variant="subtitle1" color="secondary" sx={{ fontWeight: "bold" }}>
+    <Typography variant="subtitle1" color="primary" sx={{ fontWeight: "bold" }}>
       { children }
     </Typography>
     <Typography variant="subtitle1" color="textSecondary">
@@ -68,7 +68,7 @@ const StatusMessage = ({ children }) => (
 
 // Submit-style action button; all variants share the same type, color and top margin.
 const SubmitButton = ({ variant = "contained", onClick, children }) => (
-  <Button type="submit" variant={variant} color="secondary" onClick={onClick} sx={{ mt: 4 }}>
+  <Button type="submit" variant={variant} color="primary" onClick={onClick} sx={{ mt: 4 }}>
     { children }
   </Button>
 );
