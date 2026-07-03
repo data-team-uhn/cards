@@ -35,10 +35,10 @@ async function getFooterExtensions() {
     );
 }
 
-const useStyles = makeStyles()(theme => ({
+const useStyles = makeStyles()((theme, { align }) => ({
   footer : {
     color: theme.palette.text.secondary,
-    justifyContent: "center",
+    justifyContent: { left: "flex-start", center: "center", right: "flex-end" }[align],
     minHeight: theme.spacing(2),
   },
   horizontal: {
@@ -51,14 +51,16 @@ const useStyles = makeStyles()(theme => ({
   },
   vertical: {
     display: "grid",
-    textAlign: "center",
+    padding: theme.spacing(0, 3),
+    textAlign: align,
   },
 }));
 
 export default function Footer (props) {
+  const { align = "center" } = props;
   let [ footerExtensions, setFooterExtensions ] = useState([]);
 
-  const { classes } = useStyles();
+  const { classes } = useStyles({ align });
 
   const isSmallScreen = useMediaQuery('(max-width:600px)');
 

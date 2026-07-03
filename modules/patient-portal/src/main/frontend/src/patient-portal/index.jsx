@@ -86,7 +86,7 @@ function PatientPortalHomepage (props) {
       <PageStartWrapper extensionsName="PatientPortalPageStart">
         <Stack sx={ theme => ({ maxWidth: theme.width.intro, mx: "auto" }) }>
           <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
-          <Footer />
+          <Footer align="left" />
         </Stack>
       </PageStartWrapper>
     );
