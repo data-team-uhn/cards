@@ -72,15 +72,15 @@ export default function ErrorPage(props) {
         <Grid>
           <Stack spacing={2}>
             {appName && <>
-              <Typography variant="overline" component="h1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
+              <Typography variant="overline" component="h1" color="textSecondary" sx={{ fontWeight: 'bold' }}>
                 {appName}
               </Typography>
               <Divider />
             </> }
-            {errorCode && <Typography variant="h3" component="h2" color={errorCodeColor || "secondary"}>
+            {errorCode && <Typography variant="h3" component="h2" color={errorCodeColor || "primary"}>
               {errorCode}
             </Typography> }
-            {title && <Typography variant="h4" color={titleColor || "secondary"} sx={{ fontWeight: 'bold' }}>
+            {title && <Typography variant="h4" color={titleColor || "primary"} sx={{ fontWeight: 'bold' }}>
               {title}
             </Typography> }
             {message && <FormattedText variant="subtitle1" color={messageColor || "textSecondary"}>
