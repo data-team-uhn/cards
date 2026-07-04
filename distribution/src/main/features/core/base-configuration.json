@@ -49,6 +49,7 @@
                 "-/favicon.ico",
                 "-/libs",
                 "-/apps",
+                "-/system/sling.js",
                 "-/system/sling/info"
             ]
         }
