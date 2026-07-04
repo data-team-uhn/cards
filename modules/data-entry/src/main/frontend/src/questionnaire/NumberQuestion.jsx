@@ -159,9 +159,19 @@ function NumberQuestion(props) {
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
   const formContext = useFormReaderContext();
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
+  const isSlider = displayMode === "slider" && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined';
+  // The rendered widget can differ from the requested displayMode:
+  //  - a slider needs both bounds; without them it falls back to a text input
+  //  - a range ignores list/select and always renders editable limit fields, unless it is a bounded slider
+  const effectiveDisplayMode = useMemo(() => {
+    if (isSlider) return "slider";
+    if (isRange) return "input";
+    if (displayMode === "slider") return "input";
+    return displayMode;
+  }, [isSlider, isRange, displayMode]);
   const acceptsTypedValue = useMemo(
-    () => (!displayMode) || ["input", "list+input", "textbox"].includes(displayMode),
-    [displayMode]
+    () => (!effectiveDisplayMode) || ["input", "list+input", "textbox"].includes(effectiveDisplayMode),
+    [effectiveDisplayMode]
   );
   const existingValue = existingAnswer?.[1]?.value;
   const isMultivalued = Array.isArray(existingValue);
@@ -192,7 +202,6 @@ function NumberQuestion(props) {
   // The following is only used for non-range sliders.
   // Default to an empty string, which results in a "no data"
   // selection as close to 0 as possible within the valid range
-  const isSlider = displayMode === "slider" && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined';
   const [ sliderValue, setSliderValue ] = useState(isSlider ? (existingValue || defaultValue) : undefined);
   // Load slider-specific style
   const sliderClasses = useSliderStyles();
@@ -255,7 +264,8 @@ function NumberQuestion(props) {
     return null;
   };
 
-  // Validation is only needed for display modes that allow typed entry
+  // Validate only when the rendered widget accepts a typed value; list, select and bounded sliders
+  // constrain the value for the user (see effectiveDisplayMode)
   useEffect(() => {
     if (!acceptsTypedValue) return;
     if (isRange) {
