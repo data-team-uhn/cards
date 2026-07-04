@@ -238,9 +238,9 @@ function NumberQuestion(props) {
       }
     }
 
-    // Test that it is within our min/max (if they are defined), can happen only if isRange
-    if (isRange && typeof minValue !== 'undefined' && lowerRangeValue < minValue &&
-                   typeof maxValue !== 'undefined' && upperRangeValue > maxValue) {
+    // For a range with both limits defined, show a single "between" message when the value falls outside them
+    if (isRange && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined' &&
+        (value < minValue || value > maxValue)) {
       return `The values must be between ${minValue} and ${maxValue}`;
     }
 
