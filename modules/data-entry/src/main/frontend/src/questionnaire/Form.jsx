@@ -57,6 +57,7 @@ import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import ErrorDialog from "../components/ErrorDialog";
 import FormattedText from "../components/FormattedText.jsx";
 import MainActionButton from "../components/MainActionButton.jsx";
+import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
@@ -526,13 +527,11 @@ function Form (props) {
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
     return (
-      <Grid container justifyContent="center">
-        <Grid>
-          <Typography variant="h2" color="error">
-            Error obtaining form data: {error.status} {error.statusText}
-          </Typography>
-        </Grid>
-      </Grid>
+      <ResourceErrorMessage
+        title="Error obtaining form data"
+        notFoundTitle="This form does not exist"
+        error={error}
+      />
     );
   }
 

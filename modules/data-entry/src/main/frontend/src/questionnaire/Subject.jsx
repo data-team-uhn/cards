@@ -47,6 +47,7 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
 import FormattedText from "../components/FormattedText";
+import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import { checkPropTypes } from "../propTypes";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import ResourceHeader from "./ResourceHeader.jsx"
@@ -245,13 +246,11 @@ function SubjectContainer(props) {
 
   if (error) {
     return (
-      <Grid container justifyContent="center">
-        <Grid>
-          <Typography variant="h2" color="error">
-            Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
-          </Typography>
-        </Grid>
-      </Grid>
+      <ResourceErrorMessage
+        title="Error obtaining subject data"
+        notFoundTitle="This subject does not exist"
+        error={error}
+      />
     );
   }
 
@@ -340,11 +339,11 @@ function SubjectHeader(props) {
 
   if (error) {
     return (
-      <Grid>
-        <Typography variant="h2" color="error">
-          Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
-        </Typography>
-      </Grid>
+      <ResourceErrorMessage
+        title="Error obtaining subject data"
+        notFoundTitle="This subject does not exist"
+        error={error}
+      />
     );
   }
 
@@ -480,13 +479,11 @@ function SubjectMemberInternal (props) {
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
     return (
-      <Grid container justifyContent="center">
-        <Grid>
-          <Typography variant="h2" color="error">
-            Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
-          </Typography>
-        </Grid>
-      </Grid>
+      <ResourceErrorMessage
+        title="Error obtaining subject data"
+        notFoundTitle="This subject does not exist"
+        error={error}
+      />
     );
   }
 
@@ -765,9 +762,11 @@ function FormData(props) {
 
   if (error) {
     return (
-      <Typography variant="h2" color="error">
-        Error obtaining form data: {error.status} {error.statusText}
-      </Typography>
+      <ResourceErrorMessage
+        title="Error obtaining form data"
+        notFoundTitle="This form does not exist"
+        error={error}
+      />
     );
   }
   // Handle questions and sections differently
