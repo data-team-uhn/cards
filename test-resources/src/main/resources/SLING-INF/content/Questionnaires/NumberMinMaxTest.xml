@@ -511,4 +511,53 @@ Expected values are between 0 and 10, or select one of the options.</value>
 			</property>
 		</node>
 	</node>
+	<node>
+		<name>long_multi_default_out_of_range</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Long, multiple answers, out-of-range default value</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Defaults are 5 and -5, and -5 is below the minimum of 0. On a NEW form both defaults pre-fill and the min/max error indicator appears on load, because per-item validation now runs over the default values. After saving, in view mode -5 is flagged and 5 is not.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>10</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>defaultValue</name>
+			<value>5, -5</value>
+			<type>String</type>
+		</property>
+	</node>
 </node>

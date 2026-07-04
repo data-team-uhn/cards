@@ -140,6 +140,7 @@ function NumberQuestion(props) {
     dataType,
     displayMode,
     minAnswers,
+    maxAnswers,
     disableNegativeInput,
     minValue,
     maxValue,
@@ -174,7 +175,7 @@ function NumberQuestion(props) {
     [effectiveDisplayMode]
   );
   const existingValue = existingAnswer?.[1]?.value;
-  const isMultivalued = Array.isArray(existingValue);
+  const isMultivalued = maxAnswers !== 1;
 
   const rawDefaultValue = props.questionDefinition.defaultValue;
   // Keep only the numeric default value(s); a multivalued question may provide a comma-separated list, and any
@@ -191,7 +192,11 @@ function NumberQuestion(props) {
   const [ minMaxError, setMinMaxError ] = useState(null);
   const [ minMaxErrorByIndex, setMinMaxErrorByIndex ] = useState({});
 
-  const initialValue = Array.from(existingValue || numericDefaultValues);
+  // Normalize the saved answer to an array.
+  // Fall back to the numeric default(s) when unanswered.
+  const initialValue = Array.isArray(existingValue)
+    ? Array.from(existingValue)
+    : (existingValue != null && existingValue !== "" ? [existingValue] : Array.from(numericDefaultValues));
 
   // The following two are only used for range answers
   const [ lowerRangeValue, setLowerRangeValue ] = useState(isRange ? initialValue[0] : undefined);
