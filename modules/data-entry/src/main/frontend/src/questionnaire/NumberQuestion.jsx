@@ -54,7 +54,7 @@ const DATA_TO_VALUE_TYPE = {
   "double": "Double",
   "decimal": "Decimal",
 };
-const INTEGER_VALUE_PATTERN = /^[-+]?\d*$/;
+const INTEGER_VALUE_PATTERN = /^[-+]?\d+$/;
 const WHITESPACE_ONLY_PATTERN = /^\s*$/;
 const isValidNumber = (input) => input !== "" && !Number.isNaN(Number(input));
 
