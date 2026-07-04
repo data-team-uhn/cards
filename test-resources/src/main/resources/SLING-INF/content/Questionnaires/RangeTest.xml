@@ -320,4 +320,38 @@ Expected values are between 0 and 100.</value>
 			<type>String</type>
 		</property>
 	</node>
+	<node>
+		<name>q9</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Double range, slider display but no min/maxValue</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>displayMode is slider but no bounds are set, so it falls back to editable limit fields. Validation must still run: enter a lower value greater than the upper (e.g. 50 then 5) and the "range is invalid" error must appear.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>double</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>slider</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+	</node>
 </node>
