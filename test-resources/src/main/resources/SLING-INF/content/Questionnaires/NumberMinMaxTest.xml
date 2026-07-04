@@ -376,7 +376,7 @@ Expected values are between 0 and 10.</value>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Accepts a typed value between 0 and 10 or one of the listed options. The instruction should end with "or select one of the options".</value>
+			<value>Enforced min/max with options whose values (-1, -2) are deliberately outside the range. The instruction should end with "or select one of the options". Because enforcement is on, typing an out-of-range value OR selecting "Not applicable" / "Unknown" is flagged in view mode and the backend marks the form INVALID on save. Compare with the not-enforced version below.</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -403,6 +403,84 @@ Expected values are between 0 and 10.</value>
 			<name>maxValue</name>
 			<value>10</value>
 			<type>Double</type>
+		</property>
+		<node>
+			<name>opt_na</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Not applicable</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>-1</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>opt_unknown</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Unknown</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>-2</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>long_listinput_options_soft</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Long, list + input, min and max **not enforced**, with options</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Same options as the enforced version above (values -1, -2 outside the range), but with enforcement off. Typing an out-of-range value OR selecting "Not applicable" / "Unknown" shows the soft message instead of an error, and the form is NOT marked invalid on save.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list+input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>10</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>Please check that your entry is correct.
+Expected values are between 0 and 10, or select one of the options.</value>
+			<type>String</type>
 		</property>
 		<node>
 			<name>opt_na</name>
