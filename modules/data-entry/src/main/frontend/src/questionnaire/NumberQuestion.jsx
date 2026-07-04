@@ -159,7 +159,10 @@ function NumberQuestion(props) {
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
   const formContext = useFormReaderContext();
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
-  const isListSelectOrSlider = useMemo(() => ["list", "select", "slider"].includes(displayMode), [displayMode]);
+  const acceptsTypedValue = useMemo(
+    () => (!displayMode) || ["input", "list+input", "textbox"].includes(displayMode),
+    [displayMode]
+  );
   const existingValue = existingAnswer?.[1]?.value;
   const isMultivalued = Array.isArray(existingValue);
 
@@ -252,9 +255,9 @@ function NumberQuestion(props) {
     return null;
   };
 
-  // No need to validate list, select, slider display modes
+  // Validation is only needed for display modes that allow typed entry
   useEffect(() => {
-    if (isListSelectOrSlider) return;
+    if (!acceptsTypedValue) return;
     if (isRange) {
       // Check for invalid range limits
       setMinMaxError(
@@ -278,7 +281,7 @@ function NumberQuestion(props) {
   }, [
     lowerRangeValue,
     upperRangeValue,
-    isListSelectOrSlider,
+    acceptsTypedValue,
     isRange,
     isMultivalued,
     existingValue,
