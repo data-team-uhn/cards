@@ -181,8 +181,8 @@ function NumberQuestion(props) {
   const initialValue = Array.from(existingValue || numericDefaultValues);
 
   // The following two are only used for range answers
-  const [lowerRangeValue, setLowerRangeValue] = useState(isRange ? initialValue[0] : undefined);
-  const [upperRangeValue, setUpperRangeValue] = useState(isRange ? initialValue[1] : undefined);
+  const [ lowerRangeValue, setLowerRangeValue ] = useState(isRange ? initialValue[0] : undefined);
+  const [ upperRangeValue, setUpperRangeValue ] = useState(isRange ? initialValue[1] : undefined);
   const [ rangeError, setRangeError ] = useState(false);
   const isRangeSelected = isRange && isValidNumber(lowerRangeValue) && isValidNumber(upperRangeValue);
 
@@ -190,7 +190,7 @@ function NumberQuestion(props) {
   // Default to an empty string, which results in a "no data"
   // selection as close to 0 as possible within the valid range
   const isSlider = displayMode === "slider" && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined';
-  const [sliderValue, setSliderValue] = useState(isSlider ? (existingValue || defaultValue) : undefined);
+  const [ sliderValue, setSliderValue ] = useState(isSlider ? (existingValue || defaultValue) : undefined);
   // Load slider-specific style
   const sliderClasses = useSliderStyles();
   // Marks at the minimum and maximum, as well as user specified intervals if provided
