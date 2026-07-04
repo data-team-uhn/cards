@@ -176,7 +176,7 @@ function NumberQuestion(props) {
   const defaultValue = numericDefaultValues.length ? numericDefaultValues[0] : null;
 
   const [ minMaxError, setMinMaxError ] = useState(null);
-  const [ minMaxErrorObject, setMinMaxErrorObject ] = useState({});
+  const [ minMaxErrorByIndex, setMinMaxErrorByIndex ] = useState({});
 
   const initialValue = Array.from(existingValue || numericDefaultValues);
 
@@ -266,12 +266,12 @@ function NumberQuestion(props) {
          (Number(lowerRangeValue) > Number(upperRangeValue))
       );
     } else if (isMultivalued) {
-      const nextMinMaxErrorObject = initialValue.reduce((accumulator, value, index) => {
+      const nextMinMaxErrorByIndex = initialValue.reduce((accumulator, value, index) => {
         accumulator[index] = getValidationErrorMessage(value);
         return accumulator;
       }, {});
-      setMinMaxErrorObject(nextMinMaxErrorObject);
-      setMinMaxError(Object.values(nextMinMaxErrorObject).find(Boolean) || null);
+      setMinMaxErrorByIndex(nextMinMaxErrorByIndex);
+      setMinMaxError(Object.values(nextMinMaxErrorByIndex).find(Boolean) || null);
     } else {
       setMinMaxError(getValidationErrorMessage(existingValue));
     }
@@ -352,7 +352,7 @@ function NumberQuestion(props) {
   }
 
   let markdownFormatter = function(label, idx) {
-    const errorMessage = isMultivalued ? minMaxErrorObject[idx] : minMaxError;
+    const errorMessage = isMultivalued ? minMaxErrorByIndex[idx] : minMaxError;
     return (
       <div>
         <FormattedText color={!disableMinMaxValueEnforcement && pageActive && errorMessage ? "error" : ""}>
