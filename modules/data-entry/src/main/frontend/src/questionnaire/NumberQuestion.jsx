@@ -161,7 +161,7 @@ function NumberQuestion(props) {
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
   const isListSelectOrSlider = useMemo(() => ["list", "select", "slider"].includes(displayMode), [displayMode]);
   const existingValue = existingAnswer?.[1]?.value;
-  const isMultiValue = Array.isArray(existingValue);
+  const isMultivalued = Array.isArray(existingValue);
 
   const rawDefaultValue = props.questionDefinition.defaultValue;
   // Keep only the numeric default value(s); a multivalued question may provide a comma-separated list, and any
@@ -265,7 +265,7 @@ function NumberQuestion(props) {
         typeof(lowerRangeValue) == 'undefined' && typeof(upperRangeValue) != 'undefined' ||
          (Number(lowerRangeValue) > Number(upperRangeValue))
       );
-    } else if (isMultiValue) {
+    } else if (isMultivalued) {
       const nextMinMaxErrorObject = initialValue.reduce((accumulator, value, index) => {
         accumulator[index] = getValidationErrorMessage(value);
         return accumulator;
@@ -280,7 +280,7 @@ function NumberQuestion(props) {
     upperRangeValue,
     isListSelectOrSlider,
     isRange,
-    isMultiValue,
+    isMultivalued,
     existingValue,
     dataType,
     minValue,
@@ -352,7 +352,7 @@ function NumberQuestion(props) {
   }
 
   let markdownFormatter = function(label, idx) {
-    const errorMessage = isMultiValue ? minMaxErrorObject[idx] : minMaxError;
+    const errorMessage = isMultivalued ? minMaxErrorObject[idx] : minMaxError;
     return (
       <div>
         <FormattedText color={!disableMinMaxValueEnforcement && pageActive && errorMessage ? "error" : ""}>
