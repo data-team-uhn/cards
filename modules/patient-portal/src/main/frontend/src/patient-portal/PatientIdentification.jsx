@@ -315,14 +315,7 @@ function PatientIdentification(props) {
                       variant: 'standard',
                       autoFocus: true,
                       fullWidth: true,
-                      className: classes.textField,
                       helperText: null,
-                      onBlur: (event) => {
-                        if (dob?.invalid) {
-                          setError(true);
-                          setErrorMessage("Invalid date" + (dob.invalid.explanation ? ": " + dob.invalid.explanation : ""));
-                        }
-                      },
                       inputProps: {
                         placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`
                       },
