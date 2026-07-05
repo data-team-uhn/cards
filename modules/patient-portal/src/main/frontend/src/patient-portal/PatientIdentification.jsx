@@ -92,9 +92,6 @@ const useStyles = makeStyles()(theme => ({
       textTransform: "none",
     },
   },
-  submit : {
-    float: 'right',
-  }
 }));
 
 // The patient is already authenticated via the token.
@@ -398,7 +395,6 @@ function PatientIdentification(props) {
                 <Button
                   type="submit"
                   variant="contained"
-                  className={classes.submit}
                 >
                   Continue
                 </Button>
@@ -448,7 +444,6 @@ function PatientIdentification(props) {
                   <Grid>
                     <Button
                       variant="contained"
-                      className={classes.submit}
                       onClick={() => window.location = "/system/sling/logout"}
                     >
                       Close
