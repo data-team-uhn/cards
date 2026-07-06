@@ -71,7 +71,7 @@ public class CardsJwtTokenManagerImplTest
      */
     private static final String SESSION_SUBJECT = "cards:sessionSubject";
 
-    private static final String KEY_PATH = "/jcr:system/cards:jwt/JWTSigningKey";
+    private static final String KEY_PATH = "/jcr:system/cards:jwt/JWTRSA256Key";
 
     private static final String PEER_ID = "localhost8081";
 
@@ -213,7 +213,7 @@ public class CardsJwtTokenManagerImplTest
     @Test
     public void createForeignKeyThenAccept()
     {
-        // Test using a second set of keys
+        // Test using a second set of keys that we've accepted
         String selfID = CardsJwtTokenImpl.SELF_ID.replaceAll("\\P{Alnum}", "");
 
         final String foreign = Jwts.builder()

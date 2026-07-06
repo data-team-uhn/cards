@@ -23,10 +23,10 @@ import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.crypto.SecretKey;
 import javax.jcr.Node;
 
 import org.apache.sling.api.resource.LoginException;
@@ -41,14 +41,13 @@ import org.slf4j.LoggerFactory;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ClaimsMutator.AudienceCollection;
-import io.jsonwebtoken.JweHeader;
-import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import io.uhndata.cards.auth.token.TokenManager;
 
 /**
@@ -65,7 +64,12 @@ public class CardsJwtTokenManagerImpl implements TokenManager
     /** JCR property containing a verification key. */
     public static final String VERIFY_PROP = "verify";
 
+    /** JCR path to the node where we keep our signing/verification keys. */
+    public static final String KEY_PATH = "/jcr:system/cards:jwt/JWTRSA256Key";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CardsJwtTokenManagerImpl.class);
+
+    private final SecretKey symmetricKey;
 
     private final PrivateKey signingKey;
 
@@ -82,13 +86,14 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         this.selfID = CardsJwtTokenImpl.SELF_ID.replaceAll("\\P{Alnum}", "");
         PrivateKey result = null;
         PublicKey verification = null;
+        SecretKey symmetric = null;
         try (ResourceResolver resolver = rrf.getServiceResourceResolver(null)) {
-            String resourcePath = "/jcr:system/cards:jwt/JWTSigningKey";
-            Resource res = resolver.resolve(resourcePath);
+            Resource res = resolver.resolve(CardsJwtTokenManagerImpl.KEY_PATH);
             Node keyNode = res.adaptTo(Node.class);
             if (keyNode == null) {
-                LOGGER.error("Failed to load JWT Signing key: node {} could not be read", resourcePath);
-                throw new ExceptionInInitializerError(resourcePath);
+                LOGGER.error("Failed to load JWT Signing key: node {} could not be read",
+                    CardsJwtTokenManagerImpl.KEY_PATH);
+                throw new ExceptionInInitializerError(CardsJwtTokenManagerImpl.KEY_PATH);
             }
 
             if (keyNode.hasProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP)
@@ -115,6 +120,14 @@ public class CardsJwtTokenManagerImpl implements TokenManager
                 result = newPair.getPrivate();
                 verification = newPair.getPublic();
             }
+
+            // For backwards compatibility: attempt to load (but not generate) a symmetric key, if it exists
+            res = resolver.resolve("/jcr:system/cards:jwt/JWTSigningKey");
+            keyNode = res.adaptTo(Node.class);
+            if (keyNode != null && keyNode.hasProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP)) {
+                symmetric = Keys.hmacShaKeyFor(Decoders.BASE64.decode(keyNode.getProperty(
+                    CardsJwtTokenManagerImpl.SIGNING_KEY_PROP).getString()));
+            }
         } catch (LoginException e) {
             LOGGER.error("Service access not granted: {}", e.getMessage());
         } catch (Exception e) {
@@ -122,6 +135,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         }
         this.signingKey = result;
         this.verificationKey = verification;
+        this.symmetricKey = symmetric;
     }
 
     @Override
@@ -129,12 +143,18 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         final Map<String, String> extraData)
     {
         // Assume our own audience if none is given
-        Set<String> audience = new HashSet<String>();
-        audience.add(this.selfID);
-        return create(userId, expiration, extraData, audience);
+        return create(userId, expiration, extraData, Set.of(this.selfID));
     }
 
-    // Override of the above create that allows for multiple audiences to be set
+    /**
+     * Create a JWT with the given specifications.
+     *
+     * @param userId The user ID to assign as a subject
+     * @param expiration An expiration time for the JWT
+     * @param extraData Additional data to include in the JWT payload
+     * @param audiences A set of audiences that the JWT is meant for
+     * @return A CardsJwtTokenImpl corresponding to a newly minted JWT with the given parameters.
+     */
     public CardsJwtTokenImpl create(final String userId, final Calendar expiration,
         final Map<String, String> extraData, Set<String> audiences)
     {
@@ -169,7 +189,8 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         try {
             PublicKey ourVerificationKey = this.verificationKey;
             Jwt<?, ?> jwt = Jwts.parser()
-                .keyLocator(new CardsJwtVerificationLocatorImpl(this.verificationKey, this.rrf, this.selfID))
+                .keyLocator(new CardsJwtVerificationLocatorImpl(this.verificationKey, this.symmetricKey, this.rrf,
+                    this.selfID))
                 .build()
                 .parseSignedClaims(loginToken);
 
@@ -177,9 +198,13 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             Object payload = jwt.getPayload();
             if (payload instanceof Claims) {
                 Claims claims = (Claims) payload;
-                String keyID = jwt.getHeader() instanceof JwsHeader ? ((JwsHeader) jwt.getHeader()).getKeyId()
-                    : ((JweHeader) jwt.getHeader()).getKeyId();
-                // Double-check that we're the intended audience for this JWT
+                String keyID = CardsJwtVerificationLocatorImpl.getKey(jwt.getHeader());
+                if (keyID == null) {
+                    // We were signed using a symmetric key (no `kid` present): we accept for backwards compatability
+                    return new CardsJwtTokenImpl(jwt, loginToken);
+                }
+
+                // If we're signed using an asymmetric key, double-check that we're the intended audience for this JWT
                 if (claims.getAudience() == null) {
                     // No audience found, reject
                     throw new JwtException("The given JWT is missing an `aud` claim.");

@@ -20,7 +20,9 @@ import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.regex.Pattern;
 
+import javax.crypto.SecretKey;
 import javax.jcr.Node;
 
 import org.apache.sling.api.resource.LoginException;
@@ -44,13 +46,17 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
 {
     private final PublicKey verificationKey;
 
+    private final SecretKey symmetricKey;
+
     private final ResourceResolverFactory rrf;
 
     private final String selfID;
 
-    public CardsJwtVerificationLocatorImpl(PublicKey verificationKey, ResourceResolverFactory resolver, String selfID)
+    public CardsJwtVerificationLocatorImpl(PublicKey verificationKey, SecretKey symmetricKey,
+        ResourceResolverFactory resolver, String selfID)
     {
         this.verificationKey = verificationKey;
+        this.symmetricKey = symmetricKey;
         this.rrf = resolver;
         this.selfID = selfID;
     }
@@ -60,9 +66,10 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
      */
     private PublicKey lookupPeerKey(final String keyID)
     {
+        Pattern pattern = Pattern.compile("\\P{Alnum}");
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
             // Ensure the keyID is sanitized, disallow usage and return nothing if not
-            if (keyID.indexOf("\\P{Alnum}") >= 0) {
+            if (pattern.matcher(keyID).find()) {
                 throw new JwtException(String.format("Unsafe peer key: {}", keyID));
             }
 
@@ -93,14 +100,30 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
         }
     }
 
+    /**
+     * Extracts the `kid` header from a given JWT Header.
+     *
+     * @param header The JWT Header
+     * @return the `kid` header, or {@code null} if the given header does not correspond to a JwsHeader/JweHeader
+     */
+    public static String getKey(Header header)
+    {
+        if (header instanceof JwsHeader) {
+            return ((JwsHeader) header).getKeyId();
+        } else if (header instanceof JweHeader) {
+            return ((JweHeader) header).getKeyId();
+        }
+        return null;
+    }
+
     @Override
     public Key locate(Header header)
     {
-        final String keyID = header instanceof JwsHeader ? ((JwsHeader) header).getKeyId()
-            : ((JweHeader) header).getKeyId();
+        final String keyID = getKey(header);
 
         if (keyID == null) {
-            return null;
+            // This might instead be a symmetric key -- use the symmetric key
+            return this.symmetricKey;
         }
 
         return keyID.equals(this.selfID) ? this.verificationKey : lookupPeerKey(keyID);
