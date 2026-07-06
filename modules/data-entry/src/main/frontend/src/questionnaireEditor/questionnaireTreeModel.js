@@ -183,7 +183,7 @@ function jcrFindEntries(jcrData, rootPath = (jcrData['@path'] || ''), nodes) {
     throw new Error("jcrFindEntries called with invalid jcrData");
   }
   const children = jcrGetChildren(jcrData);
-  const nodeParent = jcrData['jcr:uuid'];
+  const nodeParent = jcrGetUniqueId(jcrData);
 
   for (const child of children) {
     const uniqueNodeId = jcrGetUniqueId(child);
