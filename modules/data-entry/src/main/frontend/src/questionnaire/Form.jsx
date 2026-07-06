@@ -528,8 +528,7 @@ function Form (props) {
   if (error) {
     return (
       <ResourceErrorMessage
-        title="Error obtaining form data"
-        notFoundTitle="This form does not exist"
+        entityType="form"
         error={error}
       />
     );

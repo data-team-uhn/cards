@@ -269,8 +269,7 @@ let QuestionnaireComponent = (props) => {
     <QuestionnaireProvider>
       { error ?
         <ResourceErrorMessage
-          title="Error obtaining questionnaire data"
-          notFoundTitle="This questionnaire does not exist"
+          entityType="questionnaire"
           error={error}
         />
         :

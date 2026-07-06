@@ -147,8 +147,7 @@ function Subject(props) {
   if (error) {
     return (
       <ResourceErrorMessage
-        title="Error obtaining subject data"
-        notFoundTitle="This subject does not exist"
+        entityType="subject"
         error={error}
       />
     );
@@ -262,8 +261,7 @@ function SubjectContainer(props) {
   if (error) {
     return (
       <ResourceErrorMessage
-        title="Error obtaining subject data"
-        notFoundTitle="This subject does not exist"
+        entityType="subject"
         error={error}
       />
     );
@@ -483,8 +481,7 @@ function SubjectMemberInternal (props) {
   if (error) {
     return (
       <ResourceErrorMessage
-        title="Error obtaining subject data"
-        notFoundTitle="This subject does not exist"
+        entityType="subject"
         error={error}
       />
     );
@@ -766,8 +763,7 @@ function FormData(props) {
   if (error) {
     return (
       <ResourceErrorMessage
-        title="Error obtaining form data"
-        notFoundTitle="This form does not exist"
+        entityType="form"
         error={error}
       />
     );

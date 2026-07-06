@@ -25,16 +25,17 @@ import { checkPropTypes } from "../propTypes";
 // visual hierarchy of ErrorPage (small bold heading + secondary detail) without
 // the full-page logo/card chrome, so it can be dropped into an existing view.
 //
-// @param {string} title - the heading shown when the fetch failed; required
-// @param {string} notFoundTitle - a friendlier heading shown instead of `title`
-//   when the resource does not exist (the error is an HTTP 404)
+// @param {string} entityType - the kind of resource that failed to load (e.g.
+//   "form", "subject", "questionnaire"); used to build the headings; required
 // @param {object} error - the failed response or thrown error; its `status` and
 //   `statusText` (falling back to `toString()`) are shown as the detail line
 function ResourceErrorMessage(props) {
   checkPropTypes(ResourceErrorMessage, props);
-  const { title, notFoundTitle, error } = props;
+  const { entityType, error } = props;
+  const title = `Error obtaining ${entityType} data`;
+  const notFoundTitle = `This ${entityType} does not exist`;
   // Show a friendlier heading when the resource simply doesn't exist (404).
-  const heading = (notFoundTitle && error?.status === 404) ? notFoundTitle : title;
+  const heading = error?.status === 404 ? notFoundTitle : title;
   const detail = [error?.status, error?.statusText || error?.toString?.()]
     .filter(Boolean).join(" ");
 
@@ -51,8 +52,7 @@ function ResourceErrorMessage(props) {
 }
 
 ResourceErrorMessage.propTypes = {
-  title: PropTypes.string.isRequired,
-  notFoundTitle: PropTypes.string,
+  entityType: PropTypes.string.isRequired,
   error: PropTypes.object.isRequired,
 }
 
