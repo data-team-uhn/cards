@@ -43,7 +43,7 @@ function ResourceErrorMessage(props) {
     .filter(Boolean).join(" ");
 
   return (
-    <Stack spacing={1} sx={{ py: 4, mx: 'auto', textAlign: 'center' }}>
+    <Stack spacing={1} sx={{ py: 4, mx: 'auto', maxWidth: 600, textAlign: 'center' }}>
       <Typography variant="h4" component="h1" color="primary"  sx={{ fontWeight: 'bold' }}>
         {heading}
       </Typography>
