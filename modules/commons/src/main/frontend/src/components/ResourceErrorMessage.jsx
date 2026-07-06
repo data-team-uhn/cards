@@ -27,8 +27,9 @@ import { checkPropTypes } from "../propTypes";
 //
 // @param {string} entityType - the kind of resource that failed to load (e.g.
 //   "form", "subject", "questionnaire"); used to build the headings; required
-// @param {object} error - the failed response or thrown error; its `status` and
-//   `statusText` (falling back to `toString()`) are shown as the detail line
+// @param {object} error - the failed response or thrown error, if any; its
+//   `status` and `statusText` (falling back to `toString()`) are shown as the
+//   detail line, and an HTTP 404 switches to the friendlier "not found" heading
 // @param {string} message - an optional extra message shown below the status
 //   detail, e.g. to give the user context or a suggested next step
 function ResourceErrorMessage(props) {
@@ -58,7 +59,7 @@ function ResourceErrorMessage(props) {
 
 ResourceErrorMessage.propTypes = {
   entityType: PropTypes.string.isRequired,
-  error: PropTypes.object.isRequired,
+  error: PropTypes.object,
   message: PropTypes.string,
 }
 
