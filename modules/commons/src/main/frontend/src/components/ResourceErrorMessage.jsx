@@ -29,9 +29,11 @@ import { checkPropTypes } from "../propTypes";
 //   "form", "subject", "questionnaire"); used to build the headings; required
 // @param {object} error - the failed response or thrown error; its `status` and
 //   `statusText` (falling back to `toString()`) are shown as the detail line
+// @param {string} message - an optional extra message shown below the status
+//   detail, e.g. to give the user context or a suggested next step
 function ResourceErrorMessage(props) {
   checkPropTypes(ResourceErrorMessage, props);
-  const { entityType, error } = props;
+  const { entityType, error, message } = props;
   const title = `Error obtaining ${entityType} data`;
   const notFoundTitle = `This ${entityType} does not exist`;
   // Show a friendlier heading when the resource simply doesn't exist (404).
@@ -47,6 +49,9 @@ function ResourceErrorMessage(props) {
       {detail &&
         <Typography variant="subtitle1" color="textSecondary">{detail}</Typography>
       }
+      {message &&
+        <Typography variant="subtitle1" color="textSecondary">{message}</Typography>
+      }
     </Stack>
   );
 }
@@ -54,6 +59,7 @@ function ResourceErrorMessage(props) {
 ResourceErrorMessage.propTypes = {
   entityType: PropTypes.string.isRequired,
   error: PropTypes.object.isRequired,
+  message: PropTypes.string,
 }
 
 export default ResourceErrorMessage;
