@@ -64,8 +64,8 @@
     </style>
     <script src="/system/sling.js"></script>
     <sly data-sly-use.assets="/libs/cards/resources/assets">
-      <script src="/libs/cards/resources/${assets['vendor.js']}"></script>
-      <script src="/libs/cards/resources/${assets['runtime.js']}"></script>
+      <script type="module" src="/libs/cards/resources/${assets['vendor.js']}"></script>
+      <script type="module" src="/libs/cards/resources/${assets['runtime.js']}"></script>
     </sly>
   </head>
   <body style='font-family:"Roboto", "Helvetica", "Arial", sans-serif;line-height:1.5em'>

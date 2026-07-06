@@ -17,35 +17,16 @@
  * under the License.
  */
 
-const RuntimeGlobals = require("webpack/lib/RuntimeGlobals");
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { WebpackAssetsManifest } = require('webpack-assets-manifest');
-const MinimizerPlugin = require('minimizer-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
-const { defineReactCompilerLoaderOption, reactCompilerLoader } = require('react-compiler-webpack');
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { WebpackAssetsManifest } from 'webpack-assets-manifest';
+import MinimizerPlugin from 'minimizer-webpack-plugin';
+import ESLintPlugin from 'eslint-webpack-plugin';
+import { defineReactCompilerLoaderOption, reactCompilerLoader } from 'react-compiler-webpack';
 
-/*
- * Webpack 5.25.0 changed how the code is generated to no longer return the module by default when eval-ing it.
- * Our dynamic UIX loading depends on this, so this is a simple library plugin that forces webpack to "return" the module.
- */
-class ReturnModulePlugin {
-  constructor() {
-    this.pluginName = 'returnModule';
-  }
-  apply(compiler) {
-    compiler.hooks.thisCompilation.tap(this.pluginName, compilation => {
-      compilation.hooks.additionalChunkRuntimeRequirements.tap(
-        this.pluginName,
-        (chunk, set, { chunkGraph }) => {
-          set.add(RuntimeGlobals.returnExportsFromRuntime);
-        }
-      );
-      }
-    );
-  }
-}
-
-module_name = require("./package.json").name + ".";
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const isProduction = process.argv.find(arg => arg.startsWith("--mode"))?.substring(7) == 'production';
 
@@ -100,10 +81,13 @@ function logCompilerEvent(filename, event) {
   }
 }
 
-module.exports = (env) => {
+export default (env) => {
   return {
+    experiments: {
+      outputModule: true,
+    },
     mode: 'development',
-    devtool: 'eval-cheap-module-source-map',
+    devtool: 'source-map',
     cache: {
       type: 'filesystem',
       // any change here invalidates the cache
@@ -116,7 +100,6 @@ module.exports = (env) => {
 ENTRY_CONTENT
     },
     plugins: [
-      new ReturnModulePlugin(),
       new CleanWebpackPlugin(),
       new WebpackAssetsManifest({
         output: "assets.json"
@@ -192,6 +175,9 @@ ENTRY_CONTENT
       }
     },
     output: {
+      library: {
+        type: "modern-module",
+      },
       path: __dirname + '/dist/SLING-INF/content/libs/cards/resources/',
       publicPath: '/',
       filename: '[name].[contenthash].js',
