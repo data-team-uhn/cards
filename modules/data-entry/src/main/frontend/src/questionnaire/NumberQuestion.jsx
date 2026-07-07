@@ -577,7 +577,7 @@ function NumberQuestion(props) {
             <MultipleChoice
               answerNodeType={answerNodeType}
               valueType={valueType}
-              input={displayMode === "input" || displayMode === "list+input"}
+              input={effectiveDisplayMode === "input" || effectiveDisplayMode === "list+input"}
               textbox={displayMode === "textbox"}
               onUpdate={text => setMinMaxError(getValidationErrorMessage(text))}
               additionalInputProps={textFieldProps}
