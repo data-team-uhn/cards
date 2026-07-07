@@ -29,7 +29,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import {
-  Backdrop,
   Button,
   CircularProgress,
   Divider,
@@ -45,7 +44,6 @@ import {
   Typography,
   useScrollTrigger,
 } from "@mui/material";
-import { alpha } from '@mui/material/styles';
 import _ from "lodash";
 import { DateTime } from "luxon";
 import PropTypes from "prop-types";
@@ -59,6 +57,7 @@ import { QuestionnaireProvider, useQuestionnaireInViewContext } from "./Question
 import QuestionnairePreview from "./QuestionnairePreview";
 import { stripCardsNamespace } from "./QuestionnaireUtilities";
 import ResourceHeader from "./ResourceHeader";
+import LoadingOverlay from "../components/LoadingOverlay";
 import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import ExportButton from "../dataHomepage/ExportButton";
@@ -334,18 +333,7 @@ let QuestionnaireComponent = (props) => {
               showLocation={isEdit}
             />
             <Grid>
-              { isSwitchingView &&
-                <Backdrop
-                  open={isSwitchingView}
-                  sx={(theme) => ({
-                    backgroundColor: alpha(theme.palette.background.paper, .5),
-                    marginLeft: { md : "260px" },
-                    zIndex: theme.zIndex.drawer + 1
-                  })}
-                >
-                  <CircularProgress />
-                </Backdrop>
-              }
+              <LoadingOverlay open={isSwitchingView} />
               { renderedView === 'preview'
                 ? previewContent
                 :
@@ -368,9 +356,7 @@ let QuestionnaireComponent = (props) => {
           </Grid>
           :
           // Initial load: the questionnaire data is still being fetched (or first-rendered).
-          <Grid container justifyContent="center" sx={{ p: 4 }}>
-            <CircularProgress />
-          </Grid>
+          <LoadingOverlay open={true}/>
       }
     </QuestionnaireProvider>
   );
