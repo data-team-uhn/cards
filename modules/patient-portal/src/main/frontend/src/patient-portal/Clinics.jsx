@@ -27,6 +27,8 @@ import {
   Typography
 } from "@mui/material";
 
+import clinicsHints from "./Clinics-hints.json";
+import clinicsSpecs from "./Clinics.json";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
@@ -36,8 +38,6 @@ import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 function Clinics(props) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isNewClinic, setIsNewClinic] = useState(false);
-
-  let clinicsSpecs = require('./Clinics.json');
 
   let columns = Object.keys(clinicsSpecs).filter((stat) => !Array.isArray(clinicsSpecs[stat]))
     .map((stat) => {
@@ -89,15 +89,6 @@ function OnboardNewClinicDialog(props) {
   let [initialized, setInitialized] = useState(false);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
-
-  let clinicsSpecs = require('./Clinics.json');
-
-  let hints = null;
-  try {
-    hints = require(`./Clinics-hints.json`);
-  } catch (e) {
-    // do nothing
-  }
 
   let reset = () => {
     // reset all fields
@@ -160,7 +151,7 @@ function OnboardNewClinicDialog(props) {
             {
               // We don't want to load the Fields component until we are fully initialized
               // since otherwise the default values will be empty and cannot be assigned
-              initialized && <Fields data={{}} JSON={clinicsSpecs} hints={hints} edit />
+              initialized && <Fields data={{}} JSON={clinicsSpecs} hints={clinicsHints} edit />
             }
           </Grid>
         </DialogContent>

@@ -26,9 +26,8 @@ import {
   Typography
 } from "@mui/material";
 
+import Status from "./statusCodes.json";
 import VocabularyTable from "./VocabularyTable";
-
-const Status = require("./statusCodes.json");
 
 /*
   This function reformats the vocab data for more light unified representation.

@@ -33,8 +33,7 @@ import {
 import { makeStyles } from 'tss-react/mui';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
-
-const Phase = require("./phaseCodes.json");
+import Phase from "./phaseCodes.json";
 
 const useStyles = makeStyles()(theme => ({
   vocabularyAction: {

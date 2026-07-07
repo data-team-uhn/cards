@@ -32,8 +32,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import fetchBioPortalApiKey from "./BioportalApiKey.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
-
-const vocabLinks = require('./vocabularyLinks.json');
+import vocabLinks from './vocabularyLinks.json';
 
 function extractList(data) {
   let acronymList = [];

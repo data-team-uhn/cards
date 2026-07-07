@@ -30,6 +30,7 @@ import {
 import { Link } from "react-router";
 import { v4 as uuidv4 } from 'uuid';
 
+import statisticsSpecs from "./Statistics.json";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
@@ -177,8 +178,6 @@ function StatisticDialog(props) {
   const [ initialized, setInitialized ] = useState(false);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
-
-  let statisticsSpecs = require('./Statistics.json');
 
   let reset = () => {
     // reset all fields

@@ -26,10 +26,9 @@ import {
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 
+import Phase from "./phaseCodes.json";
 import VocabularyActions from "./VocabularyActions"
 import VocabularySearch from "./VocabularySearch";
-
-const Phase = require("./phaseCodes.json");
 
 export default function VocabularyTable(props) {
   const { vocabList, type  } = props;

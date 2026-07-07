@@ -25,11 +25,10 @@ import {
 
 import ErrorDialog from "./components/ErrorDialog";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
+import Phase from "./phaseCodes.json";
 import VocabularyAction from "./VocabularyAction"
 import VocabularyDetails from "./VocabularyDetails"
-
-const Phase = require("./phaseCodes.json");
-const vocabLinks = require('./vocabularyLinks.json');
+import vocabLinks from './vocabularyLinks.json';
 
 
 /*

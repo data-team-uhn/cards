@@ -27,10 +27,9 @@ import {
 import AdminScreen from "./adminDashboard/AdminScreen.jsx";
 import { BioPortalApiKey } from "./BioportalApiKey.jsx";
 import OwlInstaller from "./OwlInstaller.jsx";
+import Phase from "./phaseCodes.json";
 import VocabularyDirectory from "./VocabularyDirectory.jsx";
-
-const Phase = require("./phaseCodes.json");
-const vocabLinks = require("./vocabularyLinks.json");
+import vocabLinks from "./vocabularyLinks.json";
 
 // Generates a URL to the vocabulary listing page
 function generateRemoteLink(apiKey, linkKey) {
