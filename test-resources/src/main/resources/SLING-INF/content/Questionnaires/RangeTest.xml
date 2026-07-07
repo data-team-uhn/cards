@@ -95,7 +95,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Decimal range with min/maxValue</value>
+			<value>Double range with min/maxValue</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -111,6 +111,241 @@
 		<property>
 			<name>dataType</name>
 			<value>double</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>q4</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Long range with min/maxValue</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Whole-number range accepting values between 0 and 100. Enter -5 and 120 (in view mode you should see "The values must be between 0 and 100").</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>100</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>q5</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Decimal range with min/maxValue, 2 decimal places</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Decimal range accepting values between 0 and 10, rounded to 2 decimals.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>10</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>decimalScale</name>
+			<value>2</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>q6</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Double range with min value only</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Only a lower limit is set. The instruction should read "Please enter values of at least 0".</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>double</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>q7</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Double range with max value only</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Only an upper limit is set. The instruction should read "Please enter values of at most 100".</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>double</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>100</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>q8</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Double range with min/maxValue, **not enforced**</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Expected values are between 0 and 100 but not enforced. Out-of-range limits show a warning instead of blocking the form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>double</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>100</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>Please check that your entries are correct.
+Expected values are between 0 and 100.</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>q9</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Double range, slider display but no min/maxValue</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>displayMode is slider but no bounds are set, so it falls back to editable limit fields. Validation must still run: enter a lower value greater than the upper (e.g. 50 then 5) and the "range is invalid" error must appear.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>double</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>slider</value>
 			<type>String</type>
 		</property>
 		<property>
