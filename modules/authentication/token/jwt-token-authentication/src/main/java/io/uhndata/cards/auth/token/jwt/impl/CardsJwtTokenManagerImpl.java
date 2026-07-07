@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.crypto.SecretKey;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -99,16 +100,11 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             if (keyNode.hasProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP)
                 && keyNode.hasProperty(CardsJwtTokenManagerImpl.VERIFY_PROP)) {
                 // Private key is PKCS-encoded
-                byte[] privBytes = Decoders.BASE64.decode(
-                    keyNode.getProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP).getString()
-                );
-                result = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(privBytes));
-
+                result = KeyFactory.getInstance("RSA").generatePrivate(
+                    new PKCS8EncodedKeySpec(readKey(keyNode, CardsJwtTokenManagerImpl.SIGNING_KEY_PROP)));
                 // Public key is X.509-encoded
-                byte[] pubBytes = Decoders.BASE64.decode(keyNode.getProperty(
-                    CardsJwtTokenManagerImpl.VERIFY_PROP).getString()
-                );
-                verification = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubBytes));
+                verification = KeyFactory.getInstance("RSA").generatePublic(
+                    new X509EncodedKeySpec(readKey(keyNode, CardsJwtTokenManagerImpl.VERIFY_PROP)));
             } else {
                 KeyPair newPair = Jwts.SIG.RS256.keyPair().build();
                 String secretString = Encoders.BASE64.encode(newPair.getPrivate().getEncoded());
@@ -136,6 +132,20 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         this.signingKey = result;
         this.verificationKey = verification;
         this.symmetricKey = symmetric;
+    }
+
+    /**
+     * Read a BASE64-encoded key from the given property of the given node.
+     *
+     * @param keyNode The node to extract a key from
+     * @param propName The property containing the key
+     * @return A byte array from the BASE64-encoded key
+     */
+    private byte[] readKey(Node keyNode, String propName) throws RepositoryException
+    {
+        return Decoders.BASE64.decode(
+            keyNode.getProperty(propName).getString()
+        );
     }
 
     @Override
