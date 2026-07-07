@@ -262,7 +262,7 @@ function NumberQuestion(props) {
     // For a range with both limits defined, show a single "between" message when the value falls outside them
     if (isRange && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined' &&
         (value < minValue || value > maxValue)) {
-      return `The values must be between ${minValue} and ${maxValue}`;
+      return `The value${pluralSuffix} must be between ${minValue} and ${maxValue}`;
     }
 
     // individual out of range error can happen if range or not

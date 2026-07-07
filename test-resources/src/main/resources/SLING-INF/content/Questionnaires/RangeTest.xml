@@ -129,7 +129,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Whole-number range accepting values between 0 and 100. Enter -5 and 120 (in view mode you should see "The values must be between 0 and 100"), or 3.5 to see "The values must be whole numbers".</value>
+			<value>Whole-number range accepting values between 0 and 100. Enter -5 and 120 (in view mode you should see "The values must be between 0 and 100").</value>
 			<type>String</type>
 		</property>
 		<property>
