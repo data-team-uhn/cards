@@ -376,7 +376,7 @@ Expected values are between 0 and 10.</value>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Enforced min/max with options whose values (-1, -2) are deliberately outside the range. The instruction should end with "or select one of the options". Because enforcement is on, typing an out-of-range value OR selecting "Not applicable" / "Unknown" is flagged in view mode and the backend marks the form INVALID on save. Compare with the not-enforced version below.</value>
+			<value>Enforced min/max with options whose values (-1, -2) are deliberately outside the range. The instruction should end with "or select one of the options". Because enforcement is on, typing an out-of-range value is flagged in view mode and the backend marks the form INVALID on save. However, selecting a predefined option ("Not applicable" / "Unknown") is always accepted: it is NOT flagged in view mode and does NOT mark the form invalid, even though its value falls outside the range. Compare with the not-enforced version below.</value>
 			<type>String</type>
 		</property>
 		<property>
