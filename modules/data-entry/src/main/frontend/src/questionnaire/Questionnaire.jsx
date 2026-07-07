@@ -17,12 +17,19 @@
 //  under the License.
 //
 
-import { useEffect, useState, useMemo } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 
 import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import {
+  Backdrop,
   Button,
   CircularProgress,
   Divider,
@@ -38,6 +45,7 @@ import {
   Typography,
   useScrollTrigger,
 } from "@mui/material";
+import { alpha } from '@mui/material/styles';
 import _ from "lodash";
 import { DateTime } from "luxon";
 import PropTypes from "prop-types";
@@ -72,6 +80,9 @@ import { getAncestorPath } from "../questionnaireEditor/treeQueries";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
+
+// Stable reference so the memoized edit-tab element below isn't invalidated every render.
+const MAIN_ACTION_MENU_PROPS = { isMainAction: true };
 
 let Questionnaire = (props) => {
   let location = useLocation();
@@ -161,10 +172,48 @@ let QuestionnaireComponent = (props) => {
   let navigate = useNavigate();
   let isEdit = location.pathname.endsWith(".edit");
   let isReorder = location.pathname.endsWith(".reorder");
-  // Derive the active tab from the URL rather than holding it in separate state. This keeps
+  // Derive the active view from the URL rather than holding it in separate state. This keeps
   // the Reorder tab mounted when its navigation guard blocks a tab switch: the guard blocks
-  // the URL change, the derived tab stays on "reorder", and no out-of-sync state lingers.
-  const editTab = isReorder ? 'reorder' : 'edit';
+  // the URL change, the derived view stays on "reorder", and no out-of-sync state lingers.
+  const view = isReorder ? 'reorder' : (isEdit ? 'edit' : 'preview');
+  // The heavy tab content is rendered from `renderedView`, which lags `view` during a switch.
+  // Mounting a tab's subtree blocks for a while on a big questionnaire. The view comes from
+  // react-router's location (a synchronous external store React can't defer), so we bridge the
+  // change into our own state inside a transition: React then renders the next view in the
+  // background, keeps the current one on screen, and `isSwitchingView` (pending) drives the
+  // progress bar. Rendering stays interruptible, so the page doesn't lock up mid-switch.
+  // This runs in a layout effect (before paint) rather than a passive one, so the pending
+  // backdrop appears on the same frame as the click instead of one paint later.
+  const [renderedView, setRenderedView] = useState(view);
+  const [isSwitchingView, startTransition] = useTransition();
+  useLayoutEffect(() => {
+    if (view !== renderedView) startTransition(() => setRenderedView(view));
+  }, [view, renderedView]);
+
+  // Memoize each view's element so a location-change re-render of this component doesn't
+  // reconcile the (large) current view again before the switch transition starts — that
+  // extra reconcile is what delayed the backdrop when leaving the Edit tab. The element only
+  // rebuilds when its own inputs change; context-driven updates still reach the subtree.
+  const previewContent = useMemo(() => (
+    <QuestionnairePreview
+      data={data}
+      title={questionnaireTitle}
+      contentOffset={props.contentOffset}
+    />
+  ), [data, questionnaireTitle, props.contentOffset]);
+  const editContent = useMemo(() => (
+    <QuestionnaireContents
+      key={treeContext.state.revision}
+      disableDelete
+      data={data}
+      classes={classes}
+      menuProps={MAIN_ACTION_MENU_PROPS}
+    />
+  ), [treeContext.state.revision, data, classes]);
+  const reorderContent = useMemo(() => (
+    <ReorderDraft key={treeContext.state.timestamp} />
+  ), [treeContext.state.timestamp]);
+
   let pageNameWriter = usePageNameWriterContext();
 
   // First, fetch the questionnaire data
@@ -273,7 +322,8 @@ let QuestionnaireComponent = (props) => {
           error={error}
         />
         :
-        data?.["jcr:primaryType"] === "cards:Questionnaire" &&
+        data?.["jcr:primaryType"] === "cards:Questionnaire"
+          ?
           <Grid container className={classes.formContainer} {...FORM_ENTRY_CONTAINER_PROPS}>
             <QuestionnaireResourceHeader
               title={questionnaireTitle}
@@ -284,17 +334,24 @@ let QuestionnaireComponent = (props) => {
               showLocation={isEdit}
             />
             <Grid>
-              { !(isEdit || isReorder)
-                ?
-                <QuestionnairePreview
-                  data={data}
-                  title={questionnaireTitle}
-                  contentOffset={props.contentOffset}
-                />
+              { isSwitchingView &&
+                <Backdrop
+                  open={isSwitchingView}
+                  sx={(theme) => ({
+                    backgroundColor: alpha(theme.palette.background.paper, .5),
+                    marginLeft: { md : "260px" },
+                    zIndex: theme.zIndex.drawer + 1
+                  })}
+                >
+                  <CircularProgress />
+                </Backdrop>
+              }
+              { renderedView === 'preview'
+                ? previewContent
                 :
                 <>
                   <Tabs
-                    value={editTab}
+                    value={renderedView}
                     onChange={(event, newValue) => {
                       navigate(questionnaireUrl + `.${newValue}`);
                     }}
@@ -303,21 +360,16 @@ let QuestionnaireComponent = (props) => {
                     <Tab label="Reorder" value="reorder" />
                   </Tabs>
                   <Divider />
-                  { editTab == "edit" &&
-                    <QuestionnaireContents
-                      key={treeContext.state.revision}
-                      disableDelete
-                      data={data}
-                      classes={classes}
-                      menuProps={{ isMainAction: true }}
-                    />
-                  }
-                  { editTab == "reorder" &&
-                    <ReorderDraft key={treeContext.state.timestamp} />
-                  }
+                  { renderedView == "edit" && editContent }
+                  { renderedView == "reorder" && reorderContent }
                 </>
               }
             </Grid>
+          </Grid>
+          :
+          // Initial load: the questionnaire data is still being fetched (or first-rendered).
+          <Grid container justifyContent="center" sx={{ p: 4 }}>
+            <CircularProgress />
           </Grid>
       }
     </QuestionnaireProvider>
