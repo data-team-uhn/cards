@@ -197,7 +197,6 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             return null;
         }
         try {
-            PublicKey ourVerificationKey = this.verificationKey;
             Jwt<?, ?> jwt = Jwts.parser()
                 .keyLocator(new CardsJwtVerificationLocatorImpl(this.verificationKey, this.symmetricKey, this.rrf,
                     this.selfID))

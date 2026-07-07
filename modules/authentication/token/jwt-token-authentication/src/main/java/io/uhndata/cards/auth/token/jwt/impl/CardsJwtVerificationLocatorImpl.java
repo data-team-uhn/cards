@@ -70,7 +70,7 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
             // Ensure the keyID is sanitized, disallow usage and return nothing if not
             if (pattern.matcher(keyID).find()) {
-                throw new JwtException(String.format("Unsafe peer key: {}", keyID));
+                throw new JwtException(String.format("Unsafe peer key: %s", keyID));
             }
 
             // Grab the appropriate key node, if it exists
@@ -94,9 +94,9 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
             );
             return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubBytes));
         } catch (LoginException e) {
-            throw new JwtException(String.format("Service access not granted: {}", e.getMessage()));
+            throw new JwtException(String.format("Service access not granted: %s", e.getMessage()));
         } catch (Exception e) {
-            throw new JwtException(String.format("Failed to load JWT validation key from node: {}", e.getMessage()));
+            throw new JwtException(String.format("Failed to load JWT validation key from node: %s", e.getMessage()));
         }
     }
 
