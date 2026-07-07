@@ -51,6 +51,7 @@ import { QuestionnaireProvider, useQuestionnaireInViewContext } from "./Question
 import QuestionnairePreview from "./QuestionnairePreview";
 import { stripCardsNamespace } from "./QuestionnaireUtilities";
 import ResourceHeader from "./ResourceHeader";
+import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import ExportButton from "../dataHomepage/ExportButton";
 import { checkPropTypes } from "../propTypes";
@@ -267,9 +268,10 @@ let QuestionnaireComponent = (props) => {
   return (
     <QuestionnaireProvider>
       { error ?
-        <Typography variant="h2" color="error">
-          Error obtaining questionnaire info: {error.status} {error.statusText}
-        </Typography>
+        <ResourceErrorMessage
+          entityType="questionnaire"
+          error={error}
+        />
         :
         data?.["jcr:primaryType"] === "cards:Questionnaire" &&
           <Grid container className={classes.formContainer} {...FORM_ENTRY_CONTAINER_PROPS}>

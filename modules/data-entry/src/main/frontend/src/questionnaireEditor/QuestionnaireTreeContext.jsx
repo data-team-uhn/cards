@@ -147,7 +147,7 @@ export function QuestionnaireTreeProvider(props) {
   // Actions
   const fetchRootData = useCallback((highlightPath = null) => {
     return jcrActions.fetchQuestionnaireData(globalLoginDisplay, { id: questionnaireId })
-      .then(response => response.json())
+      .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(data => {
         if (highlightPath) {
           flagNodeForHighlight(data, highlightPath);
@@ -158,7 +158,7 @@ export function QuestionnaireTreeProvider(props) {
 
   const fetchRootNodes = useCallback(() => {
     return jcrActions.fetchQuestionnaireData(globalLoginDisplay, { id: questionnaireId })
-      .then(response => response.json())
+      .then(response => response.ok ? response.json() : Promise.reject(response))
       .then(data => {
         const nodes = initializeRoot(data);
         return nodes;

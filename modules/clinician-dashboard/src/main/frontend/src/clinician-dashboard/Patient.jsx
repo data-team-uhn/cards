@@ -33,6 +33,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { DateTime } from "luxon";
 import { useNavigate } from "react-router";
 
+import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/questionnaireConstants.jsx";
 import ResourceHeader from "../questionnaire/ResourceHeader.jsx";
@@ -94,8 +95,10 @@ function Patient() {
   const [visits, setVisits] = useState();
   // Visit data formatted for display in a DataGrid
   const [visitGridRows, setVisitGridRows] = useState();
-  // When something goes wrong:
-  const [error, setError] = useState();
+  // When something goes wrong: the props for a ResourceErrorMessage, i.e.
+  // { entityType, error, message } - the failed resource type, the failed
+  // response (if any), and a message explaining what happened
+  const [errorData, setErrorData] = useState();
 
   const navigate = useNavigate();
 
@@ -110,7 +113,11 @@ function Patient() {
       .then((json) => {
         setPatientData(json);
       })
-      .catch(() => setError("The patient record could not be loaded. Please try again later or contact the administrator for further assistance."));
+      .catch((response) => setErrorData({
+        entityType: "patient",
+        error: response,
+        message: "The patient record could not be loaded. Please try again later or contact the administrator for further assistance.",
+      }));
   };
 
   const fetchVisits = () => {
@@ -122,7 +129,11 @@ function Patient() {
       .then(result => {
         setVisits(Array.from(result.rows))
       })
-      .catch(() => setError("The visits could not be loaded for this patient. Please try again later or contact the administrator for further assistance."));
+      .catch((response) => setErrorData({
+        entityType: "patient",
+        error: response,
+        message: "The visits could not be loaded for this patient. Please try again later or contact the administrator for further assistance.",
+      }));
   };
 
   const formatVisits = () => {
@@ -154,8 +165,8 @@ function Patient() {
     </Grid>
   );
 
-  if (error) {
-    return displayMessageScreen(error, "error");
+  if (errorData) {
+    return <ResourceErrorMessage {...errorData} />;
   }
 
   if (!patientData || !visits) {

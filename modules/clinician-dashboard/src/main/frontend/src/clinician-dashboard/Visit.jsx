@@ -44,6 +44,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import SurveyLinkButton from "./SurveyLinkButton";
 import FormattedText from "../components/FormattedText";
+import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import EditButton from "../dataHomepage/EditButton";
 import PrintButton from "../dataHomepage/PrintButton";
 import SubjectLockAction from "../locking/SubjectLockAction";
@@ -106,8 +107,10 @@ function Visit(props) {
   const [ visitPath, setVisitPath ] = useState();
   // The parent nodes of the visit subject (expected: one parent, a patient subject)
   const [ parents, setParents ] = useState();
-  // When something goes wrong:
-  const [ error, setError ] = useState("");
+  // When something goes wrong: the props for a ResourceErrorMessage, i.e.
+  // { entityType, error, message } - the failed resource type, the failed
+  // response (if any), and a message explaining what happened
+  const [ errorData, setErrorData ] = useState();
   // Visit information form
   const [ visitInformation, setVisitInformation ] = useState();
   // If the current visit is locked
@@ -136,7 +139,7 @@ function Visit(props) {
           setVisitInformation(json[VISIT_INFORMATION_FORM_TITLE]?.[0] || {});
           let clinicPath = json[VISIT_INFORMATION_FORM_TITLE]?.[0]?.clinic;
           if (!clinicPath) {
-            setError("Clinic is missing for this visit.");
+            setErrorData({ entityType: "visit", message: "Clinic is missing for this visit." });
             return;
           } else {
             return fetchWithReLogin(globalLoginDisplay, `${clinicPath}.deep.json`)
@@ -148,7 +151,11 @@ function Visit(props) {
         }
         selectDataForQuestionnaireSet(questionnaires, questionnaireSetIds);
       })
-      .catch(() => setError("The survey data could not be loaded for this visit. Please try again later or contact the administrator for further assistance."));
+      .catch((response) => setErrorData({
+        entityType: "visit",
+        error: response,
+        message: "The survey data could not be loaded for this visit. Please try again later or contact the administrator for further assistance.",
+      }));
   }
 
   const loadQuestionnaireSet = () => {
@@ -162,9 +169,17 @@ function Visit(props) {
       })
       .catch((response) => {
         if (response.status == 404) {
-          setError("The survey you are trying to access does not exist. Please contact the administrator for further assistance.");
+          setErrorData({
+            entityType: "survey",
+            error: response,
+            message: "The survey you are trying to access does not exist. Please contact the administrator for further assistance.",
+          });
         } else {
-          setError("The survey could not be loaded at this time. Please try again later or contact the administrator for further assistance.");
+          setErrorData({
+            entityType: "survey",
+            error: response,
+            message: "The survey could not be loaded at this time. Please try again later or contact the administrator for further assistance.",
+          });
         }
       });
   }
@@ -233,8 +248,8 @@ function Visit(props) {
     </Grid>
   );
 
-  if (error) {
-    return displayMessageScreen(error, "error");
+  if (errorData) {
+    return <ResourceErrorMessage {...errorData} />;
   }
 
   if (!questionnaireSetId || !questionnaireIds || !questionnaires || !visit) {

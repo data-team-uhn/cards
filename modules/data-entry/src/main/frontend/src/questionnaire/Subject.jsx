@@ -47,6 +47,7 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
 import FormattedText from "../components/FormattedText";
+import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import { checkPropTypes } from "../propTypes";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import ResourceHeader from "./ResourceHeader.jsx"
@@ -93,6 +94,8 @@ function Subject(props) {
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ activeTab, setActiveTab ] = useState(0);
   const [ fetchSubjectData, setFetchSubjectData ] = useState(null);
+  // Error set when the subject data could not be fetched (e.g. the subject does not exist)
+  const [ error, setError ] = useState();
 
   // TODO: These tabs should be extensible.
   // This will involve moving SubjectContainer to it's own file and moving
@@ -109,6 +112,7 @@ function Subject(props) {
     let newId = getSubjectIdFromPath(location.pathname);
     if (newId !== currentSubjectId) {
       setCurrentSubject(undefined);
+      setError(undefined);
       setCurrentSubjectId(newId);
     }
     if (location.hash.length > 0 && tabs.includes(location.hash.substring(1))) {
@@ -139,6 +143,16 @@ function Subject(props) {
     setActiveTab(index);
   }
 
+  // If the subject data could not be fetched, report the error and stop rendering the subject
+  if (error) {
+    return (
+      <ResourceErrorMessage
+        entityType="subject"
+        error={error}
+      />
+    );
+  }
+
   return (
     <>
       <NewFormDialog
@@ -154,6 +168,7 @@ function Subject(props) {
           pageTitle={pageTitle}
           classes={classes}
           getSubject={handleSubject}
+          onError={setError}
           onFetchSubjectDataReady={handleSetFetchSubjectData}
           contentOffset={props.contentOffset}
           extensionURL={activeExtensionURL}
@@ -245,13 +260,10 @@ function SubjectContainer(props) {
 
   if (error) {
     return (
-      <Grid container justifyContent="center">
-        <Grid>
-          <Typography variant="h2" color="error">
-            Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
-          </Typography>
-        </Grid>
-      </Grid>
+      <ResourceErrorMessage
+        entityType="subject"
+        error={error}
+      />
     );
   }
 
@@ -278,11 +290,9 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject, pageTitle, onFetchSubjectDataReady, extensionURL } = props;
+  let { id, classes, getSubject, pageTitle, onError, onFetchSubjectDataReady, extensionURL } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
-  // Error message set when fetching the data from the server fails
-  let [ error, setError ] = useState();
   let [ statusFlags, setStatusFlags ] = useState([]);
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
@@ -298,7 +308,7 @@ function SubjectHeader(props) {
 
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
-    setError(response);
+    onError?.(response);
     setSubject({});  // Prevent an infinite loop if data was not set
   };
 
@@ -335,16 +345,6 @@ function SubjectHeader(props) {
   if (!subject) {
     return (
       <Grid><CircularProgress className={classes.subjectLoading} /></Grid>
-    );
-  }
-
-  if (error) {
-    return (
-      <Grid>
-        <Typography variant="h2" color="error">
-          Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
-        </Typography>
-      </Grid>
     );
   }
 
@@ -480,13 +480,10 @@ function SubjectMemberInternal (props) {
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
     return (
-      <Grid container justifyContent="center">
-        <Grid>
-          <Typography variant="h2" color="error">
-            Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
-          </Typography>
-        </Grid>
-      </Grid>
+      <ResourceErrorMessage
+        entityType="subject"
+        error={error}
+      />
     );
   }
 
@@ -765,9 +762,10 @@ function FormData(props) {
 
   if (error) {
     return (
-      <Typography variant="h2" color="error">
-        Error obtaining form data: {error.status} {error.statusText}
-      </Typography>
+      <ResourceErrorMessage
+        entityType="form"
+        error={error}
+      />
     );
   }
   // Handle questions and sections differently
