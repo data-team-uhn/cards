@@ -100,27 +100,34 @@ const useSliderStyles = makeStyles()(theme => ({
   },
 }));
 
-// Component that renders a multiple choice question, with optional number input.
-// Selected answers are placed in a series of <input type="hidden"> tags for
-// submission.
+// Component that renders a numeric question as a multiple-choice list (with optional free-text
+// input), a bounded slider, or a pair of range limit fields. Selected answers are placed in a
+// series of <input type="hidden"> tags for submission via the Answer component.
 //
-// Optional props:
-//  minAnswers: Integer denoting minimum number of options that may be selected
-//  maxAnswers: Integer denoting maximum number of options that may be selected
-//  text: String containing the question to ask
-//  defaults: Array of arrays, each with two values, a "label" which will be displayed to the user,
-//            and a "value" denoting what will actually be stored
-//  displayMode: Either "input", "list", "list+input", "select", "slider", or undefined denoting the type of
-//             user input. If nothing is specified or if displayMode is "slider" but the conditions
-//             are not met (minValue or maxValue missing), "input" is used by default.
-//  maxValue: The maximum allowed input value
-//  minValue: The minimum allowed input value
-//  dataType: One of "integer" or "float" (default: "float")
-//  errorText: String to display when the input is not valid (default: "")
-//  isRange: Whether or not to display a range instead of a single value
-//  sliderStep: The increment between selectable slider values
-//  sliderMarkStep: The increment between marked & labeled slider values
-//  sliderOrientation: Either "horizontal" or "vertical": The orientation of the slider's bar
+// Props (on the component or its questionDefinition):
+//  minAnswers: Minimum number of options that may be selected
+//  maxAnswers: Maximum number of options that may be selected
+//  text: The question to ask
+//  defaults: Array of [label, value] pairs for predefined answer options
+//  displayMode: "input", "list", "list+input", "select", "textbox", "slider", or undefined.
+//             When undefined, MultipleChoice picks the UI from the options and maxAnswers (bare
+//             input, radio list, or checkbox list). A slider is shown only when displayMode is
+//             "slider" and both minValue and maxValue are set; otherwise the slider path is skipped.
+//             isRange forces editable limit fields (or a range slider when bounded).
+//  minValue / maxValue: Bounds for validation, sliders, and input constraints
+//  dataType: One of "long", "double", or "decimal"
+//  errorText: Shown when validation fails on an active page (default: "")
+//  isRange: Whether to collect a lower and upper limit instead of a single value
+//  sliderStep: Increment between selectable slider values
+//  sliderMarkStep: Increment between marked and labeled slider values
+//  sliderOrientation: "horizontal" (default) or "vertical"
+//  minValueLabel / maxValueLabel: Optional captions beside a slider
+//  unitOfMeasurement: Shown as an adornment on text inputs
+//  disableNegativeInput: Disallow negative typed values when no lower bound applies
+//  disableMinMaxValueEnforcement: Skip min/max validation and related instructions
+//  messageForValuesOutsideMinMax: Custom markdown shown for out-of-range values
+//  decimalScale: Decimal places for non-long data types
+//  defaultValue: Comma-separated numeric default(s) on questionDefinition
 //
 // Sample usage:
 // <NumberQuestion
@@ -198,7 +205,7 @@ function NumberQuestion(props) {
     ? Array.from(existingValue)
     : (existingValue != null && existingValue !== "" ? [existingValue] : Array.from(numericDefaultValues));
 
-  // The following two are only used for range answers
+  // The following are only used for range answers
   const [ lowerRangeValue, setLowerRangeValue ] = useState(isRange ? initialValue[0] : undefined);
   const [ upperRangeValue, setUpperRangeValue ] = useState(isRange ? initialValue[1] : undefined);
   const [ rangeError, setRangeError ] = useState(false);
