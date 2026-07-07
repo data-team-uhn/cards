@@ -306,7 +306,7 @@ const ReorderSubmitModal = (props) => {
       <Snackbar
         open={reorderState.status === 'success'}
         autoHideDuration={2000}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         onClose={() => reorderDispatch({ type: 'SET_IDLE' })}
       >
         <Alert
