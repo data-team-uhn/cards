@@ -30,6 +30,7 @@ import javax.crypto.SecretKey;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -65,6 +66,9 @@ public class CardsJwtTokenManagerImpl implements TokenManager
     /** JCR property containing a verification key. */
     public static final String VERIFY_PROP = "verify";
 
+    /** JCR property containing a peer's expected 'issuer' ID. */
+    public static final String ISSUER_PROP = "iss";
+
     /** JCR path to the node where we keep our signing/verification keys. */
     public static final String KEY_PATH = "/jcr:system/cards:jwt/JWTRSA256Key";
 
@@ -76,6 +80,8 @@ public class CardsJwtTokenManagerImpl implements TokenManager
 
     private final PublicKey verificationKey;
 
+    private final String selfAud;
+
     private final String selfID;
 
     private ResourceResolverFactory rrf;
@@ -84,7 +90,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
     public CardsJwtTokenManagerImpl(@Reference ResourceResolverFactory rrf)
     {
         this.rrf = rrf;
-        this.selfID = CardsJwtTokenImpl.SELF_ID.replaceAll("\\P{Alnum}", "");
+        this.selfAud = CardsJwtTokenImpl.SELF_ID.replaceAll("\\P{Alnum}", "");
         PrivateKey result = null;
         PublicKey verification = null;
         SecretKey symmetric = null;
@@ -107,10 +113,10 @@ public class CardsJwtTokenManagerImpl implements TokenManager
                     new X509EncodedKeySpec(readKey(keyNode, CardsJwtTokenManagerImpl.VERIFY_PROP)));
             } else {
                 KeyPair newPair = Jwts.SIG.RS256.keyPair().build();
-                String secretString = Encoders.BASE64.encode(newPair.getPrivate().getEncoded());
-                String signingString = Encoders.BASE64.encode(newPair.getPublic().getEncoded());
-                keyNode.setProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP, secretString);
-                keyNode.setProperty(CardsJwtTokenManagerImpl.VERIFY_PROP, signingString);
+                keyNode.setProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP,
+                    Encoders.BASE64.encode(newPair.getPrivate().getEncoded()));
+                keyNode.setProperty(CardsJwtTokenManagerImpl.VERIFY_PROP,
+                    Encoders.BASE64.encode(newPair.getPublic().getEncoded()));
                 resolver.commit();
 
                 result = newPair.getPrivate();
@@ -119,7 +125,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
 
             // For backwards compatibility: attempt to load (but not generate) a symmetric key, if it exists
             res = resolver.resolve("/jcr:system/cards:jwt/JWTSigningKey");
-            keyNode = res.adaptTo(Node.class);
+            keyNode = res == null ? null : res.adaptTo(Node.class);
             if (keyNode != null && keyNode.hasProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP)) {
                 symmetric = Keys.hmacShaKeyFor(Decoders.BASE64.decode(keyNode.getProperty(
                     CardsJwtTokenManagerImpl.SIGNING_KEY_PROP).getString()));
@@ -132,6 +138,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         this.signingKey = result;
         this.verificationKey = verification;
         this.symmetricKey = symmetric;
+        this.selfID = getFingerprint(verification);
     }
 
     /**
@@ -153,7 +160,30 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         final Map<String, String> extraData)
     {
         // Assume our own audience if none is given
-        return create(userId, expiration, extraData, Set.of(this.selfID));
+        return create(userId, expiration, extraData, Set.of(this.selfAud));
+    }
+
+    /**
+     * Obtain a fingerprint from the given public key.
+     *
+     * @param publicKey The key to obtain a fingerprint for
+     * @return A string hash that should uniquely identify the given public key
+     */
+    public static String getFingerprint(final PublicKey publicKey)
+    {
+        // Obtain a fingerprint from a key
+        if (publicKey == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return DigestUtils.sha256Hex(Encoders.BASE64.encode(publicKey.getEncoded()));
+        } catch (Exception e) {
+            // TODO: Better exception handling
+            return null;
+        }
     }
 
     /**
@@ -173,7 +203,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             return null;
         }
         AudienceCollection<JwtBuilder> audBuilder = Jwts.builder()
-                .issuer(this.selfID)
+                .issuer(this.selfAud)
                 .audience();
 
         for (String aud : audiences) {
@@ -190,6 +220,38 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         return new CardsJwtTokenImpl(jws, userId, expiration, extraData);
     }
 
+    private boolean areClaimsValid(Jwt<?, ?> jwt, CardsJwtVerificationLocatorImpl locator) throws JwtException,
+        RepositoryException
+    {
+        // Double check claims in the payload:
+        Object payload = jwt.getPayload();
+        if (payload instanceof Claims) {
+            Claims claims = (Claims) payload;
+            String keyID = CardsJwtVerificationLocatorImpl.getKey(jwt.getHeader());
+            if (keyID == null) {
+                // We were signed using a symmetric key (no `kid` present): we accept for backwards compatability
+                return true;
+            }
+
+            String issuer = keyID.equals(this.selfID) ? this.selfAud : locator.lookupPeerDetails(keyID)
+                .getProperty(CardsJwtTokenManagerImpl.ISSUER_PROP).getString();
+
+            // If we're signed using an asymmetric key, double-check that we're the intended audience for this JWT
+            if (claims.getAudience() == null) {
+                // No audience found, reject
+                throw new JwtException("The given JWT is missing an `aud` claim.");
+            } else if (!claims.getAudience().contains(this.selfAud)) {
+                throw new JwtException("Our server (" + this.selfAud
+                    + ")) is not in the list of JWT audiences for the given JWT.");
+            } else if (!claims.getIssuer().equals(issuer)) {
+                throw new JwtException("The given JWT's issuer does not match the expected issuer.");
+            }
+            return true;
+        } else {
+            throw new JwtException("The given JWT's payload is in an unknown format.");
+        }
+    }
+
     @Override
     public CardsJwtTokenImpl parse(final String loginToken)
     {
@@ -197,37 +259,21 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             return null;
         }
         try {
+            CardsJwtVerificationLocatorImpl locator = new CardsJwtVerificationLocatorImpl(this.verificationKey,
+                this.symmetricKey, this.rrf, this.selfID);
+
             Jwt<?, ?> jwt = Jwts.parser()
-                .keyLocator(new CardsJwtVerificationLocatorImpl(this.verificationKey, this.symmetricKey, this.rrf,
-                    this.selfID))
+                .keyLocator(locator)
                 .build()
                 .parseSignedClaims(loginToken);
 
             // Double check claims in the payload:
-            Object payload = jwt.getPayload();
-            if (payload instanceof Claims) {
-                Claims claims = (Claims) payload;
-                String keyID = CardsJwtVerificationLocatorImpl.getKey(jwt.getHeader());
-                if (keyID == null) {
-                    // We were signed using a symmetric key (no `kid` present): we accept for backwards compatability
-                    return new CardsJwtTokenImpl(jwt, loginToken);
-                }
-
-                // If we're signed using an asymmetric key, double-check that we're the intended audience for this JWT
-                if (claims.getAudience() == null) {
-                    // No audience found, reject
-                    throw new JwtException("The given JWT is missing an `aud` claim.");
-                } else if (!claims.getAudience().contains(this.selfID)) {
-                    throw new JwtException("Our server (" + this.selfID
-                        + ")) is not in the list of JWT audiences for the given JWT.");
-                } else if (!claims.getIssuer().equals(keyID)) {
-                    throw new JwtException("The given JWT's issuer does not match the KeyID passed in its header.");
-                } else {
-                    // Audience found, and we're in it -- OK
-                    return new CardsJwtTokenImpl(jwt, loginToken);
-                }
+            if (areClaimsValid(jwt, locator)) {
+                return new CardsJwtTokenImpl(jwt, loginToken);
             }
         } catch (JwtException e) {
+            LOGGER.error("JWT validation failed: {}", e.getMessage());
+        } catch (RepositoryException e) {
             LOGGER.error("JWT validation failed: {}", e.getMessage());
         }
         return null;

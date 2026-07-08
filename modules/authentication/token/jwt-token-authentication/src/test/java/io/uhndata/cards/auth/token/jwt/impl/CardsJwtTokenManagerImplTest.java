@@ -73,9 +73,11 @@ public class CardsJwtTokenManagerImplTest
 
     private static final String KEY_PATH = "/jcr:system/cards:jwt/JWTRSA256Key";
 
+    private static final String SELF_ID = "localhost8080";
+
     private static final String PEER_ID = "localhost8081";
 
-    private static final String PEER_KEY_PATH = "/jcr:system/cards:jwt/" + PEER_ID;
+    private static final String PEER_KEY_PATH_PREFIX = "/jcr:system/cards:jwt/";
 
     @Mock
     private ResourceResolverFactory resolverFactory;
@@ -96,6 +98,9 @@ public class CardsJwtTokenManagerImplTest
     private Property verifyProperty;
 
     @Mock
+    private Property issuerProperty;
+
+    @Mock
     private Resource peerResource;
 
     @Mock
@@ -104,9 +109,14 @@ public class CardsJwtTokenManagerImplTest
     @Mock
     private Property peerVerifyProperty;
 
+    @Mock
+    private Property peerIssuerProperty;
+
     private CardsJwtTokenManagerImpl manager;
 
     private KeyPair peerPair;
+
+    private String peerFingerprint;
 
     @Before
     public void setUp() throws Exception
@@ -125,12 +135,15 @@ public class CardsJwtTokenManagerImplTest
         when(this.verifyProperty.getString()).thenReturn(Encoders.BASE64.encode(keyPair.getPublic().getEncoded()));
 
         this.peerPair = Jwts.SIG.RS256.keyPair().build();
-        when(this.resolver.resolve(PEER_KEY_PATH)).thenReturn(this.peerResource);
+        this.peerFingerprint = CardsJwtTokenManagerImpl.getFingerprint(this.peerPair.getPublic());
+        when(this.resolver.resolve(PEER_KEY_PATH_PREFIX + this.peerFingerprint)).thenReturn(this.peerResource);
         when(this.peerResource.adaptTo(Node.class)).thenReturn(this.peerNode);
         when(this.peerNode.hasProperty("verify")).thenReturn(true);
         when(this.peerNode.getProperty("verify")).thenReturn(this.peerVerifyProperty);
+        when(this.peerNode.getProperty("iss")).thenReturn(this.peerIssuerProperty);
         when(this.peerVerifyProperty.getString()).thenReturn(
             Encoders.BASE64.encode(this.peerPair.getPublic().getEncoded()));
+        when(this.peerIssuerProperty.getString()).thenReturn(PEER_ID);
 
         // Activate the component via its @Activate constructor.
         this.manager = new CardsJwtTokenManagerImpl(this.resolverFactory);
@@ -220,7 +233,7 @@ public class CardsJwtTokenManagerImplTest
             .issuer("localhost8081")
             .audience().add(selfID).and()
             .expiration(oneHourFromNow().getTime())
-            .header().keyId("localhost8081").and()
+            .header().keyId(this.peerFingerprint).and()
             .signWith(this.peerPair.getPrivate())
             .compact();
         Assert.assertNotNull("A foreign, trusted issued token must parse back", this.manager.parse(foreign));

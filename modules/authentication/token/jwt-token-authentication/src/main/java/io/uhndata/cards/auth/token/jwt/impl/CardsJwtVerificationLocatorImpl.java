@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.auth.token.jwt.impl;
 
+import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PublicKey;
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
 
 import javax.crypto.SecretKey;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -62,9 +64,12 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
     }
 
     /**
-     * In an instance where the JWT does not belong to us, look up the peer key in `/jcr:system/cards:jwt/`.
+     * In an instance where the JWT does not belong to us, look up info about them in `/jcr:system/cards:jwt/`.
+     *
+     * @param keyID The ID under which to find the key
+     * @return A node corresponding to the peer's details, or null if we do not have it
      */
-    private PublicKey lookupPeerKey(final String keyID)
+    public Node lookupPeerDetails(final String keyID)
     {
         Pattern pattern = Pattern.compile("\\P{Alnum}");
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
@@ -76,27 +81,39 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
             // Grab the appropriate key node, if it exists
             String resourcePath = "/jcr:system/cards:jwt/" + keyID;
             Resource res = resolver.resolve(resourcePath);
-            Node keyNode = res.adaptTo(Node.class);
+            Node keyNode = res == null ? null : res.adaptTo(Node.class);
             if (keyNode == null) {
                 throw new JwtException(
                     String.format("Failed to load JWT Verification key for peer %s: node %s could not be read",
                         keyID, resourcePath)
                 );
             }
+            return keyNode;
+        } catch (LoginException e) {
+            throw new JwtException(String.format("Service access not granted: %s", e.getMessage()));
+        }
+    }
+
+    private PublicKey getPublicKey(Node keyNode) throws JwtException
+    {
+        try {
             if (!keyNode.hasProperty(CardsJwtTokenManagerImpl.VERIFY_PROP)) {
                 throw new JwtException(
-                    String.format("Failed to load JWT Verification key for peer %s: node %s could not be read",
-                        keyID, resourcePath)
+                    String.format("Failed to load JWT Verification key: node %s missing %s property",
+                        keyNode.getIdentifier(), CardsJwtTokenManagerImpl.VERIFY_PROP)
                 );
             }
+
             byte[] pubBytes = Decoders.BASE64.decode(
                 keyNode.getProperty(CardsJwtTokenManagerImpl.VERIFY_PROP).getString()
             );
             return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubBytes));
-        } catch (LoginException e) {
-            throw new JwtException(String.format("Service access not granted: %s", e.getMessage()));
-        } catch (Exception e) {
-            throw new JwtException(String.format("Failed to load JWT validation key from node: %s", e.getMessage()));
+        } catch (GeneralSecurityException e) {
+            // Should not happen, this is to catch java.security.NoSuchAlgorithmException
+            // or java.security.spec.InvalidKeySpecException, but KeyFactory should be able to load RSA
+            throw new JwtException(String.format("Failed to load decryption algorithm: %s", e.getMessage()));
+        } catch (RepositoryException e) {
+            throw new JwtException(String.format("Failed to load JWT Verification key: %s", e.getMessage()));
         }
     }
 
@@ -126,6 +143,6 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
             return this.symmetricKey;
         }
 
-        return keyID.equals(this.selfID) ? this.verificationKey : lookupPeerKey(keyID);
+        return keyID.equals(this.selfID) ? this.verificationKey : getPublicKey(lookupPeerDetails(keyID));
     }
 }
