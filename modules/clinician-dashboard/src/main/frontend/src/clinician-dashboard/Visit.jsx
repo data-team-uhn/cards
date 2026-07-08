@@ -25,10 +25,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import WarningIcon from '@mui/icons-material/Warning';
 import {
   Alert,
-  AlertTitle,
   Avatar,
   Chip,
-  CircularProgress,
   Divider,
   Grid,
   List,
@@ -44,6 +42,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import SurveyLinkButton from "./SurveyLinkButton";
 import FormattedText from "../components/FormattedText";
+import LoadingOverlay from "../components/LoadingOverlay";
 import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import EditButton from "../dataHomepage/EditButton";
 import PrintButton from "../dataHomepage/PrintButton";
@@ -238,26 +237,14 @@ function Visit(props) {
 
 
   // --------------------------------------------------------------------------------------------------------------
-  // Message screens are displayed if the data isn't loaded yet or if there's an error
-
-  const displayMessageScreen = (message, type, icon) => (
-    <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-      <Grid>
-        <Alert severity={type} icon={icon}>{message}</Alert>
-      </Grid>
-    </Grid>
-  );
+  // An error screen is shown if the data could not be fetched, a loading overlay while it is loading
 
   if (errorData) {
     return <ResourceErrorMessage {...errorData} />;
   }
 
   if (!questionnaireSetId || !questionnaireIds || !questionnaires || !visit) {
-    return displayMessageScreen(
-      <AlertTitle>Loading...</AlertTitle>,
-      "info",
-      <CircularProgress size={24} />
-    );
+    return <LoadingOverlay open={true} />;
   }
 
   // -----------------------------------------------------------------------------------------------------------

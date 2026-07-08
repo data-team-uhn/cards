@@ -19,7 +19,6 @@
 import { useState, useEffect } from "react";
 
 import {
-  CircularProgress,
   Grid,
   ListItemButton,
   ListItemIcon,
@@ -28,6 +27,7 @@ import {
 import { useNavigate } from "react-router";
 
 import AdminScreen from "./AdminScreen.jsx";
+import LoadingOverlay from "../components/LoadingOverlay";
 import { loadExtensions } from "../uiextension/extensionManager";
 
 
@@ -54,7 +54,7 @@ function AdminDashboard(props) {
 
   if (loading) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <LoadingOverlay open={true} />
     );
   }
 

@@ -20,10 +20,7 @@
 import { useEffect, useState, useLayoutEffect } from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  CircularProgress,
-  Grid
-} from "@mui/material";
+import { Grid } from "@mui/material";
 import { useNavigate, useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
@@ -33,6 +30,7 @@ import FormPagination from "./FormPagination";
 import formStyles from "./formStyles.jsx";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
+import LoadingOverlay from "../components/LoadingOverlay";
 import MainActionButton from "../components/MainActionButton.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
@@ -68,7 +66,7 @@ function QuestionnairePreview (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <LoadingOverlay open={true} />
     );
   }
 
