@@ -19,6 +19,13 @@ mvn:io.uhndata.cards/cards/${PROJECT_VERSION}/slingosgifeature/composum
 mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-modules-upgrade-marker/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/forms_demo
+mvn:io.uhndata.cards/cards-chromosome/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-contact-info/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-dicom/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-identifier/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-pedigree/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-selectable-area/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-vocabularies/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-modules-test-forms/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support-ssl/${PROJECT_VERSION}/slingosgifeature
