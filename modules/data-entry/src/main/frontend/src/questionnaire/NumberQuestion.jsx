@@ -31,7 +31,7 @@ import { NumericFormat } from 'react-number-format';
 import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import Answer from "./Answer";
+import Answer, { VALUE_POS, getAnswerOptions } from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import AnswerInstructions from "./AnswerInstructions";
 import { useFormReaderContext } from "./FormContext";
@@ -196,21 +196,14 @@ function NumberQuestion(props) {
   // A single numeric default for this question's own slider and range inputs.
   const defaultValue = numericDefaultValues.length ? numericDefaultValues[0] : null;
 
-  // The numeric values of the predefined answer options, gathered both from the `defaults` prop and from the child
-  // cards:AnswerOption nodes of the question definition. A value matching one of these is always accepted, even when
+  // The numeric values of the predefined answer options. A value matching one of these is always accepted, even when
   // it falls outside [minValue, maxValue], mirroring the backend MinMaxValueValidator.
   const answerOptionValues = useMemo(() => {
     const values = new Set();
-    (props.defaults || []).forEach(option => {
-      const rawValue = option?.[1];
+    getAnswerOptions(props.questionDefinition, props.defaults).forEach(option => {
+      const rawValue = option[VALUE_POS];
       if (rawValue != null && rawValue !== "" && !Number.isNaN(Number(rawValue))) {
         values.add(Number(rawValue));
-      }
-    });
-    Object.values(props.questionDefinition).forEach(option => {
-      if (option?.['jcr:primaryType'] === 'cards:AnswerOption'
-          && option.value != null && option.value !== "" && !Number.isNaN(Number(option.value))) {
-        values.add(Number(option.value));
       }
     });
     return values;
@@ -366,7 +359,7 @@ function NumberQuestion(props) {
   // * minValue  = 0
   // * displayMode = slider
   let minMaxMessage = "";
-  let hasAnswerOptions = !!(props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'cards:AnswerOption'));
+  let hasAnswerOptions = getAnswerOptions(props.questionDefinition, props.defaults).length > 0;
   if ((typeof minValue !== "undefined" || typeof maxValue !== "undefined") && !isSlider && !disableValueInstructions) {
     if (typeof messageForValuesOutsideMinMax !== "undefined") {
       minMaxMessage = messageForValuesOutsideMinMax;
