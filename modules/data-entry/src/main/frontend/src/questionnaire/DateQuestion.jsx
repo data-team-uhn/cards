@@ -218,20 +218,9 @@ function DateQuestion(props) {
       </LocalizationProvider>);
   }
 
-  let rangeDisplayFormatter = function(label, idx) {
-    const initialValue = Array.from(existingAnswer?.[1]?.value || []);
-    let limits = initialValue.slice(0, 2);
-    if (idx > 0 || limits.length == 0) return '';
-    limits[0] = DateTimeUtilities.toPrecision(limits[0])?.toFormat(dateFormat);
-    // In case of invalid data (only one limit of the range is available)
-    if (limits.length == 1) {
-      limits.push("");
-    } else {
-      limits[1] = DateTimeUtilities.toPrecision(limits[1])?.toFormat(dateFormat);
-    }
-    return dateDisplayFormatter(limits.join(' - '), idx);
-  }
-
+  // Renders one formatted date label, with any validation error beneath it. Single dates and intervals are
+  // shown the same way: each answer already arrives as a ready-to-display label (an interval as a single
+  // combined "start — end" string), so the formatter only has to print it.
   let dateDisplayFormatter = function(label, idx) {
     return (
       <div>
@@ -270,7 +259,7 @@ function DateQuestion(props) {
 
   return (
     <Question
-      defaultDisplayFormatter={isRange? rangeDisplayFormatter : dateDisplayFormatter}
+      defaultDisplayFormatter={dateDisplayFormatter}
       compact={isRange}
       currentAnswers={isAnswerComplete() ? 1 : 0}
       {...props}
