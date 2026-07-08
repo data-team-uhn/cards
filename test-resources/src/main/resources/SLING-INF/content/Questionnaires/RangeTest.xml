@@ -61,6 +61,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>unitOfMeasurement</name>
+			<value>bpm</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>isRange</name>
 			<value>True</value>
 			<type>Boolean</type>
@@ -153,6 +158,11 @@
 			<type>Double</type>
 		</property>
 		<property>
+			<name>unitOfMeasurement</name>
+			<value>%</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>isRange</name>
 			<value>True</value>
 			<type>Boolean</type>
@@ -195,6 +205,11 @@
 			<name>decimalScale</name>
 			<value>2</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mmol/L</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>isRange</name>

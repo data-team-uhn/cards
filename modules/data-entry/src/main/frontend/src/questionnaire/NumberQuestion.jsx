@@ -375,34 +375,22 @@ function NumberQuestion(props) {
 
   // Range error message
   let rangeErrorMessage = "The range is invalid: the lower limit must be less than or equal to the upper limit";
-  let rangeDisplayFormatter = function(label, idx) {
-    if (idx != 1) return '';
-    return (
-      <div>
-        <FormattedText color={!disableMinMaxValueEnforcement && pageActive && (minMaxError || rangeError) ? "error" : ""}>
-          { `${lowerRangeValue} &mdash; ${label}` }
-        </FormattedText>
-        { (typeof messageForValuesOutsideMinMax != "undefined" && minMaxError) ?
-          <Typography component="div" color="textSecondary" variant="caption">
-            { messageForValuesOutsideMinMax }
-          </Typography>
-          : (pageActive && (minMaxError || rangeError)) &&
-          <Typography component="div" color="error" variant="caption">
-            { rangeError ? rangeErrorMessage : minMaxError }
-          </Typography>
-        }
-      </div>
-    );
-  }
 
+  // A range is serialized as a single combined displayedValue (e.g. "5 — 10 mmHg") by NumberRangeLabelProcessor,
+  // so it is displayed like any other single value: one label, one error. A structural range error (lower > upper)
+  // takes precedence over an out-of-range limit, and the custom out-of-range message only stands in for the latter.
   let markdownFormatter = function(label, idx) {
-    const errorMessage = isMultivalued ? minMaxErrorByIndex[idx] : minMaxError;
+    const errorMessage = isRange
+      ? (rangeError ? rangeErrorMessage : minMaxError)
+      : (isMultivalued ? minMaxErrorByIndex[idx] : minMaxError);
+    const showCustomMessage = typeof messageForValuesOutsideMinMax != "undefined"
+      && (isRange ? minMaxError : errorMessage);
     return (
       <div>
         <FormattedText color={!disableMinMaxValueEnforcement && pageActive && errorMessage ? "error" : ""}>
           { label }
         </FormattedText>
-        { (typeof messageForValuesOutsideMinMax != "undefined" && errorMessage) ?
+        { showCustomMessage ?
           <Typography component="div" color="textSecondary" variant="caption">
             { messageForValuesOutsideMinMax }
           </Typography>
@@ -455,7 +443,7 @@ function NumberQuestion(props) {
 
   return (
     <Question
-      defaultDisplayFormatter={isRange ? rangeDisplayFormatter : markdownFormatter }
+      defaultDisplayFormatter={markdownFormatter}
       disableInstructions
       {...props}
     >
