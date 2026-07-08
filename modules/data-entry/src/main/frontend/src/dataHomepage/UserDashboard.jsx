@@ -20,7 +20,6 @@ import { useState, useEffect } from "react";
 
 import {
   Button,
-  CircularProgress,
   DialogActions,
   DialogContent,
   Grid,
@@ -29,6 +28,7 @@ import { MaterialReactTable } from "material-react-table";
 import { withStyles } from 'tss-react/mui';
 
 import dashboardStyles from "./dashboardStyles.jsx";
+import LoadingOverlay from "../components/LoadingOverlay";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import { loadExtensions } from "../uiextension/extensionManager";
@@ -81,7 +81,7 @@ function UserDashboard(props) {
 
   if (loading) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <LoadingOverlay open={true} />
     );
   }
 

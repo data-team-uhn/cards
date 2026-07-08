@@ -19,7 +19,6 @@
 import { useState, useEffect, useContext, useMemo } from "react";
 
 import {
-  CircularProgress,
   Grid,
   Typography,
   useMediaQuery
@@ -30,6 +29,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import ClinicForms from "./ClinicForms";
 import ClinicVisits from "./ClinicVisits";
+import LoadingOverlay from "../components/LoadingOverlay";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { loadExtensions } from "../uiextension/extensionManager";
 
@@ -180,7 +180,7 @@ function ClinicDashboard(props) {
 
   if (defaultsLoading || extensionsLoading || !visitInfo) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <LoadingOverlay open={true} />
     );
   }
 

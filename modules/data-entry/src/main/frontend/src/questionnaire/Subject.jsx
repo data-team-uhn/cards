@@ -47,6 +47,7 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
 import FormattedText from "../components/FormattedText";
+import LoadingOverlay from "../components/LoadingOverlay";
 import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import { checkPropTypes } from "../propTypes";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
@@ -344,7 +345,7 @@ function SubjectHeader(props) {
 
   if (!subject) {
     return (
-      <Grid><CircularProgress className={classes.subjectLoading} /></Grid>
+      <LoadingOverlay open={true} />
     );
   }
 

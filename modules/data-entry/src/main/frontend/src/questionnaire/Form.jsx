@@ -28,7 +28,6 @@ import {
   Breadcrumbs,
   Button,
   Chip,
-  CircularProgress,
   Grid,
   IconButton,
   List,
@@ -519,7 +518,7 @@ function Form (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
+      <LoadingOverlay open={true} />
     );
   }
 

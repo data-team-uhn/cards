@@ -22,7 +22,6 @@ import {
   Alert,
   Button,
   CardActions,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -35,6 +34,7 @@ import { makeStyles } from 'tss-react/mui';
 import { checkPropTypes } from "../propTypes";
 import AdminScreen from "./AdminScreen.jsx";
 import FormattedText from "../components/FormattedText.jsx";
+import LoadingOverlay from "../components/LoadingOverlay";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 const useStyles = makeStyles()(theme => ({
@@ -213,54 +213,54 @@ function AdminConfigScreen(props) {
   return (
     <AdminScreen title={title} className={classes.root}>
       { (configError || error) && <Alert severity="error">{configError || error}</Alert> }
-      { typeof(config) == 'undefined' ? <CircularProgress/> :
-        !config ? "" :
-          <form onSubmit={handleSubmit}>
-            { children }
-            <CardActions>
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={!!configError || !hasChanges}
-              >
-                Save
-              </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                disabled={configIsInitial}
-                onClick={() => setResetConfirmationPending(true)}
-              >
-                Reset to initial settings
-              </Button>
-            </CardActions>
+      <LoadingOverlay open={typeof config == 'undefined'} />
+      { config &&
+        <form onSubmit={handleSubmit}>
+          { children }
+          <CardActions>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={!!configError || !hasChanges}
+            >
+              Save
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              disabled={configIsInitial}
+              onClick={() => setResetConfirmationPending(true)}
+            >
+              Reset to initial settings
+            </Button>
+          </CardActions>
 
-            { /* Confirmation dialog for resetting the changes */ }
-            <Dialog className={classes.confirmationDialog} open={resetConfirmationPending}>
-              <DialogTitle>
-                Confirm configuration reset
-              </DialogTitle>
-              <DialogContent>
-                <FormattedText>
-                  This will revert **all** the changes made since opening this page
-                  **including the ones that you may have already saved**.
-                </FormattedText>
-                <FormattedText>
-                  If you wish to keep the saved changes and discard the unsaved ones,
-                  you can simply navigate away from this page, for example by clicking
-                  on the link to Administration at the top.
-                </FormattedText>
-                <FormattedText>
-                  **Are you sure you wish to proceed with resetting the configuration?**
-                </FormattedText>
-              </DialogContent>
-              <DialogActions>
-                <Button variant="contained" onClick={handleReset}>Yes, Reset</Button>
-                <Button variant="outlined" onClick={() => setResetConfirmationPending(false)}>No, Cancel</Button>
-                <Button onClick={() => navigate("/content.html/admin/")}>No, go to Administration</Button>
-              </DialogActions>
-            </Dialog>
-          </form>
+          { /* Confirmation dialog for resetting the changes */ }
+          <Dialog className={classes.confirmationDialog} open={resetConfirmationPending}>
+            <DialogTitle>
+              Confirm configuration reset
+            </DialogTitle>
+            <DialogContent>
+              <FormattedText>
+                This will revert **all** the changes made since opening this page
+                **including the ones that you may have already saved**.
+              </FormattedText>
+              <FormattedText>
+                If you wish to keep the saved changes and discard the unsaved ones,
+                you can simply navigate away from this page, for example by clicking
+                on the link to Administration at the top.
+              </FormattedText>
+              <FormattedText>
+                **Are you sure you wish to proceed with resetting the configuration?**
+              </FormattedText>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="contained" onClick={handleReset}>Yes, Reset</Button>
+              <Button variant="outlined" onClick={() => setResetConfirmationPending(false)}>No, Cancel</Button>
+              <Button onClick={() => navigate("/content.html/admin/")}>No, go to Administration</Button>
+            </DialogActions>
+          </Dialog>
+        </form>
       }
     </AdminScreen>
   );
