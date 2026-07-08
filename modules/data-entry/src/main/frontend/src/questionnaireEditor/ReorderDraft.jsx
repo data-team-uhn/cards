@@ -32,7 +32,6 @@ import {
   Divider,
   Icon,
   IconButton,
-  LinearProgress,
   List,
   ListItem,
   ListItemAvatar,
@@ -59,6 +58,7 @@ import {
 } from './reorderModel';
 import { getEntryChildIds } from './treeQueries';
 import ErrorDialog from '../components/ErrorDialog';
+import LoadingOverlay from '../components/LoadingOverlay';
 import MainActionButton from "../components/MainActionButton";
 import { QUESTIONNAIRE_TYPES, SECTION_TYPES, CONDITIONAL_TYPES } from '../questionnaire/FormEntry';
 import { useQuestionnaireInViewContext } from '../questionnaire/QuestionnaireContext';
@@ -297,23 +297,16 @@ const ReorderSubmitModal = (props) => {
         disabled={moves.length === 0}
         inProgress={reorderState.status === 'loading'}
       />
-      <Dialog
-        maxWidth="lg"
-        open={['loading'].includes(reorderState.status)}
-      >
-        <DialogTitle>Reordering entries</DialogTitle>
-        <DialogContent>
-          <LinearProgress
-            variant="determinate"
-            value={progressValue}
-          />
-        </DialogContent>
-      </Dialog>
+      <LoadingOverlay
+        open={reorderState.status === 'loading'}
+        message="Reordering entries..."
+        progress={progressValue}
+      />
 
       <Snackbar
         open={reorderState.status === 'success'}
         autoHideDuration={2000}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         onClose={() => reorderDispatch({ type: 'SET_IDLE' })}
       >
         <Alert

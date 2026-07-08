@@ -25,7 +25,6 @@ import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from '@mui/icons-material/Edit';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import {
-  Backdrop,
   Breadcrumbs,
   Button,
   Chip,
@@ -38,7 +37,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { alpha } from '@mui/material/styles';
 import { DateTime } from "luxon";
 import { Link, useNavigate, useBlocker } from "react-router";
 import { withStyles } from 'tss-react/mui';
@@ -56,6 +54,7 @@ import { getTextHierarchy, getHierarchyAsList } from "./SubjectIdentifier";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import ErrorDialog from "../components/ErrorDialog";
 import FormattedText from "../components/FormattedText.jsx";
+import LoadingOverlay from "../components/LoadingOverlay";
 import MainActionButton from "../components/MainActionButton.jsx";
 import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton";
@@ -762,18 +761,7 @@ function Form (props) {
                 disableRedirect
               />
             }
-            {fetchInProgress &&
-              <Backdrop
-                open={fetchInProgress}
-                sx={(theme) => ({
-                  backgroundColor: alpha(theme.palette.background.paper, .5),
-                  marginLeft: { md : "260px" },
-                  zIndex: theme.zIndex.drawer + 1
-                })}
-              >
-                <CircularProgress />
-              </Backdrop>
-            }
+            <LoadingOverlay open={fetchInProgress} />
             {changedSubject &&
               <>
                 <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]} />
