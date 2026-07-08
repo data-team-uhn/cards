@@ -328,6 +328,45 @@
 		</property>
 	</node>
 	<node>
+		<name>absoluteyearmonthdayint</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Full date interval with absolute lower and upper limits (`2022-08-02` - `2023-08-02`)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy-MM-dd</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>lowerLimit</name>
+			<value>2022-08-02</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>upperLimit</name>
+			<value>2023-08-02</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>type</name>
+			<value>interval</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
 		<name>monthdayyearint</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
