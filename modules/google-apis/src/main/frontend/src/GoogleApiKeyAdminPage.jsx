@@ -22,7 +22,9 @@ import { useState, useEffect, useContext } from "react";
 import {
   Alert,
   Button,
+  CircularProgress,
   Grid,
+  InputAdornment,
   TextField,
 } from "@mui/material";
 
@@ -35,6 +37,7 @@ const APIKEY_SERVLET_URL = "/.googleApiKey";
 export default function GoogleApiKeyAdminPage() {
   const [ googleApiKey, setGoogleApiKey ] = useState("");
   const [ hasChanges, setHasChanges ] = useState(false);
+  const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -50,7 +53,8 @@ export default function GoogleApiKeyAdminPage() {
       })
       .catch((error) => {
         setError("Error fetching GoogleApiKey node: " + error);
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // function to create / edit node
@@ -91,12 +95,21 @@ export default function GoogleApiKeyAdminPage() {
                 value={googleApiKey}
                 label="Google API key"
                 fullWidth
+                disabled={loading}
+                slotProps={{
+                  input: {
+                    endAdornment: loading &&
+                      <InputAdornment position="end">
+                        <CircularProgress size={20} />
+                      </InputAdornment>,
+                  },
+                }}
               />
             </Grid>
             <Grid size={2}>
               <Button
                 variant="contained"
-                disabled={!hasChanges}
+                disabled={!hasChanges || loading}
                 onClick={updateKey}
               >
                 Submit

@@ -27,6 +27,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js"
 export default function PrincipalsContainer(props) {
   const [ users, setUsers ] = useState([]);
   const [ groups, setGroups ] = useState([]);
+  const [ loading, setLoading ] = useState(true);
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let handleLoadGroups = () => {
@@ -39,6 +40,7 @@ export default function PrincipalsContainer(props) {
       .then((data) => setGroups(data.rows))
       .catch((error) => console.log(error?.statusText ?? error))
       .finally(() => {
+        setLoading(false);
         // This event is needed in cases we do not want to collapse details panel after reload
         let reloadedEvent = new CustomEvent('principals-reloaded', {
           bubbles: true,
@@ -49,6 +51,7 @@ export default function PrincipalsContainer(props) {
   }
 
   let handleLoadUsers = () => {
+    setLoading(true);
     fetchWithReLogin(globalLoginDisplay, "/home/users.json",
       {
         method: 'GET',
@@ -74,8 +77,8 @@ export default function PrincipalsContainer(props) {
 
   return (
     <div>
-      { props.isUserListPage ? <UsersManager users={users} groups={groups} reload={handleLoadUsers}/>
-        : <GroupsManager users={users} groups={groups} reload={handleLoadUsers}/> }
+      { props.isUserListPage ? <UsersManager users={users} groups={groups} loading={loading} reload={handleLoadUsers}/>
+        : <GroupsManager users={users} groups={groups} loading={loading} reload={handleLoadUsers}/> }
     </div>
   );
 }

@@ -38,7 +38,7 @@ const USER_URL = "/system/userManager/user/";
 
 function UsersManager(props) {
   checkPropTypes(UsersManager, props);
-  const { classes, groups, users, reload } = props;
+  const { classes, groups, users, loading, reload } = props;
 
   let [ currentUserName, setCurrentUserName ] = useState("");
   let [ deployCreateUser, setDeployCreateUser ] = useState(false);
@@ -92,6 +92,7 @@ function UsersManager(props) {
           enableSorting={false}
           enableToolbarInternalActions={false}
           initialState={{ showGlobalFilter: true }}
+          state={{ isLoading: loading }}
           muiTableHeadCellProps={{
             sx: (theme) => ({
               background: theme.palette.grey['200'],
@@ -188,6 +189,7 @@ function UsersManager(props) {
 UsersManager.propTypes = {
   users: PropTypes.array,
   groups: PropTypes.array,
+  loading: PropTypes.bool,
   reload: PropTypes.func.isRequired
 }
 

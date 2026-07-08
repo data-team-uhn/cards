@@ -158,7 +158,7 @@ let GroupUsersTable = (props) => {
 
 function GroupsManager(props) {
   checkPropTypes(GroupsManager, props);
-  const { classes, groups, users, reload } = props;
+  const { classes, groups, users, loading, reload } = props;
 
   let [ currentGroupUsers, setCurrentGroupUsers ] = useState([]);
   let [ currentGroupName, setCurrentGroupName ] = useState("");
@@ -252,6 +252,7 @@ function GroupsManager(props) {
           enableSorting={false}
           enableToolbarInternalActions={false}
           initialState={{ showGlobalFilter: true }}
+          state={{ isLoading: loading }}
           muiTableHeadCellProps={{
             sx: (theme) => ({
               background: theme.palette.grey['200'],
@@ -314,6 +315,7 @@ function GroupsManager(props) {
 GroupsManager.propTypes = {
   groups: PropTypes.array,
   users: PropTypes.array,
+  loading: PropTypes.bool,
   reload: PropTypes.func.isRequired
 }
 
