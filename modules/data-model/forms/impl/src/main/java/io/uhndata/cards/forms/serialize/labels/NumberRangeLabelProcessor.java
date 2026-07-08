@@ -56,6 +56,16 @@ public class NumberRangeLabelProcessor extends SimpleAnswerLabelProcessor implem
     }
 
     @Override
+    public int getPriority()
+    {
+        // Label processors run in ascending priority order, each overwriting the displayedValue set by the previous
+        // one. This must run after the other processors that also produce a label for a number answer node: the base
+        // DefaultLabelProcessor (70) and AnswerOptionsLabelProcessor (75, which fires for any answer whose question
+        // has options). 76 puts it last, so the combined range label is the one that wins.
+        return 76;
+    }
+
+    @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
