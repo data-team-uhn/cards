@@ -196,6 +196,26 @@ function NumberQuestion(props) {
   // A single numeric default for this question's own slider and range inputs.
   const defaultValue = numericDefaultValues.length ? numericDefaultValues[0] : null;
 
+  // The numeric values of the predefined answer options, gathered both from the `defaults` prop and from the child
+  // cards:AnswerOption nodes of the question definition. A value matching one of these is always accepted, even when
+  // it falls outside [minValue, maxValue], mirroring the backend MinMaxValueValidator.
+  const answerOptionValues = useMemo(() => {
+    const values = new Set();
+    (props.defaults || []).forEach(option => {
+      const rawValue = option?.[1];
+      if (rawValue != null && rawValue !== "" && !Number.isNaN(Number(rawValue))) {
+        values.add(Number(rawValue));
+      }
+    });
+    Object.values(props.questionDefinition).forEach(option => {
+      if (option?.['jcr:primaryType'] === 'cards:AnswerOption'
+          && option.value != null && option.value !== "" && !Number.isNaN(Number(option.value))) {
+        values.add(Number(option.value));
+      }
+    });
+    return values;
+  }, [props.defaults, props.questionDefinition]);
+
   const [ minMaxError, setMinMaxError ] = useState(null);
   const [ minMaxErrorByIndex, setMinMaxErrorByIndex ] = useState({});
 
@@ -257,6 +277,12 @@ function NumberQuestion(props) {
       if (WHITESPACE_ONLY_PATTERN.test(text) || Number.isNaN(value)) {
         return `The value${pluralSuffix} must be numeric`;
       }
+    }
+
+    // A value matching a predefined answer option is always accepted, even when it falls outside [minValue, maxValue].
+    // This mirrors the backend MinMaxValueValidator, so the two sides agree on which values are valid.
+    if (answerOptionValues.has(value)) {
+      return null;
     }
 
     // For a range with both limits defined, show a single "between" message when the value falls outside them
