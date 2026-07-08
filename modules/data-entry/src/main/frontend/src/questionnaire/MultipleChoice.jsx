@@ -40,7 +40,14 @@ import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import Answer, { LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS } from "./Answer";
+import Answer, {
+  LABEL_POS,
+  VALUE_POS,
+  DESC_POS,
+  IS_DEFAULT_OPTION_POS,
+  IS_DEFAULT_ANSWER_POS,
+  getAnswerOptions
+} from "./Answer";
 import AnswerInstructions from "./AnswerInstructions.jsx";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
@@ -93,14 +100,7 @@ function MultipleChoice(props) {
   // pageActive and answerNodeType should be passed to the Answer component, so we make sure to include them in the `rest` variable above
   let { instanceId, pageActive, answerNodeType } = props;
 
-  let defaults = props.defaults || Object.values(props.questionDefinition)
-    // Keep only answer options
-    // FIXME Must deal with nested options, do this recursively
-    .filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
-    // Sort by default order
-    .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
-    // Only extract the labels, internal values and description from the node
-    .map(value => [value.label || value.value, value.value, true, value.description, value.isDefault]);
+  let defaults = getAnswerOptions(props.questionDefinition, props.defaults);
   // Locate an option referring to the "none of the above", if it exists
   let naOption = naValue || Object.values(props.questionDefinition)
     .find((value) => value['notApplicable'])?.["value"];

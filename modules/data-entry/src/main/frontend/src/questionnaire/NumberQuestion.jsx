@@ -31,7 +31,7 @@ import { NumericFormat } from 'react-number-format';
 import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import Answer from "./Answer";
+import Answer, { VALUE_POS, getAnswerOptions } from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import AnswerInstructions from "./AnswerInstructions";
 import { useFormReaderContext } from "./FormContext";
@@ -196,6 +196,19 @@ function NumberQuestion(props) {
   // A single numeric default for this question's own slider and range inputs.
   const defaultValue = numericDefaultValues.length ? numericDefaultValues[0] : null;
 
+  // The numeric values of the predefined answer options. A value matching one of these is always accepted, even when
+  // it falls outside [minValue, maxValue], mirroring the backend MinMaxValueValidator.
+  const answerOptionValues = useMemo(() => {
+    const values = new Set();
+    getAnswerOptions(props.questionDefinition, props.defaults).forEach(option => {
+      const rawValue = option[VALUE_POS];
+      if (rawValue != null && rawValue !== "" && !Number.isNaN(Number(rawValue))) {
+        values.add(Number(rawValue));
+      }
+    });
+    return values;
+  }, [props.defaults, props.questionDefinition]);
+
   const [ minMaxError, setMinMaxError ] = useState(null);
   const [ minMaxErrorByIndex, setMinMaxErrorByIndex ] = useState({});
 
@@ -257,6 +270,12 @@ function NumberQuestion(props) {
       if (WHITESPACE_ONLY_PATTERN.test(text) || Number.isNaN(value)) {
         return `The value${pluralSuffix} must be numeric`;
       }
+    }
+
+    // A value matching a predefined answer option is always accepted, even when it falls outside [minValue, maxValue].
+    // This mirrors the backend MinMaxValueValidator, so the two sides agree on which values are valid.
+    if (answerOptionValues.has(value)) {
+      return null;
     }
 
     // For a range with both limits defined, show a single "between" message when the value falls outside them
@@ -340,7 +359,7 @@ function NumberQuestion(props) {
   // * minValue  = 0
   // * displayMode = slider
   let minMaxMessage = "";
-  let hasAnswerOptions = !!(props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'cards:AnswerOption'));
+  let hasAnswerOptions = getAnswerOptions(props.questionDefinition, props.defaults).length > 0;
   if ((typeof minValue !== "undefined" || typeof maxValue !== "undefined") && !isSlider && !disableValueInstructions) {
     if (typeof messageForValuesOutsideMinMax !== "undefined") {
       minMaxMessage = messageForValuesOutsideMinMax;

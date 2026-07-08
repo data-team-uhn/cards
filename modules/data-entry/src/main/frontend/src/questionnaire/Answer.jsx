@@ -34,6 +34,24 @@ export const DESC_POS = 3;
 // Position used to read whether or not an answer is a "default" for questions that don’t yet have an existing answer, option is displayed as selected
 export const IS_DEFAULT_ANSWER_POS = 4;
 
+// Extract the predefined answer options of a question as normalized
+// [label, value, isDefaultOption, description, isDefaultAnswer] tuples.
+// When `defaults` is supplied (already in that shape) it is returned as-is;
+// otherwise the options are read from the child cards:AnswerOption nodes.
+export const getAnswerOptions = (questionDefinition, defaults) => {
+  if (defaults) {
+    return defaults;
+  }
+  return Object.values(questionDefinition || {})
+    // Keep only answer options
+    // FIXME Must deal with nested options, do this recursively
+    .filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
+    // Sort by default order
+    .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
+    // Only extract the labels, internal values and description from the node
+    .map(value => [value.label || value.value, value.value, true, value.description, value.isDefault]);
+};
+
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
