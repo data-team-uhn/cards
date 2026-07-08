@@ -22,6 +22,7 @@ import { useEffect, useContext, useState } from "react";
 import SettingsIcon from '@mui/icons-material/Settings';
 import {
   Button,
+  CircularProgress,
   Grid,
   Dialog,
   DialogTitle,
@@ -75,6 +76,8 @@ export function BioPortalApiKey(props) {
   /* User input api key */
   const [customApiKey, setCustomApiKey] = useState('');
   const [displayPopup, setDisplayPopup] = useState(false);
+  /* Whether the currently configured key is still being fetched */
+  const [loading, setLoading] = useState(true);
 
   // function to create / edit node
   function addNewKey() {
@@ -98,8 +101,10 @@ export function BioPortalApiKey(props) {
       (apiKey) => {
         updateKey(apiKey);
         setCustomApiKey(apiKey);
+        setLoading(false);
       }, () => {
         updateKey(false);
+        setLoading(false);
       });
   }, [bioPortalApiKey]);
 
@@ -136,7 +141,13 @@ export function BioPortalApiKey(props) {
         </Typography>
       </Grid>
 
-      { !bioPortalApiKey && <>
+      { loading &&
+        <Grid className={classes.noKeyInfo}>
+          <CircularProgress size={20} />
+        </Grid>
+      }
+
+      { !loading && !bioPortalApiKey && <>
         <Grid className={classes.noKeyInfo}>
           <Typography>Your system does not have a <a href="https://www.bioontology.org/wiki/BioPortal_Help#Getting_an_API_key" target="_blank" rel="noreferrer">Bioportal API Key</a> configured.</Typography>
           {/* eslint-disable-next-line @stylistic/max-len */}
