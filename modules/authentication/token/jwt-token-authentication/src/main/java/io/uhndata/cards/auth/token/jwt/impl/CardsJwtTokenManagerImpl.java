@@ -177,13 +177,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             return null;
         }
 
-        try
-        {
-            return DigestUtils.sha256Hex(Encoders.BASE64.encode(publicKey.getEncoded()));
-        } catch (Exception e) {
-            // TODO: Better exception handling
-            return null;
-        }
+        return DigestUtils.sha256Hex(Encoders.BASE64.encode(publicKey.getEncoded()));
     }
 
     /**
