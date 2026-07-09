@@ -94,6 +94,12 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
         }
     }
 
+    /**
+     * Extracts the public key from a given JCR Node representing a peer.
+     *
+     * @param keyNode The JCR node representing a peer's keys
+     * @return The peer's PublicKey
+     */
     private PublicKey getPublicKey(Node keyNode) throws JwtException
     {
         try {
@@ -121,7 +127,7 @@ public class CardsJwtVerificationLocatorImpl implements Locator<Key>
      * Extracts the `kid` header from a given JWT Header.
      *
      * @param header The JWT Header
-     * @return the `kid` header, or {@code null} if the given header does not correspond to a JwsHeader/JweHeader
+     * @return The `kid` header, or {@code null} if the given header does not correspond to a JwsHeader/JweHeader
      */
     public static String getKey(Header header)
     {

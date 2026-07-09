@@ -31,6 +31,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -72,6 +73,10 @@ public class CardsJwtTokenManagerImpl implements TokenManager
     /** JCR path to the node where we keep our signing/verification keys. */
     public static final String KEY_PATH = "/jcr:system/cards:jwt/JWTRSA256Key";
 
+    /** The ID of this CARDS instance, used to determine the `iss` field when minting tokens. */
+    public static final String SELF_ID =
+        StringUtils.defaultIfEmpty(System.getenv("CARDS_HOST_AND_PORT"), "localhost:8080");
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CardsJwtTokenManagerImpl.class);
 
     private final SecretKey symmetricKey;
@@ -90,32 +95,32 @@ public class CardsJwtTokenManagerImpl implements TokenManager
     public CardsJwtTokenManagerImpl(@Reference ResourceResolverFactory rrf)
     {
         this.rrf = rrf;
-        this.selfAud = CardsJwtTokenImpl.SELF_ID.replaceAll("\\P{Alnum}", "");
+        this.selfAud = SELF_ID.replaceAll("\\P{Alnum}", "");
         PrivateKey result = null;
         PublicKey verification = null;
         SecretKey symmetric = null;
         try (ResourceResolver resolver = rrf.getServiceResourceResolver(null)) {
-            Resource res = resolver.resolve(CardsJwtTokenManagerImpl.KEY_PATH);
+            Resource res = resolver.resolve(KEY_PATH);
             Node keyNode = res.adaptTo(Node.class);
             if (keyNode == null) {
                 LOGGER.error("Failed to load JWT Signing key: node {} could not be read",
-                    CardsJwtTokenManagerImpl.KEY_PATH);
-                throw new ExceptionInInitializerError(CardsJwtTokenManagerImpl.KEY_PATH);
+                    KEY_PATH);
+                throw new ExceptionInInitializerError(KEY_PATH);
             }
 
-            if (keyNode.hasProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP)
-                && keyNode.hasProperty(CardsJwtTokenManagerImpl.VERIFY_PROP)) {
+            if (keyNode.hasProperty(SIGNING_KEY_PROP)
+                && keyNode.hasProperty(VERIFY_PROP)) {
                 // Private key is PKCS-encoded
                 result = KeyFactory.getInstance("RSA").generatePrivate(
-                    new PKCS8EncodedKeySpec(readKey(keyNode, CardsJwtTokenManagerImpl.SIGNING_KEY_PROP)));
+                    new PKCS8EncodedKeySpec(readKey(keyNode, SIGNING_KEY_PROP)));
                 // Public key is X.509-encoded
                 verification = KeyFactory.getInstance("RSA").generatePublic(
-                    new X509EncodedKeySpec(readKey(keyNode, CardsJwtTokenManagerImpl.VERIFY_PROP)));
+                    new X509EncodedKeySpec(readKey(keyNode, VERIFY_PROP)));
             } else {
                 KeyPair newPair = Jwts.SIG.RS256.keyPair().build();
-                keyNode.setProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP,
+                keyNode.setProperty(SIGNING_KEY_PROP,
                     Encoders.BASE64.encode(newPair.getPrivate().getEncoded()));
-                keyNode.setProperty(CardsJwtTokenManagerImpl.VERIFY_PROP,
+                keyNode.setProperty(VERIFY_PROP,
                     Encoders.BASE64.encode(newPair.getPublic().getEncoded()));
                 resolver.commit();
 
@@ -126,9 +131,9 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             // For backwards compatibility: attempt to load (but not generate) a symmetric key, if it exists
             res = resolver.resolve("/jcr:system/cards:jwt/JWTSigningKey");
             keyNode = res == null ? null : res.adaptTo(Node.class);
-            if (keyNode != null && keyNode.hasProperty(CardsJwtTokenManagerImpl.SIGNING_KEY_PROP)) {
+            if (keyNode != null && keyNode.hasProperty(SIGNING_KEY_PROP)) {
                 symmetric = Keys.hmacShaKeyFor(Decoders.BASE64.decode(keyNode.getProperty(
-                    CardsJwtTokenManagerImpl.SIGNING_KEY_PROP).getString()));
+                    SIGNING_KEY_PROP).getString()));
             }
         } catch (LoginException e) {
             LOGGER.error("Service access not granted: {}", e.getMessage());
@@ -171,7 +176,6 @@ public class CardsJwtTokenManagerImpl implements TokenManager
      */
     public static String getFingerprint(final PublicKey publicKey)
     {
-        // Obtain a fingerprint from a key
         if (publicKey == null)
         {
             return null;
@@ -214,6 +218,15 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         return new CardsJwtTokenImpl(jws, userId, expiration, extraData);
     }
 
+    /**
+     * Validate JWT claims against expected issuer/audience/key constraints.
+     *
+     * @param jwt the parsed JWT to validate
+     * @param locator verification locator containing expected key and audience information
+     * @return {@code true} if all required claims are valid, {@code false} otherwise
+     * @throws JwtException if the JWT claims are malformed or invalid
+     * @throws RepositoryException if verification requires repository access that fails
+     */
     private boolean areClaimsValid(Jwt<?, ?> jwt, CardsJwtVerificationLocatorImpl locator) throws JwtException,
         RepositoryException
     {
@@ -228,7 +241,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             }
 
             String issuer = keyID.equals(this.selfID) ? this.selfAud : locator.lookupPeerDetails(keyID)
-                .getProperty(CardsJwtTokenManagerImpl.ISSUER_PROP).getString();
+                .getProperty(ISSUER_PROP).getString();
 
             // If we're signed using an asymmetric key, double-check that we're the intended audience for this JWT
             if (claims.getAudience() == null) {

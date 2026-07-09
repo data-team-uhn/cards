@@ -227,7 +227,7 @@ public class CardsJwtTokenManagerImplTest
     public void createForeignKeyThenAccept()
     {
         // Test using a second set of keys that we've accepted
-        String selfID = CardsJwtTokenImpl.SELF_ID.replaceAll("\\P{Alnum}", "");
+        String selfID = CardsJwtTokenManagerImpl.SELF_ID.replaceAll("\\P{Alnum}", "");
 
         final String foreign = Jwts.builder()
             .issuer("localhost8081")
