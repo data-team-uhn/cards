@@ -770,7 +770,8 @@
                       <!--module name="IllegalCatch"/-->
 
                       <module name="IllegalImport">
-                        <property name="illegalPkgs" value="sun,groovy,org.apache.commons.lang,org.apache.commons.codec.binary,antlr" />
+                        <property name="illegalPkgs" value="sun,groovy,org.apache.commons.lang,antlr" />
+                        <property name="illegalClasses" value="org.apache.commons.codec.binary.StringUtils" />
                       </module>
 
                       <module name="IllegalInstantiation">
@@ -1228,7 +1229,8 @@
                       <!--module name="IllegalCatch"/-->
 
                       <module name="IllegalImport">
-                        <property name="illegalPkgs" value="sun,groovy,org.apache.commons.lang,org.apache.commons.codec.binary,antlr" />
+                        <property name="illegalPkgs" value="sun,groovy,org.apache.commons.lang,antlr" />
+                        <property name="illegalClasses" value="org.apache.commons.codec.binary.StringUtils" />
                       </module>
 
                       <module name="IllegalInstantiation">
