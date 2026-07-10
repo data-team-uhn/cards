@@ -85,11 +85,15 @@ public class CardsJwtTokenManagerImpl implements TokenManager
 
     private final PublicKey verificationKey;
 
+    /** Our own audience, used in the Jwt `aud` field to verify that this token is meant for us. */
     private final String selfAud;
 
+    /** Our own fingerprint, used to identify tokens that are signed by us. */
     private final String selfID;
 
-    private ResourceResolverFactory rrf;
+    private final CardsJwtVerificationLocatorImpl locator;
+
+    private final ResourceResolverFactory rrf;
 
     @Activate
     public CardsJwtTokenManagerImpl(@Reference ResourceResolverFactory rrf)
@@ -144,6 +148,8 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         this.verificationKey = verification;
         this.symmetricKey = symmetric;
         this.selfID = getFingerprint(verification);
+        this.locator = new CardsJwtVerificationLocatorImpl(this.verificationKey, this.symmetricKey, this.rrf,
+            this.selfID);
     }
 
     /**
@@ -201,8 +207,9 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             return null;
         }
         AudienceCollection<JwtBuilder> audBuilder = Jwts.builder()
-                .issuer(this.selfAud)
-                .audience();
+            .claims(extraData)
+            .issuer(this.selfAud)
+            .audience();
 
         for (String aud : audiences) {
             audBuilder.add(aud);
@@ -211,7 +218,6 @@ public class CardsJwtTokenManagerImpl implements TokenManager
         String jws = audBuilder.and()
             .subject(userId)
             .expiration(expiration.getTime())
-            .claims(extraData)
             .header().keyId(this.selfID).and()
             .signWith(this.signingKey)
             .compact();
@@ -222,12 +228,11 @@ public class CardsJwtTokenManagerImpl implements TokenManager
      * Validate JWT claims against expected issuer/audience/key constraints.
      *
      * @param jwt the parsed JWT to validate
-     * @param locator verification locator containing expected key and audience information
      * @return {@code true} if all required claims are valid, {@code false} otherwise
      * @throws JwtException if the JWT claims are malformed or invalid
      * @throws RepositoryException if verification requires repository access that fails
      */
-    private boolean areClaimsValid(Jwt<?, ?> jwt, CardsJwtVerificationLocatorImpl locator) throws JwtException,
+    private boolean areClaimsValid(Jwt<?, ?> jwt) throws JwtException,
         RepositoryException
     {
         // Double check claims in the payload:
@@ -240,7 +245,7 @@ public class CardsJwtTokenManagerImpl implements TokenManager
                 return true;
             }
 
-            String issuer = keyID.equals(this.selfID) ? this.selfAud : locator.lookupPeerDetails(keyID)
+            String issuer = keyID.equals(this.selfID) ? this.selfAud : this.locator.lookupPeerDetails(keyID)
                 .getProperty(ISSUER_PROP).getString();
 
             // If we're signed using an asymmetric key, double-check that we're the intended audience for this JWT
@@ -249,8 +254,8 @@ public class CardsJwtTokenManagerImpl implements TokenManager
                 throw new JwtException("The given JWT is missing an `aud` claim.");
             } else if (!claims.getAudience().contains(this.selfAud)) {
                 throw new JwtException("Our server (" + this.selfAud
-                    + ")) is not in the list of JWT audiences for the given JWT.");
-            } else if (!claims.getIssuer().equals(issuer)) {
+                    + ") is not in the list of JWT audiences for the given JWT.");
+            } else if (!issuer.equals(claims.getIssuer())) {
                 throw new JwtException("The given JWT's issuer does not match the expected issuer.");
             }
             return true;
@@ -266,16 +271,13 @@ public class CardsJwtTokenManagerImpl implements TokenManager
             return null;
         }
         try {
-            CardsJwtVerificationLocatorImpl locator = new CardsJwtVerificationLocatorImpl(this.verificationKey,
-                this.symmetricKey, this.rrf, this.selfID);
-
             Jwt<?, ?> jwt = Jwts.parser()
-                .keyLocator(locator)
+                .keyLocator(this.locator)
                 .build()
                 .parseSignedClaims(loginToken);
 
             // Double check claims in the payload:
-            if (areClaimsValid(jwt, locator)) {
+            if (areClaimsValid(jwt)) {
                 return new CardsJwtTokenImpl(jwt, loginToken);
             }
         } catch (JwtException e) {

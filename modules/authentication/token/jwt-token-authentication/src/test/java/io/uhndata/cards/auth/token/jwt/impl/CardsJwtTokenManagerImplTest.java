@@ -47,19 +47,15 @@ import static org.mockito.Mockito.when;
  * {@code TokenManager}.
  *
  * <p>
- * These pin the current behaviour of self-issued, symmetric (HMAC) tokens so
- * that future changes to
- * {@code parse()} -- such as adding support for tokens issued by trusted
- * external providers -- can be made without
- * regressing the existing patient-portal flow, where a token minted by
- * {@code create()} must round-trip back through
+ * These check the behaviour of self-issued, asymmetric RS256 tokens,
+ * where a token minted by {@code create()} must round-trip back through
  * {@code parse()} and yield the same user and session subject.
  * </p>
  *
  * <p>
- * On activation the manager reads its HMAC signing key from
- * {@code /jcr:system/cards:jwt/JWTSigningKey}; here that
- * lookup is mocked to return a freshly generated, valid HS512 key, so no
+ * On activation the manager reads its RSA256 signing key from
+ * {@code /jcr:system/cards:jwt/JWTRSA256Key}; here that
+ * lookup is mocked to return a freshly generated, valid RSA256 key, so no
  * repository is needed.
  * </p>
  */
@@ -191,12 +187,23 @@ public class CardsJwtTokenManagerImplTest
     }
 
     @Test
-    public void parseRejectsTokenSignedWithForeignKey()
+    public void parseRejectsTokenSignedWithUnknownKey()
     {
-        // A well-formed token signed with some other key must be rejected: verification
-        // uses this instance's own
-        // secret. This is exactly the boundary that cross-provider support would later
-        // have to open up deliberately.
+        // A well-formed token signed with some an asymmetric key NOT in our list of accepted providers must be
+        // rejected
+        final String foreign = Jwts.builder()
+                .subject("attacker")
+                .expiration(new Date(System.currentTimeMillis() + 3_600_000L))
+                .header().keyId("attacker").and()
+                .signWith(Jwts.SIG.RS256.keyPair().build().getPrivate())
+                .compact();
+        Assert.assertNull("A token signed with a different key must not parse", this.manager.parse(foreign));
+    }
+
+    @Test
+    public void parseRejectsTokenSignedWithUnknownSymmetricKey()
+    {
+        // A well-formed token signed with some other symmetric key must be rejected
         final String foreign = Jwts.builder()
                 .subject("attacker")
                 .expiration(new Date(System.currentTimeMillis() + 3_600_000L))
