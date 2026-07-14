@@ -40,6 +40,7 @@ public abstract class AbstractResourceLabelProcessor extends SimpleAnswerLabelPr
     /**
      * Given a resource question definition, find the resource property that should be used as the label for
      * answers of that type, if it exists.
+     *
      * @param question the Question node
      * @return the property name as a string, or null if the question definition doesn't have the labelProperty
      *     defined or its value is blank

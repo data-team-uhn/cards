@@ -32,7 +32,7 @@ public class VocabularyIndexException extends Exception
      */
     public VocabularyIndexException()
     {
-        super();
+        // Nothing to do, but we need to declare a parameterless constructor to be able to use it
     }
 
     /**

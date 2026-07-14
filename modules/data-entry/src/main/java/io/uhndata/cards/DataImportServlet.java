@@ -524,7 +524,7 @@ public class DataImportServlet extends SlingJakartaAllMethodsServlet
                     result = valueFactory.createValue(parseDate(rawValue));
                     break;
                 case "text":
-                default:
+                case null, default:
                     result = valueFactory.createValue(standardizeValue(rawValue, question));
             }
         } catch (NumberFormatException | NullPointerException e) {

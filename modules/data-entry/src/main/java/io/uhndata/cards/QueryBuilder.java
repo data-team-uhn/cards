@@ -537,6 +537,7 @@ public class QueryBuilder implements Use
      */
     private static final class EmptyResults implements QueryResult
     {
+        /** The singleton instance to use. */
         public static final QueryResult INSTANCE = new EmptyResults();
 
         @Override
@@ -569,6 +570,7 @@ public class QueryBuilder implements Use
      */
     private static final class EmptyIterator implements RowIterator, NodeIterator
     {
+        /** The singleton instance to use. */
         public static final EmptyIterator INSTANCE = new EmptyIterator();
 
         @Override

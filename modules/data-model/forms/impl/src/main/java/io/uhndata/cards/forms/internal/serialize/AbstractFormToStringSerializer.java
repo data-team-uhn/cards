@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 import jakarta.json.Json;
 import jakarta.json.JsonException;
 import jakarta.json.JsonObject;
@@ -47,8 +46,11 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 public abstract class AbstractFormToStringSerializer
 {
     private static final String SECTION_KEY = "section";
+
     private static final String QUESTION_KEY = "question";
+
     private static final String PRIMARY_TYPE_KEY = "jcr:primaryType";
+
     private static final String UUID_KEY = "jcr:uuid";
 
     private static final String PATH_KEY = "@path";

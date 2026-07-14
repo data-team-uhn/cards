@@ -37,8 +37,11 @@ package io.uhndata.cards.serialize.spi;
 public class SelectorDetails
 {
     private String name;
+
     private String description;
+
     private Boolean enabledByDefault;
+
     private SelectorOption[] options;
 
     public SelectorDetails(String name, String description)
@@ -118,6 +121,7 @@ public class SelectorDetails
     public class SelectorOption
     {
         private String name;
+
         private String description;
 
         SelectorOption(String name, String description)

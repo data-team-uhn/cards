@@ -118,6 +118,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
 
     /**
      * Get the Details to be output for all DataFilterFactories.
+     *
      * @return a sorted map of all selector details, keyed and ordered by selector name.
      *         The value for each entry will be a list of all selector details with a given name.
      */
@@ -128,6 +129,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
 
     /**
      * Get the Details to be output for all ResourceCSVProcessors.
+     *
      * @return a sorted map of all selector details, keyed and ordered by selector name.
      *         The value for each entry will be a list of all selector details with a given name.
      */
@@ -138,6 +140,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
 
     /**
      * Add the details from multiple lists of details.
+     *
      * @param stream A stream containing all the lists of details to pull details from
      * @return a sorted map of all selector details, keyed and ordered by selector name.
      *         The value for each entry will be a list of all selector details with a given name.
@@ -157,6 +160,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
      * Add the SelectorDetails to the output map.
      * If there is already an entry for the selector's name, add it to that list.
      * Otherwise, create a new list containing this SelectorDetails and insert it into the map.
+     *
      * @param results The map to add the details to
      * @param details The {@code SelectorDetails} to add
      */
@@ -174,6 +178,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
 
     /**
      * Output all the selector details in a markdown format.
+     *
      * @param out The writer to output the details to
      * @param allDetails All the details that should be output
      * @throws IOException If writing the data failed
@@ -188,6 +193,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
 
     /**
      * Output all the selector details for a specific selector type in a markdown format.
+     *
      * @param out The writer to output the details to
      * @param type The name of the selector type
      * @param typeDetails All the details that should be output as belonging to the specified type
@@ -206,6 +212,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
      * Output a set of selector details with a given name.
      * If there is just one entry in the list, output it as is.
      * If there are multiple entries, output them as an ordered list.
+     *
      * @param out The writer to output the details to
      * @param name The name of the specified selector
      * @param detailsList The list of details to output
@@ -230,6 +237,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
     /**
      * Output the information about a given selector.
      * Outputs the description, options (if available) and if the selector is enabled by default.
+     *
      * @param out The writer to output the details to
      * @param details The details about the desired selector
      * @param index The index of the selector in a list of implementations.
@@ -277,6 +285,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
 
     /**
      * Output all the selector details in Json format.
+     *
      * @param out The writer to output the details to
      * @param allDetails All the details that should be output
      * @throws IOException If writing the data failed
@@ -295,6 +304,7 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
 
     /**
      * Get the details about all selectors of a type in a Json format.
+     *
      * @param typeDetails All the details that should be converted to Json
      * @return a Json object containing all the provided details, keyed by selector name
      */
@@ -321,6 +331,8 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
     /**
      * Output the data about a given selector.
      * e.g.
+     *
+     * <code>
      * {
      *     description: "the description"
      *     isEnabledByDefault: true or undefined
@@ -328,6 +340,8 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
      *         option name: "option description"
      *     }
      * }
+     * </code>
+     *
      * @param details The selector details that should be output
      * @return A json object containing all the provided details
      */

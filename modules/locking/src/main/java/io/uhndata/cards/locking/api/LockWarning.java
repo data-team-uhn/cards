@@ -29,7 +29,7 @@ public class LockWarning extends Exception
 
     public LockWarning()
     {
-        super();
+        // Nothing to do, but we need to declare a parameterless constructor to be able to use it
     }
 
     public LockWarning(String message)

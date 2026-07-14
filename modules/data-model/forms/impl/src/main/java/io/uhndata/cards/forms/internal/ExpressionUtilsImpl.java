@@ -122,17 +122,23 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     private final class ExpressionParser
     {
         private String expression;
+
         private final Map<String, Object> questionValues;
+
         private boolean missingValue;
+
         private Map<String, ExpressionArgument> questions = new HashMap<>();
 
         // Next argument details
         private boolean isArrayArgument;
-        private String startMarker;
-        private String endMarker;
-        private int start;
-        private int end;
 
+        private String startMarker;
+
+        private String endMarker;
+
+        private int start;
+
+        private int end;
 
         ExpressionParser(String expression, final Map<String, Object> questionValues)
         {
@@ -289,7 +295,9 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     private static final class ExpressionArgument
     {
         private final String argument;
+
         private final String questionName;
+
         private final Object value;
 
         ExpressionArgument(String argument, String questionName, Object value)

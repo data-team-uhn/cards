@@ -35,8 +35,11 @@ import org.slf4j.LoggerFactory;
 public final class Metrics
 {
     private static final String LABEL_TODAY = "today";
+
     private static final String LABEL_TOTAL = "total";
+
     private static final String METRICS_PATH = "/Metrics/";
+
     private static final String PROP_VALUE = "value";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Metrics.class);

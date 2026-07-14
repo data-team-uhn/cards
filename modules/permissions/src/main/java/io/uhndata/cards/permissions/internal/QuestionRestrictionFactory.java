@@ -37,7 +37,9 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 @Component(immediate = true)
 public class QuestionRestrictionFactory implements RestrictionFactory
 {
-    /** @see #getName */
+    /**
+     * @see #getName
+     */
     public static final String NAME = "cards:question";
 
     @Reference

@@ -663,12 +663,19 @@
                       <!-- Not used because we want to use abstract classes as SPI declarations, without requiring an ugly Abstract* prefix -->
                       <!--module name="AbstractClassName"/-->
 
+                      <module name="AbbreviationAsWordInName">
+                        <property name="allowedAbbreviations" value="JSON, NCIT" />
+                      </module>
+
                       <module name="AnnotationLocation">
                         <property name="allowSamelineSingleParameterlessAnnotation" value="false" />
                       </module>
 
-                      <!-- Not used because we prefer annotations on separate lines, as enforced by AnnotationLocation -->
+                      <!-- Not used because we prefer annotations on separate lines, as enforced by AnnotationLocation. -->
                       <!--module name="AnnotationOnSameLine"/-->
+
+                      <!-- Not used, keep annotation style flexible. -->
+                      <!--module name="AnnotationUseStyle"/-->
 
                       <module name="AnonInnerLength" />
 
@@ -680,12 +687,16 @@
                         <property name="tagOrder" value="@param, @return, @throws, @exception, @see, @version, @since, @deprecated" />
                       </module>
 
-                      <!-- We allow escapes so that the source code can be checked out on non-UTF systems -->
+                      <module name="AvoidDoubleBraceInitialization" />
+
+                      <!-- We allow escapes so that the source code can be checked out on non-UTF systems. -->
                       <!--module name="AvoidEscapedUnicodeCharacters"/-->
 
                       <!--module name="AvoidInlineConditionals"/-->
 
                       <module name="AvoidNestedBlocks" />
+
+                      <module name="AvoidNoArgumentSuperConstructorCall" />
 
                       <module name="AvoidStarImport" />
 
@@ -699,7 +710,7 @@
                         <property name="excludedPackages" value="java.io, java.math, java.text, java.util, java.util.concurrent, java.util.concurrent.atomic, java.util.function, java.util.stream, javax.annotation, javax.inject, javax.servlet, org.apache.commons.collections4, org.apache.commons.lang3, org.json, org.slf4j, org.xwiki.component.annotation, org.apache.sling.servlets.annotations, org.osgi.service.component.annotations" />
                       </module>
 
-                      <!-- We use the opposite, RedundantModifier -->
+                      <!-- We use the opposite, RedundantModifier. -->
                       <!--module name="ClassMemberImpliedModifier"/-->
 
                       <module name="ClassTypeParameterName" />
@@ -708,7 +719,12 @@
 
                       <module name="ConstantName" />
 
+                      <module name="ConstructorsDeclarationGrouping" />
+
                       <module name="CovariantEquals" />
+
+                      <!-- We use ImportOrder instead. -->
+                      <!--module name="CustomImportOrder" /-->
 
                       <module name="CyclomaticComplexity" />
 
@@ -716,10 +732,10 @@
 
                       <module name="DefaultComesLast" />
 
-                      <!-- The default values for this one allow everything to pass. Unneeded.
-                      <module name="DescendantToken" />
-                      -->
+                      <!-- The default values for this one allow everything to pass. Unneeded. -->
+                      <!--module name="DescendantToken" /-->
 
+                      <!-- Too verbose, and only recommended for libraries. -->
                       <!--module name="DesignForExtension"/-->
 
                       <module name="EmptyBlock">
@@ -732,12 +748,13 @@
 
                       <module name="EmptyForIteratorPad" />
 
-                      <!-- TODO: Enable this after fixing violations
                       <module name="EmptyLineSeparator">
                         <property name="allowMultipleEmptyLines" value="false" />
                         <property name="allowMultipleEmptyLinesInsideClassMembers" value="false" />
+                        <!-- We let there be no separator between the license header and the package declaration, -PACKAGE_DEF. -->
+                        <!-- We also allow skipping empty lines between closely related fields/variables, -VARIABLE_DEF. -->
+                        <property name="tokens" value="IMPORT, STATIC_IMPORT, MODULE_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF, STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF, RECORD_DEF, COMPACT_CTOR_DEF" />
                       </module>
-                      -->
 
                       <module name="EmptyStatement" />
 
@@ -761,13 +778,21 @@
 
                       <module name="GenericWhitespace" />
 
+                      <module name="GoogleNonConstantFieldName" />
+
+                      <module name="HexLiteralCase" />
+
                       <module name="HiddenField">
                         <property name="tokens" value="VARIABLE_DEF,LAMBDA" />
                       </module>
 
                       <module name="HideUtilityClassConstructor" />
 
-                      <!--module name="IllegalCatch"/-->
+                      <!-- Although not recommended, we do allow catching Exception. -->
+                      <!--module name="IllegalCatch" /-->
+
+                      <!-- We don't have any names we want to forbid. -->
+                      <!--module name="IllegalIdentifierName" /-->
 
                       <module name="IllegalImport">
                         <property name="illegalPkgs" value="sun,groovy,org.apache.commons.lang,antlr" />
@@ -777,6 +802,8 @@
                       <module name="IllegalInstantiation">
                         <property name="classes" value="java.lang.Boolean, java.lang.String" />
                       </module>
+
+                      <module name="IllegalSymbol" />
 
                       <module name="IllegalThrows" />
 
@@ -788,7 +815,9 @@
 
                       <module name="IllegalType" />
 
-                      <!--module name="ImportControl"/-->
+                      <!-- Too verbose, this requires us to list every allowed import.
+                      <module name="ImportControl"/>
+                      -->
 
                       <module name="ImportOrder">
                         <property name="groups" value="java,javax,jakarta,org" />
@@ -802,15 +831,33 @@
 
                       <module name="InnerAssignment" />
 
+                      <!-- Sometimes it makes sense to define inner types near the top. -->
+                      <!--module name="InnerTypeLast" /-->
+
                       <module name="InterfaceIsType" />
+
+                      <!-- We want the opposite, enforced by RedundantModifier. -->
+                      <!--module name="InterfaceMemberImpliedModifier" /-->
 
                       <module name="InterfaceTypeParameterName">
                         <property name="format" value="^[A-Z]{1,2}$" />
                       </module>
 
+                      <module name="InvalidJavadocPosition" />
+
+                      <module name="JavadocBlockTagLocation" />
+
+                      <module name="JavadocContentLocation" />
+
+                      <module name="JavadocLeadingAsteriskAlign" />
+
                       <module name="JavadocMethod">
                         <property name="accessModifiers" value="public" />
                       </module>
+
+                      <module name="JavadocMissingLeadingAsterisk" />
+
+                      <module name="JavadocMissingWhitespaceAfterAsterisk" />
 
                       <!-- Too strict at the moment -->
                       <!--module name="JavadocParagraph"/-->
@@ -825,10 +872,13 @@
                       </module>
 
                       <module name="JavadocVariable">
-                        <property name="scope" value="public" />
+                        <property name="accessModifiers" value="public" />
                       </module>
 
                       <module name="JavaNCSS" />
+
+                      <!-- Fix and enable. -->
+                      <!--module name="LambdaBodyLength" /-->
 
                       <module name="LambdaParameterName" />
 
@@ -850,9 +900,7 @@
                       <module name="MethodLength" />
 
                       <!-- Allow for UI methods generated by idea -->
-                      <module name="MethodName">
-                        <property name="format" value="^[a-z][a-zA-Z0-9]*$|^\$\$\$setupUI\$\$\$$" />
-                      </module>
+                      <module name="MethodName" />
 
                       <module name="MethodParamPad" />
 
@@ -862,7 +910,17 @@
 
                       <module name="MissingDeprecated" />
 
+                      <!-- Fix and enable. -->
+                      <!--module name="MissingJavadocMethod" /-->
+
+                      <!-- Fix and enable. -->
+                      <!--module name="MissingJavadocType" /-->
+
+                      <module name="MissingNullCaseInSwitch" />
+
                       <module name="MissingOverride" />
+
+                      <module name="MissingOverrideOnRecordAccessor" />
 
                       <module name="MissingSwitchDefault" />
 
@@ -896,6 +954,10 @@
 
                       <module name="NestedTryDepth" />
 
+                      <!-- We actually want these, to allow adding entries without having to alter the existing lines. -->
+                      <!--module name="NoArrayTrailingComma" /-->
+                      <!--module name="NoEnumTrailingComma" /-->
+
                       <!--module name="NoClone"/-->
 
                       <module name="NoFinalizer" />
@@ -910,7 +972,11 @@
 
                       <module name="NoWhitespaceBefore" />
 
+                      <module name="NoWhitespaceBeforeCaseDefaultColon" />
+
                       <module name="NPathComplexity" />
+
+                      <module name="NumericalPrefixesInfixesSuffixesCharacterCase" />
 
                       <module name="OneStatementPerLine" />
 
@@ -939,6 +1005,16 @@
 
                       <module name="ParenPad" />
 
+                      <module name="PatternVariableAssignment" />
+
+                      <module name="PatternVariableName" />
+
+                      <module name="RecordComponentName" />
+
+                      <module name="RecordComponentNumber" />
+
+                      <module name="RecordTypeParameterName" />
+
                       <module name="RedundantImport" />
 
                       <module name="RedundantModifier" />
@@ -955,12 +1031,12 @@
 
                       <!--module name="RegexpHeader"/-->
 
+                      <module name="RequireEmptyLineBeforeBlockTagGroup" />
+
                       <module name="RequireThis">
                         <property name="checkMethods" value="false" />
                         <property name="validateOnlyOverlapping" value="false" />
                       </module>
-
-                      <!--module name="RequiredRegexp"/-->
 
                       <!-- Increasing the maximum number of allowed return statements, as otherwise
                            the code will simply use workarounds to hide the same amount of exit points. -->
@@ -970,6 +1046,8 @@
                       </module>
 
                       <module name="RightCurly" />
+
+                      <module name="SealedShouldHavePermitsList" />
 
                       <module name="SeparatorWrap">
                         <property name="tokens" value="COMMA" />
@@ -985,11 +1063,16 @@
 
                       <module name="SimplifyBooleanReturn" />
 
+                      <module name="SingleLineJavadoc" />
+
                       <module name="SingleSpaceSeparator" />
 
                       <module name="StaticVariableName" />
 
                       <module name="StringLiteralEquality" />
+
+                      <!-- A new feature, adding these to every class is too costly for now. -->
+                      <!--module name="SummaryJavadoc" /-->
 
                       <module name="SuperClone" />
 
@@ -1024,13 +1107,41 @@
 
                       <!--module name="UnnecessaryParentheses"/-->
 
+                      <module name="UnnecessaryNullCheckWithInstanceOf" />
+
+                      <module name="UnnecessarySemicolonAfterOuterTypeDeclaration" />
+
+                      <module name="UnnecessarySemicolonAfterTypeMemberDeclaration" />
+
+                      <module name="UnnecessarySemicolonInEnumeration" />
+
+                      <module name="UnnecessarySemicolonInTryWithResources" />
+
+                      <!-- New feature, fix and enable. -->
+                      <!--module name="UnusedCatchParameterShouldBeUnnamed" /-->
+
                       <module name="UnusedImports" />
 
+                      <!-- Fix and enable. -->
+                      <!--module name="UnusedLambdaParameterShouldBeUnnamed" /-->
+
+                      <module name="UnusedLocalVariable" />
+
+                      <module name="UnusedTryResourceShouldBeUnnamed" />
+
                       <module name="UpperEll" />
+
+                      <!-- New feature, fix and enable. -->
+                      <!--module name="UseEnhancedSwitch" /-->
+
+                      <!-- New feature, fix and enable. -->
+                      <!--module name="VariableDeclarationUsageDistance" /-->
 
                       <module name="VisibilityModifier">
                         <property name="protectedAllowed" value="true" />
                       </module>
+
+                      <module name="WhenShouldBeUsed" />
 
                       <module name="WhitespaceAfter" />
 
@@ -1133,6 +1244,10 @@
                       <!-- Not used because we want to use abstract classes as SPI declarations, without requiring an ugly Abstract* prefix -->
                       <!--module name="AbstractClassName"/-->
 
+                      <module name="AbbreviationAsWordInName">
+                        <property name="allowedAbbreviations" value="JSON, NCIT" />
+                      </module>
+
                       <module name="AnnotationLocation">
                         <property name="allowSamelineSingleParameterlessAnnotation" value="false" />
                       </module>
@@ -1141,32 +1256,45 @@
                         <property name="max" value="100" />
                       </module>
 
+                      <!-- Not used because we prefer annotations on separate lines, as enforced by AnnotationLocation. -->
+                      <!--module name="AnnotationOnSameLine"/-->
+
+                      <!-- Not used, keep annotation style flexible. -->
+                      <!--module name="AnnotationUseStyle"/-->
+
                       <!--module name="ArrayTrailingComma"/-->
 
                       <module name="ArrayTypeStyle" />
-
-                      <!--module name="AvoidInlineConditionals"/-->
 
                       <module name="AtclauseOrder">
                         <property name="tagOrder" value="@param, @return, @throws, @exception, @see, @version, @since, @deprecated" />
                       </module>
 
-                      <!-- We allow escapes so that the source code can be checked out on non-UTF systems -->
+                      <module name="AvoidDoubleBraceInitialization" />
+
+                      <!-- We allow escapes so that the source code can be checked out on non-UTF systems. -->
                       <!--module name="AvoidEscapedUnicodeCharacters"/-->
+
+                      <!--module name="AvoidInlineConditionals"/-->
 
                       <module name="AvoidNestedBlocks" />
 
-                      <!--module name="AvoidStarImport"/-->
+                      <module name="AvoidNoArgumentSuperConstructorCall" />
 
-                      <!--module name="AvoidStaticImport"/-->
+                      <!--module name="AvoidStarImport" /-->
+
+                      <!--module name="AvoidStaticImport" /-->
 
                       <module name="BooleanExpressionComplexity" />
 
-                      <!--module name="ClassDataAbstractionCoupling"/-->
+                      <!--module name="ClassDataAbstractionCoupling" /-->
 
                       <!--module name="ClassFanOutComplexity">
-                        <property name="excludedClasses" value="boolean, byte, char, double, float, int, long, short, void, Boolean, Byte, Character, Double, Float, Integer, Long, Short, Void, Object, Class, String, StringBuffer, StringBuilder, ArrayIndexOutOfBoundsException, Exception, RuntimeException, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, NullPointerException, Throwable, SecurityException, UnsupportedOperationException, List, ArrayList, Deque, Queue, LinkedList, Set, HashSet, SortedSet, TreeSet, Map, HashMap, LinkedHashMap, SortedMap, TreeMap, Collections, Collection, Iterator, Iterable, Arrays, Logger, LoggerFactory, StringUtils, Inject, Named, Component, Role, Singleton" />
+                        <property name="excludedPackages" value="java.io, java.math, java.text, java.util, java.util.concurrent, java.util.concurrent.atomic, java.util.function, java.util.stream, javax.annotation, javax.inject, javax.servlet, org.apache.commons.collections4, org.apache.commons.lang3, org.json, org.slf4j, org.xwiki.component.annotation, org.apache.sling.servlets.annotations, org.osgi.service.component.annotations" />
                       </module-->
+
+                      <!-- We use the opposite, RedundantModifier. -->
+                      <!--module name="ClassMemberImpliedModifier"/-->
 
                       <module name="ClassTypeParameterName" />
 
@@ -1174,7 +1302,12 @@
 
                       <module name="ConstantName" />
 
+                      <module name="ConstructorsDeclarationGrouping" />
+
                       <module name="CovariantEquals" />
+
+                      <!-- We use ImportOrder instead. -->
+                      <!--module name="CustomImportOrder" /-->
 
                       <module name="CyclomaticComplexity">
                         <property name="max" value="32" />
@@ -1184,10 +1317,10 @@
 
                       <module name="DefaultComesLast" />
 
-                      <!-- The default values for this one allow everything to pass. Unneeded.
-                      <module name="DescendantToken" />
-                      -->
+                      <!-- The default values for this one allow everything to pass. Unneeded. -->
+                      <!--module name="DescendantToken" /-->
 
+                      <!-- Too verbose, and only recommended for libraries. -->
                       <!--module name="DesignForExtension"/-->
 
                       <module name="EmptyBlock">
@@ -1199,6 +1332,14 @@
                       <module name="EmptyForInitializerPad" />
 
                       <module name="EmptyForIteratorPad" />
+
+                      <module name="EmptyLineSeparator">
+                        <property name="allowMultipleEmptyLines" value="false" />
+                        <property name="allowMultipleEmptyLinesInsideClassMembers" value="false" />
+                        <!-- We let there be no separator between the license header and the package declaration, -PACKAGE_DEF. -->
+                        <!-- We also allow skipping empty lines between closely related fields/variables, -VARIABLE_DEF. -->
+                        <property name="tokens" value="IMPORT, STATIC_IMPORT, MODULE_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF, STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF, RECORD_DEF, COMPACT_CTOR_DEF" />
+                      </module>
 
                       <module name="EmptyStatement" />
 
@@ -1216,17 +1357,27 @@
 
                       <!--module name="FinalLocalVariable"/-->
 
-                      <!--module name="FinalParameters"/-->
+                      <!-- TODO: Enable this after fixing violations
+                      <module name="FinalParameters" />
+                      -->
 
                       <module name="GenericWhitespace" />
 
+                      <module name="GoogleNonConstantFieldName" />
+
+                      <module name="HexLiteralCase" />
+
                       <module name="HiddenField">
-                        <property name="tokens" value="VARIABLE_DEF" />
+                        <property name="tokens" value="VARIABLE_DEF,LAMBDA" />
                       </module>
 
                       <module name="HideUtilityClassConstructor" />
 
-                      <!--module name="IllegalCatch"/-->
+                      <!-- Although not recommended, we do allow catching Exception. -->
+                      <!--module name="IllegalCatch" /-->
+
+                      <!-- We don't have any names we want to forbid. -->
+                      <!--module name="IllegalIdentifierName" /-->
 
                       <module name="IllegalImport">
                         <property name="illegalPkgs" value="sun,groovy,org.apache.commons.lang,antlr" />
@@ -1236,6 +1387,8 @@
                       <module name="IllegalInstantiation">
                         <property name="classes" value="java.lang.Boolean, java.lang.String" />
                       </module>
+
+                      <module name="IllegalSymbol" />
 
                       <module name="IllegalThrows" />
 
@@ -1247,7 +1400,9 @@
 
                       <module name="IllegalType" />
 
-                      <!--module name="ImportControl"/-->
+                      <!-- Too verbose, this requires us to list every allowed import.
+                      <module name="ImportControl"/>
+                      -->
 
                       <module name="ImportOrder">
                         <property name="groups" value="java,javax,jakarta,org" />
@@ -1261,16 +1416,33 @@
 
                       <module name="InnerAssignment" />
 
+                      <!-- Sometimes it makes sense to define inner types near the top. -->
+                      <!--module name="InnerTypeLast" /-->
+
                       <module name="InterfaceIsType" />
+
+                      <!-- We want the opposite, enforced by RedundantModifier. -->
+                      <!--module name="InterfaceMemberImpliedModifier" /-->
 
                       <module name="InterfaceTypeParameterName">
                         <property name="format" value="^[A-Z]{1,2}$" />
                       </module>
 
+                      <module name="InvalidJavadocPosition" />
+
+                      <module name="JavadocBlockTagLocation" />
+
+                      <module name="JavadocContentLocation" />
+
+                      <module name="JavadocLeadingAsteriskAlign" />
+
                       <!--module name="JavadocMethod">
-                        <property name="scope" value="public" />
-                        <property name="allowUndeclaredRTE" value="true" />
+                        <property name="accessModifiers" value="public" />
                       </module-->
+
+                      <module name="JavadocMissingLeadingAsterisk" />
+
+                      <module name="JavadocMissingWhitespaceAfterAsterisk" />
 
                       <!-- Too strict at the moment -->
                       <!--module name="JavadocParagraph"/-->
@@ -1285,12 +1457,17 @@
                       </module-->
 
                       <!--module name="JavadocVariable">
-                        <property name="scope" value="public" />
+                        <property name="accessModifiers" value="public" />
                       </module-->
 
                       <module name="JavaNCSS">
                         <property name="methodMaximum" value="200" />
                       </module>
+
+                      <!-- Fix and enable. -->
+                      <!--module name="LambdaBodyLength" /-->
+
+                      <module name="LambdaParameterName" />
 
                       <module name="LeftCurly">
                         <property name="option" value="nl" />
@@ -1327,7 +1504,17 @@
 
                       <module name="MissingDeprecated" />
 
+                      <!-- Fix and enable. -->
+                      <!--module name="MissingJavadocMethod" /-->
+
+                      <!-- Fix and enable. -->
+                      <!--module name="MissingJavadocType" /-->
+
+                      <module name="MissingNullCaseInSwitch" />
+
                       <module name="MissingOverride" />
+
+                      <module name="MissingOverrideOnRecordAccessor" />
 
                       <module name="MissingSwitchDefault" />
 
@@ -1356,13 +1543,17 @@
 
                       <module name="NestedTryDepth" />
 
+                      <!-- We actually want these, to allow adding entries without having to alter the existing lines. -->
+                      <!--module name="NoArrayTrailingComma" /-->
+                      <!--module name="NoEnumTrailingComma" /-->
+
                       <!--module name="NoClone"/-->
+
+                      <module name="NoFinalizer" />
 
                       <module name="NoLineWrap" />
 
                       <module name="NonEmptyAtclauseDescription" />
-
-                      <module name="NoFinalizer" />
 
                       <module name="NoWhitespaceAfter">
                         <property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS" />
@@ -1370,9 +1561,15 @@
 
                       <module name="NoWhitespaceBefore" />
 
+                      <module name="NoWhitespaceBeforeCaseDefaultColon" />
+
                       <module name="NPathComplexity" />
 
+                      <module name="NumericalPrefixesInfixesSuffixesCharacterCase" />
+
                       <module name="OneStatementPerLine" />
+
+                      <module name="OneTopLevelClass" />
 
                       <module name="OperatorWrap" />
 
@@ -1397,6 +1594,16 @@
 
                       <module name="ParenPad" />
 
+                      <module name="PatternVariableAssignment" />
+
+                      <module name="PatternVariableName" />
+
+                      <module name="RecordComponentName" />
+
+                      <module name="RecordComponentNumber" />
+
+                      <module name="RecordTypeParameterName" />
+
                       <module name="RedundantImport" />
 
                       <module name="RedundantModifier" />
@@ -1413,12 +1620,12 @@
 
                       <!--module name="RegexpHeader"/-->
 
+                      <module name="RequireEmptyLineBeforeBlockTagGroup" />
+
                       <module name="RequireThis">
                         <property name="checkMethods" value="false" />
                         <property name="validateOnlyOverlapping" value="false" />
                       </module>
-
-                      <!--module name="RequiredRegexp"/-->
 
                       <!-- Increasing the maximum number of allowed return statements, as otherwise
                            the code will simply use workarounds to hide the same amount of exit points. -->
@@ -1428,6 +1635,8 @@
                       </module>
 
                       <module name="RightCurly" />
+
+                      <module name="SealedShouldHavePermitsList" />
 
                       <module name="SeparatorWrap">
                         <property name="tokens" value="COMMA" />
@@ -1443,11 +1652,16 @@
 
                       <module name="SimplifyBooleanReturn" />
 
+                      <module name="SingleLineJavadoc" />
+
                       <module name="SingleSpaceSeparator" />
 
                       <module name="StaticVariableName" />
 
                       <module name="StringLiteralEquality" />
+
+                      <!-- A new feature, adding these to every class is too costly for now. -->
+                      <!--module name="SummaryJavadoc" /-->
 
                       <module name="SuperClone" />
 
@@ -1482,13 +1696,41 @@
 
                       <!--module name="UnnecessaryParentheses"/-->
 
+                      <module name="UnnecessaryNullCheckWithInstanceOf" />
+
+                      <module name="UnnecessarySemicolonAfterOuterTypeDeclaration" />
+
+                      <module name="UnnecessarySemicolonAfterTypeMemberDeclaration" />
+
+                      <module name="UnnecessarySemicolonInEnumeration" />
+
+                      <module name="UnnecessarySemicolonInTryWithResources" />
+
+                      <!-- New feature, fix and enable. -->
+                      <!--module name="UnusedCatchParameterShouldBeUnnamed" /-->
+
                       <module name="UnusedImports" />
 
+                      <!-- Fix and enable. -->
+                      <!--module name="UnusedLambdaParameterShouldBeUnnamed" /-->
+
+                      <module name="UnusedLocalVariable" />
+
+                      <module name="UnusedTryResourceShouldBeUnnamed" />
+
                       <module name="UpperEll" />
+
+                      <!-- New feature, fix and enable. -->
+                      <!--module name="UseEnhancedSwitch" /-->
+
+                      <!-- New feature, fix and enable. -->
+                      <!--module name="VariableDeclarationUsageDistance" /-->
 
                       <module name="VisibilityModifier">
                         <property name="protectedAllowed" value="true" />
                       </module>
+
+                      <module name="WhenShouldBeUsed" />
 
                       <module name="WhitespaceAfter" />
 

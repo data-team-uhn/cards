@@ -402,7 +402,7 @@ public abstract class AnswersEditor extends DefaultEditor
                             ? Type.LONG
                             : Type.DATE;
                     break;
-                default:
+                case null, default:
                     result = Type.STRING;
             }
         } catch (RepositoryException e) {

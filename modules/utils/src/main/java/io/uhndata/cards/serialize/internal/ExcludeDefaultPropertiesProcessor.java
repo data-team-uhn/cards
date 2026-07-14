@@ -59,7 +59,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  * </ul>
  *
  *  @version $Id$
-**/
+ */
 @Component(immediate = true)
 public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
 {

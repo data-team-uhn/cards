@@ -35,7 +35,9 @@ import io.uhndata.cards.permissions.spi.RestrictionFactory;
 @Component(immediate = true)
 public class UnsubmittedFormsRestrictionFactory implements RestrictionFactory
 {
-    /** @see #getName */
+    /**
+     * @see #getName
+     */
     public static final String NAME = "cards:unsubmittedForms";
 
     @Reference
