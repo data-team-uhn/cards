@@ -238,7 +238,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                 updatePolicyMatches = false;
                 break;
             case "always":
-            default:
+            case null, default:
                 updatePolicyMatches = true;
                 break;
         }

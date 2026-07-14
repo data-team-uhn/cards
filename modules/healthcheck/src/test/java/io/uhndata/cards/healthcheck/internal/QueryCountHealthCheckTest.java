@@ -133,7 +133,7 @@ public class QueryCountHealthCheckTest
         when(this.queryManager.createQuery(any(), eq(Query.JCR_SQL2))).thenReturn(this.jcrQuery);
         when(this.jcrQuery.execute()).thenReturn(this.queryResult);
         when(this.queryResult.getRows()).thenReturn(this.rowIterator);
-        // Default: iterator yields one row → actualCount = 1
+        // Default: iterator yields one row -> actualCount = 1
         when(this.rowIterator.hasNext()).thenReturn(true, false);
 
         when(this.config1.getProperty(QueryCountHealthCheck.QUERY_PROPERTY)).thenReturn(this.queryProp1);
@@ -165,7 +165,7 @@ public class QueryCountHealthCheckTest
     @Test
     public void testPassedCheck() throws Exception
     {
-        // actualCount=1, comparator="=", expectedCount=1 → passes
+        // actualCount=1, comparator="=", expectedCount=1 -> passes
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config1)));
         Assert.assertEquals(Status.OK, this.checker.execute().getStatus());
         verify(this.jcrQuery).setLimit(2L);
@@ -174,7 +174,7 @@ public class QueryCountHealthCheckTest
     @Test
     public void testFailedCheck() throws Exception
     {
-        // actualCount=1, comparator="=", expectedCount=99 → fails
+        // actualCount=1, comparator="=", expectedCount=99 -> fails
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config2)));
         Assert.assertEquals(Status.CRITICAL, this.checker.execute().getStatus());
         verify(this.jcrQuery).setLimit(100L);

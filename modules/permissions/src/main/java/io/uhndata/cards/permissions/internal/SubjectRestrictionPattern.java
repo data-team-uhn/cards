@@ -41,6 +41,7 @@ public class SubjectRestrictionPattern implements RestrictionPattern
     private static final Logger LOGGER = LoggerFactory.getLogger(SubjectRestrictionFactory.class);
 
     private final String targetSubject;
+
     private final Session session;
 
     /**
@@ -92,6 +93,7 @@ public class SubjectRestrictionPattern implements RestrictionPattern
 
     /**
      * Iteratively search a subject's reference for a match to the {@code targetSubject}.
+     *
      * @param uuid the first subject to check the reference of
      * @return true if the target was in the chain of references, false if an error occurs or target is not found
      */

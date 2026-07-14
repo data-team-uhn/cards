@@ -59,6 +59,7 @@ import io.uhndata.cards.vocabularies.spi.VocabularyParserUtils;
     service = VocabularyIndexer.class,
     name = "VocabularyParser.ncit-owl",
     reference = { @Reference(field = "utils", name = "utils", service = VocabularyParserUtils.class) })
+@SuppressWarnings({"checkstyle:AbbreviationAsWordInName"})
 public class NCITOWLIndexer extends AbstractNCITIndexer
 {
     /** An empty String[] array to use for {@code Set.toArray}, we don't want to create a new array for each call. */

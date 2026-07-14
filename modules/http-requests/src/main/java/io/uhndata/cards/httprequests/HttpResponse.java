@@ -22,6 +22,7 @@ package io.uhndata.cards.httprequests;
 public class HttpResponse
 {
     private int statusCode;
+
     private String responsePayload;
 
     public HttpResponse(int statusCode, String responsePayload)

@@ -211,7 +211,7 @@ public final class EmailAlertEventListener implements EventListener
                     return value != null && !String.valueOf(value).isEmpty();
                 case "is empty":
                     return value == null || String.valueOf(value).isEmpty();
-                default:
+                case null, default:
                     return false;
             }
         } catch (NumberFormatException e) {

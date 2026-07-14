@@ -116,7 +116,7 @@ public class IdentifierAnswerEditor extends DefaultEditor
         switch (identifierType) {
             case "uuid":
                 return UUID.randomUUID().toString();
-            default:
+            case null, default:
                 return null;
         }
     }

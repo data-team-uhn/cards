@@ -27,6 +27,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 public class ResourceIterator implements Iterator<Resource>
 {
     private ResourceResolver resourceResolver;
+
     private NodeIterator nodeIterator;
 
     public ResourceIterator(ResourceResolver rr, NodeIterator nodes)

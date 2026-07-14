@@ -204,6 +204,7 @@ public final class OntologyIndexerUtils
 
     /**
      * Sets root Vocabulary nodes.
+     *
      * @param vocabularyNode The vocabulary node that holds indexed data
      */
     private static void setRootNodes(InheritableThreadLocal<Node> vocabularyNode)

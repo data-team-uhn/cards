@@ -87,6 +87,7 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
     private static final String VALUE_NOT_SPECIFIED = "Not specified";
 
     // xValueDictionary is used to cache the map from answer displayed values to raw values for the variable
+    @SuppressWarnings({"checkstyle:GoogleNonConstantFieldName"})
     private final ThreadLocal<Map<String, String>> xValueDictionary = new ThreadLocal<>();
 
     // splitValueDictionary is used to cache the map from answer displayed values to raw values for the split variable

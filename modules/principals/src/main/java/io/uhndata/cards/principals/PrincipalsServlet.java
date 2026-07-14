@@ -165,7 +165,7 @@ public class PrincipalsServlet extends SlingJakartaSafeMethodsServlet
                     case "/home/groups.json":
                         type = AuthorizableType.GROUP;
                         break;
-                    default:
+                    case null, default:
                         type = AuthorizableType.AUTHORIZABLE;
                 }
                 jsonGen.writeStartObject();

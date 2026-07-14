@@ -29,7 +29,7 @@ public class LockError extends Exception
 
     public LockError()
     {
-        super();
+        // Nothing to do, but we need to declare a parameterless constructor to be able to use it
     }
 
     public LockError(String message)

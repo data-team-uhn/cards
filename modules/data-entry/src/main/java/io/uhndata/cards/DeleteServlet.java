@@ -105,7 +105,7 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
          *
          * @param node the node to be operated on
          * @throws RepositoryException if the operation fails due to repository errors
-        */
+         */
         void accept(Node node) throws RepositoryException;
     }
 
@@ -395,7 +395,7 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
      * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes,
      *         an empty string if there are no nodes needing confirmation or {@code null} in case of error.
      */
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:JavaNCSS"})
     private String listReferrersFromTraversal()
     {
         try {
@@ -431,7 +431,7 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
                         // The user will be prompted to delete the parent resource if it is being deleted
                         // or the link should be deleted silently
                         break;
-                    default:
+                    case null, default:
                         if ("cards/Answer".equals(n.getProperty("sling:resourceSuperType").getString())) {
                             answerCount++;
                         } else {
@@ -492,6 +492,7 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
 
     /**
      * Transform a word from singular to plural form.
+     *
      * @param word the word in singular form
      * @param count word count
      * @return the correct form of the word for the given count
@@ -635,7 +636,7 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
      * reference the same node, we need an explicit comparator that compares the two node paths. This comparator may
      * throw {@code NullPointerException} if any of the nodes to compare are null.
      */
-    private static class NodeComparator implements Comparator<Node>
+    private static final class NodeComparator implements Comparator<Node>
     {
         @Override
         public int compare(Node o1, Node o2)

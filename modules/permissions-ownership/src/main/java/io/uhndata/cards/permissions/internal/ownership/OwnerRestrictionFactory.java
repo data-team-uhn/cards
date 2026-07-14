@@ -37,7 +37,9 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 @Component(immediate = true)
 public class OwnerRestrictionFactory implements RestrictionFactory
 {
-    /** @see #getName */
+    /**
+     * @see #getName
+     */
     public static final String NAME = "cards:owner";
 
     /**

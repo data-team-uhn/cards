@@ -83,10 +83,12 @@ import io.uhndata.cards.utils.DateUtils;
     selectors = { "paginate" })
 public class PaginationServlet extends SlingJakartaSafeMethodsServlet
 {
-
     protected static final String FIELDNAMES = "fieldnames";
+
     protected static final String FIELDCOMPARATORS = "fieldcomparators";
+
     protected static final String FIELDVALUES = "fieldvalues";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PaginationServlet.class);
 
     private static final long serialVersionUID = -6068156942302219324L;
@@ -770,7 +772,7 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
                     queryProperty,
                     valueToCompare);
                 break;
-            default:
+            case null, default:
                 compareQuery = null;
                 break;
         }

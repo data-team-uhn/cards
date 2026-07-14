@@ -181,6 +181,7 @@ public interface ResourceJsonProcessor
      * {@code null}, then the property is skipped from the parent node's serialization. Only the outcome of the last
      * processor is taken into consideration when serializing the parent node. The default implementation simply
      * returns the input unmodified
+     *
      * @param node the node whose property name is being determined
      * @param property the property which is being named
      * @param input the name determined by the previous processors, may be {@code null}

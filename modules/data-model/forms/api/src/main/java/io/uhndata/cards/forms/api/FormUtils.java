@@ -534,6 +534,7 @@ public interface FormUtils
 
     /**
      * Extract the set of status flags from a form, answer section or answer node.
+     *
      * @param node the form, answer section or answer node to pull the status flags from
      * @return the set of status flags for a form.
      *         If no status flags are present, an empty set will be returned.

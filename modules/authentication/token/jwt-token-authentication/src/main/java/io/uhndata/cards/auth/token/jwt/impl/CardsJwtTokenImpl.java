@@ -58,6 +58,7 @@ public class CardsJwtTokenImpl implements CardsToken
     /**
      * Parse the attributes forming a token from an existing JWT and the login token containing said JWT.
      * This should generally be used when parsing an inbound JWT from a user.
+     *
      * @param jwt The JWT containing the attributes about the current token
      * @param token The login token string said JWT was parsed from
      */
@@ -84,6 +85,7 @@ public class CardsJwtTokenImpl implements CardsToken
     /**
      * Create a token from the raw attributes desired.
      * This should generally be used when creating a new token from scratch.
+     *
      * @param jws the signed token string that can be provided to users to authenticate with later
      * @param userId the userId of encoded within this token
      * @param expiration the date and time when this token should stop being valid

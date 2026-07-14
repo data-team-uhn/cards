@@ -135,7 +135,7 @@ abstract class AbstractEmailNotification
                     appointmentResults = AppointmentUtils.getAppointmentsForInitialEmailForDay(session, dateToQuery,
                         clinicId, surveyDeadline);
                     break;
-                default:
+                case null, default:
                     appointmentResults = AppointmentUtils.getAppointmentsForReminderEmailForDay(session, dateToQuery,
                         clinicId);
                     break;
