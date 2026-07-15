@@ -24,12 +24,8 @@ import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.llm.LLMConfigurationService;
 
 /**
  * A {@link EditorProvider} returning {@link ProposalAnswerEditor}.
@@ -42,14 +38,10 @@ public class ProposalAnswerEditorProvider implements EditorProvider
     @Reference
     private FormUtils formUtils;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private volatile LLMConfigurationService llmConfig;
-
     @Override
     public Editor getRootEditor(final NodeState before, final NodeState after, final NodeBuilder builder,
         final CommitInfo info) throws CommitFailedException
     {
-        return new ProposalAnswerEditor(builder, this.formUtils, this.llmConfig);
+        return new ProposalAnswerEditor(builder, this.formUtils);
     }
 }

@@ -40,18 +40,19 @@ import org.slf4j.LoggerFactory;
  * Triggers the Docling section-aware chat chunker for a proposal answer, asynchronously and without
  * ever blocking the caller.
  * <p>
- * The chunker builds the {@code ChatChunks} tree and {@code aggregated_chunked.md} that back the
- * proposal chat feature. It is independent of the per-answer field-extraction chunks produced by
+ * The chunker splits every per-source parsed Markdown into a {@code Sections/<stem>} tree (section
+ * files plus {@code catalog.json}) that backs the downstream extraction and proposal chat features.
+ * It is independent of the per-answer field-extraction chunks produced by
  * {@link MarkdownChunker}; both run, for different purposes.
  * </p>
  * <p>
  * The request is first sent to the long-running Docling daemon at {@code cards.docling.daemon.url}
  * via {@code POST /chunk}. If that call fails (daemon down, error response, or transport error) and
- * fallback is enabled, a detached {@code docling_chunker.py} CLI process is started instead. Neither
- * path blocks the calling thread: the daemon call is fired with
+ * fallback is enabled, a detached {@code docling_section_splitter.py} CLI process is started instead.
+ * Neither path blocks the calling thread: the daemon call is fired with
  * {@link HttpClient#sendAsync(HttpRequest, HttpResponse.BodyHandler)} and the CLI process is left to
- * run on its own. Chunking can take a while; callers fire it after the aggregate is written and
- * carry on.
+ * run on its own. Chunking can take a while; callers fire it after the per-file markdown is written
+ * and carry on.
  * </p>
  *
  * @version $Id$
@@ -62,7 +63,7 @@ public final class DoclingChatChunker
 
     private static final String DEFAULT_DAEMON_URL = "http://127.0.0.1:18765";
 
-    private static final String DEFAULT_SCRIPT_NAME = "Utilities/Parsing/docling_chunker.py";
+    private static final String DEFAULT_SCRIPT_NAME = "Utilities/Parsing/docling_section_splitter.py";
 
     private static final String DEFAULT_PYTHON_COMMAND = "python";
 
@@ -192,7 +193,7 @@ public final class DoclingChatChunker
         if (error == null && response != null && response.statusCode() == 200) {
             if (!isCurrentGeneration(folder, generation)) {
                 LOGGER.warn("Discarding stale Docling chat chunking result for {}", folder);
-                ParsedMarkdownStore.clearChatChunkOutput(answerDir);
+                ParsedMarkdownStore.clearSectionOutput(answerDir);
                 return;
             }
             LOGGER.info("Docling chat chunking finished for {}: {}", folder, response.body());
@@ -261,7 +262,7 @@ public final class DoclingChatChunker
             final int exitCode = waitForProcess(process);
             if (exitCode == 0 && !isCurrentGeneration(folder, generation)) {
                 LOGGER.warn("Discarding stale Docling chat chunking CLI result for {}", folder);
-                ParsedMarkdownStore.clearChatChunkOutput(answerDir);
+                ParsedMarkdownStore.clearSectionOutput(answerDir);
             } else if (exitCode != 0) {
                 LOGGER.warn("Docling chat chunker CLI exited with code {} for {}", exitCode, folder);
             } else {

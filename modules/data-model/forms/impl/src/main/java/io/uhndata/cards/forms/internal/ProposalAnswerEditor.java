@@ -40,16 +40,14 @@ import io.uhndata.cards.forms.internal.parse.DocumentParseException;
 import io.uhndata.cards.forms.internal.parse.FileParser;
 import io.uhndata.cards.forms.internal.parse.FileParserFactory;
 import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
-import io.uhndata.cards.llm.LLMConfigurationService;
 
 /**
  * Parse uploaded files and store any parse errors in the answer note.
  * <p>
  * Files are parsed only when their content actually changes: on each commit the editor compares the answer's
  * before and after state, parses just the files that were added or whose binary content differs (or whose
- * parsed output is missing), and only then renews the aggregated markdown and re-runs the chunker. A re-save
- * that does not touch the files is a no-op. When files or whole answers are removed, the corresponding parse
- * output is deleted.
+ * parsed output is missing), and only then re-runs the section chunker. A re-save that does not touch the
+ * files is a no-op. When files or whole answers are removed, the corresponding parse output is deleted.
  * </p>
  *
  * @version $Id$
@@ -78,8 +76,6 @@ public class ProposalAnswerEditor extends DefaultEditor
 
     private final FormUtils formUtils;
 
-    private final LLMConfigurationService llmConfig;
-
     private final NodeBuilder currentNodeBuilder;
 
     private final String nodeName;
@@ -89,12 +85,10 @@ public class ProposalAnswerEditor extends DefaultEditor
      *
      * @param nodeBuilder the builder for the current node
      * @param formUtils helper for checking form nodes
-     * @param llmConfig service used to resolve the active model's chunk size, or {@code null} to skip chunking
      */
-    public ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils,
-        final LLMConfigurationService llmConfig)
+    public ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils)
     {
-        this(nodeBuilder, formUtils, llmConfig, null);
+        this(nodeBuilder, formUtils, null);
     }
 
     /**
@@ -102,15 +96,12 @@ public class ProposalAnswerEditor extends DefaultEditor
      *
      * @param nodeBuilder the builder for the current node
      * @param formUtils helper for checking form nodes
-     * @param llmConfig service used to resolve the active model's chunk size, or {@code null} to skip chunking
      * @param name the name of the node the builder represents, used as the parse output folder name
      */
-    private ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils,
-        final LLMConfigurationService llmConfig, final String name)
+    private ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils, final String name)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.formUtils = formUtils;
-        this.llmConfig = llmConfig;
         this.nodeName = name;
     }
 
@@ -154,15 +145,14 @@ public class ProposalAnswerEditor extends DefaultEditor
         if (this.formUtils.isFormsHomepage(after) || this.formUtils.isForm(after)
             || this.formUtils.isAnswerSection(after)
             || PROPOSAL_ANSWER_NODETYPE.equals(after.getName(JCR_PRIMARY_TYPE))) {
-            return new ProposalAnswerEditor(this.currentNodeBuilder.getChildNode(name), this.formUtils,
-                this.llmConfig, name);
+            return new ProposalAnswerEditor(this.currentNodeBuilder.getChildNode(name), this.formUtils, name);
         }
         return null;
     }
 
     /**
      * Bring the parse output of a proposal answer in line with its current files: parse new or changed files,
-     * drop the output of removed files, and renew the aggregate and chunks only when something changed.
+     * drop the output of removed files, and renew the section trees only when something changed.
      *
      * @param before the answer's state before the commit (may be non-existent for a newly added answer)
      * @param after the answer's state after the commit
@@ -192,11 +182,8 @@ public class ProposalAnswerEditor extends DefaultEditor
         if (!parseErrors.isEmpty()) {
             this.currentNodeBuilder.setProperty(NOTE_PROPERTY, String.join("\n\n", parseErrors), Type.STRING);
         }
-        ParsedMarkdownStore.writeAggregate(answerFolder);
         if (parseErrors.isEmpty()) {
-            this.chunkAggregate(answerFolder);
-            // The aggregate is ready, so kick off the section-aware chat chunker. This runs
-            // asynchronously and independently of the field-extraction chunks above.
+            // All per-file markdown is written, so kick off the section chunker. This runs asynchronously.
             DoclingChatChunker.requestChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder));
         } else {
             DoclingChatChunker.invalidateChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder));
@@ -225,25 +212,6 @@ public class ProposalAnswerEditor extends DefaultEditor
             for (final ChildNodeEntry entry : before.getChildNodeEntries()) {
                 cleanupDeleted(entry.getName(), entry.getNodeState());
             }
-        }
-    }
-
-    /**
-     * Split the aggregated markdown into chunks sized for the active LLM model, when one is configured.
-     * Any failure to resolve the configuration is logged and ignored so it never blocks the commit.
-     *
-     * @param answerFolder the answer's parse output subfolder
-     */
-    private void chunkAggregate(final String answerFolder)
-    {
-        if (this.llmConfig == null) {
-            return;
-        }
-        try {
-            final long chunkTokenSize = this.llmConfig.getActiveSettings().getChunkTokenSize();
-            ParsedMarkdownStore.chunkAggregate(answerFolder, (int) chunkTokenSize);
-        } catch (IOException | RuntimeException e) {
-            LOGGER.warn("Could not resolve LLM chunk size, skipping chunking: {}", e.getMessage());
         }
     }
 

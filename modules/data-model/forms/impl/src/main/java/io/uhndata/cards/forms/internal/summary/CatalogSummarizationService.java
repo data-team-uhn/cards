@@ -21,6 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -34,13 +36,13 @@ import io.uhndata.cards.llm.LLMClient;
 import io.uhndata.cards.llm.LLMClientFactory;
 
 /**
- * Fills in the empty {@code summary} fields of a proposal answer's {@code ChatChunks} catalog tree, bottom-up,
- * by sending the chunked Markdown to the active LLM. The chat chunker (see {@link DoclingChatChunker}) writes
- * the tree with every summary blank and with sections as the deepest level: each {@code Section*.md} file
- * directly under a {@code File-*} folder holds one section unit. This service walks the tree after chunking
- * completes and summarizes from the leaves up: each section is summarized from its {@code .md} text, and each
- * file from the summaries of its sections. A file is only summarized once all of its sections are, so the
- * file summary is built from real section summaries rather than blanks.
+ * Fills in the empty {@code summary} fields of a proposal answer's per-file section catalogs by sending each
+ * section's Markdown to the active LLM. The section splitter writes one {@code Sections/<stem>} folder per
+ * parsed source file, each holding {@code Section-*.md} files and a {@code catalog.json} whose entries start
+ * with blank summaries. This service walks every section catalog after chunking completes and fills each empty
+ * summary from the section's own text; already summarized entries are left untouched, so the walk is idempotent
+ * and safely resumable. A failure on any one section leaves that summary empty and is logged; it never aborts
+ * the rest of the answer.
  * <p>
  * All LLM traffic goes through the shared {@link LLMClient}, so it is logged and configured centrally like the
  * rest of the platform's LLM use. The service registers itself as the summarization hook on
@@ -55,31 +57,26 @@ public class CatalogSummarizationService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogSummarizationService.class);
 
-    /** The {@code ChatChunks} subfolder of an answer's parse folder, holding the catalog tree. */
-    private static final String CHAT_CHUNKS_DIRNAME = "ChatChunks";
+    /** Name of the answer subfolder holding one per-source-file sections folder each. */
+    private static final String SECTIONS_DIRNAME = "Sections";
 
-    /** The per-folder catalog file name, identical at every level of the tree. */
+    /** The catalog file name inside every section folder. */
     private static final String CATALOG_NAME = "catalog.json";
 
-    /** Blank line separating an instruction from its content, and successive child summaries, in a prompt. */
+    /** Blank line separating an instruction from its content in a prompt. */
     private static final String PARAGRAPH_BREAK = "\n\n";
 
-    /** Shared role prompt establishing the summarizer's contract for every level. */
+    /** Shared role prompt establishing the summarizer's contract. */
     private static final String SYSTEM_PROMPT =
         "You are a precise document summarizer. Describe what the provided material contains, capturing its "
         + "specific items, topics and data. Use ONLY the material given: do not invent information, do not "
         + "answer questions about it, and do not add commentary. Respond with prose only, with no markdown "
         + "headings and no preamble such as 'Here is the summary'.";
 
-    /** Instruction for summarizing one leaf section from its Markdown text (~300-600 tokens). */
+    /** Instruction for summarizing one section from its Markdown text (~300-600 tokens). */
     private static final String SECTION_INSTRUCTION =
         "Summarize the following section of a study document in approximately 300-600 tokens, capturing the "
         + "specific items, topics and data it covers.";
-
-    /** Instruction for summarizing one file from the summaries of its sections (~500-800 tokens). */
-    private static final String FILE_INSTRUCTION =
-        "Summarize what this document contains, in approximately 500-800 tokens, using the numbered section "
-        + "summaries below. Give a high-level map of the items and topics it covers.";
 
     /**
      * Generation sentinel for {@link #summarize(Path)} when no chunk-generation guard is needed (manual or test
@@ -111,12 +108,12 @@ public class CatalogSummarizationService
     }
 
     /**
-     * Fill every empty summary in the {@code ChatChunks} tree under an answer folder, bottom-up. Already
-     * summarized entries are left untouched, so this is idempotent and safely resumable. A failure on any one
-     * section leaves that summary empty and is logged; it never aborts the rest of the answer.
+     * Fill every empty summary in the section catalogs under an answer folder. Already summarized entries are
+     * left untouched, so this is idempotent and safely resumable. A failure on any one section leaves that
+     * summary empty and is logged; it never aborts the rest of the answer.
      *
      * @param answerDir the absolute parse output folder of the answer
-     * @throws IOException if the active LLM client cannot be resolved, or the root catalog cannot be read
+     * @throws IOException if the active LLM client cannot be resolved, or the answer folder cannot be listed
      */
     public void summarize(final Path answerDir) throws IOException
     {
@@ -124,12 +121,12 @@ public class CatalogSummarizationService
     }
 
     /**
-     * Fill every empty summary in the {@code ChatChunks} tree under an answer folder, bottom-up, aborting when
-     * the chunk generation is no longer current. See {@link #summarize(Path)} for traversal semantics.
+     * Fill every empty summary in the section catalogs under an answer folder, aborting when the chunk
+     * generation is no longer current. See {@link #summarize(Path)} for traversal semantics.
      *
      * @param answerDir the absolute parse output folder of the answer
      * @param generation the chunk generation that triggered this run; values {@code >= 0} enable staleness checks
-     * @throws IOException if the active LLM client cannot be resolved, or the root catalog cannot be read
+     * @throws IOException if the active LLM client cannot be resolved, or the answer folder cannot be listed
      */
     public void summarize(final Path answerDir, final long generation) throws IOException
     {
@@ -140,125 +137,84 @@ public class CatalogSummarizationService
             LOGGER.warn("Skipping stale summarization for {}", answerDir);
             return;
         }
-        final Path chatDir = answerDir.resolve(CHAT_CHUNKS_DIRNAME);
-        final Path rootCatalogFile = chatDir.resolve(CATALOG_NAME);
-        if (!Files.isRegularFile(rootCatalogFile)) {
-            LOGGER.warn("No ChatChunks catalog to summarize under {}; expected root catalog at {}",
-                answerDir, rootCatalogFile);
+        final List<Path> catalogFiles = findSectionCatalogs(answerDir);
+        if (catalogFiles.isEmpty()) {
+            LOGGER.warn("No section catalogs to summarize under {}", answerDir);
             return;
         }
         final LLMClient client = this.llmClientFactory.getActiveClient();
-        final SummaryCatalog rootCatalog = SummaryCatalog.read(rootCatalogFile);
-        final List<String> fileIds = rootCatalog.ids();
-        LOGGER.info("START summarizing ChatChunks tree under {} (generation {}): {} file(s) {}",
-            answerDir, generation, fileIds.size(), fileIds);
+        LOGGER.info("START summarizing {} section catalog(s) under {} (generation {})",
+            catalogFiles.size(), answerDir, generation);
         int done = 0;
-        for (final String fileEntryId : fileIds) {
+        for (final Path catalogFile : catalogFiles) {
             if (this.isStale(answerDir, generation)) {
                 LOGGER.warn("STOP: summarization for {} superseded by a newer generation", answerDir);
                 return;
             }
             try {
-                this.summarizeFile(client, answerDir, chatDir, fileEntryId, rootCatalog, generation);
-                rootCatalog.write();
+                this.summarizeCatalog(client, answerDir, catalogFile, generation);
                 done++;
             } catch (final IOException e) {
-                LOGGER.warn("Could not summarize file {} under {}: {}", fileEntryId, answerDir, e.getMessage(), e);
+                LOGGER.warn("Could not summarize catalog {} under {}: {}", catalogFile, answerDir,
+                    e.getMessage(), e);
             }
         }
-        LOGGER.info("DONE summarizing ChatChunks tree under {}: {}/{} file(s) processed",
-            answerDir, done, fileIds.size());
+        LOGGER.info("DONE summarizing section catalogs under {}: {}/{} catalog(s) processed",
+            answerDir, done, catalogFiles.size());
     }
 
-    private void summarizeFile(final LLMClient client, final Path answerDir, final Path chatDir,
-        final String fileEntryId, final SummaryCatalog rootCatalog, final long generation) throws IOException
+    /**
+     * Summarize every unsummarized section of one {@code <stem>-sections} catalog, then write the catalog back.
+     */
+    private void summarizeCatalog(final LLMClient client, final Path answerDir, final Path catalogFile,
+        final long generation) throws IOException
     {
-        final Path fileDir = chatDir.resolve(fileEntryId);
-        final Path fileCatalogFile = fileDir.resolve(CATALOG_NAME);
-        if (!Files.isRegularFile(fileCatalogFile)) {
-            LOGGER.warn("Missing file catalog {} for entry {}", fileCatalogFile, fileEntryId);
-            return;
-        }
-        final SummaryCatalog fileCatalog = SummaryCatalog.read(fileCatalogFile);
-        final List<String> sectionIds = fileCatalog.ids();
-        LOGGER.info("File {}: summarizing {} section(s) {}", fileEntryId, sectionIds.size(), sectionIds);
+        final Path sectionsDir = catalogFile.getParent();
+        final SummaryCatalog catalog = SummaryCatalog.read(catalogFile);
+        final List<String> sectionIds = catalog.ids();
+        LOGGER.info("Catalog {}: summarizing {} section(s) {}",
+            sectionsDir.getFileName(), sectionIds.size(), sectionIds);
         for (final String sectionId : sectionIds) {
             if (this.isStale(answerDir, generation)) {
                 return;
             }
-            this.summarizeSection(client, answerDir, fileDir, sectionId, fileCatalog, generation);
+            this.summarizeSection(client, answerDir, sectionsDir, sectionId, catalog, generation);
         }
         if (this.isStale(answerDir, generation)) {
             return;
         }
-        fileCatalog.write();
-        this.rollUpFile(client, answerDir, generation, rootCatalog, fileEntryId, fileCatalog);
+        catalog.write();
     }
 
     /**
-     * Summarize one leaf section from its {@code <sectionId>.md} text, unless it is already summarized or its
-     * text cannot be read.
+     * Summarize one section from the Markdown file named by its catalog entry, unless it is already summarized
+     * or its text cannot be read.
      */
-    private void summarizeSection(final LLMClient client, final Path answerDir, final Path fileDir,
-        final String sectionId, final SummaryCatalog fileCatalog, final long generation)
+    private void summarizeSection(final LLMClient client, final Path answerDir, final Path sectionsDir,
+        final String sectionId, final SummaryCatalog catalog, final long generation)
     {
         final String label = "section " + sectionId;
-        if (fileCatalog.isSummarized(sectionId)) {
+        if (catalog.isSummarized(sectionId)) {
             LOGGER.debug("{}: already summarized, skipping", label);
             return;
         }
+        final String fileName = catalog.fileOf(sectionId);
+        if (fileName.isBlank()) {
+            LOGGER.warn("{} in {} has no file reference; leaving its summary empty", label, sectionsDir);
+            return;
+        }
         if (this.isStale(answerDir, generation)) {
             return;
         }
-        final String text = readSectionText(fileDir.resolve(sectionId + ".md"));
+        final String text = readSectionText(sectionsDir.resolve(fileName));
         if (text.isBlank()) {
-            LOGGER.warn("{} in {} has no readable text; leaving its summary empty", label, fileDir);
-            return;
-        }
-        if (this.isStale(answerDir, generation)) {
+            LOGGER.warn("{} in {} has no readable text; leaving its summary empty", label, sectionsDir);
             return;
         }
         final String summary = this.callLlm(client, label, SECTION_INSTRUCTION + PARAGRAPH_BREAK + text);
         if (summary != null) {
-            fileCatalog.setSummary(sectionId, summary);
+            catalog.setSummary(sectionId, summary);
         }
-    }
-
-    /**
-     * Produce the file-level summary from its section summaries, once every section is summarized. Does nothing
-     * when the file is already summarized; warns when sections are still missing summaries.
-     */
-    private void rollUpFile(final LLMClient client, final Path answerDir, final long generation,
-        final SummaryCatalog rootCatalog, final String fileEntryId, final SummaryCatalog fileCatalog)
-    {
-        if (rootCatalog.isSummarized(fileEntryId)) {
-            return;
-        }
-        if (!fileCatalog.allSummarized()) {
-            LOGGER.warn("File {}: skipping file-level summary because not all section(s) are summarized",
-                fileEntryId);
-            return;
-        }
-        if (this.isStale(answerDir, generation)) {
-            return;
-        }
-        final String summary = this.summarizeFromChildren(client, "file " + fileEntryId, FILE_INSTRUCTION,
-            fileCatalog.orderedSummaries());
-        if (summary != null) {
-            rootCatalog.setSummary(fileEntryId, summary);
-        }
-    }
-
-    private String summarizeFromChildren(final LLMClient client, final String label, final String instruction,
-        final List<String> childSummaries)
-    {
-        final StringBuilder builder = new StringBuilder(instruction).append(PARAGRAPH_BREAK);
-        int number = 1;
-        for (final String childSummary : childSummaries) {
-            builder.append(number).append(". ").append(childSummary).append(PARAGRAPH_BREAK);
-            number++;
-        }
-        return this.callLlm(client, label, builder.toString());
     }
 
     /**
@@ -294,13 +250,32 @@ public class CatalogSummarizationService
         try {
             this.summarize(answerDir, generation);
         } catch (final IOException e) {
-            LOGGER.warn("Could not summarize ChatChunks tree under {}: {}", answerDir, e.getMessage());
+            LOGGER.warn("Could not summarize section catalogs under {}: {}", answerDir, e.getMessage());
         }
     }
 
     private boolean isStale(final Path answerDir, final long generation)
     {
         return generation >= 0 && !DoclingChatChunker.isSummarizationCurrent(answerDir, generation);
+    }
+
+    /**
+     * Locate every {@code Sections/<stem>/catalog.json} under an answer folder, in name order.
+     */
+    private static List<Path> findSectionCatalogs(final Path answerDir) throws IOException
+    {
+        final Path sectionsRoot = answerDir.resolve(SECTIONS_DIRNAME);
+        if (!Files.isDirectory(sectionsRoot)) {
+            return List.of();
+        }
+        try (Stream<Path> children = Files.list(sectionsRoot)) {
+            return children
+                .filter(Files::isDirectory)
+                .map(dir -> dir.resolve(CATALOG_NAME))
+                .filter(Files::isRegularFile)
+                .sorted()
+                .collect(Collectors.toList());
+        }
     }
 
     private static String readSectionText(final Path sectionFile)

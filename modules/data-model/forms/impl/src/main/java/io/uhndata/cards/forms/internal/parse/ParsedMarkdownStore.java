@@ -51,19 +51,14 @@ public final class ParsedMarkdownStore
     /** Name of the subfolder, within an answer's subfolder, that holds the markdown chunks. */
     public static final String CHUNKS_SUBDIR = "chunks";
 
-    /** Name of the subfolder that holds section-aware chat chunks for the proposal chat feature. */
-    public static final String CHAT_CHUNKS_SUBDIR = "ChatChunks";
-
-    /** Name of the aggregate rebuilt with embedded chat chunk markers. */
-    public static final String CHUNKED_AGGREGATE_FILE_NAME = "aggregated_chunked.md";
+    /** Name of the answer subfolder holding the per-source-file section trees. */
+    public static final String SECTIONS_SUBDIR = "Sections";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParsedMarkdownStore.class);
 
     private static final String OUTPUT_DIR_PROPERTY = "cards.parse.output.dir";
 
     private static final String DEFAULT_OUTPUT_SUBDIR = "cards-parsed-markdown";
-
-    private static final String SEPARATOR = "\n\n";
 
     private ParsedMarkdownStore()
     {
@@ -97,76 +92,7 @@ public final class ParsedMarkdownStore
     }
 
     /**
-     * Join every parsed {@code .md} file in an answer's subfolder into a single
-     * {@value #AGGREGATED_FILE_NAME}, ordered from the largest file to the smallest. The aggregated
-     * file itself is excluded from the inputs and overwritten on each run. A failure never throws — it
-     * is logged and swallowed.
-     *
-     * @param outputSubfolder the answer's subfolder; aggregation is skipped when {@code null} or blank
-     */
-    public static void writeAggregate(final String outputSubfolder)
-    {
-        if (sanitizeSubfolder(outputSubfolder) == null) {
-            LOGGER.debug("Skipping markdown aggregation: no answer subfolder provided");
-            return;
-        }
-        // Resolve via the exact same method used by save() so the aggregate always lands in the same
-        // folder as the per-file markdown.
-        final Path dir = resolveOutputDir(outputSubfolder);
-        try {
-            if (!Files.isDirectory(dir)) {
-                LOGGER.warn("Cannot aggregate markdown: directory {} does not exist", dir.toAbsolutePath());
-                return;
-            }
-            final List<Path> mdFiles = listMarkdownFiles(dir);
-            if (mdFiles.isEmpty()) {
-                LOGGER.warn("No parsed markdown files to aggregate in {}", dir.toAbsolutePath());
-                return;
-            }
-            mdFiles.sort(Comparator.comparingLong(ParsedMarkdownStore::fileSize).reversed()
-                .thenComparing(path -> path.getFileName().toString()));
-            final Path target = dir.resolve(AGGREGATED_FILE_NAME);
-            Files.writeString(target, joinFiles(mdFiles), StandardCharsets.UTF_8);
-            LOGGER.info("Wrote aggregated markdown from {} file(s) to {}",
-                mdFiles.size(), target.toAbsolutePath());
-        } catch (IOException | RuntimeException e) {
-            LOGGER.warn("Could not write aggregated markdown in {}: {}", dir.toAbsolutePath(), e.getMessage());
-        }
-    }
-
-    /**
-     * Split the aggregated markdown of an answer into chunk files under a {@value #CHUNKS_SUBDIR}
-     * subfolder, sized for the given token budget. Chunking is skipped when no answer subfolder is
-     * provided, the token budget is not positive, or the aggregated file does not exist. A failure
-     * never throws — it is logged and swallowed.
-     *
-     * @param outputSubfolder the answer's subfolder; chunking is skipped when {@code null} or blank
-     * @param chunkTokenSize the approximate maximum number of tokens per chunk; must be positive
-     */
-    public static void chunkAggregate(final String outputSubfolder, final int chunkTokenSize)
-    {
-        if (sanitizeSubfolder(outputSubfolder) == null || chunkTokenSize <= 0) {
-            LOGGER.debug("Skipping markdown chunking: no answer subfolder or non-positive token size");
-            return;
-        }
-        final Path dir = resolveOutputDir(outputSubfolder);
-        final Path aggregated = dir.resolve(AGGREGATED_FILE_NAME);
-        try {
-            if (!Files.isRegularFile(aggregated)) {
-                LOGGER.warn("Cannot chunk markdown: {} does not exist", aggregated.toAbsolutePath());
-                return;
-            }
-            final Path chunksDir = dir.resolve(CHUNKS_SUBDIR);
-            final List<String> chunks = MarkdownChunker.chunk(aggregated, chunksDir, chunkTokenSize);
-            LOGGER.info("Wrote {} markdown chunk(s) from {} to {}",
-                chunks.size(), AGGREGATED_FILE_NAME, chunksDir.toAbsolutePath());
-        } catch (IOException | RuntimeException e) {
-            LOGGER.warn("Could not chunk aggregated markdown in {}: {}", dir.toAbsolutePath(), e.getMessage());
-        }
-    }
-
-    /**
-     * Delete field-extraction chunks, chat chunks, and the chunked aggregate so stale output is not
+     * Delete field-extraction chunks and per-source section folders so stale output is not
      * served after a failed parse. A failure never throws — it is logged and swallowed.
      *
      * @param outputSubfolder the answer's subfolder; clearing is skipped when {@code null} or blank
@@ -178,7 +104,7 @@ public final class ParsedMarkdownStore
         }
         final Path answerDir = resolveOutputDir(outputSubfolder);
         clearFieldExtractionChunks(answerDir);
-        clearChatChunkOutput(answerDir);
+        clearSectionOutput(answerDir);
     }
 
     /**
@@ -193,35 +119,36 @@ public final class ParsedMarkdownStore
     }
 
     /**
-     * Delete an answer's {@value #CHAT_CHUNKS_SUBDIR} tree and {@value #CHUNKED_AGGREGATE_FILE_NAME}.
-     * Used when a stale asynchronous chat chunk job completes after a parse failure. A failure never
-     * throws — it is logged and swallowed.
+     * Delete an answer's {@value #SECTIONS_SUBDIR} tree written by the section splitter. Used when a
+     * stale asynchronous chunk job completes after a parse failure. A failure never throws — it is
+     * logged and swallowed.
      *
      * @param answerDir the absolute answer parse folder; ignored when {@code null}
      */
-    public static void clearChatChunkOutput(final Path answerDir)
+    public static void clearSectionOutput(final Path answerDir)
     {
         if (answerDir == null) {
             return;
         }
-        final Path chatChunksDir = answerDir.resolve(CHAT_CHUNKS_SUBDIR);
+        final Path sectionsRoot = answerDir.resolve(SECTIONS_SUBDIR);
         try {
-            if (Files.isDirectory(chatChunksDir)) {
-                try (Stream<Path> entries = Files.walk(chatChunksDir)) {
-                    final List<Path> paths = entries.sorted(Comparator.reverseOrder())
-                        .collect(Collectors.toCollection(ArrayList::new));
-                    for (final Path path : paths) {
-                        Files.deleteIfExists(path);
-                    }
-                }
-                LOGGER.info("Cleared chat chunks in {}", chatChunksDir.toAbsolutePath());
-            }
-            final Path chunkedAggregate = answerDir.resolve(CHUNKED_AGGREGATE_FILE_NAME);
-            if (Files.deleteIfExists(chunkedAggregate)) {
-                LOGGER.info("Deleted chat chunked aggregate at {}", chunkedAggregate.toAbsolutePath());
+            if (Files.isDirectory(sectionsRoot)) {
+                deleteRecursively(sectionsRoot);
+                LOGGER.info("Cleared section tree {}", sectionsRoot.toAbsolutePath());
             }
         } catch (IOException | RuntimeException e) {
-            LOGGER.warn("Could not clear chat chunk output in {}: {}", answerDir.toAbsolutePath(), e.getMessage());
+            LOGGER.warn("Could not clear section output in {}: {}", answerDir.toAbsolutePath(), e.getMessage());
+        }
+    }
+
+    private static void deleteRecursively(final Path dir) throws IOException
+    {
+        try (Stream<Path> entries = Files.walk(dir)) {
+            final List<Path> paths = entries.sorted(Comparator.reverseOrder())
+                .collect(Collectors.toCollection(ArrayList::new));
+            for (final Path path : paths) {
+                Files.deleteIfExists(path);
+            }
         }
     }
 
@@ -420,43 +347,6 @@ public final class ParsedMarkdownStore
     private static boolean isChunkFile(final String name)
     {
         return name.startsWith("chunk_") && name.toLowerCase(Locale.ROOT).endsWith(".md");
-    }
-
-    private static List<Path> listMarkdownFiles(final Path dir)
-        throws IOException
-    {
-        try (Stream<Path> entries = Files.list(dir)) {
-            return entries
-                .filter(Files::isRegularFile)
-                .filter(ParsedMarkdownStore::isAggregatableMarkdown)
-                .collect(Collectors.toCollection(ArrayList::new));
-        }
-    }
-
-    private static boolean isAggregatableMarkdown(final Path path)
-    {
-        final String name = path.getFileName().toString();
-        return name.toLowerCase(Locale.ROOT).endsWith(".md")
-            && !AGGREGATED_FILE_NAME.equals(name.toLowerCase(Locale.ROOT));
-    }
-
-    private static String joinFiles(final List<Path> files)
-        throws IOException
-    {
-        final List<String> contents = new ArrayList<>(files.size());
-        for (final Path file : files) {
-            contents.add(Files.readString(file, StandardCharsets.UTF_8));
-        }
-        return String.join(SEPARATOR, contents);
-    }
-
-    private static long fileSize(final Path path)
-    {
-        try {
-            return Files.size(path);
-        } catch (IOException e) {
-            return 0L;
-        }
     }
 
     private static Path resolveOutputDir(final String outputSubfolder)

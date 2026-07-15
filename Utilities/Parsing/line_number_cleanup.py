@@ -39,7 +39,7 @@ numbered lists that legitimately appear at the top of a page.
 When it runs
 ------------
 Called from ``markdown_cleanup.clean_markdown`` after PDF pages are assembled
-(with ``# PDF Page N`` markers). DOCX conversion is unaffected.
+(with ``<PDF Page N>`` markers). DOCX conversion is unaffected.
 """
 
 import re
@@ -47,7 +47,7 @@ import re
 MIN_RUN_LENGTH = 5
 
 _LINE_NUMBER = re.compile(r"^\d+$")
-_PAGE_MARKER = re.compile(r"(\n\n---\n\n# PDF Page \d+\n\n---\n\n)")
+_PAGE_MARKER = re.compile(r"(\n\n---\n\n<PDF Page \d+>\n\n---\n\n)")
 
 
 def _is_consecutive(values: list[int]) -> bool:
@@ -107,7 +107,7 @@ def cleanup_margin_line_numbers(md: str) -> str:
     """
     Remove margin line-number blocks from assembled PDF markdown.
 
-    Splits on ``# PDF Page N`` markers inserted by ``docling_pdf_parser`` and
+    Splits on ``<PDF Page N>`` markers inserted by ``docling_pdf_parser`` and
     cleans each page body independently.
 
     @param md: full markdown document

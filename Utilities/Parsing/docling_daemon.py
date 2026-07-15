@@ -48,14 +48,11 @@ from typing import Any
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 
 from docling_batch_sizing import GB_PER_WORKER, calc_workers
-from docling_chunker import chunk_answer_folder
 from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
 from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
+from docling_section_splitter import chunk_answer_folder
 
 SUPPORTED_SUFFIXES = (".pdf", ".docx")
-
-# Marker file that identifies a directory as a CARDS parse folder eligible for chunking.
-AGGREGATE_MARKER = "aggregated.md"
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 18765
 DEFAULT_PARSE_OUTPUT_SUBDIR = "cards-parsed-markdown"
@@ -154,7 +151,7 @@ def _is_allowed_chunk_dir(path: Path) -> bool:
     if _STATE is None:
         return False
     resolved = path.resolve()
-    if not resolved.is_dir() or not (resolved / AGGREGATE_MARKER).is_file():
+    if not resolved.is_dir() or not any(p.is_file() for p in resolved.glob("*.md")):
         return False
     return _is_under_root(resolved, _STATE.parse_output_root)
 
@@ -253,8 +250,9 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             _json_response(self, HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(exc)})
 
     def _handle_chunk(self) -> None:
-        """Build the ChatChunks tree for a parse folder. Unlike PDF/DOCX conversion this does
-        not need the warm worker pool, so it is served even while the pool is unavailable."""
+        """Split each per-source Markdown in a parse folder into its section tree. Unlike PDF/DOCX
+        conversion this does not need the warm worker pool, so it is served even while the pool
+        is unavailable."""
         try:
             body = _read_json_body(self)
             folder_value = body.get("folder_path")
@@ -264,8 +262,8 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             folder_path = Path(folder_value)
             if not _is_allowed_chunk_dir(folder_path):
                 raise ValueError(
-                    f"folder_path must be a directory containing {AGGREGATE_MARKER} "
-                    f"under the CARDS parse output directory"
+                    "folder_path must be a directory containing parsed .md files "
+                    "under the CARDS parse output directory"
                 )
 
             kwargs: dict[str, Any] = {}

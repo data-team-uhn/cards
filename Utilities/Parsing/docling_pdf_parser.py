@@ -53,6 +53,7 @@ from docling_error_detection import (
     DoclingLogCollector,
     ensure_conversion_ok,
 )
+from docling_section_splitter import write_section_files
 from markdown_cleanup import clean_markdown
 from toc_cleanup import TOC_CLEANUP_MAX_PAGE, cleanup_toc_tables
 
@@ -260,7 +261,7 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
 
         chunk_parts: list[str] = []
         for page_no in range(start_page, end_page + 1):
-            chunk_parts.append(f"\n\n---\n\n# PDF Page {page_no}\n\n---\n\n")
+            chunk_parts.append(f"\n\n---\n\n<PDF Page {page_no}>\n\n---\n\n")
             page_md = result.document.export_to_markdown(page_no=page_no)
             if page_no < TOC_CLEANUP_MAX_PAGE:
                 page_md = cleanup_toc_tables(page_md)
@@ -285,6 +286,7 @@ def convert_pdf(
     *,
     batch_pages: int | None = None,
     workers: int | None = None,
+    split_sections: bool = False,
 ) -> None:
     """
     Convert a PDF file to Markdown and write it to output_file.
@@ -293,6 +295,7 @@ def convert_pdf(
     @param output_file: path where Markdown output is written
     @param batch_pages: optional override for pages per worker batch
     @param workers: optional override for parallel worker process count
+    @param split_sections: also write per-section .md files and catalog.json beside output_file
     """
     try:
         markdown_content = convert_pdf_to_markdown(
@@ -309,3 +312,10 @@ def convert_pdf(
         f.write(markdown_content)
     write_end = perf_counter()
     print(f"File write:           {write_end - write_start:.2f}s")
+
+    if split_sections:
+        split_start = perf_counter()
+        sections_dir = write_section_files(markdown_content, output_file, input_path.name)
+        split_end = perf_counter()
+        print(f"Section split:        {split_end - split_start:.2f}s")
+        print(f"Sections written to {sections_dir}")
