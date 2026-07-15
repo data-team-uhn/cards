@@ -282,7 +282,7 @@ public class ProposalExtractionService
     private static void appendEvidenceRules(final StringBuilder builder)
     {
         builder.append("Support every extracted value with a short, direct quote from the study chunk.\n");
-        builder.append("If a quote appears after a page marker such as '# PDF Page 75', include that page.\n");
+        builder.append("If a quote appears after a page marker such as '<PDF Page 75>', include that page.\n");
         builder.append("If a field cannot be determined from this chunk, set found_answer=false, ");
         builder.append("confidence=0.0, value=null and evidence=[].\n");
     }

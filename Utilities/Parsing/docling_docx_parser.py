@@ -29,6 +29,7 @@ from docling.datamodel.base_models import InputFormat
 from docling.document_converter import DocumentConverter, WordFormatOption
 
 from docling_error_detection import ensure_conversion_ok
+from docling_section_splitter import write_section_files
 from markdown_cleanup import clean_markdown
 
 _docx_converter: DocumentConverter | None = None
@@ -64,12 +65,13 @@ def convert_docx_to_markdown(
     return clean_markdown(result.document.export_to_markdown())
 
 
-def convert_docx(input_path: Path, output_file: Path) -> None:
+def convert_docx(input_path: Path, output_file: Path, *, split_sections: bool = False) -> None:
     """
     Convert a DOCX file to Markdown and write it to output_file.
 
     @param input_path: path to the source .docx file
     @param output_file: path where Markdown output is written
+    @param split_sections: also write per-section .md files and catalog.json beside output_file
     """
     t0 = perf_counter()
 
@@ -91,6 +93,11 @@ def convert_docx(input_path: Path, output_file: Path) -> None:
 
     t4 = perf_counter()
 
+    if split_sections:
+        sections_dir = write_section_files(markdown_content, output_file, input_path.name)
+
+    t5 = perf_counter()
+
     print(f"Markdown length: {len(markdown_content):,} characters")
 
     print("\n=== Timing ===")
@@ -98,4 +105,7 @@ def convert_docx(input_path: Path, output_file: Path) -> None:
     print(f"Document convert:    {t2 - t1:.2f}s")
     print(f"Markdown export:     {t3 - t2:.2f}s")
     print(f"File write:          {t4 - t3:.2f}s")
-    print(f"Total:               {t4 - t0:.2f}s")
+    if split_sections:
+        print(f"Section split:       {t5 - t4:.2f}s")
+        print(f"Sections written to {sections_dir}")
+    print(f"Total:               {t5 - t0:.2f}s")

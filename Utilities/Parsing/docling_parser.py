@@ -57,6 +57,14 @@ def parse_args():
             f"max {MAX_BATCH_PAGES})"
         ),
     )
+    parser.add_argument(
+        "--split-sections",
+        action="store_true",
+        help=(
+            "also write per-section .md files and catalog.json into a "
+            "Sections/<filename> folder beside the output .md"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -83,9 +91,10 @@ def main() -> None:
             output_file,
             batch_pages=args.batch_pages,
             workers=args.workers,
+            split_sections=args.split_sections,
         )
     else:
-        convert_docx(input_path, output_file)
+        convert_docx(input_path, output_file, split_sections=args.split_sections)
 
     print(f"\nSaved to {output_file}")
 
