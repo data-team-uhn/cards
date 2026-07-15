@@ -31,6 +31,7 @@ from docling.document_converter import DocumentConverter, WordFormatOption
 from docling_error_detection import ensure_conversion_ok
 from docling_section_splitter import write_section_files
 from markdown_cleanup import clean_markdown
+from toc_detection import mark_toc
 
 _docx_converter: DocumentConverter | None = None
 
@@ -62,7 +63,7 @@ def convert_docx_to_markdown(
     active_converter = converter if converter is not None else get_docx_converter()
     result = active_converter.convert(str(input_path))
     ensure_conversion_ok(result)
-    return clean_markdown(result.document.export_to_markdown())
+    return mark_toc(clean_markdown(result.document.export_to_markdown()))
 
 
 def convert_docx(input_path: Path, output_file: Path, *, split_sections: bool = False) -> None:

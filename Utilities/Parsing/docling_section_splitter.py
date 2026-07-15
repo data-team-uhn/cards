@@ -96,6 +96,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from toc_detection import build_outline
+
 # Default maximum tokens per section file. A section larger than this is split into parts.
 DEFAULT_MAX_TOKENS = 2000
 
@@ -110,6 +112,9 @@ DEFAULT_HEADING = "General Information"
 
 # Name of the per-document catalog file written into the sections folder.
 CATALOG_NAME = "catalog.json"
+
+# Per-document outline file written beside the catalog (TOC / heading array / token size).
+OUTLINE_NAME = "outline.json"
 
 # Name of the shared root folder holding one per-source-file sections subfolder each.
 SECTIONS_DIRNAME = "Sections"
@@ -399,6 +404,10 @@ def write_section_files(
     catalog = {"fileId": filename, "sections": catalog_sections}
     (sections_dir / CATALOG_NAME).write_text(
         json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    (sections_dir / OUTLINE_NAME).write_text(
+        json.dumps(build_outline(markdown_content, filename), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
     )
     return sections_dir
 
