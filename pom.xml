@@ -595,7 +595,7 @@
                     <module name="FileTabCharacter" />
 
                     <!-- We don't use Checkstyle's facility to check license headers since it's too limited for our needs.
-                         Instead we use http://code.google.com/p/maven-license-plugin/
+                         Instead we use apache-rat-plugin.
                     <module name="Header">
                       <property name="headerFile" value="${checkstyle.header.file}" />
                       <property name="ignoreLines" value="4,5,6,7" />
@@ -1176,7 +1176,7 @@
                     <module name="FileTabCharacter" />
 
                     <!-- We don't use Checkstyle's facility to check license headers since it's too limited for our needs.
-                         Instead we use http://code.google.com/p/maven-license-plugin/
+                         Instead we use apache-rat-plugin.
                     <module name="Header">
                       <property name="headerFile" value="${checkstyle.header.file}" />
                       <property name="ignoreLines" value="4,5,6,7" />
