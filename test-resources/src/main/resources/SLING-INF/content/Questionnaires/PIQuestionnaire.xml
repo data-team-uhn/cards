@@ -1,0 +1,1022 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<!--
+  Derived from the "Research Study Implementing Letter" template. The Extracted Study
+  Information section holds the protocol-plausible fields, pre-filled by the intake LLM
+  call (extractFromProposal); the Administrative Information section holds the
+  contractual/finance fields the applicant fills in manually.
+-->
+<node>
+	<name>PIQuestionnaire</name>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
+	<property>
+		<name>title</name>
+		<value>Research Study Implementing Letter</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>
+Page 1: **Research Protocol** — upload the protocol document
+Page 2: **Extracted Study Information** — review and confirm fields extracted from the protocol
+Page 3: **Administrative Information** — institutional IDs, finance and legal terms (manual entry)
+		</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>paginate</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>0</value>
+		<type>Long</type>
+	</property>
+	<node>
+		<name>proposal_section</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Research Protocol</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>proposal</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Research Protocol</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Upload the research protocol document (.pdf, .docx, or .doc)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>proposal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>extracted_study_information</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Extracted Study Information</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>extractFromProposal</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>categoriesDocument</name>
+			<value>
+# Research Study Description (check all that apply)
+
+## Top categories — choose the ONE canonical label that best matches:
+
+1. "Investigator-Initiated Prospective (Full Study)" — investigator-initiated prospective
+   clinical research study, with the full duplicative study being performed at the
+   participating institution(s).
+2. "Investigator-Initiated Prospective (Integrated)" — investigator-initiated integrated
+   prospective clinical research study: some portion of the study is performed at the
+   participating institution (not solely as services, analysis or publication).
+3. "Investigator-Initiated Prospective (Single Site, External Recruitment)" —
+   investigator-initiated prospective study at a single site, with patients recruited
+   from other (non-lead) sites.
+4. "Retrospective Data/Material or Non-Clinical Study" — retrospectively collected human
+   clinical data study, retrospectively collected human material study, or non-clinical
+   research study.
+5. "Collaborative Clinical Research Support Services" — analysis of human materials
+   and/or human data transferred by the Lead Institution; the receiving party provides
+   deliverables to the Lead Institution in support of a prospective clinical research
+   study.
+6. "Other" — anything else (requires navigator approval).
+
+## Sub-flags — check all that apply; valid flags depend on the top category:
+
+For top categories 1-3:
+- "Health Canada Regulated" — the prospective study is regulated by Health Canada.
+- "Non-regulated" — the prospective study is not regulated by Health Canada.
+- "Data/Material Transfer" — human data and/or human material is transferred as part of
+  the study.
+- "Retrospective Data/Material Transfer" — retrospectively collected human data and/or
+  material is transferred as part of the study.
+- "Visiting Personnel" — visiting personnel take part in the study.
+
+For top category 4:
+- "Collaborative Retrospective Clinical Data" — collaborative study using retrospectively
+  collected human clinical data.
+- "Collaborative Retrospective Human Materials" — collaborative study using
+  retrospectively collected human materials, including data from within the materials
+  (e.g. whole genome sequencing) and derivatives (e.g. cell lines, PDX models).
+- "Other" — other retrospective / non-clinical arrangement (describe).
+- "Visiting Personnel"
+
+For top category 5:
+- "Data/Material Transfer" — data or material transfer as part of the support services.
+- "Visiting Personnel"
+			</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>study_title</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Study / Project Title</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>study_title</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine the Study Title.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- The study title is usually located on the cover page, application summary, protocol title section, or research project title field.
+- Prefer the official protocol title.
+- If both a short title and full title exist, return the full title.
+- Ignore file names, document names, generic headers, footers, version labels, and form titles unless no official study title exists.
+- Do not invent a title.
+- If no title is present, return found_answer=false for study_title.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>study_category</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Research Study Description — Category</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>study_category</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Classify this study using the Research Study Description categories.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- Classify this study using the Research Study Description top categories.
+- Return exactly one canonical top-category label, character for character as listed.
+- Judge from what the study actually does: prospective conduct at sites (full, integrated, or single-site with external recruitment), retrospective data/material analysis, or analysis services provided on transferred data/materials.
+- Support the classification with direct evidence quotes from the study design statements.
+- If the category is genuinely indeterminable, return found_answer=false for study_category.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>study_category_flags</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Research Study Description — Applicable Flags</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>study_category_flags</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine which Research Study Description sub-flags apply.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- Return every applicable sub-flag as a comma-separated list of canonical labels, restricted to the flags valid for the chosen top category.
+- "Health Canada Regulated" vs "Non-regulated": look for Clinical Trial Application (CTA), Investigational Testing Authorization (ITA), device class, or explicit Health Canada statements.
+- Transfer flags: look for statements about sharing, shipping or transferring data, specimens or materials between institutions.
+- "Visiting Personnel" is rarely stated in a protocol; include it only with direct evidence.
+- Each flag needs its own supporting quote.
+- If no flag can be determined, return found_answer=false for study_category_flags.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>regulatory_sponsor</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Regulatory Sponsor</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>regulatory_sponsor</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine the Regulatory Sponsor.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- The regulatory sponsor is usually named on the cover page, sponsor information page, or synopsis.
+- Return the sponsor organization's name exactly as written; for investigator-initiated studies the sponsor may be the lead institution or the lead investigator.
+- Do not return funders, collaborators, or vendors as the sponsor.
+- If no sponsor is named, return found_answer=false for regulatory_sponsor.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>lead_institution</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Lead Institution</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>lead_institution</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine the Lead Institution.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- The lead institution is the site of the lead/coordinating investigator or the named coordinating centre.
+- Return exactly one of: "Centre for Addiction and Mental Health (CAMH)", "Sunnybrook Health Sciences Centre (SRI)", "Unity Health Toronto (UHT)", "University Health Network (UHN)".
+- Match name variants to these labels (e.g. "Toronto General Hospital", "Princess Margaret" are UHN sites; "St. Michael's Hospital" is UHT).
+- If the document does not identify one of these four institutions as the lead, return found_answer=false for lead_institution.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>lead_investigator</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Lead Investigator</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>lead_investigator</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine the Lead Institution's Principal Investigator.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- The Lead Investigator is usually located on the study team page, investigator information section, signature page, or contact list.
+- May appear as Principal Investigator, PI, Lead Investigator, Qualified Investigator, Principal Applicant, or Principal Researcher.
+- Prefer the individual explicitly identified as responsible for the study.
+- Return the person's full name exactly as written; exclude credentials unless part of the displayed name.
+- Do not return research coordinators, co-investigators, students, sponsors, institutions, or study teams unless no individual PI can be identified.
+- If no lead investigator can be determined, return found_answer=false for lead_investigator.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>lead_investigator_email</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Lead Investigator Institutional Email</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>lead_investigator_email</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine the Lead Investigator's institutional email.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- Return the institutional email address of the lead investigator, exactly as written, usually from the contact information or study team section.
+- Only return an email explicitly associated with the lead investigator; never guess or construct one.
+- If no such email is present, return found_answer=false for lead_investigator_email.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>participating_institutions</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Participating Institutions</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>participating_institutions</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine the Participating Institutions.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- List the institutions named as participating/collaborating sites, other than the lead institution.
+- Return a comma-separated list restricted to: "Centre for Addiction and Mental Health (CAMH)", "Sunnybrook Health Sciences Centre (SRI)", "Unity Health Toronto (UHT)", "University Health Network (UHN)"; match name variants to these labels.
+- Look in site lists, study team sections, and multi-centre design statements.
+- If none of the four appear as participating sites, return found_answer=false for participating_institutions.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>participating_investigators</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Participating Investigators</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>participating_investigators</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine the Participating Institutions' investigators.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- List the site investigators at the participating institutions (not the lead investigator).
+- Return "Full Name (Institution); email if stated" entries, comma-separated, names exactly as written.
+- Look in study team pages, site lists, and investigator tables.
+- Do not include coordinators, students, or sponsor personnel.
+- If no participating investigators are named, return found_answer=false for participating_investigators.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>study_drug_device</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Study Drug / Device</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>promptKey</name>
+				<value>study_drug_device</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>taskLabel</name>
+				<value>Determine whether the study uses a study drug or device.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>extractedText</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>prompt</name>
+				<value>
+- Determine whether the study administers or evaluates a study drug or a medical device.
+- Return exactly one of: "Drug", "Device", "Drug and Device", "None"; if the product is named, append it in parentheses, e.g. "Drug (vitamin D)".
+- Standard-of-care medications given outside the study intervention do not count.
+- Support the answer with a quote naming the intervention.
+- If it cannot be determined, return found_answer=false for study_drug_device.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>administrative_information</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Administrative Information</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>start_id</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>START ID</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>raaf_camh_id</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>RAAF (CAMH)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>sunnybrook_id</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Sunnybrook ID</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>uht_contract_id</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>UHT Contract ID</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>uhn_capcr_id</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>UHN Project ID / CAPCR ID</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>no_funding_transfer</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>No funding is transferred between the Parties in connection with the Research Study and/or Collaborative Clinical Research Support Services</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>funding_transfer_details</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Funding Transfer Matrix</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>One row per transfer: Paying Institution; Receiving Institution; Funding Source; Internal Ref/Account #; Applicable Funding Schedule.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>textbox</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>reporting_deliverables</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Financial and progress reporting deliverables</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Deliverables required by the funder, with due date and responsible party (insert N/A for CIHR-funded projects).</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>textbox</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>drug_device_arrangement</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Study Drug / Device arrangement</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Transfer of Industry Obtained Study Drug or Device (Lead Institution has contract with Industry)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>industry_transfer</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Participating Site will obtain Drug or Device through the process outlined in the Protocol</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>site_obtains</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Not applicable — no study drug or device</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>not_applicable</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>apps_technology_flag</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Research Study requires the Participating Institution to use Apps/Technology not previously approved for the intended use at the Participating Institution</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>apps_technology_details</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Identification of any such apps/technology used to transfer, store, analyze or otherwise use data</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>textbox</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>privacy_review_organization</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Which organization has conducted or will conduct a privacy/security review?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>supplementary_legal_terms</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Other Supplementary Legal Terms</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Additional terms supplementing the MCA for this Research Study, or N/A. Terms here override the Addendum and its Schedules/Exhibits. Consult your institution's legal office before adding terms.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>textbox</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
+</node>
