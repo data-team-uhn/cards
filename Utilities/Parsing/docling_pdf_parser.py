@@ -56,6 +56,7 @@ from docling_error_detection import (
 from docling_section_splitter import write_section_files
 from markdown_cleanup import clean_markdown
 from toc_cleanup import TOC_CLEANUP_MAX_PAGE, cleanup_toc_tables
+from toc_detection import mark_toc
 
 
 def build_pdf_converter() -> DocumentConverter:
@@ -203,7 +204,7 @@ def convert_pdf_to_markdown(
     for _start_page, _end_page, _status, md, _md_len, _elapsed, _error in completed_results:
         all_markdown.append(md)
 
-    markdown_content = clean_markdown("".join(all_markdown))
+    markdown_content = mark_toc(clean_markdown("".join(all_markdown)))
     write_end = perf_counter()
     t2 = perf_counter()
 
