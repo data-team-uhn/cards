@@ -480,7 +480,7 @@
             <!-- Ignore email template files since we do not send a license in notification emails -->
             <exclude>**/mailTemplates/**</exclude>
             <!-- No license in mailcap file -->
-            <exclude>mailcap</exclude>
+            <exclude>**/mailcap</exclude>
             <!-- Content with non-Apache Licenses -->
             <exclude>**/fullBody.svg</exclude>
           </inputExcludes>
