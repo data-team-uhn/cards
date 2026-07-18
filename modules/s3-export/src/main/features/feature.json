@@ -30,7 +30,7 @@
       "start-order":"26"
     },
     {
-      "id":"com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.17.2",
+      "id":"com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:${jackson.version}",
       "start-order":"26"
     },
     {
