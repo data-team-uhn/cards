@@ -3,5 +3,5 @@
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Variants",
   "cards:targetURL": "/content.html/Variants",
-  "cards:extensionRenderURL": "asset:cards-variants.VariantFilesContainer.js"
+  "cards:extensionRenderURL": "asset:cards-variants.VariantFilesContainer.js?lazy"
 }

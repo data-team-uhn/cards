@@ -4,5 +4,5 @@
   "cards:extensionName": "Forms",
   "cards:targetURL": "/content.html/Subjects/:patientId",
   "cards:defaultOrder": -100,
-  "cards:extensionRenderURL": "asset:clinician-dashboard.Patient.js"
+  "cards:extensionRenderURL": "asset:clinician-dashboard.Patient.js?lazy"
 }

@@ -3,5 +3,5 @@
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Subjects",
   "cards:targetURL": "/content.html/Subjects",
-  "cards:extensionRenderURL": "asset:cards-dataentry.Subjects.js"
+  "cards:extensionRenderURL": "asset:cards-dataentry.Subjects.js?lazy"
 }

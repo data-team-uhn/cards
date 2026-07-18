@@ -4,5 +4,5 @@
   "cards:extensionName": "Admin Form View",
   "cards:targetURL": "/content.html/admin/Forms/*",
   "cards:extensionURL": "admin",
-  "cards:extensionRenderURL": "asset:cards-dataentry.FormView.js"
+  "cards:extensionRenderURL": "asset:cards-dataentry.FormView.js?lazy"
 }

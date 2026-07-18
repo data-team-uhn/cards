@@ -3,5 +3,5 @@
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Dashboard",
   "cards:targetURL": "/content.html/Questionnaires/User",
-  "cards:extensionRenderURL": "asset:cards-dataentry.userDashboard.js"
+  "cards:extensionRenderURL": "asset:cards-dataentry.userDashboard.js?lazy"
 }

@@ -3,5 +3,5 @@
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Clinics",
   "cards:targetURL": "/content.html/admin/Clinics",
-  "cards:extensionRenderURL": "asset:patient-portal.Clinics.js"
+  "cards:extensionRenderURL": "asset:patient-portal.Clinics.js?lazy"
 }

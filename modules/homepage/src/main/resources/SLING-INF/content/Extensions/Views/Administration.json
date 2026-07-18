@@ -2,7 +2,7 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Administration",
-  "cards:extensionRenderURL": "asset:cards-homepage.AdminDashboard.js",
+  "cards:extensionRenderURL": "asset:cards-homepage.AdminDashboard.js?lazy",
   "cards:targetURL": "/content.html/admin",
   "cards:exactURLMatch": true
 }
