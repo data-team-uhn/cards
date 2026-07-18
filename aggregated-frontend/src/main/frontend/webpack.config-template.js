@@ -134,6 +134,14 @@ ENTRY_CONTENT
         {
           test:/\.css$/,
           use:['style-loader','css-loader']
+        },
+        // Serve the PDF.js worker as a static asset (used by proposal file validation)
+        {
+          test: /pdf\.worker(\.min)?\.mjs$/,
+          type: 'asset/resource',
+          generator: {
+            filename: 'pdf.worker.[contenthash][ext]'
+          }
         }
       ]
     },

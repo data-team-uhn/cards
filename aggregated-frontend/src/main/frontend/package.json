@@ -69,7 +69,9 @@
     "raphael": "2.3.0",
     "remove-markdown": "0.6.4",
     "google-palette": "1.1.1",
-    "recharts": "3.9.2"
+    "recharts": "3.9.2",
+    "pdfjs-dist": "4.10.38",
+    "jszip": "3.10.1"
   },
   "devDependencies": {
     "@babel/core": "7.29.7",
