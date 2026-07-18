@@ -151,7 +151,7 @@ public class FileLabelProcessorTest
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
         node.setProperty(VALUE_PROPERTY, new String[] {
-            "/Forms/f1/a1/answer_path.txt", "/Forms/f1/a1/answer_path.txt"
+            "/Forms/f1/a1/answer_path.txt", "/Forms/f1/a1/other_path.pdf"
         });
 
         this.fileLabelProcessor.leave(node, json, mock(Function.class));
@@ -161,7 +161,7 @@ public class FileLabelProcessorTest
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
         Assert.assertEquals(2, jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).size());
         Assert.assertEquals("answer_path.txt", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
-        Assert.assertEquals("answer_path.txt", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
+        Assert.assertEquals("other_path.pdf", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
     }
 
     @Test

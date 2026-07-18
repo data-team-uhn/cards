@@ -63,7 +63,7 @@ public class BooleanLabelProcessorTest
 
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
-    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/question_5";
+    private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_3";
 
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
 
@@ -135,10 +135,7 @@ public class BooleanLabelProcessorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
-        Node question = session.getNode(TEST_QUESTION_PATH);
-        question.setProperty("yesLabel", "yes");
-        question.setProperty("noLabel", "no");
-        question.setProperty("unknownLabel", "unknown");
+        setCustomLabels(session.getNode(TEST_QUESTION_PATH));
 
         this.booleanLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
@@ -154,10 +151,7 @@ public class BooleanLabelProcessorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a2");
-        Node question = session.getNode(TEST_QUESTION_PATH);
-        question.setProperty("yesLabel", "yes");
-        question.setProperty("noLabel", "no");
-        question.setProperty("unknownLabel", "unknown");
+        setCustomLabels(session.getNode(TEST_QUESTION_PATH));
 
         this.booleanLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
@@ -168,6 +162,42 @@ public class BooleanLabelProcessorTest
         Assert.assertEquals(2, values.size());
         Assert.assertEquals("yes", values.getString(0));
         Assert.assertEquals("no", values.getString(1));
+    }
+
+    @Test
+    public void leaveForBooleanAnswerNodeWithoutLabelPropertiesUsesDefaultLabels() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        Node node = session.getNode("/Forms/f1/a2");
+
+        this.booleanLabelProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+
+        Assert.assertFalse(jsonObject.isEmpty());
+        Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
+        JsonArray values = jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY);
+        Assert.assertEquals(2, values.size());
+        Assert.assertEquals("Yes", values.getString(0));
+        Assert.assertEquals("No", values.getString(1));
+    }
+
+    @Test
+    public void leaveForBooleanAnswerNodeWithUnknownValueUsesUnknownLabel() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        Node node = session.getNode("/Forms/f1/a1");
+        node.setProperty(VALUE_PROPERTY, -1);
+        Node question = session.getNode(TEST_QUESTION_PATH);
+        question.setProperty("unknownLabel", "unknown");
+
+        this.booleanLabelProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+
+        Assert.assertFalse(jsonObject.isEmpty());
+        Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
+        Assert.assertEquals("unknown", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
     }
 
     @Test
@@ -247,5 +277,12 @@ public class BooleanLabelProcessorTest
                 QUESTION_PROPERTY, question,
                 VALUE_PROPERTY, List.of(1, 0).toArray())
             .commit();
+    }
+
+    private void setCustomLabels(final Node question) throws RepositoryException
+    {
+        question.setProperty("yesLabel", "yes");
+        question.setProperty("noLabel", "no");
+        question.setProperty("unknownLabel", "unknown");
     }
 }

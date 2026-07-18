@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.forms.serialize.labels;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -230,6 +231,45 @@ public class DateLabelProcessorTest
             jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
         Assert.assertEquals(format.format(datePlusOne.getTime()),
             jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(1));
+    }
+
+    @Test
+    public void leaveForDateAnswerNodeWithoutDateFormatUsesDefaultFormat() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Calendar date = Calendar.getInstance();
+        date.set(2023, Calendar.JANUARY, 1);
+        Node node = session.getNode("/Forms/f1/s1/a1");
+        node.setProperty(VALUE_PROPERTY, new DateValue(date), PropertyType.DATE);
+        Node question = session.getNode(TEST_QUESTION_PATH);
+        question.getProperty("dateFormat").remove();
+        JsonObjectBuilder json = Json.createObjectBuilder();
+
+        this.dateLabelProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+
+        Assert.assertFalse(jsonObject.isEmpty());
+        Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
+        final DateFormat defaultFormat = DateFormat.getDateInstance(DateFormat.LONG);
+        defaultFormat.setTimeZone(date.getTimeZone());
+        Assert.assertEquals(defaultFormat.format(date.getTime()), jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+    }
+
+    @Test
+    public void leaveForDateAnswerNodeWithoutQuestion() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Calendar date = Calendar.getInstance();
+        date.set(2023, Calendar.JANUARY, 1);
+        Node node = session.getNode("/Forms/f1/s1/a1");
+        node.getProperty(QUESTION_PROPERTY).remove();
+        node.setProperty(VALUE_PROPERTY, new DateValue(date), PropertyType.DATE);
+        JsonObjectBuilder json = Json.createObjectBuilder();
+
+        this.dateLabelProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+
+        Assert.assertTrue(jsonObject.isEmpty());
     }
 
     @Test
