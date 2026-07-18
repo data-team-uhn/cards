@@ -41,6 +41,7 @@ from docling.document_converter import DocumentConverter, PdfFormatOption
 
 from typing import Callable
 
+from chunker import clear_prior_outputs, write_chunk_files
 from docling_batch_sizing import (
     calc_active_workers,
     calc_batch_pages,
@@ -53,10 +54,11 @@ from docling_error_detection import (
     DoclingLogCollector,
     ensure_conversion_ok,
 )
-from docling_section_splitter import write_section_files
 from markdown_cleanup import clean_markdown
-from toc_cleanup import TOC_CLEANUP_MAX_PAGE, cleanup_toc_tables
-from toc_detection import mark_toc
+from toc_and_appendix_detection import (
+    DEFAULT_MIN_STRUCTURE_TOKENS,
+    mark_toc_and_appendix,
+)
 
 
 def build_pdf_converter() -> DocumentConverter:
@@ -147,6 +149,8 @@ def convert_pdf_to_markdown(
     workers: int | None = None,
     executor: ProcessPoolExecutor | None = None,
     log: LogFn | None = None,
+    outline_path: Path | None = None,
+    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> str:
     """
     Convert a PDF file to Markdown and return the text.
@@ -156,6 +160,10 @@ def convert_pdf_to_markdown(
     @param workers: optional override for parallel worker process count
     @param executor: optional persistent ProcessPoolExecutor (daemon mode)
     @param log: optional log sink; defaults to print
+    @param outline_path: where to write the outline.json sidecar.
+        None (e.g. the daemon's /convert call) still marks TOC
+        and appendix in the Markdown when large enough, but skips writing the sidecar.
+    @param min_structure_tokens: skip TOC/appendix marking when ``len(md)//4`` is below this
     @return: cleaned Markdown text
     """
     log_fn = log if log is not None else print
@@ -204,7 +212,10 @@ def convert_pdf_to_markdown(
     for _start_page, _end_page, _status, md, _md_len, _elapsed, _error in completed_results:
         all_markdown.append(md)
 
-    markdown_content = mark_toc(clean_markdown("".join(all_markdown)))
+    cleaned = clean_markdown("".join(all_markdown))
+    markdown_content = mark_toc_and_appendix(
+        cleaned, outline_path, min_structure_tokens=min_structure_tokens
+    )
     write_end = perf_counter()
     t2 = perf_counter()
 
@@ -262,10 +273,8 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
 
         chunk_parts: list[str] = []
         for page_no in range(start_page, end_page + 1):
-            chunk_parts.append(f"\n\n---\n\n<PDF Page {page_no}>\n\n---\n\n")
+            chunk_parts.append(f"\n<PDF Page {page_no}>\n")
             page_md = result.document.export_to_markdown(page_no=page_no)
-            if page_no < TOC_CLEANUP_MAX_PAGE:
-                page_md = cleanup_toc_tables(page_md)
             chunk_parts.append(page_md)
 
         md = "".join(chunk_parts)
@@ -287,7 +296,8 @@ def convert_pdf(
     *,
     batch_pages: int | None = None,
     workers: int | None = None,
-    split_sections: bool = False,
+    chunk: bool = False,
+    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> None:
     """
     Convert a PDF file to Markdown and write it to output_file.
@@ -296,13 +306,20 @@ def convert_pdf(
     @param output_file: path where Markdown output is written
     @param batch_pages: optional override for pages per worker batch
     @param workers: optional override for parallel worker process count
-    @param split_sections: also write per-section .md files and catalog.json beside output_file
+    @param chunk: also write per-chunk .md files and catalog.json beside output_file
+        when the document is at least ``min_structure_tokens``
+    @param min_structure_tokens: skip TOC/appendix marking and chunking below this size
     """
+    # Drop any previous convert's outline sidecar and Chunks/ before writing anew.
+    clear_prior_outputs(output_file)
+    outline_path = output_file.with_name("outline.json") if chunk else None
     try:
         markdown_content = convert_pdf_to_markdown(
             input_path,
             batch_pages=batch_pages,
             workers=workers,
+            outline_path=outline_path,
+            min_structure_tokens=min_structure_tokens,
         )
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)
@@ -313,10 +330,23 @@ def convert_pdf(
         f.write(markdown_content)
     write_end = perf_counter()
     print(f"File write:           {write_end - write_start:.2f}s")
+    print(f"Token estimate:       {len(markdown_content) // 4:,}")
 
-    if split_sections:
+    if chunk:
         split_start = perf_counter()
-        sections_dir = write_section_files(markdown_content, output_file, input_path.name)
+        chunks_dir = write_chunk_files(
+            markdown_content,
+            output_file,
+            input_path.name,
+            min_structure_tokens=min_structure_tokens,
+        )
         split_end = perf_counter()
-        print(f"Section split:        {split_end - split_start:.2f}s")
-        print(f"Sections written to {sections_dir}")
+        print(f"Chunk split:          {split_end - split_start:.2f}s")
+        if chunks_dir is not None:
+            chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
+            print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")
+        else:
+            print(
+                f"Chunking skipped "
+                f"({len(markdown_content) // 4} tokens < {min_structure_tokens} min_structure_tokens)"
+            )
