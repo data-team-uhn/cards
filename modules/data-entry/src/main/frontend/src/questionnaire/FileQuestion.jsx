@@ -105,20 +105,22 @@ function FileQuestion(props) {
   }
 
   // Event handler for selecting files
-  let upload = (files) => {
+  let upload = async (files) => {
     // Don't do anything if the context provider says uploads are disabled
     if (disableUploads) {
       return;
     }
-    const validationError = validateFiles?.(files);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-    // TODO - handle possible logged out situation here - open a login popup
+    // validateFiles may be sync or async (e.g. proposal PDF/DOCX content checks)
     setUploadInProgress(true);
     setError("");
+    const validationError = await Promise.resolve(validateFiles?.(files));
+    if (validationError) {
+      setError(validationError);
+      setUploadInProgress(false);
+      return;
+    }
 
+    // TODO - handle possible logged out situation here - open a login popup
     let savePromise = saveForm(new Event("autosave"));
     if (savePromise) {
       // When this function returns, the "files selected" event is cleared, along with the files list. Make a copy to preserve the data.
@@ -137,6 +139,7 @@ function FileQuestion(props) {
         });
     } else {
       setError("Could not save form to prepare for file upload");
+      setUploadInProgress(false);
     }
   };
 

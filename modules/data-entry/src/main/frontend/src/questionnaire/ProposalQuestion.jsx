@@ -18,11 +18,16 @@
 //
 
 import { Alert } from "@mui/material";
+import JSZip from "jszip";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfWorkerSrc from "pdfjs-dist/build/pdf.worker.min.mjs";
 import PropTypes from "prop-types";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import FileQuestion from "./FileQuestion";
 import { checkPropTypes } from "../propTypes";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
 
 const ACCEPTED_PROPOSAL_EXTENSIONS = [".pdf", ".docx", ".doc"];
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
@@ -49,22 +54,101 @@ function extractFileExtension(fileName) {
 }
 
 /**
- * Validate proposal uploads by file extension.
+ * Try to open a PDF with PDF.js; rejects corrupted or non-PDF content.
+ *
+ * @param {File} file uploaded file
+ * @returns {Promise<{valid: boolean, pageCount?: number, error?: string}>}
+ */
+async function validatePdf(file) {
+  try {
+    const data = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data }).promise;
+    return {
+      valid: true,
+      pageCount: pdf.numPages,
+    };
+  } catch {
+    return {
+      valid: false,
+      error: "The PDF is corrupted or cannot be read.",
+    };
+  }
+}
+
+/**
+ * Confirm a DOCX is a readable Open XML zip with the required parts.
+ *
+ * @param {File} file uploaded file
+ * @returns {Promise<{valid: boolean, error?: string}>}
+ */
+async function validateDocx(file) {
+  try {
+    const zip = await JSZip.loadAsync(file);
+    const hasContentTypes = Boolean(zip.file("[Content_Types].xml"));
+    const hasDocument = Boolean(zip.file("word/document.xml"));
+
+    if (!hasContentTypes || !hasDocument) {
+      return {
+        valid: false,
+        error: "The file is not a valid DOCX document.",
+      };
+    }
+
+    return { valid: true };
+  } catch {
+    return {
+      valid: false,
+      error: "The DOCX file is corrupted or cannot be read.",
+    };
+  }
+}
+
+/**
+ * Legacy .doc files are OLE compound documents; check the magic header only.
+ *
+ * @param {File} file uploaded file
+ * @returns {Promise<{valid: boolean, error?: string}>}
+ */
+async function validateDoc(file) {
+  try {
+    const header = await file.slice(0, 8).arrayBuffer();
+    const bytes = new Uint8Array(header);
+    const oleMagic = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1];
+    const matches = oleMagic.every((value, index) => bytes[index] === value);
+    if (!matches) {
+      return {
+        valid: false,
+        error: "The selected file is not a valid DOC document.",
+      };
+    }
+    return { valid: true };
+  } catch {
+    return {
+      valid: false,
+      error: "The DOC file is corrupted or cannot be read.",
+    };
+  }
+}
+
+/**
+ * Validate proposal uploads by size, extension, and file content.
  *
  * @param {FileList} files selected files
- * @returns {string|undefined} user-visible error when any file is unsupported
+ * @returns {Promise<string|undefined>} user-visible error when any file is unsupported
  */
-function validateProposalFiles(files) {
+async function validateProposalFiles(files) {
   const errors = [];
   for (let i = 0; i < files.length; i++) {
     const file = files.item(i);
 
     if (file.size === 0) {
       errors.push("The selected file is empty (0 bytes).");
+      continue;
     }
 
     if (file.size > MAX_FILE_SIZE) {
       errors.push("The selected file exceeds the maximum size of 50 MB.");
+      continue;
     }
 
     const extension = extractFileExtension(file.name);
@@ -74,6 +158,20 @@ function validateProposalFiles(files) {
         `Unsupported file format ${format}, file ${file.name} can not be processed. `
         + "Accepted formats: .pdf, .docx, .doc"
       );
+      continue;
+    }
+
+    let contentResult;
+    if (extension === ".pdf") {
+      contentResult = await validatePdf(file);
+    } else if (extension === ".docx") {
+      contentResult = await validateDocx(file);
+    } else if (extension === ".doc") {
+      contentResult = await validateDoc(file);
+    }
+
+    if (contentResult && !contentResult.valid) {
+      errors.push(`${file.name}: ${contentResult.error}`);
     }
   }
   return errors.length > 0 ? errors.join(" ") : undefined;
