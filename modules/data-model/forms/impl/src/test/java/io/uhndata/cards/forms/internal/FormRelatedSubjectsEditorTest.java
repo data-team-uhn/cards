@@ -58,19 +58,6 @@ public class FormRelatedSubjectsEditorTest
 
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
 
-    private static final String ANSWER_TYPE = "cards:TextAnswer";
-
-    private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
-
-    private static final String TEST_COMPUTED_QUESTION_PATH =
-        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
-
-    private static final String TEST_LONG_QUESTION_PATH =
-        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
-
-    private static final String TEST_SECTION_PATH =
-        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
-
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
 
     private static final String TEST_SUBJECT_CHILD_PATH = "/Subjects/Test/TestTumor";
@@ -83,12 +70,6 @@ public class FormRelatedSubjectsEditorTest
     private NodeBuilder currentNodeBuilder;
 
     private Session session;
-
-    @Test
-    public void constructorTest()
-    {
-        Assert.assertNotNull(this.formRelatedSubjectsEditor);
-    }
 
     @Test
     public void childNodeAddedTestForFormNode() throws CommitFailedException
@@ -158,12 +139,10 @@ public class FormRelatedSubjectsEditorTest
         this.session = this.context.resourceResolver().adaptTo(Session.class);
 
         this.context.build()
-            .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
             .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
             .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
             .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
             .commit();
-        this.context.load().json("/ComputedQuestionnairesPlain.json", TEST_COMPUTED_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
             .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
@@ -176,73 +155,33 @@ public class FormRelatedSubjectsEditorTest
             .commit();
 
         String subjectChildUuid = this.session.getNode(TEST_SUBJECT_CHILD_PATH).getIdentifier();
-        String questionnaireUuid = this.session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH).getIdentifier();
-        String sectionUuid = this.session.getNode(TEST_SECTION_PATH).getIdentifier();
-
-        Node questionNode = this.session.getNode(TEST_LONG_QUESTION_PATH);
-        String questionUuid = questionNode.getIdentifier();
-
-        Node computedQuestionNode = this.session.getNode(TEST_COMPUTED_QUESTION_PATH);
-        String computedQuestionUuid = computedQuestionNode.getIdentifier();
 
         // Create NodeBuilder/NodeState instances of New Test Form
-        String answerUuid = UUID.randomUUID().toString();
-        NodeBuilder answerBuilder = createTestAnswer(answerUuid, questionUuid);
-
-        String computedAnswerUuid = UUID.randomUUID().toString();
-        NodeBuilder computedAnswerBuilder = createTestComputedAnswer(computedAnswerUuid, computedQuestionUuid);
-
         String answerSectionUuid = UUID.randomUUID().toString();
-        NodeBuilder answerSectionBuilder =
-            createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
-                computedQuestionUuid, computedAnswerBuilder.getNodeState());
+        NodeBuilder answerSectionBuilder = createTestAnswerSection(answerSectionUuid);
 
         String formUuid = UUID.randomUUID().toString();
-        this.currentNodeBuilder = createTestForm(formUuid, questionnaireUuid, subjectChildUuid, answerSectionUuid,
+        this.currentNodeBuilder = createTestForm(formUuid, subjectChildUuid, answerSectionUuid,
             answerSectionBuilder.getNodeState());
         this.formRelatedSubjectsEditor = new FormRelatedSubjectsEditor(this.currentNodeBuilder, this.session);
 
     }
 
-    private NodeBuilder createTestForm(String uuid, String questionnaireUuid, String subjectUuid,
-        String answerSectionUuid, NodeState answerSection)
+    private NodeBuilder createTestForm(String uuid, String subjectUuid, String answerSectionUuid,
+        NodeState answerSection)
     {
         NodeBuilder formBuilder = EmptyNodeState.EMPTY_NODE.builder();
         formBuilder.setProperty(NODE_TYPE, FORM_TYPE);
-        formBuilder.setProperty("questionnaire", questionnaireUuid);
         formBuilder.setProperty("subject", subjectUuid);
         formBuilder.setProperty("jcr:uuid", uuid);
         formBuilder.setChildNode(answerSectionUuid, answerSection);
         return formBuilder;
     }
 
-    private NodeBuilder createTestAnswer(String uuid, String questionUuid)
-    {
-        NodeBuilder answerBuilder = EmptyNodeState.EMPTY_NODE.builder();
-        answerBuilder.setProperty(NODE_TYPE, ANSWER_TYPE);
-        answerBuilder.setProperty("question", questionUuid);
-        answerBuilder.setProperty("value", 200L);
-        answerBuilder.setProperty("jcr:uuid", uuid);
-        return answerBuilder;
-    }
-
-    private NodeBuilder createTestComputedAnswer(String uuid, String questionUuid)
-    {
-        NodeBuilder computedAnswerBuilder = EmptyNodeState.EMPTY_NODE.builder();
-        computedAnswerBuilder.setProperty(NODE_TYPE, ANSWER_TYPE);
-        computedAnswerBuilder.setProperty("question", questionUuid);
-        computedAnswerBuilder.setProperty("jcr:uuid", uuid);
-        return computedAnswerBuilder;
-    }
-
-    private NodeBuilder createTestAnswerSection(String uuid, String sectionUuid, String answerUuid, NodeState answer,
-        String computedAnswerUuid, NodeState computedAnswer)
+    private NodeBuilder createTestAnswerSection(String uuid)
     {
         NodeBuilder answerSectionBuilder = EmptyNodeState.EMPTY_NODE.builder();
         answerSectionBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
-        answerSectionBuilder.setChildNode(computedAnswerUuid, computedAnswer);
-        answerSectionBuilder.setChildNode(answerUuid, answer);
-        answerSectionBuilder.setProperty("section", sectionUuid);
         answerSectionBuilder.setProperty("jcr:uuid", uuid);
         return answerSectionBuilder;
     }

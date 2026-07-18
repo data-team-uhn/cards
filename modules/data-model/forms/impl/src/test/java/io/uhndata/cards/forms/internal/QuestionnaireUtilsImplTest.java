@@ -125,7 +125,7 @@ public class QuestionnaireUtilsImplTest
     }
 
     @Test
-    public void getOwnerQuestionnaireWithFakeElementThrowsException() throws RepositoryException
+    public void getOwnerQuestionnaireWithFakeElementReturnsNull() throws RepositoryException
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node fakeElement = session.getNode(TEST_SUBJECT_PATH);
@@ -166,7 +166,7 @@ public class QuestionnaireUtilsImplTest
     }
 
     @Test
-    public void getQuestionWithFakeQuestionnaireThrowsException() throws RepositoryException
+    public void getQuestionWithFakeQuestionnaireReturnsNull() throws RepositoryException
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node fakeQuestionnaire = session.getNode(TEST_SUBJECT_PATH);
@@ -195,7 +195,7 @@ public class QuestionnaireUtilsImplTest
     }
 
     @Test
-    public void isComputedQuestionForNotComputedAnswerThrowsException() throws RepositoryException
+    public void isComputedQuestionWhenPropertyAccessFailsReturnsFalse() throws RepositoryException
     {
         Node computedQuestion = Mockito.mock(Node.class);
         Mockito.when(computedQuestion.isNodeType(QUESTION_TYPE)).thenReturn(true);
@@ -263,7 +263,7 @@ public class QuestionnaireUtilsImplTest
     }
 
     @Test
-    public void getQuestionNameTrowsException() throws RepositoryException
+    public void getQuestionNameWhenNameAccessFailsReturnsNull() throws RepositoryException
     {
         Node question = Mockito.mock(Node.class);
         Mockito.when(question.isNodeType(QUESTION_TYPE)).thenReturn(true);

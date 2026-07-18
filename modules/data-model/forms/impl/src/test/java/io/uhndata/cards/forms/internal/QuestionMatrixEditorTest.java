@@ -95,12 +95,6 @@ public class QuestionMatrixEditorTest
     private QuestionMatrixEditor questionMatrixEditor;
 
     @Test
-    public void constructorTest()
-    {
-        Assert.assertNotNull(this.questionMatrixEditor);
-    }
-
-    @Test
     public void propertyChangedTest() throws RepositoryException
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
@@ -339,9 +333,9 @@ public class QuestionMatrixEditorTest
     }
 
     /**
-     * Converts a UUID string to a valid JCR node name by removing hyphens. JCR node names cannot contain hyphens, so we
-     * remove them to create a valid name. Also ensures the name always starts with a letter to avoid JCR name
-     * validation issues.
+     * Converts a UUID string to a node name usable in test fixtures. Hyphens are legal in JCR names, but they are
+     * stripped here for a compact name, and the name is prefixed with a letter so that it does not start with a
+     * digit.
      */
     private String uuidToNodeName(String uuid)
     {

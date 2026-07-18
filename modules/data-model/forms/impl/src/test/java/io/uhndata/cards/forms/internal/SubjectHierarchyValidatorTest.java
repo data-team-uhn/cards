@@ -18,8 +18,6 @@
  */
 package io.uhndata.cards.forms.internal;
 
-import java.lang.reflect.Field;
-import java.util.Deque;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -51,8 +49,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@SuppressWarnings("unchecked")
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SubjectHierarchyValidatorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -78,15 +75,7 @@ public class SubjectHierarchyValidatorTest
     @Mock
     private SubjectUtils subjectUtils;
 
-    private Deque<NodeState> parentNodes;
-
     private SubjectHierarchyValidator subjectHierarchyValidator;
-
-    @Test
-    public void constructorTest()
-    {
-        Assert.assertNotNull(this.subjectHierarchyValidator);
-    }
 
     @Test
     public void enterAddsNodeState() throws CommitFailedException, RepositoryException
@@ -94,16 +83,34 @@ public class SubjectHierarchyValidatorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         NodeState leafSubject = createSubjectNodeState(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH).getIdentifier());
 
+        // Push an extra leaf subject on the stack of parents; a new leaf subject requires its immediate parent to
+        // be a branch subject, but the top of the stack is now a leaf subject, so the validation must fail
         this.subjectHierarchyValidator.enter(Mockito.mock(NodeState.class), leafSubject);
-        Assert.assertEquals(3, this.parentNodes.size());
-        Assert.assertEquals(leafSubject, this.parentNodes.getLast());
+
+        stubSubjectTypeHierarchy(session);
+        NodeState newLeafSubject =
+            createSubjectNodeState(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH).getIdentifier());
+        Assert.assertThrows(CommitFailedException.class,
+            () -> this.subjectHierarchyValidator.childNodeAdded(UUID.randomUUID().toString(), newLeafSubject));
     }
 
     @Test
-    public void leaveRemovesLastNodeState() throws CommitFailedException
+    public void leaveRemovesLastNodeState() throws CommitFailedException, RepositoryException
     {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        NodeState leafSubject = createSubjectNodeState(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH).getIdentifier());
+
+        // Push an extra leaf subject on the stack of parents, then pop it; the stack must be back to the
+        // root/branch hierarchy, so a new leaf subject must pass the validation again
+        this.subjectHierarchyValidator.enter(Mockito.mock(NodeState.class), leafSubject);
         this.subjectHierarchyValidator.leave(Mockito.mock(NodeState.class), Mockito.mock(NodeState.class));
-        Assert.assertEquals(1, this.parentNodes.size());
+
+        stubSubjectTypeHierarchy(session);
+        NodeState newLeafSubject =
+            createSubjectNodeState(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH).getIdentifier());
+        Validator validator =
+            this.subjectHierarchyValidator.childNodeAdded(UUID.randomUUID().toString(), newLeafSubject);
+        Assert.assertEquals(this.subjectHierarchyValidator, validator);
     }
 
     @Test
@@ -121,10 +128,7 @@ public class SubjectHierarchyValidatorTest
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         NodeState subject = createSubjectNodeState(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH).getIdentifier());
-        Mockito.when(this.subjectUtils.isSubject(Mockito.any(NodeState.class))).thenReturn(true);
-        Mockito.when(this.subjectTypeUtils.getSubjectType(subject.getProperty(TYPE_PROPERTY).getValue(Type.REFERENCE)))
-            .thenReturn(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH));
-        Mockito.when(this.subjectTypeUtils.isSubjectType(Mockito.any(Node.class))).thenReturn(true);
+        stubSubjectTypeHierarchy(session);
 
         Validator validator = this.subjectHierarchyValidator.childNodeAdded(UUID.randomUUID().toString(), subject);
         Assert.assertNotNull(validator);
@@ -135,8 +139,6 @@ public class SubjectHierarchyValidatorTest
     @Test
     public void childNodeAddedForNotSubjectNodeReturnsThisValidator() throws CommitFailedException
     {
-        Mockito.when(this.subjectUtils.isSubject(Mockito.any(NodeState.class))).thenReturn(false);
-
         Validator validator = this.subjectHierarchyValidator.childNodeAdded(UUID.randomUUID().toString(),
             Mockito.mock(NodeState.class));
         Assert.assertNotNull(validator);
@@ -145,23 +147,21 @@ public class SubjectHierarchyValidatorTest
     }
 
     @Test
-    public void childNodeAddedForSubjectNodeThrowsException() throws RepositoryException
+    public void childNodeAddedForSubjectNodeThrowsException() throws RepositoryException, CommitFailedException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         NodeState subject = createSubjectNodeState(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH).getIdentifier());
-        Mockito.when(this.subjectUtils.isSubject(Mockito.any(NodeState.class))).thenReturn(true);
-        Mockito.when(this.subjectTypeUtils.getSubjectType(subject.getProperty(TYPE_PROPERTY).getValue(Type.REFERENCE)))
-            .thenReturn(session.getNode(TEST_LEAF_SUBJECT_TYPE_PATH));
-        Mockito.when(this.subjectTypeUtils.isSubjectType(Mockito.any(Node.class))).thenReturn(true);
+        stubSubjectTypeHierarchy(session);
 
-        this.parentNodes.removeLast();
+        // Pop the branch subject off the stack of parents; the leaf subject can no longer find its required parent
+        this.subjectHierarchyValidator.leave(Mockito.mock(NodeState.class), Mockito.mock(NodeState.class));
         Assert.assertThrows(CommitFailedException.class,
             () -> this.subjectHierarchyValidator.childNodeAdded(UUID.randomUUID().toString(), subject));
 
     }
 
     @Before
-    public void setupRepo() throws RepositoryException, IllegalAccessException
+    public void setupRepo() throws RepositoryException, CommitFailedException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
@@ -178,23 +178,26 @@ public class SubjectHierarchyValidatorTest
         leaf.setProperty(PARENTS_PROPERTY, branch);
 
         this.subjectHierarchyValidator = new SubjectHierarchyValidator(this.subjectTypeUtils, this.subjectUtils);
-        this.parentNodes = getParentNodesTemporaryPublic();
 
+        // Seed the validator's stack of parent nodes through its public API, simulating the descent from the root
+        // subject through the branch subject
         NodeState rootState = createSubjectNodeState(root.getIdentifier());
         NodeState branchState = createSubjectNodeState(branch.getIdentifier());
-        this.parentNodes.add(rootState);
-        this.parentNodes.add(branchState);
+        this.subjectHierarchyValidator.enter(Mockito.mock(NodeState.class), rootState);
+        this.subjectHierarchyValidator.enter(Mockito.mock(NodeState.class), branchState);
     }
 
-    private Deque<NodeState> getParentNodesTemporaryPublic() throws IllegalAccessException
+    private void stubSubjectTypeHierarchy(Session session) throws RepositoryException
     {
-        for (Field field : this.subjectHierarchyValidator.getClass().getDeclaredFields()) {
-            if (field.getType().equals(Deque.class)) {
-                field.setAccessible(true);
-                return ((Deque<NodeState>) field.get(this.subjectHierarchyValidator));
-            }
-        }
-        return null;
+        Mockito.when(this.subjectUtils.isSubject(Mockito.any(NodeState.class))).thenReturn(true);
+        Mockito.when(this.subjectTypeUtils.getSubjectType(Mockito.anyString()))
+            .thenAnswer(invocation -> session.getNodeByIdentifier(invocation.getArgument(0)));
+        // A subject type only requires a parent if it has a "parents" property; Root has none, so the hierarchy
+        // walk stops above Root through this condition instead of a swallowed exception
+        Mockito.when(this.subjectTypeUtils.isSubjectType(Mockito.any(Node.class))).thenAnswer(invocation -> {
+            Node type = invocation.getArgument(0);
+            return type != null && type.hasProperty(PARENTS_PROPERTY);
+        });
     }
 
     private NodeState createSubjectNodeState(String subjectTypeId)

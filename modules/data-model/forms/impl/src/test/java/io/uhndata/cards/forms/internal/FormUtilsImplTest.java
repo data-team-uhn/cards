@@ -24,9 +24,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -71,7 +73,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class FormUtilsImplTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -268,8 +270,6 @@ public class FormUtilsImplTest
         String questionnaireIdentifier = questionnaire.getIdentifier();
 
         Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
-        Mockito.when(this.questionnaires.getQuestionnaire(questionnaireIdentifier))
-            .thenReturn(questionnaire);
         NodeBuilder nodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
         nodeBuilder.setProperty(NODE_TYPE, FORM_TYPE);
         nodeBuilder.setProperty(QUESTIONNAIRE_PROPERTY, questionnaireIdentifier);
@@ -287,8 +287,6 @@ public class FormUtilsImplTest
         String questionnaireIdentifier = questionnaire.getIdentifier();
 
         Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
-        Mockito.when(this.questionnaires.getQuestionnaire(questionnaireIdentifier))
-            .thenReturn(questionnaire);
         NodeBuilder nodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
         nodeBuilder.setProperty(NODE_TYPE, FORM_TYPE);
         nodeBuilder.setProperty(QUESTIONNAIRE_PROPERTY, questionnaireIdentifier);
@@ -396,7 +394,6 @@ public class FormUtilsImplTest
         String subjectIdentifier = subject.getIdentifier();
 
         Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
-        Mockito.when(this.subjects.getSubject(subjectIdentifier)).thenReturn(subject);
         NodeBuilder nodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
         nodeBuilder.setProperty(NODE_TYPE, FORM_TYPE);
         nodeBuilder.setProperty(SUBJECT_PROPERTY, subjectIdentifier);
@@ -413,7 +410,6 @@ public class FormUtilsImplTest
         String subjectIdentifier = subject.getIdentifier();
 
         Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
-        Mockito.when(this.subjects.getSubject(subjectIdentifier)).thenReturn(subject);
         NodeBuilder nodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
         nodeBuilder.setProperty(NODE_TYPE, FORM_TYPE);
         nodeBuilder.setProperty(SUBJECT_PROPERTY, subjectIdentifier);
@@ -549,7 +545,6 @@ public class FormUtilsImplTest
         String sectionIdentifier = section.getIdentifier();
 
         Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
-        Mockito.when(this.subjects.getSubject(sectionIdentifier)).thenReturn(section);
         NodeBuilder nodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
         nodeBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
         nodeBuilder.setProperty("section", sectionIdentifier);
@@ -567,7 +562,6 @@ public class FormUtilsImplTest
         String sectionIdentifier = section.getIdentifier();
 
         Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
-        Mockito.when(this.subjects.getSubject(sectionIdentifier)).thenReturn(section);
         NodeBuilder nodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
         nodeBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
         nodeBuilder.setProperty("section", sectionIdentifier);
@@ -651,7 +645,7 @@ public class FormUtilsImplTest
     }
 
     @Test
-    public void getQuestionForNodeStateWithActualAnswerReturnsCorrectQuestio() throws RepositoryException
+    public void getQuestionForNodeStateWithActualAnswerReturnsCorrectQuestion() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node question = session.getNode(TEST_QUESTION_PATH);
@@ -668,7 +662,7 @@ public class FormUtilsImplTest
     }
 
     @Test
-    public void getQuestionForNodeBuilderWithBooleanAnswerReturnsCorrectQuestio() throws RepositoryException
+    public void getQuestionForNodeBuilderWithBooleanAnswerReturnsCorrectQuestion() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node question = session.getNode(TEST_QUESTION_PATH);
@@ -712,7 +706,6 @@ public class FormUtilsImplTest
         String questionIdentifier = question.getIdentifier();
 
         Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
-        Mockito.when(this.subjects.getSubject(questionIdentifier)).thenReturn(question);
         NodeBuilder nodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
         nodeBuilder.setProperty(NODE_TYPE, ANSWER_BOOLEAN_TYPE);
         nodeBuilder.setProperty(QUESTION_PROPERTY, questionIdentifier);
@@ -959,18 +952,11 @@ public class FormUtilsImplTest
         commitResources(session);
         Mockito.when(this.subjects.isSubject(Mockito.any(Node.class))).thenReturn(Boolean.TRUE);
         Mockito.when(this.questionnaires.getOwnerQuestionnaire(question)).thenReturn(questionnaireTest);
-        Iterator<Node> answers = this.formUtils.findAllFormRelatedAnswers(
+        Set<String> answerPaths = getPaths(this.formUtils.findAllFormRelatedAnswers(
             session.getNode("/Forms/f2"),
             question,
-            EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS))
-            .iterator();
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f1/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f2/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f2/a3", answers.next().getPath());
-        Assert.assertFalse(answers.hasNext());
+            EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS)));
+        Assert.assertEquals(Set.of("/Forms/f1/a1", "/Forms/f2/a1", "/Forms/f2/a3"), answerPaths);
     }
 
     @Test
@@ -983,18 +969,11 @@ public class FormUtilsImplTest
         commitResources(session);
         Mockito.when(this.subjects.isSubject(Mockito.any(Node.class))).thenReturn(Boolean.TRUE);
         Mockito.when(this.questionnaires.getOwnerQuestionnaire(question)).thenReturn(questionnaireTest);
-        Iterator<Node> answers = this.formUtils.findAllFormRelatedAnswers(
+        Set<String> answerPaths = getPaths(this.formUtils.findAllFormRelatedAnswers(
             session.getNode(TEST_FORM_PATH),
             question,
-            EnumSet.of(FormUtils.SearchType.DESCENDANTS_FORMS))
-            .iterator();
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f4/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f4/a2", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f5/a2", answers.next().getPath());
-        Assert.assertFalse(answers.hasNext());
+            EnumSet.of(FormUtils.SearchType.DESCENDANTS_FORMS)));
+        Assert.assertEquals(Set.of("/Forms/f4/a1", "/Forms/f4/a2", "/Forms/f5/a2"), answerPaths);
     }
 
     @Test
@@ -1007,22 +986,13 @@ public class FormUtilsImplTest
         commitResources(session);
         Mockito.when(this.subjects.isSubject(Mockito.any(Node.class))).thenReturn(Boolean.TRUE);
         Mockito.when(this.questionnaires.getOwnerQuestionnaire(question)).thenReturn(questionnaireTest);
-        Iterator<Node> answers = this.formUtils.findAllFormRelatedAnswers(
+        Set<String> answerPaths = getPaths(this.formUtils.findAllFormRelatedAnswers(
             session.getNode("/Forms/f5"),
             question,
-            EnumSet.of(FormUtils.SearchType.ANCESTORS_FORMS))
-            .iterator();
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f4/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f4/a2", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f1/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f2/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f2/a3", answers.next().getPath());
-        Assert.assertFalse(answers.hasNext());
+            EnumSet.of(FormUtils.SearchType.ANCESTORS_FORMS)));
+        Assert.assertEquals(
+            Set.of("/Forms/f4/a1", "/Forms/f4/a2", "/Forms/f1/a1", "/Forms/f2/a1", "/Forms/f2/a3"),
+            answerPaths);
     }
 
     @Test
@@ -1050,18 +1020,11 @@ public class FormUtilsImplTest
         commitResources(session);
         Mockito.when(this.subjects.isSubject(Mockito.any(Node.class))).thenReturn(Boolean.TRUE);
         Mockito.when(this.questionnaires.getOwnerQuestionnaire(question)).thenReturn(questionnaireTest);
-        Iterator<Node> answers = this.formUtils.findAllSubjectRelatedAnswers(
+        Set<String> answerPaths = getPaths(this.formUtils.findAllSubjectRelatedAnswers(
             session.getNode(TEST_SUBJECT_PATH),
             question,
-            EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS))
-            .iterator();
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f1/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f2/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f2/a3", answers.next().getPath());
-        Assert.assertFalse(answers.hasNext());
+            EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS)));
+        Assert.assertEquals(Set.of("/Forms/f1/a1", "/Forms/f2/a1", "/Forms/f2/a3"), answerPaths);
     }
 
     @Test
@@ -1074,18 +1037,11 @@ public class FormUtilsImplTest
         commitResources(session);
         Mockito.when(this.subjects.isSubject(Mockito.any(Node.class))).thenReturn(Boolean.TRUE);
         Mockito.when(this.questionnaires.getOwnerQuestionnaire(question)).thenReturn(questionnaireTest);
-        Iterator<Node> answers = this.formUtils.findAllSubjectRelatedAnswers(
+        Set<String> answerPaths = getPaths(this.formUtils.findAllSubjectRelatedAnswers(
             session.getNode(TEST_SUBJECT_PATH),
             question,
-            EnumSet.of(FormUtils.SearchType.DESCENDANTS_FORMS))
-            .iterator();
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f4/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f4/a2", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f5/a2", answers.next().getPath());
-        Assert.assertFalse(answers.hasNext());
+            EnumSet.of(FormUtils.SearchType.DESCENDANTS_FORMS)));
+        Assert.assertEquals(Set.of("/Forms/f4/a1", "/Forms/f4/a2", "/Forms/f5/a2"), answerPaths);
     }
 
     @Test
@@ -1098,22 +1054,13 @@ public class FormUtilsImplTest
         commitResources(session);
         Mockito.when(this.subjects.isSubject(Mockito.any(Node.class))).thenReturn(Boolean.TRUE);
         Mockito.when(this.questionnaires.getOwnerQuestionnaire(question)).thenReturn(questionnaireTest);
-        Iterator<Node> answers = this.formUtils.findAllSubjectRelatedAnswers(
+        Set<String> answerPaths = getPaths(this.formUtils.findAllSubjectRelatedAnswers(
             session.getNode("/Subjects/Test/TestTumor/TestTumorRegion"),
             question,
-            EnumSet.of(FormUtils.SearchType.ANCESTORS_FORMS))
-            .iterator();
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f4/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f4/a2", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f1/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f2/a1", answers.next().getPath());
-        Assert.assertTrue(answers.hasNext());
-        Assert.assertEquals("/Forms/f2/a3", answers.next().getPath());
-        Assert.assertFalse(answers.hasNext());
+            EnumSet.of(FormUtils.SearchType.ANCESTORS_FORMS)));
+        Assert.assertEquals(
+            Set.of("/Forms/f4/a1", "/Forms/f4/a2", "/Forms/f1/a1", "/Forms/f2/a1", "/Forms/f2/a3"),
+            answerPaths);
     }
 
     @Test
@@ -1262,7 +1209,7 @@ public class FormUtilsImplTest
     }
 
     @Test
-    public void serializePropertyTrowRepositoryException() throws RepositoryException
+    public void serializePropertyThrowsRepositoryException() throws RepositoryException
     {
         Property property = Mockito.mock(Property.class);
 
@@ -1285,6 +1232,15 @@ public class FormUtilsImplTest
             .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
                 this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
             .commit();
+    }
+
+    private Set<String> getPaths(Iterable<Node> answers) throws RepositoryException
+    {
+        Set<String> paths = new HashSet<>();
+        for (Node answer : answers) {
+            paths.add(answer.getPath());
+        }
+        return paths;
     }
 
     private String getStringWithoutDoubleQuotationMarks(String json)

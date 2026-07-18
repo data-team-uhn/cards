@@ -58,7 +58,7 @@ import static org.mockito.Mockito.when;
  * @version $Id$
  */
 @SuppressWarnings("unchecked")
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ComputedAnswersEditorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -91,6 +91,10 @@ public class ComputedAnswersEditorTest
 
     private NodeState after;
 
+    private NodeBuilder answerSectionBuilder;
+
+    private String computedAnswerUuid;
+
     private Session currentSession;
 
     @Mock
@@ -107,12 +111,6 @@ public class ComputedAnswersEditorTest
 
     @Mock
     private QuestionnaireUtils questionnaireUtils;
-
-    @Test
-    public void constructorTest()
-    {
-        Assert.assertNotNull(this.computedAnswersEditor);
-    }
 
     @Test
     public void isMatchedAnswerNodeReturnsTrue() throws RepositoryException
@@ -155,13 +153,7 @@ public class ComputedAnswersEditorTest
         this.computedAnswersEditor = new ComputedAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
             this.questionnaireUtils, this.formUtils, this.expressionUtils);
 
-        PropertyState typeProperty = Mockito.mock(PropertyState.class);
-        NodeState formNodeState = Mockito.mock(NodeState.class);
         NodeBuilder formNodeBuilder = Mockito.mock(NodeBuilder.class);
-
-        when(typeProperty.getValue(Type.NAME)).thenReturn(FORM_TYPE);
-        when(formNodeState.getProperty(NODE_TYPE)).thenReturn(typeProperty);
-        when(formNodeBuilder.getNodeState()).thenReturn(formNodeState);
         when(this.nodeBuilder.getChildNode(Mockito.eq(name))).thenReturn(formNodeBuilder);
 
         editor = this.computedAnswersEditor.childNodeAdded(name, Mockito.mock(NodeState.class));
@@ -170,10 +162,20 @@ public class ComputedAnswersEditorTest
     }
 
     @Test
-    public void handleLeaveTest()
+    public void handleLeaveComputesAndStoresMissingAnswer()
     {
+        // The computed answer starts without a value
+        Assert.assertFalse(this.answerSectionBuilder.getChildNode(this.computedAnswerUuid).hasProperty("value"));
+
         this.computedAnswersEditor.serviceSession = this.context.resourceResolver().adaptTo(Session.class);
         this.computedAnswersEditor.handleLeave(this.after);
+
+        // The evaluated expression result, 200, must have been written into the computed answer node
+        Mockito.verify(this.expressionUtils).evaluate(Mockito.any(Node.class), Mockito.<String, Object>anyMap(),
+            Mockito.eq(Type.LONG), Mockito.any(Set.class));
+        NodeBuilder computedAnswer = this.answerSectionBuilder.getChildNode(this.computedAnswerUuid);
+        Assert.assertTrue(computedAnswer.hasProperty("value"));
+        Assert.assertEquals(Long.valueOf(200L), computedAnswer.getProperty("value").getValue(Type.LONG));
     }
 
     @Before
@@ -208,17 +210,17 @@ public class ComputedAnswersEditorTest
         String answerUuid = UUID.randomUUID().toString();
         NodeBuilder answerBuilder = createTestAnswer(answerUuid, questionUuid);
 
-        String computedAnswerUuid = UUID.randomUUID().toString();
-        NodeBuilder computedAnswerBuilder = createTestComputedAnswer(computedAnswerUuid, computedQuestionUuid);
+        this.computedAnswerUuid = UUID.randomUUID().toString();
+        NodeBuilder computedAnswerBuilder = createTestComputedAnswer(this.computedAnswerUuid, computedQuestionUuid);
 
         String answerSectionUuid = UUID.randomUUID().toString();
-        NodeBuilder answerSectionBuilder =
+        this.answerSectionBuilder =
             createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
-                computedQuestionUuid, computedAnswerBuilder.getNodeState());
+                this.computedAnswerUuid, computedAnswerBuilder.getNodeState());
 
         String formUuid = UUID.randomUUID().toString();
         NodeBuilder formBuilder = createTestForm(formUuid, questionnaireUuid, answerSectionUuid,
-            answerSectionBuilder.getNodeState());
+            this.answerSectionBuilder.getNodeState());
 
         this.after = formBuilder.getNodeState();
 
@@ -227,7 +229,8 @@ public class ComputedAnswersEditorTest
 
         NodeState answerSectionState = this.after.getChildNode(answerSectionUuid);
         NodeState answerSection = this.after.getChildNode(answerSectionUuid).getChildNode(answerUuid);
-        NodeState computedAnswerSection = this.after.getChildNode(answerSectionUuid).getChildNode(computedAnswerUuid);
+        NodeState computedAnswerSection =
+            this.after.getChildNode(answerSectionUuid).getChildNode(this.computedAnswerUuid);
         when(this.formUtils.isAnswerSection(answerSectionState)).thenReturn(true);
         when(this.formUtils.isAnswer(answerSection)).thenReturn(true);
         when(this.formUtils.isAnswer(computedAnswerSection)).thenReturn(true);
@@ -248,20 +251,24 @@ public class ComputedAnswersEditorTest
         when(this.nodeBuilder.getProperty("questionnaire")).thenReturn(propertyState);
         when(propertyState.getValue(Type.REFERENCE)).thenReturn(questionnaireUuid);
 
-        // mock QuestionTree getUnansweredMatchingQuestions(final Node currentNode)
-        when(this.questionnaireUtils.isComputedQuestion(Mockito.any())).thenReturn(false, false, false, true);
-        when(this.questionnaireUtils.isQuestionnaire(Mockito.any())).thenReturn(true, false);
-        when(this.questionnaireUtils.isSection(Mockito.any())).thenReturn(true, false);
+        // mock QuestionTree getUnmodifiedMatchingQuestions(final Node currentNode), deciding per node instead of
+        // relying on the order in which the questionnaire tree is traversed
+        when(this.questionnaireUtils.isComputedQuestion(Mockito.any()))
+            .thenAnswer(invocation -> nodeHasPath(invocation.getArgument(0), TEST_COMPUTED_QUESTION_PATH));
+        when(this.questionnaireUtils.isQuestionnaire(Mockito.any()))
+            .thenAnswer(invocation -> nodeHasPath(invocation.getArgument(0), TEST_COMPUTED_QUESTIONNAIRE_PATH));
+        when(this.questionnaireUtils.isSection(Mockito.any()))
+            .thenAnswer(invocation -> nodeHasPath(invocation.getArgument(0), TEST_SECTION_PATH));
 
-        // mock Map<QuestionTree, NodeBuilder> createMissingNodes(
-        // final QuestionTree questionTree, final NodeBuilder currentNode)
-        when(this.nodeBuilder.hasProperty("jcr:primaryType")).thenReturn(true);
         // mock Map<String, List<NodeBuilder>> getChildNodesByReference(final NodeBuilder nodeBuilder)
         when(this.nodeBuilder.getChildNodeNames()).thenReturn(List.of("from_long_to_computed_section"));
         when(this.nodeBuilder.getChildNode(Mockito.eq("from_long_to_computed_section")))
-            .thenReturn(answerSectionBuilder);
-        when(this.formUtils.isAnswerSection(answerSectionBuilder)).thenReturn(true);
-        when(this.formUtils.getSectionIdentifier(answerSectionBuilder)).thenReturn(sectionUuid);
+            .thenReturn(this.answerSectionBuilder);
+        when(this.formUtils.isAnswerSection(this.answerSectionBuilder)).thenReturn(true);
+        when(this.formUtils.getSectionIdentifier(this.answerSectionBuilder)).thenReturn(sectionUuid);
+        when(this.formUtils.isAnswer(Mockito.any(NodeBuilder.class))).thenReturn(true);
+        when(this.formUtils.getQuestionIdentifier(Mockito.any(NodeBuilder.class))).thenAnswer(
+            invocation -> ((NodeBuilder) invocation.getArgument(0)).getProperty("question").getValue(Type.STRING));
 
         // mock void computeAnswer(final Map.Entry<QuestionTree, NodeBuilder> entry,
         // final Map<String, Object> answersByQuestionName)
@@ -270,6 +277,15 @@ public class ComputedAnswersEditorTest
         when(this.expressionUtils.evaluate(Mockito.any(Node.class), Mockito.<String, Object>anyMap(),
             Mockito.eq(Type.LONG), Mockito.any(Set.class)))
                 .thenReturn(new ExpressionUtils.ExpressionResult(false, false, 200L, 1));
+    }
+
+    private static boolean nodeHasPath(final Node node, final String path)
+    {
+        try {
+            return node != null && path.equals(node.getPath());
+        } catch (RepositoryException e) {
+            return false;
+        }
     }
 
     private void initializeEditorForFormNodeBuilder()
@@ -313,13 +329,13 @@ public class ComputedAnswersEditorTest
     private NodeBuilder createTestAnswerSection(String uuid, String sectionUuid, String answerUuid, NodeState answer,
         String computedAnswerUuid, NodeState computedAnswer)
     {
-        NodeBuilder answerSectionBuilder = EmptyNodeState.EMPTY_NODE.builder();
-        answerSectionBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
-        answerSectionBuilder.setChildNode(computedAnswerUuid, computedAnswer);
-        answerSectionBuilder.setChildNode(answerUuid, answer);
-        answerSectionBuilder.setProperty("section", sectionUuid);
-        answerSectionBuilder.setProperty("jcr:uuid", uuid);
-        return answerSectionBuilder;
+        NodeBuilder sectionBuilder = EmptyNodeState.EMPTY_NODE.builder();
+        sectionBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
+        sectionBuilder.setChildNode(computedAnswerUuid, computedAnswer);
+        sectionBuilder.setChildNode(answerUuid, answer);
+        sectionBuilder.setProperty("section", sectionUuid);
+        sectionBuilder.setProperty("jcr:uuid", uuid);
+        return sectionBuilder;
     }
 
     private Map<String, NodeState> getAnswersFromFormWithSection()

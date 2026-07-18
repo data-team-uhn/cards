@@ -54,7 +54,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ExpressionUtilsImplTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -81,8 +81,7 @@ public class ExpressionUtilsImplTest
         Node question = session.getNode("/Questionnaires/TestComputedQuestionnaire/question_4");
         Set<String> expectedDependencies = Set.of("question_1", "question_2", "question_3");
         Set<String> dependencies = this.expressionUtils.getDependencies(question);
-        Assert.assertEquals(3, dependencies.size());
-        Assert.assertEquals(dependencies, expectedDependencies);
+        Assert.assertEquals(expectedDependencies, dependencies);
     }
 
     @Test
@@ -135,9 +134,10 @@ public class ExpressionUtilsImplTest
         Object result = 100.7;
         Node question = session.getNode(
             "/Questionnaires/TestComputedQuestionnaire/from_double_to_computed_section/double_computed_question");
-        Bindings filledBindings = emptyBindings;
-        filledBindings.put("arg0", String.valueOf(result));
-        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(filledBindings)))
+        // The expression is "return @{double_question:-100.7}" and no values are provided, so the parsed default
+        // value "100.7" must be passed to the script engine as arg0
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"),
+            Mockito.argThat((Bindings bindings) -> "100.7".equals(bindings.get("arg0")))))
             .thenReturn(result);
         Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE,
             Collections.emptySet()).getResult());
@@ -151,8 +151,9 @@ public class ExpressionUtilsImplTest
 
         question = session.getNode(
             "/Questionnaires/TestComputedQuestionnaire/from_double_to_computed_section/double_long_computed_question");
-        filledBindings.put("arg0", "100.0");
-        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.eq(filledBindings)))
+        // This expression's parsed default value is "100.0"
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"),
+            Mockito.argThat((Bindings bindings) -> "100.0".equals(bindings.get("arg0")))))
             .thenReturn(100.0);
         Assert.assertEquals("100", this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING,
             Collections.emptySet()).getResult());
@@ -257,20 +258,18 @@ public class ExpressionUtilsImplTest
     }
 
     @Test
-    public void evaluateProducesExceptionQuestionReturnsEmptyValue() throws RepositoryException, ScriptException
+    public void evaluateWithUnformattableResultReturnsNullValue() throws RepositoryException, ScriptException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         ScriptEngine engine = Mockito.mock(ScriptEngine.class);
         Mockito.when(this.manager.getEngineByName("JavaScript")).thenReturn(engine);
-        Bindings emptyBindings = new SimpleBindings();
-        Mockito.when(engine.createBindings()).thenReturn(emptyBindings);
+        Mockito.when(engine.createBindings()).thenReturn(new SimpleBindings());
 
-        Date result = new Date();
         Node question = session.getNode(
             "/Questionnaires/TestComputedQuestionnaire/from_text_to_computed_section/date_computed_question");
-        Bindings bindings = emptyBindings;
-        bindings.put("arg0", result);
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
+        // A Date cannot be converted to any of the numeric types, so formatting the result must return null
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.any(Bindings.class)))
+            .thenReturn(new Date());
         Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG,
             Collections.emptySet()).getResult());
         Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE,
@@ -278,15 +277,27 @@ public class ExpressionUtilsImplTest
         Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL,
             Collections.emptySet()).getResult());
 
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(null);
+        // A null evaluation result stays null
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.any(Bindings.class)))
+            .thenReturn(null);
         Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING,
             Collections.emptySet()).getResult());
+    }
 
-        Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings)))
+    @Test
+    public void evaluateWithFailingScriptReturnsNullValue() throws RepositoryException, ScriptException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        ScriptEngine engine = Mockito.mock(ScriptEngine.class);
+        Mockito.when(this.manager.getEngineByName("JavaScript")).thenReturn(engine);
+        Mockito.when(engine.createBindings()).thenReturn(new SimpleBindings());
+
+        Node question = session.getNode(
+            "/Questionnaires/TestComputedQuestionnaire/from_text_to_computed_section/date_computed_question");
+        Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.any(Bindings.class)))
             .thenThrow(new ScriptException("Evaluating the expression for question failed"));
         Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING,
             Collections.emptySet()).getResult());
-
     }
 
     @Before

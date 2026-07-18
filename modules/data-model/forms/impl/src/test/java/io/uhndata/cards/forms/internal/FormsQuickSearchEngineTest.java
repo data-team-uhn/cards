@@ -18,7 +18,9 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -50,7 +52,7 @@ import io.uhndata.cards.spi.SearchParametersFactory;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class FormsQuickSearchEngineTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -116,15 +118,9 @@ public class FormsQuickSearchEngineTest
     }
 
     @Test
-    public void quickSearchAddsAllFoundFormsToOutput() throws RepositoryException
+    public void quickSearchAddsAllFoundFormsToOutput()
     {
-        Session session = this.context.resourceResolver().adaptTo(Session.class);
-        Mockito.when(this.formUtils.getValue(Mockito.any(Node.class)))
-            .thenReturn("textAnswer1", "newValue", "textAnswer3");
-        Mockito.when(this.formUtils.getForm(Mockito.any(Node.class))).thenReturn(
-            session.getNode("/Forms/f1/s1/a1"),
-            session.getNode("/Forms/f2/s1/a1"),
-            session.getNode("/Forms/f3/s1/a1"));
+        stubAnswerAccessors();
 
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
             .withQuery("textAnswer")
@@ -133,23 +129,27 @@ public class FormsQuickSearchEngineTest
 
         QuickSearchEngine.Results output = this.formsQuickSearchEngine.quickSearch(parameters,
             this.context.resourceResolver());
+        // Collect the matched values and whether the match was found in the answer notes, without depending on the
+        // order in which the query returns the matched answers
+        Map<String, Boolean> matches = new HashMap<>();
         for (int numberOfFoundMatches = 0; numberOfFoundMatches < 3; numberOfFoundMatches++) {
             Assert.assertTrue(output.hasNext());
-            Assert.assertNotNull(output.next());
+            JsonObject result = output.next();
+            JsonObject match = result.getJsonObject("cards:queryMatch");
+            Assert.assertNotNull(match);
+            matches.put(match.getString("before") + match.getString("text") + match.getString("after"),
+                match.getBoolean("inNotes"));
         }
         Assert.assertFalse(output.hasNext());
+        Assert.assertEquals(
+            Map.of("textAnswer1", Boolean.FALSE, "textAnswer2", Boolean.TRUE, "textAnswer3", Boolean.FALSE),
+            matches);
     }
 
     @Test
-    public void skip() throws RepositoryException
+    public void skipAdvancesPastResults()
     {
-        Session session = this.context.resourceResolver().adaptTo(Session.class);
-        Mockito.when(this.formUtils.getValue(Mockito.any(Node.class)))
-            .thenReturn("textAnswer1", "newValue", "textAnswer3");
-        Mockito.when(this.formUtils.getForm(Mockito.any(Node.class))).thenReturn(
-            session.getNode("/Forms/f1/s1/a1"),
-            session.getNode("/Forms/f2/s1/a1"),
-            session.getNode("/Forms/f3/s1/a1"));
+        stubAnswerAccessors();
 
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
             .withQuery("textAnswer")
@@ -158,10 +158,13 @@ public class FormsQuickSearchEngineTest
 
         QuickSearchEngine.Results output = this.formsQuickSearchEngine.quickSearch(parameters,
             this.context.resourceResolver());
+        // Three answers match the query; skipping twice must leave exactly one processable result
         output.skip();
         output.skip();
         Assert.assertTrue(output.hasNext());
-        Assert.assertNotNull(output.next());
+        JsonObject result = output.next();
+        Assert.assertNotNull(result);
+        Assert.assertNotNull(result.getJsonObject("cards:queryMatch"));
         Assert.assertFalse(output.hasNext());
     }
 
@@ -174,12 +177,10 @@ public class FormsQuickSearchEngineTest
         session.getNode(TEST_TEXT_QUESTION_PATH).getProperty("text").remove();
         session.getNode(TEST_REFERENCE_QUESTION_PATH).getProperty("text").remove();
 
+        // Only the answer values are accessed; the questions' text is accessed directly through the JCR nodes, and
+        // fails since the text properties were removed above
         Mockito.when(this.formUtils.getValue(Mockito.any(Node.class)))
-            .thenReturn("textAnswer1", "newValue", "textAnswer3");
-        Mockito.when(this.formUtils.getForm(Mockito.any(Node.class))).thenReturn(
-            session.getNode("/Forms/f1/s1/a1"),
-            session.getNode("/Forms/f2/s1/a1"),
-            session.getNode("/Forms/f3/s1/a1"));
+            .thenAnswer(invocation -> ((Node) invocation.getArgument(0)).getProperty(VALUE_PROPERTY).getString());
 
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
             .withQuery("textAnswer")
@@ -197,16 +198,8 @@ public class FormsQuickSearchEngineTest
     }
 
     @Test
-    public void quickSearchReturnsEmptyResults() throws RepositoryException
+    public void quickSearchReturnsEmptyResults()
     {
-        Session session = this.context.resourceResolver().adaptTo(Session.class);
-        Mockito.when(this.formUtils.getValue(Mockito.any(Node.class)))
-            .thenReturn("textAnswer1", "newValue", "textAnswer3");
-        Mockito.when(this.formUtils.getForm(Mockito.any(Node.class))).thenReturn(
-            session.getNode("/Forms/f1/s1/a1"),
-            session.getNode("/Forms/f2/s1/a1"),
-            session.getNode("/Forms/f3/s1/a1"));
-
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
             .withQuery("nonexistentValue")
             .withType(QUICK_SEARCH_PARAMETER_TYPE)
@@ -297,5 +290,20 @@ public class FormsQuickSearchEngineTest
                 QUESTION_PROPERTY, referenceQuestionNode,
                 VALUE_PROPERTY, "textAnswer3")
             .commit();
+    }
+
+    private void stubAnswerAccessors()
+    {
+        // Return each answer's actual stored value, regardless of the order in which the answers are processed
+        Mockito.when(this.formUtils.getValue(Mockito.any(Node.class)))
+            .thenAnswer(invocation -> ((Node) invocation.getArgument(0)).getProperty(VALUE_PROPERTY).getString());
+        // Return the actual cards:Form ancestor of each answer
+        Mockito.when(this.formUtils.getForm(Mockito.any(Node.class))).thenAnswer(invocation -> {
+            Node node = invocation.getArgument(0);
+            while (node != null && !node.isNodeType(FORM_TYPE)) {
+                node = node.getParent();
+            }
+            return node;
+        });
     }
 }
