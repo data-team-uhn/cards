@@ -25,6 +25,7 @@ import FileQuestion from "./FileQuestion";
 import { checkPropTypes } from "../propTypes";
 
 const ACCEPTED_PROPOSAL_EXTENSIONS = [".pdf", ".docx", ".doc"];
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 
 const ACCEPTED_PROPOSAL_MIME_TYPES =
   ".pdf,.docx,.doc,application/pdf,application/msword,"
@@ -57,6 +58,15 @@ function validateProposalFiles(files) {
   const errors = [];
   for (let i = 0; i < files.length; i++) {
     const file = files.item(i);
+
+    if (file.size === 0) {
+      errors.push("The selected file is empty (0 bytes).");
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      errors.push("The selected file exceeds the maximum size of 50 MB.");
+    }
+
     const extension = extractFileExtension(file.name);
     if (!extension || !ACCEPTED_PROPOSAL_EXTENSIONS.includes(extension)) {
       const format = extension || "(unknown)";
