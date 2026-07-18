@@ -18,9 +18,12 @@ package io.uhndata.cards.forms.internal;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -45,9 +48,14 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
-import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService;
 import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.FieldResult;
 import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.FieldSpec;
+import io.uhndata.cards.forms.internal.extraction.ProposalIntakeService;
+import io.uhndata.cards.forms.internal.extraction.ProposalIntakeService.IntakeResult;
+import io.uhndata.cards.forms.internal.extraction.ProposalParseFolder;
+import io.uhndata.cards.forms.internal.extraction.ProposalStep2Service;
+import io.uhndata.cards.forms.internal.extraction.ProtocolGateService;
+import io.uhndata.cards.forms.internal.extraction.ProtocolGateService.GateDecision;
 import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
 
 /**
@@ -73,11 +81,11 @@ import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
     resourceTypes = { "cards/Form" },
     methods = { "POST" },
     selectors = { "extract" })
-public class SectionExtractionServlet extends SlingJakartaAllMethodsServlet
+public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
 {
     private static final long serialVersionUID = -7745626264367310608L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SectionExtractionServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChunkExtractionServlet.class);
 
     private static final String EXTRACTED_TEXT_ANSWER_NODETYPE = "cards:ExtractedTextAnswer";
 
@@ -94,7 +102,13 @@ public class SectionExtractionServlet extends SlingJakartaAllMethodsServlet
     private transient QuestionnaireUtils questionnaireUtils;
 
     @Reference
-    private transient ProposalExtractionService extractionService;
+    private transient ProtocolGateService gateService;
+
+    @Reference
+    private transient ProposalIntakeService intakeService;
+
+    @Reference
+    private transient ProposalStep2Service step2Service;
 
     @Override
     public void doPost(final SlingJakartaHttpServletRequest request,
@@ -125,39 +139,70 @@ public class SectionExtractionServlet extends SlingJakartaAllMethodsServlet
     {
         final Node form = request.getResource().adaptTo(Node.class);
         if (form == null || !this.formUtils.isForm(form)) {
-            return statusJson("not_a_form", 0, 0);
+            return statusJson("not_a_form", 0);
         }
         final Node questionnaire = this.formUtils.getQuestionnaire(form);
         final Node section = findFlaggedSection(questionnaire, request.getParameter("section"));
         if (section == null) {
-            return statusJson("no_section", 0, 0);
+            return statusJson("no_section", 0);
         }
-        final String folder = resolveProposalFolder(form);
-        final List<String> chunks = folder == null ? List.of() : ParsedMarkdownStore.readChunks(folder);
-        if (chunks.isEmpty()) {
-            return statusJson("no_document", 0, 0);
+        final String subfolder = resolveProposalFolder(form);
+        final Path answerDir = subfolder == null ? null : ParsedMarkdownStore.resolveAnswerDir(subfolder);
+        final Optional<ProposalParseFolder> parseFolder = ProposalParseFolder.locate(answerDir);
+        if (parseFolder.isEmpty()) {
+            return statusJson("no_document", 0);
         }
         final boolean force = Boolean.parseBoolean(request.getParameter("force"));
-        return runExtraction(form, section, folder, chunks, force);
+        return runPipeline(form, section, parseFolder.get(), force);
     }
 
-    private JsonObject runExtraction(final Node form, final Node section, final String folder,
-        final List<String> chunks, final boolean force) throws RepositoryException, IOException
+    /**
+     * Run the upload-time pipeline for one extraction section: skip when already current, else gate the document
+     * and either reject it (not a protocol) or run intake and persist the extracted field answers.
+     */
+    private JsonObject runPipeline(final Node form, final Node section, final ProposalParseFolder parseFolder,
+        final boolean force) throws RepositoryException, IOException
     {
         final List<Node> questions = listQuestions(section);
-        final long sourceTimestamp = ParsedMarkdownStore.aggregateLastModified(folder);
+        final long sourceTimestamp = documentTimestamp(parseFolder);
         if (!force && !shouldExtract(form, questions, findAnswerSection(form, section), sourceTimestamp)) {
-            return statusJson("skipped", 0, chunks.size());
+            return statusJson("skipped", 0);
         }
+        final GateDecision gate = this.gateService.evaluate(parseFolder);
+        if (!gate.isProtocol()) {
+            mutateForm(form, section, sourceTimestamp, answerSection -> {
+                writeGateResult(answerSection, gate);
+                return 0;
+            });
+            return gateRejectionJson(gate);
+        }
+        this.gateService.stampCatalog(parseFolder, gate);
         final List<FieldSpec> fields = buildFieldSpecs(questions);
         final String categories = stringProperty(section, "categoriesDocument");
-        final Map<String, FieldResult> results = this.extractionService.extract(fields, categories, chunks);
-        final int written = persistAnswers(form, section, questions, results, sourceTimestamp);
-        return statusJson("extracted", written, chunks.size());
+        final IntakeResult intake = this.intakeService.run(parseFolder, fields, categories);
+        final Map<String, FieldResult> results = intake.degraded()
+            ? intake.fields() : this.step2Service.run(parseFolder, fields, intake.fields());
+        final int written = mutateForm(form, section, sourceTimestamp, answerSection -> {
+            writeGateResult(answerSection, gate);
+            return writeAnswers(form, answerSection, questions, results);
+        });
+        return intakeJson(written, gate, intake);
     }
 
-    private int persistAnswers(final Node form, final Node section, final List<Node> questions,
-        final Map<String, FieldResult> results, final long sourceTimestamp) throws RepositoryException
+    /**
+     * Check the form out (only if it was checked in), apply a mutation to the answer section, stamp the
+     * extraction timestamp, save and check back in — the shared write envelope for both the gate result and the
+     * extracted answers.
+     *
+     * @param form the form node
+     * @param section the flagged questionnaire section
+     * @param sourceTimestamp the parse timestamp to record as this run's source
+     * @param mutation the change to apply to the answer section, returning a count to report
+     * @return the mutation's returned count
+     * @throws RepositoryException if the repository cannot be accessed
+     */
+    private int mutateForm(final Node form, final Node section, final long sourceTimestamp,
+        final FormMutation mutation) throws RepositoryException
     {
         final Session session = form.getSession();
         final VersionManager versionManager = session.getWorkspace().getVersionManager();
@@ -169,13 +214,45 @@ public class SectionExtractionServlet extends SlingJakartaAllMethodsServlet
             versionManager.checkout(formPath);
         }
         final Node answerSection = findOrCreateAnswerSection(form, section);
-        final int written = writeAnswers(form, answerSection, questions, results);
+        final int result = mutation.apply(answerSection);
         answerSection.setProperty(EXTRACTION_TIMESTAMP_PROPERTY, sourceTimestamp);
         session.save();
         if (wasCheckedIn) {
             versionManager.checkin(formPath);
         }
-        return written;
+        return result;
+    }
+
+    /**
+     * Record the gate verdict on the answer section for audit and for the UI's not-a-protocol message.
+     *
+     * @param answerSection the answer section node
+     * @param gate the gate decision
+     * @throws RepositoryException if the repository cannot be accessed
+     */
+    private static void writeGateResult(final Node answerSection, final GateDecision gate)
+        throws RepositoryException
+    {
+        answerSection.setProperty("isProtocol", gate.isProtocol());
+        answerSection.setProperty("gateConfidence", gate.confidence());
+        if (gate.reasoning() != null && !gate.reasoning().isBlank()) {
+            answerSection.setProperty("gateReasoning", gate.reasoning());
+        }
+        if (gate.rawResponse() != null && !gate.rawResponse().isBlank()) {
+            answerSection.setProperty("gateResponse", gate.rawResponse());
+        }
+    }
+
+    private static long documentTimestamp(final ProposalParseFolder parseFolder)
+    {
+        final Path documentMarkdown = parseFolder.documentMarkdown();
+        try {
+            return Files.isRegularFile(documentMarkdown)
+                ? Files.getLastModifiedTime(documentMarkdown).toMillis() : 0L;
+        } catch (final IOException e) {
+            LOGGER.warn("Could not read modified time of {}: {}", documentMarkdown, e.getMessage());
+            return 0L;
+        }
     }
 
     private Node findFlaggedSection(final Node questionnaire, final String sectionName)
@@ -403,17 +480,52 @@ public class SectionExtractionServlet extends SlingJakartaAllMethodsServlet
         return node.hasProperty(name) && node.getProperty(name).getBoolean();
     }
 
-    private static JsonObject statusJson(final String status, final int extracted, final int chunks)
+    private static JsonObject statusJson(final String status, final int extracted)
     {
         return Json.createObjectBuilder()
             .add("status", status)
             .add("extracted", extracted)
-            .add("chunks", chunks)
+            .build();
+    }
+
+    private static JsonObject gateRejectionJson(final GateDecision gate)
+    {
+        return Json.createObjectBuilder()
+            .add("status", "not_a_protocol")
+            .add("extracted", 0)
+            .add("isProtocol", false)
+            .add("confidence", gate.confidence())
+            .add("reasoning", gate.reasoning() == null ? "" : gate.reasoning())
+            .build();
+    }
+
+    private static JsonObject intakeJson(final int written, final GateDecision gate, final IntakeResult intake)
+    {
+        return Json.createObjectBuilder()
+            .add("status", "extracted")
+            .add("extracted", written)
+            .add("isProtocol", true)
+            .add("gateFailedOpen", gate.failedOpen())
+            .add("degraded", intake.degraded())
             .build();
     }
 
     private static JsonObject errorJson(final String message)
     {
         return Json.createObjectBuilder().add("error", message).build();
+    }
+
+    /** A change applied to an answer section inside the checkout/save/checkin envelope of {@code mutateForm}. */
+    @FunctionalInterface
+    private interface FormMutation
+    {
+        /**
+         * Apply the change.
+         *
+         * @param answerSection the answer section to mutate
+         * @return a count to report (e.g. answers written), or {@code 0} when not meaningful
+         * @throws RepositoryException if the repository cannot be accessed
+         */
+        int apply(Node answerSection) throws RepositoryException;
     }
 }

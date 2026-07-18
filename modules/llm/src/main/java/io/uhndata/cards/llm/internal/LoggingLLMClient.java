@@ -31,6 +31,7 @@ import io.uhndata.cards.llm.LLMConfigurationService;
 import io.uhndata.cards.llm.LLMInteraction;
 import io.uhndata.cards.llm.LLMInteractionLogger;
 import io.uhndata.cards.llm.LLMMessage;
+import io.uhndata.cards.llm.LLMRequestOptions;
 import io.uhndata.cards.llm.LLMSettings;
 
 /**
@@ -77,6 +78,13 @@ final class LoggingLLMClient implements LLMClient
     public String chat(final String systemPrompt, final List<LLMMessage> messages) throws IOException
     {
         return logged(systemPrompt, messages, () -> this.delegate.chat(systemPrompt, messages));
+    }
+
+    @Override
+    public String chat(final String systemPrompt, final List<LLMMessage> messages, final LLMRequestOptions options)
+        throws IOException
+    {
+        return logged(systemPrompt, messages, () -> this.delegate.chat(systemPrompt, messages, options));
     }
 
     private String logged(final String systemPrompt, final List<LLMMessage> messages,
