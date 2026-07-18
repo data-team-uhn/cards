@@ -50,7 +50,7 @@ import static org.mockito.Mockito.when;
  * @version $Id$
  */
 @SuppressWarnings("unchecked")
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class AnswerOptionsLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -59,9 +59,9 @@ public class AnswerOptionsLabelProcessorTest
 
     private static final String SUBJECT_TYPE = "cards:Subject";
 
-    private static final String ANSWER_OPTION_TYPE = "cards:AnswerOption";
-
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
+    private static final String ANSWER_NODETYPE = "cards:Answer";
 
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
@@ -210,9 +210,13 @@ public class AnswerOptionsLabelProcessorTest
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
-        when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
-        when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
+        Property questionProperty = mock(Property.class);
+        Node questionNode = this.context.resourceResolver().getResource(TEST_QUESTION_PATH).adaptTo(Node.class);
+        when(node.isNodeType(ANSWER_NODETYPE)).thenReturn(true);
+        when(node.hasProperty(QUESTION_PROPERTY)).thenReturn(true);
+        when(node.getProperty(QUESTION_PROPERTY)).thenReturn(questionProperty);
+        when(questionProperty.getNode()).thenReturn(questionNode);
+        when(node.hasProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
 
         this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
@@ -226,7 +230,7 @@ public class AnswerOptionsLabelProcessorTest
         Node node = mock(Node.class);
         Property questionProperty = mock(Property.class);
         Node questionNode = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
+        when(node.isNodeType(ANSWER_NODETYPE)).thenReturn(true);
         when(node.hasProperty(QUESTION_PROPERTY)).thenReturn(true);
         when(node.getProperty(QUESTION_PROPERTY)).thenReturn(questionProperty);
         when(questionProperty.getNode()).thenReturn(questionNode);
@@ -238,13 +242,13 @@ public class AnswerOptionsLabelProcessorTest
     }
 
     @Test
-    public void leaveForVocabularyAnswerNodeWithValuePropertyThrowsRepositoryException() throws RepositoryException
+    public void leaveForAnswerNodeWithValuePropertyThrowsRepositoryException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
         Property questionProperty = mock(Property.class);
         Node questionNode = this.context.resourceResolver().getResource(TEST_QUESTION_PATH).adaptTo(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
+        when(node.isNodeType(ANSWER_NODETYPE)).thenReturn(true);
         when(node.hasProperty(QUESTION_PROPERTY)).thenReturn(true);
         when(node.getProperty(QUESTION_PROPERTY)).thenReturn(questionProperty);
         when(questionProperty.getNode()).thenReturn(questionNode);
@@ -261,7 +265,7 @@ public class AnswerOptionsLabelProcessorTest
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
+        when(node.isNodeType(ANSWER_NODETYPE)).thenReturn(true);
         when(node.hasProperty(QUESTION_PROPERTY)).thenThrow(new RepositoryException());
 
         this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
@@ -274,7 +278,7 @@ public class AnswerOptionsLabelProcessorTest
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenThrow(new RepositoryException());
+        when(node.isNodeType(ANSWER_NODETYPE)).thenThrow(new RepositoryException());
 
         this.answerOptionsLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
@@ -290,7 +294,6 @@ public class AnswerOptionsLabelProcessorTest
             .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
             .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
             .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
-            .resource("/Vocabularies", NODE_TYPE, "cards:FormsHomepage")
             .commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
@@ -306,12 +309,6 @@ public class AnswerOptionsLabelProcessorTest
         Node question = session.getNode(TEST_QUESTION_PATH);
 
         this.context.build()
-            .resource("/Vocabularies/Option1",
-                NODE_TYPE, ANSWER_OPTION_TYPE,
-                VALUE_PROPERTY, "O1")
-            .resource("/Vocabularies/Option2",
-                NODE_TYPE, ANSWER_OPTION_TYPE,
-                VALUE_PROPERTY, "O2")
             .resource(TEST_FORM_PATH,
                 NODE_TYPE, FORM_TYPE,
                 QUESTIONNAIRE_PROPERTY, questionnaire,

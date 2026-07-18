@@ -211,7 +211,7 @@ public class ResourceLabelProcessorTest
     }
 
     @Test
-    public void leaveForResourceAnswerNodeWithoutLabelPropertyThrowsException() throws RepositoryException
+    public void leaveFallsBackToPathWhenResourceAccessThrows() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();

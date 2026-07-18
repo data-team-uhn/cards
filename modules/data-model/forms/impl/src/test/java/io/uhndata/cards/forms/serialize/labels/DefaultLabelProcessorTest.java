@@ -50,7 +50,7 @@ import static org.mockito.Mockito.when;
  * @version $Id $
  */
 @SuppressWarnings("unchecked")
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class DefaultLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -60,6 +60,8 @@ public class DefaultLabelProcessorTest
     private static final String SUBJECT_TYPE = "cards:Subject";
 
     private static final String ANSWER_TYPE = "cards:TextAnswer";
+
+    private static final String ANSWER_NODETYPE = "cards:Answer";
 
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
@@ -170,11 +172,27 @@ public class DefaultLabelProcessorTest
     }
 
     @Test
+    public void leaveForAnswerNodeWithoutUnitOfMeasurement() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        Node node = session.getNode("/Forms/f1/a1");
+        node.setProperty(VALUE_PROPERTY, 2);
+
+        this.defaultLabelProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+
+        Assert.assertFalse(jsonObject.isEmpty());
+        Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
+        Assert.assertEquals("2", jsonObject.getString(DISPLAYED_VALUE_PROPERTY));
+    }
+
+    @Test
     public void leaveForAnswerNodeWithValuePropertyThrowsException() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType(ANSWER_TYPE)).thenReturn(true);
+        when(node.isNodeType(ANSWER_NODETYPE)).thenReturn(true);
         when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
         when(node.hasProperty(QUESTION_PROPERTY)).thenReturn(false);
         when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
@@ -189,7 +207,7 @@ public class DefaultLabelProcessorTest
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
-        when(node.isNodeType("cards:Answer")).thenThrow(new RepositoryException());
+        when(node.isNodeType(ANSWER_NODETYPE)).thenThrow(new RepositoryException());
 
         this.defaultLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
