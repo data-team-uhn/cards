@@ -53,7 +53,7 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ReferenceAnswersEditorInSectionTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -127,12 +127,6 @@ public class ReferenceAnswersEditorInSectionTest
     public void getServiceNameTest()
     {
         Assert.assertEquals(SERVICE_NAME, this.referenceAnswersEditor.getServiceName());
-    }
-
-    @Test
-    public void constructorTest()
-    {
-        Assert.assertNotNull(this.referenceAnswersEditor);
     }
 
     @Test
@@ -227,6 +221,10 @@ public class ReferenceAnswersEditorInSectionTest
     @Test
     public void handleLeaveForUncompletedSourceAnswer()
     {
+        // Pre-fill the reference answer with a stale value, so that we can check that handleLeave removes it
+        getReferenceAnswer(this.nodeBuilder).setProperty(VALUE_PROPERTY, 999L);
+        Assert.assertTrue(getReferenceAnswer(this.nodeBuilder).hasProperty(VALUE_PROPERTY));
+
         this.referenceAnswersEditor.serviceSession = this.context.resourceResolver().adaptTo(Session.class);
         when(this.formUtils.findAllSubjectRelatedAnswers(Mockito.any(Node.class), Mockito.any(), Mockito.any()))
             .thenReturn(List.of());
@@ -264,8 +262,6 @@ public class ReferenceAnswersEditorInSectionTest
         String referenceQuestionUuid = referenceQuestionNode.getIdentifier();
 
         this.context.build()
-            .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
             .resource("/Forms/f1",
                 NODE_TYPE, FORM_TYPE,
                 QUESTIONNAIRE_PROPERTY, sourceQuestionnaire,
@@ -299,17 +295,18 @@ public class ReferenceAnswersEditorInSectionTest
         this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
             this.questionnaireUtils, this.formUtils, this.subjectUtils);
 
-        // mock Node getQuestionnaire()
-        PropertyState propertyState = Mockito.mock(PropertyState.class);
-        when(propertyState.getValue(Type.REFERENCE)).thenReturn(referenceQuestionnaireUuid);
-
-        // mock QuestionTree getUnansweredMatchingQuestions(final Node currentNode)
-        when(this.questionnaireUtils.isReferenceQuestion(Mockito.any())).thenReturn(false, false, false, true);
-        when(this.questionnaireUtils.isQuestionnaire(Mockito.any())).thenReturn(true, false);
-        when(this.questionnaireUtils.isSection(Mockito.any())).thenReturn(false, true, false);
+        // mock QuestionTree getUnmodifiedMatchingQuestions(final Node currentNode), deciding per node instead of
+        // relying on the order in which the questionnaire tree is traversed
+        when(this.questionnaireUtils.isReferenceQuestion(Mockito.any()))
+            .thenAnswer(invocation -> nodeHasPath(invocation.getArgument(0), TEST_REFERENCE_QUESTION_PATH));
+        when(this.questionnaireUtils.isQuestionnaire(Mockito.any()))
+            .thenAnswer(invocation -> nodeHasPath(invocation.getArgument(0), TEST_REFERENCE_QUESTIONNAIRE_PATH));
+        when(this.questionnaireUtils.isSection(Mockito.any()))
+            .thenAnswer(invocation -> nodeHasPath(invocation.getArgument(0), TEST_REFERENCE_SECTION_PATH));
 
         // mock Map<String, List<NodeBuilder>> getChildNodesByReference(final NodeBuilder nodeBuilder)
-        when(this.formUtils.isAnswerSection(Mockito.any(NodeBuilder.class))).thenReturn(true, false);
+        when(this.formUtils.isAnswerSection(Mockito.any(NodeBuilder.class))).thenAnswer(
+            invocation -> ANSWER_SECTION_TYPE.equals(((NodeBuilder) invocation.getArgument(0)).getName(NODE_TYPE)));
         when(this.formUtils.isAnswer(Mockito.any(NodeBuilder.class))).thenReturn(true);
         when(this.formUtils.getSectionIdentifier(Mockito.any(NodeBuilder.class)))
             .thenReturn(session.getNode(TEST_REFERENCE_SECTION_PATH).getIdentifier());
@@ -317,11 +314,20 @@ public class ReferenceAnswersEditorInSectionTest
             .thenReturn(session.getNode(TEST_REFERENCE_QUESTION_PATH).getIdentifier());
 
         // mock Object getAnswer(NodeState form, String questionPath)
-        when(this.formUtils.getSubject(formBuilder.getNodeState())).thenReturn(subject);
+        when(this.formUtils.getSubject(Mockito.any(NodeState.class))).thenReturn(subject);
         when(this.formUtils.findAllSubjectRelatedAnswers(Mockito.eq(subject), Mockito.any(), Mockito.any()))
             .thenReturn(List.of(session.getNode("/Forms/f1/s1/a1")));
         when(this.formUtils.getValue(Mockito.any(Node.class))).thenReturn(200L);
 
+    }
+
+    private static boolean nodeHasPath(final Node node, final String path)
+    {
+        try {
+            return node != null && path.equals(node.getPath());
+        } catch (RepositoryException e) {
+            return false;
+        }
     }
 
     private NodeBuilder createTestForm(String uuid, String questionnaireUuid, Map<String, NodeState> children)

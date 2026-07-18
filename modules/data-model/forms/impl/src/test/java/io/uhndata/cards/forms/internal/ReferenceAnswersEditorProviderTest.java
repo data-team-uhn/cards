@@ -85,7 +85,7 @@ public class ReferenceAnswersEditorProviderTest
     }
 
     @Test
-    public void getRootEditorReturnsReferenceAnswersEditorForNullResourceResolver() throws CommitFailedException
+    public void getRootEditorReturnsNullForNullResourceResolver() throws CommitFailedException
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
 

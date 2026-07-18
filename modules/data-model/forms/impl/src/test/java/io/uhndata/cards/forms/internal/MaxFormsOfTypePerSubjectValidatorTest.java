@@ -67,24 +67,11 @@ public class MaxFormsOfTypePerSubjectValidatorTest
 
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
 
-    private static final String ANSWER_TYPE = "cards:TextAnswer";
-
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
-
-    private static final String TEST_COMPUTED_QUESTION_PATH =
-        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
-
-    private static final String TEST_LONG_QUESTION_PATH =
-        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
-
-    private static final String TEST_SECTION_PATH =
-        "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
 
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
 
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
-
-    private static final String QUESTION_PROPERTY = "question";
 
     private static final String SUBJECT_PROPERTY = "subject";
 
@@ -97,12 +84,6 @@ public class MaxFormsOfTypePerSubjectValidatorTest
     private MaxFormsOfTypePerSubjectValidator maxFormsOfTypePerSubjectValidator;
 
     private NodeState form;
-
-    @Test
-    public void constructorTest()
-    {
-        Assert.assertNotNull(this.maxFormsOfTypePerSubjectValidator);
-    }
 
     @Test
     public void childNodeAddedForSectionNodeReturnsThisValidator() throws CommitFailedException
@@ -234,25 +215,10 @@ public class MaxFormsOfTypePerSubjectValidatorTest
 
         String subjectUuid = session.getNode(TEST_SUBJECT_PATH).getIdentifier();
         String questionnaireUuid = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH).getIdentifier();
-        String sectionUuid = session.getNode(TEST_SECTION_PATH).getIdentifier();
-
-        Node questionNode = session.getNode(TEST_LONG_QUESTION_PATH);
-        String questionUuid = questionNode.getIdentifier();
-
-        Node computedQuestionNode = session.getNode(TEST_COMPUTED_QUESTION_PATH);
-        String computedQuestionUuid = computedQuestionNode.getIdentifier();
 
         // Create NodeBuilder/NodeState instances of New Test Form
-        String answerUuid = UUID.randomUUID().toString();
-        NodeBuilder answerBuilder = createTestAnswer(answerUuid, questionUuid);
-
-        String computedAnswerUuid = UUID.randomUUID().toString();
-        NodeBuilder computedAnswerBuilder = createTestComputedAnswer(computedAnswerUuid, computedQuestionUuid);
-
         String answerSectionUuid = UUID.randomUUID().toString();
-        NodeBuilder answerSectionBuilder =
-            createTestAnswerSection(answerSectionUuid, sectionUuid, answerUuid, answerBuilder.getNodeState(),
-                computedQuestionUuid, computedAnswerBuilder.getNodeState());
+        NodeBuilder answerSectionBuilder = createTestAnswerSection(answerSectionUuid);
 
         String formUuid = UUID.randomUUID().toString();
         this.form = createTestForm(formUuid, questionnaireUuid, subjectUuid, answerSectionUuid,
@@ -271,33 +237,10 @@ public class MaxFormsOfTypePerSubjectValidatorTest
         return formBuilder;
     }
 
-    private NodeBuilder createTestAnswer(String uuid, String questionUuid)
-    {
-        NodeBuilder answerBuilder = EmptyNodeState.EMPTY_NODE.builder();
-        answerBuilder.setProperty(NODE_TYPE, ANSWER_TYPE);
-        answerBuilder.setProperty(QUESTION_PROPERTY, questionUuid);
-        answerBuilder.setProperty("value", 200L);
-        answerBuilder.setProperty(NODE_IDENTIFIER, uuid);
-        return answerBuilder;
-    }
-
-    private NodeBuilder createTestComputedAnswer(String uuid, String questionUuid)
-    {
-        NodeBuilder computedAnswerBuilder = EmptyNodeState.EMPTY_NODE.builder();
-        computedAnswerBuilder.setProperty(NODE_TYPE, ANSWER_TYPE);
-        computedAnswerBuilder.setProperty(QUESTION_PROPERTY, questionUuid);
-        computedAnswerBuilder.setProperty(NODE_IDENTIFIER, uuid);
-        return computedAnswerBuilder;
-    }
-
-    private NodeBuilder createTestAnswerSection(String uuid, String sectionUuid, String answerUuid, NodeState answer,
-        String computedAnswerUuid, NodeState computedAnswer)
+    private NodeBuilder createTestAnswerSection(String uuid)
     {
         NodeBuilder answerSectionBuilder = EmptyNodeState.EMPTY_NODE.builder();
         answerSectionBuilder.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
-        answerSectionBuilder.setChildNode(computedAnswerUuid, computedAnswer);
-        answerSectionBuilder.setChildNode(answerUuid, answer);
-        answerSectionBuilder.setProperty("section", sectionUuid);
         answerSectionBuilder.setProperty(NODE_IDENTIFIER, uuid);
         return answerSectionBuilder;
     }

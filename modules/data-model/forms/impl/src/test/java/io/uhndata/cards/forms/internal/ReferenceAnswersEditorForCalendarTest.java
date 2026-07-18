@@ -27,7 +27,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.plugins.memory.EmptyNodeState;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
@@ -54,7 +53,7 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ReferenceAnswersEditorForCalendarTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -165,10 +164,6 @@ public class ReferenceAnswersEditorForCalendarTest
         this.currentSession = this.context.resourceResolver().adaptTo(Session.class);
         this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
             this.questionnaireUtils, this.formUtils, this.subjectUtils);
-
-        // mock Node getQuestionnaire()
-        PropertyState propertyState = Mockito.mock(PropertyState.class);
-        when(propertyState.getValue(Type.REFERENCE)).thenReturn(referenceQuestionnaireUuid);
 
         // mock QuestionTree getUnansweredMatchingQuestions(final Node currentNode)
         when(this.questionnaireUtils.isReferenceQuestion(Mockito.any())).thenReturn(false, true);
