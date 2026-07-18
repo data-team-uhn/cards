@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
  * @version $Id$
  */
 @SuppressWarnings("unchecked")
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class VocabularyOptionsLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -59,8 +59,6 @@ public class VocabularyOptionsLabelProcessorTest
     private static final String ANSWER_OPTION_TYPE = "cards:AnswerOption";
 
     private static final String SUBJECT_TYPE = "cards:Subject";
-
-    private static final String ANSWER_BOOLEAN_TYPE = "cards:BooleanAnswer";
 
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
@@ -75,8 +73,6 @@ public class VocabularyOptionsLabelProcessorTest
     private static final String TEST_FORM_PATH = "/Forms/f1";
 
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
-
-    private static final String QUESTION_PROPERTY = "question";
 
     private static final String SUBJECT_PROPERTY = "subject";
 
@@ -181,7 +177,6 @@ public class VocabularyOptionsLabelProcessorTest
         when(node.isNodeType(ANSWER_OPTION_TYPE)).thenReturn(true);
         when(node.getParent())
             .thenReturn(this.context.resourceResolver().getResource(TEST_QUESTION_PATH).adaptTo(Node.class));
-        when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
         when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
 
         Assert.assertThrows(NullPointerException.class,
@@ -222,7 +217,6 @@ public class VocabularyOptionsLabelProcessorTest
 
         Node subject = session.getNode(TEST_SUBJECT_PATH);
         Node questionnaire = session.getNode(TEST_QUESTIONNAIRE_PATH);
-        Node question = session.getNode(TEST_QUESTION_PATH);
 
         this.context.build()
             .resource("/Vocabularies/Option1",
@@ -238,9 +232,6 @@ public class VocabularyOptionsLabelProcessorTest
                 QUESTIONNAIRE_PROPERTY, questionnaire,
                 SUBJECT_PROPERTY, subject,
                 "relatedSubjects", List.of(subject).toArray())
-            .resource("/Forms/f1/a1",
-                NODE_TYPE, ANSWER_BOOLEAN_TYPE,
-                QUESTION_PROPERTY, question)
             .commit();
     }
 }

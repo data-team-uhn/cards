@@ -53,7 +53,7 @@ import static org.mockito.Mockito.when;
  * @version $Id$
  */
 @SuppressWarnings("unchecked")
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ResourceOptionsLabelProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -203,7 +203,6 @@ public class ResourceOptionsLabelProcessorTest
         when(node.getParent()).thenReturn(session.getNode(TEST_QUESTION_PATH));
         when(node.isNodeType(ANSWER_OPTION_TYPE)).thenReturn(true);
         when(node.hasProperty(LABEL_PROPERTY)).thenReturn(false);
-        when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
         when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
 
         Assert.assertThrows(NullPointerException.class,
