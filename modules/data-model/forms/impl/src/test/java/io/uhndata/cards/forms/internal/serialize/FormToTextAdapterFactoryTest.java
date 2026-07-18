@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -126,18 +126,11 @@ public class FormToTextAdapterFactoryTest
         String subjectFullIdentifier = resourceResolver.getResource(TEST_SUBJECT_PATH).adaptTo(Node.class)
             .getIdentifier();
         Resource form = resourceResolver.getResource(TEST_FORM_PATH);
-        String markdown = this.formToTextAdapterFactory.serialize(form);
-        assertNotNull(markdown);
+        String text = this.formToTextAdapterFactory.serialize(form);
+        assertNotNull(text);
         assertEquals(subjectFullIdentifier + NEXT_LINE
             + "TEST SERIALIZABLE QUESTIONNAIRE" + NEXT_LINE
             + getExpectedCreationDate(TEST_FORM_PATH) + NEXT_LINE
-            + NEXT_LINE
-            + "---------------------------------------------" + NEXT_LINE
-            + NEXT_LINE
-            + "SECTION 2" + NEXT_LINE
-            + NEXT_LINE
-            + "Long Question" + NEXT_LINE
-            + "  100" + NEXT_LINE
             + NEXT_LINE
             + "SECTION 1" + NEXT_LINE
             + NEXT_LINE
@@ -148,7 +141,14 @@ public class FormToTextAdapterFactoryTest
             + "  Pedigree provided" + NEXT_LINE
             + NEXT_LINE
             + "  NOTES" + NEXT_LINE
-            + "  Pedigree note", markdown);
+            + "  Pedigree note" + NEXT_LINE
+            + NEXT_LINE
+            + "---------------------------------------------" + NEXT_LINE
+            + NEXT_LINE
+            + "SECTION 2" + NEXT_LINE
+            + NEXT_LINE
+            + "Long Question" + NEXT_LINE
+            + "  100", text);
     }
 
     @Test
@@ -159,8 +159,8 @@ public class FormToTextAdapterFactoryTest
             .getIdentifier();
         Resource form = resourceResolver.getResource("/Forms/f2");
 
-        String markdown = this.formToTextAdapterFactory.serialize(form);
-        assertNotNull(markdown);
+        String text = this.formToTextAdapterFactory.serialize(form);
+        assertNotNull(text);
         assertEquals(subjectFullIdentifier + NEXT_LINE
             + "TEST SERIALIZABLE QUESTIONNAIRE" + NEXT_LINE
             + getExpectedCreationDate("/Forms/f2") + NEXT_LINE
@@ -170,7 +170,7 @@ public class FormToTextAdapterFactoryTest
             + "Boolean Question" + NEXT_LINE
             + "  true" + NEXT_LINE
             + NEXT_LINE
-            + "---------------------------------------------", markdown);
+            + "---------------------------------------------", text);
     }
 
     @Test
@@ -180,23 +180,23 @@ public class FormToTextAdapterFactoryTest
         String subjectFullIdentifier = resourceResolver.getResource(TEST_SUBJECT_PATH).adaptTo(Node.class)
             .getIdentifier();
         Resource form = resourceResolver.getResource("/Forms/f3");
-        String markdown = this.formToTextAdapterFactory.serialize(form);
-        assertNotNull(markdown);
+        String text = this.formToTextAdapterFactory.serialize(form);
+        assertNotNull(text);
         assertEquals(subjectFullIdentifier + NEXT_LINE
             + "TEST SERIALIZABLE QUESTIONNAIRE" + NEXT_LINE
             + getExpectedCreationDate("/Forms/f3") + NEXT_LINE
             + NEXT_LINE
             + "SECTION 3" + NEXT_LINE
             + NEXT_LINE
+            + "Boolean Question" + NEXT_LINE
+            + "  true" + NEXT_LINE
+            + NEXT_LINE
             + "SECTION 4 #1" + NEXT_LINE
             + NEXT_LINE
             + "Text Question" + NEXT_LINE
             + "  some text" + NEXT_LINE
             + NEXT_LINE
-            + "Boolean Question" + NEXT_LINE
-            + "  true" + NEXT_LINE
-            + NEXT_LINE
-            + "---------------------------------------------", markdown);
+            + "---------------------------------------------", text);
     }
 
     @Test
@@ -212,8 +212,8 @@ public class FormToTextAdapterFactoryTest
         when(originalResource.getResourceResolver()).thenReturn(resourceResolver);
         when(resourceResolver.resolve(anyString())).thenReturn(resource);
         when(resource.adaptTo(JsonObject.class)).thenReturn(null);
-        String markdown = this.formToTextAdapterFactory.serialize(originalResource);
-        assertNull(markdown);
+        String text = this.formToTextAdapterFactory.serialize(originalResource);
+        assertNull(text);
     }
 
     @Before
@@ -319,7 +319,7 @@ public class FormToTextAdapterFactoryTest
 
     private Map<String, Object> createPropertiesAndChildrenMap(Resource originalResource) throws RepositoryException
     {
-        Map<String, Object> propertiesAndChildrenMap = new HashMap<>();
+        Map<String, Object> propertiesAndChildrenMap = new LinkedHashMap<>();
 
         // process properties of resource
         ValueMap valueMap = originalResource.getValueMap();

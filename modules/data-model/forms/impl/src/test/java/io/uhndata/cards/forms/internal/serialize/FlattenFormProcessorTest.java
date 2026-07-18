@@ -162,8 +162,9 @@ public class FlattenFormProcessorTest
     public void processChildForQuestionChildNode()
     {
         Node child = this.context.resourceResolver().getResource(TEST_QUESTION_PATH).adaptTo(Node.class);
-        Assert.assertNotNull(this.flattenFormProcessor.processChild(
-            mock(Node.class), child, mock(JsonValue.class), mock(Function.class)));
+        JsonValue input = mock(JsonValue.class);
+        Assert.assertSame(input, this.flattenFormProcessor.processChild(
+            mock(Node.class), child, input, mock(Function.class)));
     }
 
     @Test
