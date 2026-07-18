@@ -132,7 +132,7 @@ public class SubjectAnswerCopyProcessorTest
     }
 
     @Test
-    public void canProcessForQuestionResourceReturnsTrue()
+    public void canProcessForQuestionResourceReturnsFalse()
     {
         Resource resource = this.context.resourceResolver().getResource(TEST_QUESTION_PATH);
         Assert.assertFalse(this.subjectAnswerCopyProcessor.canProcess(resource));
@@ -184,7 +184,7 @@ public class SubjectAnswerCopyProcessorTest
     public void getAnswerReturnsNull() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
-        Node source = session.getNode(TEST_FORM_PATH);
+        Node source = session.getNode(TEST_SUBJECT_PATH);
         Node question = session.getNode(TEST_QUESTION_PATH);
         Assert.assertNull(this.subjectAnswerCopyProcessor.getAnswer(source, question));
     }

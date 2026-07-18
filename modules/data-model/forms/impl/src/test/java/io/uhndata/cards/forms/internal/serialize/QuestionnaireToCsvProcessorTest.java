@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -145,25 +145,25 @@ public class QuestionnaireToCsvProcessorTest
         assertNotNull(csvText);
         String[] lines = csvText.split("\r\n");
         assertEquals(4, lines.length);
-        assertEquals("Identifier,Root ID,Branch ID,Leaf ID,Created,Last modified,Text Question,Boolean Question,"
-            + "Long Question,Date Question,Pedigree Question", lines[0]);
+        assertEquals("Identifier,Root ID,Branch ID,Leaf ID,Created,Last modified,Date Question,Pedigree Question,"
+            + "Long Question,Boolean Question,Text Question", lines[0]);
 
         Node form = session.getNode("/Forms/f1");
         String createdDateForm1 = getFormattedDate(form.getProperty(CREATED_DATE_PROPERTY).getValue().getDate());
         String modifiedDateForm1 = getFormattedDate(form.getProperty(MODIFIED_DATE_PROPERTY).getValue().getDate());
         assertEquals("f1,Root Subject,Branch Subject,," + createdDateForm1 + "," + modifiedDateForm1
-            + ",,,100,2023-01-01,yes", lines[1]);
+            + ",2023-01-01,yes,100,,", lines[1]);
 
         Node form2 = session.getNode(TEST_FORM_2_PATH);
         String createdDateForm2 = getFormattedDate(form2.getProperty(CREATED_DATE_PROPERTY).getValue().getDate());
         String modifiedDateForm2 = getFormattedDate(form2.getProperty(MODIFIED_DATE_PROPERTY).getValue().getDate());
-        assertEquals("f2,Root Subject,Branch Subject,," + createdDateForm2 + "," + modifiedDateForm2 + ",,true,,,",
+        assertEquals("f2,Root Subject,Branch Subject,," + createdDateForm2 + "," + modifiedDateForm2 + ",,,,true,",
             lines[2]);
 
         Node form3 = session.getNode(TEST_FORM_3_PATH);
         String createdDateForm3 = getFormattedDate(form3.getProperty(CREATED_DATE_PROPERTY).getValue().getDate());
         String modifiedDateForm3 = getFormattedDate(form3.getProperty(MODIFIED_DATE_PROPERTY).getValue().getDate());
-        assertEquals("f3,Root Subject,Branch Subject,," + createdDateForm3 + "," + modifiedDateForm3 + ",some text,,,,",
+        assertEquals("f3,Root Subject,Branch Subject,," + createdDateForm3 + "," + modifiedDateForm3 + ",,,,,some text",
             lines[3]);
     }
 
@@ -177,6 +177,9 @@ public class QuestionnaireToCsvProcessorTest
         });
         String csvText = this.questionnaireToCsvProcessor.serialize(questionnaire);
         assertNotNull(csvText);
+        // Only the required subject type and its ancestors get an ID column, so no Leaf ID here
+        assertEquals("Identifier,Root ID,Branch ID,Created,Last modified,Date Question,Pedigree Question,"
+            + "Long Question,Boolean Question,Text Question", csvText.split("\r\n")[0]);
     }
 
     @Test
@@ -315,7 +318,7 @@ public class QuestionnaireToCsvProcessorTest
 
     private Map<String, Object> createPropertiesAndChildrenMap(Resource originalResource) throws RepositoryException
     {
-        Map<String, Object> propertiesAndChildrenMap = new HashMap<>();
+        Map<String, Object> propertiesAndChildrenMap = new LinkedHashMap<>();
 
         // process properties of resource
         ValueMap valueMap = originalResource.getValueMap();
@@ -356,8 +359,16 @@ public class QuestionnaireToCsvProcessorTest
             }
         }
 
-        if (originalResource.getResourceType().equals("cards/Subject")
-            || originalResource.getResourceType().equals("cards/SubjectType")) {
+        if (originalResource.getResourceType().equals("cards/SubjectType")) {
+            // The real serializer exposes the parent subject type under "parents"
+            Resource parent = originalResource.getParent();
+            if (parent != null && "cards/SubjectType".equals(parent.getResourceType())) {
+                propertiesAndChildrenMap.put("parents",
+                    Json.createObjectBuilder(createPropertiesAndChildrenMap(parent)).build());
+            }
+            return propertiesAndChildrenMap;
+        }
+        if (originalResource.getResourceType().equals("cards/Subject")) {
             return propertiesAndChildrenMap;
         }
 

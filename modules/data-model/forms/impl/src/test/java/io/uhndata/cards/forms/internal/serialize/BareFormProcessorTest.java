@@ -176,7 +176,7 @@ public class BareFormProcessorTest
     }
 
     @Test
-    public void processPropertyForFormNodeAndStatusFlagProperty() throws RepositoryException
+    public void processPropertyForStatusFlagsPropertyReturnsNull() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node node = session.getNode(TEST_QUESTION_PATH);
@@ -222,7 +222,7 @@ public class BareFormProcessorTest
         Node node = session.getNode(TEST_FORM_PATH);
         Node child = session.getNode(TEST_SUBJECT_PATH);
         JsonValue input = Mockito.mock(JsonValue.class);
-        Assert.assertNotNull(this.bareFormProcessor.processChild(node, child, input, Mockito.mock(Function.class)));
+        Assert.assertSame(input, this.bareFormProcessor.processChild(node, child, input, Mockito.mock(Function.class)));
     }
 
     @Test
@@ -265,7 +265,11 @@ public class BareFormProcessorTest
                 .add(NODE_TYPE, ANSWER_SECTION_TYPE).build());
 
         this.bareFormProcessor.leave(form, json, Mockito.mock(Function.class));
-        Assert.assertEquals(1, json.build().size());
+        JsonObject result = json.build();
+        Assert.assertEquals(1, result.size());
+        // A non-recurrent section is output directly as an object
+        Assert.assertEquals(JsonValue.ValueType.OBJECT,
+            result.get(session.getNode(TEST_SECTION_PATH).getIdentifier()).getValueType());
         Assert.assertTrue(childrenJsons.get().isEmpty());
     }
 
@@ -290,7 +294,11 @@ public class BareFormProcessorTest
                 .add(NODE_TYPE, ANSWER_SECTION_TYPE).build());
 
         this.bareFormProcessor.leave(form, json, Mockito.mock(Function.class));
-        Assert.assertEquals(1, json.build().size());
+        JsonObject result = json.build();
+        Assert.assertEquals(1, result.size());
+        // Instances of a recurrent section are gathered into an array
+        Assert.assertEquals(JsonValue.ValueType.ARRAY,
+            result.get(session.getNode(TEST_SECTION_PATH).getIdentifier()).getValueType());
         Assert.assertTrue(childrenJsons.get().isEmpty());
     }
 

@@ -129,7 +129,7 @@ public class SimpleQuestionnaireProcessorTest
     }
 
     @Test
-    public void processPropertyJcrPropertyOfAnswerNode() throws RepositoryException
+    public void processPropertyJcrPropertyOfQuestionNode() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node node = session.getNode(TEST_QUESTION_PATH);

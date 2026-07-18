@@ -135,7 +135,7 @@ public class FormAnswerCopyProcessorTest
     }
 
     @Test
-    public void canProcessForQuestionResourceReturnsTrue()
+    public void canProcessForQuestionResourceReturnsFalse()
     {
         Resource resource = this.context.resourceResolver().getResource(TEST_QUESTION_PATH);
         Assert.assertFalse(this.formAnswerCopyProcessor.canProcess(resource));
@@ -153,7 +153,7 @@ public class FormAnswerCopyProcessorTest
         when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.get(Mockito.anyString(), Mockito.any())).thenReturn(property);
         when(property.getNode()).thenReturn(node);
-        when(node.getName()).thenReturn(path);
+        when(node.getName()).thenReturn("TestQuestionnaire");
 
         Resource configuration = mock(Resource.class);
         ResourceResolver resourceResolver = mock(ResourceResolver.class);
@@ -161,6 +161,9 @@ public class FormAnswerCopyProcessorTest
         when(resourceResolver.getResource(Mockito.anyString())).thenReturn(configuration);
         when(configuration.adaptTo(Node.class)).thenReturn(mock(Node.class));
         this.formAnswerCopyProcessor.start(resource);
+
+        // The configuration must be looked up under the questionnaire's name
+        Mockito.verify(resourceResolver).getResource(path);
 
         ThreadLocal<Node> answersToCopy = (ThreadLocal<Node>) getAccessedSuperclassField("answersToCopy");
         Assert.assertNotNull(answersToCopy.get());

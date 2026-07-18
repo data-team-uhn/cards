@@ -24,7 +24,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -126,13 +126,6 @@ public class FormToMarkdownProcessorTest
         assertNotNull(markdown);
         assertEquals("# Test Serializable Questionnaire" + NEXT_LINE
             + NEXT_LINE
-            + "----" + NEXT_LINE
-            + NEXT_LINE
-            + "### Section 2" + NEXT_LINE
-            + NEXT_LINE
-            + "Long Question  " + NEXT_LINE
-            + "**100**" + NEXT_LINE
-            + NEXT_LINE
             + "### Section 1" + NEXT_LINE
             + NEXT_LINE
             + "Date Question  " + NEXT_LINE
@@ -142,7 +135,14 @@ public class FormToMarkdownProcessorTest
             + "overflow: hidden;'><svg style='width: 100%' greeDisplayedValue</div>" + NEXT_LINE
             + NEXT_LINE
             + "**Notes**  " + NEXT_LINE
-            + "Pedigree note", markdown);
+            + "Pedigree note" + NEXT_LINE
+            + NEXT_LINE
+            + "----" + NEXT_LINE
+            + NEXT_LINE
+            + "### Section 2" + NEXT_LINE
+            + NEXT_LINE
+            + "Long Question  " + NEXT_LINE
+            + "**100**", markdown);
     }
 
     @Test
@@ -173,13 +173,13 @@ public class FormToMarkdownProcessorTest
             + NEXT_LINE
             + "### Section 3" + NEXT_LINE
             + NEXT_LINE
+            + "Boolean Question  " + NEXT_LINE
+            + "**true**" + NEXT_LINE
+            + NEXT_LINE
             + "### Section 4 #1" + NEXT_LINE
             + NEXT_LINE
             + "Text Question  " + NEXT_LINE
             + "**some text**" + NEXT_LINE
-            + NEXT_LINE
-            + "Boolean Question  " + NEXT_LINE
-            + "**true**" + NEXT_LINE
             + NEXT_LINE
             + "----", markdown);
     }
@@ -304,7 +304,7 @@ public class FormToMarkdownProcessorTest
 
     private Map<String, Object> createPropertiesAndChildrenMap(Resource originalResource) throws RepositoryException
     {
-        Map<String, Object> propertiesAndChildrenMap = new HashMap<>();
+        Map<String, Object> propertiesAndChildrenMap = new LinkedHashMap<>();
 
         // process properties of resource
         ValueMap valueMap = originalResource.getValueMap();
