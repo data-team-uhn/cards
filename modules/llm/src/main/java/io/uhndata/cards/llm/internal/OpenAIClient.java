@@ -39,6 +39,7 @@ import io.uhndata.cards.llm.DefaultLLMClient;
 import io.uhndata.cards.llm.LLMClient;
 import io.uhndata.cards.llm.LLMConfigurationService;
 import io.uhndata.cards.llm.LLMMessage;
+import io.uhndata.cards.llm.LLMRequestOptions;
 import io.uhndata.cards.llm.LLMSettings;
 
 /**
@@ -93,9 +94,9 @@ public class OpenAIClient extends DefaultLLMClient
 
     @Override
     protected String buildRequestBody(final LLMSettings settings, final String systemPrompt,
-        final List<LLMMessage> messages)
+        final List<LLMMessage> messages, final LLMRequestOptions options)
     {
-        final JsonObjectBuilder body = baseRequestBody(settings);
+        final JsonObjectBuilder body = baseRequestBody(settings, options);
         // This client reads a single, complete JSON response (choices[0].message.content). Streaming would
         // arrive as many partial chunks and only the first token would be read, so disable it explicitly:
         // some OpenAI-compatible servers (e.g. Ollama) otherwise stream the reply.
@@ -104,6 +105,10 @@ public class OpenAIClient extends DefaultLLMClient
         final String projectId = settings.getProviderProperty(PROJECT_ID);
         if (StringUtils.isNotBlank(projectId)) {
             body.add("project_id", projectId);
+        }
+
+        if (options != null && options.hasResponseSchema()) {
+            body.add("response_format", buildJsonSchemaResponseFormat(options));
         }
 
         final JsonArrayBuilder turns = Json.createArrayBuilder();
@@ -116,6 +121,30 @@ public class OpenAIClient extends DefaultLLMClient
         body.add("messages", turns);
 
         return body.build().toString();
+    }
+
+    /**
+     * Build the OpenAI {@code response_format} object that pins the reply to a JSON Schema (structured outputs):
+     * {@code {"type":"json_schema","json_schema":{"name":...,"strict":true,"schema":{...}}}}.
+     *
+     * @param options the per-call options carrying the schema name and body
+     * @return the {@code response_format} object builder
+     */
+    private static JsonObjectBuilder buildJsonSchemaResponseFormat(final LLMRequestOptions options)
+    {
+        return Json.createObjectBuilder()
+            .add("type", "json_schema")
+            .add("json_schema", Json.createObjectBuilder()
+                .add("name", options.getResponseSchemaName())
+                .add("strict", true)
+                .add("schema", parseSchema(options.getResponseSchema())));
+    }
+
+    private static JsonObject parseSchema(final String schema)
+    {
+        try (JsonReader reader = Json.createReader(new StringReader(schema))) {
+            return reader.readObject();
+        }
     }
 
     @Override

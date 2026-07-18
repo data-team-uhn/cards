@@ -24,13 +24,18 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,15 +45,15 @@ import org.slf4j.LoggerFactory;
  * Triggers the Docling section-aware chat chunker for a proposal answer, asynchronously and without
  * ever blocking the caller.
  * <p>
- * The chunker splits every per-source parsed Markdown into a {@code Sections/<stem>} tree (section
- * files plus {@code catalog.json}) that backs the downstream extraction and proposal chat features.
- * It is independent of the per-answer field-extraction chunks produced by
- * {@link MarkdownChunker}; both run, for different purposes.
+ * The chunker splits the answer's single parsed Markdown file (MVP: one proposal file per answer)
+ * into a flat {@code Chunks/} tree (chunk files plus {@code catalog.json}) that backs the downstream
+ * extraction and proposal chat features. It is independent of the per-answer field-extraction chunks
+ * produced by {@link MarkdownChunker}; both run, for different purposes.
  * </p>
  * <p>
  * The request is first sent to the long-running Docling daemon at {@code cards.docling.daemon.url}
  * via {@code POST /chunk}. If that call fails (daemon down, error response, or transport error) and
- * fallback is enabled, a detached {@code docling_section_splitter.py} CLI process is started instead.
+ * fallback is enabled, a detached {@code chunker.py} CLI process is started instead.
  * Neither path blocks the calling thread: the daemon call is fired with
  * {@link HttpClient#sendAsync(HttpRequest, HttpResponse.BodyHandler)} and the CLI process is left to
  * run on its own. Chunking can take a while; callers fire it after the per-file markdown is written
@@ -63,7 +68,7 @@ public final class DoclingChatChunker
 
     private static final String DEFAULT_DAEMON_URL = "http://127.0.0.1:18765";
 
-    private static final String DEFAULT_SCRIPT_NAME = "Utilities/Parsing/docling_section_splitter.py";
+    private static final String DEFAULT_SCRIPT_NAME = "Utilities/Parsing/chunker.py";
 
     private static final String DEFAULT_PYTHON_COMMAND = "python";
 
@@ -149,7 +154,8 @@ public final class DoclingChatChunker
 
     /**
      * Request chat chunking for an answer folder, returning immediately. Does nothing when chunking is
-     * disabled or the folder is {@code null}. The chunker always uses its own single hardcoded tokenizer
+     * disabled, the folder is {@code null}, or a single parsed {@code .md} file cannot be resolved under
+     * it (MVP: one proposal file per answer). The chunker always uses its own single hardcoded tokenizer
      * model, so no model is passed here. Any failure is logged, never thrown.
      *
      * @param answerDir the absolute parse output folder of the answer, as produced by
@@ -164,36 +170,64 @@ public final class DoclingChatChunker
             LOGGER.debug("Docling chat chunking is disabled; skipping {}", answerDir);
             return;
         }
+        final Path documentFile = resolveSingleDocumentFile(answerDir);
+        if (documentFile == null) {
+            LOGGER.warn("Could not resolve a single parsed .md file to chunk under {}; skipping", answerDir);
+            return;
+        }
         final String folder = folderKey(answerDir);
         final long generation = nextGeneration(answerDir);
         try {
-            sendDaemonRequest(folder, answerDir, generation);
+            sendDaemonRequest(documentFile, folder, answerDir, generation);
         } catch (RuntimeException e) {
             LOGGER.warn("Could not start Docling chat chunking for {}: {}", folder, e.getMessage());
         }
     }
 
-    private static void sendDaemonRequest(final String folder, final Path answerDir, final long generation)
+    /**
+     * Resolve the single parsed {@code .md} file directly under an answer folder (excluding
+     * {@value ParsedMarkdownStore#AGGREGATED_FILE_NAME}), the document the chunker should split.
+     *
+     * @return the resolved file, or {@code null} when there is not exactly one candidate
+     */
+    private static Path resolveSingleDocumentFile(final Path answerDir)
+    {
+        try (Stream<Path> children = Files.list(answerDir)) {
+            final List<Path> candidates = children
+                .filter(Files::isRegularFile)
+                .filter(path -> path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".md"))
+                .filter(path -> !ParsedMarkdownStore.AGGREGATED_FILE_NAME.equals(path.getFileName().toString()))
+                .collect(Collectors.toList());
+            return candidates.size() == 1 ? candidates.get(0) : null;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private static void sendDaemonRequest(final Path documentFile, final String folder, final Path answerDir,
+        final long generation)
     {
         final String url = resolveDaemonUrl() + "/chunk";
-        final String body = "{\"folder_path\":" + jsonString(folder) + "}";
+        final String filePath = documentFile.toAbsolutePath().normalize().toString();
+        final String body = "{\"file_path\":" + jsonString(filePath) + "}";
         final HttpRequest request = HttpRequest.newBuilder(URI.create(url))
             .timeout(Duration.ofMinutes(REQUEST_TIMEOUT_MINUTES))
             .header("Content-Type", "application/json; charset=utf-8")
             .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
             .build();
-        LOGGER.info("Requesting Docling chat chunking for {} via daemon", folder);
+        LOGGER.info("Requesting Docling chat chunking for {} via daemon", filePath);
         HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
-            .whenComplete((response, error) -> handleDaemonResult(answerDir, folder, generation, response, error));
+            .whenComplete((response, error) -> handleDaemonResult(documentFile, answerDir, folder, generation,
+                response, error));
     }
 
-    private static void handleDaemonResult(final Path answerDir, final String folder, final long generation,
-        final HttpResponse<String> response, final Throwable error)
+    private static void handleDaemonResult(final Path documentFile, final Path answerDir, final String folder,
+        final long generation, final HttpResponse<String> response, final Throwable error)
     {
         if (error == null && response != null && response.statusCode() == 200) {
             if (!isCurrentGeneration(folder, generation)) {
                 LOGGER.warn("Discarding stale Docling chat chunking result for {}", folder);
-                ParsedMarkdownStore.clearSectionOutput(answerDir);
+                ParsedMarkdownStore.clearChunkTree(answerDir);
                 return;
             }
             LOGGER.info("Docling chat chunking finished for {}: {}", folder, response.body());
@@ -207,7 +241,7 @@ public final class DoclingChatChunker
             return;
         }
         LOGGER.warn("Docling chat chunking via daemon failed for {} ({}); falling back to CLI", folder, reason);
-        runCliFallback(answerDir, folder, generation);
+        runCliFallback(documentFile, answerDir, folder, generation);
     }
 
     private static void runSummarization(final Path answerDir, final String folder, final long generation)
@@ -233,10 +267,12 @@ public final class DoclingChatChunker
         });
     }
 
-    private static void runCliFallback(final Path answerDir, final String folder, final long generation)
+    private static void runCliFallback(final Path documentFile, final Path answerDir, final String folder,
+        final long generation)
     {
         try {
-            final Process process = new ProcessBuilder(resolvePythonCommand(), resolveScriptPath(), folder)
+            final Process process = new ProcessBuilder(resolvePythonCommand(), resolveScriptPath(),
+                documentFile.toAbsolutePath().normalize().toString())
                 .redirectErrorStream(true)
                 .start();
             drainProcessOutput(answerDir, folder, generation, process);
@@ -262,7 +298,7 @@ public final class DoclingChatChunker
             final int exitCode = waitForProcess(process);
             if (exitCode == 0 && !isCurrentGeneration(folder, generation)) {
                 LOGGER.warn("Discarding stale Docling chat chunking CLI result for {}", folder);
-                ParsedMarkdownStore.clearSectionOutput(answerDir);
+                ParsedMarkdownStore.clearChunkTree(answerDir);
             } else if (exitCode != 0) {
                 LOGGER.warn("Docling chat chunker CLI exited with code {} for {}", exitCode, folder);
             } else {

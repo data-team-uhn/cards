@@ -67,19 +67,26 @@ public abstract class DefaultLLMClient implements LLMClient
     @Override
     public String chat(final String userMessage) throws IOException
     {
-        return doChat(null, Collections.singletonList(new LLMMessage("user", userMessage)));
+        return doChat(null, Collections.singletonList(new LLMMessage("user", userMessage)), null);
     }
 
     @Override
     public String chat(final String systemPrompt, final String userMessage) throws IOException
     {
-        return doChat(systemPrompt, Collections.singletonList(new LLMMessage("user", userMessage)));
+        return doChat(systemPrompt, Collections.singletonList(new LLMMessage("user", userMessage)), null);
     }
 
     @Override
     public String chat(final String systemPrompt, final List<LLMMessage> messages) throws IOException
     {
-        return doChat(systemPrompt, messages);
+        return doChat(systemPrompt, messages, null);
+    }
+
+    @Override
+    public String chat(final String systemPrompt, final List<LLMMessage> messages, final LLMRequestOptions options)
+        throws IOException
+    {
+        return doChat(systemPrompt, messages, options);
     }
 
     /**
@@ -87,29 +94,35 @@ public abstract class DefaultLLMClient implements LLMClient
      *
      * @param systemPrompt the optional system prompt
      * @param messages the conversation turns
+     * @param options per-call overrides, or {@code null} to use the active model's settings unchanged
      * @return the assistant's reply
      * @throws IOException on configuration, network or API errors
      */
-    protected String doChat(final String systemPrompt, final List<LLMMessage> messages) throws IOException
+    protected String doChat(final String systemPrompt, final List<LLMMessage> messages,
+        final LLMRequestOptions options) throws IOException
     {
         final LLMSettings settings = getConfigurationService().getActiveSettings();
-        final String requestBody = buildRequestBody(settings, systemPrompt, messages);
+        final String requestBody = buildRequestBody(settings, systemPrompt, messages, options);
         final String responseBody = sendRequest(settings, requestBody);
         return extractContent(responseBody);
     }
 
     /**
      * Build a request body pre-populated with the fields common to both APIs: the model, the maximum number of
-     * output tokens, and the temperature.
+     * output tokens, and the temperature. When {@code options} carries an output-token override it wins over the
+     * model's configured ceiling; otherwise the configured ceiling is used.
      *
      * @param settings the active settings
+     * @param options per-call overrides, or {@code null} to use the active model's settings unchanged
      * @return a request body builder for the subclass to complete
      */
-    protected JsonObjectBuilder baseRequestBody(final LLMSettings settings)
+    protected JsonObjectBuilder baseRequestBody(final LLMSettings settings, final LLMRequestOptions options)
     {
+        final long maxTokens = options == null
+            ? settings.getMaxOutputTokens() : options.resolveMaxOutputTokens(settings.getMaxOutputTokens());
         return Json.createObjectBuilder()
             .add("model", settings.getModelId())
-            .add("max_tokens", settings.getMaxOutputTokens())
+            .add("max_tokens", maxTokens)
             .add("temperature", settings.getTemperature());
     }
 
@@ -216,10 +229,11 @@ public abstract class DefaultLLMClient implements LLMClient
      * @param settings the active settings
      * @param systemPrompt the optional system prompt
      * @param messages the conversation turns
+     * @param options per-call overrides, or {@code null} to use the active model's settings unchanged
      * @return the JSON request body
      */
     protected abstract String buildRequestBody(LLMSettings settings, String systemPrompt,
-        List<LLMMessage> messages);
+        List<LLMMessage> messages, LLMRequestOptions options);
 
     /**
      * Extract the assistant's text reply from the raw response body.

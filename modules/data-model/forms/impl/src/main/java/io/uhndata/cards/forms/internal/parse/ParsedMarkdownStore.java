@@ -51,8 +51,13 @@ public final class ParsedMarkdownStore
     /** Name of the subfolder, within an answer's subfolder, that holds the markdown chunks. */
     public static final String CHUNKS_SUBDIR = "chunks";
 
-    /** Name of the answer subfolder holding the per-source-file section trees. */
-    public static final String SECTIONS_SUBDIR = "Sections";
+    /**
+     * Name of the answer subfolder holding the chunker's output: the document's chunk files,
+     * catalog and outline. Distinct from {@link #CHUNKS_SUBDIR} (the unrelated, lowercase
+     * field-extraction chunk folder produced by {@code MarkdownChunker}) — the two mechanisms
+     * share the word "chunk" but nothing else.
+     */
+    public static final String CHUNK_TREE_SUBDIR = "Chunks";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParsedMarkdownStore.class);
 
@@ -92,7 +97,7 @@ public final class ParsedMarkdownStore
     }
 
     /**
-     * Delete field-extraction chunks and per-source section folders so stale output is not
+     * Delete field-extraction chunks and the chunker's output tree so stale output is not
      * served after a failed parse. A failure never throws — it is logged and swallowed.
      *
      * @param outputSubfolder the answer's subfolder; clearing is skipped when {@code null} or blank
@@ -104,7 +109,7 @@ public final class ParsedMarkdownStore
         }
         final Path answerDir = resolveOutputDir(outputSubfolder);
         clearFieldExtractionChunks(answerDir);
-        clearSectionOutput(answerDir);
+        clearChunkTree(answerDir);
     }
 
     /**
@@ -119,25 +124,25 @@ public final class ParsedMarkdownStore
     }
 
     /**
-     * Delete an answer's {@value #SECTIONS_SUBDIR} tree written by the section splitter. Used when a
+     * Delete an answer's {@value #CHUNK_TREE_SUBDIR} tree written by the chunker. Used when a
      * stale asynchronous chunk job completes after a parse failure. A failure never throws — it is
      * logged and swallowed.
      *
      * @param answerDir the absolute answer parse folder; ignored when {@code null}
      */
-    public static void clearSectionOutput(final Path answerDir)
+    public static void clearChunkTree(final Path answerDir)
     {
         if (answerDir == null) {
             return;
         }
-        final Path sectionsRoot = answerDir.resolve(SECTIONS_SUBDIR);
+        final Path chunkTreeRoot = answerDir.resolve(CHUNK_TREE_SUBDIR);
         try {
-            if (Files.isDirectory(sectionsRoot)) {
-                deleteRecursively(sectionsRoot);
-                LOGGER.info("Cleared section tree {}", sectionsRoot.toAbsolutePath());
+            if (Files.isDirectory(chunkTreeRoot)) {
+                deleteRecursively(chunkTreeRoot);
+                LOGGER.info("Cleared chunk tree {}", chunkTreeRoot.toAbsolutePath());
             }
         } catch (IOException | RuntimeException e) {
-            LOGGER.warn("Could not clear section output in {}: {}", answerDir.toAbsolutePath(), e.getMessage());
+            LOGGER.warn("Could not clear chunk tree in {}: {}", answerDir.toAbsolutePath(), e.getMessage());
         }
     }
 

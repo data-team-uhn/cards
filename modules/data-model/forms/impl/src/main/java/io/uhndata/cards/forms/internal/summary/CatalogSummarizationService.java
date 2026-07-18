@@ -21,8 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -36,13 +34,13 @@ import io.uhndata.cards.llm.LLMClient;
 import io.uhndata.cards.llm.LLMClientFactory;
 
 /**
- * Fills in the empty {@code summary} fields of a proposal answer's per-file section catalogs by sending each
- * section's Markdown to the active LLM. The section splitter writes one {@code Sections/<stem>} folder per
- * parsed source file, each holding {@code Section-*.md} files and a {@code catalog.json} whose entries start
- * with blank summaries. This service walks every section catalog after chunking completes and fills each empty
- * summary from the section's own text; already summarized entries are left untouched, so the walk is idempotent
- * and safely resumable. A failure on any one section leaves that summary empty and is logged; it never aborts
- * the rest of the answer.
+ * Fills in the empty {@code summary} fields of a proposal answer's chunk catalog by sending each chunk's
+ * Markdown to the active LLM. The chunker writes a single {@code Chunks/} folder (MVP: one proposal file
+ * per answer) holding {@code Chunk-*.md} files and a {@code catalog.json} whose entries start with blank
+ * summaries. This service walks the catalog after chunking completes and fills each empty summary from the
+ * chunk's own text; already summarized entries are left untouched, so the walk is idempotent and safely
+ * resumable. A failure on any one chunk leaves that summary empty and is logged; it never aborts the rest of
+ * the answer.
  * <p>
  * All LLM traffic goes through the shared {@link LLMClient}, so it is logged and configured centrally like the
  * rest of the platform's LLM use. The service registers itself as the summarization hook on
@@ -57,10 +55,10 @@ public class CatalogSummarizationService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogSummarizationService.class);
 
-    /** Name of the answer subfolder holding one per-source-file sections folder each. */
-    private static final String SECTIONS_DIRNAME = "Sections";
+    /** Name of the answer subfolder holding the chunk files, catalog and outline. */
+    private static final String CHUNKS_DIRNAME = "Chunks";
 
-    /** The catalog file name inside every section folder. */
+    /** The catalog file name inside the chunks folder. */
     private static final String CATALOG_NAME = "catalog.json";
 
     /** Blank line separating an instruction from its content in a prompt. */
@@ -164,7 +162,7 @@ public class CatalogSummarizationService
     }
 
     /**
-     * Summarize every unsummarized section of one {@code <stem>-sections} catalog, then write the catalog back.
+     * Summarize every unsummarized chunk in the catalog, then write the catalog back.
      */
     private void summarizeCatalog(final LLMClient client, final Path answerDir, final Path catalogFile,
         final long generation) throws IOException
@@ -260,22 +258,14 @@ public class CatalogSummarizationService
     }
 
     /**
-     * Locate every {@code Sections/<stem>/catalog.json} under an answer folder, in name order.
+     * Locate the answer's {@code Chunks/catalog.json}, when the chunker has produced one. Returned as a
+     * (0- or 1-element) list so the caller's traversal logic stays unchanged from when several per-source
+     * catalogs could exist (post-MVP multi-file).
      */
-    private static List<Path> findSectionCatalogs(final Path answerDir) throws IOException
+    private static List<Path> findSectionCatalogs(final Path answerDir)
     {
-        final Path sectionsRoot = answerDir.resolve(SECTIONS_DIRNAME);
-        if (!Files.isDirectory(sectionsRoot)) {
-            return List.of();
-        }
-        try (Stream<Path> children = Files.list(sectionsRoot)) {
-            return children
-                .filter(Files::isDirectory)
-                .map(dir -> dir.resolve(CATALOG_NAME))
-                .filter(Files::isRegularFile)
-                .sorted()
-                .collect(Collectors.toList());
-        }
+        final Path catalogFile = answerDir.resolve(CHUNKS_DIRNAME).resolve(CATALOG_NAME);
+        return Files.isRegularFile(catalogFile) ? List.of(catalogFile) : List.of();
     }
 
     private static String readSectionText(final Path sectionFile)

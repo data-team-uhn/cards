@@ -60,4 +60,16 @@ public interface LLMClient
      * @throws IOException on network failure or a non-200 API response
      */
     String chat(String systemPrompt, List<LLMMessage> messages) throws IOException;
+
+    /**
+     * Send a multi-turn conversation with an optional system prompt and per-call request overrides.
+     *
+     * @param systemPrompt optional system instructions (may be {@code null} or blank)
+     * @param messages the ordered list of conversation turns; must alternate user/assistant
+     * @param options per-call overrides such as the output-token ceiling; when {@code null}, the active model's
+     *            configured settings are used unchanged
+     * @return the assistant's text response
+     * @throws IOException on network failure or a non-200 API response
+     */
+    String chat(String systemPrompt, List<LLMMessage> messages, LLMRequestOptions options) throws IOException;
 }
