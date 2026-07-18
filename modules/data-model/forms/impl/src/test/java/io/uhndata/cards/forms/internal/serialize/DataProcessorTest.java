@@ -19,7 +19,6 @@
 package io.uhndata.cards.forms.internal.serialize;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -497,17 +496,4 @@ public class DataProcessorTest
             java.time.LocalDate.now().plusDays(1), "nonExistingFilter", 0);
     }
 
-    private Map<String, String> generateFilters()
-    {
-        Map<String, String> filters = new HashMap<>();
-        filters.put("createdAfter", java.time.LocalDate.now().minusDays(1).toString());
-        filters.put("createdBefore", java.time.LocalDate.now().plusDays(1).toString());
-        filters.put("createdBy", "admin");
-        filters.put("status", "INCOMPLETE");
-        filters.put("statusNot", "COMPLETE");
-        filters.put("modifiedAfter", java.time.LocalDate.now().minusDays(1).toString());
-        filters.put("modifiedBefore", java.time.LocalDate.now().plusDays(1).toString());
-        filters.put("nonExistingFilter", "nonExistingFilter");
-        return filters;
-    }
 }
