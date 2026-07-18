@@ -26,6 +26,7 @@ Java calls this over HTTP instead of spawning docling_parser.py per file.
 Endpoints:
     GET  /health   -> {"status": "ok", "workers": N, "ready": true}
     POST /convert  -> {"input_path": "/abs/path/file.pdf"} -> {"markdown": "...", "logs": "..."}
+    POST /chunk    -> {"file_path": "/abs/path/file.md"} -> {"status": "ok", "chunks": N, "logs": "..."}
     POST /shutdown -> graceful stop (used when CARDS owns the daemon process)
 """
 
@@ -47,10 +48,10 @@ from typing import Any
 
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 
+from chunker import chunk_file
 from docling_batch_sizing import GB_PER_WORKER, calc_workers
 from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
 from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
-from docling_section_splitter import chunk_answer_folder
 
 SUPPORTED_SUFFIXES = (".pdf", ".docx")
 DEFAULT_HOST = "127.0.0.1"
@@ -147,11 +148,11 @@ def _is_allowed_path(path: Path) -> bool:
         return str(resolved).startswith(str(temp_root) + os.sep)
 
 
-def _is_allowed_chunk_dir(path: Path) -> bool:
+def _is_allowed_chunk_file(path: Path) -> bool:
     if _STATE is None:
         return False
     resolved = path.resolve()
-    if not resolved.is_dir() or not any(p.is_file() for p in resolved.glob("*.md")):
+    if not resolved.is_file() or resolved.suffix.lower() != ".md":
         return False
     return _is_under_root(resolved, _STATE.parse_output_root)
 
@@ -250,27 +251,25 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             _json_response(self, HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(exc)})
 
     def _handle_chunk(self) -> None:
-        """Split each per-source Markdown in a parse folder into its section tree. Unlike PDF/DOCX
-        conversion this does not need the warm worker pool, so it is served even while the pool
-        is unavailable."""
+        """Split one parsed Markdown file into its chunk tree. Unlike PDF/DOCX conversion this
+        does not need the warm worker pool, so it is served even while the pool is unavailable."""
         try:
             body = _read_json_body(self)
-            folder_value = body.get("folder_path")
-            if not folder_value or not isinstance(folder_value, str):
-                raise ValueError("folder_path is required")
+            file_value = body.get("file_path")
+            if not file_value or not isinstance(file_value, str):
+                raise ValueError("file_path is required")
 
-            folder_path = Path(folder_value)
-            if not _is_allowed_chunk_dir(folder_path):
+            file_path = Path(file_value)
+            if not _is_allowed_chunk_file(file_path):
                 raise ValueError(
-                    "folder_path must be a directory containing parsed .md files "
-                    "under the CARDS parse output directory"
+                    "file_path must be a parsed .md file under the CARDS parse output directory"
                 )
 
             kwargs: dict[str, Any] = {}
             if isinstance(body.get("max_tokens"), int) and body["max_tokens"] > 0:
                 kwargs["max_tokens"] = body["max_tokens"]
 
-            summary = chunk_answer_folder(str(folder_path), **kwargs)
+            summary = chunk_file(str(file_path), **kwargs)
             _json_response(self, HTTPStatus.OK, {"status": "ok", **summary})
         except (ValueError, FileNotFoundError) as exc:
             _json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})

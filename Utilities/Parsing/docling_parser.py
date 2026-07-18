@@ -28,6 +28,7 @@ import docling_config  # noqa: F401 — apply shared Docling settings on import
 from docling_batch_sizing import GB_PER_WORKER, MAX_BATCH_PAGES
 from docling_docx_parser import convert_docx
 from docling_pdf_parser import convert_pdf
+from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 SUPPORTED_SUFFIXES = (".pdf", ".docx")
 
@@ -58,11 +59,22 @@ def parse_args():
         ),
     )
     parser.add_argument(
-        "--split-sections",
+        "--chunk",
         action="store_true",
         help=(
-            "also write per-section .md files and catalog.json into a "
-            "Sections/<filename> folder beside the output .md"
+            "also write per-chunk .md files and catalog.json into a "
+            "Chunks/ folder beside the output .md (skipped when the document is "
+            f"under --min-structure-tokens, default {DEFAULT_MIN_STRUCTURE_TOKENS})"
+        ),
+    )
+    parser.add_argument(
+        "--min-structure-tokens",
+        type=int,
+        default=DEFAULT_MIN_STRUCTURE_TOKENS,
+        metavar="N",
+        help=(
+            "skip TOC/appendix marking and chunking when document tokens (len//4) "
+            f"are below this (default: {DEFAULT_MIN_STRUCTURE_TOKENS})"
         ),
     )
     return parser.parse_args()
@@ -91,10 +103,16 @@ def main() -> None:
             output_file,
             batch_pages=args.batch_pages,
             workers=args.workers,
-            split_sections=args.split_sections,
+            chunk=args.chunk,
+            min_structure_tokens=args.min_structure_tokens,
         )
     else:
-        convert_docx(input_path, output_file, split_sections=args.split_sections)
+        convert_docx(
+            input_path,
+            output_file,
+            chunk=args.chunk,
+            min_structure_tokens=args.min_structure_tokens,
+        )
 
     print(f"\nSaved to {output_file}")
 
