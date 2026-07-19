@@ -18,6 +18,10 @@
  */
 package io.uhndata.cards.dicom.internal;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
 
@@ -29,6 +33,8 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 
+import org.apache.jackrabbit.commons.cnd.CndImporter;
+import org.apache.jackrabbit.commons.cnd.ParseException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
@@ -219,6 +225,14 @@ public class DicomLabelProcessorTest
             .commit();
 
         Session session = this.context.resourceResolver().adaptTo(Session.class);
+        // The mock repository only registers node types declared in classpath jar manifests,
+        // so this module's own node types must be registered explicitly.
+        try (Reader cnd = new InputStreamReader(
+            getClass().getResourceAsStream("/SLING-INF/nodetypes/dicom.cnd"), StandardCharsets.UTF_8)) {
+            CndImporter.registerNodeTypes(cnd, session);
+        } catch (IOException | ParseException e) {
+            throw new RepositoryException("Failed to register test node types", e);
+        }
 
         Node subject = session.getNode(TEST_SUBJECT_PATH);
         Node questionnaire = session.getNode(TEST_QUESTIONNAIRE_PATH);
