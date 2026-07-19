@@ -63,7 +63,11 @@ public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor 
             if (node.isNodeType("cards:AnswerOption")
                 && "vocabulary".equals(node.getParent().getProperty("dataType").getString())
                 && !node.hasProperty(PROP_LABEL)) {
-                json.add(PROP_LABEL, getAnswerLabel(node));
+                JsonValue label = getAnswerLabel(node);
+                // A label computation failure must not break the serialization of the rest of the resource
+                if (label != null) {
+                    json.add(PROP_LABEL, label);
+                }
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen

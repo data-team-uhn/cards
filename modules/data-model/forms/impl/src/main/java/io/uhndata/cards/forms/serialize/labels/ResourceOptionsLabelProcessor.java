@@ -76,7 +76,11 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
                 // Default to the resource node's name if no such configuration is present
                 String labelPropertyName = getLabelPropertyName(question);
                 // Generate and add the label
-                json.add(PROP_LABEL, getAnswerOptionLabel(node, labelPropertyName));
+                JsonValue label = getAnswerOptionLabel(node, labelPropertyName);
+                // A label computation failure must not break the serialization of the rest of the resource
+                if (label != null) {
+                    json.add(PROP_LABEL, label);
+                }
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen
