@@ -31,7 +31,7 @@
   <name>CARDS - Vocabularies</name>
 
   <properties>
-    <coverage.instructionRatio>0.24</coverage.instructionRatio>
+    <coverage.instructionRatio>0.31</coverage.instructionRatio>
   </properties>
 
   <build>
