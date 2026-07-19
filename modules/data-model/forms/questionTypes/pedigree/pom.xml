@@ -116,6 +116,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>jackrabbit-jcr-commons</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.resourcebuilder</artifactId>
       <version>1.0.4</version>
