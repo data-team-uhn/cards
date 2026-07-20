@@ -76,6 +76,7 @@ import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
  *
  * @version $Id$
  */
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/Form" },
@@ -94,6 +95,8 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
     private static final String ANSWER_SECTION_NODETYPE = "cards:AnswerSection";
 
     private static final String EXTRACTION_TIMESTAMP_PROPERTY = "extractionSourceTimestamp";
+
+    private static final String EXTRACTED = "extracted";
 
     @Reference
     private transient FormUtils formUtils;
@@ -331,7 +334,7 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
     private static void writeExtractionMetadata(final Node answer, final FieldResult result)
         throws RepositoryException
     {
-        answer.setProperty("extracted", result.found());
+        answer.setProperty(EXTRACTED, result.found());
         if (result.reasoning() != null) {
             answer.setProperty("reasoning", result.reasoning());
         } else {
@@ -484,7 +487,7 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
     {
         return Json.createObjectBuilder()
             .add("status", status)
-            .add("extracted", extracted)
+            .add(EXTRACTED, extracted)
             .build();
     }
 
@@ -492,7 +495,7 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
     {
         return Json.createObjectBuilder()
             .add("status", "not_a_protocol")
-            .add("extracted", 0)
+            .add(EXTRACTED, 0)
             .add("isProtocol", false)
             .add("confidence", gate.confidence())
             .add("reasoning", gate.reasoning() == null ? "" : gate.reasoning())
@@ -502,8 +505,8 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
     private static JsonObject intakeJson(final int written, final GateDecision gate, final IntakeResult intake)
     {
         return Json.createObjectBuilder()
-            .add("status", "extracted")
-            .add("extracted", written)
+            .add("status", EXTRACTED)
+            .add(EXTRACTED, written)
             .add("isProtocol", true)
             .add("gateFailedOpen", gate.failedOpen())
             .add("degraded", intake.degraded())

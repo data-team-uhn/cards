@@ -25,7 +25,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * The static {@code field key → rubric tags} map for the intake fields and the code-side join that turns it,
+ * The static {@code field key -> rubric tags} map for the intake fields and the code-side join that turns it,
  * together with a section's tags, into each section's {@code extraction_hints} — the field keys that section is
  * a candidate source for. This is Stage 1.15 of the pipeline: no LLM call, just a join recomputed whenever a
  * section's tags change.
@@ -46,20 +46,23 @@ public final class FieldTagMap
 
     private static final String BASIS_DEEP = "deep";
 
+    /** Rubric tag for study identification / administrative sections. */
+    private static final String TAG_B1 = "B.1";
+
     /**
      * The intake fields' rubric affinities. A field absent from this map is treated as matching every section
      * (conservative: never starve an unknown field of candidate sections).
      */
     private static final Map<String, Set<String>> FIELD_TAGS = Map.ofEntries(
-        Map.entry("study_title", Set.of("B.1")),
-        Map.entry("study_category", Set.of("B.1", "B.4")),
+        Map.entry("study_title", Set.of(TAG_B1)),
+        Map.entry("study_category", Set.of(TAG_B1, "B.4")),
         Map.entry("study_category_flags", Set.of("B.4", "B.7", "B.9", "B.14")),
-        Map.entry("regulatory_sponsor", Set.of("B.1")),
-        Map.entry("lead_institution", Set.of("B.1")),
-        Map.entry("lead_investigator", Set.of("B.1")),
-        Map.entry("lead_investigator_email", Set.of("B.1")),
-        Map.entry("participating_institutions", Set.of("B.1", "B.5")),
-        Map.entry("participating_investigators", Set.of("B.1", "B.5")),
+        Map.entry("regulatory_sponsor", Set.of(TAG_B1)),
+        Map.entry("lead_institution", Set.of(TAG_B1)),
+        Map.entry("lead_investigator", Set.of(TAG_B1)),
+        Map.entry("lead_investigator_email", Set.of(TAG_B1)),
+        Map.entry("participating_institutions", Set.of(TAG_B1, "B.5")),
+        Map.entry("participating_investigators", Set.of(TAG_B1, "B.5")),
         Map.entry("study_drug_device", Set.of("B.7")));
 
     private FieldTagMap()

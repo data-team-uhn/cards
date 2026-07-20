@@ -20,27 +20,27 @@ package io.uhndata.cards.forms.internal.parse.pdf;
 
 final class TextToken
 {
-    private final float x;
+    private final float posX;
 
-    private final float y;
+    private final float posY;
 
     private final String text;
 
-    TextToken(final float x, final float y, final String text)
+    TextToken(final float posX, final float posY, final String text)
     {
-        this.x = x;
-        this.y = y;
+        this.posX = posX;
+        this.posY = posY;
         this.text = text;
     }
 
     float getX()
     {
-        return this.x;
+        return this.posX;
     }
 
     float getY()
     {
-        return this.y;
+        return this.posY;
     }
 
     String getText()

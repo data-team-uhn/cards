@@ -131,18 +131,28 @@ public final class FieldResponseParser
         if (value == null) {
             return null;
         }
+        final String validated;
         switch (key) {
+            case null:
+                validated = value;
+                break;
             case "study_category":
-                return StudyTaxonomy.isCategory(value) ? value : null;
+                validated = StudyTaxonomy.isCategory(value) ? value : null;
+                break;
             case "study_category_flags":
-                return StudyTaxonomy.filter(value, StudyTaxonomy.CATEGORY_FLAGS);
+                validated = StudyTaxonomy.filter(value, StudyTaxonomy.CATEGORY_FLAGS);
+                break;
             case "lead_institution":
-                return StudyTaxonomy.INSTITUTIONS.contains(value.strip()) ? value : null;
+                validated = StudyTaxonomy.INSTITUTIONS.contains(value.strip()) ? value : null;
+                break;
             case "participating_institutions":
-                return StudyTaxonomy.filter(value, StudyTaxonomy.INSTITUTIONS);
+                validated = StudyTaxonomy.filter(value, StudyTaxonomy.INSTITUTIONS);
+                break;
             default:
-                return value;
+                validated = value;
+                break;
         }
+        return validated;
     }
 
     private static boolean verifyEvidence(final JsonObject fieldObject, final Map<String, String> texts)
