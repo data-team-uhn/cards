@@ -85,14 +85,17 @@ public class ProposalIntakeService
     private static final String CORRECTION = "\n\n# Correction\n\nYour previous response was not a valid JSON "
         + "object matching the required schema. Return only the JSON object.";
 
+    /** Rubric tag for eligibility / participant sections. */
+    private static final String TAG_B5 = "B.5";
+
     /** Coarse heading-keyword to rubric-tag rules for filling section-tag holes; first match wins. */
     private static final String[][] HEADING_TAG_RULES = {
         {"reference", "B.17"}, {"bibliograph", "B.17"}, {"appendix", "B.17"},
         {"background", "B.2"}, {"rationale", "B.2"},
         {"objective", "B.3"}, {"hypothes", "B.3"}, {"aim", "B.3"},
         {"design", "B.4"}, {"randomiz", "B.4"}, {"blinding", "B.4"}, {"endpoint", "B.4"},
-        {"eligib", "B.5"}, {"inclusion", "B.5"}, {"exclusion", "B.5"}, {"participant", "B.5"},
-        {"recruit", "B.5"}, {"withdraw", "B.6"}, {"discontinu", "B.6"},
+        {"eligib", TAG_B5}, {"inclusion", TAG_B5}, {"exclusion", TAG_B5}, {"participant", TAG_B5},
+        {"recruit", TAG_B5}, {"withdraw", "B.6"}, {"discontinu", "B.6"},
         {"treatment", "B.7"}, {"intervention", "B.7"}, {"dosing", "B.7"},
         {"efficacy", "B.8"}, {"safety", "B.9"}, {"adverse", "B.9"},
         {"statistic", "B.10"}, {"analysis", "B.10"}, {"sample size", "B.10"},

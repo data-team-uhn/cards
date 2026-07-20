@@ -80,6 +80,8 @@ public class ProposalStep2Service
     private static final String CORRECTION = "\n\n# Correction\n\nYour previous response was not a valid JSON "
         + "object matching the required schema. Return only the JSON object.";
 
+    private static final String TYPE = "type";
+
     @Reference
     private LLMClientFactory llmClientFactory;
 
@@ -247,7 +249,7 @@ public class ProposalStep2Service
             properties.add(key, Json.createObjectBuilder().add("$ref", "#/$defs/field"));
         }
         return Json.createObjectBuilder()
-            .add("type", "object")
+            .add(TYPE, "object")
             .add("additionalProperties", false)
             .add("required", required)
             .add("properties", properties)
@@ -258,7 +260,7 @@ public class ProposalStep2Service
     private static JsonObjectBuilder fieldDef()
     {
         return Json.createObjectBuilder()
-            .add("type", "object")
+            .add(TYPE, "object")
             .add("additionalProperties", false)
             .add("required", strings("found_answer", "confidence", "value", "reasoning", "evidence"))
             .add("properties", Json.createObjectBuilder()
@@ -267,14 +269,14 @@ public class ProposalStep2Service
                 .add("value", nullableType("string"))
                 .add("reasoning", type("string"))
                 .add("evidence", Json.createObjectBuilder()
-                    .add("type", "array")
+                    .add(TYPE, "array")
                     .add("items", evidenceItem())));
     }
 
     private static JsonObjectBuilder evidenceItem()
     {
         return Json.createObjectBuilder()
-            .add("type", "object")
+            .add(TYPE, "object")
             .add("additionalProperties", false)
             .add("required", strings("quote", "section_id", "page"))
             .add("properties", Json.createObjectBuilder()
@@ -285,12 +287,12 @@ public class ProposalStep2Service
 
     private static JsonObjectBuilder type(final String type)
     {
-        return Json.createObjectBuilder().add("type", type);
+        return Json.createObjectBuilder().add(TYPE, type);
     }
 
     private static JsonObjectBuilder nullableType(final String type)
     {
-        return Json.createObjectBuilder().add("type", Json.createArrayBuilder().add(type).add("null"));
+        return Json.createObjectBuilder().add(TYPE, Json.createArrayBuilder().add(type).add("null"));
     }
 
     private static JsonArrayBuilder strings(final String... values)

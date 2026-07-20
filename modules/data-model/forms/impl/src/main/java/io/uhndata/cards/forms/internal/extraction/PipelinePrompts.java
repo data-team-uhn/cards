@@ -19,6 +19,7 @@ package io.uhndata.cards.forms.internal.extraction;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,7 +77,7 @@ public final class PipelinePrompts
             if (in == null) {
                 throw new IOException("Bundled prompt resource not found on the classpath: " + resourcePath);
             }
-            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(in.readAllBytes())).toString();
         } catch (final IOException e) {
             throw new UncheckedIOException("Could not load bundled prompt resource " + resourcePath, e);
         }

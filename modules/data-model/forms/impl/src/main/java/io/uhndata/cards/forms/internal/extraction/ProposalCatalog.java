@@ -284,11 +284,11 @@ public final class ProposalCatalog
                 }
             }
         }
-        return new Section(entry.getString(CHUNK_ID, ""), entry.getString(FILE, ""),
-            stringList(entry, HEADING), Collections.unmodifiableList(pages),
-            stringList(entry, RUBRIC_TAGS), entry.getString(TAG_BASIS, ""),
+        final TagMetadata tag = new TagMetadata(stringList(entry, RUBRIC_TAGS), entry.getString(TAG_BASIS, ""),
             doubleValue(entry, TAG_CONFIDENCE), entry.getBoolean(UNCERTAIN, false),
-            entry.getBoolean(EXCLUDED, false), entry.getString(EXCLUSION_REASON, ""),
+            entry.getBoolean(EXCLUDED, false), entry.getString(EXCLUSION_REASON, ""));
+        return new Section(entry.getString(CHUNK_ID, ""), entry.getString(FILE, ""),
+            stringList(entry, HEADING), Collections.unmodifiableList(pages), tag,
             stringList(entry, EXTRACTION_HINTS));
     }
 
@@ -321,23 +321,79 @@ public final class ProposalCatalog
     }
 
     /**
-     * A read-only view of one catalog chunk entry.
+     * Tagging fields stamped onto a catalog chunk by the gate/intake passes.
      *
-     * @param id the chunk identifier (e.g. {@code s001})
-     * @param file the chunk's Markdown file name, relative to the catalog folder
-     * @param heading the chunk's heading(s)
-     * @param pages the 1-based PDF page numbers the chunk spans (empty for DOCX-origin documents)
      * @param rubricTags the stamped rubric tags (empty before gate/intake tagging)
      * @param tagBasis how the tag was derived ({@code heading}, {@code fulltext}, {@code deep} or empty)
      * @param tagConfidence the tagging pass's confidence in {@code rubricTags}, in {@code [0, 1]}
      * @param uncertain whether the tag is a weak or truncation-filled guess
      * @param excluded whether a deeper look at the chunk's full text invalidated its tag
      * @param exclusionReason why the tag was excluded, or blank when {@code excluded} is {@code false}
+     */
+    public record TagMetadata(List<String> rubricTags, String tagBasis, double tagConfidence, boolean uncertain,
+        boolean excluded, String exclusionReason)
+    {
+    }
+
+    /**
+     * A read-only view of one catalog chunk entry.
+     *
+     * @param id the chunk identifier (e.g. {@code s001})
+     * @param file the chunk's Markdown file name, relative to the catalog folder
+     * @param heading the chunk's heading(s)
+     * @param pages the 1-based PDF page numbers the chunk spans (empty for DOCX-origin documents)
+     * @param tag the stamped tagging metadata
      * @param extractionHints the derived field keys this chunk is a candidate source for (empty before the join)
      */
-    public record Section(String id, String file, List<String> heading, List<Integer> pages,
-        List<String> rubricTags, String tagBasis, double tagConfidence, boolean uncertain, boolean excluded,
-        String exclusionReason, List<String> extractionHints)
+    public record Section(String id, String file, List<String> heading, List<Integer> pages, TagMetadata tag,
+        List<String> extractionHints)
     {
+        /**
+         * @return the stamped rubric tags
+         */
+        public List<String> rubricTags()
+        {
+            return this.tag.rubricTags();
+        }
+
+        /**
+         * @return how the tag was derived
+         */
+        public String tagBasis()
+        {
+            return this.tag.tagBasis();
+        }
+
+        /**
+         * @return the tagging pass's confidence
+         */
+        public double tagConfidence()
+        {
+            return this.tag.tagConfidence();
+        }
+
+        /**
+         * @return whether the tag is a weak or truncation-filled guess
+         */
+        public boolean uncertain()
+        {
+            return this.tag.uncertain();
+        }
+
+        /**
+         * @return whether the tag was invalidated
+         */
+        public boolean excluded()
+        {
+            return this.tag.excluded();
+        }
+
+        /**
+         * @return why the tag was excluded, or blank when not excluded
+         */
+        public String exclusionReason()
+        {
+            return this.tag.exclusionReason();
+        }
     }
 }
