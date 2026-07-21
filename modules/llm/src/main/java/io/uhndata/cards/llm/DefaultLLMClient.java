@@ -121,7 +121,7 @@ public abstract class DefaultLLMClient implements LLMClient
         final long maxTokens = options == null
             ? settings.getMaxOutputTokens() : options.resolveMaxOutputTokens(settings.getMaxOutputTokens());
         return Json.createObjectBuilder()
-            .add("model", settings.getModelId())
+            .add("model", settings.getModelName())
             .add("max_tokens", maxTokens)
             .add("temperature", settings.getTemperature());
     }

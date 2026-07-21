@@ -525,6 +525,8 @@
             <!-- Tabula auto generated file -->
             <exclude>/technology/tabula/ObjectExtractor.java</exclude>
             <exclude>/Parsing/prompter*.py</exclude>
+            <!-- Generated parse output of uploaded proposal documents -->
+            <exclude>cards-parsed-markdown/**</exclude>
           </inputExcludes>
         </configuration>
         <executions>
