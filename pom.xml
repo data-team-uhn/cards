@@ -78,6 +78,7 @@
     <asm.version>9.9.1</asm.version>
     <composum.nodes.version>4.3.5</composum.nodes.version>
     <jackson.version>2.17.2</jackson.version>
+    <langchain4j.version>1.0.1</langchain4j.version>
 
     <enforcer.skip>false</enforcer.skip>
     <checkstyle.skip>false</checkstyle.skip>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
+    <version>0.9.41-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>cards-llm</artifactId>
+  <packaging>bundle</packaging>
+  <name>CARDS - LLM</name>
+  <description>Forwards prompts to an OpenAI-compatible chat completions endpoint using the LangChain4j SDK</description>
+
+  <build>
+    <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <!--
+              LangChain4j is not published as OSGi bundles, so its jars are embedded inside this
+              bundle. Only the dev.langchain4j (and jtokkit, if pulled in) artifacts are embedded;
+              everything else (Jackson, SLF4J, ...) is imported from the platform bundles.
+            -->
+            <Embed-Dependency>*;scope=compile;groupId=dev.langchain4j|com.knuddels</Embed-Dependency>
+            <Embed-Transitive>true</Embed-Transitive>
+            <Embed-Directory>lib</Embed-Directory>
+            <!--
+              Let bnd compute the imports from the embedded classes. LangChain4j references several
+              optional provider integrations it does not ship; those are marked optional so the
+              bundle can still resolve with only the OpenAI integration present.
+            -->
+            <Import-Package>
+              <!--
+                LangChain4j 1.0.1 compiles against Jackson 2.19, but this platform ships 2.17
+                (see the jackson.version property in the root pom), so widen the accepted range.
+              -->
+              com.fasterxml.jackson.*;version="[2.17,3)",
+              org.slf4j.*,
+              jakarta.json.*,
+              jakarta.servlet.*,
+              org.apache.sling.*,
+              org.apache.commons.lang3.*,
+              org.osgi.*,
+              !com.google.*,
+              !reactor.*,
+              !io.reactivex.*,
+              *;resolution:=optional
+            </Import-Package>
+            <_dsannotations>*</_dsannotations>
+            <_metatypeannotations>*</_metatypeannotations>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>jakarta.json</groupId>
+      <artifactId>jakarta.json-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.servlets.annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.metatype.annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <!-- The LangChain4j SDK, embedded into this bundle (see maven-bundle-plugin config above). -->
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-open-ai</artifactId>
+      <version>${langchain4j.version}</version>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

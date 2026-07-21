@@ -100,6 +100,10 @@
         {
             "id":"${project.groupId}:cards-embedded-view:${project.version}",
             "start-order":"26"
+        },
+        {
+            "id":"io.uhndata.cards:cards-llm:${project.version}",
+            "start-order":"25"
         }
     ]
 }
