@@ -185,8 +185,7 @@ public class LangfuseInteractionLogger implements LLMInteractionLogger
         final JsonObjectBuilder metadata = Json.createObjectBuilder();
         if (settings != null) {
             metadata.add("provider", str(settings.getProviderName()))
-                .add("model", str(settings.getModelName()))
-                .add("modelId", str(settings.getModelId()));
+                .add("model", str(settings.getModelName()));
         }
 
         final JsonObjectBuilder trace = Json.createObjectBuilder()
@@ -236,7 +235,7 @@ public class LangfuseInteractionLogger implements LLMInteractionLogger
         if (settings == null) {
             return;
         }
-        builder.add("model", str(settings.getModelId()));
+        builder.add("model", str(settings.getModelName()));
         builder.add("modelParameters", Json.createObjectBuilder()
             .add("temperature", settings.getTemperature())
             .add("max_tokens", settings.getMaxOutputTokens()));

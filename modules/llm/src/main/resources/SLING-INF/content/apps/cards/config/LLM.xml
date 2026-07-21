@@ -64,11 +64,6 @@
 			<name>llama3.2-3b</name>
 			<primaryNodeType>cards:Model</primaryNodeType>
 			<property>
-				<name>modelId</name>
-				<value>llama3.2:3b</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>contextLimitTokens</name>
 				<value>131072</value>
 				<type>Long</type>
@@ -131,6 +126,36 @@
 		</property>
 
 		<node>
+			<name>GPT-OSS-120B</name>
+			<primaryNodeType>cards:Model</primaryNodeType>
+			<property>
+				<name>contextLimitTokens</name>
+				<value>131072</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxOutputTokens</name>
+				<value>2000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>temperature</name>
+				<value>0.0</value>
+				<type>Double</type>
+			</property>
+			<property>
+				<name>chunkTokenSize</name>
+				<value>30000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>developer</name>
+				<value>openai</value>
+				<type>String</type>
+			</property>
+		</node>
+
+		<node>
 			<name>gemma-4-26B-A4B-it</name>
 			<primaryNodeType>cards:Model</primaryNodeType>
 			<property>
@@ -156,6 +181,66 @@
 			<property>
 				<name>developer</name>
 				<value>google</value>
+				<type>String</type>
+			</property>
+		</node>
+
+		<node>
+			<name>Llama-3.3-70B-Instruct</name>
+			<primaryNodeType>cards:Model</primaryNodeType>
+			<property>
+				<name>contextLimitTokens</name>
+				<value>131072</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxOutputTokens</name>
+				<value>2000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>temperature</name>
+				<value>0.0</value>
+				<type>Double</type>
+			</property>
+			<property>
+				<name>chunkTokenSize</name>
+				<value>30000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>developer</name>
+				<value>meta</value>
+				<type>String</type>
+			</property>
+		</node>
+
+		<node>
+			<name>DeepSeek-R1-Distill-Qwen-32B</name>
+			<primaryNodeType>cards:Model</primaryNodeType>
+			<property>
+				<name>contextLimitTokens</name>
+				<value>131072</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxOutputTokens</name>
+				<value>2000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>temperature</name>
+				<value>0.0</value>
+				<type>Double</type>
+			</property>
+			<property>
+				<name>chunkTokenSize</name>
+				<value>30000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>developer</name>
+				<value>deepseek</value>
 				<type>String</type>
 			</property>
 		</node>

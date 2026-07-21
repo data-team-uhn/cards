@@ -49,8 +49,6 @@ public final class LLMSettings
 
     private static final String DEVELOPER = "developer";
 
-    private static final String MODEL_ID = "modelId";
-
     private static final long DEFAULT_TIMEOUT_SECONDS = 120;
 
     private static final long DEFAULT_MAX_OUTPUT_TOKENS = 1000;
@@ -130,19 +128,6 @@ public final class LLMSettings
     public long getTimeoutSeconds()
     {
         return number(this.providerProperties, TIMEOUT_SECONDS, DEFAULT_TIMEOUT_SECONDS);
-    }
-
-    /**
-     * The identifier of the active model, as sent to the API in the request body. This is the model's node
-     * name in the JCR configuration, unless an explicit {@code modelId} property overrides it (useful when the
-     * provider's model identifier is not a valid JCR node name, e.g. {@code llama3.2:3b}).
-     *
-     * @return the model identifier
-     */
-    public String getModelId()
-    {
-        final String explicit = string(this.modelProperties, MODEL_ID);
-        return explicit != null ? explicit : this.modelName;
     }
 
     /**
