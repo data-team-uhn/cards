@@ -273,7 +273,7 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
 
         chunk_parts: list[str] = []
         for page_no in range(start_page, end_page + 1):
-            chunk_parts.append(f"\n<PDF Page {page_no}>\n")
+            chunk_parts.append(f"\n<-- page: {page_no}-->\n")
             page_md = result.document.export_to_markdown(page_no=page_no)
             chunk_parts.append(page_md)
 
