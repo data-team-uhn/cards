@@ -19,6 +19,7 @@ package io.uhndata.cards.forms.internal.parse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -36,6 +37,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonValue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -231,6 +237,11 @@ public final class DoclingChatChunker
                 return;
             }
             LOGGER.info("Docling chat chunking finished for {}: {}", folder, response.body());
+            if (chunkCountFromResponse(response.body()) == 0) {
+                LOGGER.info(
+                    "Chunking skipped for {} (no chunks produced); skipping summarization", folder);
+                return;
+            }
             runSummarization(answerDir, folder, generation);
             return;
         }
@@ -246,6 +257,11 @@ public final class DoclingChatChunker
 
     private static void runSummarization(final Path answerDir, final String folder, final long generation)
     {
+        if (!hasChunkCatalog(answerDir)) {
+            LOGGER.info(
+                "Chunking finished for {} without a catalog; skipping summarization", folder);
+            return;
+        }
         final BiConsumer<Path, Long> hook = summarizationHook;
         if (hook == null) {
             LOGGER.warn("Chunking finished for {} but no summarization hook is registered; summaries will NOT be "
@@ -265,6 +281,42 @@ public final class DoclingChatChunker
                 LOGGER.warn("Docling chat summarization failed for {}: {}", folder, e.getMessage(), e);
             }
         });
+    }
+
+    /**
+     * Whether the chunker wrote a {@code Chunks/catalog.json} under the answer folder.
+     *
+     * @param answerDir the absolute parse output folder of the answer
+     * @return {@code true} when a catalog file is present
+     */
+    private static boolean hasChunkCatalog(final Path answerDir)
+    {
+        return Files.isRegularFile(
+            answerDir.resolve(ParsedMarkdownStore.CHUNK_TREE_SUBDIR).resolve("catalog.json"));
+    }
+
+    /**
+     * Read the {@code chunks} count from a daemon {@code /chunk} response body, or {@code -1} when absent or
+     * unparseable (so callers treat the response as "unknown, decide from disk").
+     *
+     * @param body the JSON response body
+     * @return the chunk count, or {@code -1} when the field is missing or not a number
+     */
+    private static int chunkCountFromResponse(final String body)
+    {
+        if (StringUtils.isBlank(body)) {
+            return -1;
+        }
+        try (JsonReader reader = Json.createReader(new StringReader(body))) {
+            final JsonObject payload = reader.readObject();
+            if (!payload.containsKey("chunks")
+                || payload.get("chunks").getValueType() != JsonValue.ValueType.NUMBER) {
+                return -1;
+            }
+            return payload.getJsonNumber("chunks").intValue();
+        } catch (RuntimeException e) {
+            return -1;
+        }
     }
 
     private static void runCliFallback(final Path documentFile, final Path answerDir, final String folder,
