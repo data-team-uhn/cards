@@ -43,6 +43,9 @@ public final class PipelinePrompts
     /** The B.1–B.17 protocol-structure glossary shared by the gate and intake calls. */
     public static final String PROTOCOL_STRUCTURE_GLOSSARY = "/prompts/protocol_structure_glossary.md";
 
+    /** The full B.1–B.17 protocol-structure reference sent with every gate (Stage 0.5) call. */
+    public static final String PROTOCOL_STRUCTURE = "/prompts/protocol_structure.md";
+
     /** The intake (Stage 1.1) system prompt. */
     public static final String STEP1_INTAKE_SYSTEM = "/prompts/step1_intake_system.md";
 

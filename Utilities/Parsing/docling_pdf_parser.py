@@ -55,10 +55,7 @@ from docling_error_detection import (
     ensure_conversion_ok,
 )
 from markdown_cleanup import clean_markdown
-from toc_and_appendix_detection import (
-    DEFAULT_MIN_STRUCTURE_TOKENS,
-    mark_toc_and_appendix,
-)
+from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 
 def build_pdf_converter() -> DocumentConverter:
@@ -149,21 +146,18 @@ def convert_pdf_to_markdown(
     workers: int | None = None,
     executor: ProcessPoolExecutor | None = None,
     log: LogFn | None = None,
-    outline_path: Path | None = None,
-    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> str:
     """
     Convert a PDF file to Markdown and return the text.
+
+    (:func:`chunker.write_chunk_files`) runs cleanup and structure detection for every
+    chunking entry point, including Markdown that never passed through this parser.
 
     @param input_path: path to the source .pdf file
     @param batch_pages: optional override for pages per worker batch
     @param workers: optional override for parallel worker process count
     @param executor: optional persistent ProcessPoolExecutor (daemon mode)
     @param log: optional log sink; defaults to print
-    @param outline_path: where to write the outline.json sidecar.
-        None (e.g. the daemon's /convert call) still marks TOC
-        and appendix in the Markdown when large enough, but skips writing the sidecar.
-    @param min_structure_tokens: skip TOC/appendix marking when ``len(md)//4`` is below this
     @return: cleaned Markdown text
     """
     log_fn = log if log is not None else print
@@ -212,10 +206,8 @@ def convert_pdf_to_markdown(
     for _start_page, _end_page, _status, md, _md_len, _elapsed, _error in completed_results:
         all_markdown.append(md)
 
-    cleaned = clean_markdown("".join(all_markdown), source_file=input_path.name)
-    markdown_content = mark_toc_and_appendix(
-        cleaned, outline_path, min_structure_tokens=min_structure_tokens
-    )
+    cleaned = clean_markdown("".join(all_markdown))
+    markdown_content = f"{"<!-- source_file: {input_path.name.replace("--", "—")} -->"}\n{cleaned}"
     write_end = perf_counter()
     t2 = perf_counter()
 
@@ -312,14 +304,11 @@ def convert_pdf(
     """
     # Drop any previous convert's outline sidecar and Chunks/ before writing anew.
     clear_prior_outputs(output_file)
-    outline_path = output_file.with_name("outline.json") if chunk else None
     try:
         markdown_content = convert_pdf_to_markdown(
             input_path,
             batch_pages=batch_pages,
             workers=workers,
-            outline_path=outline_path,
-            min_structure_tokens=min_structure_tokens,
         )
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)

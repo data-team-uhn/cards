@@ -31,6 +31,10 @@ _GARBAGE_LINE = re.compile(
 
 MIN_RUN_LENGTH = 25
 
+# Reserved marker recorded at the top of a document once clean_markdown has run, so a
+# second pass (e.g. the chunker re-cleaning an already-cleaned parse output) is a no-op.
+CLEANED_MARKER = "<!-- cleaned -->"
+
 _LINE_NUMBER = re.compile(r"^\d+$")
 _PAGE_MARKER = re.compile(r"(\n<!-- page: \d+-->\n)")
 _IMAGE_PLACEHOLDER = re.compile(r"^\s*<!--\s*image\s*-->\s*$")
@@ -120,12 +124,14 @@ def _escape_comment(value: str) -> str:
     return value.replace("--", "—")
 
 
-def clean_markdown(md: str, source_file: str | None = None) -> str:
+def clean_markdown(md: str) -> str:
     """
     Collapse blank lines, remove empty headings / image placeholders, and strip
-    decorative garbage lines.
-    When ``source_file`` is set, prepends ``<!-- source_file: ... -->``
+    decorative garbage lines. Cleanup never runs twice on the same output.
     """
+    if md and CLEANED_MARKER in md:
+        return md
+
     if not md:
         cleaned = md or ""
     else:
@@ -138,7 +144,4 @@ def clean_markdown(md: str, source_file: str | None = None) -> str:
         ]
         cleaned = re.sub(r"\n{3,}", "\n\n", "\n".join(kept_lines)).strip()
 
-    if source_file:
-        header = f"<!-- source_file: {_escape_comment(source_file)} -->"
-        cleaned = f"{header}\n{cleaned}" if cleaned else header
-    return cleaned
+    return f"{cleaned}\n\n{CLEANED_MARKER}" if cleaned else CLEANED_MARKER

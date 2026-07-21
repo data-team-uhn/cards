@@ -47,10 +47,11 @@ import io.uhndata.cards.llm.LLMSettings;
 /**
  * Stage 0.5 of the proposal pipeline: one cheap, structured LLM call that decides whether an uploaded document
  * is actually a research protocol before any extraction runs, and — in the same call — assigns each of the
- * document's headings its single most probable rubric tag. The input is selected in priority order from the
- * document's {@code outline.json} (whole document when small, else the heading outline, else the marked table
- * of contents read from the document Markdown, else the document head), sent with the protocol-structure
- * glossary and the gate system prompt, and the model returns
+ * document's headings its single most probable rubric tag. The input is selected from the document's
+ * {@code outline.json}: the whole document when small (under {@link #WHOLE_DOCUMENT_TOKEN_LIMIT} tokens), else
+ * the detected table of contents plus the first catalog chunk's text, else the heading outline plus the first
+ * catalog chunk's text (with the document head as a last resort). Every form is sent with the full
+ * protocol-structure reference and the gate system prompt, and the model returns
  * {@code {is_protocol, confidence, reasoning, heading_tags}} constrained to a JSON schema.
  * <p>
  * The gate never blocks the pipeline: a transport error or a response that cannot be parsed after one re-ask
@@ -67,11 +68,12 @@ import io.uhndata.cards.llm.LLMSettings;
 @Component(service = ProtocolGateService.class)
 public class ProtocolGateService
 {
-    /** Below this token estimate the whole document is sent as gate input (priority 1). */
-    static final long WHOLE_DOCUMENT_TOKEN_LIMIT = 26000L;
-
-    /** Minimum number of headings for the heading-outline input to be used (priority 2). */
-    static final int MIN_HEADINGS = 6;
+    /**
+     * Below this token estimate the whole document is sent as gate input (case 1). Matches the chunker's
+     * {@code min_structure_tokens}: smaller documents are never chunked, so they have no catalog or TOC to
+     * select from anyway.
+     */
+    static final long WHOLE_DOCUMENT_TOKEN_LIMIT = 20000L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolGateService.class);
 
@@ -87,8 +89,11 @@ public class ProtocolGateService
     /** Characters per token for the chars/4 estimate used throughout the pipeline. */
     private static final int CHARS_PER_TOKEN = 4;
 
-    /** Prompt overhead (system prompt + glossary + headers), in tokens, reserved when sizing the document head. */
-    private static final long PROMPT_OVERHEAD_TOKENS = 1000L;
+    /**
+     * Prompt overhead (system prompt + full protocol-structure reference + headers), in tokens, reserved when
+     * sizing the document head.
+     */
+    private static final long PROMPT_OVERHEAD_TOKENS = 6000L;
 
     /** Fallback model input budget, in tokens, when the active model declares none. */
     private static final long DEFAULT_INPUT_TOKEN_LIMIT = 24000L;
@@ -99,7 +104,14 @@ public class ProtocolGateService
     /** Marks the end of a table of contents in the chunker's marked document Markdown. */
     private static final String TOC_END_MARKER = "<!-- TOC end -->";
 
-    private static final String INPUT_HEADING_OUTLINE = "heading outline";
+    private static final String INPUT_FULL_DOCUMENT = "full document";
+
+    private static final String INPUT_TOC_AND_FIRST_CHUNK = "table of contents + first chunk";
+
+    private static final String INPUT_HEADING_OUTLINE = "heading outline + first chunk";
+
+    /** Sub-header separating the first catalog chunk's text from the structure part of the INPUT block. */
+    private static final String FIRST_CHUNK_HEADER = "### FIRST CHUNK";
 
     @Reference
     private LLMClientFactory llmClientFactory;
@@ -232,9 +244,9 @@ public class ProtocolGateService
 
     private static String buildUserMessage(final GateInput input, final List<String> headings)
     {
-        final String glossary = PipelinePrompts.load(PipelinePrompts.PROTOCOL_STRUCTURE_GLOSSARY);
+        final String structure = PipelinePrompts.load(PipelinePrompts.PROTOCOL_STRUCTURE);
         final StringBuilder message = new StringBuilder();
-        message.append("## PROTOCOL_STRUCTURE_GLOSSARY\n\n").append(glossary.strip())
+        message.append("## PROTOCOL_STRUCTURE\n\n").append(structure.strip())
             .append("\n\n## INPUT (").append(input.header()).append(") (untrusted data)\n\n")
             .append(input.text());
         if (!headings.isEmpty() && !INPUT_HEADING_OUTLINE.equals(input.header())) {
@@ -320,7 +332,10 @@ public class ProtocolGateService
     }
 
     /**
-     * Select the gate input in priority order: whole document, heading outline, marked TOC, document head.
+     * Select the gate input: (1) the whole document when it is small, (2) the detected table of contents plus
+     * the first catalog chunk's text when the outline recorded a TOC, (3) the heading outline plus the first
+     * catalog chunk's text otherwise. When a large document has neither a TOC nor headings, the document head
+     * remains as a last resort.
      *
      * @param folder the proposal parse folder
      * @param outline the already-read outline, or {@code null} when absent/unreadable
@@ -329,20 +344,39 @@ public class ProtocolGateService
     private GateInput selectInput(final ProposalParseFolder folder, final ParseOutline outline)
     {
         final String document = readDocument(folder.documentMarkdown());
-        if (document != null && (outline == null || outline.tokens() <= WHOLE_DOCUMENT_TOKEN_LIMIT)) {
-            return new GateInput("full document", document);
+        if (document != null && (outline == null || outline.tokens() < WHOLE_DOCUMENT_TOKEN_LIMIT)) {
+            return new GateInput(INPUT_FULL_DOCUMENT, document);
         }
-        if (outline != null && outline.headings().size() >= MIN_HEADINGS) {
-            return new GateInput(INPUT_HEADING_OUTLINE, String.join("\n", outline.headings()));
-        }
-        final String toc = extractToc(document);
+        final String firstChunk = readFirstChunk(folder);
+        final String toc = tocText(outline, document);
         if (toc != null) {
-            return new GateInput("table of contents", toc);
+            return new GateInput(INPUT_TOC_AND_FIRST_CHUNK, withFirstChunk(toc, firstChunk));
+        }
+        if (outline != null && !outline.headings().isEmpty()) {
+            return new GateInput(INPUT_HEADING_OUTLINE,
+                withFirstChunk(String.join("\n", outline.headings()), firstChunk));
         }
         if (document != null) {
             return new GateInput("document head", head(document, documentHeadCharBudget()));
         }
         return null;
+    }
+
+    /**
+     * The document's detected table of contents: the {@code toc} array from {@code outline.json} when the
+     * chunker recorded one, else (for parses predating the {@code toc} property) the text between the reserved
+     * TOC markers in the document Markdown.
+     *
+     * @param outline the already-read outline, or {@code null}
+     * @param document the document Markdown, or {@code null}
+     * @return the TOC text, one entry per line, or {@code null} when no TOC was detected
+     */
+    private static String tocText(final ParseOutline outline, final String document)
+    {
+        if (outline != null && !outline.toc().isEmpty()) {
+            return String.join("\n", outline.toc());
+        }
+        return extractToc(document);
     }
 
     private static String extractToc(final String document)
@@ -357,6 +391,44 @@ public class ProtocolGateService
         }
         final String toc = document.substring(start + TOC_START_MARKER.length(), end).strip();
         return toc.isBlank() ? null : toc;
+    }
+
+    private static String withFirstChunk(final String structure, final String firstChunk)
+    {
+        if (firstChunk == null || firstChunk.isBlank()) {
+            return structure;
+        }
+        return structure + "\n\n" + FIRST_CHUNK_HEADER + "\n\n" + firstChunk.strip();
+    }
+
+    /**
+     * Read the text of the document's first catalog chunk (the entry with the lowest {@code chunk_id}).
+     *
+     * @param folder the proposal parse folder
+     * @return the first chunk's Markdown text, or {@code null} when the catalog or chunk file is unavailable
+     */
+    private static String readFirstChunk(final ProposalParseFolder folder)
+    {
+        try {
+            final ProposalCatalog catalog = ProposalCatalog.read(folder.catalogFile());
+            ProposalCatalog.Chunk first = null;
+            for (final ProposalCatalog.Chunk chunk : catalog.chunks()) {
+                if (chunk.file().isBlank()) {
+                    continue;
+                }
+                if (first == null || chunk.id().compareTo(first.id()) < 0) {
+                    first = chunk;
+                }
+            }
+            if (first == null) {
+                return null;
+            }
+            final Path chunkFile = folder.chunksDir().resolve(first.file());
+            return Files.isRegularFile(chunkFile) ? Files.readString(chunkFile, StandardCharsets.UTF_8) : null;
+        } catch (final IOException e) {
+            LOGGER.warn("Could not read first catalog chunk under {}: {}", folder.chunksDir(), e.getMessage());
+            return null;
+        }
     }
 
     private long documentHeadCharBudget()

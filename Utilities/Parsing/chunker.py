@@ -93,13 +93,17 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from markdown_cleanup import clean_markdown
 from toc_and_appendix_detection import (
     DEFAULT_MIN_STRUCTURE_TOKENS,
     MAX_HEADING_WORDS,
     MAX_WORD_CHARS,
     MIN_HEADING_CHARS,
+    TOC_END,
+    TOC_START,
     backmatter_marker_line,
     is_toc_entry_line,
+    mark_toc_and_appendix,
     read_outline,
 )
 
@@ -649,6 +653,46 @@ def _aggregate_headings(
     return headings
 
 
+def _toc_lines(lines: list[str]) -> list[str]:
+    """The marked TOC's entry lines — everything between the reserved ``<!-- TOC start -->``
+    and ``<!-- TOC end -->`` markers, blank and page-marker lines dropped — or ``[]`` when
+    the document has no marked TOC.
+    """
+    try:
+        start = lines.index(TOC_START)
+        end = lines.index(TOC_END, start + 1)
+    except ValueError:
+        return []
+    entries: list[str] = []
+    for line in lines[start + 1:end]:
+        stripped = line.strip()
+        if stripped and not _PAGE_MARKER_LINE.match(stripped):
+            entries.append(stripped)
+    return entries
+
+
+def _prepare_markdown(markdown_content: str, output_file: Path, min_structure_tokens: int) -> str:
+    """Run the shared pre-chunking pipeline on a document: garbage-line cleanup
+    (idempotent — a ``<!-- cleaned -->``-marked document passes through unchanged), then
+    TOC/appendix marking (size-gated internally, sidecar ``outline.json`` written beside
+    ``output_file``). When anything changed, the updated Markdown is written back to
+    ``output_file`` so the stored ``.md`` always matches what was chunked.
+
+    This runs here rather than in the PDF/DOCX parsers so that *every* chunking entry
+    point — including Java-generated Markdown sent straight to ``chunk_file`` — goes
+    through the same cleanup and structure detection.
+    """
+    prepared = clean_markdown(markdown_content)
+    prepared = mark_toc_and_appendix(
+        prepared,
+        output_file.with_name(OUTLINE_NAME),
+        min_structure_tokens=min_structure_tokens,
+    )
+    if prepared != markdown_content:
+        output_file.write_text(prepared, encoding="utf-8")
+    return prepared
+
+
 def clear_prior_outputs(output_file: Path) -> None:
     """Remove a previous convert's sibling ``outline.json`` and ``Chunks/`` folder
     (including ``catalog.json``) beside ``output_file``, so a reconvert cannot reuse
@@ -671,7 +715,11 @@ def write_chunk_files(
     """Write per-chunk Markdown files, an ``outline.json`` and a ``catalog.json`` into a
     ``Chunks/`` folder beside ``output_file``.
 
-    Documents with fewer than ``min_structure_tokens`` (``len // 4``) are not chunked —
+    The document first goes through the shared pre-chunking pipeline
+    (:func:`_prepare_markdown`): garbage-line cleanup (idempotent via the
+    ``<!-- cleaned -->`` marker) and TOC/appendix marking, with the result written back
+    to ``output_file`` when anything changed. Documents with fewer than
+    ``min_structure_tokens`` (``len // 4``) are still cleaned, but not chunked —
     returns ``None`` without creating ``Chunks/``.
 
     A ``<Reference>``/``<Appendix>`` marker (see :func:`toc_and_appendix_detection.mark_appendix`),
@@ -689,6 +737,7 @@ def write_chunk_files(
     @param min_structure_tokens: skip chunking when the document is smaller than this
     @return: the path to the created chunks folder, or ``None`` when chunking was skipped
     """
+    markdown_content = _prepare_markdown(markdown_content, output_file, min_structure_tokens)
     if len(markdown_content) // 4 < min_structure_tokens:
         return None
 
@@ -701,17 +750,20 @@ def write_chunk_files(
     # instead of each re-splitting the same (potentially large) document on "\n".
     lines = markdown_content.split("\n")
 
-    # toc_and_appendix_detection.mark_toc_and_appendix() may already have recorded these in a sidecar
-    # outline.json beside output_file. Read it if present; otherwise the TOC range is
-    # simply unknown here (no re-detection pass -- unlike backmatter_line below, which
-    # keeps a direct fallback since finding it is comparatively cheap).
+    # The TOC range comes from the reserved markers themselves — exact by construction —
+    # with the sidecar outline.json (written by mark_toc_and_appendix in
+    # _prepare_markdown above) as a fallback for marker-less documents.
     sidecar = read_outline(output_file.with_name(OUTLINE_NAME))
-    toc_start = sidecar.get("tocStartLine")
-    toc_end = sidecar.get("tocEndLine")
-    if isinstance(toc_start, int) and isinstance(toc_end, int):
-        toc_range = (toc_start, toc_end)
-    else:
-        toc_range = None
+    try:
+        marker_start = lines.index(TOC_START)
+        toc_range = (marker_start, lines.index(TOC_END, marker_start + 1))
+    except ValueError:
+        toc_start = sidecar.get("tocStartLine")
+        toc_end = sidecar.get("tocEndLine")
+        if isinstance(toc_start, int) and isinstance(toc_end, int):
+            toc_range = (toc_start, toc_end)
+        else:
+            toc_range = None
     backmatter_line = sidecar.get("backmatterLine")
     if not isinstance(backmatter_line, int):
         backmatter_line = backmatter_marker_line(markdown_content, lines=lines)
@@ -800,6 +852,7 @@ def write_chunk_files(
         "fileId": filename,
         "tokens": len(markdown_content) // 4,
         "headings": headings,
+        "toc": _toc_lines(lines),
     }
     if toc_range is not None:
         outline["tocStartLine"], outline["tocEndLine"] = toc_range

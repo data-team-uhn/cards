@@ -31,10 +31,7 @@ from docling.document_converter import DocumentConverter, WordFormatOption
 from chunker import clear_prior_outputs, write_chunk_files
 from docling_error_detection import ensure_conversion_ok
 from markdown_cleanup import clean_markdown
-from toc_and_appendix_detection import (
-    DEFAULT_MIN_STRUCTURE_TOKENS,
-    mark_toc_and_appendix,
-)
+from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 _docx_converter: DocumentConverter | None = None
 
@@ -55,31 +52,19 @@ def convert_docx_to_markdown(
     input_path: Path,
     *,
     converter: DocumentConverter | None = None,
-    outline_path: Path | None = None,
-    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> str:
     """
     Convert a DOCX file to Markdown and return the text.
 
     @param input_path: path to the source .docx file
     @param converter: optional reusable converter instance
-    @param outline_path: where to write the outline.json sidecar from
-        :func:`toc_and_appendix_detection.mark_toc_and_appendix`, when the caller has an output
-        location for it. ``None`` (e.g. the daemon's ``/convert`` call) still marks TOC
-        and appendix in the Markdown when large enough, but skips writing the sidecar.
-    @param min_structure_tokens: skip TOC/appendix marking when ``len(md)//4`` is below this
     @return: cleaned Markdown text
     """
     active_converter = converter if converter is not None else get_docx_converter()
     result = active_converter.convert(str(input_path))
     ensure_conversion_ok(result)
-    cleaned = clean_markdown(
-        result.document.export_to_markdown(),
-        source_file=input_path.name,
-    )
-    return mark_toc_and_appendix(
-        cleaned, outline_path, min_structure_tokens=min_structure_tokens
-    )
+    cleaned = clean_markdown(result.document.export_to_markdown())
+    return f"{"<!-- source_file: {input_path.name.replace("--", "—")} -->"}\n{cleaned}"
 
 
 def convert_docx(
@@ -96,7 +81,8 @@ def convert_docx(
     @param output_file: path where Markdown output is written
     @param chunk: also write per-chunk .md files and catalog.json beside output_file
         when the document is at least ``min_structure_tokens``
-    @param min_structure_tokens: skip TOC/appendix marking and chunking below this size
+    @param min_structure_tokens: skip chunking (and TOC/appendix marking within it)
+        below this size
     """
     t0 = perf_counter()
 
@@ -106,14 +92,8 @@ def convert_docx(
 
     # Drop any previous convert's outline sidecar and Chunks/ before writing anew.
     clear_prior_outputs(output_file)
-    outline_path = output_file.with_name("outline.json") if chunk else None
     try:
-        markdown_content = convert_docx_to_markdown(
-            input_path,
-            converter=converter,
-            outline_path=outline_path,
-            min_structure_tokens=min_structure_tokens,
-        )
+        markdown_content = convert_docx_to_markdown(input_path, converter=converter)
     except RuntimeError as exc:
         print(f"Conversion failed: {exc}", file=sys.stderr)
         sys.exit(1)
