@@ -133,12 +133,16 @@ ENTRY_CONTENT
           test:/\.css$/,
           use:['style-loader','css-loader']
         },
-        // Serve the PDF.js worker as a static asset (used by proposal file validation)
+        // Serve the PDF.js worker as a static asset (used by proposal file validation).
+        // pdfjsLib.GlobalWorkerOptions.workerSrc gets this generator's URL directly, so it
+        // needs the real deployed path here rather than the global publicPath ('/'), which
+        // only resolves correctly when a resource is looked up server-side via assets.json.
         {
           test: /pdf\.worker(\.min)?\.mjs$/,
           type: 'asset/resource',
           generator: {
-            filename: 'pdf.worker.[contenthash][ext]'
+            filename: 'pdf.worker.[contenthash][ext]',
+            publicPath: '/libs/cards/resources/'
           }
         }
       ]

@@ -392,6 +392,14 @@
         "org.apache.felix.http":{
             "org.apache.felix.jetty.relativeredirectallowed":false,
             "org.eclipse.jetty.UriComplianceMode":"JETTY_11"
+        },
+        // The bundled Sling mime.types has no entry for .mjs, so ES module assets (e.g. the
+        // pdf.js worker used by ProposalQuestion) are served with the wrong content type and
+        // browsers refuse to dynamically import them.
+        "org.apache.sling.commons.mime.internal.MimeTypeServiceImpl":{
+            "mime.types":[
+                "text/javascript mjs"
+            ]
         }
     },
     "repoinit:TEXT|true":"@file"
