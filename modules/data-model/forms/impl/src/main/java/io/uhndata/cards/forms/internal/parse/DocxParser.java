@@ -26,12 +26,6 @@ import org.slf4j.LoggerFactory;
  * Parser for DOCX files. Delegates orchestration to {@link SimpleDocumentParser} and supplies
  * {@link DoclingMarkdownGenerator} as the primary generator, with
  * {@link DocxMarkdownGenerator} (Apache POI) as the fallback.
- * <p>
- * Before running Docling, {@link DocxListOutlineRiskDetector} inspects the document: when it numbers
- * its section outline with a shared Word multi-level list (which Docling mis-groups), the Apache POI
- * generator is used as the primary path instead, since POI renders numbered paragraphs inline in
- * document order.
- * </p>
  *
  * @version $Id$
  */
@@ -40,20 +34,6 @@ public class DocxParser extends SimpleDocumentParser
     private static final Logger LOGGER = LoggerFactory.getLogger(DocxParser.class);
 
     private final DocxMarkdownGenerator poiGenerator = new DocxMarkdownGenerator();
-
-    private final DocxListOutlineRiskDetector outlineRiskDetector = new DocxListOutlineRiskDetector();
-
-    @Override
-    protected String runPrimaryGenerator(final byte[] content, final String fileName)
-    {
-        if (this.outlineRiskDetector.hasListOutlineRisk(content, fileName)) {
-            LOGGER.info("Routing DOCX '{}' to Apache POI to avoid Docling list-grouping scramble", fileName);
-            setActiveGenerator("Apache POI (list-outline risk)");
-            return this.runPoiGenerator(content, fileName);
-        }
-        setActiveGenerator("Docling");
-        return super.runPrimaryGenerator(content, fileName);
-    }
 
     @Override
     protected String runFallbackGenerator(final byte[] content, final String fileName)
