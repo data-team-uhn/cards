@@ -50,10 +50,13 @@ import org.slf4j.LoggerFactory;
  * The detector walks the body in document order and measures, per {@code numId}, how much plain
  * body text accumulates between two list items that share that id. A genuine outline-as-list packs
  * substantial prose between its items; a real numbered list (procedure steps, inclusion criteria)
- * does not. Heading-styled paragraphs and bullet lists are ignored, and tables reset the per-id
- * continuity because Docling already splits its list groups at a table. The signal therefore avoids
- * the false positives of a naive title-length heuristic: legitimately numbered {@code Heading 1/2}
- * outlines, bullet lists interrupted by notes, and short numbered lists all score below threshold.
+ * does not. Heading/Title-styled paragraphs and bullet lists are ignored; a bare
+ * {@code w:outlineLvl} on {@code ListParagraph}/{@code Body Text} is <em>not</em> treated as a
+ * heading, because that is exactly the outline-as-list pattern Docling scrambles. Tables reset
+ * the per-id continuity because Docling already splits its list groups at a table. The signal
+ * therefore avoids the false positives of a naive title-length heuristic: legitimately numbered
+ * {@code Heading 1/2} outlines, bullet lists interrupted by notes, and short numbered lists all
+ * score below threshold.
  * </p>
  * <p>
  * The check is intentionally conservative and fails open — any parsing error yields {@code false}
@@ -147,13 +150,14 @@ public class DocxListOutlineRiskDetector
             return;
         }
         if (this.isHeadingStyled(paragraph, styles, headingStyleCache)) {
-            // Docling renders heading-styled paragraphs as headings, not as list items, so a shared
-            // numId on a real Heading 1/2 outline does not trigger the grouping bug.
+            // Docling renders Heading/Title-styled paragraphs as headings, not as list items, so a
+            // shared numId on a real Heading 1/2 outline does not trigger the grouping bug.
             return;
         }
         final String numberingFormat = paragraph.getNumFmt();
-        if (numberingFormat == null || BULLET_NUM_FMT.equalsIgnoreCase(numberingFormat)) {
-            // Bullets and numbering we cannot resolve are not outline-risk items.
+        if (BULLET_NUM_FMT.equalsIgnoreCase(numberingFormat)) {
+            // Bullet lists are not outline-risk items. A null format still counts: POI often cannot
+            // resolve numFmt for outline-as-list paragraphs that nonetheless share a numId.
             return;
         }
         accumulator.recordTrackedItem(numId);
@@ -162,19 +166,14 @@ public class DocxListOutlineRiskDetector
     private boolean isHeadingStyled(final XWPFParagraph paragraph, final XWPFStyles styles,
         final Map<String, Boolean> headingStyleCache)
     {
-        if (this.hasDirectOutlineLevel(paragraph)) {
-            return true;
-        }
+        // Only Heading/Title *styles* are safe for Docling. A bare w:outlineLvl on ListParagraph
+        // or Body Text is common in outline-as-list documents and must still be tracked — Docling
+        // groups those by numId and displaces the intervening body text.
         final String styleId = paragraph.getStyle();
         if (StringUtils.isBlank(styleId)) {
             return false;
         }
         return headingStyleCache.computeIfAbsent(styleId, id -> this.resolveHeadingStyle(id, styles));
-    }
-
-    private boolean hasDirectOutlineLevel(final XWPFParagraph paragraph)
-    {
-        return paragraph.getCTPPr() != null && paragraph.getCTPPr().isSetOutlineLvl();
     }
 
     private boolean resolveHeadingStyle(final String styleId, final XWPFStyles styles)
