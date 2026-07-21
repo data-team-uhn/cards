@@ -29,7 +29,7 @@
   <artifactId>cards-llm</artifactId>
   <packaging>bundle</packaging>
   <name>CARDS - LLM</name>
-  <description>Forwards prompts to an OpenAI-compatible chat completions endpoint using the LangChain4j SDK</description>
+  <description>Forwards prompts to an OpenAI-compatible chat completions endpoint using the Spring AI SDK</description>
 
   <build>
     <plugins>
@@ -41,33 +41,34 @@
         <configuration>
           <instructions>
             <!--
-              LangChain4j is not published as OSGi bundles, so its jars are embedded inside this
-              bundle. Only the dev.langchain4j (and jtokkit, if pulled in) artifacts are embedded;
-              everything else (Jackson, SLF4J, ...) is imported from the platform bundles.
+              Spring AI (and the Spring Framework, Reactor, Micrometer, ... it pulls in) is not
+              published as OSGi bundles, so the whole tree is embedded inside this bundle to keep it
+              self-contained. Every compile/runtime dependency is embedded; the platform APIs the
+              bundle shares with the container (SLF4J, Sling, servlet, jakarta.json, commons-lang3)
+              are declared "provided" below so they are imported instead of embedded.
+
+              Note: Spring AI depends on Jackson 2.19, newer than the 2.17 the platform ships, so
+              Jackson is embedded here (isolated to this bundle) rather than imported.
             -->
-            <Embed-Dependency>*;scope=compile;groupId=dev.langchain4j|com.knuddels</Embed-Dependency>
+            <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
             <Embed-Directory>lib</Embed-Directory>
             <!--
-              Let bnd compute the imports from the embedded classes. LangChain4j references several
-              optional provider integrations it does not ship; those are marked optional so the
-              bundle can still resolve with only the OpenAI integration present.
+              Only the shared platform packages are hard imports; everything the embedded Spring
+              stack references but we do not ship (alternate HTTP clients, Kotlin, Netty, GraalVM,
+              etc.) is optional so the bundle can still resolve with just the JDK HTTP client.
             -->
             <Import-Package>
-              <!--
-                LangChain4j 1.0.1 compiles against Jackson 2.19, but this platform ships 2.17
-                (see the jackson.version property in the root pom), so widen the accepted range.
-              -->
-              com.fasterxml.jackson.*;version="[2.17,3)",
-              org.slf4j.*,
-              jakarta.json.*,
-              jakarta.servlet.*,
-              org.apache.sling.*,
-              org.apache.commons.lang3.*,
-              org.osgi.*,
+              org.slf4j,
+              org.slf4j.helpers,
+              org.slf4j.spi,
+              jakarta.json,
+              jakarta.servlet,
+              jakarta.servlet.http,
+              org.apache.sling.api,
+              org.apache.sling.api.servlets,
+              org.apache.commons.lang3,
               !com.google.*,
-              !reactor.*,
-              !io.reactivex.*,
               *;resolution:=optional
             </Import-Package>
             <_dsannotations>*</_dsannotations>
@@ -79,44 +80,56 @@
   </build>
 
   <dependencies>
+    <!--
+      Platform APIs supplied by the OSGi container. These are "provided" so the bundle plugin
+      imports them instead of embedding them (see the Embed-Dependency instruction above).
+    -->
     <dependency>
       <groupId>jakarta.json</groupId>
       <artifactId>jakarta.json-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.servlets.annotations</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.service.component.annotations</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.service.metatype.annotations</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
-    <!-- The LangChain4j SDK, embedded into this bundle (see maven-bundle-plugin config above). -->
+    <!-- The Spring AI SDK, embedded into this bundle (see maven-bundle-plugin config above). -->
     <dependency>
-      <groupId>dev.langchain4j</groupId>
-      <artifactId>langchain4j-open-ai</artifactId>
-      <version>${langchain4j.version}</version>
+      <groupId>org.springframework.ai</groupId>
+      <artifactId>spring-ai-openai</artifactId>
+      <version>${spring-ai.version}</version>
     </dependency>
 
     <!-- Testing -->

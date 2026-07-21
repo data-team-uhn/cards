@@ -35,12 +35,13 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import dev.langchain4j.model.openai.OpenAiChatModel;
+import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.ai.openai.api.OpenAiApi;
 
 /**
  * A servlet that forwards a prompt to an OpenAI-compatible chat completions server through the
- * LangChain4j SDK.
+ * Spring AI SDK.
  * <p>
  * It answers {@code POST} requests to {@code /llm} with a JSON body of the form:
  * </p>
@@ -71,8 +72,12 @@ import dev.langchain4j.model.openai.OpenAiChatModel;
 @Designate(ocd = LlmConfigDefinition.class)
 public class LlmEndpoint extends SlingJakartaAllMethodsServlet
 {
-    /** The default base URL of the OpenAI-compatible server, used when no OSGi config is set. */
-    public static final String DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1";
+    /**
+     * The default base URL of the OpenAI-compatible server, used when no OSGi config is set. Spring
+     * AI expects the host root here (it appends {@code /v1/chat/completions} itself), unlike SDKs
+     * that expect the {@code /v1} path to be included.
+     */
+    public static final String DEFAULT_OPENAI_BASE_URL = "https://api.openai.com";
 
     /** The default API key for the OpenAI-compatible server, used when no OSGi config is set. */
     public static final String DEFAULT_OPENAI_API_KEY = "CHANGE_ME";
@@ -123,13 +128,16 @@ public class LlmEndpoint extends SlingJakartaAllMethodsServlet
         }
 
         try {
-            final OpenAiChatModel chatModel = OpenAiChatModel.builder()
+            final OpenAiApi openAiApi = OpenAiApi.builder()
                 .baseUrl(this.baseUrl)
                 .apiKey(this.apiKey)
-                .modelName(this.model)
+                .build();
+            final OpenAiChatModel chatModel = OpenAiChatModel.builder()
+                .openAiApi(openAiApi)
+                .defaultOptions(OpenAiChatOptions.builder().model(this.model).build())
                 .build();
 
-            final String reply = chatModel.chat(content);
+            final String reply = chatModel.call(content);
 
             response.getWriter().print(Json.createObjectBuilder()
                 .add("content", reply)

@@ -34,7 +34,7 @@ import org.mockito.Mockito;
  * A simple "hello world" test for {@link LlmEndpoint}.
  * <p>
  * NOTE: this is an early placeholder test and is not expected to pass yet; forwarding to a real
- * OpenAI-compatible server requires either live credentials or a mocked LangChain4j chat model,
+ * OpenAI-compatible server requires either live credentials or a mocked Spring AI chat model,
  * which will be wired up in a follow-up.
  * </p>
  */
