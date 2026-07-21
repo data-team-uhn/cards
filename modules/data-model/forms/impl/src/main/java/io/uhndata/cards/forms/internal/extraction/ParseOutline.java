@@ -33,8 +33,8 @@ import jakarta.json.JsonValue;
 /**
  * The parsed contents of an {@code outline.json} written by the chunker beside a document's {@code catalog.json}.
  * It holds everything the Stage 0.5 gate's input selection needs without re-parsing the document: the document's
- * estimated token count and its ordered heading array. The marked table-of-contents text, when present, lives in
- * the document Markdown itself (between {@code <!-- TOC start -->}/{@code <!-- TOC end -->} markers) rather than here.
+ * estimated token count, its ordered heading array, and the detected table-of-contents lines (the cleaned text
+ * between the document's {@code <!-- TOC start -->}/{@code <!-- TOC end -->} markers, one entry per line).
  *
  * @version $Id$
  */
@@ -46,17 +46,23 @@ public final class ParseOutline
 
     private static final String HEADINGS = "headings";
 
+    private static final String TOC = "toc";
+
     private final String fileId;
 
     private final long tokens;
 
     private final List<String> headings;
 
-    private ParseOutline(final String documentFileId, final long documentTokens, final List<String> headingList)
+    private final List<String> toc;
+
+    private ParseOutline(final String documentFileId, final long documentTokens, final List<String> headingList,
+        final List<String> tocList)
     {
         this.fileId = documentFileId;
         this.tokens = documentTokens;
         this.headings = headingList;
+        this.toc = tocList;
     }
 
     /**
@@ -74,7 +80,8 @@ public final class ParseOutline
                 throw new IOException("Outline is not a JSON object: " + outlineFile);
             }
             final JsonObject root = parsed.asJsonObject();
-            return new ParseOutline(string(root, FILE_ID), longValue(root, TOKENS), headingList(root));
+            return new ParseOutline(string(root, FILE_ID), longValue(root, TOKENS), stringList(root, HEADINGS),
+                stringList(root, TOC));
         } catch (final RuntimeException e) {
             throw new IOException("Could not parse outline " + outlineFile + ": " + e.getMessage(), e);
         }
@@ -110,13 +117,24 @@ public final class ParseOutline
         return this.headings;
     }
 
-    private static List<String> headingList(final JsonObject root)
+    /**
+     * The detected table-of-contents lines (one cleaned TOC entry per element), written by the chunker from the
+     * marked {@code <!-- TOC start -->}/{@code <!-- TOC end -->} block.
+     *
+     * @return the TOC lines in document order, empty when no TOC was detected, never {@code null}
+     */
+    public List<String> toc()
     {
-        if (!root.containsKey(HEADINGS) || root.get(HEADINGS).getValueType() != JsonValue.ValueType.ARRAY) {
+        return this.toc;
+    }
+
+    private static List<String> stringList(final JsonObject root, final String key)
+    {
+        if (!root.containsKey(key) || root.get(key).getValueType() != JsonValue.ValueType.ARRAY) {
             return Collections.emptyList();
         }
         final List<String> result = new ArrayList<>();
-        for (final JsonValue value : root.getJsonArray(HEADINGS)) {
+        for (final JsonValue value : root.getJsonArray(key)) {
             if (value.getValueType() == JsonValue.ValueType.STRING) {
                 result.add(((JsonString) value).getString());
             }
