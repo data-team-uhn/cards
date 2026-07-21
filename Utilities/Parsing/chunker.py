@@ -67,8 +67,8 @@ All chunks are summarised in ``catalog.json``
     }
 
 ``summary``, ``rubric_tags``, ``questions_answered`` and ``extraction_hints`` are always left
-empty here so they can be filled in later. ``pages`` lists the PDF page numbers referenced within
-a chunk (from the ``<PDF Page N>`` markers the PDF parser emits); it is empty for DOCX.
+empty here so they can be filled in later. ``pages`` lists the -- page: numbers referenced within
+a chunk (from the ``<-- page: N-->`` markers the PDF parser emits); it is empty for DOCX.
 ``length`` is the character count of the chunk file's content.
 
 Token counts use a cheap character-based heuristic (``len(text) // 4``); no ML tokenizer is loaded.
@@ -137,8 +137,8 @@ HEADING = re.compile(r"^(#{1,6})(?!#)\s+(.*\S)\s*$")
 
 _RULE_LINE = re.compile(r"^-{3,}$")
 
-# A "<PDF Page N>" marker, page number captured.
-_PAGE_MARKER = re.compile(r"<PDF\s+Page\s+(\d+)>", re.IGNORECASE)
+# A "<-- page: N-->" marker, page number captured.
+_PAGE_MARKER = re.compile(r"<-- page: (\d+)-->", re.IGNORECASE)
 
 # A page marker alone on its own line.
 _PAGE_MARKER_LINE = re.compile(rf"^{_PAGE_MARKER.pattern}$", re.IGNORECASE)
@@ -255,7 +255,7 @@ def _min_heading_level(
 
 
 def _pages_in(text: str) -> list[int]:
-    """Return the sorted, de-duplicated PDF page numbers referenced in a string."""
+    """Return the sorted, de-duplicated -- page: numbers referenced in a string."""
     pages: set[int] = set()
     for match in _PAGE_MARKER.finditer(text or ""):
         pages.add(int(match.group(1)))
@@ -375,7 +375,7 @@ def _subchunk_blocks(chunk_text: str, boundary_level: int) -> list[str]:
 
 
 def _split_trailing_page_markers(text: str) -> tuple[str, str] | None:
-    """If ``text`` ends with one or more ``<PDF Page N>`` lines (and blank lines around
+    """If ``text`` ends with one or more ``<-- page: N-->`` lines (and blank lines around
     them), return ``(body, markers_block)``. ``None`` when it does not end that way.
     """
     lines = text.split("\n")
@@ -415,7 +415,7 @@ def _flush_without_trailing_page_markers(current: str, nxt: str) -> tuple[str | 
 
 
 def _move_trailing_page_markers(parts: list[str]) -> list[str]:
-    """Never leave a ``<PDF Page N>`` marker at the end of a part: move trailing marker
+    """Never leave a ``<-- page: N-->`` marker at the end of a part: move trailing marker
     runs to the start of the next part. Empty parts left behind are dropped. The last
     part is unchanged (nowhere to move markers).
     """
@@ -436,7 +436,7 @@ def _split_by_paragraphs(text: str, max_tokens: int) -> list[str]:
     """Split text into parts no larger than the budget at blank-line (paragraph) boundaries.
 
     A single paragraph larger than the budget is kept whole (nothing is split mid-paragraph).
-    When a part is closed, a trailing ``<PDF Page N>`` run is moved onto the next paragraph.
+    When a part is closed, a trailing ``<-- page: N-->`` run is moved onto the next paragraph.
     """
     parts: list[str] = []
     current: str | None = None
@@ -475,7 +475,7 @@ def _pack_blocks(blocks: list[str], max_tokens: int) -> list[str]:
     flushes alone — it always takes at least the following block (even over budget; the
     oversized splitter handles that later).
 
-    Trailing ``<PDF Page N>`` markers are never left at the end of a flushed part — they
+    Trailing ``<-- page: N-->`` markers are never left at the end of a flushed part — they
     move onto the start of the next part.
     """
     parts: list[str] = []

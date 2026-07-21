@@ -162,7 +162,7 @@ public class PdfMarkdownGenerator
                     fileName, allTokens.get(page - 1));
                 final List<StyledLine> pageLines = this.filterDecorations(rawLines, decorations, seenDecorations);
                 final String pageText = renderPage(pageLines, tables, currentSection);
-                markdown.append("\n\n<!-- page: ").append(page).append(" -->\n")
+                markdown.append("\n<-- page: ").append(page).append(" -->\n")
                     .append("## Page ").append(page).append(DOUBLE_NEWLINE);
                 if (StringUtils.isBlank(pageText)) {
                     markdown.append("_No extractable text on this page._\n");

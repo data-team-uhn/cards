@@ -32,7 +32,7 @@ import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.Fiel
  * Assembles the per-document blocks of the Stage 1.1 intake user message: the SCHEMA (the extraction fields'
  * rules), the CATALOG (one {@code sNNN: heading} line per section, plus an opening snippet for sections not sent
  * in full), and the CHUNK (the excerpt sent in full, each section prefixed with a {@code [section:sNNN]} marker
- * with its {@code <PDF Page N>} markers preserved). Section selection follows the design: reference lists are
+ * with its {@code <-- page: N-->} markers preserved). Section selection follows the design: reference lists are
  * dropped, the whole document is sent when it fits the budget, otherwise sections are taken in document order
  * (front first) up to the chunk budget. The set of section ids sent in full is exposed so the caller can stamp
  * {@code tag_basis} and record coverage.

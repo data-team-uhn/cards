@@ -32,7 +32,7 @@ _GARBAGE_LINE = re.compile(
 MIN_RUN_LENGTH = 25
 
 _LINE_NUMBER = re.compile(r"^\d+$")
-_PAGE_MARKER = re.compile(r"(\n<PDF Page \d+>\n)")
+_PAGE_MARKER = re.compile(r"(\n<-- page: \d+-->\n)")
 
 def _is_consecutive(values: list[int]) -> bool:
     """Return True when values form a +1 sequence."""
@@ -70,7 +70,7 @@ def cleanup_page_leading_line_numbers(page_md: str) -> str:
     """
     Remove a leading leading line-number block from one page body.
 
-    @param page_md: markdown for a single PDF page (no page header)
+    @param page_md: markdown for a single -- page: (no page header)
     @return: page markdown with leading line numbers removed when detected
     """
     if not page_md:
@@ -91,7 +91,7 @@ def cleanup_leading_line_numbers(md: str) -> str:
     """
     Remove leading line-number blocks from assembled PDF markdown.
 
-    Splits on ``<PDF Page N>`` markers inserted by ``docling_pdf_parser`` and
+    Splits on ``<-- page: N-->`` markers inserted by ``docling_pdf_parser`` and
     cleans each page body independently.
 
     @param md: full markdown document

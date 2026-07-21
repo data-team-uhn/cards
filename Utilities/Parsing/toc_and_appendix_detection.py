@@ -403,7 +403,7 @@ def _scan_block(lines: list[str], start: int, is_of_type) -> tuple[list[str], in
 
 
 def _scan_region(lines: list[str], start: int, is_of_type) -> tuple[list[str], int]:
-    """Collect an ``is_of_type`` region, continuing across ``<PDF Page N>`` boundaries as
+    """Collect an ``is_of_type`` region, continuing across ``<-- page: N-->`` boundaries as
     long as the next page's leading content resumes matching (tolerating a short run of
     stray words — page-header noise — before giving up) and no label re-appears first.
     Page markers that fall *between* continued TOC pages are kept inside the collected
