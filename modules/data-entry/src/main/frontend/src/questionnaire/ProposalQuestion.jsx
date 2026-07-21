@@ -67,7 +67,9 @@ async function validatePdf(file) {
       valid: true,
       pageCount: pdf.numPages,
     };
-  } catch {
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("PDF validation failed:", err);
     return {
       valid: false,
       error: "The PDF is corrupted or cannot be read.",
