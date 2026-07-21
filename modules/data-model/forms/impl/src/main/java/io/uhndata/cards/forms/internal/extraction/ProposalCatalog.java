@@ -139,11 +139,11 @@ public final class ProposalCatalog
      *
      * @return an unmodifiable list of chunk views
      */
-    public List<Section> sections()
+    public List<Chunk> chunks()
     {
-        final List<Section> result = new ArrayList<>(this.entries.size());
+        final List<Chunk> result = new ArrayList<>(this.entries.size());
         for (final JsonObject entry : this.entries) {
-            result.add(toSection(entry));
+            result.add(toChunk(entry));
         }
         return Collections.unmodifiableList(result);
     }
@@ -274,7 +274,7 @@ public final class ProposalCatalog
         return builder.build();
     }
 
-    private static Section toSection(final JsonObject entry)
+    private static Chunk toChunk(final JsonObject entry)
     {
         final List<Integer> pages = new ArrayList<>();
         if (entry.containsKey(PAGES) && entry.get(PAGES).getValueType() == JsonValue.ValueType.ARRAY) {
@@ -287,7 +287,7 @@ public final class ProposalCatalog
         final TagMetadata tag = new TagMetadata(stringList(entry, RUBRIC_TAGS), entry.getString(TAG_BASIS, ""),
             doubleValue(entry, TAG_CONFIDENCE), entry.getBoolean(UNCERTAIN, false),
             entry.getBoolean(EXCLUDED, false), entry.getString(EXCLUSION_REASON, ""));
-        return new Section(entry.getString(CHUNK_ID, ""), entry.getString(FILE, ""),
+        return new Chunk(entry.getString(CHUNK_ID, ""), entry.getString(FILE, ""),
             stringList(entry, HEADING), Collections.unmodifiableList(pages), tag,
             stringList(entry, EXTRACTION_HINTS));
     }
@@ -345,7 +345,7 @@ public final class ProposalCatalog
      * @param tag the stamped tagging metadata
      * @param extractionHints the derived field keys this chunk is a candidate source for (empty before the join)
      */
-    public record Section(String id, String file, List<String> heading, List<Integer> pages, TagMetadata tag,
+    public record Chunk(String id, String file, List<String> heading, List<Integer> pages, TagMetadata tag,
         List<String> extractionHints)
     {
         /**

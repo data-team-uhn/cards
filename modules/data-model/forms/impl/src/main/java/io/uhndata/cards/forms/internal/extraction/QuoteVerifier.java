@@ -20,12 +20,13 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
- * Verifies that an extracted evidence quote actually occurs in the section text it claims to come from. Both
- * sides are normalized first — the reserved parse markers ({@code <!-- page: N-->}, {@code [section:sNNN]},
- * {@code <!-- TOC start -->}/{@code <!-- TOC end -->}) are removed, all whitespace runs collapse to a single space, and case
- * is folded — because those markers interrupt sentences and the model's verbatim quote may differ from the
+ * Verifies that an extracted evidence quote actually occurs in the chunk text it claims to come from. Both
+ * sides are normalized first — the reserved parse markers ({@code <!-- page: N-->}, {@code [chunk:sNNN]},
+ * {@code <!-- TOC start -->}/{@code <!-- TOC end -->}) are removed, all whitespace runs collapse to a single
+ * space, and case is folded — because those markers interrupt sentences and the model's verbatim quote may
+ * differ from the
  * source only in incidental whitespace. A quote counts as verified when the normalized quote is a substring of
- * the normalized section text. This is the code-side half of the injection defense: an injected instruction
+ * the normalized chunk text. This is the code-side half of the injection defense: an injected instruction
  * cannot fabricate evidence that survives this check.
  *
  * @version $Id$
@@ -36,7 +37,7 @@ public final class QuoteVerifier
     static final int MIN_QUOTE_LENGTH = 6;
 
     private static final Pattern MARKER =
-        Pattern.compile("<!-- page: \\d+-->|\\[section:s\\d+\\]|<!-- TOC start -->|<!-- TOC end -->");
+        Pattern.compile("<!-- page: \\d+-->|\\[chunk:s\\d+\\]|<!-- TOC start -->|<!-- TOC end -->");
 
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
@@ -46,22 +47,22 @@ public final class QuoteVerifier
     }
 
     /**
-     * Whether the given quote occurs, after normalization, in the given section text.
+     * Whether the given quote occurs, after normalization, in the given chunk text.
      *
      * @param quote the extracted evidence quote
-     * @param sectionText the full Markdown text of the section the quote claims to come from
-     * @return {@code true} when the normalized quote is a non-trivial substring of the normalized section text
+     * @param chunkText the full Markdown text of the chunk the quote claims to come from
+     * @return {@code true} when the normalized quote is a non-trivial substring of the normalized chunk text
      */
-    public static boolean verify(final String quote, final String sectionText)
+    public static boolean verify(final String quote, final String chunkText)
     {
-        if (quote == null || sectionText == null) {
+        if (quote == null || chunkText == null) {
             return false;
         }
         final String normalizedQuote = normalize(quote);
         if (normalizedQuote.length() < MIN_QUOTE_LENGTH) {
             return false;
         }
-        return normalize(sectionText).contains(normalizedQuote);
+        return normalize(chunkText).contains(normalizedQuote);
     }
 
     private static String normalize(final String text)

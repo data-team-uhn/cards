@@ -35,14 +35,14 @@ import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.Fiel
  * evidence}}) that both the intake call and the Stage 1.2 targeted-extraction call return. It turns each raw
  * field object into a {@link FieldResult}, applying the two code-side checks the model is never trusted to do
  * itself: enum validation of the controlled-vocabulary fields ({@link StudyTaxonomy}) and verification of each
- * evidence quote against the section text it claims to come from ({@link QuoteVerifier}), penalizing a value's
+ * evidence quote against the chunk text it claims to come from ({@link QuoteVerifier}), penalizing a value's
  * confidence when no quote can be verified.
  *
  * @version $Id$
  */
 public final class FieldResponseParser
 {
-    /** Confidence multiplier applied when no evidence quote could be verified against the section text. */
+    /** Confidence multiplier applied when no evidence quote could be verified against the chunk text. */
     static final double UNVERIFIED_PENALTY = 0.5;
 
     private FieldResponseParser()
@@ -55,7 +55,7 @@ public final class FieldResponseParser
      *
      * @param parsed the model's response object
      * @param fieldKeys the field keys to read
-     * @param texts a map from section id to that section's full Markdown text, for quote verification
+     * @param texts a map from chunk id to that chunk's full Markdown text, for quote verification
      * @return the per-field results, in the requested order; fields absent from the response are omitted
      */
     public static Map<String, FieldResult> parseFields(final JsonObject parsed, final List<String> fieldKeys,
@@ -79,7 +79,7 @@ public final class FieldResponseParser
      *
      * @param key the field key
      * @param fieldObject the raw field object
-     * @param texts a map from section id to section text
+     * @param texts a map from chunk id to chunk text
      * @return the finalized field result
      */
     public static FieldResult finalizeField(final String key, final JsonObject fieldObject,
@@ -172,8 +172,8 @@ public final class FieldResponseParser
     private static boolean verifyItem(final JsonObject item, final Map<String, String> texts)
     {
         final String quote = readString(item, "quote");
-        final String sectionId = readString(item, "section_id");
-        final String text = sectionId == null ? null : texts.get(sectionId);
+        final String chunkId = readString(item, "chunk_id");
+        final String text = chunkId == null ? null : texts.get(chunkId);
         return QuoteVerifier.verify(quote, text);
     }
 

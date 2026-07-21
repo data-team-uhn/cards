@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Append-only per-call coverage log written beside a proposal's {@code catalog.json} as
  * {@code llm_call_tracker.jsonl} — one JSON object per line recording which fields an LLM call asked for and
- * which section ids' full text was in its payload. Appending (never rewriting) keeps parallel Stage 1.2 batches
+ * which chunk ids' full text was in its payload. Appending (never rewriting) keeps parallel Stage 1.2 batches
  * from racing: each writer only ever adds its own line. The coverage math used by the sweep planner is derived
- * from these records: {@code examined(field)} is the union of {@code sections} over every line whose
+ * from these records: {@code examined(field)} is the union of {@code chunks} over every line whose
  * {@code fields} contain that field.
  *
  * @version $Id$
@@ -91,25 +91,25 @@ public final class LlmCallTracker
      *
      * @param step one of {@link #STEP_GATE}, {@link #STEP_INTAKE}, {@link #STEP_EXTRACT}, {@link #STEP_SWEEP}
      * @param fields the field keys this call asked for
-     * @param sections the section ids whose full text was in this call's payload
+     * @param chunks the chunk ids whose full text was in this call's payload
      * @return the assigned call number
      */
-    public int append(final String step, final List<String> fields, final List<String> sections)
+    public int append(final String step, final List<String> fields, final List<String> chunks)
     {
         final int call = this.callCounter.getAndIncrement();
         final JsonArrayBuilder fieldArray = Json.createArrayBuilder();
         for (final String field : nullToEmpty(fields)) {
             fieldArray.add(field);
         }
-        final JsonArrayBuilder sectionArray = Json.createArrayBuilder();
-        for (final String section : nullToEmpty(sections)) {
-            sectionArray.add(section);
+        final JsonArrayBuilder chunkArray = Json.createArrayBuilder();
+        for (final String chunk : nullToEmpty(chunks)) {
+            chunkArray.add(chunk);
         }
         final JsonObject record = Json.createObjectBuilder()
             .add("call", call)
             .add("step", step)
             .add("fields", fieldArray)
-            .add("sections", sectionArray)
+            .add("chunks", chunkArray)
             .build();
         try {
             Files.writeString(this.trackerFile, record.toString() + System.lineSeparator(),
@@ -122,18 +122,18 @@ public final class LlmCallTracker
     }
 
     /**
-     * The union of section ids examined for a field across every recorded call that asked for it — the coverage
-     * set the sweep planner uses to avoid re-sending a section already read for that field.
+     * The union of chunk ids examined for a field across every recorded call that asked for it — the coverage
+     * set the sweep planner uses to avoid re-sending a chunk already read for that field.
      *
      * @param field the field key
-     * @return the section ids examined for the field, in first-seen order
+     * @return the chunk ids examined for the field, in first-seen order
      */
     public List<String> examined(final String field)
     {
         final List<String> result = new ArrayList<>();
         for (final JsonObject record : readRecords(this.trackerFile)) {
             if (containsString(record.get("fields"), field)) {
-                addNewStrings(result, record.get("sections"));
+                addNewStrings(result, record.get("chunks"));
             }
         }
         return result;

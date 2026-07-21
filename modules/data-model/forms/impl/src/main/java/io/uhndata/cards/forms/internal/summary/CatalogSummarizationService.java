@@ -71,9 +71,9 @@ public class CatalogSummarizationService
         + "answer questions about it, and do not add commentary. Respond with prose only, with no markdown "
         + "headings and no preamble such as 'Here is the summary'.";
 
-    /** Instruction for summarizing one section from its Markdown text (~300-600 tokens). */
-    private static final String SECTION_INSTRUCTION =
-        "Summarize the following section of a study document in approximately 300-600 tokens, capturing the "
+    /** Instruction for summarizing one chunk from its Markdown text (~300-600 tokens). */
+    private static final String CHUNK_INSTRUCTION =
+        "Summarize the following chunk of a study document in approximately 300-600 tokens, capturing the "
         + "specific items, topics and data it covers.";
 
     /**
@@ -106,8 +106,8 @@ public class CatalogSummarizationService
     }
 
     /**
-     * Fill every empty summary in the section catalogs under an answer folder. Already summarized entries are
-     * left untouched, so this is idempotent and safely resumable. A failure on any one section leaves that
+     * Fill every empty summary in the chunk catalogs under an answer folder. Already summarized entries are
+     * left untouched, so this is idempotent and safely resumable. A failure on any one chunk leaves that
      * summary empty and is logged; it never aborts the rest of the answer.
      *
      * @param answerDir the absolute parse output folder of the answer
@@ -119,7 +119,7 @@ public class CatalogSummarizationService
     }
 
     /**
-     * Fill every empty summary in the section catalogs under an answer folder, aborting when the chunk
+     * Fill every empty summary in the chunk catalogs under an answer folder, aborting when the chunk
      * generation is no longer current. See {@link #summarize(Path)} for traversal semantics.
      *
      * @param answerDir the absolute parse output folder of the answer
@@ -135,13 +135,13 @@ public class CatalogSummarizationService
             LOGGER.warn("Skipping stale summarization for {}", answerDir);
             return;
         }
-        final List<Path> catalogFiles = findSectionCatalogs(answerDir);
+        final List<Path> catalogFiles = findChunkCatalogs(answerDir);
         if (catalogFiles.isEmpty()) {
-            LOGGER.warn("No section catalogs to summarize under {}", answerDir);
+            LOGGER.warn("No chunk catalogs to summarize under {}", answerDir);
             return;
         }
         final LLMClient client = this.llmClientFactory.getActiveClient();
-        LOGGER.info("START summarizing {} section catalog(s) under {} (generation {})",
+        LOGGER.info("START summarizing {} chunk catalog(s) under {} (generation {})",
             catalogFiles.size(), answerDir, generation);
         int done = 0;
         for (final Path catalogFile : catalogFiles) {
@@ -157,7 +157,7 @@ public class CatalogSummarizationService
                     e.getMessage(), e);
             }
         }
-        LOGGER.info("DONE summarizing section catalogs under {}: {}/{} catalog(s) processed",
+        LOGGER.info("DONE summarizing chunk catalogs under {}: {}/{} catalog(s) processed",
             answerDir, done, catalogFiles.size());
     }
 
@@ -167,16 +167,16 @@ public class CatalogSummarizationService
     private void summarizeCatalog(final LLMClient client, final Path answerDir, final Path catalogFile,
         final long generation) throws IOException
     {
-        final Path sectionsDir = catalogFile.getParent();
+        final Path chunksDir = catalogFile.getParent();
         final SummaryCatalog catalog = SummaryCatalog.read(catalogFile);
-        final List<String> sectionIds = catalog.ids();
-        LOGGER.info("Catalog {}: summarizing {} section(s) {}",
-            sectionsDir.getFileName(), sectionIds.size(), sectionIds);
-        for (final String sectionId : sectionIds) {
+        final List<String> chunkIds = catalog.ids();
+        LOGGER.info("Catalog {}: summarizing {} chunk(s) {}",
+            chunksDir.getFileName(), chunkIds.size(), chunkIds);
+        for (final String chunkId : chunkIds) {
             if (this.isStale(answerDir, generation)) {
                 return;
             }
-            this.summarizeSection(client, answerDir, sectionsDir, sectionId, catalog, generation);
+            this.summarizeChunk(client, answerDir, chunksDir, chunkId, catalog, generation);
         }
         if (this.isStale(answerDir, generation)) {
             return;
@@ -185,33 +185,33 @@ public class CatalogSummarizationService
     }
 
     /**
-     * Summarize one section from the Markdown file named by its catalog entry, unless it is already summarized
+     * Summarize one chunk from the Markdown file named by its catalog entry, unless it is already summarized
      * or its text cannot be read.
      */
-    private void summarizeSection(final LLMClient client, final Path answerDir, final Path sectionsDir,
-        final String sectionId, final SummaryCatalog catalog, final long generation)
+    private void summarizeChunk(final LLMClient client, final Path answerDir, final Path chunksDir,
+        final String chunkId, final SummaryCatalog catalog, final long generation)
     {
-        final String label = "section " + sectionId;
-        if (catalog.isSummarized(sectionId)) {
+        final String label = "chunk " + chunkId;
+        if (catalog.isSummarized(chunkId)) {
             LOGGER.debug("{}: already summarized, skipping", label);
             return;
         }
-        final String fileName = catalog.fileOf(sectionId);
+        final String fileName = catalog.fileOf(chunkId);
         if (fileName.isBlank()) {
-            LOGGER.warn("{} in {} has no file reference; leaving its summary empty", label, sectionsDir);
+            LOGGER.warn("{} in {} has no file reference; leaving its summary empty", label, chunksDir);
             return;
         }
         if (this.isStale(answerDir, generation)) {
             return;
         }
-        final String text = readSectionText(sectionsDir.resolve(fileName));
+        final String text = readChunkText(chunksDir.resolve(fileName));
         if (text.isBlank()) {
-            LOGGER.warn("{} in {} has no readable text; leaving its summary empty", label, sectionsDir);
+            LOGGER.warn("{} in {} has no readable text; leaving its summary empty", label, chunksDir);
             return;
         }
-        final String summary = this.callLlm(client, label, SECTION_INSTRUCTION + PARAGRAPH_BREAK + text);
+        final String summary = this.callLlm(client, label, CHUNK_INSTRUCTION + PARAGRAPH_BREAK + text);
         if (summary != null) {
-            catalog.setSummary(sectionId, summary);
+            catalog.setSummary(chunkId, summary);
         }
     }
 
@@ -248,7 +248,7 @@ public class CatalogSummarizationService
         try {
             this.summarize(answerDir, generation);
         } catch (final IOException e) {
-            LOGGER.warn("Could not summarize section catalogs under {}: {}", answerDir, e.getMessage());
+            LOGGER.warn("Could not summarize chunk catalogs under {}: {}", answerDir, e.getMessage());
         }
     }
 
@@ -262,21 +262,21 @@ public class CatalogSummarizationService
      * (0- or 1-element) list so the caller's traversal logic stays unchanged from when several per-source
      * catalogs could exist (post-MVP multi-file).
      */
-    private static List<Path> findSectionCatalogs(final Path answerDir)
+    private static List<Path> findChunkCatalogs(final Path answerDir)
     {
         final Path catalogFile = answerDir.resolve(CHUNKS_DIRNAME).resolve(CATALOG_NAME);
         return Files.isRegularFile(catalogFile) ? List.of(catalogFile) : List.of();
     }
 
-    private static String readSectionText(final Path sectionFile)
+    private static String readChunkText(final Path chunkFile)
     {
-        if (!Files.isRegularFile(sectionFile)) {
+        if (!Files.isRegularFile(chunkFile)) {
             return "";
         }
         try {
-            return Files.readString(sectionFile, StandardCharsets.UTF_8);
+            return Files.readString(chunkFile, StandardCharsets.UTF_8);
         } catch (final IOException e) {
-            LOGGER.warn("Could not read section file {}: {}", sectionFile, e.getMessage());
+            LOGGER.warn("Could not read chunk file {}: {}", chunkFile, e.getMessage());
             return "";
         }
     }
