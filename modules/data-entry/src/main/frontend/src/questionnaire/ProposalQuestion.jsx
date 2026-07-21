@@ -133,13 +133,13 @@ async function validateDoc(file) {
 /**
  * Validate proposal uploads by size, extension, and file content.
  *
- * @param {FileList} files selected files
+ * @param {FileList|File[]} files selected files
  * @returns {Promise<string|undefined>} user-visible error when any file is unsupported
  */
 async function validateProposalFiles(files) {
   const errors = [];
   for (let i = 0; i < files.length; i++) {
-    const file = files.item(i);
+    const file = files[i];
 
     if (file.size === 0) {
       errors.push("The selected file is empty (0 bytes).");
