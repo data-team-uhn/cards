@@ -36,6 +36,7 @@ public class PdfParser extends SimpleDocumentParser
     protected String runFallbackGenerator(final byte[] content, final String fileName)
     {
         try {
+            setActiveGenerator("PDFBox");
             return this.pdfBoxGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
         } catch (IOException | LinkageError e) {
             return "";

@@ -118,12 +118,56 @@ public class DocxMarkdownGeneratorTest
         Assert.assertTrue(markdown.contains("12"));
     }
 
+    @Test
+    public void testSpaceSeparatedRunsAreNotGluedTogether() throws IOException
+    {
+        final String markdown = this.generator.toMarkdown(docxWithSpaceSeparatedRuns(), "spaces.docx");
+        Assert.assertTrue("Expected spaces between words, got: " + markdown, markdown.contains("STUDY SUMMARY"));
+        Assert.assertFalse(markdown.contains("STUDYSUMMARY"));
+    }
+
+    @Test
+    public void testSpaceSeparatedHyperlinkRunsAreNotGluedTogether() throws IOException
+    {
+        final String markdown = this.generator.toMarkdown(docxWithSpaceSeparatedHyperlinkRuns(), "toc.docx");
+        Assert.assertTrue("Expected spaces between hyperlink words, got: " + markdown,
+            markdown.contains("STUDY SUMMARY"));
+        Assert.assertFalse(markdown.contains("STUDYSUMMARY"));
+    }
+
     private static ByteArrayInputStream docxWithText(final String text) throws IOException
     {
         try (XWPFDocument doc = new XWPFDocument()) {
             final XWPFParagraph para = doc.createParagraph();
             final XWPFRun run = para.createRun();
             run.setText(text);
+            return toStream(doc);
+        }
+    }
+
+    private static ByteArrayInputStream docxWithSpaceSeparatedRuns() throws IOException
+    {
+        try (XWPFDocument doc = new XWPFDocument()) {
+            final XWPFParagraph para = doc.createParagraph();
+            para.setStyle("Heading1");
+            para.createRun().setText("STUDY");
+            para.createRun().setText(" ");
+            para.createRun().setText("SUMMARY");
+            return toStream(doc);
+        }
+    }
+
+    private static ByteArrayInputStream docxWithSpaceSeparatedHyperlinkRuns() throws IOException
+    {
+        try (XWPFDocument doc = new XWPFDocument()) {
+            final XWPFParagraph para = doc.createParagraph();
+            para.setStyle("Heading1");
+            // Mirror Word TOC fields: one hyperlink run per word/space, often without a resolvable URL.
+            para.createHyperlinkRun("").setText("STUDY");
+            para.createHyperlinkRun("").setText(" ");
+            para.createHyperlinkRun("").setText("SUMMARY");
+            para.createHyperlinkRun("").addTab();
+            para.createHyperlinkRun("").setText("4");
             return toStream(doc);
         }
     }
