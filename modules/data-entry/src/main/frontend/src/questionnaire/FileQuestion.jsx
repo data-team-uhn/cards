@@ -110,10 +110,17 @@ function FileQuestion(props) {
     if (disableUploads) {
       return;
     }
+    // FileList from the input/drop event is live and cleared when the event ends.
+    // Copy the File objects before any await so validation and upload still see them.
+    let filesCopy = [];
+    for (let i = 0; i < files.length; ++i) {
+      filesCopy.push(files[i]);
+    }
+
     // validateFiles may be sync or async (e.g. proposal PDF/DOCX content checks)
     setUploadInProgress(true);
     setError("");
-    const validationError = await Promise.resolve(validateFiles?.(files));
+    const validationError = await Promise.resolve(validateFiles?.(filesCopy));
     if (validationError) {
       setError(validationError);
       setUploadInProgress(false);
@@ -123,11 +130,6 @@ function FileQuestion(props) {
     // TODO - handle possible logged out situation here - open a login popup
     let savePromise = saveForm(new Event("autosave"));
     if (savePromise) {
-      // When this function returns, the "files selected" event is cleared, along with the files list. Make a copy to preserve the data.
-      let filesCopy = [];
-      for (let i = 0 ; i < files.length; ++i) {
-        filesCopy.push(files.item(i));
-      }
       savePromise.then(() => uploadAllFiles(filesCopy))
         .catch( (err) => {
           console.log(err);
