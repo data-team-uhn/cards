@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Triggers the Docling section-aware chat chunker for a proposal answer, asynchronously and without
+ * Triggers the Docling chunk-aware chat chunker for a proposal answer, asynchronously and without
  * ever blocking the caller.
  * <p>
  * The chunker splits the answer's single parsed Markdown file (MVP: one proposal file per answer)

@@ -154,21 +154,21 @@ public class ProtocolGateService
         }
         final ProposalCatalog catalog = ProposalCatalog.read(catalogFile);
         boolean changed = false;
-        for (final ProposalCatalog.Section section : catalog.sections()) {
-            changed |= stampSection(catalog, section, byHeading);
+        for (final ProposalCatalog.Chunk chunk : catalog.chunks()) {
+            changed |= stampChunk(catalog, chunk, byHeading);
         }
         if (changed) {
             catalog.write();
         }
     }
 
-    private static boolean stampSection(final ProposalCatalog catalog, final ProposalCatalog.Section section,
+    private static boolean stampChunk(final ProposalCatalog catalog, final ProposalCatalog.Chunk chunk,
         final Map<String, HeadingTag> byHeading)
     {
         final List<String> tags = new ArrayList<>();
         double confidenceSum = 0.0;
         int matches = 0;
-        for (final String heading : section.heading()) {
+        for (final String heading : chunk.heading()) {
             final HeadingTag tag = byHeading.get(normalize(heading));
             if (tag == null) {
                 continue;
@@ -182,10 +182,10 @@ public class ProtocolGateService
         if (tags.isEmpty()) {
             return false;
         }
-        catalog.setRubricTags(section.id(), tags);
-        catalog.setTagBasis(section.id(), "heading");
-        catalog.setTagConfidence(section.id(), confidenceSum / matches);
-        catalog.setUncertain(section.id(), true);
+        catalog.setRubricTags(chunk.id(), tags);
+        catalog.setTagBasis(chunk.id(), "heading");
+        catalog.setTagConfidence(chunk.id(), confidenceSum / matches);
+        catalog.setUncertain(chunk.id(), true);
         return true;
     }
 

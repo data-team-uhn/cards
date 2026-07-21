@@ -46,7 +46,7 @@ import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
  * <p>
  * Files are parsed only when their content actually changes: on each commit the editor compares the answer's
  * before and after state, parses just the files that were added or whose binary content differs (or whose
- * parsed output is missing), and only then re-runs the section chunker. A re-save that does not touch the
+ * parsed output is missing), and only then re-runs the chunker. A re-save that does not touch the
  * files is a no-op. When files or whole answers are removed, the corresponding parse output is deleted.
  * </p>
  *
@@ -152,7 +152,7 @@ public class ProposalAnswerEditor extends DefaultEditor
 
     /**
      * Bring the parse output of a proposal answer in line with its current files: parse new or changed files,
-     * drop the output of removed files, and renew the section trees only when something changed.
+     * drop the output of removed files, and renew the chunk trees only when something changed.
      *
      * @param before the answer's state before the commit (may be non-existent for a newly added answer)
      * @param after the answer's state after the commit
@@ -183,7 +183,7 @@ public class ProposalAnswerEditor extends DefaultEditor
             this.currentNodeBuilder.setProperty(NOTE_PROPERTY, String.join("\n\n", parseErrors), Type.STRING);
         }
         if (parseErrors.isEmpty()) {
-            // All per-file markdown is written, so kick off the section chunker. This runs asynchronously.
+            // All per-file markdown is written, so kick off the chunker. This runs asynchronously.
             DoclingChatChunker.requestChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder));
         } else {
             DoclingChatChunker.invalidateChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder));

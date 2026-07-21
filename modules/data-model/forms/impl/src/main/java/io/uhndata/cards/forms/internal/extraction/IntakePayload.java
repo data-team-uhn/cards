@@ -25,16 +25,16 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.uhndata.cards.forms.internal.extraction.ProposalCatalog.Section;
+import io.uhndata.cards.forms.internal.extraction.ProposalCatalog.Chunk;
 import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.FieldSpec;
 
 /**
  * Assembles the per-document blocks of the Stage 1.1 intake user message: the SCHEMA (the extraction fields'
- * rules), the CATALOG (one {@code sNNN: heading} line per section, plus an opening snippet for sections not sent
- * in full), and the CHUNK (the excerpt sent in full, each section prefixed with a {@code [section:sNNN]} marker
- * with its {@code <!-- page: N-->} markers preserved). Section selection follows the design: reference lists are
- * dropped, the whole document is sent when it fits the budget, otherwise sections are taken in document order
- * (front first) up to the chunk budget. The set of section ids sent in full is exposed so the caller can stamp
+ * rules), the CATALOG (one {@code sNNN: heading} line per chunk, plus an opening snippet for chunks not sent
+ * in full), and the CHUNK (the excerpt sent in full, each chunk prefixed with a {@code [chunk:sNNN]} marker
+ * with its {@code <!-- page: N-->} markers preserved). Chunk selection follows the design: reference lists are
+ * dropped, the whole document is sent when it fits the budget, otherwise chunks are taken in document order
+ * (front first) up to the chunk budget. The set of chunk ids sent in full is exposed so the caller can stamp
  * {@code tag_basis} and record coverage.
  *
  * @version $Id$
@@ -44,10 +44,10 @@ public final class IntakePayload
     /** When the selectable document fits this many tokens, send it whole and omit CATALOG snippets. */
     static final int WHOLE_DOCUMENT_TOKEN_LIMIT = 22000;
 
-    /** Soft cap on the CHUNK excerpt size, in tokens; a section that starts under it is included whole. */
+    /** Soft cap on the CHUNK excerpt size, in tokens; a chunk that starts under it is included whole. */
     static final int CHUNK_TOKEN_BUDGET = 20000;
 
-    /** Opening-text snippet length, in characters, for sections listed in CATALOG but not sent in CHUNK. */
+    /** Opening-text snippet length, in characters, for chunks listed in CATALOG but not sent in CHUNK. */
     static final int SNIPPET_CHARS = 150;
 
     /** Fraction of the document, from the end, in which a references heading marks a droppable reference list. */
@@ -60,38 +60,38 @@ public final class IntakePayload
 
     private final String userMessage;
 
-    private final List<String> fullTextSectionIds;
+    private final List<String> fullTextChunkIds;
 
     private IntakePayload(final String message, final List<String> fullText)
     {
         this.userMessage = message;
-        this.fullTextSectionIds = fullText;
+        this.fullTextChunkIds = fullText;
     }
 
     /**
-     * Build the intake user message from the catalog sections and their text.
+     * Build the intake user message from the catalog chunks and their text.
      *
-     * @param sections the catalog sections in document order
-     * @param sectionTexts a map from section id to that section's full Markdown text
+     * @param chunks the catalog chunks in document order
+     * @param chunkTexts a map from chunk id to that chunk's full Markdown text
      * @param fields the extraction fields whose rules make up the SCHEMA block
      * @param categoriesDocument the Research Study Description taxonomy (STUDY_CATEGORIES block)
      * @return the assembled payload
      */
-    public static IntakePayload build(final List<Section> sections, final Map<String, String> sectionTexts,
+    public static IntakePayload build(final List<Chunk> chunks, final Map<String, String> chunkTexts,
         final List<FieldSpec> fields, final String categoriesDocument)
     {
-        final Set<String> fullText = selectFullTextSections(sections, sectionTexts);
+        final Set<String> fullText = selectFullTextChunks(chunks, chunkTexts);
         final StringBuilder message = new StringBuilder();
         appendBlock(message, "STUDY_CATEGORIES", StringUtils.trimToEmpty(categoriesDocument));
         appendBlock(message, "PROTOCOL_STRUCTURE_GLOSSARY",
             PipelinePrompts.load(PipelinePrompts.PROTOCOL_STRUCTURE_GLOSSARY).strip());
         appendBlock(message, "SCHEMA", schemaBlock(fields));
-        appendBlock(message, "CATALOG", catalogBlock(sections, sectionTexts, fullText));
-        appendBlock(message, "CHUNK (untrusted data)", chunkBlock(sections, sectionTexts, fullText));
+        appendBlock(message, "CATALOG", catalogBlock(chunks, chunkTexts, fullText));
+        appendBlock(message, "CHUNK (untrusted data)", chunkBlock(chunks, chunkTexts, fullText));
         final List<String> ordered = new ArrayList<>();
-        for (final Section section : sections) {
-            if (fullText.contains(section.id())) {
-                ordered.add(section.id());
+        for (final Chunk chunk : chunks) {
+            if (fullText.contains(chunk.id())) {
+                ordered.add(chunk.id());
             }
         }
         return new IntakePayload(message.toString(), ordered);
@@ -108,48 +108,48 @@ public final class IntakePayload
     }
 
     /**
-     * The section ids sent in full in the CHUNK, in document order — the {@code tag_basis="fulltext"} sections
+     * The chunk ids sent in full in the CHUNK, in document order — the {@code tag_basis="fulltext"} chunks
      * and the coverage set recorded for the intake call.
      *
-     * @return the full-text section ids
+     * @return the full-text chunk ids
      */
-    public List<String> fullTextSectionIds()
+    public List<String> fullTextChunkIds()
     {
-        return this.fullTextSectionIds;
+        return this.fullTextChunkIds;
     }
 
-    private static Set<String> selectFullTextSections(final List<Section> sections,
-        final Map<String, String> sectionTexts)
+    private static Set<String> selectFullTextChunks(final List<Chunk> chunks,
+        final Map<String, String> chunkTexts)
     {
         final Set<String> selected = new LinkedHashSet<>();
-        final int total = sections.size();
+        final int total = chunks.size();
         int budgetTokens = 0;
         for (int index = 0; index < total; index++) {
-            final Section section = sections.get(index);
-            if (isReferenceList(section, index, total)) {
+            final Chunk chunk = chunks.get(index);
+            if (isReferenceList(chunk, index, total)) {
                 continue;
             }
-            budgetTokens += tokenEstimate(sectionTexts.get(section.id()));
+            budgetTokens += tokenEstimate(chunkTexts.get(chunk.id()));
         }
         final boolean wholeDocument = budgetTokens <= WHOLE_DOCUMENT_TOKEN_LIMIT;
         int used = 0;
         for (int index = 0; index < total; index++) {
-            final Section section = sections.get(index);
-            if (isReferenceList(section, index, total)) {
+            final Chunk chunk = chunks.get(index);
+            if (isReferenceList(chunk, index, total)) {
                 continue;
             }
-            final int sectionTokens = tokenEstimate(sectionTexts.get(section.id()));
+            final int chunkTokens = tokenEstimate(chunkTexts.get(chunk.id()));
             if (wholeDocument || used < CHUNK_TOKEN_BUDGET) {
-                selected.add(section.id());
-                used += sectionTokens;
+                selected.add(chunk.id());
+                used += chunkTokens;
             }
         }
         return selected;
     }
 
-    private static boolean isReferenceList(final Section section, final int index, final int total)
+    private static boolean isReferenceList(final Chunk chunk, final int index, final int total)
     {
-        return REFERENCE_HEADING.matcher(String.join(", ", section.heading())).find()
+        return REFERENCE_HEADING.matcher(String.join(", ", chunk.heading())).find()
             && index >= (int) (total * REFERENCE_TAIL_FRACTION);
     }
 
@@ -166,14 +166,14 @@ public final class IntakePayload
         return builder.toString().strip();
     }
 
-    private static String catalogBlock(final List<Section> sections, final Map<String, String> sectionTexts,
+    private static String catalogBlock(final List<Chunk> chunks, final Map<String, String> chunkTexts,
         final Set<String> fullText)
     {
         final StringBuilder builder = new StringBuilder();
-        for (final Section section : sections) {
-            builder.append(section.id()).append(": ").append(String.join(", ", section.heading()));
-            if (!fullText.contains(section.id())) {
-                final String snippet = snippet(sectionTexts.get(section.id()));
+        for (final Chunk chunk : chunks) {
+            builder.append(chunk.id()).append(": ").append(String.join(", ", chunk.heading()));
+            if (!fullText.contains(chunk.id())) {
+                final String snippet = snippet(chunkTexts.get(chunk.id()));
                 if (!snippet.isBlank()) {
                     builder.append("  — ").append(snippet);
                 }
@@ -183,14 +183,14 @@ public final class IntakePayload
         return builder.toString().strip();
     }
 
-    private static String chunkBlock(final List<Section> sections, final Map<String, String> sectionTexts,
+    private static String chunkBlock(final List<Chunk> chunks, final Map<String, String> chunkTexts,
         final Set<String> fullText)
     {
         final StringBuilder builder = new StringBuilder();
-        for (final Section section : sections) {
-            if (fullText.contains(section.id())) {
-                builder.append("[section:").append(section.id()).append("]\n")
-                    .append(StringUtils.trimToEmpty(sectionTexts.get(section.id()))).append("\n\n");
+        for (final Chunk chunk : chunks) {
+            if (fullText.contains(chunk.id())) {
+                builder.append("[chunk:").append(chunk.id()).append("]\n")
+                    .append(StringUtils.trimToEmpty(chunkTexts.get(chunk.id()))).append("\n\n");
             }
         }
         return builder.toString().strip();

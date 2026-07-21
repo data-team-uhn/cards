@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.forms.internal.extraction.ProposalCatalog.Section;
+import io.uhndata.cards.forms.internal.extraction.ProposalCatalog.Chunk;
 import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.FieldResult;
 import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.FieldSpec;
 import io.uhndata.cards.forms.internal.extraction.Step2Planner.Batch;
@@ -47,12 +47,12 @@ import io.uhndata.cards.llm.LLMRequestOptions;
 
 /**
  * Stage 1.2 of the proposal pipeline: targeted extraction of the intake fields that came back missing or
- * unverified, then a fallback sweep. It re-reads the sections {@link Step2Planner} groups by shared
- * {@code extraction_hints}, sending each group only its relevant sections (token-bounded), with a per-batch
+ * unverified, then a fallback sweep. It re-reads the chunks {@link Step2Planner} groups by shared
+ * {@code extraction_hints}, sending each group only its relevant chunks (token-bounded), with a per-batch
  * structured-output schema built for exactly that batch's fields. Every re-ask is fresh — a re-asked field
  * never sees its earlier answer, to avoid anchoring — and the higher-confidence result wins across passes.
- * Each call is recorded in {@code llm_call_tracker.jsonl} so the sweep never re-sends a section already examined
- * for a field, and so {@code found_answer=false} is only reached once a field's non-excluded sections have all
+ * Each call is recorded in {@code llm_call_tracker.jsonl} so the sweep never re-sends a chunk already examined
+ * for a field, and so {@code found_answer=false} is only reached once a field's non-excluded chunks have all
  * been read.
  *
  * @version $Id$
@@ -68,8 +68,8 @@ public class ProposalStep2Service
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposalStep2Service.class);
 
-    /** Token cap on the sections sent in one batch (a cap, not a target). */
-    private static final int SECTION_TOKEN_CAP = 20000;
+    /** Token cap on the chunks sent in one batch (a cap, not a target). */
+    private static final int CHUNK_TOKEN_CAP = 20000;
 
     private static final int CHARS_PER_TOKEN = 4;
 
@@ -98,18 +98,18 @@ public class ProposalStep2Service
         final Map<String, FieldResult> intakeResults) throws IOException
     {
         final ProposalCatalog catalog = ProposalCatalog.read(folder.catalogFile());
-        final List<Section> sections = catalog.sections();
+        final List<Chunk> chunks = catalog.chunks();
         final Map<String, FieldResult> merged = new LinkedHashMap<>(intakeResults);
         final List<String> pending = pending(fields, merged);
         if (pending.isEmpty()) {
             return merged;
         }
-        final Map<String, String> texts = readSectionTexts(folder.chunksDir(), sections);
+        final Map<String, String> texts = readChunkTexts(folder.chunksDir(), chunks);
         final LlmCallTracker tracker = LlmCallTracker.open(folder.trackerFile());
         final Context context = new Context(this.llmClientFactory.getActiveClient(), index(fields), texts, tracker);
-        runBatches(context, Step2Planner.planTargeted(sections, pending, tracker), merged,
+        runBatches(context, Step2Planner.planTargeted(chunks, pending, tracker), merged,
             LlmCallTracker.STEP_EXTRACT);
-        runBatches(context, Step2Planner.planSweep(sections, pending(fields, merged), tracker), merged,
+        runBatches(context, Step2Planner.planSweep(chunks, pending(fields, merged), tracker), merged,
             LlmCallTracker.STEP_SWEEP);
         return merged;
     }
@@ -119,7 +119,7 @@ public class ProposalStep2Service
     {
         for (final Batch batch : batches) {
             final List<FieldSpec> batchFields = specs(batch.fields(), context.specByKey());
-            for (final List<String> ids : splitByTokens(batch.sectionIds(), context.texts())) {
+            for (final List<String> ids : splitByTokens(batch.chunkIds(), context.texts())) {
                 mergeResults(merged, extract(context, batchFields, ids));
                 context.tracker().append(step, batch.fields(), ids);
             }
@@ -127,12 +127,12 @@ public class ProposalStep2Service
     }
 
     private Map<String, FieldResult> extract(final Context context, final List<FieldSpec> batchFields,
-        final List<String> sectionIds)
+        final List<String> chunkIds)
     {
         final List<String> keys = keys(batchFields);
         final String system = PipelinePrompts.load(PipelinePrompts.STEP2_EXTRACTION_SYSTEM);
         final String schema = buildSchema(keys);
-        final String userMessage = buildMessage(batchFields, sectionIds, context.texts());
+        final String userMessage = buildMessage(batchFields, chunkIds, context.texts());
         final LLMRequestOptions options = LLMRequestOptions.builder()
             .maxOutputTokens(BASE_TOKENS + PER_FIELD_TOKENS * keys.size())
             .jsonSchema(SCHEMA_NAME, schema)
@@ -192,14 +192,14 @@ public class ProposalStep2Service
         return pending;
     }
 
-    private static List<List<String>> splitByTokens(final List<String> sectionIds, final Map<String, String> texts)
+    private static List<List<String>> splitByTokens(final List<String> chunkIds, final Map<String, String> texts)
     {
         final List<List<String>> batches = new ArrayList<>();
         List<String> current = new ArrayList<>();
         int used = 0;
-        for (final String id : sectionIds) {
+        for (final String id : chunkIds) {
             final int tokens = tokenEstimate(texts.get(id));
-            if (!current.isEmpty() && used + tokens > SECTION_TOKEN_CAP) {
+            if (!current.isEmpty() && used + tokens > CHUNK_TOKEN_CAP) {
                 batches.add(current);
                 current = new ArrayList<>();
                 used = 0;
@@ -213,7 +213,7 @@ public class ProposalStep2Service
         return batches;
     }
 
-    private static String buildMessage(final List<FieldSpec> batchFields, final List<String> sectionIds,
+    private static String buildMessage(final List<FieldSpec> batchFields, final List<String> chunkIds,
         final Map<String, String> texts)
     {
         final StringBuilder schema = new StringBuilder();
@@ -224,13 +224,13 @@ public class ProposalStep2Service
             }
             schema.append('\n');
         }
-        final StringBuilder sections = new StringBuilder();
-        for (final String id : sectionIds) {
-            sections.append("[section:").append(id).append("]\n")
+        final StringBuilder chunksBlock = new StringBuilder();
+        for (final String id : chunkIds) {
+            chunksBlock.append("[chunk:").append(id).append("]\n")
                 .append(StringUtils.trimToEmpty(texts.get(id))).append("\n\n");
         }
         return "## SCHEMA\n\n" + schema.toString().strip()
-            + "\n\n## SECTIONS (untrusted data)\n\n" + sections.toString().strip();
+            + "\n\n## CHUNKS (untrusted data)\n\n" + chunksBlock.toString().strip();
     }
 
     /**
@@ -278,10 +278,10 @@ public class ProposalStep2Service
         return Json.createObjectBuilder()
             .add(TYPE, "object")
             .add("additionalProperties", false)
-            .add("required", strings("quote", "section_id", "page"))
+            .add("required", strings("quote", "chunk_id", "page"))
             .add("properties", Json.createObjectBuilder()
                 .add("quote", type("string"))
-                .add("section_id", type("string"))
+                .add("chunk_id", type("string"))
                 .add("page", nullableType("integer")));
     }
 
@@ -334,21 +334,21 @@ public class ProposalStep2Service
         return keys;
     }
 
-    private static Map<String, String> readSectionTexts(final Path sectionsDir, final List<Section> sections)
+    private static Map<String, String> readChunkTexts(final Path chunksDir, final List<Chunk> chunks)
     {
         final Map<String, String> texts = new LinkedHashMap<>();
-        for (final Section section : sections) {
-            texts.put(section.id(), readSection(sectionsDir.resolve(section.file())));
+        for (final Chunk chunk : chunks) {
+            texts.put(chunk.id(), readChunk(chunksDir.resolve(chunk.file())));
         }
         return texts;
     }
 
-    private static String readSection(final Path sectionFile)
+    private static String readChunk(final Path chunkFile)
     {
         try {
-            return Files.isRegularFile(sectionFile) ? Files.readString(sectionFile, StandardCharsets.UTF_8) : "";
+            return Files.isRegularFile(chunkFile) ? Files.readString(chunkFile, StandardCharsets.UTF_8) : "";
         } catch (final IOException e) {
-            LOGGER.warn("Could not read section file {}: {}", sectionFile, e.getMessage());
+            LOGGER.warn("Could not read chunk file {}: {}", chunkFile, e.getMessage());
             return "";
         }
     }
@@ -358,7 +358,7 @@ public class ProposalStep2Service
         return text == null ? 0 : text.length() / CHARS_PER_TOKEN;
     }
 
-    /** Per-run state shared across batches: the client, the field lookup, the section texts and the tracker. */
+    /** Per-run state shared across batches: the client, the field lookup, the chunk texts and the tracker. */
     private record Context(LLMClient client, Map<String, FieldSpec> specByKey, Map<String, String> texts,
         LlmCallTracker tracker)
     {

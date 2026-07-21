@@ -24,16 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.uhndata.cards.forms.internal.extraction.ProposalCatalog.Section;
+import io.uhndata.cards.forms.internal.extraction.ProposalCatalog.Chunk;
 
 /**
  * Plans the Stage 1.2 targeted-extraction calls. Targeted batches group pending fields by their shared candidate
- * sections — the sections that hint the field (per the {@code extraction_hints} join) and have not yet been
- * examined for it — so each call carries only the sections relevant to its fields and fields with the same
+ * chunks — the chunks that hint the field (per the {@code extraction_hints} join) and have not yet been
+ * examined for it — so each call carries only the chunks relevant to its fields and fields with the same
  * candidate set share one call. The sweep is the fallback: for fields still missing after the targeted pass, it
- * gathers every section not yet examined and not confidently excluded (only a content-based tag that does not
+ * gathers every chunk not yet examined and not confidently excluded (only a content-based tag that does not
  * match the field can exclude it — {@link FieldTagMap#isWildcard}) into one blind batch. Token-bounding of each
- * batch's sections is left to the caller, which holds the section texts.
+ * batch's chunks is left to the caller, which holds the chunk texts.
  *
  * @version $Id$
  */
@@ -45,19 +45,19 @@ public final class Step2Planner
     }
 
     /**
-     * Group pending fields into targeted batches by their shared candidate sections.
+     * Group pending fields into targeted batches by their shared candidate chunks.
      *
-     * @param sections the catalog sections, with their stamped tags and hints
+     * @param chunks the catalog chunks, with their stamped tags and hints
      * @param pendingFields the field keys still needing an answer
-     * @param tracker the coverage tracker, consulted to skip already-examined sections
-     * @return the targeted batches, each carrying the fields that share a candidate section set
+     * @param tracker the coverage tracker, consulted to skip already-examined chunks
+     * @return the targeted batches, each carrying the fields that share a candidate chunk set
      */
-    public static List<Batch> planTargeted(final List<Section> sections, final List<String> pendingFields,
+    public static List<Batch> planTargeted(final List<Chunk> chunks, final List<String> pendingFields,
         final LlmCallTracker tracker)
     {
         final Map<String, List<String>> candidatesByField = new LinkedHashMap<>();
         for (final String field : pendingFields) {
-            final List<String> candidates = candidateSections(sections, field, tracker);
+            final List<String> candidates = candidateChunks(chunks, field, tracker);
             if (!candidates.isEmpty()) {
                 candidatesByField.put(field, candidates);
             }
@@ -68,35 +68,35 @@ public final class Step2Planner
     /**
      * Plan the fallback sweep for fields still missing after the targeted pass.
      *
-     * @param sections the catalog sections, with their stamped tags and hints
+     * @param chunks the catalog chunks, with their stamped tags and hints
      * @param stillPending the field keys still missing after targeted extraction
-     * @param tracker the coverage tracker, consulted to skip already-examined sections
-     * @return a single-batch list carrying all still-pending fields over the sweep sections, or empty when there
+     * @param tracker the coverage tracker, consulted to skip already-examined chunks
+     * @return a single-batch list carrying all still-pending fields over the sweep chunks, or empty when there
      *         is nothing left to read
      */
-    public static List<Batch> planSweep(final List<Section> sections, final List<String> stillPending,
+    public static List<Batch> planSweep(final List<Chunk> chunks, final List<String> stillPending,
         final LlmCallTracker tracker)
     {
         if (stillPending.isEmpty()) {
             return List.of();
         }
         final Set<String> sweepIds = new LinkedHashSet<>();
-        for (final Section section : sections) {
-            if (isSweepCandidate(section, stillPending, tracker)) {
-                sweepIds.add(section.id());
+        for (final Chunk chunk : chunks) {
+            if (isSweepCandidate(chunk, stillPending, tracker)) {
+                sweepIds.add(chunk.id());
             }
         }
         return sweepIds.isEmpty() ? List.of() : List.of(new Batch(stillPending, new ArrayList<>(sweepIds)));
     }
 
-    private static boolean isSweepCandidate(final Section section, final List<String> stillPending,
+    private static boolean isSweepCandidate(final Chunk chunk, final List<String> stillPending,
         final LlmCallTracker tracker)
     {
         final boolean wildcard =
-            FieldTagMap.isWildcard(section.rubricTags(), section.tagBasis(), section.uncertain());
+            FieldTagMap.isWildcard(chunk.rubricTags(), chunk.tagBasis(), chunk.uncertain());
         for (final String field : stillPending) {
-            final boolean excluded = !wildcard && !section.extractionHints().contains(field);
-            final boolean examined = tracker.examined(field).contains(section.id());
+            final boolean excluded = !wildcard && !chunk.extractionHints().contains(field);
+            final boolean examined = tracker.examined(field).contains(chunk.id());
             if (!excluded && !examined) {
                 return true;
             }
@@ -104,14 +104,14 @@ public final class Step2Planner
         return false;
     }
 
-    private static List<String> candidateSections(final List<Section> sections, final String field,
+    private static List<String> candidateChunks(final List<Chunk> chunks, final String field,
         final LlmCallTracker tracker)
     {
         final Set<String> examined = new HashSet<>(tracker.examined(field));
         final List<String> candidates = new ArrayList<>();
-        for (final Section section : sections) {
-            if (section.extractionHints().contains(field) && !examined.contains(section.id())) {
-                candidates.add(section.id());
+        for (final Chunk chunk : chunks) {
+            if (chunk.extractionHints().contains(field) && !examined.contains(chunk.id())) {
+                candidates.add(chunk.id());
             }
         }
         return candidates;
@@ -120,26 +120,26 @@ public final class Step2Planner
     private static List<Batch> groupByCandidateSet(final Map<String, List<String>> candidatesByField)
     {
         final Map<String, List<String>> fieldsByKey = new LinkedHashMap<>();
-        final Map<String, List<String>> sectionsByKey = new LinkedHashMap<>();
+        final Map<String, List<String>> chunksByKey = new LinkedHashMap<>();
         for (final Map.Entry<String, List<String>> entry : candidatesByField.entrySet()) {
             final String key = String.join(",", entry.getValue());
             fieldsByKey.computeIfAbsent(key, ignored -> new ArrayList<>()).add(entry.getKey());
-            sectionsByKey.putIfAbsent(key, entry.getValue());
+            chunksByKey.putIfAbsent(key, entry.getValue());
         }
         final List<Batch> batches = new ArrayList<>();
         for (final Map.Entry<String, List<String>> entry : fieldsByKey.entrySet()) {
-            batches.add(new Batch(entry.getValue(), sectionsByKey.get(entry.getKey())));
+            batches.add(new Batch(entry.getValue(), chunksByKey.get(entry.getKey())));
         }
         return batches;
     }
 
     /**
-     * One planned extraction call: the fields to ask for and the section ids to send.
+     * One planned extraction call: the fields to ask for and the chunk ids to send.
      *
      * @param fields the field keys this call extracts
-     * @param sectionIds the section ids whose full text this call sends
+     * @param chunkIds the chunk ids whose full text this call sends
      */
-    public record Batch(List<String> fields, List<String> sectionIds)
+    public record Batch(List<String> fields, List<String> chunkIds)
     {
     }
 }
