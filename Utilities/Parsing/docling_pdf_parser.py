@@ -212,7 +212,7 @@ def convert_pdf_to_markdown(
     for _start_page, _end_page, _status, md, _md_len, _elapsed, _error in completed_results:
         all_markdown.append(md)
 
-    cleaned = clean_markdown("".join(all_markdown))
+    cleaned = clean_markdown("".join(all_markdown), source_file=input_path.name)
     markdown_content = mark_toc_and_appendix(
         cleaned, outline_path, min_structure_tokens=min_structure_tokens
     )
@@ -273,7 +273,7 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
 
         chunk_parts: list[str] = []
         for page_no in range(start_page, end_page + 1):
-            chunk_parts.append(f"\n<-- page: {page_no}-->\n")
+            chunk_parts.append(f"\n<!-- page: {page_no}-->\n")
             page_md = result.document.export_to_markdown(page_no=page_no)
             chunk_parts.append(page_md)
 
