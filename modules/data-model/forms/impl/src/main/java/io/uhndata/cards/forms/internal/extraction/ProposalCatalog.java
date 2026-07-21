@@ -61,7 +61,7 @@ public final class ProposalCatalog
     /** Chunk-entry property: the chunk's heading(s). */
     public static final String HEADING = "heading";
 
-    /** Chunk-entry property: the 1-based <-- page: N--> numbers the chunk spans (empty for DOCX). */
+    /** Chunk-entry property: the 1-based <!-- page: N--> numbers the chunk spans (empty for DOCX). */
     public static final String PAGES = "pages";
 
     /** Chunk-entry property: the rubric tags (B.1–B.17). */
@@ -341,7 +341,7 @@ public final class ProposalCatalog
      * @param id the chunk identifier (e.g. {@code s001})
      * @param file the chunk's Markdown file name, relative to the catalog folder
      * @param heading the chunk's heading(s)
-     * @param pages the 1-based <-- page: N--> numbers the chunk spans (empty for DOCX-origin documents)
+     * @param pages the 1-based <!-- page: N--> numbers the chunk spans (empty for DOCX-origin documents)
      * @param tag the stamped tagging metadata
      * @param extractionHints the derived field keys this chunk is a candidate source for (empty before the join)
      */

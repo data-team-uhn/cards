@@ -19,7 +19,7 @@
 
 """
 TOC detection: find a "table of contents" / "contents" label, flatten table-shaped
-TOCs, clean leaders/tabs, and wrap the block in ``<TOC start>`` / ``<TOC end>``.
+TOCs, clean leaders/tabs, and wrap the block in ``<!-- TOC start -->`` / ``<!-- TOC end -->``.
 Entries over 40 words or with a word over 100 characters are discarded.
 
 Appendix detection (:func:`mark_toc_and_appendix`): after TOC marking, find the first
@@ -34,8 +34,8 @@ import json
 import re
 from pathlib import Path
 
-TOC_START = "<TOC start>"
-TOC_END = "<TOC end>"
+TOC_START = "<!-- TOC start -->"
+TOC_END = "<!-- TOC end -->"
 
 # Maximum words per accepted heading, and maximum characters per word within it.
 MAX_HEADING_WORDS = 40
@@ -54,9 +54,9 @@ DENSITY_WINDOW = 8
 MAX_LEADING_WORDS_FOR_CONTINUATION = 12
 
 # Marker line inserted immediately before the first Reference or Appendix section
-# heading found by mark_appendix() — reserved, like <TOC start>/<TOC end>.
-REFERENCE_MARKER = "<Reference>"
-APPENDIX_MARKER = "<Appendix>"
+# heading found by mark_appendix() — reserved, like <!-- TOC start -->/<!-- TOC end -->.
+REFERENCE_MARKER = "<!-- Reference -->"
+APPENDIX_MARKER = "<!-- Appendix -->"
 
 # Documents shorter than this (``len(md) // 4``) skip TOC/appendix marking — Stage 0.5
 # can send them whole. Overridable via :func:`mark_toc_and_appendix`'s ``min_structure_tokens``.
@@ -133,7 +133,7 @@ def _keyword_start_pattern(phrases: list[str]) -> re.Pattern:
 _REFERENCE_HEADING_START = _keyword_start_pattern(REFERENCE_HEADINGS)
 _APPENDIX_HEADING_START = _keyword_start_pattern(APPENDIX_HEADINGS)
 
-PAGE_MARKER = re.compile(r"<PDF\s+Page\s+(\d+)>", re.IGNORECASE)
+PAGE_MARKER = re.compile(r"<!--\s+page:\s+(\d+)\s+-->", re.IGNORECASE)
 
 # A page marker alone on its own line.
 _PAGE_MARKER_LINE = re.compile(rf"^{PAGE_MARKER.pattern}$", re.IGNORECASE)
@@ -403,7 +403,7 @@ def _scan_block(lines: list[str], start: int, is_of_type) -> tuple[list[str], in
 
 
 def _scan_region(lines: list[str], start: int, is_of_type) -> tuple[list[str], int]:
-    """Collect an ``is_of_type`` region, continuing across ``<-- page: N-->`` boundaries as
+    """Collect an ``is_of_type`` region, continuing across ``<!-- page: N-->`` boundaries as
     long as the next page's leading content resumes matching (tolerating a short run of
     stray words — page-header noise — before giving up) and no label re-appears first.
     Page markers that fall *between* continued TOC pages are kept inside the collected
@@ -463,7 +463,7 @@ def _clean_toc_line(line: str) -> str:
 
 
 def mark_and_cleanup_toc(md: str, outline_path: Path | None = None) -> str:
-    """Detect the document's TOC and wrap it in <TOC start> / <TOC end> lines.
+    """Detect the document's TOC and wrap it in <!-- TOC start --> / <!-- TOC end --> lines.
 
     @param md: the full assembled Markdown document
     @param outline_path: the document's outline.json file

@@ -34,7 +34,7 @@ import jakarta.json.JsonValue;
  * The parsed contents of an {@code outline.json} written by the chunker beside a document's {@code catalog.json}.
  * It holds everything the Stage 0.5 gate's input selection needs without re-parsing the document: the document's
  * estimated token count and its ordered heading array. The marked table-of-contents text, when present, lives in
- * the document Markdown itself (between {@code <TOC start>}/{@code <TOC end>} markers) rather than here.
+ * the document Markdown itself (between {@code <!-- TOC start -->}/{@code <!-- TOC end -->} markers) rather than here.
  *
  * @version $Id$
  */

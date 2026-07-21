@@ -32,7 +32,8 @@ _GARBAGE_LINE = re.compile(
 MIN_RUN_LENGTH = 25
 
 _LINE_NUMBER = re.compile(r"^\d+$")
-_PAGE_MARKER = re.compile(r"(\n<-- page: \d+-->\n)")
+_PAGE_MARKER = re.compile(r"(\n<!-- page: \d+-->\n)")
+_IMAGE_PLACEHOLDER = re.compile(r"^\s*<!--\s*image\s*-->\s*$")
 
 def _is_consecutive(values: list[int]) -> bool:
     """Return True when values form a +1 sequence."""
@@ -91,7 +92,7 @@ def cleanup_leading_line_numbers(md: str) -> str:
     """
     Remove leading line-number blocks from assembled PDF markdown.
 
-    Splits on ``<-- page: N-->`` markers inserted by ``docling_pdf_parser`` and
+    Splits on ``<!-- page: N-->`` markers inserted by ``docling_pdf_parser`` and
     cleans each page body independently.
 
     @param md: full markdown document
@@ -114,12 +115,30 @@ def cleanup_leading_line_numbers(md: str) -> str:
     return "".join(cleaned_parts)
 
 
-def clean_markdown(md: str) -> str:
-    """Collapse blank lines, remove empty headings, and strip decorative garbage lines."""
+def _escape_comment(value: str) -> str:
+    """Escape HTML-comment-hostile sequences."""
+    return value.replace("--", "—")
+
+
+def clean_markdown(md: str, source_file: str | None = None) -> str:
+    """
+    Collapse blank lines, remove empty headings / image placeholders, and strip
+    decorative garbage lines.
+    When ``source_file`` is set, prepends ``<!-- source_file: ... -->``
+    """
     if not md:
-        return md or ""
-    # Special case: cleanup leading line numbers at every line
-    md = cleanup_leading_line_numbers(md)
-    kept_lines = [line for line in md.split("\n") if not _GARBAGE_LINE.match(line)]
-    cleaned = re.sub(r"\n{3,}", "\n\n", "\n".join(kept_lines)).strip()
+        cleaned = md or ""
+    else:
+        # Special case: cleanup leading line numbers at every line
+        md = cleanup_leading_line_numbers(md)
+        kept_lines = [
+            line
+            for line in md.split("\n")
+            if not _GARBAGE_LINE.match(line) and not _IMAGE_PLACEHOLDER.match(line)
+        ]
+        cleaned = re.sub(r"\n{3,}", "\n\n", "\n".join(kept_lines)).strip()
+
+    if source_file:
+        header = f"<!-- source_file: {_escape_comment(source_file)} -->"
+        cleaned = f"{header}\n{cleaned}" if cleaned else header
     return cleaned

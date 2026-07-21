@@ -73,7 +73,10 @@ def convert_docx_to_markdown(
     active_converter = converter if converter is not None else get_docx_converter()
     result = active_converter.convert(str(input_path))
     ensure_conversion_ok(result)
-    cleaned = clean_markdown(result.document.export_to_markdown())
+    cleaned = clean_markdown(
+        result.document.export_to_markdown(),
+        source_file=input_path.name,
+    )
     return mark_toc_and_appendix(
         cleaned, outline_path, min_structure_tokens=min_structure_tokens
     )

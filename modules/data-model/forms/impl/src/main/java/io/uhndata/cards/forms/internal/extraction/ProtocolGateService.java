@@ -94,10 +94,10 @@ public class ProtocolGateService
     private static final long DEFAULT_INPUT_TOKEN_LIMIT = 24000L;
 
     /** Marks the start of a table of contents in the chunker's marked document Markdown. */
-    private static final String TOC_START_MARKER = "<TOC start>";
+    private static final String TOC_START_MARKER = "<!-- TOC start -->";
 
     /** Marks the end of a table of contents in the chunker's marked document Markdown. */
-    private static final String TOC_END_MARKER = "<TOC end>";
+    private static final String TOC_END_MARKER = "<!-- TOC end -->";
 
     private static final String INPUT_HEADING_OUTLINE = "heading outline";
 
