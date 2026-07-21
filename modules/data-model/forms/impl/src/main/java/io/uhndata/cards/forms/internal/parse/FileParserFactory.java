@@ -18,6 +18,9 @@ package io.uhndata.cards.forms.internal.parse;
 
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Factory returning the appropriate parser for a given file extension.
  * <p>
@@ -33,6 +36,8 @@ import java.util.Locale;
  */
 public class FileParserFactory
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileParserFactory.class);
+
     private final FileParser pdfParser = new PdfParser();
 
     private final FileParser docxParser = new DocxParser();
@@ -48,15 +53,18 @@ public class FileParserFactory
     public FileParser getParser(final String fileName)
     {
         final String normalizedName = fileName.toLowerCase(Locale.ROOT);
+        final FileParser parser;
         if (normalizedName.endsWith(".pdf")) {
-            return this.pdfParser;
+            parser = this.pdfParser;
+        } else if (normalizedName.endsWith(".docx")) {
+            parser = this.docxParser;
+        } else if (normalizedName.endsWith(".doc")) {
+            parser = this.docParser;
+        } else {
+            LOGGER.info("No document parser registered for '{}'", fileName);
+            return null;
         }
-        if (normalizedName.endsWith(".docx")) {
-            return this.docxParser;
-        }
-        if (normalizedName.endsWith(".doc")) {
-            return this.docParser;
-        }
-        return null;
+        LOGGER.info("Selected parser {} for '{}'", parser.getClass().getSimpleName(), fileName);
+        return parser;
     }
 }

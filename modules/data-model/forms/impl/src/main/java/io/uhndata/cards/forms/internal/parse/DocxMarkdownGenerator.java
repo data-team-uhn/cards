@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.usermodel.IBodyElement;
 import org.apache.poi.xwpf.usermodel.IRunElement;
@@ -44,6 +46,8 @@ import org.apache.poi.xwpf.usermodel.XWPFSDTContent;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.xmlbeans.XmlCursor;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +56,7 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class DocxMarkdownGenerator
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocxMarkdownGenerator.class);
@@ -116,14 +121,18 @@ public class DocxMarkdownGenerator
     public String toMarkdown(final InputStream stream, final String fileName)
         throws IOException
     {
-        LOGGER.info("ApachePOI parse request started for '{}'", fileName);
+        final long startTimestamp = System.currentTimeMillis();
+        LOGGER.info("Apache POI DOCX parse started for '{}'", fileName);
         StringBuilder markdown = new StringBuilder();
         markdown.append("<!-- source_file: ").append(this.escapeComment(fileName)).append(" -->").append(NEWLINE);
 
         try (XWPFDocument document = new XWPFDocument(stream)) {
             ParseState state = new ParseState(markdown);
             this.walkDocumentParts(document, state);
-            return MarkdownCleanup.clean(markdown.toString());
+            final String result = MarkdownCleanup.clean(markdown.toString());
+            LOGGER.info("Apache POI DOCX parse finished for '{}' (total {} ms, result {} chars)",
+                fileName, System.currentTimeMillis() - startTimestamp, result.length());
+            return result;
         }
     }
 
@@ -324,15 +333,22 @@ public class DocxMarkdownGenerator
     private boolean appendHyperlinkRun(final XWPFHyperlinkRun linkRun, final XWPFParagraph paragraph,
         final StringBuilder output)
     {
-        String label = this.escapeMarkdown(linkRun.text());
-        String url = this.resolveHyperlinkUrl(linkRun, paragraph);
+        final String label = this.escapeMarkdown(this.extractRunPlainText(linkRun));
+        if (label.isEmpty()) {
+            return false;
+        }
+        // TOC fields often split "STUDY SUMMARY" into one hyperlink run per word/space.
+        // Whitespace-only runs must be kept or words glue together (STUDYSUMMARY).
+        if (StringUtils.isBlank(label)) {
+            output.append(label);
+            return false;
+        }
+        final String url = this.resolveHyperlinkUrl(linkRun, paragraph);
         if (StringUtils.isNotBlank(url)) {
             output.append('[').append(label).append("](").append(url).append(')');
             return true;
         }
-        if (StringUtils.isNotBlank(label)) {
-            output.append(label);
-        }
+        output.append(label);
         return false;
     }
 
@@ -352,10 +368,10 @@ public class DocxMarkdownGenerator
     private String getRunElementText(final IRunElement runElement)
     {
         if (runElement instanceof XWPFHyperlinkRun) {
-            return ((XWPFHyperlinkRun) runElement).text();
+            return this.extractRunPlainText((XWPFHyperlinkRun) runElement);
         }
         if (runElement instanceof XWPFRun) {
-            return ((XWPFRun) runElement).text();
+            return this.extractRunPlainText((XWPFRun) runElement);
         }
         if (runElement instanceof XWPFSDT) {
             return ((XWPFSDT) runElement).getContent().getText();
@@ -365,8 +381,13 @@ public class DocxMarkdownGenerator
 
     private void appendStyledRun(final XWPFRun run, final StringBuilder output)
     {
-        String text = this.escapeMarkdown(run.text());
+        final String text = this.escapeMarkdown(this.extractRunPlainText(run));
+        if (text.isEmpty()) {
+            return;
+        }
+        // Word often stores spaces/tabs as their own runs; isBlank() would drop them and glue words.
         if (StringUtils.isBlank(text)) {
+            output.append(text);
             return;
         }
         if (run.isBold() && run.isItalic()) {
@@ -378,6 +399,41 @@ public class DocxMarkdownGenerator
         } else {
             output.append(text);
         }
+    }
+
+    /**
+     * Collect a run's visible text, including tabs and breaks that {@link XWPFRun#text()} omits.
+     *
+     * @param run the Word run
+     * @return plain text with tabs/breaks preserved
+     */
+    private String extractRunPlainText(final XWPFRun run)
+    {
+        final CTR ctr = run.getCTR();
+        if (ctr == null) {
+            return StringUtils.defaultString(run.text());
+        }
+        final StringBuilder text = new StringBuilder();
+        try (XmlCursor cursor = ctr.newCursor()) {
+            if (!cursor.toFirstChild()) {
+                return StringUtils.defaultString(run.text());
+            }
+            do {
+                final QName name = cursor.getName();
+                if (name == null) {
+                    continue;
+                }
+                final String local = name.getLocalPart();
+                if ("t".equals(local)) {
+                    text.append(cursor.getTextValue());
+                } else if ("tab".equals(local)) {
+                    text.append('\t');
+                } else if ("br".equals(local) || "cr".equals(local)) {
+                    text.append(NEWLINE);
+                }
+            } while (cursor.toNextSibling());
+        }
+        return text.toString();
     }
 
     private void renderTable(final XWPFTable table, final ParseState state, final String section)
@@ -811,12 +867,7 @@ public class DocxMarkdownGenerator
         if (StringUtils.isBlank(content)) {
             return;
         }
-        state.blockIndex++;
-        state.markdown.append(NEWLINE).append(NEWLINE).append("<!-- block: ").append(state.blockIndex);
-        if (!BODY_SECTION.equals(section)) {
-            state.markdown.append(" section: ").append(section);
-        }
-        state.markdown.append(" -->").append(NEWLINE);
+        state.markdown.append(NEWLINE).append(NEWLINE);
         state.markdown.append(content);
     }
 
@@ -1119,15 +1170,12 @@ public class DocxMarkdownGenerator
 
         private final CodeBuffer codeBuffer;
 
-        private int blockIndex;
-
         private ParseState(final StringBuilder markdown)
         {
             this.markdown = markdown;
             this.numberingTracker = new NumberingTracker();
             this.tabularBuffer = new TabularBuffer();
             this.codeBuffer = new CodeBuffer();
-            this.blockIndex = 0;
         }
     }
 

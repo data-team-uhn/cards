@@ -48,14 +48,17 @@ public class DocxParser extends SimpleDocumentParser
     {
         if (this.outlineRiskDetector.hasListOutlineRisk(content, fileName)) {
             LOGGER.info("Routing DOCX '{}' to Apache POI to avoid Docling list-grouping scramble", fileName);
+            setActiveGenerator("Apache POI (list-outline risk)");
             return this.runPoiGenerator(content, fileName);
         }
+        setActiveGenerator("Docling");
         return super.runPrimaryGenerator(content, fileName);
     }
 
     @Override
     protected String runFallbackGenerator(final byte[] content, final String fileName)
     {
+        setActiveGenerator("Apache POI");
         return this.runPoiGenerator(content, fileName);
     }
 

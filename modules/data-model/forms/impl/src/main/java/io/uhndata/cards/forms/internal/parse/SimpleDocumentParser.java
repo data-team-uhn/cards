@@ -38,6 +38,9 @@ public abstract class SimpleDocumentParser implements FileParser
 {
     private static final int MIN_CONTENT_CHARS = 50;
 
+    /** Name of the generator that produced the current parse result (request-scoped). */
+    private static final ThreadLocal<String> ACTIVE_GENERATOR = new ThreadLocal<>();
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DoclingMarkdownGenerator doclingGenerator = new DoclingMarkdownGenerator();
@@ -57,22 +60,27 @@ public abstract class SimpleDocumentParser implements FileParser
             this.logger.warn("Failed to read stream for '{}', document is empty", fileName);
             throw new DocumentParseException("Document is empty", null);
         }
-        final String primary = runPrimaryGeneratorSafely(content, fileName);
-        if (isSufficient(primary)) {
-            ParsedMarkdownStore.save(outputSubfolder, fileName, primary);
-            logParseFinished(fileName, startTimestamp, primary, "primary");
-            return primary;
+        try {
+            final String primary = runPrimaryGeneratorSafely(content, fileName);
+            if (isSufficient(primary)) {
+                ParsedMarkdownStore.save(outputSubfolder, fileName, primary);
+                logParseFinished(fileName, startTimestamp, primary, "primary");
+                return primary;
+            }
+            this.logger.info("Primary generator '{}' failed or produced insufficient output for '{}', using fallback",
+                currentGeneratorName("primary"), fileName);
+            final String fallback = runFallbackGenerator(content, fileName);
+            if (isSufficient(fallback)) {
+                ParsedMarkdownStore.save(outputSubfolder, fileName, fallback);
+                logParseFinished(fileName, startTimestamp, fallback, "fallback");
+                return fallback;
+            }
+            this.logger.warn("Fallback generator '{}' produced insufficient output for '{}', document is empty",
+                currentGeneratorName("fallback"), fileName);
+            throw new DocumentParseException("Generated output is empty", null);
+        } finally {
+            ACTIVE_GENERATOR.remove();
         }
-        this.logger.info("Primary generator failed or produced insufficient output for '{}', using fallback",
-            fileName);
-        final String fallback = runFallbackGenerator(content, fileName);
-        if (isSufficient(fallback)) {
-            ParsedMarkdownStore.save(outputSubfolder, fileName, fallback);
-            logParseFinished(fileName, startTimestamp, fallback, "fallback");
-            return fallback;
-        }
-        this.logger.warn("Fallback generator produced insufficient output for '{}', document is empty", fileName);
-        throw new DocumentParseException("Generated output is empty", null);
     }
 
     private String runPrimaryGeneratorSafely(final byte[] content, final String fileName)
@@ -98,8 +106,26 @@ public abstract class SimpleDocumentParser implements FileParser
         final String path)
     {
         final long endTimestamp = System.currentTimeMillis();
-        this.logger.info("Document parsing finished for '{}' via {} at {} (total {} ms, result {} chars)",
-            fileName, path, endTimestamp, endTimestamp - startTimestamp, result.length());
+        this.logger.info(
+            "Document parsing finished for '{}' using generator '{}' ({} path) at {} (total {} ms, result {} chars)",
+            fileName, currentGeneratorName(path), path, endTimestamp, endTimestamp - startTimestamp,
+            result.length());
+    }
+
+    private static String currentGeneratorName(final String pathFallback)
+    {
+        final String named = ACTIVE_GENERATOR.get();
+        return StringUtils.isNotBlank(named) ? named : pathFallback;
+    }
+
+    /**
+     * Record which concrete markdown generator is about to run for this request.
+     *
+     * @param generatorName human-readable generator label (e.g. {@code Docling}, {@code Apache POI})
+     */
+    protected static void setActiveGenerator(final String generatorName)
+    {
+        ACTIVE_GENERATOR.set(generatorName);
     }
 
     /**
@@ -114,6 +140,7 @@ public abstract class SimpleDocumentParser implements FileParser
      */
     protected String runPrimaryGenerator(final byte[] content, final String fileName)
     {
+        setActiveGenerator("Docling");
         return this.doclingGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
     }
 
