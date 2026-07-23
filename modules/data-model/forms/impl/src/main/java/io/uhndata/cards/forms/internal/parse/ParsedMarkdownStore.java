@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -93,6 +94,31 @@ public final class ParsedMarkdownStore
             LOGGER.info("Saved parse result for '{}' to {}", fileName, outputFile);
         } catch (IOException | RuntimeException e) {
             LOGGER.warn("Could not save parse result for '{}': {}", fileName, e.getMessage());
+        }
+    }
+
+    /**
+     * Persist a sibling artifact (such as a PDF rendition) next to a source file's parsed markdown, in the same
+     * answer subfolder and under the same base name with the given extension. Any existing artifact with that
+     * name is replaced. A failure never throws — it is logged and swallowed.
+     *
+     * @param outputSubfolder subfolder to save into (typically the owning answer's UUID); when {@code null} or
+     *            blank, the output directory root is used
+     * @param fileName source file name; its base name is reused for the artifact
+     * @param extension the artifact's file extension without a dot (e.g. {@code pdf})
+     * @param sourceFile the file to copy into the answer folder
+     */
+    public static void saveArtifact(final String outputSubfolder, final String fileName, final String extension,
+        final Path sourceFile)
+    {
+        try {
+            final Path outputDir = resolveOutputDir(outputSubfolder);
+            Files.createDirectories(outputDir);
+            final Path target = outputDir.resolve(baseName(fileName) + "." + extension);
+            Files.copy(sourceFile, target, StandardCopyOption.REPLACE_EXISTING);
+            LOGGER.info("Saved {} artifact for '{}' to {}", extension, fileName, target);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not save {} artifact for '{}': {}", extension, fileName, e.getMessage());
         }
     }
 
@@ -391,6 +417,11 @@ public final class ParsedMarkdownStore
 
     private static String buildOutputFileName(final String fileName)
     {
+        return baseName(fileName) + ".md";
+    }
+
+    private static String baseName(final String fileName)
+    {
         String baseName = fileName;
         final int separator = Math.max(baseName.lastIndexOf('/'), baseName.lastIndexOf('\\'));
         if (separator >= 0) {
@@ -403,6 +434,6 @@ public final class ParsedMarkdownStore
         if (StringUtils.isBlank(baseName)) {
             baseName = "document";
         }
-        return baseName + ".md";
+        return baseName;
     }
 }
