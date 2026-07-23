@@ -84,6 +84,11 @@
 				<type>Long</type>
 			</property>
 			<property>
+				<name>wholeDocumentTokenLimit</name>
+				<value>20000</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>developer</name>
 				<value>meta</value>
 				<type>String</type>
@@ -149,6 +154,11 @@
 				<type>Long</type>
 			</property>
 			<property>
+				<name>wholeDocumentTokenLimit</name>
+				<value>20000</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>developer</name>
 				<value>openai</value>
 				<type>String</type>
@@ -176,6 +186,11 @@
 			<property>
 				<name>chunkTokenSize</name>
 				<value>30000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>wholeDocumentTokenLimit</name>
+				<value>20000</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -209,6 +224,11 @@
 				<type>Long</type>
 			</property>
 			<property>
+				<name>wholeDocumentTokenLimit</name>
+				<value>20000</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>developer</name>
 				<value>meta</value>
 				<type>String</type>
@@ -236,6 +256,11 @@
 			<property>
 				<name>chunkTokenSize</name>
 				<value>30000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>wholeDocumentTokenLimit</name>
+				<value>20000</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -269,6 +294,11 @@
 				<type>Long</type>
 			</property>
 			<property>
+				<name>wholeDocumentTokenLimit</name>
+				<value>20000</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>developer</name>
 				<value>qwen</value>
 				<type>String</type>
@@ -296,6 +326,11 @@
 			<property>
 				<name>chunkTokenSize</name>
 				<value>30000</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>wholeDocumentTokenLimit</name>
+				<value>20000</value>
 				<type>Long</type>
 			</property>
 			<property>
