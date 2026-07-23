@@ -19,13 +19,15 @@
 
 """
 TOC detection: find a "table of contents" / "contents" label, flatten table-shaped
-TOCs, clean leaders/tabs, and wrap the block in ``<!-- TOC start -->`` / ``<!-- TOC end -->``.
-Entries over 40 words or with a word over 100 characters are discarded.
+TOCs, clean leaders/tabs, and record the cleaned block's line range plus entry lines
+in ``outline.json`` (``tocStartLine`` / ``tocEndLine`` / ``toc``). Entries over 10
+words or with a word over 100 characters are discarded.
 
-Appendix detection (:func:`mark_toc_and_appendix`): after TOC marking, find the first
+Appendix detection (:func:`mark_toc_and_appendix`): after TOC cleanup, find the first
 Reference/Appendix heading (ATX or isolated bold; see :data:`REFERENCE_HEADINGS` /
-:data:`APPENDIX_HEADINGS`) and insert ``<Reference>`` or ``<Appendix>`` before it.
-Skips the first :data:`APPENDIX_SEARCH_SKIP_LINES` lines and any marked TOC block.
+:data:`APPENDIX_HEADINGS`) and record its line as ``backmatterLine`` in
+``outline.json``. Skips the first :data:`APPENDIX_SEARCH_SKIP_LINES` lines and any
+confirmed TOC block.
 """
 
 from __future__ import annotations
@@ -34,11 +36,8 @@ import json
 import re
 from pathlib import Path
 
-TOC_START = "<!-- TOC start -->"
-TOC_END = "<!-- TOC end -->"
-
 # Maximum words per accepted heading, and maximum characters per word within it.
-MAX_HEADING_WORDS = 40
+MAX_HEADING_WORDS = 10
 MAX_WORD_CHARS = 100
 # Minimum characters for a heading extracted from a chunk (# markers already stripped).
 MIN_HEADING_CHARS = 5
@@ -52,11 +51,6 @@ DENSITY_WINDOW = 8
 # running page header, or a brief divider between multiple tables/entry-groups in one
 # TOC block — before concluding the block has genuinely ended.
 MAX_LEADING_WORDS_FOR_CONTINUATION = 12
-
-# Marker line inserted immediately before the first Reference or Appendix section
-# heading found by mark_appendix() — reserved, like <!-- TOC start -->/<!-- TOC end -->.
-REFERENCE_MARKER = "<!-- Reference -->"
-APPENDIX_MARKER = "<!-- Appendix -->"
 
 # Documents shorter than this (``len(md) // 4``) skip TOC/appendix marking — Stage 0.5
 # can send them whole. Overridable via :func:`mark_toc_and_appendix`'s ``min_structure_tokens``.
@@ -248,7 +242,7 @@ def _is_toc_header_line(stripped: str) -> bool:
 
 
 def toc_label_line(lines: list[str]) -> int | None:
-    """Find the first "table of contents" / "contents" label line: decorated (with ``#``
+    """Find the *first* "table of contents" / "contents" label line: decorated (with ``#``
     and/or ``*``), or the bare phrase "table of contents" alone, isolated by blank-line
     neighbors (or start/end of document).
 
@@ -463,17 +457,17 @@ def _clean_toc_line(line: str) -> str:
 
 
 def mark_and_cleanup_toc(md: str, outline_path: Path | None = None) -> str:
-    """Detect the document's TOC and wrap it in <!-- TOC start --> / <!-- TOC end --> lines.
+    """Detect the document's TOC, clean it in place, and record its line range in outline.json.
+
+    When ``outline_path`` is set, writes ``tocStartLine`` / ``tocEndLine`` and the
+    entry-only ``toc`` array.
 
     @param md: the full assembled Markdown document
     @param outline_path: the document's outline.json file
-    @return: the document, with its TOC (if any) marked; unchanged when no TOC is found
+    @return: the document with its TOC (if any) cleaned; unchanged when no TOC is found
     """
     if not md:
         return ""
-    # skip if already marked
-    if TOC_START in md:
-        return md
 
     lines = md.split("\n")
     label_index = toc_label_line(lines)
@@ -497,23 +491,45 @@ def mark_and_cleanup_toc(md: str, outline_path: Path | None = None) -> str:
     body_lines: list[str] = []
     for line in body_text.split("\n"):
         stripped = line.strip()
+        if stripped == "":
+            # Keep blank lines inside the TOC block; do not collapse them here.
+            body_lines.append("")
+            continue
         if _PAGE_MARKER_LINE.match(stripped):
             body_lines.append(stripped)
             continue
         cleaned_line = _clean_toc_line(line)
         if cleaned_line:
             body_lines.append(cleaned_line)
-    if not body_lines:
+    if not any(line for line in body_lines):
         return md
     cleaned = ([label_line] if label_line else []) + body_lines
-    # Layout: [preamble...][""][TOC_START][cleaned...][TOC_END][""][rest...]
-    toc_start = label_index + 1
-    toc_end = toc_start + 1 + len(cleaned)
-    rebuilt = lines[:label_index] + ["", TOC_START] + cleaned + [TOC_END, ""] + lines[boundary:]
-    result = re.sub(r"\n{3,}", "\n\n", "\n".join(rebuilt)).strip() + "\n"
+    # Replace the original TOC span with the cleaned block; leave surrounding lines as-is.
+    rebuilt = lines[:label_index] + cleaned + lines[boundary:]
+    result = "\n".join(rebuilt)
+    if not result.endswith("\n"):
+        result += "\n"
 
     if outline_path is not None:
-        write_outline(outline_path, {"tocStartLine": toc_start, "tocEndLine": toc_end})
+        toc_start = label_index
+        toc_end = label_index + len(cleaned) - 1
+        # Entry lines only — label / page markers / interstitial noise stay out of ``toc``.
+        # Match against pre-block-cleanup text so tab/leader separators still satisfy
+        # :func:`is_toc_entry_line`, then store the same cleaned form as in the body.
+        toc_entries: list[str] = []
+        for line in block_lines:
+            stripped = line.strip()
+            if not stripped or _PAGE_MARKER_LINE.match(stripped):
+                continue
+            candidate = _clean_toc_line(line)
+            if candidate and is_toc_entry_line(candidate):
+                stored = _block_cleanup(candidate).strip()
+                if stored:
+                    toc_entries.append(stored)
+        write_outline(
+            outline_path,
+            {"tocStartLine": toc_start, "tocEndLine": toc_end, "toc": toc_entries},
+        )
     return result
 
 
@@ -551,73 +567,44 @@ def appendix_heading_kind(lines: list[str], index: int) -> str | None:
 
 
 def mark_appendix(md: str, outline_path: Path | None = None) -> str:
-    """Detect the document's first Reference or Appendix section heading and mark it
-    with a reserved ``<Reference>`` / ``<Appendix>`` line immediately before it.
+    """Detect the document's first Reference or Appendix section heading and record its
+    line index as ``backmatterLine`` in outline.json. The Markdown is left unchanged —
+    no ``<!-- Reference -->`` / ``<!-- Appendix -->`` marker is inserted.
 
     Skips the first APPENDIX_SEARCH_SKIP_LINES lines (avoids false hits from an
     early in-text mention, e.g. unheaded undetected TOC line "**10.4 Appendix**"). Also
-    skips past the marked TOC block when outline_path's outline.json has a confirmed
+    skips past the TOC block when outline_path's outline.json has a confirmed
     tocEndLine (written by mark_and_cleanup_toc) -- read only, no re-detection fallback:
     with no outline_path, or no tocEndLine on file, only the fixed line-400 floor applies.
 
-    Only one marker is ever inserted whichever kind of heading — reference or appendix — appears first.
-
     @param md: the full assembled Markdown document, ideally already passed through mark_and_cleanup_toc
     @param outline_path: the document's outline.json file
-    @return: the document with a marker line inserted before the first matching heading, or unchanged
+    @return: ``md`` unchanged (side effect: ``backmatterLine`` written when found)
     """
     if not md:
         return md or ""
-    # skip if already marked
-    if REFERENCE_MARKER in md or APPENDIX_MARKER in md:
-        return md
 
     lines = md.split("\n")
     n = len(lines)
     outline = read_outline(outline_path)
     toc_end = outline.get("tocEndLine")
 
-    # Never search inside or before the TOC — start after it when present — so inserting
-    # a marker cannot shift stored tocStartLine/tocEndLine. Still honour the skip floor
-    # so short docs and early in-text mentions are ignored.
+    # Never search inside or before the TOC — start after it when present. Still honour
+    # the skip floor so short docs and early in-text mentions are ignored.
     index = APPENDIX_SEARCH_SKIP_LINES
     if isinstance(toc_end, int):
         index = max(index, toc_end + 1)
 
     found_index = None
-    found_kind = None
     while index < n:
-        kind = appendix_heading_kind(lines, index)
-        if kind is not None:
-            found_index, found_kind = index, kind
+        if appendix_heading_kind(lines, index) is not None:
+            found_index = index
             break
         index += 1
 
-    if found_index is None:
-        return md
-
-    marker = REFERENCE_MARKER if found_kind == "reference" else APPENDIX_MARKER
-    rebuilt = lines[:found_index] + [marker] + lines[found_index:]
-    result = "\n".join(rebuilt)
-    if outline_path is not None:
-        backmatter_line = backmatter_marker_line(result)
-        if backmatter_line is not None:
-            write_outline(outline_path, {"backmatterLine": backmatter_line})
-    return result
-
-
-def backmatter_marker_line(md: str, lines: list[str] | None = None) -> int | None:
-    """Find the line index of whichever backmatter marker — REFERENCE_MARKER or APPENDIX_MARKER,
-    set by mark_appendix — appears first in md, or None when neither is present.
-
-    @param lines: md already split on newlines, when the caller has it split already
-    @return: the line index of whichever backmatter marker appears first in md, or None
-    """
-    for index, line in enumerate(lines if lines is not None else md.split("\n")):
-        stripped = line.strip()
-        if stripped == REFERENCE_MARKER or stripped == APPENDIX_MARKER:
-            return index
-    return None
+    if found_index is not None and outline_path is not None:
+        write_outline(outline_path, {"backmatterLine": found_index})
+    return md
 
 
 def mark_toc_and_appendix(
@@ -626,15 +613,15 @@ def mark_toc_and_appendix(
     *,
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> str:
-    """Mark the TOC and the first Reference/Appendix heading, then record a token-count estimate.
+    """Clean the TOC and locate the first Reference/Appendix heading; record both in outline.json.
 
     Documents with fewer than ``min_structure_tokens`` (``len(md) // 4``) are returned
     unchanged — no TOC/appendix detection — so small protocols can be sent whole later.
 
     @param md: the full assembled Markdown document
     @param outline_path: the document's outline.json file
-    @param min_structure_tokens: skip marking when the document is smaller than this
-    @return: the document with TOC and backmatter markers applied (when found)
+    @param min_structure_tokens: skip detection when the document is smaller than this
+    @return: the document with TOC cleaned in place (when found); no marker lines added
     """
     if len(md) // 4 < min_structure_tokens:
         return md

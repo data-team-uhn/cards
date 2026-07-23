@@ -20,6 +20,7 @@
 """Post-processing cleanup for generated markdown output."""
 
 import re
+from pathlib import Path
 
 #
 # Matches empty Markdown-like headings, decorative lines, symbol-only lines, box-drawing lines.
@@ -120,8 +121,28 @@ def cleanup_leading_line_numbers(md: str) -> str:
 
 
 def _escape_comment(value: str) -> str:
-    """Escape HTML-comment-hostile sequences."""
-    return value.replace("--", "—")
+    """Escape HTML-comment-hostile sequences (``--`` cannot appear inside an HTML comment)."""
+    return value.replace("--", "\u2014")
+
+
+def resolve_source_file_name(input_path: Path, source_file: str | None = None) -> str:
+    """Return the display name for a ``source_file`` header.
+
+    Prefer an explicit original name (e.g. the upload basename) when provided;
+    otherwise fall back to the on-disk path name. Always returns a basename so a
+    full path cannot leak into the markdown comment.
+    """
+    if source_file and source_file.strip():
+        return Path(source_file.strip()).name
+    return input_path.name
+
+
+def source_file_header(source_file: str) -> str:
+    """The reserved ``<!-- source_file: ... -->`` header naming a document's original input file.
+
+    Prepended by the PDF/DOCX parsers after cleanup, not by :func:`clean_markdown`.
+    """
+    return f"<!-- source_file: {_escape_comment(source_file)} -->"
 
 
 def clean_markdown(md: str) -> str:

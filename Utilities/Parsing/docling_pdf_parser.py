@@ -54,7 +54,7 @@ from docling_error_detection import (
     DoclingLogCollector,
     ensure_conversion_ok,
 )
-from markdown_cleanup import clean_markdown
+from markdown_cleanup import clean_markdown, resolve_source_file_name, source_file_header
 from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 
@@ -146,6 +146,7 @@ def convert_pdf_to_markdown(
     workers: int | None = None,
     executor: ProcessPoolExecutor | None = None,
     log: LogFn | None = None,
+    source_file: str | None = None,
 ) -> str:
     """
     Convert a PDF file to Markdown and return the text.
@@ -158,6 +159,8 @@ def convert_pdf_to_markdown(
     @param workers: optional override for parallel worker process count
     @param executor: optional persistent ProcessPoolExecutor (daemon mode)
     @param log: optional log sink; defaults to print
+    @param source_file: optional original upload name for the source_file header
+        (defaults to ``input_path.name``, which may be a temp basename)
     @return: cleaned Markdown text
     """
     log_fn = log if log is not None else print
@@ -207,7 +210,8 @@ def convert_pdf_to_markdown(
         all_markdown.append(md)
 
     cleaned = clean_markdown("".join(all_markdown))
-    markdown_content = f"{"<!-- source_file: {input_path.name.replace("--", "—")} -->"}\n{cleaned}"
+    display_name = resolve_source_file_name(input_path, source_file)
+    markdown_content = f"{source_file_header(display_name)}\n{cleaned}"
     write_end = perf_counter()
     t2 = perf_counter()
 
@@ -290,6 +294,7 @@ def convert_pdf(
     workers: int | None = None,
     chunk: bool = False,
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
+    source_file: str | None = None,
 ) -> None:
     """
     Convert a PDF file to Markdown and write it to output_file.
@@ -301,6 +306,7 @@ def convert_pdf(
     @param chunk: also write per-chunk .md files and catalog.json beside output_file
         when the document is at least ``min_structure_tokens``
     @param min_structure_tokens: skip TOC/appendix marking and chunking below this size
+    @param source_file: optional original upload name for the source_file header
     """
     # Drop any previous convert's outline sidecar and Chunks/ before writing anew.
     clear_prior_outputs(output_file)
@@ -309,6 +315,7 @@ def convert_pdf(
             input_path,
             batch_pages=batch_pages,
             workers=workers,
+            source_file=source_file,
         )
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)
@@ -323,10 +330,11 @@ def convert_pdf(
 
     if chunk:
         split_start = perf_counter()
+        display_name = resolve_source_file_name(input_path, source_file)
         chunks_dir = write_chunk_files(
             markdown_content,
             output_file,
-            input_path.name,
+            display_name,
             min_structure_tokens=min_structure_tokens,
         )
         split_end = perf_counter()

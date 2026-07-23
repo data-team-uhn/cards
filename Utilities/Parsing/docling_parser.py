@@ -77,6 +77,15 @@ def parse_args():
             f"are below this (default: {DEFAULT_MIN_STRUCTURE_TOKENS})"
         ),
     )
+    parser.add_argument(
+        "--source-file",
+        default=None,
+        metavar="NAME",
+        help=(
+            "original upload basename for the <!-- source_file: ... --> header "
+            "(defaults to the input file name)"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -105,6 +114,7 @@ def main() -> None:
             workers=args.workers,
             chunk=args.chunk,
             min_structure_tokens=args.min_structure_tokens,
+            source_file=args.source_file,
         )
     else:
         convert_docx(
@@ -112,6 +122,7 @@ def main() -> None:
             output_file,
             chunk=args.chunk,
             min_structure_tokens=args.min_structure_tokens,
+            source_file=args.source_file,
         )
 
     print(f"\nSaved to {output_file}")
