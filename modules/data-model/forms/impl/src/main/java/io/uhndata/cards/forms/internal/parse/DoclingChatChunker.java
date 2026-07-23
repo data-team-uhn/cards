@@ -19,7 +19,6 @@ package io.uhndata.cards.forms.internal.parse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -28,20 +27,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-import jakarta.json.JsonValue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -63,7 +57,9 @@ import org.slf4j.LoggerFactory;
  * Neither path blocks the calling thread: the daemon call is fired with
  * {@link HttpClient#sendAsync(HttpRequest, HttpResponse.BodyHandler)} and the CLI process is left to
  * run on its own. Chunking can take a while; callers fire it after the per-file markdown is written
- * and carry on.
+ * and carry on. Catalog summarization is deliberately <em>not</em> started here — it runs only after
+ * the extraction phase has finished and saved, so the two LLM workloads never race on the shared
+ * catalog.
  * </p>
  *
  * @version $Id$
@@ -104,15 +100,6 @@ public final class DoclingChatChunker
     /** Per-answer generation counters used to discard stale asynchronous chunk results. */
     private static final ConcurrentHashMap<String, AtomicLong> CHUNK_GENERATIONS = new ConcurrentHashMap<>();
 
-    /**
-     * Optional summarization callback invoked with the answer folder and the chunk generation once chunking
-     * completes successfully. Set by the summarization service while it is active (see its {@code @Activate});
-     * {@code null} when no such service is registered, in which case chunking simply produces a tree with empty
-     * summaries. {@code volatile} because it is written from the service's lifecycle thread and read from the
-     * async chunking threads.
-     */
-    private static volatile BiConsumer<Path, Long> summarizationHook;
-
     private DoclingChatChunker()
     {
         // Utility class, never instantiated.
@@ -134,15 +121,20 @@ public final class DoclingChatChunker
     }
 
     /**
-     * Register (or clear) the callback run with the answer folder and chunk generation once chunking completes
-     * successfully. The summarization service sets this while active and clears it on deactivation, coupling
-     * chunking completion to summary generation without the chunker depending on that service directly.
+     * The current chunk generation for an answer folder. Downstream work that must abort when a newer chunking
+     * run supersedes this one (for example catalog summarization after extraction) should capture this value
+     * when it starts and poll {@link #isSummarizationCurrent(Path, long)}.
      *
-     * @param hook the callback to invoke after successful chunking, or {@code null} to clear it
+     * @param answerDir the absolute parse output folder of the answer
+     * @return the current generation, or {@code 0} when no chunking has been requested for this folder yet
      */
-    public static void setSummarizationHook(final BiConsumer<Path, Long> hook)
+    public static long currentGeneration(final Path answerDir)
     {
-        summarizationHook = hook;
+        if (answerDir == null) {
+            return 0L;
+        }
+        final AtomicLong current = CHUNK_GENERATIONS.get(folderKey(answerDir));
+        return current == null ? 0L : current.get();
     }
 
     /**
@@ -150,7 +142,7 @@ public final class DoclingChatChunker
      * abort when this returns {@code false}, for example after a re-parse or a newer chunking request.
      *
      * @param answerDir the absolute parse output folder of the answer
-     * @param generation the generation captured when chunking completed
+     * @param generation the generation captured when scheduling summarization
      * @return {@code true} when no newer chunking has superseded this generation
      */
     public static boolean isSummarizationCurrent(final Path answerDir, final long generation)
@@ -166,8 +158,12 @@ public final class DoclingChatChunker
      *
      * @param answerDir the absolute parse output folder of the answer, as produced by
      *            {@link ParsedMarkdownStore#resolveAnswerDir(String)}
+     * @param minStructureTokens the small-document threshold (the active LLM model's
+     *            {@code wholeDocumentTokenLimit}): documents under this many estimated tokens are not chunked
+     *            and are recorded as {@code chunked: false} in {@code outline.json}; pass {@code 0} or a
+     *            negative value to let the chunker use its own default
      */
-    public static void requestChunking(final Path answerDir)
+    public static void requestChunking(final Path answerDir, final long minStructureTokens)
     {
         if (answerDir == null) {
             return;
@@ -184,7 +180,7 @@ public final class DoclingChatChunker
         final String folder = folderKey(answerDir);
         final long generation = nextGeneration(answerDir);
         try {
-            sendDaemonRequest(documentFile, folder, answerDir, generation);
+            sendDaemonRequest(documentFile, folder, answerDir, generation, minStructureTokens);
         } catch (RuntimeException e) {
             LOGGER.warn("Could not start Docling chat chunking for {}: {}", folder, e.getMessage());
         }
@@ -211,24 +207,29 @@ public final class DoclingChatChunker
     }
 
     private static void sendDaemonRequest(final Path documentFile, final String folder, final Path answerDir,
-        final long generation)
+        final long generation, final long minStructureTokens)
     {
         final String url = resolveDaemonUrl() + "/chunk";
         final String filePath = documentFile.toAbsolutePath().normalize().toString();
-        final String body = "{\"file_path\":" + jsonString(filePath) + "}";
+        final StringBuilder body = new StringBuilder("{\"file_path\":").append(jsonString(filePath));
+        if (minStructureTokens > 0) {
+            body.append(",\"min_structure_tokens\":").append(minStructureTokens);
+        }
+        body.append('}');
         final HttpRequest request = HttpRequest.newBuilder(URI.create(url))
             .timeout(Duration.ofMinutes(REQUEST_TIMEOUT_MINUTES))
             .header("Content-Type", "application/json; charset=utf-8")
-            .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+            .POST(HttpRequest.BodyPublishers.ofString(body.toString(), StandardCharsets.UTF_8))
             .build();
         LOGGER.info("Requesting Docling chat chunking for {} via daemon", filePath);
         HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
             .whenComplete((response, error) -> handleDaemonResult(documentFile, answerDir, folder, generation,
-                response, error));
+                minStructureTokens, response, error));
     }
 
     private static void handleDaemonResult(final Path documentFile, final Path answerDir, final String folder,
-        final long generation, final HttpResponse<String> response, final Throwable error)
+        final long generation, final long minStructureTokens, final HttpResponse<String> response,
+        final Throwable error)
     {
         if (error == null && response != null && response.statusCode() == 200) {
             if (!isCurrentGeneration(folder, generation)) {
@@ -237,12 +238,6 @@ public final class DoclingChatChunker
                 return;
             }
             LOGGER.info("Docling chat chunking finished for {}: {}", folder, response.body());
-            if (chunkCountFromResponse(response.body()) == 0) {
-                LOGGER.info(
-                    "Chunking skipped for {} (no chunks produced); skipping summarization", folder);
-                return;
-            }
-            runSummarization(answerDir, folder, generation);
             return;
         }
         final String reason = error != null ? error.getMessage()
@@ -252,79 +247,20 @@ public final class DoclingChatChunker
             return;
         }
         LOGGER.warn("Docling chat chunking via daemon failed for {} ({}); falling back to CLI", folder, reason);
-        runCliFallback(documentFile, answerDir, folder, generation);
-    }
-
-    private static void runSummarization(final Path answerDir, final String folder, final long generation)
-    {
-        if (!hasChunkCatalog(answerDir)) {
-            LOGGER.info(
-                "Chunking finished for {} without a catalog; skipping summarization", folder);
-            return;
-        }
-        final BiConsumer<Path, Long> hook = summarizationHook;
-        if (hook == null) {
-            LOGGER.warn("Chunking finished for {} but no summarization hook is registered; summaries will NOT be "
-                + "generated. Is the CatalogSummarizationService active?", folder);
-            return;
-        }
-        LOGGER.info("Chunking finished for {}; scheduling catalog summarization (generation {})", folder,
-            generation);
-        CLI_DRAIN_EXECUTOR.submit(() -> {
-            if (!isCurrentGeneration(folder, generation)) {
-                LOGGER.warn("Skipping stale Docling chat summarization for {}", folder);
-                return;
-            }
-            try {
-                hook.accept(answerDir, generation);
-            } catch (RuntimeException e) {
-                LOGGER.warn("Docling chat summarization failed for {}: {}", folder, e.getMessage(), e);
-            }
-        });
-    }
-
-    /**
-     * Whether the chunker wrote a {@code Chunks/catalog.json} under the answer folder.
-     *
-     * @param answerDir the absolute parse output folder of the answer
-     * @return {@code true} when a catalog file is present
-     */
-    private static boolean hasChunkCatalog(final Path answerDir)
-    {
-        return Files.isRegularFile(
-            answerDir.resolve(ParsedMarkdownStore.CHUNK_TREE_SUBDIR).resolve("catalog.json"));
-    }
-
-    /**
-     * Read the {@code chunks} count from a daemon {@code /chunk} response body, or {@code -1} when absent or
-     * unparseable (so callers treat the response as "unknown, decide from disk").
-     *
-     * @param body the JSON response body
-     * @return the chunk count, or {@code -1} when the field is missing or not a number
-     */
-    private static int chunkCountFromResponse(final String body)
-    {
-        if (StringUtils.isBlank(body)) {
-            return -1;
-        }
-        try (JsonReader reader = Json.createReader(new StringReader(body))) {
-            final JsonObject payload = reader.readObject();
-            if (!payload.containsKey("chunks")
-                || payload.get("chunks").getValueType() != JsonValue.ValueType.NUMBER) {
-                return -1;
-            }
-            return payload.getJsonNumber("chunks").intValue();
-        } catch (RuntimeException e) {
-            return -1;
-        }
+        runCliFallback(documentFile, answerDir, folder, generation, minStructureTokens);
     }
 
     private static void runCliFallback(final Path documentFile, final Path answerDir, final String folder,
-        final long generation)
+        final long generation, final long minStructureTokens)
     {
         try {
-            final Process process = new ProcessBuilder(resolvePythonCommand(), resolveScriptPath(),
-                documentFile.toAbsolutePath().normalize().toString())
+            final List<String> command = new ArrayList<>(List.of(resolvePythonCommand(), resolveScriptPath(),
+                documentFile.toAbsolutePath().normalize().toString()));
+            if (minStructureTokens > 0) {
+                command.add("--min-structure-tokens");
+                command.add(Long.toString(minStructureTokens));
+            }
+            final Process process = new ProcessBuilder(command)
                 .redirectErrorStream(true)
                 .start();
             drainProcessOutput(answerDir, folder, generation, process);
@@ -354,7 +290,7 @@ public final class DoclingChatChunker
             } else if (exitCode != 0) {
                 LOGGER.warn("Docling chat chunker CLI exited with code {} for {}", exitCode, folder);
             } else {
-                runSummarization(answerDir, folder, generation);
+                LOGGER.info("Docling chat chunking CLI finished for {}", folder);
             }
         });
     }
