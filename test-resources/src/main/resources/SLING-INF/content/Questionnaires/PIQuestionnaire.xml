@@ -582,7 +582,7 @@ For top category 5:
 			</property>
 			<property>
 				<name>taskLabel</name>
-				<value>Determine the Participating Institutions' investigators.</value>
+				<value>Determine the participating investigators (all named investigators other than the lead).</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -603,11 +603,12 @@ For top category 5:
 			<property>
 				<name>prompt</name>
 				<value>
-- List the site investigators at the participating institutions (not the lead investigator).
-- Return "Full Name (Institution); email if stated" entries, comma-separated, names exactly as written.
-- Look in study team pages, site lists, and investigator tables.
-- Do not include coordinators, students, or sponsor personnel.
-- If no participating investigators are named, return found_answer=false for participating_investigators.
+- Participating investigators are every named investigator OTHER than the lead investigator: co-investigators, site/qualified investigators, and any additional investigators on the study team.
+- When the protocol lists investigators as one combined group (e.g. a "Study Investigators" or "Investigators" line) with no per-site breakdown, treat everyone in that list except the lead investigator as participating investigators. Do NOT require an explicit participating-institution or site attribution.
+- Look on the study team page, investigator information section, signature page, contact list, site lists, and investigator tables.
+- Return one entry per person, comma-separated, names exactly as written; append the institution and/or email in parentheses only when the document states them, e.g. "Dr. Jane Doe (UHN); jane@uhn.ca".
+- Do not include research coordinators, students, or sponsor personnel, and do not repeat the lead investigator.
+- Return found_answer=false only when the lead investigator is the sole named investigator (no one else is listed).
 				</value>
 				<type>String</type>
 			</property>
