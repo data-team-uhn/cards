@@ -60,6 +60,7 @@ public abstract class SimpleDocumentParser implements FileParser
             this.logger.warn("Failed to read stream for '{}', document is empty", fileName);
             throw new DocumentParseException("Document is empty", null);
         }
+        onDocumentBytes(content, fileName, outputSubfolder);
         try {
             final String primary = runPrimaryGeneratorSafely(content, fileName);
             if (isSufficient(primary)) {
@@ -126,6 +127,20 @@ public abstract class SimpleDocumentParser implements FileParser
     protected static void setActiveGenerator(final String generatorName)
     {
         ACTIVE_GENERATOR.set(generatorName);
+    }
+
+    /**
+     * Hook invoked once the document bytes have been read, before any generator runs. The default does
+     * nothing; subclasses override it to trigger format-specific side work (such as an asynchronous PDF
+     * rendition) that must run in parallel with, and must never delay or interfere with, the parse itself.
+     *
+     * @param content the raw document bytes
+     * @param fileName the source file name
+     * @param outputSubfolder the owning answer's parse subfolder
+     */
+    protected void onDocumentBytes(final byte[] content, final String fileName, final String outputSubfolder)
+    {
+        // No-op by default; format-specific parsers may override.
     }
 
     /**

@@ -36,6 +36,17 @@ public class DocxParser extends SimpleDocumentParser
     private final DocxMarkdownGenerator poiGenerator = new DocxMarkdownGenerator();
 
     @Override
+    protected void onDocumentBytes(final byte[] content, final String fileName, final String outputSubfolder)
+    {
+        // Skip when the DOC path is driving this parse: it converts the original DOC to PDF itself, so the
+        // intermediate DOCX must not also be rendered.
+        if (LibreOfficeConverter.isDocxPdfSuppressed()) {
+            return;
+        }
+        LibreOfficeConverter.convertToPdfAsync(content, "docx", fileName, outputSubfolder);
+    }
+
+    @Override
     protected String runFallbackGenerator(final byte[] content, final String fileName)
     {
         setActiveGenerator("Apache POI");
