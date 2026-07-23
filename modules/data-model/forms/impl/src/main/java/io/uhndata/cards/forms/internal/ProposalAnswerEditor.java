@@ -40,6 +40,7 @@ import io.uhndata.cards.forms.internal.parse.DocumentParseException;
 import io.uhndata.cards.forms.internal.parse.FileParser;
 import io.uhndata.cards.forms.internal.parse.FileParserFactory;
 import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
+import io.uhndata.cards.llm.LLMConfigurationService;
 
 /**
  * Parse uploaded files and store any parse errors in the answer note.
@@ -76,6 +77,8 @@ public class ProposalAnswerEditor extends DefaultEditor
 
     private final FormUtils formUtils;
 
+    private final LLMConfigurationService llmConfigurationService;
+
     private final NodeBuilder currentNodeBuilder;
 
     private final String nodeName;
@@ -85,10 +88,13 @@ public class ProposalAnswerEditor extends DefaultEditor
      *
      * @param nodeBuilder the builder for the current node
      * @param formUtils helper for checking form nodes
+     * @param llmConfigurationService resolves the active LLM model settings, the source of the small-document
+     *            chunking threshold passed to the chunker
      */
-    public ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils)
+    public ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils,
+        final LLMConfigurationService llmConfigurationService)
     {
-        this(nodeBuilder, formUtils, null);
+        this(nodeBuilder, formUtils, llmConfigurationService, null);
     }
 
     /**
@@ -96,12 +102,15 @@ public class ProposalAnswerEditor extends DefaultEditor
      *
      * @param nodeBuilder the builder for the current node
      * @param formUtils helper for checking form nodes
+     * @param llmConfigurationService resolves the active LLM model settings
      * @param name the name of the node the builder represents, used as the parse output folder name
      */
-    private ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils, final String name)
+    private ProposalAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils,
+        final LLMConfigurationService llmConfigurationService, final String name)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.formUtils = formUtils;
+        this.llmConfigurationService = llmConfigurationService;
         this.nodeName = name;
     }
 
@@ -145,7 +154,8 @@ public class ProposalAnswerEditor extends DefaultEditor
         if (this.formUtils.isFormsHomepage(after) || this.formUtils.isForm(after)
             || this.formUtils.isAnswerSection(after)
             || PROPOSAL_ANSWER_NODETYPE.equals(after.getName(JCR_PRIMARY_TYPE))) {
-            return new ProposalAnswerEditor(this.currentNodeBuilder.getChildNode(name), this.formUtils, name);
+            return new ProposalAnswerEditor(this.currentNodeBuilder.getChildNode(name), this.formUtils,
+                this.llmConfigurationService, name);
         }
         return null;
     }
@@ -184,10 +194,28 @@ public class ProposalAnswerEditor extends DefaultEditor
         }
         if (parseErrors.isEmpty()) {
             // All per-file markdown is written, so kick off the chunker. This runs asynchronously.
-            DoclingChatChunker.requestChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder));
+            DoclingChatChunker.requestChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder),
+                wholeDocumentTokenLimit());
         } else {
             DoclingChatChunker.invalidateChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder));
             ParsedMarkdownStore.clearChunks(answerFolder);
+        }
+    }
+
+    /**
+     * The active LLM model's {@code wholeDocumentTokenLimit}, the single source of the small-document chunking
+     * threshold. When the configuration cannot be read, {@code 0} is returned so the chunker applies its own
+     * built-in default rather than this editor inventing a second value.
+     *
+     * @return the configured limit in estimated tokens, or {@code 0} when unavailable
+     */
+    private long wholeDocumentTokenLimit()
+    {
+        try {
+            return this.llmConfigurationService.getActiveSettings().getWholeDocumentTokenLimit();
+        } catch (final IOException e) {
+            LOGGER.warn("Could not read the active LLM settings for the chunking threshold: {}", e.getMessage());
+            return 0L;
         }
     }
 

@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.llm.LLMConfigurationService;
 
 /**
  * A {@link EditorProvider} returning {@link ProposalAnswerEditor}.
@@ -38,10 +39,13 @@ public class ProposalAnswerEditorProvider implements EditorProvider
     @Reference
     private FormUtils formUtils;
 
+    @Reference
+    private LLMConfigurationService llmConfigurationService;
+
     @Override
     public Editor getRootEditor(final NodeState before, final NodeState after, final NodeBuilder builder,
         final CommitInfo info) throws CommitFailedException
     {
-        return new ProposalAnswerEditor(builder, this.formUtils);
+        return new ProposalAnswerEditor(builder, this.formUtils, this.llmConfigurationService);
     }
 }

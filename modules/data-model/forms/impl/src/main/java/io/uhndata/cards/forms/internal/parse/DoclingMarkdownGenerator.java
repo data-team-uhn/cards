@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
 
 import org.apache.commons.lang3.StringUtils;
@@ -189,9 +190,12 @@ public class DoclingMarkdownGenerator
         LOGGER.info("Sending Docling convert request for '{}' to daemon at {} (timeout {} min)",
             fileName, daemonUrl, timeoutMinutes);
         try {
-            final JsonObject requestBody = Json.createObjectBuilder()
-                .add("input_path", tmpFile.getAbsolutePath())
-                .build();
+            final JsonObjectBuilder bodyBuilder = Json.createObjectBuilder()
+                .add("input_path", tmpFile.getAbsolutePath());
+            if (StringUtils.isNotBlank(fileName)) {
+                bodyBuilder.add("source_file", fileName);
+            }
+            final JsonObject requestBody = bodyBuilder.build();
             final HttpRequest request = HttpRequest.newBuilder(URI.create(daemonUrl + "/convert"))
                 .timeout(Duration.ofMinutes(timeoutMinutes))
                 .header("Content-Type", "application/json")
@@ -232,10 +236,16 @@ public class DoclingMarkdownGenerator
         final String pythonCmd = resolvePythonCommand();
         final String scriptPath = resolveScriptPath();
         LOGGER.debug("Starting Docling CLI process for '{}' with script '{}'", fileName, scriptPath);
-        return new ProcessBuilder(pythonCmd, scriptPath,
-            tmpFile.getAbsolutePath())
-            .redirectErrorStream(true)
-            .start();
+        final ProcessBuilder builder;
+        if (StringUtils.isNotBlank(fileName)) {
+            builder = new ProcessBuilder(pythonCmd, scriptPath,
+                tmpFile.getAbsolutePath(),
+                "--source-file", fileName);
+        } else {
+            builder = new ProcessBuilder(pythonCmd, scriptPath,
+                tmpFile.getAbsolutePath());
+        }
+        return builder.redirectErrorStream(true).start();
     }
 
     private CompletableFuture<String> readProcessStdoutAsync(final Process process)
