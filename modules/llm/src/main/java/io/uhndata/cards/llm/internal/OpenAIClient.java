@@ -101,6 +101,8 @@ public class OpenAIClient extends DefaultLLMClient
         // arrive as many partial chunks and only the first token would be read, so disable it explicitly:
         // some OpenAI-compatible servers (e.g. Ollama) otherwise stream the reply.
         body.add("stream", false);
+        body.add("chat_template_kwargs", Json.createObjectBuilder()
+            .add("enable_thinking", false));
 
         final String projectId = settings.getProviderProperty(PROJECT_ID);
         if (StringUtils.isNotBlank(projectId)) {
