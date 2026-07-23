@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -140,7 +141,7 @@ public class ProposalIntakeService
         final List<String> keys = fieldKeys(fields);
         final Map<String, FieldResult> results = FieldResponseParser.parseFields(parsed, keys, texts);
         if (catalog != null) {
-            stampTags(catalog, chunks, parsed, new HashSet<>(payload.fullTextChunkIds()), keys);
+            stampTags(catalog, chunks, parsed, new HashSet<>(payload.fullTextChunkIds()), fieldTagMap(fields));
             writeCatalog(catalog, folder.catalogFile());
         }
         LlmCallTracker.open(folder.trackerFile())
@@ -188,7 +189,7 @@ public class ProposalIntakeService
     }
 
     private void stampTags(final ProposalCatalog catalog, final List<Chunk> chunks, final JsonObject parsed,
-        final Set<String> fullTextIds, final List<String> fieldKeys)
+        final Set<String> fullTextIds, final Map<String, Set<String>> fieldTags)
     {
         final Map<String, TagEntry> tagMap = parseTagMap(parsed);
         for (final Chunk chunk : chunks) {
@@ -223,7 +224,7 @@ public class ProposalIntakeService
                 uncertain = chunk.uncertain();
             }
             catalog.setExtractionHints(chunk.id(),
-                FieldTagMap.hintsForChunk(tags, basis, uncertain, fieldKeys));
+                FieldTagMap.hintsForChunk(tags, basis, uncertain, fieldTags));
         }
     }
 
@@ -317,6 +318,23 @@ public class ProposalIntakeService
             keys.add(field.key());
         }
         return keys;
+    }
+
+    /**
+     * The {@code field key -> rubric tags} mapping for this extraction, read from the questionnaire fields
+     * currently being extracted (each {@link FieldSpec}'s {@code tags}), in field order. A field with no
+     * configured tags maps to an empty set, which {@link FieldTagMap} treats as matching every chunk.
+     *
+     * @param fields the fields being extracted
+     * @return an ordered map from field key to its rubric tag set
+     */
+    private static Map<String, Set<String>> fieldTagMap(final List<FieldSpec> fields)
+    {
+        final Map<String, Set<String>> map = new LinkedHashMap<>();
+        for (final FieldSpec field : fields) {
+            map.put(field.key(), Set.copyOf(field.tags()));
+        }
+        return map;
     }
 
     private static String readString(final JsonObject object, final String key)
