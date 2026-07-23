@@ -39,11 +39,64 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <!--
+            These are embedded into the bundle (see Embed-Dependency) for LangChain4j's runtime use, but this
+            module's own source does not import them directly, so the analyzer would otherwise flag them.
+          -->
+          <ignoredUnusedDeclaredDependencies>
+            <ignoredUnusedDeclaredDependency>dev.langchain4j:langchain4j-http-client</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>com.fasterxml.jackson.core:jackson-databind</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>com.fasterxml.jackson.core:jackson-core</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>com.fasterxml.jackson.core:jackson-annotations</ignoredUnusedDeclaredDependency>
+            <ignoredUnusedDeclaredDependency>com.knuddels:jtokkit</ignoredUnusedDeclaredDependency>
+          </ignoredUnusedDeclaredDependencies>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <!-- Only the public API package is exported; the internal package and every embedded library
+                 (LangChain4j + its JDK HTTP client + Jackson + jtokkit) stay private to this bundle. -->
+            <Export-Package>io.uhndata.cards.llm</Export-Package>
+            <!-- LangChain4j and its non-OSGi dependencies are embedded into this bundle (fat bundle), since
+                 they are plain JARs with no OSGi metadata. jtokkit and the Jackson artifacts are transitive
+                 dependencies of LangChain4j, embedded here by artifactId. -->
+            <Embed-Dependency>
+              langchain4j-open-ai,
+              langchain4j-core,
+              langchain4j-http-client,
+              langchain4j-http-client-jdk,
+              jtokkit,
+              jackson-databind,
+              jackson-core,
+              jackson-annotations
+            </Embed-Dependency>
+            <!-- Keep the genuine platform dependencies as mandatory imports (they are provided by the OSGi
+                 runtime); make every other package the embedded libraries reference optional, so the self
+                 contained fat bundle resolves without demanding LangChain4j's optional integrations. -->
+            <Import-Package>
+              jakarta.json,
+              jakarta.servlet,
+              org.apache.commons.lang3,
+              org.apache.http,
+              org.apache.http.client.config,
+              org.apache.http.client.methods,
+              org.apache.http.entity,
+              org.apache.http.impl.client,
+              org.apache.http.util,
+              org.apache.sling.api,
+              org.apache.sling.api.resource,
+              org.apache.sling.api.servlets,
+              org.slf4j,
+              *;resolution:=optional
+            </Import-Package>
             <Sling-Nodetypes>SLING-INF/nodetypes/llms.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
               SLING-INF/content/apps/cards/config/;path:=/apps/cards/config/;overwrite:=false,
@@ -99,6 +152,61 @@
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
+    <!--
+      LangChain4j is the LLM transport (see OpenAIClient). These artifacts, together with the Jackson and
+      jtokkit libraries LangChain4j needs at runtime, are embedded into this bundle (see Embed-Dependency
+      above). They are declared directly (rather than relying on transitive resolution) because
+      Embed-Dependency only embeds directly-declared artifacts, and marked optional so they do not leak as
+      transitive compile dependencies onto modules that depend on this one (e.g. cards-data-model-forms-impl).
+    -->
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-open-ai</artifactId>
+      <version>1.16.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-core</artifactId>
+      <version>1.16.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-http-client</artifactId>
+      <version>1.16.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-http-client-jdk</artifactId>
+      <version>1.16.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.21.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.21.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.21</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.knuddels</groupId>
+      <artifactId>jtokkit</artifactId>
+      <version>1.1.0</version>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 </project>
