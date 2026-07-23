@@ -29,6 +29,8 @@ import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.status.api.StatusReportManager;
 import io.uhndata.cards.status.spi.StatusReport;
@@ -37,6 +39,9 @@ import io.uhndata.cards.status.spi.StatusReporter;
 @Component
 public class StatusReportManagerImpl implements StatusReportManager
 {
+    /** Default logger. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatusReportManagerImpl.class);
+
     /** A list of all available reporters. */
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.REPLACE,
         policy = ReferencePolicy.DYNAMIC)
@@ -48,9 +53,28 @@ public class StatusReportManagerImpl implements StatusReportManager
     {
         return this.reporters.stream()
             .filter(r -> tags == null || tags.isEmpty() || !Collections.disjoint(r.getTags(), tags))
-            .map(r -> r.report(unprivileged))
+            .map(r -> report(r, unprivileged))
             .filter(Objects::nonNull)
             .filter(r -> r.getStatus().compareTo(level) >= 0)
             .toList();
+    }
+
+    /**
+     * Invokes one reporter, isolating its failures so that a misbehaving reporter doesn't prevent the other
+     * reports from being computed.
+     *
+     * @param reporter the reporter to invoke
+     * @param unprivileged whether the report must not include sensitive information
+     * @return the reporter's report, or an {@code ERROR} report if the reporter threw an exception
+     */
+    private StatusReport report(final StatusReporter reporter, final boolean unprivileged)
+    {
+        try {
+            return reporter.report(unprivileged);
+        } catch (final RuntimeException e) {
+            LOGGER.warn("Status reporter {} failed: {}", reporter.getName(), e.getMessage(), e);
+            return new StatusReport(reporter.getName(), StatusReport.Status.ERROR,
+                "Failed to compute report: " + e.getMessage());
+        }
     }
 }
