@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-utilities</artifactId>
+    <version>0.9.41-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>cards-parsing-python-tests</artifactId>
+  <packaging>pom</packaging>
+  <name>CARDS - Parsing Python tests</name>
+  <description>Runs the pytest suite covering the document-parsing Python code (chunker,
+    markdown cleanup, TOC/appendix detection, batch sizing).</description>
+
+  <properties>
+    <!-- Python interpreter used to run the tests. Override with -Dpython.executable=...
+         (e.g. the Docling virtualenv's python) when needed. -->
+    <python.executable>python</python.executable>
+  </properties>
+
+  <build>
+    <plugins>
+      <!--
+        The parsing sources sit in this directory (not in src/main), alongside a Docling
+        virtualenv and scratch output folders that carry no license header. Append RAT
+        exclusions for those so the license check only looks at real, tracked sources.
+      -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <inputExcludes combine.children="append">
+            <!-- Docling Python virtualenv (third-party packages, not our sources) -->
+            <exclude>Docling_env/**</exclude>
+            <!-- Python bytecode caches -->
+            <exclude>**/__pycache__/**</exclude>
+            <!-- Throwaway smoke script kept for reference; superseded by tests/ -->
+            <exclude>_smoke_chunked_flag.py</exclude>
+            <!-- Sample input document (binary) -->
+            <exclude>*.docx</exclude>
+            <!-- pytest configuration (ini format, no comment header support) -->
+            <exclude>pytest.ini</exclude>
+          </inputExcludes>
+        </configuration>
+      </plugin>
+
+      <!-- Run the pytest suite during the test phase, honouring the shared skipTests flag. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>run-parsing-python-tests</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <skip>${skipTests}</skip>
+              <executable>${python.executable}</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>-m</argument>
+                <argument>pytest</argument>
+                <argument>tests</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
