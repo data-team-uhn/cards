@@ -87,6 +87,14 @@ public class ServicesPresentHealthCheck implements HealthCheck
                 try {
                     final String serviceClass = requiredService.getValueMap().get(SERVICE_PROPERTY, "");
                     final String osgiFilter = requiredService.getValueMap().get(FILTER_PROPERTY, "");
+                    if (StringUtils.isBlank(serviceClass)) {
+                        // Passing an empty class name to getAllServiceReferences would match every registered
+                        // service, silently passing the check, so treat a blank configuration as an error instead
+                        result.healthCheckError("Missing service class in configuration '{}'",
+                            requiredService.getName());
+                        missing++;
+                        continue;
+                    }
                     ServiceReference<?>[] implementations = this.context.getAllServiceReferences(serviceClass,
                         StringUtils.defaultIfBlank(osgiFilter, null));
 
