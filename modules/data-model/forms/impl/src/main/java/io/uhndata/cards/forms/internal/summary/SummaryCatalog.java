@@ -38,7 +38,7 @@ import jakarta.json.stream.JsonGenerator;
 
 /**
  * Reads, updates and rewrites a single {@code catalog.json} produced by the chunker. A catalog is a
- * JSON object shaped like {@code {"fileId": "protocol.pdf", "chunks": [{"chunk_id": "s001", "file":
+ * JSON object shaped like {@code {"fileId": "protocol.pdf", "chunks": [{"chunk_id": "chunk001", "file":
  * "Chunk-1.md", "heading": "...", "summary": "", ...}, ...]}}. This class preserves every property of the
  * root object and of every chunk entry, mutating only the {@code summary} fields, and writes the file back
  * atomically (temporary file plus move) so an interrupted write never leaves a torn catalog.
@@ -47,7 +47,7 @@ import jakarta.json.stream.JsonGenerator;
  */
 public final class SummaryCatalog
 {
-    /** The JSON property holding a chunk entry's identifier (e.g. {@code s001}). */
+    /** The JSON property holding a chunk entry's identifier (e.g. {@code chunk001}). */
     private static final String CHUNK_ID = "chunk_id";
 
     /** The JSON property holding a chunk entry's Markdown file name (e.g. {@code Chunk-1.md}). */
@@ -55,6 +55,9 @@ public final class SummaryCatalog
 
     /** The JSON property holding a chunk entry's summary, filled in by the summarization service. */
     private static final String SUMMARY = "summary";
+
+    /** The JSON property marking a backmatter (Reference/Appendix) chunk that must not be summarized. */
+    private static final String IS_APPENDIX = "isAppendix";
 
     /** The root JSON property holding the ordered array of chunk entries. */
     private static final String CHUNKS = "chunks";
@@ -163,6 +166,19 @@ public final class SummaryCatalog
     }
 
     /**
+     * Whether a chunk entry is the document's backmatter (Reference/Appendix) region and must not be
+     * summarized. Absent {@code isAppendix} (legacy catalogs) is treated as {@code false}.
+     *
+     * @param id the chunk identifier
+     * @return {@code true} when the entry's {@code isAppendix} property is true
+     */
+    public boolean isAppendix(final String id)
+    {
+        final JsonObject entry = find(id);
+        return entry != null && entry.getBoolean(IS_APPENDIX, false);
+    }
+
+    /**
      * The summaries of all chunk entries, in document order, skipping entries whose summary is blank.
      *
      * @return the non-blank summaries in order
@@ -180,21 +196,23 @@ public final class SummaryCatalog
     }
 
     /**
-     * Whether every chunk entry has a non-blank summary.
+     * Whether every non-appendix chunk entry has a non-blank summary.
      *
-     * @return {@code true} when the catalog has at least one entry and all entries are summarized
+     * @return {@code true} when the catalog has at least one summarizable entry and all of them are summarized
      */
     public boolean allSummarized()
     {
-        if (this.entries.isEmpty()) {
-            return false;
-        }
+        boolean any = false;
         for (final JsonObject entry : this.entries) {
+            if (entry.getBoolean(IS_APPENDIX, false)) {
+                continue;
+            }
+            any = true;
             if (entry.getString(SUMMARY, "").isBlank()) {
                 return false;
             }
         }
-        return true;
+        return any;
     }
 
     /**

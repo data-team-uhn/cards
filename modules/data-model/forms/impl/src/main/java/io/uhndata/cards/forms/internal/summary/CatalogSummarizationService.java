@@ -21,10 +21,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,15 +37,15 @@ import io.uhndata.cards.llm.LLMClientFactory;
  * Fills in the empty {@code summary} fields of a proposal answer's chunk catalog by sending each chunk's
  * Markdown to the active LLM. The chunker writes a single {@code Chunks/} folder (MVP: one proposal file
  * per answer) holding {@code Chunk-*.md} files and a {@code catalog.json} whose entries start with blank
- * summaries. This service walks the catalog after chunking completes and fills each empty summary from the
- * chunk's own text; already summarized entries are left untouched, so the walk is idempotent and safely
- * resumable. A failure on any one chunk leaves that summary empty and is logged; it never aborts the rest of
- * the answer.
+ * summaries. This service walks the catalog after the extraction phase has finished and saved, and fills
+ * each empty summary from the chunk's own text; already summarized entries are left untouched, so the walk
+ * is idempotent and safely resumable. A failure on any one chunk leaves that summary empty and is logged; it
+ * never aborts the rest of the answer.
  * <p>
  * All LLM traffic goes through the shared {@link LLMClient}, so it is logged and configured centrally like the
- * rest of the platform's LLM use. The service registers itself as the summarization hook on
- * {@link DoclingChatChunker} while active, which is what couples chunking completion to summarization without
- * the chunker depending on this bundle's services directly.
+ * rest of the platform's LLM use. Summarization is scheduled explicitly after extraction saves (see
+ * {@link #scheduleAfterExtraction(Path)}), never from chunking completion, so the two workloads do not race on
+ * the shared catalog or the LLM.
  * </p>
  *
  * @version $Id$
@@ -69,7 +69,8 @@ public class CatalogSummarizationService
         "You are a precise document summarizer. Describe what the provided material contains, capturing its "
         + "specific items, topics and data. Use ONLY the material given: do not invent information, do not "
         + "answer questions about it, and do not add commentary. Respond with prose only, with no markdown "
-        + "headings and no preamble such as 'Here is the summary'.";
+        + "headings and no preamble such as 'Here is the summary'. Do not include any thinking or reasoning "
+        + "in the reply — output only the summary itself.";
 
     /** Instruction for summarizing one chunk from its Markdown text (~300-600 tokens). */
     private static final String CHUNK_INSTRUCTION =
@@ -82,27 +83,37 @@ public class CatalogSummarizationService
      */
     private static final long NO_GENERATION_GUARD = -1L;
 
+    /** Background pool for post-extraction summarization so the extract servlet can return promptly. */
+    private static final ExecutorService SUMMARIZATION_EXECUTOR = Executors.newCachedThreadPool(runnable -> {
+        final Thread thread = new Thread(runnable, "catalog-summarization");
+        thread.setDaemon(true);
+        return thread;
+    });
+
     @Reference
     private LLMClientFactory llmClientFactory;
 
     /**
-     * Register this service as the chunker's summarization hook so completed chunking triggers summarization.
+     * Schedule catalog summarization for an answer folder after the extraction phase has finished and saved.
+     * Returns immediately; the walk runs asynchronously. No-ops when {@code answerDir} is {@code null} or has no
+     * chunk catalog. Already-summarized entries are left untouched, so it is safe to call on skip paths as well.
+     *
+     * @param answerDir the absolute parse output folder of the answer
      */
-    @Activate
-    public void activate()
+    public void scheduleAfterExtraction(final Path answerDir)
     {
-        DoclingChatChunker.setSummarizationHook(this::summarizeQuietly);
-        LOGGER.info("Catalog summarization service activated and registered as the chunking completion hook");
-    }
-
-    /**
-     * Clear the chunker's summarization hook when this service stops.
-     */
-    @Deactivate
-    public void deactivate()
-    {
-        DoclingChatChunker.setSummarizationHook(null);
-        LOGGER.info("Catalog summarization service deactivated and cleared the chunking completion hook");
+        if (answerDir == null) {
+            return;
+        }
+        final Path catalogFile = answerDir.resolve(CHUNKS_DIRNAME).resolve(CATALOG_NAME);
+        if (!Files.isRegularFile(catalogFile)) {
+            LOGGER.debug("No chunk catalog under {}; skipping post-extraction summarization", answerDir);
+            return;
+        }
+        final long generation = DoclingChatChunker.currentGeneration(answerDir);
+        LOGGER.info("Scheduling catalog summarization after extraction for {} (generation {})",
+            answerDir, generation);
+        SUMMARIZATION_EXECUTOR.submit(() -> this.summarizeQuietly(answerDir, generation));
     }
 
     /**
@@ -185,13 +196,17 @@ public class CatalogSummarizationService
     }
 
     /**
-     * Summarize one chunk from the Markdown file named by its catalog entry, unless it is already summarized
-     * or its text cannot be read.
+     * Summarize one chunk from the Markdown file named by its catalog entry, unless it is already summarized,
+     * marked as appendix/backmatter, or its text cannot be read.
      */
     private void summarizeChunk(final LLMClient client, final Path answerDir, final Path chunksDir,
         final String chunkId, final SummaryCatalog catalog, final long generation)
     {
         final String label = "chunk " + chunkId;
+        if (catalog.isAppendix(chunkId)) {
+            LOGGER.debug("{}: appendix/backmatter, skipping summarization", label);
+            return;
+        }
         if (catalog.isSummarized(chunkId)) {
             LOGGER.debug("{}: already summarized, skipping", label);
             return;
@@ -243,7 +258,7 @@ public class CatalogSummarizationService
         }
     }
 
-    private void summarizeQuietly(final Path answerDir, final Long generation)
+    private void summarizeQuietly(final Path answerDir, final long generation)
     {
         try {
             this.summarize(answerDir, generation);
