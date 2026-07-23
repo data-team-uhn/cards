@@ -33,6 +33,12 @@ import java.util.Map;
  */
 public final class LLMSettings
 {
+    /**
+     * Default {@code wholeDocumentTokenLimit} when a model node omits the property. Matches the historic
+     * chunker {@code min_structure_tokens} default so CLI-only runs stay aligned with configured models.
+     */
+    public static final long DEFAULT_WHOLE_DOCUMENT_TOKEN_LIMIT = 20000L;
+
     private static final String ENDPOINT = "endpoint";
 
     private static final String API_KEY_ENV_VAR = "apiKeyEnvVar";
@@ -46,6 +52,8 @@ public final class LLMSettings
     private static final String CONTEXT_LIMIT_TOKENS = "contextLimitTokens";
 
     private static final String CHUNK_TOKEN_SIZE = "chunkTokenSize";
+
+    private static final String WHOLE_DOCUMENT_TOKEN_LIMIT = "wholeDocumentTokenLimit";
 
     private static final String DEVELOPER = "developer";
 
@@ -179,6 +187,20 @@ public final class LLMSettings
     public long getChunkTokenSize()
     {
         return number(this.modelProperties, CHUNK_TOKEN_SIZE, 0);
+    }
+
+    /**
+     * The document-size threshold, in estimated tokens ({@code chars / 4}), below which an uploaded document is
+     * treated as small: it is never chunked and is sent to the model whole. This is the single source of the
+     * small-document routing decision — the chunker receives it as its {@code min_structure_tokens} parameter
+     * and records the outcome as the {@code chunked} flag in {@code outline.json}, which every downstream
+     * extraction stage routes on.
+     *
+     * @return the whole-document token limit, or a default of 20000 if not set
+     */
+    public long getWholeDocumentTokenLimit()
+    {
+        return number(this.modelProperties, WHOLE_DOCUMENT_TOKEN_LIMIT, DEFAULT_WHOLE_DOCUMENT_TOKEN_LIMIT);
     }
 
     /**
