@@ -25,7 +25,8 @@ Java calls this over HTTP instead of spawning docling_parser.py per file.
 
 Endpoints:
     GET  /health   -> {"status": "ok", "workers": N, "ready": true}
-    POST /convert  -> {"input_path": "/abs/path/file.pdf"} -> {"markdown": "...", "logs": "..."}
+    POST /convert  -> {"input_path": "/abs/path/file.pdf", "source_file": "orig.pdf"?}
+                     -> {"markdown": "...", "logs": "..."}
     POST /chunk    -> {"file_path": "/abs/path/file.md"} -> {"status": "ok", "chunks": N, "logs": "..."}
     POST /shutdown -> graceful stop (used when CARDS owns the daemon process)
 """
@@ -157,7 +158,7 @@ def _is_allowed_chunk_file(path: Path) -> bool:
     return _is_under_root(resolved, _STATE.parse_output_root)
 
 
-def _convert_file(input_path: Path) -> tuple[str, str]:
+def _convert_file(input_path: Path, source_file: str | None = None) -> tuple[str, str]:
     logs: list[str] = []
 
     def log(message: str) -> None:
@@ -171,13 +172,14 @@ def _convert_file(input_path: Path) -> tuple[str, str]:
                 executor=_STATE.pdf_executor,
                 workers=_STATE.worker_count,
                 log=log,
+                source_file=source_file,
             )
         except BrokenProcessPool as exc:
             _STATE.pdf_executor_broken = True
             raise RuntimeError("PDF worker pool is broken; restart the daemon") from exc
     elif suffix == ".docx":
         with _STATE.docx_lock:
-            markdown = convert_docx_to_markdown(input_path)
+            markdown = convert_docx_to_markdown(input_path, source_file=source_file)
         log(f"Converted DOCX ({len(markdown):,} chars)")
     else:
         raise ValueError(f"Unsupported file type: {suffix}")
@@ -235,7 +237,10 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             if not _is_allowed_path(input_path):
                 raise ValueError("input_path must be an existing .pdf or .docx under the system temp directory")
 
-            markdown, logs = _convert_file(input_path)
+            source_value = body.get("source_file")
+            source_file = source_value.strip() if isinstance(source_value, str) and source_value.strip() else None
+
+            markdown, logs = _convert_file(input_path, source_file=source_file)
 
             _json_response(
                 self,
@@ -268,6 +273,8 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             kwargs: dict[str, Any] = {}
             if isinstance(body.get("max_tokens"), int) and body["max_tokens"] > 0:
                 kwargs["max_tokens"] = body["max_tokens"]
+            if isinstance(body.get("min_structure_tokens"), int) and body["min_structure_tokens"] > 0:
+                kwargs["min_structure_tokens"] = body["min_structure_tokens"]
 
             summary = chunk_file(str(file_path), **kwargs)
             _json_response(self, HTTPStatus.OK, {"status": "ok", **summary})

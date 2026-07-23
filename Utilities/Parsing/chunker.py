@@ -42,10 +42,9 @@ deeper than the top) and then paragraph (blank-line) boundaries. A text-only tai
 smaller than :data:`MIN_TAIL_TOKENS` is not cut off — it is folded back into the preceding
 part even if that pushes it over the budget.
 
-Everything from the <Reference>/<Appendix> marker to the end of the document
-becomes one standalone final chunk. That region is excluded from ``outline.json``'s
-document-wide heading array. Marked TOC lines are excluded from that array as well
-when ``tocStartLine``/``tocEndLine`` are known.
+Everything from ``backmatterLine`` (the first Reference/Appendix heading recorded in
+the sidecar ``outline.json``) to the end of the document becomes one standalone final
+chunk.
 
 All chunks are summarised in ``catalog.json``
 
@@ -61,14 +60,17 @@ All chunks are summarised in ``catalog.json``
           "questions_answered": [],
           "extraction_hints": [],
           "pages": [1, 2],
-          "length": 1837
+          "length": 1837,
+          "isAppendix": false
         }, ...
       ]
     }
 
 ``summary``, ``rubric_tags``, ``questions_answered`` and ``extraction_hints`` are always left
-empty here so they can be filled in later. ``pages`` lists the -- page: numbers referenced within
-a chunk (from the ``<!-- page: N-->`` markers the PDF parser emits); it is empty for DOCX.
+empty here so they can be filled in later. ``isAppendix`` is ``true`` only for the
+backmatter (Reference/Appendix) chunk; that chunk is never sent to the summarizer.
+``pages`` lists the -- page: numbers referenced within a chunk (from the
+``<!-- page: N-->`` markers the PDF parser emits); it is empty for DOCX.
 ``length`` is the character count of the chunk file's content.
 
 Token counts use a cheap character-based heuristic (``len(text) // 4``); no ML tokenizer is loaded.
@@ -99,9 +101,6 @@ from toc_and_appendix_detection import (
     MAX_HEADING_WORDS,
     MAX_WORD_CHARS,
     MIN_HEADING_CHARS,
-    TOC_END,
-    TOC_START,
-    backmatter_marker_line,
     is_toc_entry_line,
     mark_toc_and_appendix,
     read_outline,
@@ -122,7 +121,7 @@ DEFAULT_HEADING = "General Information"
 # Name of the per-document catalog file written into the chunks folder.
 CATALOG_NAME = "catalog.json"
 
-# Per-document outline file written beside the catalog (TOC / heading array / token size).
+# Per-document outline file written beside the catalog (TOC / token size).
 # Same base name as the preliminary sidecar :func:`toc_and_appendix_detection.mark_toc_and_appendix`
 # writes beside the .md (no collision -- that one lives beside output_file, this one inside
 # Chunks/, which is wiped and recreated below); write_chunk_files folds the sidecar's
@@ -266,30 +265,10 @@ def _pages_in(text: str) -> list[int]:
     return sorted(pages)
 
 
-def _split_off_backmatter(
-    markdown_content: str, marker_line: int | None = None, lines: list[str] | None = None
-) -> tuple[str, str | None]:
-    """Split the document at its first ``<Reference>``/``<Appendix>`` marker: 
-    everything from the marker to the end of the document becomes a standalone backmatter chunk.
-
-    @param marker_line: the marker's line index, when already known
-    @param lines: ``markdown_content`` already split on newlines, when the caller has it split already
-    @return: ``(main_content, backmatter_text)``; ``backmatter_text`` is None when no marker is present
-    """
-    if lines is None:
-        lines = markdown_content.split("\n")
-    line = marker_line if marker_line is not None else backmatter_marker_line(markdown_content, lines=lines)
-    if line is None:
-        return markdown_content, None
-    return "\n".join(lines[:line]).rstrip(), "\n".join(lines[line:]).strip()
-
-
 def _backmatter_heading(text: str) -> list[str]:
-    """The heading array for a backmatter chunk: the text of the heading line
-    immediately following the ``<Reference>``/``<Appendix>`` marker (the block's first
-    line), ATX ``#`` markers or bold ``**`` stripped."""
-    lines = text.split("\n")
-    for line in lines[1:]:
+    """The heading array for a backmatter chunk: the text of the block's first
+    non-empty line, ATX ``#`` markers or bold ``**`` stripped."""
+    for line in text.split("\n"):
         stripped = line.strip()
         if not stripped:
             continue
@@ -303,14 +282,14 @@ def _backmatter_heading(text: str) -> list[str]:
     return [DEFAULT_HEADING]
 
 
-def _split_into_top_chunks(markdown_content: str, boundary_level: int | None) -> list[dict]:
+def _split_into_top_chunks(lines: list[str], boundary_level: int | None) -> list[dict]:
     """Split the document at its shallowest heading level.
 
     The chunk boundary is the shallowest heading level present in the document: level-1
     (``#``) when the document has any, otherwise the first (topmost) heading level it does
     have. A document with no headings at all is returned as a single ``number == 0`` chunk.
 
-    @param markdown_content: the full Markdown document
+    @param lines: the main-content Markdown already split on newlines
     @param boundary_level: the document's shallowest ATX heading level, or ``None`` when it
         has none at all — computed once by the caller (:func:`write_chunk_files`) via
         :func:`_min_heading_level`
@@ -319,14 +298,14 @@ def _split_into_top_chunks(markdown_content: str, boundary_level: int | None) ->
         empty heading, and the remaining chunks are numbered from 1
     """
     if boundary_level is None:
-        text = markdown_content.strip()
+        text = "\n".join(lines).strip()
         return [{"number": 0, "heading": "", "level": 0, "text": text}] if text else []
 
     preamble_lines: list[str] = []
     chunks: list[dict] = []
     current: dict | None = None
 
-    for line in markdown_content.split("\n"):
+    for line in lines:
         if _heading_level(line) == boundary_level:
             if current is not None:
                 chunks.append(current)
@@ -595,78 +574,24 @@ def _part_heading(part_text: str, previous_heading: list[str] | None) -> list[st
     return previous_heading or [DEFAULT_HEADING]
 
 
-def _aggregate_headings(
-    detected_headings: list[list[str]],
-    *,
-    lines: list[str] | None = None,
-    toc_range: tuple[int, int] | None = None,
-    end_line: int | None = None,
+def _toc_lines(
+    lines: list[str],
+    toc_start: int | None = None,
+    toc_end: int | None = None,
 ) -> list[str]:
-    """The document-wide heading array for ``outline.json``.
-
-    When ``lines`` is given, headings are collected directly from those lines (same ATX /
-    stand-out rules as :func:`_part_heading`), skipping any ``toc_range`` and stopping
-    before ``end_line`` (the backmatter marker). Otherwise falls back to flattening
-    ``detected_headings`` from chunk parts.
-
-    Deduplicated case-insensitively; :data:`DEFAULT_HEADING` is filtered out.
+    """TOC entry lines from the inclusive ``tocStartLine``/``tocEndLine`` range in
+    outline.json that pass :func:`is_toc_entry_line` (label, blanks, page markers,
+    and short interstitial noise dropped) — or ``[]`` when the range is unknown.
     """
-    if lines is not None:
-        limit = end_line if end_line is not None else len(lines)
-        headings: list[str] = []
-        seen: set[str] = set()
-        default_key = DEFAULT_HEADING.casefold()
-        beginning_level: int | None = None
-        for index in range(limit):
-            if toc_range is not None and toc_range[0] <= index <= toc_range[1]:
-                continue
-            atx = _match_heading(lines[index])
-            if atx is not None:
-                level, text = atx
-                if beginning_level is None:
-                    beginning_level = level
-                if not (beginning_level <= level <= beginning_level + 1):
-                    continue
-            else:
-                text = _standout_heading(lines, index)
-                if text is None:
-                    continue
-            if not valid_heading(text):
-                continue
-            key = text.casefold()
-            if key == default_key or key in seen:
-                continue
-            seen.add(key)
-            headings.append(text)
-        return headings
-
-    headings = []
-    seen = set()
-    default_key = DEFAULT_HEADING.casefold()
-    for part_headings in detected_headings:
-        for heading in part_headings:
-            key = heading.casefold()
-            if key == default_key or key in seen:
-                continue
-            seen.add(key)
-            headings.append(heading)
-    return headings
-
-
-def _toc_lines(lines: list[str]) -> list[str]:
-    """The marked TOC's entry lines — everything between the reserved ``<!-- TOC start -->``
-    and ``<!-- TOC end -->`` markers, blank and page-marker lines dropped — or ``[]`` when
-    the document has no marked TOC.
-    """
-    try:
-        start = lines.index(TOC_START)
-        end = lines.index(TOC_END, start + 1)
-    except ValueError:
+    if not isinstance(toc_start, int) or not isinstance(toc_end, int):
         return []
+    if toc_start < 0 or toc_end < toc_start or toc_start >= len(lines):
+        return []
+    end = min(toc_end + 1, len(lines))
     entries: list[str] = []
-    for line in lines[start + 1:end]:
+    for line in lines[toc_start:end]:
         stripped = line.strip()
-        if stripped and not _PAGE_MARKER_LINE.match(stripped):
+        if stripped and not _PAGE_MARKER_LINE.match(stripped) and is_toc_entry_line(stripped):
             entries.append(stripped)
     return entries
 
@@ -718,67 +643,88 @@ def write_chunk_files(
     The document first goes through the shared pre-chunking pipeline
     (:func:`_prepare_markdown`): garbage-line cleanup (idempotent via the
     ``<!-- cleaned -->`` marker) and TOC/appendix marking, with the result written back
-    to ``output_file`` when anything changed. Documents with fewer than
-    ``min_structure_tokens`` (``len // 4``) are still cleaned, but not chunked —
-    returns ``None`` without creating ``Chunks/``.
+    to ``output_file`` when anything changed.
 
-    A ``<Reference>``/``<Appendix>`` marker (see :func:`toc_and_appendix_detection.mark_appendix`),
-    when present, splits off everything from it to the end of the document as one
-    standalone backmatter chunk — no heading-based sub-splitting, no token-budget
-    splitting. The remaining main content is split at the shallowest heading level, then
-    consecutive sections are united up to ``max_tokens`` before any over-budget piece is
-    split further.
+    The size gate is the single binary routing decision of the pipeline, recorded as the
+    ``chunked`` boolean in ``Chunks/outline.json`` — which is **always** written, even
+    when chunking is skipped. Documents with fewer than ``min_structure_tokens``
+    (``len // 4``) are still cleaned, but deliberately left unchunked: ``Chunks/``
+    then holds only the outline (``chunked: false``, empty ``toc``, no
+    ``catalog.json`` and no chunk files) and ``None`` is returned. Downstream stages
+    route on that recorded flag — whole-document LLM calls when ``false``, catalog-driven
+    calls when ``true`` — instead of re-deriving the threshold.
+
+    When the sidecar ``outline.json`` has a ``backmatterLine`` (see
+    :func:`toc_and_appendix_detection.mark_appendix`), everything from that line to EOF
+    becomes one standalone backmatter chunk — no heading-based sub-splitting, no
+    token-budget splitting. The remaining main content is split at the shallowest
+    heading level, then consecutive sections are united up to ``max_tokens`` before any
+    over-budget piece is split further.
 
     @param markdown_content: the full Markdown document already written to ``output_file``
     @param output_file: the main ``.md`` file; its chunks land in ``Chunks/`` beside it
     @param filename: the original input file name (with extension), recorded as ``fileId``
     @param max_tokens: target maximum tokens per chunk file; consecutive top-level sections
         are packed up to this budget, and only then is an over-budget piece split into parts
-    @param min_structure_tokens: skip chunking when the document is smaller than this
+    @param min_structure_tokens: skip chunking when the document is smaller than this;
+        the outcome is recorded as ``chunked`` in ``Chunks/outline.json`` either way
     @return: the path to the created chunks folder, or ``None`` when chunking was skipped
     """
     markdown_content = _prepare_markdown(markdown_content, output_file, min_structure_tokens)
-    if len(markdown_content) // 4 < min_structure_tokens:
-        return None
+    tokens = len(markdown_content) // 4
+    chunked = tokens >= min_structure_tokens
 
     chunks_dir = output_file.parent / CHUNKS_DIRNAME
     if chunks_dir.exists():
         shutil.rmtree(chunks_dir)
     chunks_dir.mkdir(parents=True, exist_ok=True)
 
+    if not chunked:
+        # The binary routing decision, recorded once: this document is small enough to be
+        # sent to the LLM whole, so it is deliberately left unchunked. Downstream stages
+        # read this flag instead of re-deriving the threshold or probing for chunk files.
+        outline = {
+            "fileId": filename,
+            "tokens": tokens,
+            "chunked": False,
+            "toc": [],
+        }
+        (chunks_dir / OUTLINE_NAME).write_text(
+            json.dumps(outline, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+        output_file.with_name(OUTLINE_NAME).unlink(missing_ok=True)
+        return None
+
     # One shared split of the full document, reused by every detection pass below
     # instead of each re-splitting the same (potentially large) document on "\n".
     lines = markdown_content.split("\n")
 
-    # The TOC range comes from the reserved markers themselves — exact by construction —
-    # with the sidecar outline.json (written by mark_toc_and_appendix in
-    # _prepare_markdown above) as a fallback for marker-less documents.
+    # TOC range and backmatter split come from the sidecar outline.json written by
+    # mark_toc_and_appendix in _prepare_markdown above — no Markdown markers.
     sidecar = read_outline(output_file.with_name(OUTLINE_NAME))
-    try:
-        marker_start = lines.index(TOC_START)
-        toc_range = (marker_start, lines.index(TOC_END, marker_start + 1))
-    except ValueError:
-        toc_start = sidecar.get("tocStartLine")
-        toc_end = sidecar.get("tocEndLine")
-        if isinstance(toc_start, int) and isinstance(toc_end, int):
-            toc_range = (toc_start, toc_end)
-        else:
-            toc_range = None
+    toc_start = sidecar.get("tocStartLine")
+    toc_end = sidecar.get("tocEndLine")
+    if isinstance(toc_start, int) and isinstance(toc_end, int):
+        toc_range = (toc_start, toc_end)
+    else:
+        toc_start = None
+        toc_end = None
+        toc_range = None
     backmatter_line = sidecar.get("backmatterLine")
     if not isinstance(backmatter_line, int):
-        backmatter_line = backmatter_marker_line(markdown_content, lines=lines)
-
-    main_content, backmatter_text = _split_off_backmatter(markdown_content, backmatter_line, lines=lines)
+        backmatter_line = None
     main_lines = lines[:backmatter_line] if backmatter_line is not None else lines
-    boundary_level = _min_heading_level(main_content, lines=main_lines)
+    backmatter_text = (
+        "\n".join(lines[backmatter_line:]).strip() if backmatter_line is not None else None
+    )
+    boundary_level = _min_heading_level("", lines=main_lines)
 
     catalog_chunks: list[dict] = []
-    detected_headings: list[list[str]] = []
     next_id = 1
 
     # Unite consecutive top-level sections up to the token budget, then split only
     # those united parts that are still over budget (a single oversized section).
-    top_chunks = _split_into_top_chunks(main_content, boundary_level)
+    top_chunks = _split_into_top_chunks(main_lines, boundary_level)
     top_texts = [chunk["text"] for chunk in top_chunks if chunk["text"]]
     packed = _pack_blocks(top_texts, max_tokens) if top_texts else []
     packed = _move_trailing_page_markers(packed)
@@ -800,12 +746,10 @@ def write_chunk_files(
             (chunks_dir / name).write_text(part_text + "\n", encoding="utf-8")
             previous_heading = catalog_chunks[-1]["heading"] if catalog_chunks else None
             detected = _part_heading(part_text, previous_heading)
-            detected_headings.append(detected)
-            # The very first chunk is always the default header, regardless of content;
-            # its real detected heading (if any) still feeds outline.json's aggregation.
+            # The very first chunk is always the default header, regardless of content.
             heading = detected if catalog_chunks else [DEFAULT_HEADING]
             catalog_entry = {
-                "chunk_id": f"s{next_id:03d}",
+                "chunk_id": f"chunk{next_id:03d}",
                 "file": name,
                 "heading": heading,
                 "summary": "",
@@ -814,29 +758,16 @@ def write_chunk_files(
                 "extraction_hints": [],
                 "pages": _pages_in(part_text),
                 "length": len(part_text),
+                "isAppendix": False,
             }
             catalog_chunks.append(catalog_entry)
             next_id += 1
-
-    # A document that collapses into a single main-content chunk is short enough to be
-    # sent to the LLM whole (see the Stage 0.5/1.1 whole-document thresholds) — there is
-    # no chunk selection for a heading outline to assist with, so it is left empty
-    # rather than populated with headings nothing downstream will ever read.
-    headings = (
-        _aggregate_headings(
-            detected_headings,
-            lines=lines,
-            toc_range=toc_range,
-            end_line=backmatter_line,
-        )
-        if len(catalog_chunks) > 1 else []
-    )
 
     if backmatter_text:
         name = f"Chunk-{first_number + len(packed)}.md"
         (chunks_dir / name).write_text(backmatter_text + "\n", encoding="utf-8")
         catalog_chunks.append({
-            "chunk_id": f"s{next_id:03d}",
+            "chunk_id": f"chunk{next_id:03d}",
             "file": name,
             "heading": _backmatter_heading(backmatter_text),
             "summary": "",
@@ -845,14 +776,19 @@ def write_chunk_files(
             "extraction_hints": [],
             "pages": _pages_in(backmatter_text),
             "length": len(backmatter_text),
+            "isAppendix": True,
         })
         next_id += 1
 
+    # Prefer the sidecar's entry-only ``toc`` when mark_and_cleanup_toc recorded one;
+    # otherwise re-derive from the outline line range.
+    sidecar_toc = sidecar.get("toc")
+    toc = sidecar_toc if isinstance(sidecar_toc, list) else _toc_lines(lines, toc_start, toc_end)
     outline = {
         "fileId": filename,
-        "tokens": len(markdown_content) // 4,
-        "headings": headings,
-        "toc": _toc_lines(lines),
+        "tokens": tokens,
+        "chunked": True,
+        "toc": toc,
     }
     if toc_range is not None:
         outline["tocStartLine"], outline["tocEndLine"] = toc_range
@@ -890,7 +826,8 @@ def chunk_file(
 
     MVP scope: one proposal file per answer, so this takes the exact file to chunk rather
     than scanning a folder for inputs. Documents under ``min_structure_tokens`` are not
-    chunked (``chunks`` is 0).
+    chunked (``chunks`` is 0), but the decision is still recorded in
+    ``Chunks/outline.json`` (``chunked: false``) for downstream routing.
 
     Returns a summary dict: ``{"chunks", "logs"}``. Raises :class:`FileNotFoundError` when
     the file does not exist.
@@ -913,7 +850,8 @@ def chunk_file(
             "chunks": 0,
             "logs": (
                 f"Skipped chunking '{path.name}' "
-                f"({tokens} tokens < {min_structure_tokens} min_structure_tokens)"
+                f"({tokens} tokens < {min_structure_tokens} min_structure_tokens); "
+                f"recorded chunked=false in {CHUNKS_DIRNAME}/{OUTLINE_NAME}"
             ),
         }
     count = _chunk_count(chunks_dir)
