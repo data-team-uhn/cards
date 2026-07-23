@@ -124,43 +124,34 @@
             <inherited>false</inherited>
             <executions>
               <execution>
-                <configuration>
-                  <executable>bash</executable>
-                  <workingDirectory>.</workingDirectory>
-                  <commandlineArgs>complete_git_copy.sh</commandlineArgs>
-                </configuration>
-                <id>complete-git-copy</id>
-                <phase>install</phase>
-                <goals>
-                   <goal>exec</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.sling</groupId>
-            <artifactId>slingfeature-maven-plugin</artifactId>
-            <configuration>
-              <archives>
-                <archive>
-                  <classifier>core_tar_far</classifier>
-                  <includeClassifier>core_tar</includeClassifier>
-                </archive>
-                <archive>
-                  <classifier>core_mongo_far</classifier>
-                  <includeClassifier>core_mongo</includeClassifier>
-                </archive>
-              </archives>
-            </configuration>
-            <executions>
-              <execution>
-                <id>aggregate-archives</id>
+                <!-- Harvest all the reactor's feature files and prepare the artifacts and
+                  metadata layers of the image, right after the aggregates are built -->
+                <id>prepare-docker-context</id>
                 <phase>prepare-package</phase>
                 <goals>
-                  <goal>attach-featurearchives</goal>
+                  <goal>exec</goal>
                 </goals>
+                <configuration>
+                  <executable>bash</executable>
+                  <workingDirectory>${project.basedir}</workingDirectory>
+                  <commandlineArgs>prepare_context.sh harvest ${project.version}</commandlineArgs>
+                </configuration>
               </execution>
-             </executions>
+              <execution>
+                <!-- Copy the project artifact repository into the image context, after the
+                  current build's artifacts were deployed to it by the local-deploy step -->
+                <id>copy-mvnrepo</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>bash</executable>
+                  <workingDirectory>${project.basedir}</workingDirectory>
+                  <commandlineArgs>prepare_context.sh mvnrepo ${project.version}</commandlineArgs>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
           <plugin>
             <groupId>io.fabric8</groupId>
@@ -171,6 +162,42 @@
                 <phase>install</phase>
                 <goals>
                   <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!-- Fills the image's artifact repository with every artifact referenced by any feature
+        built by the reactor, making the image fully self-contained. -->
+      <id>docker-production</id>
+      <activation>
+        <property>
+          <name>docker.production</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>slingfeature-maven-plugin</artifactId>
+            <configuration>
+              <generatedFeatures>${project.build.directory}/generated-features</generatedFeatures>
+              <repositories>
+                <repository>
+                  <repositoryDir>context/artifacts</repositoryDir>
+                  <filesInclude>**/*.json</filesInclude>
+                </repository>
+              </repositories>
+            </configuration>
+            <executions>
+              <execution>
+                <id>self-contained-repository</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>repository</goal>
                 </goals>
               </execution>
             </executions>

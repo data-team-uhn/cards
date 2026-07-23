@@ -15,33 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Use Docker multi-stage building so that the production image may be
-# slim yet still be self-contained with all the necessary dependency
-# JARs
+# The same image definition serves two flavors, differing only in how much of the artifact
+# repository is baked in by the Maven build preparing the build context:
+# - the developer flavor (default) only embeds the project artifacts (mvnrepo/); third-party
+#   artifacts come from a volume-mounted ~/.m2, or are downloaded on first start
+# - the production flavor (-Pdocker-production) also embeds every third-party artifact
+#   referenced by any feature in the repository (artifacts/), needing no network access
 
-# Build Image
-FROM alpine:3.23
-
-ARG build_jars
-
-# Copy in the make_filled_m2.sh script and make it executable
-COPY make_filled_m2.sh /
-RUN chmod +x /make_filled_m2.sh
-
-# Copy in the source code
-ADD COMPLETE_SOURCE_CODE.tar /cards
-
-# Build so that we can gather all dependency JARs, if docker.buildArg.build_jars=true
-WORKDIR /cards
-RUN if [[ "$build_jars" == "true" ]] ; then /make_filled_m2.sh ; else mkdir -p /root/.m2/repository ; fi
-
-# Create a directory for storing basic metadata about the built image
-RUN mkdir /metadata
-
-# Copy in the yarn.lock file as metadata
-RUN if [[ "$build_jars" == "true" ]] ; then cp /cards/aggregated-frontend/src/main/frontend/yarn.lock /metadata/yarn.lock ; fi
-
-# Production Image: Start from a small Alpine Linux base image
+# Start from a small Alpine Linux base image
 FROM alpine:3.23
 
 # Install dependency Alpine Linux packages and apply any available package upgrades
@@ -63,13 +44,28 @@ ENV DEV=
 # Put everything in /opt/cards
 RUN mkdir -p /opt/cards/.cards-data/
 WORKDIR /opt/cards/
+
+# The feature launcher
 COPY target/dependency/org.apache.sling.feature.launcher/ org.apache.sling.feature.launcher/
-COPY target/${project.artifactId}-${project.version}-core_mongo_far.far .
-COPY target/${project.artifactId}-${project.version}-core_tar_far.far .
+
+# The artifact repositories: the project artifacts, including all the feature files, and the
+# (possibly empty) third-party artifact repository
+COPY target/context/mvnrepo/ mvnrepo/
+COPY target/context/artifacts/ artifacts/
+
+# The build metadata, supporting security audits of deployments
+COPY target/context/metadata/ /metadata/
+
 COPY logback.xml ./.cards-data/
 COPY mailcap /root/.mailcap
 COPY get_project_dependency_features.py /get_project_dependency_features.py
 COPY sling-features.json /sling-features.json
+
+# The mount point for a host ~/.m2 in the developer flavor; harmless when not mounted
+RUN mkdir -p /root/.m2/repository
+
+# An extra artifact repository that deployment tooling may inject artifacts into
+RUN mkdir -p /root/.cards-generic-m2/repository
 
 # This is where Sling stores its data
 # Make this a volume which can be persisted between different container versions
@@ -81,18 +77,6 @@ EXPOSE 8080
 # EXPOSE is just an indication, no port is actually published unless done explicitly when starting the container,
 # so it is safe to always declare it here, even when debug mode isn't active
 EXPOSE 5005
-
-# Copy in the dependency JARs
-COPY --from=0 /root/.m2 /root/.m2
-
-# Copy in the build metadata
-COPY --from=0 /metadata /metadata
-
-# Copy in the generic CARDS logo
-COPY --from=0 /cards/modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/media/default/logo_light_bg.png /metadata/logo.png
-
-# Create the ~/.cards-generic-m2/repository empty directory
-RUN mkdir -p /root/.cards-generic-m2/repository
 
 # This is the default command executed when starting the container
 COPY docker_entry.sh /docker_entry.sh
