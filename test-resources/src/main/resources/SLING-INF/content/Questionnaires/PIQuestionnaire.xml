@@ -166,6 +166,13 @@ For top category 5:
 				<type>String</type>
 			</property>
 			<property>
+				<name>tags</name>
+				<values>
+					<value>B.1</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>taskLabel</name>
 				<value>Determine the Study Title.</value>
 				<type>String</type>
@@ -209,6 +216,13 @@ For top category 5:
 			<property>
 				<name>promptKey</name>
 				<value>study_category</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>tags</name>
+				<values>
+					<value>B.4</value>
+				</values>
 				<type>String</type>
 			</property>
 			<property>
@@ -303,6 +317,13 @@ For top category 5:
 				<type>String</type>
 			</property>
 			<property>
+				<name>tags</name>
+				<values>
+					<value>B.1</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>taskLabel</name>
 				<value>Determine the Regulatory Sponsor.</value>
 				<type>String</type>
@@ -347,6 +368,13 @@ For top category 5:
 				<type>String</type>
 			</property>
 			<property>
+				<name>tags</name>
+				<values>
+					<value>B.1</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>taskLabel</name>
 				<value>Determine the Lead Institution.</value>
 				<type>String</type>
@@ -388,6 +416,13 @@ For top category 5:
 			<property>
 				<name>promptKey</name>
 				<value>lead_investigator</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>tags</name>
+				<values>
+					<value>B.1</value>
+				</values>
 				<type>String</type>
 			</property>
 			<property>
@@ -437,6 +472,13 @@ For top category 5:
 				<type>String</type>
 			</property>
 			<property>
+				<name>tags</name>
+				<values>
+					<value>B.1</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>taskLabel</name>
 				<value>Determine the Lead Investigator's institutional email.</value>
 				<type>String</type>
@@ -477,6 +519,14 @@ For top category 5:
 			<property>
 				<name>promptKey</name>
 				<value>participating_institutions</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>tags</name>
+				<values>
+					<value>B.1</value>
+					<value>B.4</value>
+				</values>
 				<type>String</type>
 			</property>
 			<property>
@@ -524,6 +574,13 @@ For top category 5:
 				<type>String</type>
 			</property>
 			<property>
+				<name>tags</name>
+				<values>
+					<value>B.1</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>taskLabel</name>
 				<value>Determine the Participating Institutions' investigators.</value>
 				<type>String</type>
@@ -566,6 +623,14 @@ For top category 5:
 			<property>
 				<name>promptKey</name>
 				<value>study_drug_device</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>tags</name>
+				<values>
+					<value>B.4</value>
+					<value>B.7</value>
+				</values>
 				<type>String</type>
 			</property>
 			<property>
