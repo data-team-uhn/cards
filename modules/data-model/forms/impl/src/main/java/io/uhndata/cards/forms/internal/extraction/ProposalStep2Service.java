@@ -42,8 +42,10 @@ import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.Fiel
 import io.uhndata.cards.forms.internal.extraction.Step2Planner.Batch;
 import io.uhndata.cards.llm.LLMClient;
 import io.uhndata.cards.llm.LLMClientFactory;
+import io.uhndata.cards.llm.LLMConfigurationService;
 import io.uhndata.cards.llm.LLMMessage;
 import io.uhndata.cards.llm.LLMRequestOptions;
+import io.uhndata.cards.llm.LLMSettings;
 
 /**
  * Stage 1.2 of the proposal pipeline: targeted extraction of the intake fields that came back missing or
@@ -53,7 +55,9 @@ import io.uhndata.cards.llm.LLMRequestOptions;
  * never sees its earlier answer, to avoid anchoring — and the higher-confidence result wins across passes.
  * Each call is recorded in {@code llm_call_tracker.jsonl} so the sweep never re-sends a chunk already examined
  * for a field, and so {@code found_answer=false} is only reached once a field's non-excluded chunks have all
- * been read.
+ * been read. An unchunked (small) document — the chunker recorded {@code chunked: false} — skips the planner:
+ * all still-pending fields get one focused re-ask over the whole document as a single {@link WholeDocument}
+ * chunk.
  *
  * @version $Id$
  */
@@ -67,9 +71,6 @@ public class ProposalStep2Service
     static final String SCHEMA_NAME = "cards_step2_extract";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposalStep2Service.class);
-
-    /** Token cap on the chunks sent in one batch (a cap, not a target). */
-    private static final int CHUNK_TOKEN_CAP = 20000;
 
     private static final int CHARS_PER_TOKEN = 4;
 
@@ -85,28 +86,45 @@ public class ProposalStep2Service
     @Reference
     private LLMClientFactory llmClientFactory;
 
+    @Reference
+    private LLMConfigurationService configurationService;
+
     /**
-     * Run targeted extraction and a fallback sweep for the fields still pending after intake.
+     * Run targeted extraction and a fallback sweep for the fields still pending after intake. The input follows
+     * the chunker's recorded routing decision: a chunked document is re-read through the hint-driven planner
+     * over its catalog chunks; an unchunked (small) document gets one fresh focused re-ask of all still-pending
+     * fields over the whole document (there is no chunk selection to plan, and everything was already read
+     * once, so no sweep follows).
      *
      * @param folder the located parse folder of the proposal
      * @param fields the extraction fields, in questionnaire order
      * @param intakeResults the field results from the intake pass
      * @return the merged field results (intake results updated by any better answers found in Stage 1.2)
-     * @throws IOException if the catalog cannot be read or the active LLM client cannot be resolved
+     * @throws IOException if the catalog or document cannot be read or the active LLM client cannot be resolved
      */
     public Map<String, FieldResult> run(final ProposalParseFolder folder, final List<FieldSpec> fields,
         final Map<String, FieldResult> intakeResults) throws IOException
     {
-        final ProposalCatalog catalog = ProposalCatalog.read(folder.catalogFile());
-        final List<Chunk> chunks = catalog.chunks();
         final Map<String, FieldResult> merged = new LinkedHashMap<>(intakeResults);
         final List<String> pending = pending(fields, merged);
         if (pending.isEmpty()) {
             return merged;
         }
-        final Map<String, String> texts = readChunkTexts(folder.chunksDir(), chunks);
         final LlmCallTracker tracker = LlmCallTracker.open(folder.trackerFile());
-        final Context context = new Context(this.llmClientFactory.getActiveClient(), index(fields), texts, tracker);
+        final long tokenCap = wholeDocumentTokenLimit();
+        if (!folder.isChunked()) {
+            final Map<String, String> documentText = Map.of(WholeDocument.CHUNK_ID, WholeDocument.read(folder));
+            final Context context =
+                new Context(this.llmClientFactory.getActiveClient(), index(fields), documentText, tracker, tokenCap);
+            runBatches(context, List.of(new Batch(pending, List.of(WholeDocument.CHUNK_ID))), merged,
+                LlmCallTracker.STEP_EXTRACT);
+            return merged;
+        }
+        final ProposalCatalog catalog = ProposalCatalog.read(folder.catalogFile());
+        final List<Chunk> chunks = catalog.chunks();
+        final Map<String, String> texts = readChunkTexts(folder.chunksDir(), chunks);
+        final Context context =
+            new Context(this.llmClientFactory.getActiveClient(), index(fields), texts, tracker, tokenCap);
         runBatches(context, Step2Planner.planTargeted(chunks, pending, tracker), merged,
             LlmCallTracker.STEP_EXTRACT);
         runBatches(context, Step2Planner.planSweep(chunks, pending(fields, merged), tracker), merged,
@@ -114,12 +132,28 @@ public class ProposalStep2Service
         return merged;
     }
 
+    /**
+     * The active model's {@code wholeDocumentTokenLimit}, reused here as the per-batch chunk token cap so Stage
+     * 1.2 never invents a second threshold beside the chunker's routing decision.
+     *
+     * @return the configured limit in estimated tokens
+     */
+    private long wholeDocumentTokenLimit()
+    {
+        try {
+            return this.configurationService.getActiveSettings().getWholeDocumentTokenLimit();
+        } catch (final IOException e) {
+            LOGGER.warn("Could not read the active LLM settings for the step-2 token budget: {}", e.getMessage());
+            return LLMSettings.DEFAULT_WHOLE_DOCUMENT_TOKEN_LIMIT;
+        }
+    }
+
     private void runBatches(final Context context, final List<Batch> batches,
-        final Map<String, FieldResult> merged, final String step)
+        final Map<String, FieldResult> merged, final String step) throws IOException
     {
         for (final Batch batch : batches) {
             final List<FieldSpec> batchFields = specs(batch.fields(), context.specByKey());
-            for (final List<String> ids : splitByTokens(batch.chunkIds(), context.texts())) {
+            for (final List<String> ids : splitByTokens(batch.chunkIds(), context.texts(), context.tokenCap())) {
                 mergeResults(merged, extract(context, batchFields, ids));
                 context.tracker().append(step, batch.fields(), ids);
             }
@@ -127,7 +161,7 @@ public class ProposalStep2Service
     }
 
     private Map<String, FieldResult> extract(final Context context, final List<FieldSpec> batchFields,
-        final List<String> chunkIds)
+        final List<String> chunkIds) throws IOException
     {
         final List<String> keys = keys(batchFields);
         final String system = PipelinePrompts.load(PipelinePrompts.STEP2_EXTRACTION_SYSTEM);
@@ -142,22 +176,19 @@ public class ProposalStep2Service
     }
 
     private JsonObject request(final LLMClient client, final String system, final String userMessage,
-        final LLMRequestOptions options)
+        final LLMRequestOptions options) throws IOException
     {
         final JsonObject first = requestOnce(client, system, userMessage, options);
         return first != null ? first : requestOnce(client, system, userMessage + CORRECTION, options);
     }
 
     private JsonObject requestOnce(final LLMClient client, final String system, final String userMessage,
-        final LLMRequestOptions options)
+        final LLMRequestOptions options) throws IOException
     {
-        try {
-            final String reply = client.chat(system, List.of(new LLMMessage("user", userMessage)), options);
-            return FieldResponseParser.parseJsonObject(reply);
-        } catch (final IOException e) {
-            LOGGER.warn("Step-2 extraction request failed: {}", e.getMessage());
-            return null;
-        }
+        // Transport / HTTP errors propagate so the extract servlet can return them to the UI.
+        // Unparseable replies still return null and trigger the caller's one re-ask.
+        final String reply = client.chat(system, List.of(new LLMMessage("user", userMessage)), options);
+        return FieldResponseParser.parseJsonObject(reply);
     }
 
     private static void mergeResults(final Map<String, FieldResult> merged,
@@ -192,14 +223,16 @@ public class ProposalStep2Service
         return pending;
     }
 
-    private static List<List<String>> splitByTokens(final List<String> chunkIds, final Map<String, String> texts)
+    private static List<List<String>> splitByTokens(final List<String> chunkIds, final Map<String, String> texts,
+        final long tokenCap)
     {
         final List<List<String>> batches = new ArrayList<>();
         List<String> current = new ArrayList<>();
         int used = 0;
+        final long cap = Math.max(0L, tokenCap);
         for (final String id : chunkIds) {
             final int tokens = tokenEstimate(texts.get(id));
-            if (!current.isEmpty() && used + tokens > CHUNK_TOKEN_CAP) {
+            if (!current.isEmpty() && used + tokens > cap) {
                 batches.add(current);
                 current = new ArrayList<>();
                 used = 0;
@@ -358,9 +391,12 @@ public class ProposalStep2Service
         return text == null ? 0 : text.length() / CHARS_PER_TOKEN;
     }
 
-    /** Per-run state shared across batches: the client, the field lookup, the chunk texts and the tracker. */
+    /**
+     * Per-run state shared across batches: the client, the field lookup, the chunk texts, the tracker and the
+     * per-batch token cap from the active model's {@code wholeDocumentTokenLimit}.
+     */
     private record Context(LLMClient client, Map<String, FieldSpec> specByKey, Map<String, String> texts,
-        LlmCallTracker tracker)
+        LlmCallTracker tracker, long tokenCap)
     {
     }
 }

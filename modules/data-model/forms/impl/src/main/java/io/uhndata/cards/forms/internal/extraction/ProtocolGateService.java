@@ -22,10 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.Set;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -39,28 +38,33 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.llm.LLMClient;
 import io.uhndata.cards.llm.LLMClientFactory;
-import io.uhndata.cards.llm.LLMConfigurationService;
 import io.uhndata.cards.llm.LLMMessage;
 import io.uhndata.cards.llm.LLMRequestOptions;
-import io.uhndata.cards.llm.LLMSettings;
 
 /**
  * Stage 0.5 of the proposal pipeline: one cheap, structured LLM call that decides whether an uploaded document
- * is actually a research protocol before any extraction runs, and — in the same call — assigns each of the
- * document's headings its single most probable rubric tag. The input is selected from the document's
- * {@code outline.json}: the whole document when small (under {@link #WHOLE_DOCUMENT_TOKEN_LIMIT} tokens), else
- * the detected table of contents plus the first catalog chunk's text, else the heading outline plus the first
- * catalog chunk's text (with the document head as a last resort). Every form is sent with the full
- * protocol-structure reference and the gate system prompt, and the model returns
- * {@code {is_protocol, confidence, reasoning, heading_tags}} constrained to a JSON schema.
+ * is actually a research protocol before any extraction runs, and — in the same call — assigns each catalog
+ * chunk its single most probable rubric tag. The input follows the chunker's recorded routing decision
+ * ({@link ProposalParseFolder#isChunked()}): an unchunked (small) document is always sent whole; a chunked
+ * document is represented by its detected table of contents alone (a TOC already maps the whole structure),
+ * else its catalog outline ({@code chunkNNN: heading} lines) plus the first catalog chunk's text. The document
+ * head is never sent; a chunked document with neither a TOC nor a catalog produces no input and fails open. A
+ * chunked
+ * document also carries a {@code CATALOG} block listing every chunk's {@code chunkNNN: heading} so the model
+ * can tag each chunk. Every form is sent with the full protocol-structure
+ * reference and the gate system prompt, and the model returns
+ * {@code {is_protocol, confidence, reasoning, chunk_tags}} constrained to a JSON schema.
  * <p>
  * The gate never blocks the pipeline: a transport error or a response that cannot be parsed after one re-ask
  * fails <em>open</em> (treated as a protocol, flagged so the caller can mark the answer unreviewed), because a
  * legitimate proposal must not be rejected over an LLM hiccup while a junk upload that slips through only wastes
  * one intake call. The stop/continue decision and persistence of the result belong to the caller; this service
- * only produces the decision and records the call in {@code llm_call_tracker.jsonl}. Stamping {@code heading_tags}
+ * only produces the decision and records the call in {@code llm_call_tracker.jsonl}. Stamping {@code chunk_tags}
  * onto the catalog is a separate step ({@link #stampCatalog(ProposalParseFolder, GateDecision)}), left to the
  * caller to invoke once {@link GateDecision#isProtocol()} is confirmed.
+ * </p>
+ * <p>
+ * Stamping records each returned chunk tag directly onto its {@code chunk_id} in {@code catalog.json}.
  * </p>
  *
  * @version $Id$
@@ -68,56 +72,28 @@ import io.uhndata.cards.llm.LLMSettings;
 @Component(service = ProtocolGateService.class)
 public class ProtocolGateService
 {
-    /**
-     * Below this token estimate the whole document is sent as gate input (case 1). Matches the chunker's
-     * {@code min_structure_tokens}: smaller documents are never chunked, so they have no catalog or TOC to
-     * select from anyway.
-     */
-    static final long WHOLE_DOCUMENT_TOKEN_LIMIT = 20000L;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolGateService.class);
 
-    /** Base output token budget for the gate's small JSON object, before any per-heading tagging cost. */
+    /** Base output token budget for the gate's small JSON object, before any per-chunk tagging cost. */
     private static final long GATE_BASE_TOKENS = 400L;
 
-    /** Additional output tokens reserved per heading needing a {@code heading_tags} entry. */
-    private static final long GATE_TOKENS_PER_HEADING = 30L;
+    /** Additional output tokens reserved per chunk needing a {@code chunk_tags} entry. */
+    private static final long GATE_TOKENS_PER_CHUNK = 30L;
 
     /** Name the provider associates with the gate's structured-output schema. */
     private static final String SCHEMA_NAME = "cards_is_protocol_gate";
 
-    /** Characters per token for the chars/4 estimate used throughout the pipeline. */
-    private static final int CHARS_PER_TOKEN = 4;
-
-    /**
-     * Prompt overhead (system prompt + full protocol-structure reference + headers), in tokens, reserved when
-     * sizing the document head.
-     */
-    private static final long PROMPT_OVERHEAD_TOKENS = 6000L;
-
-    /** Fallback model input budget, in tokens, when the active model declares none. */
-    private static final long DEFAULT_INPUT_TOKEN_LIMIT = 24000L;
-
-    /** Marks the start of a table of contents in the chunker's marked document Markdown. */
-    private static final String TOC_START_MARKER = "<!-- TOC start -->";
-
-    /** Marks the end of a table of contents in the chunker's marked document Markdown. */
-    private static final String TOC_END_MARKER = "<!-- TOC end -->";
-
     private static final String INPUT_FULL_DOCUMENT = "full document";
 
-    private static final String INPUT_TOC_AND_FIRST_CHUNK = "table of contents + first chunk";
+    private static final String INPUT_TOC = "table of contents";
 
-    private static final String INPUT_HEADING_OUTLINE = "heading outline + first chunk";
+    private static final String INPUT_CATALOG_OUTLINE = "catalog outline + first chunk";
 
     /** Sub-header separating the first catalog chunk's text from the structure part of the INPUT block. */
     private static final String FIRST_CHUNK_HEADER = "### FIRST CHUNK";
 
     @Reference
     private LLMClientFactory llmClientFactory;
-
-    @Reference
-    private LLMConfigurationService configurationService;
 
     /**
      * Decide whether the proposal in the given parse folder is a protocol, and tag its headings.
@@ -129,8 +105,8 @@ public class ProtocolGateService
     public GateDecision evaluate(final ProposalParseFolder folder) throws IOException
     {
         final ParseOutline outline = readOutline(folder.outlineFile());
-        final List<String> headings = outline == null ? List.of() : outline.headings();
-        final GateInput input = selectInput(folder, outline);
+        final List<CatalogHeading> catalogHeadings = readCatalogHeadings(folder);
+        final GateInput input = selectInput(folder, outline, catalogHeadings);
         final LlmCallTracker tracker = LlmCallTracker.open(folder.trackerFile());
         tracker.append(LlmCallTracker.STEP_GATE, List.of("is_protocol"), List.of());
         if (input == null) {
@@ -138,89 +114,98 @@ public class ProtocolGateService
             return GateDecision.failOpen();
         }
         final LLMClient client = this.llmClientFactory.getActiveClient();
-        return callGate(client, input, headings);
+        return callGate(client, input, catalogHeadings);
     }
 
     /**
-     * Stamp the gate's per-heading tags onto the catalog as the initial {@code tag_basis="heading"} guess. Only
-     * chunks whose heading matches one the gate tagged are touched; chunks with no match (for example a generic
-     * default heading, or a backmatter chunk excluded from heading extraction) are left untouched for
-     * {@link ProposalIntakeService}'s own fallback tagging to cover.
+     * Read the {@code chunkNNN: heading} correspondence from the folder's {@code catalog.json}. This is both
+     * the chunk-tagging target the gate returns tags for and, for a chunked document with no detected TOC, the
+     * outline sent as the gate's protocol-decision INPUT.
+     *
+     * @param folder the proposal parse folder
+     * @return one {@link CatalogHeading} per catalog chunk in document order, empty when the document was left
+     *         unchunked or the catalog is unavailable
+     */
+    private static List<CatalogHeading> readCatalogHeadings(final ProposalParseFolder folder)
+    {
+        if (!folder.isChunked()) {
+            return List.of();
+        }
+        final Path catalogFile = folder.catalogFile();
+        if (!Files.isRegularFile(catalogFile)) {
+            return List.of();
+        }
+        try {
+            final ProposalCatalog catalog = ProposalCatalog.read(catalogFile);
+            final List<CatalogHeading> result = new ArrayList<>();
+            for (final ProposalCatalog.Chunk chunk : catalog.chunks()) {
+                result.add(new CatalogHeading(chunk.id(), String.join(", ", chunk.heading())));
+            }
+            return result;
+        } catch (final IOException e) {
+            LOGGER.warn("Could not read catalog headings under {}: {}", folder.chunksDir(), e.getMessage());
+            return List.of();
+        }
+    }
+
+    /**
+     * Stamp the gate's per-chunk tags onto the catalog as the initial {@code tag_basis="heading"} guess. Each
+     * returned {@code chunk_id} that exists in the catalog gets its tag; unknown ids and chunks the gate did not
+     * tag are left untouched for {@link ProposalIntakeService}'s own fallback tagging to cover. A chunk id
+     * repeated in the response keeps only its first tag.
      *
      * @param folder the proposal parse folder whose catalog should be stamped
-     * @param decision the gate decision carrying the per-heading tags
+     * @param decision the gate decision carrying the per-chunk tags
      * @throws IOException if the catalog cannot be read or written
      */
     public void stampCatalog(final ProposalParseFolder folder, final GateDecision decision) throws IOException
     {
-        if (decision.headingTags().isEmpty()) {
+        if (decision.chunkTags().isEmpty()) {
             return;
         }
         final Path catalogFile = folder.catalogFile();
         if (!Files.isRegularFile(catalogFile)) {
             return;
         }
-        final Map<String, HeadingTag> byHeading = new HashMap<>();
-        for (final HeadingTag tag : decision.headingTags()) {
-            byHeading.putIfAbsent(normalize(tag.heading()), tag);
-        }
         final ProposalCatalog catalog = ProposalCatalog.read(catalogFile);
-        boolean changed = false;
+        final Set<String> catalogIds = new HashSet<>();
         for (final ProposalCatalog.Chunk chunk : catalog.chunks()) {
-            changed |= stampChunk(catalog, chunk, byHeading);
+            catalogIds.add(chunk.id());
+        }
+        final Set<String> stamped = new HashSet<>();
+        boolean changed = false;
+        for (final ChunkTag tag : decision.chunkTags()) {
+            final String id = tag.chunkId();
+            if (!catalogIds.contains(id) || !stamped.add(id)) {
+                continue;
+            }
+            catalog.setRubricTags(id, List.of(tag.tag()));
+            catalog.setTagBasis(id, "heading");
+            catalog.setTagConfidence(id, tag.confidence());
+            catalog.setUncertain(id, true);
+            changed = true;
         }
         if (changed) {
             catalog.write();
         }
     }
 
-    private static boolean stampChunk(final ProposalCatalog catalog, final ProposalCatalog.Chunk chunk,
-        final Map<String, HeadingTag> byHeading)
-    {
-        final List<String> tags = new ArrayList<>();
-        double confidenceSum = 0.0;
-        int matches = 0;
-        for (final String heading : chunk.heading()) {
-            final HeadingTag tag = byHeading.get(normalize(heading));
-            if (tag == null) {
-                continue;
-            }
-            if (!tags.contains(tag.tag())) {
-                tags.add(tag.tag());
-            }
-            confidenceSum += tag.confidence();
-            matches++;
-        }
-        if (tags.isEmpty()) {
-            return false;
-        }
-        catalog.setRubricTags(chunk.id(), tags);
-        catalog.setTagBasis(chunk.id(), "heading");
-        catalog.setTagConfidence(chunk.id(), confidenceSum / matches);
-        catalog.setUncertain(chunk.id(), true);
-        return true;
-    }
-
-    private static String normalize(final String heading)
-    {
-        return heading == null ? "" : heading.strip().toLowerCase(Locale.ROOT);
-    }
-
-    private GateDecision callGate(final LLMClient client, final GateInput input, final List<String> headings)
+    private GateDecision callGate(final LLMClient client, final GateInput input,
+        final List<CatalogHeading> catalogHeadings) throws IOException
     {
         final String system = PipelinePrompts.load(PipelinePrompts.IS_PROTOCOL_SYSTEM);
         final String schema = PipelinePrompts.load(PipelinePrompts.IS_PROTOCOL_SCHEMA);
-        final long maxTokens = GATE_BASE_TOKENS + GATE_TOKENS_PER_HEADING * headings.size();
+        final long maxTokens = GATE_BASE_TOKENS + GATE_TOKENS_PER_CHUNK * catalogHeadings.size();
         final LLMRequestOptions options = LLMRequestOptions.builder()
             .maxOutputTokens(maxTokens)
             .jsonSchema(SCHEMA_NAME, schema)
             .build();
-        final String userMessage = buildUserMessage(input, headings);
+        final String userMessage = buildUserMessage(input, catalogHeadings);
         GateDecision decision = requestOnce(client, system, userMessage, options);
         if (decision == null) {
             final String retry = userMessage + "\n\n# Correction\n\nYour previous response was not a valid JSON "
                 + "object matching the required schema. Return only the JSON object with keys is_protocol, "
-                + "confidence, reasoning and heading_tags.";
+                + "confidence, reasoning and chunk_tags.";
             decision = requestOnce(client, system, retry, options);
         }
         if (decision == null) {
@@ -231,28 +216,36 @@ public class ProtocolGateService
     }
 
     private GateDecision requestOnce(final LLMClient client, final String system, final String userMessage,
-        final LLMRequestOptions options)
+        final LLMRequestOptions options) throws IOException
     {
-        try {
-            final String reply = client.chat(system, List.of(new LLMMessage("user", userMessage)), options);
-            return parse(reply);
-        } catch (final IOException e) {
-            LOGGER.warn("Gate LLM request failed: {}", e.getMessage());
-            return GateDecision.failOpen();
-        }
+        // Transport / HTTP errors propagate so the extract servlet can return them to the UI.
+        // Unparseable replies still return null and trigger the caller's one re-ask / fail-open path.
+        final String reply = client.chat(system, List.of(new LLMMessage("user", userMessage)), options);
+        return parse(reply);
     }
 
-    private static String buildUserMessage(final GateInput input, final List<String> headings)
+    private static String buildUserMessage(final GateInput input, final List<CatalogHeading> catalogHeadings)
     {
         final String structure = PipelinePrompts.load(PipelinePrompts.PROTOCOL_STRUCTURE);
         final StringBuilder message = new StringBuilder();
         message.append("## PROTOCOL_STRUCTURE\n\n").append(structure.strip())
             .append("\n\n## INPUT (").append(input.header()).append(") (untrusted data)\n\n")
             .append(input.text());
-        if (!headings.isEmpty() && !INPUT_HEADING_OUTLINE.equals(input.header())) {
-            message.append("\n\n## HEADINGS (untrusted data)\n\n").append(String.join("\n", headings));
+        // The catalog-outline INPUT already carries the chunkNNN: heading lines, so a CATALOG block would only
+        // repeat them; every other chunked form appends CATALOG so chunk tagging always has its targets.
+        if (!catalogHeadings.isEmpty() && !INPUT_CATALOG_OUTLINE.equals(input.header())) {
+            message.append("\n\n## CATALOG (untrusted data)\n\n").append(catalogLines(catalogHeadings));
         }
         return message.toString();
+    }
+
+    private static String catalogLines(final List<CatalogHeading> catalogHeadings)
+    {
+        final StringBuilder builder = new StringBuilder();
+        for (final CatalogHeading entry : catalogHeadings) {
+            builder.append(entry.chunkId()).append(": ").append(entry.heading()).append('\n');
+        }
+        return builder.toString().strip();
     }
 
     private static GateDecision parse(final String reply)
@@ -265,28 +258,28 @@ public class ProtocolGateService
         final double confidence = clamp(readDouble(json, "confidence"));
         final String reasoning = json.containsKey("reasoning") && !json.isNull("reasoning")
             ? json.getString("reasoning", "") : "";
-        final List<HeadingTag> headingTags = parseHeadingTags(json);
-        return new GateDecision(isProtocol, confidence, reasoning, json.toString(), false, headingTags);
+        final List<ChunkTag> chunkTags = parseChunkTags(json);
+        return new GateDecision(isProtocol, confidence, reasoning, json.toString(), false, chunkTags);
     }
 
-    private static List<HeadingTag> parseHeadingTags(final JsonObject json)
+    private static List<ChunkTag> parseChunkTags(final JsonObject json)
     {
-        final List<HeadingTag> tags = new ArrayList<>();
-        if (!json.containsKey("heading_tags")
-            || json.get("heading_tags").getValueType() != JsonValue.ValueType.ARRAY) {
+        final List<ChunkTag> tags = new ArrayList<>();
+        if (!json.containsKey("chunk_tags")
+            || json.get("chunk_tags").getValueType() != JsonValue.ValueType.ARRAY) {
             return tags;
         }
-        for (final JsonValue value : json.getJsonArray("heading_tags")) {
+        for (final JsonValue value : json.getJsonArray("chunk_tags")) {
             if (value.getValueType() != JsonValue.ValueType.OBJECT) {
                 continue;
             }
             final JsonObject entry = value.asJsonObject();
-            final String heading = entry.getString("heading", "");
+            final String chunkId = entry.getString("chunk_id", "");
             final String tag = entry.getString("tag", "");
-            if (heading.isBlank() || tag.isBlank()) {
+            if (chunkId.isBlank() || tag.isBlank()) {
                 continue;
             }
-            tags.add(new HeadingTag(heading, tag, clamp(readDouble(entry, "confidence"))));
+            tags.add(new ChunkTag(chunkId, tag, clamp(readDouble(entry, "confidence"))));
         }
         return tags;
     }
@@ -332,65 +325,50 @@ public class ProtocolGateService
     }
 
     /**
-     * Select the gate input: (1) the whole document when it is small, (2) the detected table of contents plus
-     * the first catalog chunk's text when the outline recorded a TOC, (3) the heading outline plus the first
-     * catalog chunk's text otherwise. When a large document has neither a TOC nor headings, the document head
-     * remains as a last resort.
+     * Select the gate input following the chunker's recorded routing decision: (1) an unchunked (small)
+     * document is sent whole — the only form for whole-document mode; (2) a chunked document is represented by
+     * its detected table of contents alone when the outline recorded a TOC (no first chunk — the TOC already
+     * maps the whole structure), (3) else by the catalog outline ({@code chunkNNN: heading} lines) plus the
+     * first catalog chunk's text.
+     * The document head is never sent: a chunked document with neither a TOC nor a catalog yields {@code null},
+     * which the caller treats as fail-open.
      *
-     * @param folder the proposal parse folder
+     * @param folder the proposal parse folder, carrying the chunker's {@code chunked} decision
      * @param outline the already-read outline, or {@code null} when absent/unreadable
+     * @param catalogHeadings the {@code chunkNNN: heading} correspondence from the catalog, empty when unchunked
      * @return the selected input, or {@code null} when none can be built
      */
-    private GateInput selectInput(final ProposalParseFolder folder, final ParseOutline outline)
+    private GateInput selectInput(final ProposalParseFolder folder, final ParseOutline outline,
+        final List<CatalogHeading> catalogHeadings)
     {
-        final String document = readDocument(folder.documentMarkdown());
-        if (document != null && (outline == null || outline.tokens() < WHOLE_DOCUMENT_TOKEN_LIMIT)) {
-            return new GateInput(INPUT_FULL_DOCUMENT, document);
+        if (!folder.isChunked()) {
+            final String document = readDocument(folder.documentMarkdown());
+            return document == null ? null : new GateInput(INPUT_FULL_DOCUMENT, document);
         }
-        final String firstChunk = readFirstChunk(folder);
-        final String toc = tocText(outline, document);
+        final String toc = tocText(outline);
         if (toc != null) {
-            return new GateInput(INPUT_TOC_AND_FIRST_CHUNK, withFirstChunk(toc, firstChunk));
+            // A TOC already maps the whole document's structure — the first chunk adds nothing here.
+            return new GateInput(INPUT_TOC, toc);
         }
-        if (outline != null && !outline.headings().isEmpty()) {
-            return new GateInput(INPUT_HEADING_OUTLINE,
-                withFirstChunk(String.join("\n", outline.headings()), firstChunk));
-        }
-        if (document != null) {
-            return new GateInput("document head", head(document, documentHeadCharBudget()));
+        if (!catalogHeadings.isEmpty()) {
+            final String firstChunk = readFirstChunk(folder);
+            return new GateInput(INPUT_CATALOG_OUTLINE, withFirstChunk(catalogLines(catalogHeadings), firstChunk));
         }
         return null;
     }
 
     /**
-     * The document's detected table of contents: the {@code toc} array from {@code outline.json} when the
-     * chunker recorded one, else (for parses predating the {@code toc} property) the text between the reserved
-     * TOC markers in the document Markdown.
+     * The document's detected table of contents from the {@code toc} array in {@code outline.json}.
      *
      * @param outline the already-read outline, or {@code null}
-     * @param document the document Markdown, or {@code null}
-     * @return the TOC text, one entry per line, or {@code null} when no TOC was detected
+     * @return the TOC text, one entry per line, or {@code null} when no TOC was recorded
      */
-    private static String tocText(final ParseOutline outline, final String document)
+    private static String tocText(final ParseOutline outline)
     {
-        if (outline != null && !outline.toc().isEmpty()) {
-            return String.join("\n", outline.toc());
-        }
-        return extractToc(document);
-    }
-
-    private static String extractToc(final String document)
-    {
-        if (document == null) {
+        if (outline == null || outline.toc().isEmpty()) {
             return null;
         }
-        final int start = document.indexOf(TOC_START_MARKER);
-        final int end = document.indexOf(TOC_END_MARKER);
-        if (start < 0 || end < 0 || end <= start) {
-            return null;
-        }
-        final String toc = document.substring(start + TOC_START_MARKER.length(), end).strip();
-        return toc.isBlank() ? null : toc;
+        return String.join("\n", outline.toc());
     }
 
     private static String withFirstChunk(final String structure, final String firstChunk)
@@ -431,35 +409,6 @@ public class ProtocolGateService
         }
     }
 
-    private long documentHeadCharBudget()
-    {
-        final LLMSettings settings = safeSettings();
-        long limit = settings == null ? 0L : settings.getChunkTokenSize();
-        if (limit <= 0 && settings != null) {
-            limit = settings.getContextLimitTokens();
-        }
-        if (limit <= 0) {
-            limit = DEFAULT_INPUT_TOKEN_LIMIT;
-        }
-        final long headTokens = Math.max(WHOLE_DOCUMENT_TOKEN_LIMIT, limit - PROMPT_OVERHEAD_TOKENS);
-        return headTokens * CHARS_PER_TOKEN;
-    }
-
-    private LLMSettings safeSettings()
-    {
-        try {
-            return this.configurationService.getActiveSettings();
-        } catch (final IOException e) {
-            LOGGER.debug("Could not read active LLM settings while sizing gate input: {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private static String head(final String text, final long charBudget)
-    {
-        return text.length() <= charBudget ? text : text.substring(0, (int) charBudget);
-    }
-
     private static ParseOutline readOutline(final Path outlineFile)
     {
         try {
@@ -487,13 +436,24 @@ public class ProtocolGateService
     }
 
     /**
-     * One heading's rubric guess from the gate's coarse, heading-only tagging pass.
+     * One catalog chunk's {@code chunkNNN: heading} correspondence, used both as the chunk-tagging target sent
+     * to the gate and as the catalog-outline INPUT for a chunked document with no detected TOC.
      *
-     * @param heading the heading text as given in the HEADINGS input block
-     * @param tag the single most probable rubric tag (B.1–B.17)
-     * @param confidence the model's confidence in this one heading's tag, in {@code [0, 1]}
+     * @param chunkId the chunk identifier (e.g. {@code chunk001})
+     * @param heading the chunk's heading(s), joined into one line
      */
-    public record HeadingTag(String heading, String tag, double confidence)
+    private record CatalogHeading(String chunkId, String heading)
+    {
+    }
+
+    /**
+     * One chunk's rubric guess from the gate's coarse tagging pass over the {@code chunkNNN: heading} catalog.
+     *
+     * @param chunkId the chunk identifier the tag applies to (e.g. {@code chunk001})
+     * @param tag the single most probable rubric tag (B.1–B.17)
+     * @param confidence the model's confidence in this one chunk's tag, in {@code [0, 1]}
+     */
+    public record ChunkTag(String chunkId, String tag, double confidence)
     {
     }
 
@@ -506,10 +466,10 @@ public class ProtocolGateService
      * @param rawResponse the raw JSON the model returned, for audit
      * @param failedOpen whether the decision was defaulted to {@code true} because the call could not be
      *            completed or parsed (the answer should be flagged unreviewed)
-     * @param headingTags the per-heading rubric guesses, empty when none were given or the call failed open
+     * @param chunkTags the per-chunk rubric guesses, empty when none were given or the call failed open
      */
     public record GateDecision(boolean isProtocol, double confidence, String reasoning, String rawResponse,
-        boolean failedOpen, List<HeadingTag> headingTags)
+        boolean failedOpen, List<ChunkTag> chunkTags)
     {
         /**
          * The fail-open decision: treat the document as a protocol so the pipeline continues, flagged so the

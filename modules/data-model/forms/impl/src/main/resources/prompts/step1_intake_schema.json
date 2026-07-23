@@ -1,0 +1,60 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["study_title", "study_category", "study_category_flags", "regulatory_sponsor",
+               "lead_institution", "lead_investigator", "lead_investigator_email",
+               "participating_institutions", "participating_investigators", "study_drug_device",
+               "chunk_tags"],
+  "properties": {
+    "study_title": { "$ref": "#/$defs/field" },
+    "study_category": { "$ref": "#/$defs/field" },
+    "study_category_flags": { "$ref": "#/$defs/field" },
+    "regulatory_sponsor": { "$ref": "#/$defs/field" },
+    "lead_institution": { "$ref": "#/$defs/field" },
+    "lead_investigator": { "$ref": "#/$defs/field" },
+    "lead_investigator_email": { "$ref": "#/$defs/field" },
+    "participating_institutions": { "$ref": "#/$defs/field" },
+    "participating_investigators": { "$ref": "#/$defs/field" },
+    "study_drug_device": { "$ref": "#/$defs/field" },
+    "chunk_tags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["chunk_id", "tags", "confidence", "uncertain"],
+        "properties": {
+          "chunk_id": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "confidence": { "type": "number" },
+          "uncertain": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["found_answer", "confidence", "value", "reasoning", "evidence"],
+      "properties": {
+        "found_answer": { "type": "boolean" },
+        "confidence": { "type": "number" },
+        "value": { "type": ["string", "null"] },
+        "reasoning": { "type": "string" },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["quote", "chunk_id", "page"],
+            "properties": {
+              "quote": { "type": "string" },
+              "chunk_id": { "type": "string" },
+              "page": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

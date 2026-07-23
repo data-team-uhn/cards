@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["is_protocol", "confidence", "reasoning", "chunk_tags"],
+  "properties": {
+    "is_protocol": { "type": "boolean" },
+    "confidence": { "type": "number" },
+    "reasoning": { "type": "string" },
+    "chunk_tags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["chunk_id", "tag", "confidence"],
+        "properties": {
+          "chunk_id": { "type": "string" },
+          "tag": { "type": "string" },
+          "confidence": { "type": "number" }
+        }
+      }
+    }
+  }
+}

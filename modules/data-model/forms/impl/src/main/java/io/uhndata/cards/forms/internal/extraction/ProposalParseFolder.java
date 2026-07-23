@@ -23,10 +23,13 @@ import java.util.Optional;
 
 /**
  * Locates the on-disk parse artifacts of one proposal document under an answer's parse folder. The chunker
- * writes a single {@code Chunks/} folder holding {@code outline.json}, {@code catalog.json} and the
- * {@code Chunk-*.md} files, beside the whole-document {@code <stem>.md} at the answer-folder root. The MVP
- * processes a single protocol per answer, so there is exactly one {@code Chunks/} folder to resolve; the
- * document's stem is read from {@code outline.json}'s {@code fileId} rather than a per-stem subfolder name.
+ * always writes a single {@code Chunks/} folder holding {@code outline.json} — plus, for chunked documents,
+ * {@code catalog.json} and the {@code Chunk-*.md} files — beside the whole-document {@code <stem>.md} at the
+ * answer-folder root. The outline's recorded {@code chunked} flag is the pipeline's binary routing decision:
+ * small documents are deliberately left unchunked ({@link #isChunked()} is {@code false}) and every extraction
+ * stage sends the whole document instead of selecting catalog chunks. The MVP processes a single protocol per
+ * answer, so there is exactly one {@code Chunks/} folder to resolve; the document's stem is read from
+ * {@code outline.json}'s {@code fileId} rather than a per-stem subfolder name.
  *
  * @version $Id$
  */
@@ -48,17 +51,23 @@ public final class ProposalParseFolder
 
     private final String stem;
 
-    private ProposalParseFolder(final Path parseAnswerDir, final String documentStem)
+    private final boolean chunked;
+
+    private ProposalParseFolder(final Path parseAnswerDir, final String documentStem, final boolean documentChunked)
     {
         this.answerDir = parseAnswerDir;
         this.stem = documentStem;
+        this.chunked = documentChunked;
     }
 
     /**
-     * Locate the proposal's chunk folder under an answer's parse folder.
+     * Locate the proposal's chunk folder under an answer's parse folder. Resolution requires the chunker's
+     * {@code Chunks/outline.json}; a chunked outline additionally requires {@code catalog.json} (its absence
+     * means an incomplete parse). An unchunked outline resolves without a catalog — the document is served
+     * whole.
      *
      * @param answerDir the absolute parse output folder of the answer (may be {@code null})
-     * @return the resolved parse folder, or empty when no {@code Chunks/catalog.json} exists yet
+     * @return the resolved parse folder, or empty when the chunker has not (yet) written its outline
      */
     public static Optional<ProposalParseFolder> locate(final Path answerDir)
     {
@@ -66,17 +75,17 @@ public final class ProposalParseFolder
             return Optional.empty();
         }
         final Path chunksDir = answerDir.resolve(CHUNKS_DIRNAME);
-        final Path catalogFile = chunksDir.resolve(CATALOG_NAME);
         final Path outlineFile = chunksDir.resolve(OUTLINE_NAME);
-        if (!Files.isRegularFile(catalogFile) || !Files.isRegularFile(outlineFile)) {
+        if (!Files.isRegularFile(outlineFile)) {
             return Optional.empty();
         }
         try {
-            final String fileId = ParseOutline.read(outlineFile).fileId();
-            if (fileId.isEmpty()) {
-                return Optional.empty();
-            }
-            return Optional.of(new ProposalParseFolder(answerDir, stripExtension(fileId)));
+            final ParseOutline outline = ParseOutline.read(outlineFile);
+            final boolean incomplete = outline.fileId().isEmpty()
+                || (outline.chunked() && !Files.isRegularFile(chunksDir.resolve(CATALOG_NAME)));
+            return incomplete ? Optional.empty()
+                : Optional.of(
+                    new ProposalParseFolder(answerDir, stripExtension(outline.fileId()), outline.chunked()));
         } catch (final IOException e) {
             return Optional.empty();
         }
@@ -96,6 +105,28 @@ public final class ProposalParseFolder
     public String stem()
     {
         return this.stem;
+    }
+
+    /**
+     * The chunker's recorded routing decision for this document: {@code true} when it was split into catalog
+     * chunks, {@code false} when it was small enough to be deliberately left unchunked, in which case every
+     * extraction stage must send the whole document ({@link #documentMarkdown()}) instead of catalog chunks.
+     *
+     * @return whether the document has a chunk catalog
+     */
+    public boolean isChunked()
+    {
+        return this.chunked;
+    }
+
+    /**
+     * The answer's absolute parse output folder (the parent of {@link #chunksDir()}).
+     *
+     * @return the absolute answer parse folder
+     */
+    public Path answerDir()
+    {
+        return this.answerDir;
     }
 
     /**

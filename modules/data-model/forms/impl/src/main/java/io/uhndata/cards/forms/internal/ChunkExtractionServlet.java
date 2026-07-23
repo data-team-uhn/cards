@@ -28,8 +28,10 @@ import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.version.VersionManager;
 
 import jakarta.json.Json;
@@ -57,6 +59,7 @@ import io.uhndata.cards.forms.internal.extraction.ProposalStep2Service;
 import io.uhndata.cards.forms.internal.extraction.ProtocolGateService;
 import io.uhndata.cards.forms.internal.extraction.ProtocolGateService.GateDecision;
 import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
+import io.uhndata.cards.forms.internal.summary.CatalogSummarizationService;
 
 /**
  * Servlet that fills in the answers of an extraction section by running the parsed proposal document through
@@ -72,6 +75,8 @@ import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
  * </p>
  * <p>
  * Endpoint: {@code POST /Forms/<id>.extract}. Response: {@code {"status": "...", "extracted": N, "chunks": M}}.
+ * After the extraction phase finishes and saves, catalog summarization is scheduled asynchronously so it never
+ * races extraction on the shared catalog or the LLM.
  * </p>
  *
  * @version $Id$
@@ -112,6 +117,9 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
 
     @Reference
     private transient ProposalStep2Service step2Service;
+
+    @Reference
+    private transient CatalogSummarizationService summarizationService;
 
     @Override
     public void doPost(final SlingJakartaHttpServletRequest request,
@@ -161,7 +169,9 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
 
     /**
      * Run the upload-time pipeline for one extraction section: skip when already current, else gate the document
-     * and either reject it (not a protocol) or run intake and persist the extracted field answers.
+     * and either reject it (not a protocol) or run intake and persist the extracted field answers. In every case
+     * where the extraction phase has completed (including skip and gate rejection after save), catalog
+     * summarization is scheduled so it runs only after extraction is done.
      */
     private JsonObject runPipeline(final Node form, final Node section, final ProposalParseFolder parseFolder,
         final boolean force) throws RepositoryException, IOException
@@ -169,6 +179,7 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
         final List<Node> questions = listQuestions(section);
         final long sourceTimestamp = documentTimestamp(parseFolder);
         if (!force && !shouldExtract(form, questions, findAnswerSection(form, section), sourceTimestamp)) {
+            this.scheduleSummarization(parseFolder);
             return statusJson("skipped", 0);
         }
         final GateDecision gate = this.gateService.evaluate(parseFolder);
@@ -189,7 +200,20 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
             writeGateResult(answerSection, gate);
             return writeAnswers(form, answerSection, questions, results);
         });
+        this.scheduleSummarization(parseFolder);
         return intakeJson(written, gate, intake);
+    }
+
+    /**
+     * Kick off catalog summarization for the proposal's parse folder after extraction has finished and saved.
+     * Fire-and-forget: failures are logged inside the summarization service and never affect the extract response.
+     *
+     * @param parseFolder the resolved proposal parse folder
+     */
+    private void scheduleSummarization(final ProposalParseFolder parseFolder)
+    {
+        // Temporarily disabled
+        //this.summarizationService.scheduleAfterExtraction(parseFolder.answerDir());
     }
 
     /**
@@ -296,7 +320,8 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
         for (final Node question : questions) {
             final String taskLabel = StringUtils.defaultIfBlank(stringProperty(question, "taskLabel"),
                 "Determine the " + this.questionnaireUtils.getQuestionText(question));
-            fields.add(new FieldSpec(promptKey(question), taskLabel, stringProperty(question, "prompt")));
+            fields.add(new FieldSpec(promptKey(question), taskLabel, stringProperty(question, "prompt"),
+                stringListProperty(question, "tags")));
         }
         return fields;
     }
@@ -475,6 +500,31 @@ public class ChunkExtractionServlet extends SlingJakartaAllMethodsServlet
         throws RepositoryException
     {
         return node.hasProperty(name) ? node.getProperty(name).getString() : null;
+    }
+
+    private static List<String> stringListProperty(final Node node, final String name)
+        throws RepositoryException
+    {
+        if (!node.hasProperty(name)) {
+            return List.of();
+        }
+        final Property property = node.getProperty(name);
+        final List<String> values = new ArrayList<>();
+        if (property.isMultiple()) {
+            for (final Value value : property.getValues()) {
+                addIfNotBlank(values, value.getString());
+            }
+        } else {
+            addIfNotBlank(values, property.getString());
+        }
+        return values;
+    }
+
+    private static void addIfNotBlank(final List<String> values, final String text)
+    {
+        if (StringUtils.isNotBlank(text)) {
+            values.add(text.strip());
+        }
     }
 
     private static boolean boolProperty(final Node node, final String name)

@@ -17,6 +17,7 @@
 package io.uhndata.cards.forms.internal.extraction;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,23 +31,19 @@ import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.Fiel
 
 /**
  * Assembles the per-document blocks of the Stage 1.1 intake user message: the SCHEMA (the extraction fields'
- * rules), the CATALOG (one {@code sNNN: heading} line per chunk, plus an opening snippet for chunks not sent
- * in full), and the CHUNK (the excerpt sent in full, each chunk prefixed with a {@code [chunk:sNNN]} marker
- * with its {@code <!-- page: N-->} markers preserved). Chunk selection follows the design: reference lists are
- * dropped, the whole document is sent when it fits the budget, otherwise chunks are taken in document order
- * (front first) up to the chunk budget. The set of chunk ids sent in full is exposed so the caller can stamp
- * {@code tag_basis} and record coverage.
+ * rules), the CATALOG (one {@code chunkNNN: heading} line per chunk, plus an opening snippet for chunks not
+ * sent in full), and the CHUNK (the excerpt sent in full, each chunk prefixed with a
+ * {@code [chunk:chunkNNN]} marker with its {@code <!-- page: N-->} markers preserved). Chunk selection follows
+ * the design: reference lists are dropped, the whole document is sent when it fits the active model's
+ * {@code wholeDocumentTokenLimit}; otherwise selection is tag-driven — the chunks whose Stage 0.5 gate-assigned
+ * rubric tags match any of the extraction fields' {@code tags} are sent (document order, up to the budget),
+ * and only when that yields nothing does it fall back to filling from the front. The set of chunk ids sent in
+ * full is exposed so the caller can stamp {@code tag_basis} and record coverage.
  *
  * @version $Id$
  */
 public final class IntakePayload
 {
-    /** When the selectable document fits this many tokens, send it whole and omit CATALOG snippets. */
-    static final int WHOLE_DOCUMENT_TOKEN_LIMIT = 22000;
-
-    /** Soft cap on the CHUNK excerpt size, in tokens; a chunk that starts under it is included whole. */
-    static final int CHUNK_TOKEN_BUDGET = 20000;
-
     /** Opening-text snippet length, in characters, for chunks listed in CATALOG but not sent in CHUNK. */
     static final int SNIPPET_CHARS = 150;
 
@@ -75,12 +72,15 @@ public final class IntakePayload
      * @param chunkTexts a map from chunk id to that chunk's full Markdown text
      * @param fields the extraction fields whose rules make up the SCHEMA block
      * @param categoriesDocument the Research Study Description taxonomy (STUDY_CATEGORIES block)
+     * @param wholeDocumentTokenLimit the active model's {@code wholeDocumentTokenLimit}: when the selectable
+     *            document fits this many estimated tokens it is sent whole; otherwise chunks are packed up to
+     *            the same budget. Same single-source threshold the chunker records as {@code chunked}.
      * @return the assembled payload
      */
     public static IntakePayload build(final List<Chunk> chunks, final Map<String, String> chunkTexts,
-        final List<FieldSpec> fields, final String categoriesDocument)
+        final List<FieldSpec> fields, final String categoriesDocument, final long wholeDocumentTokenLimit)
     {
-        final Set<String> fullText = selectFullTextChunks(chunks, chunkTexts);
+        final Set<String> fullText = selectFullTextChunks(chunks, chunkTexts, fields, wholeDocumentTokenLimit);
         final StringBuilder message = new StringBuilder();
         appendBlock(message, "STUDY_CATEGORIES", StringUtils.trimToEmpty(categoriesDocument));
         appendBlock(message, "PROTOCOL_STRUCTURE_GLOSSARY",
@@ -118,33 +118,86 @@ public final class IntakePayload
         return this.fullTextChunkIds;
     }
 
+    /**
+     * Pick the chunks to send in full. When the whole (non-reference) document fits the budget it is sent
+     * entirely. Otherwise selection is tag-driven: the chunks whose Stage 0.5 gate-assigned rubric tags match
+     * any of the extraction fields' {@code tags} are sent (in document order, up to the budget). Only when that
+     * tag-driven pass selects nothing — no field carried tags, or no chunk's gate tags match — does it fall
+     * back to filling consecutively from the front. Reference lists are always dropped.
+     */
     private static Set<String> selectFullTextChunks(final List<Chunk> chunks,
-        final Map<String, String> chunkTexts)
+        final Map<String, String> chunkTexts, final List<FieldSpec> fields, final long wholeDocumentTokenLimit)
     {
-        final Set<String> selected = new LinkedHashSet<>();
+        final long tokenBudget = Math.max(0L, wholeDocumentTokenLimit);
         final int total = chunks.size();
-        int budgetTokens = 0;
+        long allTokens = 0;
         for (int index = 0; index < total; index++) {
             final Chunk chunk = chunks.get(index);
-            if (isReferenceList(chunk, index, total)) {
-                continue;
+            if (!isReferenceList(chunk, index, total)) {
+                allTokens += tokenEstimate(chunkTexts.get(chunk.id()));
             }
-            budgetTokens += tokenEstimate(chunkTexts.get(chunk.id()));
         }
-        final boolean wholeDocument = budgetTokens <= WHOLE_DOCUMENT_TOKEN_LIMIT;
-        int used = 0;
+        if (allTokens <= tokenBudget) {
+            // Whole (non-reference) document fits: send it all; tag selection is moot.
+            return frontFill(chunks, chunkTexts, Long.MAX_VALUE);
+        }
+        final Set<String> tagSelected = tagDrivenSelection(chunks, chunkTexts, fields, tokenBudget);
+        return tagSelected.isEmpty() ? frontFill(chunks, chunkTexts, tokenBudget) : tagSelected;
+    }
+
+    private static Set<String> tagDrivenSelection(final List<Chunk> chunks,
+        final Map<String, String> chunkTexts, final List<FieldSpec> fields, final long tokenBudget)
+    {
+        final Set<String> fieldTags = new HashSet<>();
+        for (final FieldSpec field : fields) {
+            fieldTags.addAll(field.tags());
+        }
+        final Set<String> selected = new LinkedHashSet<>();
+        if (fieldTags.isEmpty()) {
+            return selected;
+        }
+        final int total = chunks.size();
+        long used = 0;
         for (int index = 0; index < total; index++) {
             final Chunk chunk = chunks.get(index);
-            if (isReferenceList(chunk, index, total)) {
+            if (isReferenceList(chunk, index, total) || !intersects(chunk.rubricTags(), fieldTags)) {
                 continue;
             }
-            final int chunkTokens = tokenEstimate(chunkTexts.get(chunk.id()));
-            if (wholeDocument || used < CHUNK_TOKEN_BUDGET) {
+            if (used < tokenBudget) {
                 selected.add(chunk.id());
-                used += chunkTokens;
+                used += tokenEstimate(chunkTexts.get(chunk.id()));
             }
         }
         return selected;
+    }
+
+    private static Set<String> frontFill(final List<Chunk> chunks, final Map<String, String> chunkTexts,
+        final long tokenBudget)
+    {
+        final Set<String> selected = new LinkedHashSet<>();
+        final int total = chunks.size();
+        long used = 0;
+        for (int index = 0; index < total; index++) {
+            final Chunk chunk = chunks.get(index);
+            if (isReferenceList(chunk, index, total)) {
+                continue;
+            }
+            if (used < tokenBudget) {
+                selected.add(chunk.id());
+                used += tokenEstimate(chunkTexts.get(chunk.id()));
+            }
+        }
+        return selected;
+    }
+
+    private static boolean intersects(final List<String> chunkTags, final Set<String> fieldTags)
+    {
+        for (final String tag : chunkTags) {
+            if (fieldTags.contains(tag)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean isReferenceList(final Chunk chunk, final int index, final int total)
