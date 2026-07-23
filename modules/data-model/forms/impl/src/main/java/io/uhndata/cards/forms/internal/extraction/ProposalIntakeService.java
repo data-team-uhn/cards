@@ -42,8 +42,10 @@ import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.Fiel
 import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.FieldSpec;
 import io.uhndata.cards.llm.LLMClient;
 import io.uhndata.cards.llm.LLMClientFactory;
+import io.uhndata.cards.llm.LLMConfigurationService;
 import io.uhndata.cards.llm.LLMMessage;
 import io.uhndata.cards.llm.LLMRequestOptions;
+import io.uhndata.cards.llm.LLMSettings;
 
 /**
  * Stage 1.1 of the proposal pipeline: one structured LLM call that extracts the protocol-plausible intake fields
@@ -58,7 +60,9 @@ import io.uhndata.cards.llm.LLMRequestOptions;
  * tagged at all (for example a generic default heading, or a heading outside the extracted array), which still
  * gets a heading-keyword fallback so no chunk is left without a tag. A call that cannot be parsed after one
  * re-ask degrades gracefully: no field values are written and every chunk keeps whatever tag it already had,
- * never blocking the upload pipeline.
+ * never blocking the upload pipeline. An unchunked (small) document — the chunker recorded
+ * {@code chunked: false} — is sent whole as one synthetic {@link WholeDocument} chunk instead, with no catalog
+ * to tag.
  *
  * @version $Id$
  */
@@ -107,31 +111,57 @@ public class ProposalIntakeService
     @Reference
     private LLMClientFactory llmClientFactory;
 
+    @Reference
+    private LLMConfigurationService configurationService;
+
     /**
-     * Run the intake call for a proposal, persisting the chunk tags and hints to the catalog and returning the
-     * extracted field results.
+     * Run the intake call for a proposal and return the extracted field results. The input follows the
+     * chunker's recorded routing decision: a chunked document is assembled from its catalog chunks and gets its
+     * chunk tags and hints stamped back onto the catalog; an unchunked (small) document is sent whole as one
+     * synthetic {@link WholeDocument} chunk, with no catalog to stamp.
      *
      * @param folder the located parse folder of the proposal
      * @param fields the extraction fields (one per extraction-enabled question), in questionnaire order
      * @param categoriesDocument the Research Study Description taxonomy (STUDY_CATEGORIES block)
      * @return the intake result: the per-field results and whether the call degraded
-     * @throws IOException if the catalog cannot be read or the active LLM client cannot be resolved
+     * @throws IOException if the catalog or document cannot be read or the active LLM client cannot be resolved
      */
     public IntakeResult run(final ProposalParseFolder folder, final List<FieldSpec> fields,
         final String categoriesDocument) throws IOException
     {
-        final ProposalCatalog catalog = ProposalCatalog.read(folder.catalogFile());
-        final List<Chunk> chunks = catalog.chunks();
-        final Map<String, String> texts = readChunkTexts(folder.chunksDir(), chunks);
-        final IntakePayload payload = IntakePayload.build(chunks, texts, fields, categoriesDocument);
+        final ProposalCatalog catalog = folder.isChunked() ? ProposalCatalog.read(folder.catalogFile()) : null;
+        final List<Chunk> chunks = catalog != null ? catalog.chunks() : List.of(WholeDocument.chunk(folder));
+        final Map<String, String> texts = catalog != null
+            ? readChunkTexts(folder.chunksDir(), chunks)
+            : Map.of(WholeDocument.CHUNK_ID, WholeDocument.read(folder));
+        final IntakePayload payload = IntakePayload.build(chunks, texts, fields, categoriesDocument,
+            wholeDocumentTokenLimit());
         final JsonObject parsed = call(payload.userMessage(), chunks.size());
         final List<String> keys = fieldKeys(fields);
         final Map<String, FieldResult> results = FieldResponseParser.parseFields(parsed, keys, texts);
-        stampTags(catalog, chunks, parsed, new HashSet<>(payload.fullTextChunkIds()), keys);
-        writeCatalog(catalog, folder.catalogFile());
+        if (catalog != null) {
+            stampTags(catalog, chunks, parsed, new HashSet<>(payload.fullTextChunkIds()), keys);
+            writeCatalog(catalog, folder.catalogFile());
+        }
         LlmCallTracker.open(folder.trackerFile())
             .append(LlmCallTracker.STEP_INTAKE, keys, payload.fullTextChunkIds());
         return new IntakeResult(results, parsed == null);
+    }
+
+    /**
+     * The active model's {@code wholeDocumentTokenLimit}, the single source of the small-document routing
+     * threshold. Falls back to the LLMSettings default when the configuration cannot be read.
+     *
+     * @return the configured limit in estimated tokens
+     */
+    private long wholeDocumentTokenLimit()
+    {
+        try {
+            return this.configurationService.getActiveSettings().getWholeDocumentTokenLimit();
+        } catch (final IOException e) {
+            LOGGER.warn("Could not read the active LLM settings for the intake token budget: {}", e.getMessage());
+            return LLMSettings.DEFAULT_WHOLE_DOCUMENT_TOKEN_LIMIT;
+        }
     }
 
     private JsonObject call(final String userMessage, final int chunkCount) throws IOException
@@ -149,15 +179,12 @@ public class ProposalIntakeService
     }
 
     private JsonObject request(final LLMClient client, final String system, final String userMessage,
-        final LLMRequestOptions options)
+        final LLMRequestOptions options) throws IOException
     {
-        try {
-            final String reply = client.chat(system, List.of(new LLMMessage("user", userMessage)), options);
-            return FieldResponseParser.parseJsonObject(reply);
-        } catch (final IOException e) {
-            LOGGER.warn("Intake LLM request failed: {}", e.getMessage());
-            return null;
-        }
+        // Transport / HTTP errors propagate so the extract servlet can return them to the UI.
+        // Unparseable replies still return null and trigger the caller's one re-ask / degrade path.
+        final String reply = client.chat(system, List.of(new LLMMessage("user", userMessage)), options);
+        return FieldResponseParser.parseJsonObject(reply);
     }
 
     private void stampTags(final ProposalCatalog catalog, final List<Chunk> chunks, final JsonObject parsed,

@@ -52,7 +52,7 @@ import jakarta.json.stream.JsonGenerator;
  */
 public final class ProposalCatalog
 {
-    /** Chunk-entry property: the chunk identifier (e.g. {@code s001}). */
+    /** Chunk-entry property: the chunk identifier (e.g. {@code chunk001}). */
     public static final String CHUNK_ID = "chunk_id";
 
     /** Chunk-entry property: the chunk's Markdown file name (e.g. {@code Chunk-1.md}). */
@@ -338,7 +338,7 @@ public final class ProposalCatalog
     /**
      * A read-only view of one catalog chunk entry.
      *
-     * @param id the chunk identifier (e.g. {@code s001})
+     * @param id the chunk identifier (e.g. {@code chunk001})
      * @param file the chunk's Markdown file name, relative to the catalog folder
      * @param heading the chunk's heading(s)
      * @param pages the 1-based <!-- page: N--> numbers the chunk spans (empty for DOCX-origin documents)

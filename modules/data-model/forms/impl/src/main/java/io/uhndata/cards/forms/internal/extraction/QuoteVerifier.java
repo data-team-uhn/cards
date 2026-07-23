@@ -21,13 +21,12 @@ import java.util.regex.Pattern;
 
 /**
  * Verifies that an extracted evidence quote actually occurs in the chunk text it claims to come from. Both
- * sides are normalized first — the reserved parse markers ({@code <!-- page: N-->}, {@code [chunk:sNNN]},
- * {@code <!-- TOC start -->}/{@code <!-- TOC end -->}) are removed, all whitespace runs collapse to a single
- * space, and case is folded — because those markers interrupt sentences and the model's verbatim quote may
- * differ from the
- * source only in incidental whitespace. A quote counts as verified when the normalized quote is a substring of
- * the normalized chunk text. This is the code-side half of the injection defense: an injected instruction
- * cannot fabricate evidence that survives this check.
+ * sides are normalized first — the reserved parse markers ({@code <!-- page: N-->},
+ * {@code [chunk:chunkNNN]}) are removed, all whitespace runs collapse to a single space, and case is folded —
+ * because those markers interrupt sentences and the model's verbatim quote may differ from the source only in
+ * incidental whitespace. A quote counts as verified when the normalized quote is a substring of the normalized
+ * chunk text. This is the code-side half of the injection defense: an injected instruction cannot fabricate
+ * evidence that survives this check.
  *
  * @version $Id$
  */
@@ -37,7 +36,7 @@ public final class QuoteVerifier
     static final int MIN_QUOTE_LENGTH = 6;
 
     private static final Pattern MARKER =
-        Pattern.compile("<!-- page: \\d+-->|\\[chunk:s\\d+\\]|<!-- TOC start -->|<!-- TOC end -->");
+        Pattern.compile("<!-- page: \\d+-->|\\[chunk:chunk\\d+\\]");
 
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 

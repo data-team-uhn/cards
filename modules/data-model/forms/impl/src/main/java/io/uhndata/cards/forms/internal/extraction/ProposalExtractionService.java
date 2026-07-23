@@ -301,8 +301,11 @@ public class ProposalExtractionService
      * @param key the JSON key the model must use for this field, e.g. {@code study_title}
      * @param taskLabel a short task description shown in the prompt's numbered task list
      * @param rules the field-specific extraction rules, taken from the question's {@code prompt} property
+     * @param tags the rubric tags (B.1–B.17) this field is extracted from, taken from the question's
+     *            {@code tags} property; empty when the question carries none. Used by the intake pass to pick
+     *            chunks whose gate-assigned rubric tags match.
      */
-    public record FieldSpec(String key, String taskLabel, String rules)
+    public record FieldSpec(String key, String taskLabel, String rules, List<String> tags)
     {
     }
 

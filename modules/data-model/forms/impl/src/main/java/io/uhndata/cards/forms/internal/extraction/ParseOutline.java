@@ -31,10 +31,11 @@ import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
 
 /**
- * The parsed contents of an {@code outline.json} written by the chunker beside a document's {@code catalog.json}.
- * It holds everything the Stage 0.5 gate's input selection needs without re-parsing the document: the document's
- * estimated token count, its ordered heading array, and the detected table-of-contents lines (the cleaned text
- * between the document's {@code <!-- TOC start -->}/{@code <!-- TOC end -->} markers, one entry per line).
+ * The parsed contents of an {@code outline.json} written by the chunker under a document's {@code Chunks/}
+ * folder. It holds everything the extraction pipeline's routing needs without re-parsing the document: the
+ * chunker's recorded {@code chunked} decision (small documents are deliberately left unchunked and sent to the
+ * LLM whole), the document's estimated token count, and the detected table-of-contents entry lines from the
+ * {@code toc} array (written by the chunker when a TOC was found).
  *
  * @version $Id$
  */
@@ -44,7 +45,7 @@ public final class ParseOutline
 
     private static final String TOKENS = "tokens";
 
-    private static final String HEADINGS = "headings";
+    private static final String CHUNKED = "chunked";
 
     private static final String TOC = "toc";
 
@@ -52,16 +53,16 @@ public final class ParseOutline
 
     private final long tokens;
 
-    private final List<String> headings;
+    private final boolean chunked;
 
     private final List<String> toc;
 
-    private ParseOutline(final String documentFileId, final long documentTokens, final List<String> headingList,
+    private ParseOutline(final String documentFileId, final long documentTokens, final boolean documentChunked,
         final List<String> tocList)
     {
         this.fileId = documentFileId;
         this.tokens = documentTokens;
-        this.headings = headingList;
+        this.chunked = documentChunked;
         this.toc = tocList;
     }
 
@@ -80,7 +81,7 @@ public final class ParseOutline
                 throw new IOException("Outline is not a JSON object: " + outlineFile);
             }
             final JsonObject root = parsed.asJsonObject();
-            return new ParseOutline(string(root, FILE_ID), longValue(root, TOKENS), stringList(root, HEADINGS),
+            return new ParseOutline(string(root, FILE_ID), longValue(root, TOKENS), booleanValue(root, CHUNKED),
                 stringList(root, TOC));
         } catch (final RuntimeException e) {
             throw new IOException("Could not parse outline " + outlineFile + ": " + e.getMessage(), e);
@@ -108,18 +109,22 @@ public final class ParseOutline
     }
 
     /**
-     * The ordered heading array extracted from the document (excluding any marked TOC or backmatter).
+     * The chunker's recorded routing decision: whether the document was split into catalog chunks. Small
+     * documents (under the active model's {@code wholeDocumentTokenLimit}) are deliberately left unchunked —
+     * {@code Chunks/} then holds only this outline, and every extraction stage sends the whole document instead
+     * of selecting chunks. Outlines predating this property (which were only ever written beside a catalog)
+     * default to {@code true}.
      *
-     * @return the headings in document order, possibly empty, never {@code null}
+     * @return {@code true} when the document has a chunk catalog, {@code false} for whole-document mode
      */
-    public List<String> headings()
+    public boolean chunked()
     {
-        return this.headings;
+        return this.chunked;
     }
 
     /**
-     * The detected table-of-contents lines (one cleaned TOC entry per element), written by the chunker from the
-     * marked {@code <!-- TOC start -->}/{@code <!-- TOC end -->} block.
+     * The detected table-of-contents entry lines (one cleaned TOC entry per element), written by the chunker
+     * into {@code outline.json}'s {@code toc} array.
      *
      * @return the TOC lines in document order, empty when no TOC was detected, never {@code null}
      */
@@ -152,5 +157,11 @@ public final class ParseOutline
     {
         return root.containsKey(key) && root.get(key).getValueType() == JsonValue.ValueType.NUMBER
             ? root.getJsonNumber(key).longValue() : 0L;
+    }
+
+    private static boolean booleanValue(final JsonObject root, final String key)
+    {
+        // Absent property means a legacy outline, which was only ever written beside a catalog.
+        return root.getBoolean(key, true);
     }
 }
