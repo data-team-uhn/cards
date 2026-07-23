@@ -73,23 +73,46 @@ function ProposalSectionExtraction(props) {
     setErrorMessage(null);
     const url = `${formURL}.extract${force ? "?force=true" : ""}`;
     fetchWithReLogin(globalLoginDisplay, url, { method: "POST", headers: { Accept: "application/json" } })
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(async (response) => {
+        let json = null;
+        try {
+          json = await response.json();
+        } catch (parseError) {
+          json = null;
+        }
+        if (!response.ok) {
+          const detail = json?.error || `HTTP ${response.status}`;
+          throw new Error(`The extraction request failed: ${detail}`);
+        }
+        return json;
+      })
       .then((json) => {
         if (json?.error) {
           setErrorMessage(json.error);
           setState("error");
+        } else if (json?.status === "not_a_protocol") {
+          setErrorMessage(json.reasoning
+            ? `This document was not classified as a research protocol. ${json.reasoning}`
+            : "This document was not classified as a research protocol.");
+          setState("error");
         } else if (json?.status === "extracted") {
           // Refresh the form in place so the newly saved answers render; this does not remount the form.
           reload?.();
-          setState("done");
+          if (json.degraded) {
+            setErrorMessage(
+              "Extraction finished with an incomplete LLM response; some fields may be missing. Try Re-extract.");
+            setState("error");
+          } else {
+            setState("done");
+          }
         } else if (json?.status === "no_document") {
           setState("empty");
         } else {
           setState("skipped");
         }
       })
-      .catch(() => {
-        setErrorMessage("The extraction request could not be completed.");
+      .catch((error) => {
+        setErrorMessage(error?.message || "The extraction request could not be completed.");
         setState("error");
       })
       .finally(() => {
