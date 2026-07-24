@@ -95,6 +95,26 @@ public @interface EntityIndexConfig
     String key_alias_prefix() default "/Questionnaires/";
 
     /**
+     * Properties of the entity root node itself to index as plain fields named after the property.
+     *
+     * @return property names
+     */
+    @AttributeDefinition(name = "Entity properties",
+        description = "Properties of the entity node itself to index as fields, e.g. 'identifier' for subjects")
+    String[] entity_properties() default {};
+
+    /**
+     * The index field tying an entity to the subjects it belongs to, used to evaluate cross-entity joins: joined
+     * entities must have a related subject matching this field of the searched entities.
+     *
+     * @return an index field name
+     */
+    @AttributeDefinition(name = "Subject field",
+        description = "The index field tying an entity to its subjects: @relatedSubjects for forms,"
+            + " @uuid for the subjects themselves")
+    String subject_field() default "@relatedSubjects";
+
+    /**
      * How often the index searcher is refreshed to make recent changes visible.
      *
      * @return a number of seconds

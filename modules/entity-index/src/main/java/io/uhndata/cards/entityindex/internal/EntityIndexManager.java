@@ -52,6 +52,8 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.SortedNumericSortField;
 import org.apache.lucene.search.SortedSetSortField;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.join.JoinUtil;
+import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.sling.api.resource.LoginException;
@@ -64,6 +66,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
@@ -84,8 +87,9 @@ import io.uhndata.cards.entityindex.SearchResults;
  * @version $Id$
  * @since 0.9.41
  */
-@Component(service = EntityIndexer.class, immediate = true)
-@Designate(ocd = EntityIndexConfig.class)
+@Component(service = EntityIndexer.class, immediate = true,
+    configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Designate(ocd = EntityIndexConfig.class, factory = true)
 @SuppressWarnings({ "checkstyle:ClassDataAbstractionCoupling", "checkstyle:ClassFanOutComplexity" })
 public class EntityIndexManager implements EntityIndexer, ResourceChangeListener, ExternalResourceChangeListener
 {
@@ -150,7 +154,7 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
         this.analyzer = new FieldAwareAnalyzer();
         this.translator = new QueryTranslator(this.analyzer);
         this.documentBuilder = new EntityDocumentBuilder(ItemRule.parseAll(configuration.item_rules()),
-            configuration.container_types(), configuration.key_alias_prefix());
+            configuration.container_types(), configuration.key_alias_prefix(), configuration.entity_properties());
         final Path indexLocation = resolveIndexLocation(configuration, context);
         LOGGER.info("Opening entity index for {} at {}", configuration.entity_root(), indexLocation);
         this.directory = FSDirectory.open(indexLocation);
@@ -277,7 +281,7 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
         final long start = System.currentTimeMillis();
         final IndexSearcher searcher = this.searcherManager.acquire();
         try {
-            final Query luceneQuery = this.translator.translate(query, searcher);
+            final Query luceneQuery = this.translator.translate(query, searcher, this::evaluateJoin);
             final TopDocs hits = searcher.search(luceneQuery, Math.max(1, query.getMaxHits()), getSort(query));
             final long total = searcher.count(luceneQuery);
             final List<String> paths = new ArrayList<>(hits.scoreDocs.length);
@@ -289,6 +293,34 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
             return new SearchResults(paths, total, System.currentTimeMillis() - start);
         } finally {
             this.searcherManager.release(searcher);
+        }
+    }
+
+    /**
+     * Evaluate a cross-entity join: run the join conditions against the source index — this one, or the one given in
+     * the join — collect the related subjects of the matches, and build a query matching the entities of those
+     * subjects in this index. This is one extra index lookup, independent of the number of results.
+     *
+     * @param join the join to evaluate
+     * @return a Lucene query for this index
+     * @throws IOException if evaluating the join against the source index fails
+     */
+    private Query evaluateJoin(final SearchQuery.Join join) throws IOException
+    {
+        if (!(join.getSource() instanceof EntityIndexManager) && join.getSource() != null) {
+            throw new IllegalArgumentException("Unknown index implementation: " + join.getSource().getClass());
+        }
+        final EntityIndexManager source =
+            join.getSource() == null ? this : (EntityIndexManager) join.getSource();
+        if (source.searcherManager == null) {
+            throw new IOException("The joined index is not available");
+        }
+        final IndexSearcher fromSearcher = source.searcherManager.acquire();
+        try {
+            return JoinUtil.createJoinQuery(source.config.subject_field(), true, this.config.subject_field(),
+                source.translator.translateGroup(join.getConditions()), fromSearcher, ScoreMode.None);
+        } finally {
+            source.searcherManager.release(fromSearcher);
         }
     }
 
@@ -385,6 +417,9 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
         }
         for (final String container : configuration.container_types()) {
             result.append('/').append(container);
+        }
+        for (final String property : configuration.entity_properties()) {
+            result.append('/').append(property);
         }
         return result.toString();
     }

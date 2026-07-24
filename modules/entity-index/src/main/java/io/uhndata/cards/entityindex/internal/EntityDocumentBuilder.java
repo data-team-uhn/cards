@@ -88,11 +88,15 @@ class EntityDocumentBuilder
 
     private final String keyAliasPrefix;
 
-    EntityDocumentBuilder(final List<ItemRule> itemRules, final String[] containerTypes, final String keyAliasPrefix)
+    private final String[] entityProperties;
+
+    EntityDocumentBuilder(final List<ItemRule> itemRules, final String[] containerTypes, final String keyAliasPrefix,
+        final String[] entityProperties)
     {
         this.itemRules = itemRules;
         this.containerTypes = containerTypes;
         this.keyAliasPrefix = keyAliasPrefix;
+        this.entityProperties = entityProperties;
     }
 
     /**
@@ -117,6 +121,7 @@ class EntityDocumentBuilder
         addDate(entity, "jcr:lastModified", IndexFields.LAST_MODIFIED, doc);
         addString(entity, "jcr:createdBy", IndexFields.CREATED_BY, doc);
         addString(entity, "jcr:lastModifiedBy", IndexFields.LAST_MODIFIED_BY, doc);
+        addEntityProperties(entity, doc, fulltext);
         processChildren(entity, entity, doc, fulltext);
         fulltext.forEach(text -> doc.add(new TextField(IndexFields.FULLTEXT, text, Store.NO)));
         return doc;
@@ -209,6 +214,30 @@ class EntityDocumentBuilder
             doc.add(new StringField(field, p.getString(), Store.NO));
             doc.add(new LongPoint(field + IndexFields.LONG_SUFFIX, epoch));
             doc.add(new SortedNumericDocValuesField(field + IndexFields.NSORT_SUFFIX, epoch));
+        }
+    }
+
+    /**
+     * Index the configured properties of the entity node itself as regular typed fields named after the property,
+     * e.g. the {@code identifier} of a subject.
+     *
+     * @param entity the entity root node
+     * @param doc the document being built
+     * @param fulltext collector for the entity's full text content
+     * @throws RepositoryException if reading the entity fails
+     */
+    private void addEntityProperties(final Node entity, final Document doc, final List<String> fulltext)
+        throws RepositoryException
+    {
+        for (final String property : this.entityProperties) {
+            if (!entity.hasProperty(property)) {
+                continue;
+            }
+            final Property p = entity.getProperty(property);
+            final Value[] values = p.isMultiple() ? p.getValues() : new Value[] { p.getValue() };
+            for (final Value value : values) {
+                addValue(doc, property, value, fulltext);
+            }
         }
     }
 

@@ -71,7 +71,7 @@ public final class AppointmentEmailNotificationsFactory
     private FormUtils formUtils;
 
     /** The entity index used for finding the targeted appointments. */
-    @Reference
+    @Reference(target = "(entity.root=/Forms)")
     private EntityIndexer entityIndex;
 
     /** The TokenManager for generating patient-access tokens. */

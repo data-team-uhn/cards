@@ -30,6 +30,9 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.join.JoinUtil;
+import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 import org.junit.After;
@@ -149,7 +152,7 @@ public class QueryTranslatorTest
             .withCondition(new SearchCondition(Q_AGE, Operator.GT, "25", Type.LONG))
             .withCondition(new SearchCondition(Q_DOB, Operator.LT, "1985-01-01", Type.DATE))
             .withCondition(new SearchCondition(Q_NAME, Operator.IS_NOT_EMPTY, null, Type.TEXT));
-        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.searcher)));
+        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.searcher, this::selfJoin)));
     }
 
     @Test
@@ -159,13 +162,14 @@ public class QueryTranslatorTest
         // keyword fields must keep their exact case
         final SearchQuery query = new SearchQuery()
             .withNativeQuery(Q_AGE.replace("-", "\\-") + ".long:[35 TO 60] AND \\@statusFlags:INCOMPLETE");
-        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.searcher)));
+        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.searcher, this::selfJoin)));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void invalidNativeQueriesAreRejected() throws IOException
     {
-        this.translator.translate(new SearchQuery().withNativeQuery("field:[unclosed TO"), this.searcher);
+        this.translator.translate(new SearchQuery().withNativeQuery("field:[unclosed TO"), this.searcher,
+            this::selfJoin);
     }
 
     @Test
@@ -175,10 +179,10 @@ public class QueryTranslatorTest
             .withAnyOf(java.util.List.of(
                 new SearchCondition(Q_NAME, Operator.EQ, SMITH, Type.TEXT),
                 new SearchCondition(Q_NAME, Operator.EQ, "Jones", Type.TEXT)));
-        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.searcher)));
+        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.searcher, this::selfJoin)));
         // Combined with a regular condition, the group is intersected with it
         query.withCondition(new SearchCondition(Q_AGE, Operator.GT, "35", Type.LONG));
-        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.searcher)));
+        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.searcher, this::selfJoin)));
     }
 
     @Test
@@ -187,26 +191,29 @@ public class QueryTranslatorTest
         // All entities whose subject also has an entity with the name Smith: f1 itself, and f3 of the same subject
         final SearchQuery query = new SearchQuery()
             .withSubjectJoin(java.util.List.of(new SearchCondition(Q_NAME, Operator.EQ, SMITH, Type.TEXT)));
-        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.searcher)));
+        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.searcher, this::selfJoin)));
         // Restricted to unnamed entities, only the sibling f3 remains
         query.withCondition(new SearchCondition(Q_NAME, Operator.IS_EMPTY, null, Type.TEXT));
-        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.searcher)));
+        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.searcher, this::selfJoin)));
     }
 
     @Test
     public void emptyQueryMatchesEverything() throws IOException
     {
-        Assert.assertEquals(3, this.searcher.count(this.translator.translate(new SearchQuery(), this.searcher)));
+        Assert.assertEquals(3, this.searcher.count(
+            this.translator.translate(new SearchQuery(), this.searcher, this::selfJoin)));
     }
 
     @Test
     public void fulltextSearchesTheWholeEntity() throws IOException
     {
         Assert.assertEquals(1, this.searcher.count(
-            this.translator.translate(new SearchQuery().withFulltext("common"), this.searcher)));
+            this.translator.translate(new SearchQuery().withFulltext("common"), this.searcher,
+                this::selfJoin)));
         // An unparsable fulltext query falls back to escaped terms instead of failing
         Assert.assertEquals(0, this.searcher.count(
-            this.translator.translate(new SearchQuery().withFulltext("~~ AND ("), this.searcher)));
+            this.translator.translate(new SearchQuery().withFulltext("~~ AND ("), this.searcher,
+                this::selfJoin)));
     }
 
     @Test
@@ -218,6 +225,16 @@ public class QueryTranslatorTest
         Assert.assertEquals(3, count(condition(Q_AGE, Operator.GTE, "true", Type.LONG)));
     }
 
+    /**
+     * Evaluates joins against this same index, tying entities through their shared related subjects, the same way
+     * the index manager evaluates same-index joins.
+     */
+    private Query selfJoin(final SearchQuery.Join join) throws IOException
+    {
+        return JoinUtil.createJoinQuery(IndexFields.RELATED_SUBJECTS, true, IndexFields.RELATED_SUBJECTS,
+            this.translator.translateGroup(join.getConditions()), this.searcher, ScoreMode.None);
+    }
+
     private SearchQuery condition(final String field, final Operator operator, final String value, final Type type)
     {
         return new SearchQuery().withCondition(new SearchCondition(field, operator, value, type));
@@ -225,7 +242,7 @@ public class QueryTranslatorTest
 
     private int count(final SearchQuery query) throws IOException
     {
-        return this.searcher.count(this.translator.translate(query, this.searcher));
+        return this.searcher.count(this.translator.translate(query, this.searcher, this::selfJoin));
     }
 
     private Document entity(final String path, final String note, final String name, final long age,

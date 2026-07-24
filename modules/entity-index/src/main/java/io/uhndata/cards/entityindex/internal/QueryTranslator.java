@@ -45,8 +45,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
 import org.apache.lucene.search.WildcardQuery;
-import org.apache.lucene.search.join.JoinUtil;
-import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.util.BytesRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +65,22 @@ import io.uhndata.cards.utils.DateUtils;
 @SuppressWarnings({ "checkstyle:ClassDataAbstractionCoupling", "checkstyle:ClassFanOutComplexity" })
 class QueryTranslator
 {
+    /**
+     * Evaluates a cross-entity join against the index holding the joined entity's documents; implemented by the
+     * index manager, which has access to the searchers of the other indexes.
+     */
+    interface JoinEvaluator
+    {
+        /**
+         * Build a query matching entities related to an entity of the source index matching the given conditions.
+         *
+         * @param join the join to evaluate
+         * @return a Lucene query
+         * @throws IOException if evaluating the join against the source index fails
+         */
+        Query evaluate(SearchQuery.Join join) throws IOException;
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryTranslator.class);
 
     private final Analyzer analyzer;
@@ -80,12 +94,14 @@ class QueryTranslator
      * Translate a search query into a Lucene query.
      *
      * @param query the search criteria
-     * @param searcher the current index searcher, used to configure the native query parser and to evaluate joins
+     * @param searcher the current index searcher, used to configure the native query parser
+     * @param joins evaluator for the cross-entity joins in the query
      * @return a Lucene query
      * @throws IllegalArgumentException if the native query cannot be parsed
-     * @throws IOException if evaluating a join against the index fails
+     * @throws IOException if evaluating a join fails
      */
-    Query translate(final SearchQuery query, final IndexSearcher searcher) throws IOException
+    Query translate(final SearchQuery query, final IndexSearcher searcher, final JoinEvaluator joins)
+        throws IOException
     {
         final BooleanQuery.Builder result = new BooleanQuery.Builder();
         boolean empty = true;
@@ -97,8 +113,8 @@ class QueryTranslator
             result.add(translateDisjunction(group), Occur.MUST);
             empty = false;
         }
-        for (final List<SearchCondition> join : query.getSubjectJoins()) {
-            result.add(translateJoin(join, searcher), Occur.MUST);
+        for (final SearchQuery.Join join : query.getSubjectJoins()) {
+            result.add(joins.evaluate(join), Occur.MUST);
             empty = false;
         }
         if (StringUtils.isNotBlank(query.getFulltext())) {
@@ -112,6 +128,21 @@ class QueryTranslator
         return empty ? new MatchAllDocsQuery() : result.build();
     }
 
+    /**
+     * Translate a group of conditions combined with AND, e.g. the conditions that a joined entity must match.
+     *
+     * @param conditions the conditions in the group
+     * @return a Lucene query
+     */
+    Query translateGroup(final List<SearchCondition> conditions)
+    {
+        final BooleanQuery.Builder result = new BooleanQuery.Builder();
+        for (final SearchCondition condition : conditions) {
+            result.add(translateCondition(condition), Occur.MUST);
+        }
+        return result.build();
+    }
+
     private Query translateDisjunction(final List<SearchCondition> group)
     {
         if (group.isEmpty()) {
@@ -122,26 +153,6 @@ class QueryTranslator
             result.add(translateCondition(condition), Occur.SHOULD);
         }
         return result.build();
-    }
-
-    /**
-     * Translate a cross-entity join: results must share a related subject with an entity matching all the given
-     * conditions. This is evaluated as one extra index lookup collecting the related subjects of the joined
-     * entities, independent of the number of results.
-     *
-     * @param join the conditions on the joined entity
-     * @param searcher the current index searcher
-     * @return a Lucene query
-     * @throws IOException if evaluating the join against the index fails
-     */
-    private Query translateJoin(final List<SearchCondition> join, final IndexSearcher searcher) throws IOException
-    {
-        final BooleanQuery.Builder joined = new BooleanQuery.Builder();
-        for (final SearchCondition condition : join) {
-            joined.add(translateCondition(condition), Occur.MUST);
-        }
-        return JoinUtil.createJoinQuery(IndexFields.RELATED_SUBJECTS, true, IndexFields.RELATED_SUBJECTS,
-            joined.build(), searcher, ScoreMode.None);
     }
 
     private Query translateCondition(final SearchCondition condition)

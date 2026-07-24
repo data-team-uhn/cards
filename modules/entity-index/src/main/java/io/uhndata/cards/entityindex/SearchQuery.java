@@ -30,11 +30,48 @@ import java.util.List;
  */
 public final class SearchQuery
 {
+    /**
+     * A cross-entity join: the conditions another entity must match, and the index holding that entity's documents —
+     * {@code null} for the index being searched.
+     */
+    public static final class Join
+    {
+        private final List<SearchCondition> conditions;
+
+        private final EntityIndexer source;
+
+        Join(final List<SearchCondition> conditions, final EntityIndexer source)
+        {
+            this.conditions = List.copyOf(conditions);
+            this.source = source;
+        }
+
+        /**
+         * The conditions that the joined entity must match, all together.
+         *
+         * @return an unmodifiable list of conditions
+         */
+        public List<SearchCondition> getConditions()
+        {
+            return this.conditions;
+        }
+
+        /**
+         * The index holding the joined entity's documents.
+         *
+         * @return an entity index, or {@code null} for the index being searched
+         */
+        public EntityIndexer getSource()
+        {
+            return this.source;
+        }
+    }
+
     private final List<SearchCondition> conditions = new ArrayList<>();
 
     private final List<List<SearchCondition>> disjunctions = new ArrayList<>();
 
-    private final List<List<SearchCondition>> subjectJoins = new ArrayList<>();
+    private final List<Join> subjectJoins = new ArrayList<>();
 
     private String nativeQuery;
 
@@ -84,7 +121,21 @@ public final class SearchQuery
      */
     public SearchQuery withSubjectJoin(final List<SearchCondition> conditions)
     {
-        this.subjectJoins.add(List.copyOf(conditions));
+        return withSubjectJoin(conditions, null);
+    }
+
+    /**
+     * Add a cross-entity join against another index: results must belong to a subject related to an entity of the
+     * <em>other</em> index matching all the given conditions. For example, subjects can be restricted to those
+     * having a form with specific answers by joining against the forms index.
+     *
+     * @param conditions the conditions that the joined entity must match, all together
+     * @param source the index holding the joined entity's documents, {@code null} for the index being searched
+     * @return this object, for chaining
+     */
+    public SearchQuery withSubjectJoin(final List<SearchCondition> conditions, final EntityIndexer source)
+    {
+        this.subjectJoins.add(new Join(conditions, source));
         return this;
     }
 
@@ -163,9 +214,9 @@ public final class SearchQuery
     /**
      * The cross-entity joins that results must satisfy.
      *
-     * @return an unmodifiable list of condition groups, one per joined entity, may be empty
+     * @return an unmodifiable list of joins, one per joined entity, may be empty
      */
-    public List<List<SearchCondition>> getSubjectJoins()
+    public List<Join> getSubjectJoins()
     {
         return Collections.unmodifiableList(this.subjectJoins);
     }
