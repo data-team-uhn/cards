@@ -19,10 +19,13 @@
 
 package io.uhndata.cards.patients.emailnotifications;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -33,6 +36,10 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.entityindex.EntityIndexer;
+import io.uhndata.cards.entityindex.IndexFields;
+import io.uhndata.cards.entityindex.SearchCondition;
+import io.uhndata.cards.entityindex.SearchQuery;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.utils.DateUtils;
 
@@ -249,35 +256,45 @@ public final class AppointmentUtils
      * Finds all appointments scheduled for sending a reminder email in a given day for a given clinic.
      *
      * @param session a valid JCR session
+     * @param entityIndex the entity index used to look up the matching Visit information forms
+     * @param formUtils form utilities service
      * @param dateToQuery the Java Calendar object for the day to query for appointments
      * @param clinicId the clinic identifier recorded in the Visit information form - ensure that it matches.
      * @return an Iterator of cards:DateAnswer Resources representing the scheduled visits
      */
-    public static NodeIterator getAppointmentsForReminderEmailForDay(Session session, Calendar dateToQuery,
-        String clinicId)
+    public static NodeIterator getAppointmentsForReminderEmailForDay(Session session, EntityIndexer entityIndex,
+        FormUtils formUtils, Calendar dateToQuery, String clinicId)
     {
-        return getAppointmentsForDay(session, dateToQuery, clinicId, 0, false, true);
+        return getAppointmentsForDay(session, entityIndex, formUtils, dateToQuery, clinicId, 0, false, true);
     }
 
     /**
      * Finds all appointments scheduled for sending an initial email in a given day for a given clinic.
      *
      * @param session a valid JCR session
+     * @param entityIndex the entity index used to look up the matching Visit information forms
+     * @param formUtils form utilities service
      * @param dateToQuery the Java Calendar object for the day to query for appointments
      * @param clinicId the clinic identifier recorded in the Visit information form - ensure that it matches.
      * @param surveyDeadline Clinic property for the number of days a token is valid for
      * @return an Iterator of cards:DateAnswer Resources representing the scheduled visits
      */
-    public static NodeIterator getAppointmentsForInitialEmailForDay(Session session, Calendar dateToQuery,
-        String clinicId, int surveyDeadline)
+    public static NodeIterator getAppointmentsForInitialEmailForDay(Session session, EntityIndexer entityIndex,
+        FormUtils formUtils, Calendar dateToQuery, String clinicId, int surveyDeadline)
     {
-        return getAppointmentsForDay(session, dateToQuery, clinicId, surveyDeadline, true, false);
+        return getAppointmentsForDay(session, entityIndex, formUtils, dateToQuery, clinicId, surveyDeadline,
+            true, false);
     }
 
     /**
-     * Finds all appointments scheduled for a given day for a given clinic for a given goal.
+     * Finds all appointments scheduled for a given day for a given clinic for a given goal. Instead of a JCR query
+     * JOINing the various answers, which gets slow on large repositories, the conditions are all evaluated in a
+     * single entity index lookup returning the matching Visit information forms, and only the resulting forms are
+     * accessed in the repository.
      *
      * @param session a valid JCR session
+     * @param entityIndex the entity index used to look up the matching Visit information forms
+     * @param formUtils form utilities service
      * @param dateToQuery the Java Calendar object for the day to query for appointments
      * @param clinicId the clinic identifier recorded in the Visit information form - ensure that it matches.
      * @param surveyDeadline Clinic property for the number of days a token is valid for
@@ -285,61 +302,119 @@ public final class AppointmentUtils
      * @param isReminder boolean to find all appointments scheduled for sending reminder email if true
      * @return an Iterator of cards:DateAnswer Resources representing the scheduled visits
      */
-    @SuppressWarnings({"checkstyle:MultipleStringLiterals"})
-    public static NodeIterator getAppointmentsForDay(Session session, Calendar dateToQuery, String clinicId,
-        int surveyDeadline, boolean isInitial, boolean isReminder)
+    @SuppressWarnings({ "checkstyle:MultipleStringLiterals", "checkstyle:ExecutableStatementCount",
+        "checkstyle:ParameterNumber" })
+    public static NodeIterator getAppointmentsForDay(Session session, EntityIndexer entityIndex, FormUtils formUtils,
+        Calendar dateToQuery, String clinicId, int surveyDeadline, boolean isInitial, boolean isReminder)
     {
         try {
-            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            final Node visitTimeResult = session.getNode("/Questionnaires/Visit information/time");
-            final String visitTimeUUID = visitTimeResult.getIdentifier();
-            final String statusUUID =
-                session.getNode("/Questionnaires/Visit information/status").getIdentifier();
-            final String hasSurveysUUID =
-                session.getNode("/Questionnaires/Visit information/has_surveys").getIdentifier();
-            final String clinicUUID = session.getNode(CLINIC_PATH).getIdentifier();
-            final Calendar lowerBoundDate = DateUtils.atMidnight((Calendar) dateToQuery.clone());
-            final String lowerBoundDateTime = formatter.format(lowerBoundDate.getTime());
-            final Calendar midnightToday = DateUtils.atMidnight(Calendar.getInstance());
-            final String midnightTodayTime = formatter.format(midnightToday.getTime());
-            final Calendar upperBoundDate = (Calendar) lowerBoundDate.clone();
+            final SimpleDateFormat day = new SimpleDateFormat("yyyy-MM-dd");
+            final String visitTimePath = "/Questionnaires/Visit information/time";
+            final String queriedDay = day.format(DateUtils.atMidnight((Calendar) dateToQuery.clone()).getTime());
+            final String today = day.format(Calendar.getInstance().getTime());
+            final Calendar upperBoundDate = DateUtils.atMidnight((Calendar) dateToQuery.clone());
             upperBoundDate.add(Calendar.DAY_OF_YEAR, 1);
-            final String upperBoundDateTime = formatter.format(upperBoundDate.getTime());
-            final Calendar lowerBoundDeadlineDate = DateUtils.atMidnight(Calendar.getInstance());
+            final String dayAfterQueried = day.format(upperBoundDate.getTime());
+            final Calendar lowerBoundDeadlineDate = Calendar.getInstance();
             lowerBoundDeadlineDate.add(Calendar.DAY_OF_YEAR, -1 * surveyDeadline);
-            final String lowerBoundDeadlineDateTime = formatter.format(lowerBoundDeadlineDate.getTime());
-            LOGGER.info("Querying for appointments for clinic {} between {} and {}.",
-                clinicId,
-                lowerBoundDateTime,
-                upperBoundDateTime);
+            final String deadlineDay = day.format(lowerBoundDeadlineDate.getTime());
+            LOGGER.info("Querying for appointments for clinic {} on {}.", clinicId, queriedDay);
 
-            final String query = "SELECT vdate.* FROM [cards:DateAnswer] AS vdate "
-                + "  INNER JOIN [cards:TextAnswer] AS vstatus ON vstatus.form = vdate.form "
-                + "  INNER JOIN [cards:BooleanAnswer] AS has_surveys ON has_surveys.form = vdate.form "
-                + ((clinicId != null)
-                    ? "  INNER JOIN [cards:ResourceAnswer] AS clinic ON clinic.form = vdate.form " : "")
-                + "WHERE vdate.'question'='" + visitTimeUUID + "' "
-                + "  AND vdate.'value' < cast('" + upperBoundDateTime + "' AS date)"
-                + (isInitial
-                    ? "  AND vdate.'value' >= cast('" + lowerBoundDeadlineDateTime + "' AS date)"
-                    + "  AND ( vdate.[jcr:created] >= cast('" + midnightTodayTime + "' AS date)"
-                    + "  OR vdate.'value' >= cast('" + lowerBoundDateTime + "' AS date) )" : "")
-                + (isReminder
-                    ? "  AND vdate.[jcr:created] < cast('" + midnightTodayTime + "' AS date)"
-                    + "  AND vdate.'value' >= cast('" + lowerBoundDateTime + "' AS date)" : "")
-                + "  AND vstatus.'question' = '" + statusUUID + "' "
-                + "  AND vstatus.'value' <> 'cancelled'"
-                + "  AND vstatus.'value' <> 'entered-in-error'"
-                + "  AND vstatus.'value' <> 'on-hold'"
-                + "  AND has_surveys.'question' = '" + hasSurveysUUID + "' "
-                + "  AND has_surveys.'value' = 1 "
-                + ((clinicId != null)
-                    ? ("  AND clinic.'question' = '" + clinicUUID + "' AND clinic.'value' = '" + clinicId + "'") : "")
-                + " OPTION (INDEX TAG cards)";
+            final SearchQuery query = new SearchQuery()
+                .withCondition(SearchCondition.forQuestion(session, visitTimePath, "<", dayAfterQueried))
+                .withCondition(SearchCondition.forQuestion(session,
+                    "/Questionnaires/Visit information/status", "<>", "cancelled"))
+                .withCondition(SearchCondition.forQuestion(session,
+                    "/Questionnaires/Visit information/status", "<>", "entered-in-error"))
+                .withCondition(SearchCondition.forQuestion(session,
+                    "/Questionnaires/Visit information/status", "<>", "on-hold"))
+                .withCondition(SearchCondition.forQuestion(session,
+                    "/Questionnaires/Visit information/has_surveys", "=", "1"))
+                .withMaxHits(Integer.MAX_VALUE);
+            if (clinicId != null) {
+                query.withCondition(SearchCondition.forQuestion(session, CLINIC_PATH, "=", clinicId));
+            }
+            // The form creation date approximates the original condition on the answer's creation date, since the
+            // whole answer skeleton is created together with the form
+            if (isInitial) {
+                query.withCondition(SearchCondition.forQuestion(session, visitTimePath, ">=", deadlineDay))
+                    .withAnyOf(List.of(
+                        new SearchCondition(IndexFields.CREATED, SearchCondition.Operator.GTE, today,
+                            SearchCondition.Type.DATE),
+                        SearchCondition.forQuestion(session, visitTimePath, ">=", queriedDay)));
+            }
+            if (isReminder) {
+                query.withCondition(new SearchCondition(IndexFields.CREATED, SearchCondition.Operator.LT, today,
+                    SearchCondition.Type.DATE))
+                    .withCondition(SearchCondition.forQuestion(session, visitTimePath, ">=", queriedDay));
+            }
 
-            return session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
-        } catch (RepositoryException e) {
+            final Node visitTimeQuestion = session.getNode(visitTimePath);
+            final List<Node> appointments = new ArrayList<>();
+            for (final String formPath : entityIndex.search(query).getPaths()) {
+                if (!session.nodeExists(formPath)) {
+                    continue;
+                }
+                final Node timeAnswer = formUtils.getAnswer(session.getNode(formPath), visitTimeQuestion);
+                if (timeAnswer != null) {
+                    appointments.add(timeAnswer);
+                }
+            }
+            return new ListNodeIterator(appointments);
+        } catch (RepositoryException | IOException e) {
+            LOGGER.warn("Failed to query appointments: {}", e.getMessage(), e);
             return EmptyNodeIterator.INSTANCE;
+        }
+    }
+
+    /**
+     * A node iterator over a pre-computed list of nodes.
+     */
+    private static final class ListNodeIterator implements NodeIterator
+    {
+        private final List<Node> nodes;
+
+        private int position;
+
+        ListNodeIterator(final List<Node> nodes)
+        {
+            this.nodes = nodes;
+        }
+
+        @Override
+        public Object next()
+        {
+            return nextNode();
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return this.position < this.nodes.size();
+        }
+
+        @Override
+        public void skip(long skipNum)
+        {
+            this.position = Math.toIntExact(this.position + skipNum);
+        }
+
+        @Override
+        public long getSize()
+        {
+            return this.nodes.size();
+        }
+
+        @Override
+        public long getPosition()
+        {
+            return this.position;
+        }
+
+        @Override
+        public Node nextNode()
+        {
+            return this.nodes.get(this.position++);
         }
     }
 

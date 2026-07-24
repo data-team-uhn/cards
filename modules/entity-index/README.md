@@ -88,6 +88,11 @@ transparent: answers are indexed the same no matter how deeply nested in (recurr
   case included)
 - `sortby`: a question (uuid or `/Questionnaires`-relative path) to order by instead of the
   creation date.
+- `joinnames`/`joincomparators`/`joinvalues`/`jointypes`: a **cross-entity join** — conditions
+  that another form, sharing a related subject with the returned results, must match all
+  together. For example, Visit information forms can be restricted to patients whose Patient
+  information form has a specific answer. The join is evaluated as one extra index lookup,
+  independent of the number of results, not per-row like JCR JOINs.
 
 Filter names may be question uuids (as sent by the existing frontend), question paths relative to
 `/Questionnaires`, or the special `cards:Questionnaire`, `cards:Subject`, `cards:Created`,
@@ -102,6 +107,34 @@ ranking, fuzzy (`~`), wildcard and phrase queries through the `lucene`/`filter` 
 
 `POST /Forms.reindexEntities.json` (administrators only) triggers a full rebuild in the
 background.
+
+## Backend API
+
+The `EntityIndexer` OSGi service is the Java entry point for scheduled jobs and other backend
+code. Conditions are built from question paths with `SearchCondition.forQuestion`, which resolves
+the question's identity and data type from its definition; `SearchQuery.withAnyOf` adds an OR
+group, and `SearchQuery.withSubjectJoin` a cross-entity join:
+
+```java
+@Reference
+private EntityIndexer entityIndex;
+...
+SearchQuery query = new SearchQuery()
+    .withCondition(SearchCondition.forQuestion(session, "/Questionnaires/Visit information/time", "<", "2026-08-01"))
+    .withCondition(SearchCondition.forQuestion(session, "Visit information/status", "<>", "cancelled"))
+    .withAnyOf(List.of(
+        new SearchCondition(IndexFields.CREATED, Operator.GTE, "2026-07-24", Type.DATE),
+        SearchCondition.forQuestion(session, "Visit information/time", ">=", "2026-07-24")))
+    .withSubjectJoin(List.of(
+        SearchCondition.forQuestion(session, "Patient information/email_ok", "=", "1")))
+    .withMaxHits(Integer.MAX_VALUE);
+for (String formPath : this.entityIndex.search(query).getPaths()) {
+    // read the matching forms through your own session, unreadable results must be skipped
+}
+```
+
+`AppointmentUtils.getAppointmentsForDay` in the patient-portal module is a complete example: it
+replaced a four-JOIN JCR query used by the scheduled email notification jobs.
 
 ## Maintenance lifecycle
 
@@ -130,10 +163,19 @@ the default `open` scheme is unaffected.
 ## Configuration
 
 The schema is defined by the `io.uhndata.cards.entityindex.internal.EntityIndexManager` OSGi
-configuration (see `EntityIndexConfig`): the entity root path and node type, the item/container
-node types, the key/value/note properties, the alias prefix, and the refresh/commit cadence. The
-defaults index `/Forms`; the design is deliberately generic — an IAP deployment would point it at
-`iap:Entity` roots with the corresponding item types.
+configuration (see `EntityIndexConfig`): the entity root path and node type, the container node
+types, the alias prefix, the refresh/commit cadence, and one **item rule** per indexable
+descendant node type, in the format `nodeType;key=referenceProperty;values=prop1,prop2;note=noteProperty`:
+
+- the default rule for Forms is `cards:Answer;key=question;values=value;note=note`;
+- `key` may be omitted, in which case fields are named after the item's own path inside the
+  entity — suitable for entities with meaningfully-named children instead of question references,
+  e.g. `iap:Reviewer;values=assignee,status,decision`;
+- the first `values` property is the item's primary value, indexed directly under the field name;
+  every listed property `p` is also addressable as `<field>@<p>` when it is not the primary one.
+
+Changing the rules (or upgrading to a version with a different document format) is detected
+through a schema version stored in the index, and triggers an automatic rebuild on startup.
 
 Current limitations, intended as future work:
 

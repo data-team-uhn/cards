@@ -149,7 +149,7 @@ public class QueryTranslatorTest
             .withCondition(new SearchCondition(Q_AGE, Operator.GT, "25", Type.LONG))
             .withCondition(new SearchCondition(Q_DOB, Operator.LT, "1985-01-01", Type.DATE))
             .withCondition(new SearchCondition(Q_NAME, Operator.IS_NOT_EMPTY, null, Type.TEXT));
-        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.reader)));
+        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.searcher)));
     }
 
     @Test
@@ -159,29 +159,54 @@ public class QueryTranslatorTest
         // keyword fields must keep their exact case
         final SearchQuery query = new SearchQuery()
             .withNativeQuery(Q_AGE.replace("-", "\\-") + ".long:[35 TO 60] AND \\@statusFlags:INCOMPLETE");
-        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.reader)));
+        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.searcher)));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void invalidNativeQueriesAreRejected() throws IOException
     {
-        this.translator.translate(new SearchQuery().withNativeQuery("field:[unclosed TO"), this.reader);
+        this.translator.translate(new SearchQuery().withNativeQuery("field:[unclosed TO"), this.searcher);
+    }
+
+    @Test
+    public void disjunctionsMatchAnyOfTheGroup() throws IOException
+    {
+        final SearchQuery query = new SearchQuery()
+            .withAnyOf(java.util.List.of(
+                new SearchCondition(Q_NAME, Operator.EQ, SMITH, Type.TEXT),
+                new SearchCondition(Q_NAME, Operator.EQ, "Jones", Type.TEXT)));
+        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.searcher)));
+        // Combined with a regular condition, the group is intersected with it
+        query.withCondition(new SearchCondition(Q_AGE, Operator.GT, "35", Type.LONG));
+        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.searcher)));
+    }
+
+    @Test
+    public void subjectJoinsMatchEntitiesOfTheSameSubject() throws IOException
+    {
+        // All entities whose subject also has an entity with the name Smith: f1 itself, and f3 of the same subject
+        final SearchQuery query = new SearchQuery()
+            .withSubjectJoin(java.util.List.of(new SearchCondition(Q_NAME, Operator.EQ, SMITH, Type.TEXT)));
+        Assert.assertEquals(2, this.searcher.count(this.translator.translate(query, this.searcher)));
+        // Restricted to unnamed entities, only the sibling f3 remains
+        query.withCondition(new SearchCondition(Q_NAME, Operator.IS_EMPTY, null, Type.TEXT));
+        Assert.assertEquals(1, this.searcher.count(this.translator.translate(query, this.searcher)));
     }
 
     @Test
     public void emptyQueryMatchesEverything() throws IOException
     {
-        Assert.assertEquals(3, this.searcher.count(this.translator.translate(new SearchQuery(), this.reader)));
+        Assert.assertEquals(3, this.searcher.count(this.translator.translate(new SearchQuery(), this.searcher)));
     }
 
     @Test
     public void fulltextSearchesTheWholeEntity() throws IOException
     {
         Assert.assertEquals(1, this.searcher.count(
-            this.translator.translate(new SearchQuery().withFulltext("common"), this.reader)));
+            this.translator.translate(new SearchQuery().withFulltext("common"), this.searcher)));
         // An unparsable fulltext query falls back to escaped terms instead of failing
         Assert.assertEquals(0, this.searcher.count(
-            this.translator.translate(new SearchQuery().withFulltext("~~ AND ("), this.reader)));
+            this.translator.translate(new SearchQuery().withFulltext("~~ AND ("), this.searcher)));
     }
 
     @Test
@@ -200,7 +225,7 @@ public class QueryTranslatorTest
 
     private int count(final SearchQuery query) throws IOException
     {
-        return this.searcher.count(this.translator.translate(query, this.reader));
+        return this.searcher.count(this.translator.translate(query, this.searcher));
     }
 
     private Document entity(final String path, final String note, final String name, final long age,
@@ -209,6 +234,11 @@ public class QueryTranslatorTest
         final Document doc = new Document();
         doc.add(new StringField(IndexFields.PATH, path, Store.YES));
         doc.add(new StringField(IndexFields.STATUS_FLAGS, "INCOMPLETE", Store.NO));
+        // f1 and f3 belong to the same subject, f2 to another one
+        final String subject = "/Forms/f2".equals(path) ? "subject-2" : "subject-1";
+        doc.add(new StringField(IndexFields.RELATED_SUBJECTS, subject, Store.NO));
+        doc.add(new org.apache.lucene.document.SortedSetDocValuesField(IndexFields.RELATED_SUBJECTS,
+            new org.apache.lucene.util.BytesRef(subject)));
         if (name != null) {
             doc.add(new StringField(IndexFields.QUESTIONS, Q_NAME, Store.NO));
             doc.add(new StringField(IndexFields.ANSWERED_QUESTIONS, Q_NAME, Store.NO));

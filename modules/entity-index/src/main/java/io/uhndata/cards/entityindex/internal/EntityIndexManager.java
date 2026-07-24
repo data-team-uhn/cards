@@ -99,6 +99,12 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
 
     private static final long BOOTSTRAP_RETRY_SECONDS = 10;
 
+    /** The commit metadata key holding the schema version the index was built with. */
+    private static final String SCHEMA_VERSION_KEY = "entityIndexSchema";
+
+    /** Bumped when the document format changes in a way that requires rebuilding existing indexes. */
+    private static final String DOCUMENT_FORMAT_VERSION = "2";
+
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
 
@@ -124,6 +130,8 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
 
     private int bootstrapAttempts;
 
+    private String storedSchemaVersion;
+
     /**
      * Open the index and start the maintenance tasks.
      *
@@ -141,13 +149,15 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
         }
         this.analyzer = new FieldAwareAnalyzer();
         this.translator = new QueryTranslator(this.analyzer);
-        this.documentBuilder = new EntityDocumentBuilder(configuration.item_types(),
-            configuration.container_types(), configuration.key_property(), configuration.value_property(),
-            configuration.note_property(), configuration.key_alias_prefix());
+        this.documentBuilder = new EntityDocumentBuilder(ItemRule.parseAll(configuration.item_rules()),
+            configuration.container_types(), configuration.key_alias_prefix());
         final Path indexLocation = resolveIndexLocation(configuration, context);
         LOGGER.info("Opening entity index for {} at {}", configuration.entity_root(), indexLocation);
         this.directory = FSDirectory.open(indexLocation);
         this.writer = new IndexWriter(this.directory, new IndexWriterConfig(this.analyzer));
+        this.storedSchemaVersion = readStoredSchemaVersion();
+        this.writer.setLiveCommitData(
+            Map.of(SCHEMA_VERSION_KEY, currentSchemaVersion(configuration)).entrySet());
         this.searcherManager = new SearcherManager(this.writer, null);
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
         this.scheduler.scheduleWithFixedDelay(this::refresh,
@@ -267,7 +277,7 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
         final long start = System.currentTimeMillis();
         final IndexSearcher searcher = this.searcherManager.acquire();
         try {
-            final Query luceneQuery = this.translator.translate(query, searcher.getIndexReader());
+            final Query luceneQuery = this.translator.translate(query, searcher);
             final TopDocs hits = searcher.search(luceneQuery, Math.max(1, query.getMaxHits()), getSort(query));
             final long total = searcher.count(luceneQuery);
             final List<String> paths = new ArrayList<>(hits.scoreDocs.length);
@@ -360,12 +370,54 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
     }
 
     /**
+     * The schema version the index must be built with: the document format version plus a fingerprint of the
+     * configured indexing rules. When it differs from the version stored in the index, a rebuild is needed.
+     *
+     * @param configuration the indexing schema
+     * @return a version string
+     */
+    private String currentSchemaVersion(final EntityIndexConfig configuration)
+    {
+        final StringBuilder result = new StringBuilder(DOCUMENT_FORMAT_VERSION);
+        result.append('/').append(configuration.entity_type());
+        for (final ItemRule rule : ItemRule.parseAll(configuration.item_rules())) {
+            result.append('/').append(rule.canonical());
+        }
+        for (final String container : configuration.container_types()) {
+            result.append('/').append(container);
+        }
+        return result.toString();
+    }
+
+    private String readStoredSchemaVersion()
+    {
+        final Iterable<Map.Entry<String, String>> data = this.writer.getLiveCommitData();
+        if (data != null) {
+            for (final Map.Entry<String, String> entry : data) {
+                if (SCHEMA_VERSION_KEY.equals(entry.getKey())) {
+                    return entry.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * If the index is empty but the repository has entities, e.g. on the very first startup with this module
-     * enabled, rebuild the index. Retried a few times to wait out the repository initialization.
+     * enabled, or if the index was built with a different schema, rebuild the index. Retried a few times to wait out
+     * the repository initialization.
      */
     private void bootstrap()
     {
         try {
+            final String targetVersion = currentSchemaVersion(this.config);
+            if (getIndexedEntityCount() != 0 && !targetVersion.equals(this.storedSchemaVersion)) {
+                LOGGER.info("Entity index schema changed from [{}] to [{}], rebuilding",
+                    this.storedSchemaVersion, targetVersion);
+                this.storedSchemaVersion = targetVersion;
+                reindexAll();
+                return;
+            }
             if (getIndexedEntityCount() != 0) {
                 return;
             }

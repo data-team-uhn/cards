@@ -16,6 +16,12 @@
  */
 package io.uhndata.cards.entityindex;
 
+import java.util.Locale;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 /**
  * A single constraint on one field of an indexed entity, part of a {@link SearchQuery}. The field is identified by
  * its index field name: either the UUID of the question being answered, or one of the {@code @}-prefixed entity
@@ -112,6 +118,53 @@ public final class SearchCondition
         this.operator = operator;
         this.value = value;
         this.type = type;
+    }
+
+    /**
+     * Build a condition on a question, resolving the question's identity and value type from its definition. This is
+     * the recommended way for backend code, e.g. scheduled jobs, to build conditions: only the question path and the
+     * compared value need to be known.
+     *
+     * @param session a session used to read the question definition
+     * @param question the question, either an absolute path like {@code /Questionnaires/Q/section/name}, a path
+     *            relative to {@code /Questionnaires}, or a uuid
+     * @param comparator the comparison operator symbol, e.g. {@code =} or {@code is empty}
+     * @param value the value to compare against, in string form, may be {@code null} for valueless operators
+     * @return a condition usable in a {@link SearchQuery}
+     * @throws RepositoryException if the question cannot be resolved
+     */
+    public static SearchCondition forQuestion(final Session session, final String question, final String comparator,
+        final String value) throws RepositoryException
+    {
+        final Node questionNode;
+        if (question.startsWith("/")) {
+            questionNode = session.getNode(question);
+        } else if (question.indexOf('/') != -1) {
+            questionNode = session.getNode("/Questionnaires/" + question);
+        } else {
+            questionNode = session.getNodeByIdentifier(question);
+        }
+        final String dataType = questionNode.hasProperty("dataType")
+            ? questionNode.getProperty("dataType").getString() : null;
+        return new SearchCondition(questionNode.getIdentifier(), Operator.fromSymbol(comparator), value,
+            typeForData(dataType));
+    }
+
+    /**
+     * Map a question data type, e.g. {@code boolean} or {@code decimal}, to the value type dictating how comparisons
+     * are evaluated.
+     *
+     * @param dataType a question data type, may be {@code null}
+     * @return the matching value type, {@code TEXT} for unknown or missing data types
+     */
+    public static Type typeForData(final String dataType)
+    {
+        return switch (dataType == null ? "" : dataType.toLowerCase(Locale.ROOT)) {
+            case "long", "boolean" -> Type.LONG;
+            case "double", "decimal" -> Type.DOUBLE;
+            case "date" -> Type.DATE;
+            case null, default -> Type.TEXT;
+        };
     }
 
     /**

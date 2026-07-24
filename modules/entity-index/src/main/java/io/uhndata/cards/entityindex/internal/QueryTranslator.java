@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -37,12 +38,15 @@ import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.queryparser.flexible.standard.config.PointsConfig;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.MatchNoDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
 import org.apache.lucene.search.WildcardQuery;
+import org.apache.lucene.search.join.JoinUtil;
+import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.util.BytesRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,11 +80,12 @@ class QueryTranslator
      * Translate a search query into a Lucene query.
      *
      * @param query the search criteria
-     * @param reader the current index reader, used to configure the native query parser
+     * @param searcher the current index searcher, used to configure the native query parser and to evaluate joins
      * @return a Lucene query
      * @throws IllegalArgumentException if the native query cannot be parsed
+     * @throws IOException if evaluating a join against the index fails
      */
-    Query translate(final SearchQuery query, final IndexReader reader)
+    Query translate(final SearchQuery query, final IndexSearcher searcher) throws IOException
     {
         final BooleanQuery.Builder result = new BooleanQuery.Builder();
         boolean empty = true;
@@ -88,15 +93,55 @@ class QueryTranslator
             result.add(translateCondition(condition), Occur.MUST);
             empty = false;
         }
+        for (final List<SearchCondition> group : query.getDisjunctions()) {
+            result.add(translateDisjunction(group), Occur.MUST);
+            empty = false;
+        }
+        for (final List<SearchCondition> join : query.getSubjectJoins()) {
+            result.add(translateJoin(join, searcher), Occur.MUST);
+            empty = false;
+        }
         if (StringUtils.isNotBlank(query.getFulltext())) {
             result.add(parseFulltext(query.getFulltext()), Occur.MUST);
             empty = false;
         }
         if (StringUtils.isNotBlank(query.getNativeQuery())) {
-            result.add(parseNative(query.getNativeQuery(), reader), Occur.MUST);
+            result.add(parseNative(query.getNativeQuery(), searcher.getIndexReader()), Occur.MUST);
             empty = false;
         }
         return empty ? new MatchAllDocsQuery() : result.build();
+    }
+
+    private Query translateDisjunction(final List<SearchCondition> group)
+    {
+        if (group.isEmpty()) {
+            return new MatchAllDocsQuery();
+        }
+        final BooleanQuery.Builder result = new BooleanQuery.Builder();
+        for (final SearchCondition condition : group) {
+            result.add(translateCondition(condition), Occur.SHOULD);
+        }
+        return result.build();
+    }
+
+    /**
+     * Translate a cross-entity join: results must share a related subject with an entity matching all the given
+     * conditions. This is evaluated as one extra index lookup collecting the related subjects of the joined
+     * entities, independent of the number of results.
+     *
+     * @param join the conditions on the joined entity
+     * @param searcher the current index searcher
+     * @return a Lucene query
+     * @throws IOException if evaluating the join against the index fails
+     */
+    private Query translateJoin(final List<SearchCondition> join, final IndexSearcher searcher) throws IOException
+    {
+        final BooleanQuery.Builder joined = new BooleanQuery.Builder();
+        for (final SearchCondition condition : join) {
+            joined.add(translateCondition(condition), Occur.MUST);
+        }
+        return JoinUtil.createJoinQuery(IndexFields.RELATED_SUBJECTS, true, IndexFields.RELATED_SUBJECTS,
+            joined.build(), searcher, ScoreMode.None);
     }
 
     private Query translateCondition(final SearchCondition condition)

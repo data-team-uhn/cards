@@ -45,7 +45,7 @@ import io.uhndata.cards.entityindex.IndexFields;
 
 /**
  * Flattens a whole entity — the root node together with all its descendant items — into a single Lucene document,
- * following the field naming convention described in {@link IndexFields}.
+ * following the field naming convention described in {@link IndexFields} and the configured {@link ItemRule}s.
  *
  * @version $Id$
  * @since 0.9.41
@@ -61,26 +61,37 @@ class EntityDocumentBuilder
     /** Values are truncated to this length when used as sort keys. */
     private static final int MAX_SORT_KEY_LENGTH = 256;
 
-    private final String[] itemTypes;
+    /** The identity of one item inside the entity: the field names its values are indexed under. */
+    private static final class ItemKey
+    {
+        /** The stable identifier: the key node's uuid if the item is keyed by reference, the alias otherwise. */
+        private final String id;
+
+        /** The human-friendly field name; {@code null} when it is the same as the id. */
+        private final String alias;
+
+        ItemKey(final String id, final String alias)
+        {
+            this.id = id;
+            this.alias = alias;
+        }
+
+        List<String> names()
+        {
+            return this.alias == null ? List.of(this.id) : List.of(this.id, this.alias);
+        }
+    }
+
+    private final List<ItemRule> itemRules;
 
     private final String[] containerTypes;
 
-    private final String keyProperty;
-
-    private final String valueProperty;
-
-    private final String noteProperty;
-
     private final String keyAliasPrefix;
 
-    EntityDocumentBuilder(final String[] itemTypes, final String[] containerTypes, final String keyProperty,
-        final String valueProperty, final String noteProperty, final String keyAliasPrefix)
+    EntityDocumentBuilder(final List<ItemRule> itemRules, final String[] containerTypes, final String keyAliasPrefix)
     {
-        this.itemTypes = itemTypes;
+        this.itemRules = itemRules;
         this.containerTypes = containerTypes;
-        this.keyProperty = keyProperty;
-        this.valueProperty = valueProperty;
-        this.noteProperty = noteProperty;
         this.keyAliasPrefix = keyAliasPrefix;
     }
 
@@ -100,13 +111,13 @@ class EntityDocumentBuilder
         doc.add(new StringField(IndexFields.TYPE, entity.getPrimaryNodeType().getName(), Store.NO));
         addQuestionnaire(entity, doc);
         addSubject(entity, doc, fulltext);
-        addMultiString(entity, "relatedSubjects", IndexFields.RELATED_SUBJECTS, doc);
+        addRelatedSubjects(entity, doc);
         addMultiString(entity, "statusFlags", IndexFields.STATUS_FLAGS, doc);
         addDate(entity, "jcr:created", IndexFields.CREATED, doc);
         addDate(entity, "jcr:lastModified", IndexFields.LAST_MODIFIED, doc);
         addString(entity, "jcr:createdBy", IndexFields.CREATED_BY, doc);
         addString(entity, "jcr:lastModifiedBy", IndexFields.LAST_MODIFIED_BY, doc);
-        processChildren(entity, doc, fulltext);
+        processChildren(entity, entity, doc, fulltext);
         fulltext.forEach(text -> doc.add(new TextField(IndexFields.FULLTEXT, text, Store.NO)));
         return doc;
     }
@@ -148,6 +159,27 @@ class EntityDocumentBuilder
         }
     }
 
+    /**
+     * The related subjects are indexed both as searchable terms and as doc values, the latter needed for evaluating
+     * cross-entity joins.
+     *
+     * @param entity the entity root node
+     * @param doc the document being built
+     * @throws RepositoryException if reading the entity fails
+     */
+    private void addRelatedSubjects(final Node entity, final Document doc) throws RepositoryException
+    {
+        if (!entity.hasProperty("relatedSubjects")) {
+            return;
+        }
+        final Property p = entity.getProperty("relatedSubjects");
+        final Value[] values = p.isMultiple() ? p.getValues() : new Value[] { p.getValue() };
+        for (final Value value : values) {
+            doc.add(new StringField(IndexFields.RELATED_SUBJECTS, value.getString(), Store.NO));
+            doc.add(new SortedSetDocValuesField(IndexFields.RELATED_SUBJECTS, new BytesRef(value.getString())));
+        }
+    }
+
     private void addMultiString(final Node entity, final String property, final String field, final Document doc)
         throws RepositoryException
     {
@@ -180,23 +212,34 @@ class EntityDocumentBuilder
         }
     }
 
-    private void processChildren(final Node parent, final Document doc, final List<String> fulltext)
-        throws RepositoryException
+    private void processChildren(final Node entity, final Node parent, final Document doc,
+        final List<String> fulltext) throws RepositoryException
     {
         final NodeIterator children = parent.getNodes();
         while (children.hasNext()) {
             final Node child = children.nextNode();
-            if (isAnyType(child, this.itemTypes)) {
-                processItem(child, doc, fulltext);
-            } else if (isAnyType(child, this.containerTypes)) {
-                processChildren(child, doc, fulltext);
+            final ItemRule rule = findRule(child);
+            if (rule != null) {
+                processItem(entity, child, rule, doc, fulltext);
+            } else if (isContainer(child)) {
+                processChildren(entity, child, doc, fulltext);
             }
         }
     }
 
-    private boolean isAnyType(final Node node, final String[] types) throws RepositoryException
+    private ItemRule findRule(final Node node) throws RepositoryException
     {
-        for (final String type : types) {
+        for (final ItemRule rule : this.itemRules) {
+            if (node.isNodeType(rule.getNodeType())) {
+                return rule;
+            }
+        }
+        return null;
+    }
+
+    private boolean isContainer(final Node node) throws RepositoryException
+    {
+        for (final String type : this.containerTypes) {
             if (node.isNodeType(type)) {
                 return true;
             }
@@ -204,48 +247,88 @@ class EntityDocumentBuilder
         return false;
     }
 
-    private void processItem(final Node item, final Document doc, final List<String> fulltext)
-        throws RepositoryException
+    private void processItem(final Node entity, final Node item, final ItemRule rule, final Document doc,
+        final List<String> fulltext) throws RepositoryException
     {
-        if (!item.hasProperty(this.keyProperty)) {
+        final ItemKey key = resolveKey(entity, item, rule);
+        if (key == null) {
             return;
         }
-        final Node key;
-        try {
-            key = item.getProperty(this.keyProperty).getNode();
-        } catch (final ItemNotFoundException e) {
-            LOGGER.debug("Dangling {} reference in {}", this.keyProperty, item.getPath());
-            return;
-        }
-        final String uuid = key.getIdentifier();
-        final String keyPath = key.getPath();
-        final String alias = keyPath.startsWith(this.keyAliasPrefix)
-            ? keyPath.substring(this.keyAliasPrefix.length()) : keyPath;
-        doc.add(new StringField(IndexFields.QUESTIONS, uuid, Store.NO));
-        final Value[] values = getValues(item);
-        if (values.length > 0) {
-            doc.add(new StringField(IndexFields.ANSWERED_QUESTIONS, uuid, Store.NO));
+        doc.add(new StringField(IndexFields.QUESTIONS, key.id, Store.NO));
+        boolean answered = false;
+        for (final String property : rule.getValueProperties()) {
+            final Value[] values = getValues(item, property);
+            if (values.length == 0) {
+                continue;
+            }
+            answered = true;
+            final boolean primary = property.equals(rule.getPrimaryValueProperty());
             for (final Value value : values) {
-                addValue(doc, uuid, value, fulltext);
-                addValue(doc, alias, value, null);
+                boolean gatherFulltext = true;
+                for (final String name : key.names()) {
+                    final String field = primary ? name : name + "@" + property;
+                    addValue(doc, field, value, gatherFulltext ? fulltext : null);
+                    gatherFulltext = false;
+                }
             }
         }
-        if (item.hasProperty(this.noteProperty)) {
-            final String note = item.getProperty(this.noteProperty).getString();
-            if (StringUtils.isNotBlank(note)) {
-                doc.add(new TextField(uuid + IndexFields.NOTE_SUFFIX, note, Store.NO));
-                doc.add(new TextField(alias + IndexFields.NOTE_SUFFIX, note, Store.NO));
-                fulltext.add(note);
-            }
+        if (answered) {
+            doc.add(new StringField(IndexFields.ANSWERED_QUESTIONS, key.id, Store.NO));
+        }
+        addNote(item, rule, key, doc, fulltext);
+    }
+
+    /**
+     * Determine the field name(s) for an item: the node referenced by the rule's key property gives both a uuid and a
+     * path alias; without a key property, the item's own path inside the entity is the single field name.
+     *
+     * @param entity the entity root node
+     * @param item the item node
+     * @param rule the rule being applied
+     * @return the resolved key, or {@code null} if the item has no usable key
+     * @throws RepositoryException if reading the item fails
+     */
+    private ItemKey resolveKey(final Node entity, final Node item, final ItemRule rule) throws RepositoryException
+    {
+        if (rule.getKeyProperty() == null) {
+            return new ItemKey(item.getPath().substring(entity.getPath().length() + 1), null);
+        }
+        if (!item.hasProperty(rule.getKeyProperty())) {
+            return null;
+        }
+        try {
+            final Node key = item.getProperty(rule.getKeyProperty()).getNode();
+            final String keyPath = key.getPath();
+            final String alias = keyPath.startsWith(this.keyAliasPrefix)
+                ? keyPath.substring(this.keyAliasPrefix.length()) : keyPath;
+            return new ItemKey(key.getIdentifier(), alias);
+        } catch (final ItemNotFoundException e) {
+            LOGGER.debug("Dangling {} reference in {}", rule.getKeyProperty(), item.getPath());
+            return null;
         }
     }
 
-    private Value[] getValues(final Node item) throws RepositoryException
+    private void addNote(final Node item, final ItemRule rule, final ItemKey key, final Document doc,
+        final List<String> fulltext) throws RepositoryException
     {
-        if (!item.hasProperty(this.valueProperty)) {
+        if (rule.getNoteProperty() == null || !item.hasProperty(rule.getNoteProperty())) {
+            return;
+        }
+        final String note = item.getProperty(rule.getNoteProperty()).getString();
+        if (StringUtils.isNotBlank(note)) {
+            for (final String name : key.names()) {
+                doc.add(new TextField(name + IndexFields.NOTE_SUFFIX, note, Store.NO));
+            }
+            fulltext.add(note);
+        }
+    }
+
+    private Value[] getValues(final Node item, final String property) throws RepositoryException
+    {
+        if (!item.hasProperty(property)) {
             return new Value[0];
         }
-        final Property value = item.getProperty(this.valueProperty);
+        final Property value = item.getProperty(property);
         return value.isMultiple() ? value.getValues() : new Value[] { value.getValue() };
     }
 
@@ -267,15 +350,20 @@ class EntityDocumentBuilder
                     value.getBoolean() ? 1 : 0);
                 break;
             case PropertyType.DATE:
-                final long epoch = value.getDate().getTimeInMillis();
-                doc.add(new StringField(key, value.getString(), Store.NO));
-                doc.add(new LongPoint(key + IndexFields.LONG_SUFFIX, epoch));
-                doc.add(new SortedNumericDocValuesField(key + IndexFields.NSORT_SUFFIX, epoch));
+                addDateValue(doc, key, value);
                 break;
             default:
                 addText(doc, key, value.getString(), fulltext);
                 break;
         }
+    }
+
+    private void addDateValue(final Document doc, final String key, final Value value) throws RepositoryException
+    {
+        final long epoch = value.getDate().getTimeInMillis();
+        doc.add(new StringField(key, value.getString(), Store.NO));
+        doc.add(new LongPoint(key + IndexFields.LONG_SUFFIX, epoch));
+        doc.add(new SortedNumericDocValuesField(key + IndexFields.NSORT_SUFFIX, epoch));
     }
 
     private void addNumber(final Document doc, final String key, final String stringForm, final long exact,

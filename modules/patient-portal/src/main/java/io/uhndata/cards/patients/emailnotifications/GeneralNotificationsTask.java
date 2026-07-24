@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.EmailTemplate;
+import io.uhndata.cards.entityindex.EntityIndexer;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
@@ -77,12 +78,13 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
         final ThreadResourceResolverProvider resolverProvider,
         final ServiceTracker<EventAdmin, EventAdmin> eventAdmin,
         final TokenManager tokenManager, final MailService mailService,
-        final FormUtils formUtils, final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
+        final FormUtils formUtils, final EntityIndexer entityIndex,
+        final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
         final String notificationType, final String clinicId, final String emailTemplatePath, final int daysToVisit,
         final boolean includePatientName)
     {
-        super(resolverFactory, resolverProvider, tokenManager, mailService, formUtils, patientAccessConfiguration,
-            eventAdmin, includePatientName);
+        super(resolverFactory, resolverProvider, tokenManager, mailService, formUtils, entityIndex,
+            patientAccessConfiguration, eventAdmin, includePatientName);
         this.taskName = taskName;
         this.notificationType = notificationType;
         this.clinicId = clinicId;

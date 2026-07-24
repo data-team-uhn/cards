@@ -48,6 +48,7 @@ import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.Email;
 import io.uhndata.cards.emailnotifications.EmailTemplate;
 import io.uhndata.cards.emailnotifications.EmailUtils;
+import io.uhndata.cards.entityindex.EntityIndexer;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.patients.emailnotifications.AppointmentUtils.EmptyNodeIterator;
@@ -76,6 +77,8 @@ abstract class AbstractEmailNotification
 
     private final FormUtils formUtils;
 
+    private final EntityIndexer entityIndex;
+
     private final PatientAccessConfiguration patientAccessConfiguration;
 
     private final boolean includePatientName;
@@ -84,6 +87,7 @@ abstract class AbstractEmailNotification
     AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
         final ThreadResourceResolverProvider resolverProvider,
         final TokenManager tokenManager, final MailService mailService, final FormUtils formUtils,
+        final EntityIndexer entityIndex,
         final PatientAccessConfiguration patientAccessConfiguration,
         final ServiceTracker<EventAdmin, EventAdmin> eventAdmin,
         final boolean includePatientName)
@@ -93,6 +97,7 @@ abstract class AbstractEmailNotification
         this.tokenManager = tokenManager;
         this.mailService = mailService;
         this.formUtils = formUtils;
+        this.entityIndex = entityIndex;
         this.patientAccessConfiguration = patientAccessConfiguration;
         this.eventAdmin = eventAdmin;
         this.includePatientName = includePatientName;
@@ -132,12 +137,12 @@ abstract class AbstractEmailNotification
             NodeIterator appointmentResults = EmptyNodeIterator.INSTANCE;
             switch (notificationType) {
                 case "Invitation":
-                    appointmentResults = AppointmentUtils.getAppointmentsForInitialEmailForDay(session, dateToQuery,
-                        clinicId, surveyDeadline);
+                    appointmentResults = AppointmentUtils.getAppointmentsForInitialEmailForDay(session,
+                        this.entityIndex, this.formUtils, dateToQuery, clinicId, surveyDeadline);
                     break;
                 case null, default:
-                    appointmentResults = AppointmentUtils.getAppointmentsForReminderEmailForDay(session, dateToQuery,
-                        clinicId);
+                    appointmentResults = AppointmentUtils.getAppointmentsForReminderEmailForDay(session,
+                        this.entityIndex, this.formUtils, dateToQuery, clinicId);
                     break;
             }
 

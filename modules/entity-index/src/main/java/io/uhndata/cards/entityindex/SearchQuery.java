@@ -32,6 +32,10 @@ public final class SearchQuery
 {
     private final List<SearchCondition> conditions = new ArrayList<>();
 
+    private final List<List<SearchCondition>> disjunctions = new ArrayList<>();
+
+    private final List<List<SearchCondition>> subjectJoins = new ArrayList<>();
+
     private String nativeQuery;
 
     private String fulltext;
@@ -53,6 +57,34 @@ public final class SearchQuery
     public SearchQuery withCondition(final SearchCondition condition)
     {
         this.conditions.add(condition);
+        return this;
+    }
+
+    /**
+     * Add a group of conditions of which at least one must match, i.e. the group is combined with OR internally, and
+     * with AND with all the other criteria.
+     *
+     * @param anyOf the conditions in the group
+     * @return this object, for chaining
+     */
+    public SearchQuery withAnyOf(final List<SearchCondition> anyOf)
+    {
+        this.disjunctions.add(List.copyOf(anyOf));
+        return this;
+    }
+
+    /**
+     * Add a cross-entity join: results must share a related subject with at least one <em>other</em> entity matching
+     * all the given conditions. For example, forms of one questionnaire can be restricted to patients that also have
+     * a form of another questionnaire with specific answers. Each call adds an independent join, evaluated as one
+     * extra index lookup regardless of how many results there are.
+     *
+     * @param conditions the conditions that the joined entity must match, all together
+     * @return this object, for chaining
+     */
+    public SearchQuery withSubjectJoin(final List<SearchCondition> conditions)
+    {
+        this.subjectJoins.add(List.copyOf(conditions));
         return this;
     }
 
@@ -116,6 +148,26 @@ public final class SearchQuery
     public List<SearchCondition> getConditions()
     {
         return Collections.unmodifiableList(this.conditions);
+    }
+
+    /**
+     * The groups of conditions of which at least one per group must match.
+     *
+     * @return an unmodifiable list of condition groups, may be empty
+     */
+    public List<List<SearchCondition>> getDisjunctions()
+    {
+        return Collections.unmodifiableList(this.disjunctions);
+    }
+
+    /**
+     * The cross-entity joins that results must satisfy.
+     *
+     * @return an unmodifiable list of condition groups, one per joined entity, may be empty
+     */
+    public List<List<SearchCondition>> getSubjectJoins()
+    {
+        return Collections.unmodifiableList(this.subjectJoins);
     }
 
     /**

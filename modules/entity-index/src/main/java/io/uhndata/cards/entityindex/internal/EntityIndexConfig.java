@@ -65,13 +65,16 @@ public @interface EntityIndexConfig
     String entity_type() default "cards:Form";
 
     /**
-     * The node types of the indexable items inside an entity.
+     * The rules describing which descendant items to index and how, one rule per indexable node type, in the compact
+     * format documented in {@link ItemRule}.
      *
-     * @return JCR node type names
+     * @return rule definitions
      */
-    @AttributeDefinition(name = "Item node types",
-        description = "The node types of the descendant items indexed as fields of the entity")
-    String[] item_types() default { "cards:Answer" };
+    @AttributeDefinition(name = "Item rules",
+        description = "One rule per indexable descendant node type, in the format"
+            + " 'nodeType;key=referenceProperty;values=prop1,prop2;note=noteProperty'; key may be omitted to name"
+            + " fields after the item's own path inside the entity; values defaults to 'value'")
+    String[] item_rules() default { "cards:Answer;key=question;values=value;note=note" };
 
     /**
      * The node types of intermediate containers to recurse into when looking for items.
@@ -81,31 +84,6 @@ public @interface EntityIndexConfig
     @AttributeDefinition(name = "Container node types",
         description = "The node types of intermediate containers between the entity and its items")
     String[] container_types() default { "cards:AnswerSection" };
-
-    /**
-     * The item property referencing the node that gives the item its identity.
-     *
-     * @return a property name holding a reference
-     */
-    @AttributeDefinition(name = "Key property",
-        description = "The item property referencing the node that names the index field, e.g. the question")
-    String key_property() default "question";
-
-    /**
-     * The item property holding the indexable value.
-     *
-     * @return a property name
-     */
-    @AttributeDefinition(name = "Value property", description = "The item property holding the indexable value")
-    String value_property() default "value";
-
-    /**
-     * The item property holding free text notes accompanying the value.
-     *
-     * @return a property name
-     */
-    @AttributeDefinition(name = "Note property", description = "The item property holding notes about the value")
-    String note_property() default "note";
 
     /**
      * The prefix stripped from key node paths to form the human-friendly field name alias.

@@ -65,7 +65,7 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
-            <Embed-Dependency>lucene-core,lucene-analysis-common,lucene-queryparser,lucene-queries,lucene-sandbox</Embed-Dependency>
+            <Embed-Dependency>lucene-core,lucene-analysis-common,lucene-queryparser,lucene-queries,lucene-sandbox,lucene-join</Embed-Dependency>
             <!-- The Lucene packages are provided by the embedded jars, they must not be imported from the framework;
               the com.sun.management import of lucene-core is provided through boot delegation, no exporter needed -->
             <Import-Package>!org.apache.lucene.*,com.sun.management;resolution:=optional,*</Import-Package>
@@ -99,6 +99,11 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-sandbox</artifactId>
+      <version>${lucene.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-join</artifactId>
       <version>${lucene.version}</version>
     </dependency>
     <dependency>

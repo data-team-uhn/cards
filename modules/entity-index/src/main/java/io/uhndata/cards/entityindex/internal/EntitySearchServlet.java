@@ -18,9 +18,9 @@ package io.uhndata.cards.entityindex.internal;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -137,6 +137,7 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
         addValueFilters(request, session, query);
         addValuelessFilters(request, session, query, "filterempty", SearchCondition.Operator.IS_EMPTY);
         addValuelessFilters(request, session, query, "filternotempty", SearchCondition.Operator.IS_NOT_EMPTY);
+        addJoinFilters(request, session, query);
         addStatusFilter(request, query);
         query.withFulltext(request.getParameter("filter"));
         query.withNativeQuery(request.getParameter("lucene"));
@@ -149,27 +150,64 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
     private void addValueFilters(final SlingJakartaHttpServletRequest request, final Session session,
         final SearchQuery query)
     {
-        final String[] names = request.getParameterValues("filternames");
-        if (names == null) {
-            return;
+        parseConditions(request, "filter", session).forEach(query::withCondition);
+    }
+
+    /**
+     * Parse the cross-entity join parameters: {@code joinnames}, {@code joincomparators}, {@code joinvalues} and
+     * {@code jointypes} describe conditions that another entity, sharing a related subject with the returned
+     * results, must match all together. For example, Visit information forms can be restricted to patients whose
+     * Patient information form has a specific answer.
+     *
+     * @param request the current request
+     * @param session the requesting user's session
+     * @param query the query being built
+     */
+    private void addJoinFilters(final SlingJakartaHttpServletRequest request, final Session session,
+        final SearchQuery query)
+    {
+        final List<SearchCondition> join = parseConditions(request, "join", session);
+        if (!join.isEmpty()) {
+            query.withSubjectJoin(join);
         }
-        final String[] values = request.getParameterValues("filtervalues");
-        final String[] types = request.getParameterValues("filtertypes");
-        final String[] comparators = request.getParameterValues("filtercomparators");
+    }
+
+    /**
+     * Parse a group of conditions from a set of four aligned request parameters: {@code <prefix>names},
+     * {@code <prefix>comparators}, {@code <prefix>values} and {@code <prefix>types}.
+     *
+     * @param request the current request
+     * @param prefix the parameter name prefix, {@code filter} or {@code join}
+     * @param session the requesting user's session
+     * @return the parsed conditions, may be empty
+     * @throws IllegalArgumentException if the parameters are not aligned
+     */
+    private List<SearchCondition> parseConditions(final SlingJakartaHttpServletRequest request, final String prefix,
+        final Session session)
+    {
+        final List<SearchCondition> result = new ArrayList<>();
+        final String[] names = request.getParameterValues(prefix + "names");
+        if (names == null) {
+            return result;
+        }
+        final String[] values = request.getParameterValues(prefix + "values");
+        final String[] types = request.getParameterValues(prefix + "types");
+        final String[] comparators = request.getParameterValues(prefix + "comparators");
         final boolean missing = values == null || types == null || comparators == null;
         if (missing || names.length != values.length || names.length != types.length
             || names.length != comparators.length) {
-            throw new IllegalArgumentException(
-                "Invalid request, the same number of filter names, values, types and comparators must be provided");
+            throw new IllegalArgumentException("Invalid request, the same number of " + prefix
+                + " names, values, types and comparators must be provided");
         }
         for (int i = 0; i < names.length; ++i) {
             if (StringUtils.isBlank(names[i])) {
                 continue;
             }
             final ResolvedField field = resolveField(names[i], types[i], session);
-            query.withCondition(new SearchCondition(field.field,
+            result.add(new SearchCondition(field.field,
                 SearchCondition.Operator.fromSymbol(comparators[i]), values[i], field.type));
         }
+        return result;
     }
 
     private void addValuelessFilters(final SlingJakartaHttpServletRequest request, final Session session,
@@ -240,30 +278,14 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
 
     private ResolvedField resolveQuestion(final String name, final String type, final Session session)
     {
-        String dataType = type;
-        String uuid = name;
         try {
-            final Node question = name.indexOf('/') != -1
-                ? session.getNode("/Questionnaires/" + name)
-                : session.getNodeByIdentifier(name);
-            uuid = question.getIdentifier();
-            if (StringUtils.isBlank(dataType) && question.hasProperty("dataType")) {
-                dataType = question.getProperty("dataType").getString();
-            }
+            final SearchCondition resolved = SearchCondition.forQuestion(session, name, "=", null);
+            return new ResolvedField(resolved.getField(),
+                StringUtils.isBlank(type) ? resolved.getType() : SearchCondition.typeForData(type));
         } catch (final RepositoryException e) {
             LOGGER.debug("Cannot resolve filter name [{}]: {}", name, e.getMessage());
+            return new ResolvedField(name, SearchCondition.typeForData(type));
         }
-        return new ResolvedField(uuid, mapDataType(dataType));
-    }
-
-    private SearchCondition.Type mapDataType(final String dataType)
-    {
-        return switch (StringUtils.defaultString(dataType).toLowerCase(Locale.ROOT)) {
-            case "long", "boolean" -> SearchCondition.Type.LONG;
-            case "double", "decimal" -> SearchCondition.Type.DOUBLE;
-            case "date" -> SearchCondition.Type.DATE;
-            case null, default -> SearchCondition.Type.TEXT;
-        };
     }
 
     private void writeResponse(final SlingJakartaHttpServletRequest request,

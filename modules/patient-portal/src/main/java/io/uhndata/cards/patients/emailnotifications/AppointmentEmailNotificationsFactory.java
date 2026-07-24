@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
+import io.uhndata.cards.entityindex.EntityIndexer;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
@@ -68,6 +69,10 @@ public final class AppointmentEmailNotificationsFactory
 
     @Reference
     private FormUtils formUtils;
+
+    /** The entity index used for finding the targeted appointments. */
+    @Reference
+    private EntityIndexer entityIndex;
 
     /** The TokenManager for generating patient-access tokens. */
     @Reference
@@ -135,7 +140,8 @@ public final class AppointmentEmailNotificationsFactory
 
         // Instantiate the Runnable
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.resolverProvider,
-            this.eventAdmin, this.tokenManager, this.mailService, this.formUtils, this.patientAccessConfiguration,
+            this.eventAdmin, this.tokenManager, this.mailService, this.formUtils, this.entityIndex,
+            this.patientAccessConfiguration,
             config.name(), config.notificationType(), config.clinicId(), config.emailConfiguration(),
             config.daysToVisit(), config.includePatientName());
 
