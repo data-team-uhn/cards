@@ -102,8 +102,10 @@ def convert_docx(
         markdown_content = convert_docx_to_markdown(
             input_path, converter=converter, source_file=source_file
         )
-    except RuntimeError as exc:
-        print(f"Conversion failed: {exc}", file=sys.stderr)
+    except Exception as exc:
+        # Includes RuntimeError from a failed conversion as well as reader errors from an
+        # unreadable/corrupt DOCX; surface a clean message instead of a traceback.
+        print(f"DOCX conversion failed: {exc}", file=sys.stderr)
         sys.exit(1)
 
     t2 = perf_counter()

@@ -78,28 +78,19 @@ def read_physical_core_count() -> int:
     Read physical CPU core count.
     """
     logical = read_logical_core_count()
-    try:
-        return psutil.cpu_count(logical=False) or max(1, logical // 2)
-    except ImportError:
-        return max(1, logical // 2)
+    return psutil.cpu_count(logical=False) or max(1, logical // 2)
 
-def read_total_ram_gb() -> float | None:
+def read_total_ram_gb() -> float:
     """
     Read installed RAM in gigabytes.
     """
-    try:
-        return psutil.virtual_memory().total / (1024 ** 3)
-    except ImportError:
-        return None
+    return psutil.virtual_memory().total / (1024 ** 3)
 
-def read_available_ram_gb() -> float | None:
+def read_available_ram_gb() -> float:
     """
     Read free RAM in gigabytes at import time.
     """
-    try:
-        return psutil.virtual_memory().available / (1024 ** 3)
-    except ImportError:
-        return None
+    return psutil.virtual_memory().available / (1024 ** 3)
 
 def calc_ram_budget_gb(total_gb: float, available_gb: float) -> float:
     """
@@ -127,19 +118,15 @@ def calc_max_workers_by_ram(ram_budget_gb: float) -> int:
 LOGICAL_CORE_COUNT = read_logical_core_count()
 PHYSICAL_CORE_COUNT = read_physical_core_count()
 
-# RAM at startup (None without psutil)
+# RAM at startup.
 TOTAL_RAM_GB = read_total_ram_gb()
 AVAILABLE_RAM_GB = read_available_ram_gb()
 
 # Calculate RAM budget and worker cap from RAM at startup.
 # RAM_BUDGET_GB       — safe RAM for model loads.
 # MAX_WORKERS_BY_CPU  — worker cap from CPU.
-if TOTAL_RAM_GB is not None and AVAILABLE_RAM_GB is not None:
-    RAM_BUDGET_GB = calc_ram_budget_gb(TOTAL_RAM_GB, AVAILABLE_RAM_GB)
-    MAX_WORKERS_BY_RAM = calc_max_workers_by_ram(RAM_BUDGET_GB)
-else:
-    RAM_BUDGET_GB = None
-    MAX_WORKERS_BY_RAM = max(2, LOGICAL_CORE_COUNT // 4)
+RAM_BUDGET_GB = calc_ram_budget_gb(TOTAL_RAM_GB, AVAILABLE_RAM_GB)
+MAX_WORKERS_BY_RAM = calc_max_workers_by_ram(RAM_BUDGET_GB)
 
 # worker cap from RAM
 MAX_WORKERS_BY_CPU = LOGICAL_CORE_COUNT
@@ -208,18 +195,10 @@ def print_parallelism_summary(
     """
     Print startup snapshot and resolved per-parse parallelism values on start of each PDF conversion.
     """
-    if TOTAL_RAM_GB is not None and AVAILABLE_RAM_GB is not None:
-        budget = (
-            f"{RAM_BUDGET_GB:.1f} GB budget"
-            if RAM_BUDGET_GB is not None
-            else "budget unknown"
-        )
-        ram_line = (
-            f"{TOTAL_RAM_GB:.0f} GB total, {AVAILABLE_RAM_GB:.1f} GB available "
-            f"({budget} @ {GB_PER_WORKER:.1f} GB/worker)"
-        )
-    else:
-        ram_line = "RAM unknown (install psutil for RAM-aware tuning)"
+    ram_line = (
+        f"{TOTAL_RAM_GB:.0f} GB total, {AVAILABLE_RAM_GB:.1f} GB available "
+        f"({RAM_BUDGET_GB:.1f} GB budget @ {GB_PER_WORKER:.1f} GB/worker)"
+    )
 
     workers_source = "manual" if workers_override else "auto"
     batch_source = "manual" if batch_pages_override else "auto"
