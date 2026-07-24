@@ -20,16 +20,17 @@
 """Shared pytest setup for the parsing tests.
 
 The modules under test (``markdown_cleanup``, ``toc_and_appendix_detection``,
-``chunker``, ``docling_batch_sizing``) live one directory up, beside this ``tests/``
-folder, and are imported by their bare module name. Put that directory on ``sys.path``
-so the tests run the same way whether launched by Maven, by ``pytest`` from the
-``Parsing`` folder, or from anywhere else.
+``chunker``, ``docling_batch_sizing``) live in ``src/main/python`` and are imported by
+their bare module name. This file sits in ``src/test/python``. Put the source directory
+on ``sys.path`` so the tests run the same way whether launched by Maven or by ``pytest``
+from anywhere else.
 """
 
 import sys
 from pathlib import Path
 
-PARSING_ROOT = Path(__file__).resolve().parent.parent
+# .../src/test/python/conftest.py -> parents[2] is .../src
+PYTHON_SOURCE_ROOT = Path(__file__).resolve().parents[2] / "main" / "python"
 
-if str(PARSING_ROOT) not in sys.path:
-    sys.path.insert(0, str(PARSING_ROOT))
+if str(PYTHON_SOURCE_ROOT) not in sys.path:
+    sys.path.insert(0, str(PYTHON_SOURCE_ROOT))

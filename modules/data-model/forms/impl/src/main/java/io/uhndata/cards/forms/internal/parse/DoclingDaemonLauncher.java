@@ -55,7 +55,7 @@ public class DoclingDaemonLauncher
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DoclingDaemonLauncher.class);
 
-    private static final String DEFAULT_DAEMON_SCRIPT = "Utilities/Parsing/docling_daemon.py";
+    private static final String DEFAULT_DAEMON_SCRIPT = "modules/parsing/src/main/python/docling_daemon.py";
 
     private static final String DEFAULT_DAEMON_URL = "http://127.0.0.1:18765";
 
