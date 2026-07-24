@@ -70,7 +70,7 @@ public final class DoclingChatChunker
 
     private static final String DEFAULT_DAEMON_URL = "http://127.0.0.1:18765";
 
-    private static final String DEFAULT_SCRIPT_NAME = "Utilities/Parsing/chunker.py";
+    private static final String DEFAULT_SCRIPT_NAME = "modules/parsing/src/main/python/chunker.py";
 
     private static final String DEFAULT_PYTHON_COMMAND = "python";
 

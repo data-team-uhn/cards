@@ -1,6 +1,6 @@
 # Parsing Python tests
 
-Unit tests for the document-parsing Python code in `Utilities/Parsing/`. They cover the
+Unit tests for the document-parsing Python code in `../main/python`. They cover the
 pieces that run without the heavy `docling` dependency:
 
 - `markdown_cleanup.py` — garbage-line stripping, blank-line collapsing, the
@@ -17,25 +17,25 @@ exercised through the running application instead.
 
 ## Running
 
-From `Utilities/Parsing/`:
+From `modules/parsing/`:
 
 ```
-python -m pytest tests
+python -m pytest
 ```
 
-`conftest.py` puts the `Parsing/` directory on `sys.path`, so the tests import the
-modules by their bare names regardless of where pytest is launched. `pytest.ini` limits
-collection to this `tests/` folder.
+`conftest.py` puts `src/main/python` on `sys.path`, so the tests import the modules by
+their bare names regardless of where pytest is launched. `pytest.ini` limits collection
+to `src/test/python`.
 
 Requires `pytest` and `psutil` on the interpreter used.
 
 ## From the Maven build
 
-The tests run in the `test` phase of the `cards-parsing-python-tests` module, gated by
-the shared `skipTests` flag (so `-Pquick` skips them, matching the Java tests):
+The tests run in the `test` phase of the `cards-parsing` module, gated by the shared
+`skipTests` flag (so `-Pquick` skips them, matching the Java tests):
 
 ```
-mvn test -Ptests -pl Utilities/Parsing
+mvn test -Ptests -pl modules/parsing
 ```
 
 Point Maven at a specific interpreter (for example the Docling virtualenv) with

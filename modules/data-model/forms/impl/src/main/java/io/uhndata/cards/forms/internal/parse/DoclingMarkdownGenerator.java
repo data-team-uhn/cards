@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * Markdown generator that delegates file parsing to the Docling Python stack.
  * <p>
  * When enabled, requests are sent to the long-running Docling HTTP daemon
- * ({@code Utilities/Parsing/docling_daemon.py}) so PDF worker processes and models stay warm
+ * ({@code modules/parsing/src/main/python/docling_daemon.py}) so PDF worker processes and models stay warm
  * between conversions. If the daemon is unavailable and fallback is enabled, the legacy
  * per-request {@code docling_parser.py} CLI path is used instead.
  * </p>
@@ -68,7 +68,7 @@ public class DoclingMarkdownGenerator
 
     private static final long OUTPUT_COLLECT_TIMEOUT_SECONDS = 10L;
 
-    private static final String DEFAULT_SCRIPT_NAME = "Utilities/Parsing/docling_parser.py";
+    private static final String DEFAULT_SCRIPT_NAME = "modules/parsing/src/main/python/docling_parser.py";
 
     private static final String DEFAULT_DAEMON_URL = "http://127.0.0.1:18765";
 

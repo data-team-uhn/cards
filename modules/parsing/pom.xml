@@ -22,15 +22,16 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-utilities</artifactId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9.41-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-parsing-python-tests</artifactId>
+  <artifactId>cards-parsing</artifactId>
   <packaging>pom</packaging>
-  <name>CARDS - Parsing Python tests</name>
-  <description>Runs the pytest suite covering the document-parsing Python code (chunker,
-    markdown cleanup, TOC/appendix detection, batch sizing).</description>
+  <name>CARDS - Document parsing</name>
+  <description>Document-parsing code: the Python pipeline (Docling parse, markdown cleanup,
+    TOC/appendix detection, chunking) in src/main/python with its pytest suite in
+    src/test/python. The Java side is added here in a later stage.</description>
 
   <properties>
     <!-- Python interpreter used to run the tests. Override with -Dpython.executable=...
@@ -40,25 +41,13 @@
 
   <build>
     <plugins>
-      <!--
-        The parsing sources sit in this directory (not in src/main), alongside a Docling
-        virtualenv and scratch output folders that carry no license header. Append RAT
-        exclusions for those so the license check only looks at real, tracked sources.
-      -->
+      <!-- The Python sources carry license headers; exclude only the generated/config bits. -->
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <inputExcludes combine.children="append">
-            <!-- Docling Python virtualenv (third-party packages, not our sources) -->
-            <exclude>Docling_env/**</exclude>
-            <!-- Python bytecode caches -->
             <exclude>**/__pycache__/**</exclude>
-            <!-- Throwaway smoke script kept for reference; superseded by tests/ -->
-            <exclude>_smoke_chunked_flag.py</exclude>
-            <!-- Sample input document (binary) -->
-            <exclude>*.docx</exclude>
-            <!-- pytest configuration (ini format, no comment header support) -->
             <exclude>pytest.ini</exclude>
           </inputExcludes>
         </configuration>
@@ -82,7 +71,7 @@
               <arguments>
                 <argument>-m</argument>
                 <argument>pytest</argument>
-                <argument>tests</argument>
+                <argument>src/test/python</argument>
               </arguments>
             </configuration>
           </execution>

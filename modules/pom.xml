@@ -75,5 +75,6 @@
     <module>locking</module>
     <module>healthcheck</module>
     <module>llm</module>
+    <module>parsing</module>
   </modules>
 </project>
