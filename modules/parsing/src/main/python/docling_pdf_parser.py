@@ -317,8 +317,10 @@ def convert_pdf(
             workers=workers,
             source_file=source_file,
         )
-    except RuntimeError as exc:
-        print(str(exc), file=sys.stderr)
+    except Exception as exc:
+        # Includes RuntimeError from failed page batches as well as reader errors from an
+        # unreadable/encrypted/corrupt PDF; surface a clean message instead of a traceback.
+        print(f"PDF conversion failed: {exc}", file=sys.stderr)
         sys.exit(1)
 
     write_start = perf_counter()
