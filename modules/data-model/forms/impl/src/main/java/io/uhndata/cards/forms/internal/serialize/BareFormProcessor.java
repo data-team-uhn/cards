@@ -19,7 +19,9 @@
 package io.uhndata.cards.forms.internal.serialize;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -145,6 +147,12 @@ public class BareFormProcessor implements ResourceJsonProcessor
             // The first time we encounter a section, we create a JsonArrayBuilder for it, and add it in the output.
             // Further instances of that section will be added to this JsonArrayBuilder.
             final Map<String, JsonArrayBuilder> sectionArrays = new HashMap<>();
+            // The output is a JSON object keyed by human-readable label, but two different sections (or a section
+            // and a question) can share a label; track the keys already used so that a clash disambiguates the
+            // later entry instead of silently overwriting the earlier one. CARDS-2798.
+            final Set<String> usedKeys = new HashSet<>();
+            // A recurrent section keeps the same output key across all of its instances, resolved the first time.
+            final Map<String, String> sectionKeys = new HashMap<>();
             final NodeIterator children = node.getNodes();
             while (children.hasNext()) {
                 final Node child = children.nextNode();
@@ -155,20 +163,23 @@ public class BareFormProcessor implements ResourceJsonProcessor
                     final JsonObject filteredChildJson = Json.createObjectBuilder(childJson).remove("section").build();
                     Node section = child.getProperty("section").getNode();
                     if (section.hasProperty("recurrent") && section.getProperty("recurrent").getBoolean()) {
+                        final String sectionId = section.getIdentifier();
+                        final String key =
+                            sectionKeys.computeIfAbsent(sectionId, id -> uniqueKey(childLabel, usedKeys));
                         final JsonArrayBuilder array =
-                            sectionArrays.computeIfAbsent(childLabel, name -> Json.createArrayBuilder());
+                            sectionArrays.computeIfAbsent(sectionId, id -> Json.createArrayBuilder());
                         array.add(filteredChildJson);
                         // json.add will build the array and store the result, so further changes to it will not be
                         // reflected. We need to re-add it every time we modify the array.
-                        json.add(childLabel, array);
+                        json.add(key, array);
                     } else {
-                        json.add(childLabel, filteredChildJson);
+                        json.add(uniqueKey(childLabel, usedKeys), filteredChildJson);
                     }
                     this.childrenJsons.get().remove(childId);
                 } else if (child.isNodeType("cards:Answer") && this.childrenJsons.get().containsKey(childId)) {
                     final JsonObject childJson = this.childrenJsons.get().get(childId);
                     final String childLabel = this.questionNames.get().get(childId);
-                    json.add(childLabel, childJson);
+                    json.add(uniqueKey(childLabel, usedKeys), childJson);
                     this.childrenJsons.get().remove(childId);
                     this.questionNames.get().remove(childId);
                 }
@@ -176,6 +187,25 @@ public class BareFormProcessor implements ResourceJsonProcessor
         } catch (RepositoryException e) {
             // Shouldn't happen
         }
+    }
+
+    /**
+     * Compute a key for a serialized child that doesn't clash with a sibling already stored under the same label.
+     * Since the bare serialization is a JSON object, two children sharing a label would otherwise overwrite each
+     * other; when the label is already taken, a numeric suffix is appended so that both entries are kept.
+     *
+     * @param label the desired, human-readable key
+     * @param usedKeys the keys already used in the current object; the returned key is added to it
+     * @return {@code label} if it is still free, otherwise {@code label} followed by a free {@code  (n)} suffix
+     */
+    private static String uniqueKey(final String label, final Set<String> usedKeys)
+    {
+        String key = label;
+        int suffix = 1;
+        while (!usedKeys.add(key)) {
+            key = label + " (" + (++suffix) + ")";
+        }
+        return key;
     }
 
     private JsonValue simplifyQuestionnaire(final Node node, final Property property, final JsonValue input)
