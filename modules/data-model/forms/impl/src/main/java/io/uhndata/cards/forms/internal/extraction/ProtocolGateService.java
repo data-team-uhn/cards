@@ -45,7 +45,8 @@ import io.uhndata.cards.llm.LLMRequestOptions;
  * Stage 0.5 of the proposal pipeline: one cheap, structured LLM call that decides whether an uploaded document
  * is actually a research protocol before any extraction runs, and — in the same call — assigns each catalog
  * chunk its single most probable rubric tag. The input follows the chunker's recorded routing decision
- * ({@link ProposalParseFolder#isChunked()}): an unchunked (small) document is always sent whole; a chunked
+ * ({@link ProposalParseFolder#isChunked()}): an unchunked (small) document is sent whole — or, when its
+ * outline came from PDF bookmarks and carries a TOC, by that TOC alone; a chunked
  * document is represented by its detected table of contents alone (a TOC already maps the whole structure),
  * else its catalog outline ({@code chunkNNN: heading} lines) plus the first catalog chunk's text. The document
  * head is never sent; a chunked document with neither a TOC nor a catalog produces no input and fails open. A
@@ -91,6 +92,9 @@ public class ProtocolGateService
 
     /** Sub-header separating the first catalog chunk's text from the structure part of the INPUT block. */
     private static final String FIRST_CHUNK_HEADER = "### FIRST CHUNK";
+
+    /** Outline-source label whose verified TOC is trusted enough to send alone for a small document. */
+    private static final String OUTLINE_SOURCE_BOOKMARKS = "pdf-bookmarks";
 
     @Reference
     private LLMClientFactory llmClientFactory;
@@ -326,7 +330,9 @@ public class ProtocolGateService
 
     /**
      * Select the gate input following the chunker's recorded routing decision: (1) an unchunked (small)
-     * document is sent whole — the only form for whole-document mode; (2) a chunked document is represented by
+     * document is sent whole, unless its outline came from PDF bookmarks
+     * ({@code outline_source == "pdf-bookmarks"}) and carries a {@code toc}, which is then sent alone;
+     * (2) a chunked document is represented by
      * its detected table of contents alone when the outline recorded a TOC (no first chunk — the TOC already
      * maps the whole structure), (3) else by the catalog outline ({@code chunkNNN: heading} lines) plus the
      * first catalog chunk's text.
@@ -341,11 +347,16 @@ public class ProtocolGateService
     private GateInput selectInput(final ProposalParseFolder folder, final ParseOutline outline,
         final List<CatalogHeading> catalogHeadings)
     {
+        final String toc = tocText(outline);
         if (!folder.isChunked()) {
+            // Small document: sent whole, unless it carries a PDF-bookmark TOC — that verified outline
+            // already maps the whole structure, so the TOC alone suffices and is far cheaper than the text.
+            if (toc != null && outline != null && OUTLINE_SOURCE_BOOKMARKS.equals(outline.outlineSource())) {
+                return new GateInput(INPUT_TOC, toc);
+            }
             final String document = readDocument(folder.documentMarkdown());
             return document == null ? null : new GateInput(INPUT_FULL_DOCUMENT, document);
         }
-        final String toc = tocText(outline);
         if (toc != null) {
             // A TOC already maps the whole document's structure — the first chunk adds nothing here.
             return new GateInput(INPUT_TOC, toc);

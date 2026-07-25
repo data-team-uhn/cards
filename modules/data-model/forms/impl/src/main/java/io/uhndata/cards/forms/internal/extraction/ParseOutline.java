@@ -33,9 +33,9 @@ import jakarta.json.JsonValue;
 /**
  * The parsed contents of an {@code outline.json} written by the chunker under a document's {@code Chunks/}
  * folder. It holds everything the extraction pipeline's routing needs without re-parsing the document: the
- * chunker's recorded {@code chunked} decision (small documents are deliberately left unchunked and sent to the
- * LLM whole), the document's estimated token count, and the detected table-of-contents entry lines from the
- * {@code toc} array (written by the chunker when a TOC was found).
+ * chunker's recorded {@code chunked} decision (small documents are deliberately left unchunked), the
+ * document's estimated token count, the outline record titles in the {@code toc} array, and which producer
+ * built the outline ({@code outline_source}: a PDF's bookmarks vs the printed table of contents).
  *
  * @version $Id$
  */
@@ -49,6 +49,8 @@ public final class ParseOutline
 
     private static final String TOC = "toc";
 
+    private static final String OUTLINE_SOURCE = "outline_source";
+
     private final String fileId;
 
     private final long tokens;
@@ -57,13 +59,16 @@ public final class ParseOutline
 
     private final List<String> toc;
 
+    private final String outlineSource;
+
     private ParseOutline(final String documentFileId, final long documentTokens, final boolean documentChunked,
-        final List<String> tocList)
+        final List<String> tocList, final String documentOutlineSource)
     {
         this.fileId = documentFileId;
         this.tokens = documentTokens;
         this.chunked = documentChunked;
         this.toc = tocList;
+        this.outlineSource = documentOutlineSource;
     }
 
     /**
@@ -82,7 +87,7 @@ public final class ParseOutline
             }
             final JsonObject root = parsed.asJsonObject();
             return new ParseOutline(string(root, FILE_ID), longValue(root, TOKENS), booleanValue(root, CHUNKED),
-                stringList(root, TOC));
+                stringList(root, TOC), string(root, OUTLINE_SOURCE));
         } catch (final RuntimeException e) {
             throw new IOException("Could not parse outline " + outlineFile + ": " + e.getMessage(), e);
         }
@@ -131,6 +136,19 @@ public final class ParseOutline
     public List<String> toc()
     {
         return this.toc;
+    }
+
+    /**
+     * Which producer built the outline: {@code "pdf-bookmarks"} (a PDF's embedded bookmarks),
+     * {@code "md-toc"} (the printed table of contents), or {@code "none"} / empty when none was recorded.
+     * Stage 0.5 sends a small document's {@code toc} alone (instead of the whole file) only when this is
+     * {@code "pdf-bookmarks"} — a verified bookmark outline that already maps the whole structure.
+     *
+     * @return the outline-source label, or an empty string when absent
+     */
+    public String outlineSource()
+    {
+        return this.outlineSource;
     }
 
     private static List<String> stringList(final JsonObject root, final String key)
