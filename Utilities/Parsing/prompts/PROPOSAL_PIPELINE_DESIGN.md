@@ -20,7 +20,7 @@ step keeps responses compact.
 ## Pipeline at a glance
 
 ```
-parse (docling) + clean + TOC/appendix mark ─> Stage 0  size gate + (optional) chunk split   [code only, ms]
+parse + clean + outline (PDF bookmarks / printed TOC) ─> Stage 0  size gate + (optional) chunk split  [code, ms]
                                               │ outline.chunked=false → no catalog; whole-doc path downstream
                                               │ outline.chunked=true  → catalog.json + Chunk-*.md
                                               Stage 0.5  `is_protocol` gate + chunk tags   [1 LLM call]
@@ -74,13 +74,17 @@ Rules (when `chunked: true`):
   sections up to the token budget).
 - Consecutive top-level sections are united up to the budget (`DEFAULT_MAX_TOKENS =
   2000`, counted as `len(text)//4`); only an over-budget piece is then split into
-  `Chunk-<n>.<k>.md` parts: **sub-headings honoured first**, paragraph (blank-line)
-  boundaries as fallback.
+  `Chunk-<n>.<k>.md` parts. Sub-chunk boundaries are chosen in order: **ATX sub-headings**,
+  then **outline-record cut points** (bookmark / printed-TOC titles that resolve to a unique
+  body line — `chunker._record_cut_keys`), then **numbered stand-out headings** (bold /
+  ALL-CAPS lines with a numeric prefix Docling emitted in place of a heading), then
+  paragraph (blank-line) boundaries.
 - **Tail-merge**: a text-only continuation part under `MIN_TAIL_TOKENS = 500` is folded
   back into the preceding part (never emitted as a tiny file), even over budget.
-- **Backmatter**: when a `<!-- Reference -->` or `<!-- Appendix -->` marker is present (see
-  `toc_and_appendix_detection.mark_appendix`), everything from that marker to EOF becomes
-  one standalone final chunk — no heading-based or token-budget sub-splitting.
+- **Backmatter**: when `outline.backmatterLine` is set (the first Reference/Appendix section
+  resolved from the document's outline records — `toc_and_appendix_detection.backmatter_from_records`),
+  everything from that line to EOF becomes one standalone final chunk — no heading-based or
+  token-budget sub-splitting.
 - **Catalog heading field**: the very first emitted *main-content* chunk's *displayed*
   heading is always `["General Information"]` regardless of its content; every other
   part lists its headings as a JSON array (never comma-joined into one string): ATX
@@ -150,54 +154,66 @@ everything Stage 0.5 needs for input selection.
   "fileId": "protocol.pdf",
   "tokens": 21184,           // len(md)//4
   "chunked": true,           // size-gate outcome; false → whole-document path, no catalog
-  "toc": ["1.0 Introduction .... 3", "…"],  // cleaned TOC entry lines; [] when none / unchunked
-  "tocStartLine": 42,        // present only when a TOC was detected
-  "tocEndLine": 78,          // inclusive line indices of the cleaned TOC block in the .md
-  "backmatterLine": 954      // present only when a Reference/Appendix heading was found
+  "outline_source": "pdf-bookmarks",  // who produced the outline: pdf-bookmarks | md-toc | none
+  "toc": ["1.0 Introduction", "1.1 Background", "…"],  // outline record titles; [] when none
+  "tocStartLine": 42,        // printed-TOC path only — cleaned TOC block line range in the .md
+  "tocEndLine": 78,          // (both omitted on the bookmark path: no printed TOC is scanned)
+  "backmatterLine": 954      // first Reference/Appendix record resolved to a body line
 }
 ```
 
-`tocStartLine`/`tocEndLine` are omitted entirely when no TOC is present (never nulled).
-`backmatterLine` is likewise omitted when no Reference/Appendix heading
-(see `mark_appendix()`) exists. Confirmed ranges are recorded as soon as they're known —
-see "outline.json sidecar" below — rather than each downstream reader re-deriving them.
+The full outline **records** (`{title, level, page, verified}`) live only in the sibling
+`bookmarks.json` — they are not duplicated into `outline.json`. The values above are what
+`find_toc_and_appendix` records in the sidecar; `write_chunk_files` **preserves** them into
+`Chunks/outline.json` (adding `fileId` / `chunked`) rather than re-deriving `toc`.
 
-### outline.json sidecar (parse-time, confirmed fields only)
+`tocStartLine`/`tocEndLine` are recorded only on the printed-TOC path (omitted on the
+bookmark path, and when no TOC is present — never nulled). `backmatterLine` is omitted when
+no Reference/Appendix record resolves to a body line. Confirmed values are recorded as soon
+as they're known — see "outline.json outline records" below.
 
-Owned by `toc_and_appendix_detection.py` (not `markdown_cleanup`). There is **no**
-`seed_outline`, and **no** preliminary hint fields (`tocLabelLine`,
-`appendixHeadingLineHint`, `topHeadingLine` / `topHeadingLevel`) — those were removed
-because hints went stale after TOC block rebuild and were not worth the complexity.
+### outline.json outline records (derived at chunk time)
 
-Parse/mark pipeline (after Docling export):
+The document outline is a list of records `{title, level|null, page|null, verified?}`, from
+which `toc` (titles) and `backmatterLine` are derived. Records come from **PDF bookmarks when
+available, otherwise the printed TOC** — one shape either way, owned by `bookmarks.py` +
+`toc_and_appendix_detection.py`. There are **no** `<!-- Reference -->` / TOC marker lines in
+the Markdown; the outline lives only in JSON.
 
-1. **`markdown_cleanup.clean_markdown(md)`** — strips garbage / collapses blanks only.
-   Does **not** take or write `outline_path`.
-2. **`toc_and_appendix_detection.mark_toc_and_appendix(md, outline_path)`** —
-   - runs **`mark_and_cleanup_toc`**: finds the TOC label via `toc_label_line()`,
-     density/table-flatten detection, cleans the TOC block in place, and when
-     `outline_path` is set records confirmed `tocStartLine` / `tocEndLine` / `toc`
-     from the rebuild layout (not a second full-document scan);
-   - then **`mark_appendix`**: searches for the first Reference/Appendix heading
-     starting at `max(APPENDIX_SEARCH_SKIP_LINES, toc_end + 1)` when a TOC exists;
-     short documents below the skip floor intentionally get no backmatter line;
-     records confirmed `backmatterLine` when found (no marker inserted into the `.md`);
-   - finally, when `outline_path` is set, records `tokens` (`len(result) // 4`) on
-     the marked Markdown.
-3. **`chunker.clear_prior_outputs(output_file)`** — on each CLI reconvert, deletes any
-   previous sibling `outline.json` and the whole `Chunks/` tree (including
-   `catalog.json`) before writing the new `.md`, so stale sidecars cannot be reused.
-4. **`chunker.write_chunk_files()`** — reads `tocStartLine` / `tocEndLine` /
-   `backmatterLine` from the sidecar beside `output_file` when present; falls back to
-   `backmatter_marker_line()` (and leaves TOC range unknown if the sidecar lacks it)
-   so it remains usable on daemon-produced Markdown with no sidecar. Folds findings
-   into `Chunks/outline.json` and deletes the sibling sidecar.
+Pre-chunk pipeline (`chunker._prepare_markdown`, run for every chunking entry point):
 
-**Daemon path**: `POST /convert` has no output location, so `outline_path` is `None` —
-TOC/appendix markers are still inserted into the Markdown, but no sidecar is written.
-`POST /chunk` then re-detects backmatter from markers (and treats TOC range as optional).
-Extending the sidecar across the split `/convert`+`/chunk` calls would need `/convert`
-JSON fields + Java changes — out of scope for a Python-only change.
+1. **`markdown_cleanup.clean_markdown(md)`** — strips garbage / collapses blanks (idempotent).
+2. **`chunker._extract_and_save_bookmarks(md, output_file)`** — when a source PDF sits beside
+   the `.md` (`<stem>.pdf`, co-located by the Java parse pipeline via
+   `ParsedMarkdownStore.saveArtifact` — native PDFs **and** DOCX→PDF renditions), extract its
+   bookmark outline (`pdf_bookmarks.extract_outline`, pypdf), verify/correct each record's page
+   against the `<!-- page: N-->` markers (`bookmarks.verify_bookmarks` — searches page N then
+   N±1, rewriting an off-by-one page or flagging `verified:false`), and write the records to a
+   `bookmarks.json` sidecar. A missing / bookmark-less PDF leaves no sidecar.
+3. **`toc_and_appendix_detection.find_toc_and_appendix(md, outline_path)`** — the fork
+   (size-gated: below `min_structure_tokens` the document is returned unchanged, no outline):
+   - **`bookmarks.json` present** (real PDF bookmarks from step 2) → authoritative outline;
+     the printed TOC is left untouched;
+   - **no bookmarks** → `mark_and_cleanup_toc` finds + cleans the printed TOC in place and
+     records `tocStartLine` / `tocEndLine`; its entries are harvested into records
+     (`_entry_to_record`: title, page-from-entry, level-from-numbering-depth), verified, and
+     written to `bookmarks.json`;
+   - either way it records `toc` (record titles), `backmatterLine` (first Reference/Appendix
+     record resolved to a body line — `backmatter_from_records`), and `tokens`.
+4. **`chunker.write_chunk_files()`** — uses the records (`bookmarks.json`) to drive
+   record-based sub-chunk cuts (`_record_cut_keys` → `_subchunk_blocks`), and **preserves**
+   the sidecar's outline (`toc`, `outline_source`, `backmatterLine`, TOC range) into
+   `Chunks/outline.json` — adding only `fileId` / `chunked`, never re-deriving `toc` and never
+   copying the records in — alongside `catalog.json` + `Chunk-*.md`. The `outline.json` sidecar
+   beside the `.md` is removed after folding; `bookmarks.json` persists (regenerated on
+   reconvert). `clear_prior_outputs` (CLI reconvert) first deletes any stale `outline.json` /
+   `bookmarks.json` / `Chunks/` tree.
+
+**Daemon path**: `POST /convert` returns markdown only — Java writes `<stem>.md` and
+co-locates `<stem>.pdf`. `POST /chunk` (`chunk_file`) then runs the whole pre-chunk pipeline
+above against the `.md` + its sibling PDF, so the outline is derived **uniformly at chunk
+time** regardless of which generator produced the markdown (Docling daemon, Docling CLI, or
+the Java PDFBox/POI fallback).
 
 `tag_basis`/`tag_confidence`/`uncertain`/`excluded`/`exclusion_reason` are stamped by
 code from LLM output, never asked of the model directly as catalog fields:

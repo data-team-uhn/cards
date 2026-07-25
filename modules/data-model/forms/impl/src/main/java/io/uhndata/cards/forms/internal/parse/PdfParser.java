@@ -18,6 +18,11 @@ package io.uhndata.cards.forms.internal.parse;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.internal.parse.pdf.PdfMarkdownGenerator;
 
@@ -30,7 +35,32 @@ import io.uhndata.cards.forms.internal.parse.pdf.PdfMarkdownGenerator;
  */
 public class PdfParser extends SimpleDocumentParser
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PdfParser.class);
+
     private final PdfMarkdownGenerator pdfBoxGenerator = new PdfMarkdownGenerator();
+
+    @Override
+    protected void onDocumentBytes(final byte[] content, final String fileName, final String outputSubfolder)
+    {
+        // Persist the uploaded PDF beside its parsed markdown — mirroring the DOCX -> PDF rendition
+        // office sources get — so the chunker can mine its bookmark outline into bookmarks.json.
+        Path uploadedPdfPath = null;
+        try {
+            uploadedPdfPath = Files.createTempFile("cards-pdf-source-", ".pdf");
+            Files.write(uploadedPdfPath, content);
+            ParsedMarkdownStore.saveArtifact(outputSubfolder, fileName, "pdf", uploadedPdfPath);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not co-locate source PDF for '{}': {}", fileName, e.getMessage());
+        } finally {
+            if (uploadedPdfPath != null) {
+                try {
+                    Files.deleteIfExists(uploadedPdfPath);
+                } catch (IOException e) {
+                    LOGGER.debug("Could not delete temp PDF source {}: {}", uploadedPdfPath, e.getMessage());
+                }
+            }
+        }
+    }
 
     @Override
     protected String runFallbackGenerator(final byte[] content, final String fileName)

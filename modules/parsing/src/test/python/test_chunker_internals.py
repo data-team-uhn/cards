@@ -24,6 +24,8 @@ look-ahead, over-budget splitting, small-tail folding — and were previously ex
 indirectly through chunk_file(). Tokens are len(text) // 4 (see chunker._count_tokens), so
 a block of N tokens is a string of length 4*N."""
 
+import json
+
 import chunker
 from chunker import DEFAULT_HEADING
 
@@ -199,3 +201,108 @@ class TestSplitOversized:
         parts = chunker._split_oversized(chunk_text, 1, 25)
         assert len(parts) >= 2
         assert all(chunker._count_tokens(p) <= 25 for p in parts)
+
+
+class TestSubchunkBlocksNumberedFallback:
+    def test_splits_at_bold_numbered_when_no_atx(self):
+        # No ATX sub-heading, but Docling left bold numbered headings: split on those.
+        text = (
+            "## 5 Analysis\n\nlead-in\n\n"
+            "**5.1 First**\n\nalpha body\n\n"
+            "**5.2 Second**\n\nbeta body"
+        )
+        blocks = chunker._subchunk_blocks(text, boundary_level=2)
+        assert len(blocks) == 3
+        assert blocks[0].startswith("## 5 Analysis")
+        assert blocks[1].startswith("**5.1 First**")
+        assert blocks[2].startswith("**5.2 Second**")
+
+    def test_atx_subheadings_take_precedence(self):
+        # A real ATX sub-heading wins; the bold line is not treated as a boundary.
+        text = "## 5 Analysis\n\n### 5.1 First\n\na\n\n**bold note**\n\nb"
+        blocks = chunker._subchunk_blocks(text, boundary_level=2)
+        assert len(blocks) == 2
+
+    def test_no_numbered_standout_single_block(self):
+        text = "## 5 Analysis\n\njust paragraphs\n\nmore text"
+        assert chunker._subchunk_blocks(text, boundary_level=2) == [text]
+
+
+class TestBookmarksStorage:
+    def _outline(self, tmp_path):
+        return json.loads((tmp_path / "Chunks" / "outline.json").read_text(encoding="utf-8"))
+
+    def test_small_bookmarked_doc_gets_toc_preserved(self, tmp_path):
+        # A small doc + bookmarks.json: find_toc_and_appendix records a bookmark-derived toc
+        # (ungated on the bookmark path) and write_chunk_files preserves it. No sibling PDF, so
+        # the pre-placed bookmarks.json is used as-is. The records are NOT copied into outline.
+        md = tmp_path / "doc.md"
+        md.write_text("# Title\n\nshort body\n", encoding="utf-8")
+        records = [{"title": "Alpha Section", "level": 1, "page": 1}]
+        (tmp_path / "bookmarks.json").write_text(json.dumps(records) + "\n", encoding="utf-8")
+        chunker.chunk_file(str(md), min_structure_tokens=10 ** 9)
+        outline = self._outline(tmp_path)
+        assert outline["outline_source"] == "pdf-bookmarks"
+        assert outline["toc"] == ["Alpha Section"]
+        assert "bookmarks" not in outline
+
+    def test_no_sibling_pdf_no_toc(self, tmp_path):
+        md = tmp_path / "doc.md"
+        md.write_text("# Title\n\nshort body\n", encoding="utf-8")
+        chunker.chunk_file(str(md), min_structure_tokens=10 ** 9)
+        outline = self._outline(tmp_path)
+        assert outline["toc"] == []
+        assert outline["outline_source"] == "none"
+        assert "bookmarks" not in outline
+
+
+class TestRecordCutKeys:
+    def test_resolves_unique_non_atx(self):
+        md = "<!-- page: 1-->\n## 5 Analysis\n\nData Sharing\n\nbody"
+        keys = chunker._record_cut_keys(md, md.split("\n"), [{"title": "Data Sharing", "page": 1}], None)
+        assert keys == frozenset({chunker.normalize_title("Data Sharing")})
+
+    def test_excludes_atx_match(self):
+        md = "<!-- page: 1-->\n## Data Sharing\n\nbody"
+        keys = chunker._record_cut_keys(md, md.split("\n"), [{"title": "Data Sharing", "page": 1}], None)
+        assert keys == frozenset()
+
+    def test_excludes_toc_range(self):
+        md = "<!-- page: 1-->\nData Sharing\n\nbody"  # "Data Sharing" is line index 1
+        keys = chunker._record_cut_keys(md, md.split("\n"), [{"title": "Data Sharing", "page": 1}], (1, 1))
+        assert keys == frozenset()
+
+    def test_no_records_is_empty(self):
+        assert chunker._record_cut_keys("x", ["x"], [], None) == frozenset()
+
+
+class TestSubchunkBlocksRecordTier:
+    def test_splits_at_resolved_record_lines(self):
+        text = "## 5 Analysis\n\nlead\n\nData Sharing\n\nalpha\n\nGenomic Data\n\nbeta"
+        keys = frozenset({chunker.normalize_title("Data Sharing"), chunker.normalize_title("Genomic Data")})
+        blocks = chunker._subchunk_blocks(text, boundary_level=2, cut_keys=keys)
+        assert len(blocks) == 3
+        assert blocks[1].startswith("Data Sharing")
+        assert blocks[2].startswith("Genomic Data")
+
+    def test_atx_line_not_used_by_record_tier(self):
+        text = "## 5 Analysis\n\n## Data Sharing\n\nbody"
+        keys = frozenset({chunker.normalize_title("Data Sharing")})
+        assert chunker._subchunk_blocks(text, boundary_level=2, cut_keys=keys) == [text]
+
+    def test_records_take_precedence_over_numbered_standout(self):
+        text = "## 5 Analysis\n\nData Sharing\n\nalpha\n\n**5.1 Sub**\n\nbeta"
+        keys = frozenset({chunker.normalize_title("Data Sharing")})
+        blocks = chunker._subchunk_blocks(text, boundary_level=2, cut_keys=keys)
+        assert blocks[1].startswith("Data Sharing") and "**5.1 Sub**" in blocks[1]
+
+    def test_cut_keys_thread_through_split_oversized(self):
+        text = "## 5 Analysis\n\n" + "x" * 120 + "\n\nData Sharing\n\n" + "y" * 120
+        keys = frozenset({chunker.normalize_title("Data Sharing")})
+        parts = chunker._split_oversized(text, 2, 20, keys)
+        assert any(part.startswith("Data Sharing") for part in parts)
+
+    def test_unnumbered_bold_does_not_split(self):
+        # Bold but no numeric prefix -> not a boundary; whole chunk stays one block.
+        text = "## 5 Analysis\n\nlead\n\n**Important Note**\n\nbody\n\n**Another Note**\n\nmore"
+        assert chunker._subchunk_blocks(text, boundary_level=2) == [text]
