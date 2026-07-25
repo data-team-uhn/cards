@@ -21,15 +21,15 @@
 TOC cleanup with outline.json side effects, Reference/Appendix heading detection, the
 size gate, and the outline read/write helpers."""
 
+import json
 from pathlib import Path
 
+import toc_and_appendix_detection as tad
 from toc_and_appendix_detection import (
     DEFAULT_MIN_STRUCTURE_TOKENS,
-    appendix_heading_kind,
     is_toc_entry_line,
     mark_and_cleanup_toc,
-    mark_appendix,
-    mark_toc_and_appendix,
+    find_toc_and_appendix,
     read_outline,
     toc_label_line,
     write_outline,
@@ -122,49 +122,11 @@ class TestMarkAndCleanupToc:
         assert mark_and_cleanup_toc("", None) == ""
 
 
-class TestAppendixHeadingKind:
-    def test_atx_references(self):
-        assert appendix_heading_kind(["## References"], 0) == "reference"
-
-    def test_atx_appendix(self):
-        assert appendix_heading_kind(["# Appendix A"], 0) == "appendix"
-
-    def test_numbered_reference_heading(self):
-        assert appendix_heading_kind(["## 18.0 References"], 0) == "reference"
-
-    def test_isolated_bold_appendix(self):
-        lines = ["", "**Appendix:**", ""]
-        assert appendix_heading_kind(lines, 1) == "appendix"
-
-    def test_bold_not_isolated_is_none(self):
-        lines = ["Body text", "**Appendix**", "more body"]
-        assert appendix_heading_kind(lines, 1) is None
-
-    def test_ordinary_heading_is_none(self):
-        assert appendix_heading_kind(["## Methods"], 0) is None
-
-
-class TestMarkAppendix:
-    def test_finds_first_backmatter_heading_after_skip_floor(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
-        filler = [f"Filler paragraph {n}." for n in range(401)]
-        md = "\n".join(filler + ["## References", "Citation text."])
-        mark_appendix(md, outline_path)
-        outline = read_outline(outline_path)
-        assert outline["backmatterLine"] == 401
-
-    def test_early_mention_ignored_by_skip_floor(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
-        md = "## References\n\nCited at the very top, before the skip floor.\n"
-        mark_appendix(md, outline_path)
-        assert "backmatterLine" not in read_outline(outline_path)
-
-
 class TestMarkTocAndAppendix:
     def test_small_document_skipped_unchanged(self, tmp_path):
         outline_path = tmp_path / "outline.json"
         md = "# Small\n\nToo short for structure detection.\n"
-        assert mark_toc_and_appendix(md, outline_path) == md
+        assert find_toc_and_appendix(md, outline_path) == md
         # Gated out before any outline is written.
         assert not outline_path.exists()
 
@@ -174,8 +136,19 @@ class TestMarkTocAndAppendix:
     def test_records_tokens_when_not_gated(self, tmp_path):
         outline_path = tmp_path / "outline.json"
         md = "# Title\n\n" + ("Some content paragraph. " * 40)
-        mark_toc_and_appendix(md, outline_path, min_structure_tokens=1)
+        find_toc_and_appendix(md, outline_path, min_structure_tokens=1)
         assert read_outline(outline_path)["tokens"] == len(md) // 4
+
+    def test_bookmark_path_records_outline_even_when_small(self, tmp_path):
+        # Bookmarks present -> outline recorded regardless of the size gate, so a small
+        # document still carries a toc (for the Stage 0.5 toc-only path).
+        (tmp_path / "bookmarks.json").write_text(
+            json.dumps([{"title": "Alpha", "level": 1, "page": 1}]) + "\n", encoding="utf-8")
+        outline_path = tmp_path / "outline.json"
+        find_toc_and_appendix("# Tiny\n\nbody\n", outline_path, min_structure_tokens=10 ** 9)
+        outline = read_outline(outline_path)
+        assert outline["outline_source"] == "pdf-bookmarks"
+        assert outline["toc"] == ["Alpha"]
 
 
 class TestOutlineReadWrite:
@@ -193,3 +166,52 @@ class TestOutlineReadWrite:
     def test_write_none_path_is_noop(self):
         # Must not raise.
         write_outline(None, {"tokens": 1})
+
+
+class TestEntryToRecord:
+    def test_dash_page_and_level(self):
+        assert tad._entry_to_record("1.0 Background - 9") == {"title": "1.0 Background", "level": 1, "page": 9}
+
+    def test_tab_collapsed_single_space(self):
+        assert tad._entry_to_record("Introduction 1") == {"title": "Introduction", "level": None, "page": 1}
+
+    def test_roman_page(self):
+        assert tad._entry_to_record("Abbreviations - v") == {"title": "Abbreviations", "level": None, "page": 5}
+
+    def test_no_page_keeps_level(self):
+        assert tad._entry_to_record("2.0 Introduction") == {"title": "2.0 Introduction", "level": 1, "page": None}
+
+
+class TestMarkTocAndAppendixFork:
+    def _doc_with_toc(self):
+        return (
+            "# Study Protocol\n\n## Table of Contents\n\n"
+            "1.0 Introduction\t1\n2.0 Methods\t2\nReferences\t3\n\n"
+            "## 1.0 Introduction\n\nbody\n\n## 2.0 Methods\n\nbody\n\n## References\n\ncites\n"
+        )
+
+    def test_manual_path_records_toc_and_backmatter(self, tmp_path):
+        outline_path = tmp_path / "outline.json"
+        find_toc_and_appendix(self._doc_with_toc(), outline_path, min_structure_tokens=1)
+        outline = read_outline(outline_path)
+        assert outline["outline_source"] == "md-toc"
+        assert outline["toc"] == ["1.0 Introduction", "2.0 Methods", "References"]
+        assert "backmatterLine" in outline
+        records = json.loads((tmp_path / "bookmarks.json").read_text(encoding="utf-8"))
+        assert {"title": "1.0 Introduction", "level": 1, "page": 1} in records
+
+    def test_bookmark_path_skips_printed_toc(self, tmp_path):
+        outline_path = tmp_path / "outline.json"
+        # A bookmarks.json already present -> printed TOC left untouched; toc comes from records.
+        (tmp_path / "bookmarks.json").write_text(
+            json.dumps([{"title": "Alpha", "level": 1, "page": 1}]) + "\n", encoding="utf-8")
+        result = find_toc_and_appendix(self._doc_with_toc(), outline_path, min_structure_tokens=1)
+        assert "## Table of Contents" in result
+        outline = read_outline(outline_path)
+        assert outline["outline_source"] == "pdf-bookmarks"
+        assert outline["toc"] == ["Alpha"]
+
+    def test_outline_source_none_when_nothing_found(self, tmp_path):
+        outline_path = tmp_path / "outline.json"
+        find_toc_and_appendix("# Title\n\n" + ("body paragraph. " * 40), outline_path, min_structure_tokens=1)
+        assert read_outline(outline_path)["outline_source"] == "none"

@@ -93,16 +93,26 @@ import re
 import shutil
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
+from bookmarks import (
+    BOOKMARKS_NAME,
+    line_pages,
+    normalize_title,
+    read_bookmarks,
+    resolve_record_line,
+    write_bookmarks,
+)
+from heading_numbering import numbering_depth
 from markdown_cleanup import clean_markdown
+from pdf_bookmarks import extract_verified_outline
 from toc_and_appendix_detection import (
     DEFAULT_MIN_STRUCTURE_TOKENS,
     MAX_HEADING_WORDS,
     MAX_WORD_CHARS,
     MIN_HEADING_CHARS,
     is_toc_entry_line,
-    mark_toc_and_appendix,
+    find_toc_and_appendix,
     read_outline,
 )
 
@@ -122,7 +132,7 @@ DEFAULT_HEADING = "General Information"
 CATALOG_NAME = "catalog.json"
 
 # Per-document outline file written beside the catalog (TOC / token size).
-# Same base name as the preliminary sidecar :func:`toc_and_appendix_detection.mark_toc_and_appendix`
+# Same base name as the preliminary sidecar :func:`toc_and_appendix_detection.find_toc_and_appendix`
 # writes beside the .md (no collision -- that one lives beside output_file, this one inside
 # Chunks/, which is wiped and recreated below); write_chunk_files folds the sidecar's
 # findings into this final version and removes the sidecar once done.
@@ -197,6 +207,39 @@ def _standout_heading(lines: list[str], index: int) -> str | None:
             and not is_toc_entry_line(stripped) and not HEADING.match(stripped):
         return stripped
     return None
+
+
+def _numbered_standout_depth(lines: list[str], index: int) -> int | None:
+    """The section-numbering depth of an isolated bold/ALL-CAPS stand-out heading at
+    ``lines[index]`` -- e.g. ``**3.2.1 Recruitment**`` -> 3 -- or ``None`` when the line is
+    not such a heading or carries no numeric prefix.
+
+    Used only as a sub-chunk split fallback (see :func:`_subchunk_blocks`): Docling
+    sometimes demotes a deep numbered heading to bold body text, which no ATX-based cut
+    would catch. Only Arabic-decimal numbering is honoured, to avoid false positives.
+    """
+    text = _standout_heading(lines, index)
+    if text is None or not valid_heading(text):
+        return None
+    depth = numbering_depth(text)
+    return depth or None
+
+
+def _split_lines_at(lines: list[str], is_boundary: Callable[[int], bool]) -> list[str]:
+    """Group ``lines`` into blocks, starting a new block at each boundary line. A boundary
+    at the very start (nothing accumulated yet) does not create an empty leading block.
+    """
+    blocks: list[str] = []
+    current: list[str] = []
+    for index, line in enumerate(lines):
+        if is_boundary(index) and current:
+            blocks.append("\n".join(current).strip())
+            current = [line]
+        else:
+            current.append(line)
+    if current:
+        blocks.append("\n".join(current).strip())
+    return [block for block in blocks if block]
 
 
 def _count_tokens(text: str) -> int:
@@ -332,29 +375,43 @@ def _split_into_top_chunks(lines: list[str], boundary_level: int | None) -> list
     return result
 
 
-def _subchunk_blocks(chunk_text: str, boundary_level: int) -> list[str]:
+def _subchunk_blocks(chunk_text: str, boundary_level: int, cut_keys=frozenset()) -> list[str]:
     """Split a chunk's text at its shallowest sub-heading level.
 
     The first block holds the chunk's own boundary heading and any lead-in text before the
-    first sub-heading; each subsequent block is one sub-chunk. A chunk with no sub-headings
-    (no heading deeper than ``boundary_level``) yields a single block (the whole text).
+    first sub-heading; each subsequent block is one sub-chunk.
+
+    With no ATX sub-heading (nothing deeper than ``boundary_level``), fall back in order to:
+    (1) outline-record cut points -- non-ATX lines whose normalized text is in ``cut_keys``
+    (bookmark / printed-TOC titles that resolved to a unique body line; see
+    :func:`_record_cut_keys`); then (2) the shallowest *numbered stand-out* heading (a
+    bold/ALL-CAPS line with a numeric prefix Docling emitted in place of a heading). With
+    none of these, the whole text is a single block.
     """
-    sub_level = _min_heading_level(chunk_text, deeper_than=boundary_level)
-    if sub_level is None:
+    lines = chunk_text.split("\n")
+    sub_level = _min_heading_level(chunk_text, deeper_than=boundary_level, lines=lines)
+    if sub_level is not None:
+        return _split_lines_at(lines, lambda index: _heading_level(lines[index]) == sub_level)
+
+    if cut_keys:
+        record_boundaries = {
+            index
+            for index, line in enumerate(lines)
+            if _match_heading(line) is None and normalize_title(line) in cut_keys
+        }
+        if record_boundaries:
+            return _split_lines_at(lines, lambda index: index in record_boundaries)
+
+    depth_by_index = {
+        index: depth
+        for index in range(len(lines))
+        if (depth := _numbered_standout_depth(lines, index)) is not None
+    }
+    if not depth_by_index:
         stripped = chunk_text.strip()
         return [stripped] if stripped else []
-
-    blocks: list[str] = []
-    current: list[str] = []
-    for line in chunk_text.split("\n"):
-        if _heading_level(line) == sub_level and current:
-            blocks.append("\n".join(current).strip())
-            current = [line]
-        else:
-            current.append(line)
-    if current:
-        blocks.append("\n".join(current).strip())
-    return [block for block in blocks if block]
+    top_depth = min(depth_by_index.values())
+    return _split_lines_at(lines, lambda index: depth_by_index.get(index) == top_depth)
 
 
 def _split_trailing_page_markers(text: str) -> tuple[str, str] | None:
@@ -505,15 +562,18 @@ def _pack_blocks(blocks: list[str], max_tokens: int) -> list[str]:
     return _move_trailing_page_markers(parts)
 
 
-def _split_oversized(chunk_text: str, boundary_level: int, max_tokens: int) -> list[str]:
+def _split_oversized(
+    chunk_text: str, boundary_level: int, max_tokens: int, cut_keys=frozenset()
+) -> list[str]:
     """Split an over-budget chunk into parts.
 
     Sub-headings (the shallowest heading level deeper than ``boundary_level``) are honoured
     first: consecutive sub-chunks are united up to the budget. If the chunk has no
     sub-headings, or a united part is still over budget, that piece is split at paragraph
-    boundaries.
+    boundaries. ``cut_keys`` are outline-record cut points used as a sub-heading fallback
+    (see :func:`_subchunk_blocks`).
     """
-    blocks = _subchunk_blocks(chunk_text, boundary_level)
+    blocks = _subchunk_blocks(chunk_text, boundary_level, cut_keys)
     packed = _split_by_paragraphs(chunk_text, max_tokens) if len(blocks) <= 1 \
         else _pack_blocks(blocks, max_tokens)
 
@@ -574,41 +634,27 @@ def _part_heading(part_text: str, previous_heading: list[str] | None) -> list[st
     return previous_heading or [DEFAULT_HEADING]
 
 
-def _toc_lines(
-    lines: list[str],
-    toc_start: int | None = None,
-    toc_end: int | None = None,
-) -> list[str]:
-    """TOC entry lines from the inclusive ``tocStartLine``/``tocEndLine`` range in
-    outline.json that pass :func:`is_toc_entry_line` (label, blanks, page markers,
-    and short interstitial noise dropped) — or ``[]`` when the range is unknown.
+def _extract_and_save_bookmarks(markdown_content: str, output_file: Path) -> None:
+    """When a source PDF is available, extract its bookmark outline,
+    verify/correct each record's page against ``markdown_content``, and write the result to
+    ``bookmarks.json``. A missing sibling PDF, an unreadable one, or a PDF with no bookmarks
+    leaves no sidecar (the document then falls back to manual TOC harvesting).
     """
-    if not isinstance(toc_start, int) or not isinstance(toc_end, int):
-        return []
-    if toc_start < 0 or toc_end < toc_start or toc_start >= len(lines):
-        return []
-    end = min(toc_end + 1, len(lines))
-    entries: list[str] = []
-    for line in lines[toc_start:end]:
-        stripped = line.strip()
-        if stripped and not _PAGE_MARKER_LINE.match(stripped) and is_toc_entry_line(stripped):
-            entries.append(stripped)
-    return entries
+    pdf_file = output_file.with_suffix(".pdf")
+    if not pdf_file.is_file():
+        return
+    records = extract_verified_outline(pdf_file, markdown_content)
+    if records:
+        write_bookmarks(output_file.with_name(BOOKMARKS_NAME), records)
 
 
 def _prepare_markdown(markdown_content: str, output_file: Path, min_structure_tokens: int) -> str:
-    """Run the shared pre-chunking pipeline on a document: garbage-line cleanup
-    (idempotent — a ``<!-- cleaned -->``-marked document passes through unchanged), then
-    TOC/appendix marking (size-gated internally, sidecar ``outline.json`` written beside
-    ``output_file``). When anything changed, the updated Markdown is written back to
-    ``output_file`` so the stored ``.md`` always matches what was chunked.
-
-    This runs here rather than in the PDF/DOCX parsers so that *every* chunking entry
-    point — including Java-generated Markdown sent straight to ``chunk_file`` — goes
-    through the same cleanup and structure detection.
+    """Run the shared pre-chunking pipeline on a document: garbage-line cleanup, then
+    TOC extraction/appendix detection.
     """
     prepared = clean_markdown(markdown_content)
-    prepared = mark_toc_and_appendix(
+    _extract_and_save_bookmarks(prepared, output_file)
+    prepared = find_toc_and_appendix(
         prepared,
         output_file.with_name(OUTLINE_NAME),
         min_structure_tokens=min_structure_tokens,
@@ -624,9 +670,36 @@ def clear_prior_outputs(output_file: Path) -> None:
     stale ranges or chunk files.
     """
     output_file.with_name(OUTLINE_NAME).unlink(missing_ok=True)
+    output_file.with_name(BOOKMARKS_NAME).unlink(missing_ok=True)
     chunks_dir = output_file.parent / CHUNKS_DIRNAME
     if chunks_dir.exists():
         shutil.rmtree(chunks_dir)
+
+
+def _record_cut_keys(
+    markdown_content: str,
+    lines: list[str],
+    records: list[dict],
+    toc_range: tuple[int, int] | None,
+) -> frozenset:
+    """Normalized title keys of outline records that resolve to exactly one eligible body
+    line -- not an ATX heading, not inside ``toc_range`` -- via
+    :func:`bookmarks.resolve_record_line` (exact page when the record's page is trusted).
+    These become sub-chunk cut points for sections Docling left without an ATX sub-heading.
+    """
+    if not records:
+        return frozenset()
+    exclude = {index for index, line in enumerate(lines) if _match_heading(line) is not None}
+    if toc_range is not None:
+        exclude |= set(range(toc_range[0], toc_range[1] + 1))
+    positions = line_pages(markdown_content)
+    keys: set[str] = set()
+    for record in records:
+        if resolve_record_line(positions, record, exclude=exclude) is not None:
+            key = normalize_title(record.get("title") or "")
+            if key:
+                keys.add(key)
+    return frozenset(keys)
 
 
 def write_chunk_files(
@@ -641,56 +714,51 @@ def write_chunk_files(
     ``Chunks/`` folder beside ``output_file``.
 
     The document first goes through the shared pre-chunking pipeline
-    (:func:`_prepare_markdown`): garbage-line cleanup (idempotent via the
-    ``<!-- cleaned -->`` marker) and TOC/appendix marking, with the result written back
-    to ``output_file`` when anything changed.
+    (:func:`_prepare_markdown`): garbage-line cleanup and TOC extraction/appendix detection,
+    with the result written back to ``output_file`` when anything changed.
 
     The size gate is the single binary routing decision of the pipeline, recorded as the
     ``chunked`` boolean in ``Chunks/outline.json`` — which is **always** written, even
     when chunking is skipped. Documents with fewer than ``min_structure_tokens``
     (``len // 4``) are still cleaned, but deliberately left unchunked: ``Chunks/``
-    then holds only the outline (``chunked: false``, empty ``toc``, no
-    ``catalog.json`` and no chunk files) and ``None`` is returned. Downstream stages
-    route on that recorded flag — whole-document LLM calls when ``false``, catalog-driven
-    calls when ``true`` — instead of re-deriving the threshold.
+    then holds only the outline (``chunked: false``, no ``catalog.json`` and no chunk files),
+    carrying a bookmark-derived ``toc`` when a source PDF had bookmarks; ``None`` is returned.
 
-    When the sidecar ``outline.json`` has a ``backmatterLine`` (see
-    :func:`toc_and_appendix_detection.mark_appendix`), everything from that line to EOF
-    becomes one standalone backmatter chunk — no heading-based sub-splitting, no
-    token-budget splitting. The remaining main content is split at the shallowest
-    heading level, then consecutive sections are united up to ``max_tokens`` before any
-    over-budget piece is split further.
+    When the sidecar ``outline.json`` has a ``backmatterLine``, everything from that line
+    to EOF becomes one standalone backmatter chunk.
+    The remaining main content is split at the shallowest heading level, then consecutive
+    sections are united up to ``max_tokens`` before any over-budget piece is split further.
 
-    @param markdown_content: the full Markdown document already written to ``output_file``
-    @param output_file: the main ``.md`` file; its chunks land in ``Chunks/`` beside it
-    @param filename: the original input file name (with extension), recorded as ``fileId``
-    @param max_tokens: target maximum tokens per chunk file; consecutive top-level sections
-        are packed up to this budget, and only then is an over-budget piece split into parts
-    @param min_structure_tokens: skip chunking when the document is smaller than this;
-        the outcome is recorded as ``chunked`` in ``Chunks/outline.json`` either way
+    @param markdown_content: the full Markdown document
+    @param output_file: the main ``.md`` file
+    @param filename: the original input file name (with extension)
+    @param max_tokens: target maximum tokens per chunk file
+    @param min_structure_tokens: skip chunking when the document is smaller than this
     @return: the path to the created chunks folder, or ``None`` when chunking was skipped
     """
     markdown_content = _prepare_markdown(markdown_content, output_file, min_structure_tokens)
-    tokens = len(markdown_content) // 4
-    chunked = tokens >= min_structure_tokens
 
     chunks_dir = output_file.parent / CHUNKS_DIRNAME
     if chunks_dir.exists():
         shutil.rmtree(chunks_dir)
     chunks_dir.mkdir(parents=True, exist_ok=True)
 
-    if not chunked:
-        # The binary routing decision, recorded once: this document is small enough to be
-        # sent to the LLM whole, so it is deliberately left unchunked. Downstream stages
-        # read this flag instead of re-deriving the threshold or probing for chunk files.
-        outline = {
-            "fileId": filename,
-            "tokens": tokens,
-            "chunked": False,
-            "toc": [],
-        }
+    # find_toc_and_appendix's outline (the sidecar) is the base for Chunks/outline.json; it is
+    # empty for a small no-bookmark document (that path is size-gated). Compute the gate from
+    # the .md (not the maybe-absent sidecar) and stamp the identity/routing fields + defaults
+    # here so the outline is complete and uniform on both paths.
+    sidecar = read_outline(output_file.with_name(OUTLINE_NAME))
+    tokens = len(markdown_content) // 4
+    to_be_chunked = tokens >= min_structure_tokens
+    sidecar.setdefault("outline_source", "none")
+    sidecar.setdefault("toc", [])
+    sidecar["fileId"] = filename
+    sidecar["tokens"] = tokens
+    sidecar["chunked"] = to_be_chunked
+
+    if not to_be_chunked:
         (chunks_dir / OUTLINE_NAME).write_text(
-            json.dumps(outline, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+            json.dumps(sidecar, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
         )
         output_file.with_name(OUTLINE_NAME).unlink(missing_ok=True)
         return None
@@ -700,8 +768,7 @@ def write_chunk_files(
     lines = markdown_content.split("\n")
 
     # TOC range and backmatter split come from the sidecar outline.json written by
-    # mark_toc_and_appendix in _prepare_markdown above — no Markdown markers.
-    sidecar = read_outline(output_file.with_name(OUTLINE_NAME))
+    # find_toc_and_appendix in _prepare_markdown above — no Markdown markers.
     toc_start = sidecar.get("tocStartLine")
     toc_end = sidecar.get("tocEndLine")
     if isinstance(toc_start, int) and isinstance(toc_end, int):
@@ -731,11 +798,14 @@ def write_chunk_files(
     # Prefer Chunk-0 when the document has a leading preamble; otherwise start at 1.
     first_number = 0 if (top_chunks and top_chunks[0]["number"] == 0) else 1
     split_level = boundary_level if boundary_level is not None else 0
+    # Full outline records (title / page / verified) for record-based sub-chunk cut points.
+    bookmark_records = read_bookmarks(output_file.with_name(BOOKMARKS_NAME))
+    cut_keys = _record_cut_keys(markdown_content, lines, bookmark_records, toc_range)
 
     for offset, packed_text in enumerate(packed):
         number = first_number + offset
         if _count_tokens(packed_text) > max_tokens:
-            parts = _split_oversized(packed_text, split_level, max_tokens)
+            parts = _split_oversized(packed_text, split_level, max_tokens, cut_keys)
         else:
             parts = [packed_text]
         parts = _move_trailing_page_markers(_merge_small_text_tails(parts, MIN_TAIL_TOKENS))
@@ -780,31 +850,17 @@ def write_chunk_files(
         })
         next_id += 1
 
-    # Prefer the sidecar's entry-only ``toc`` when mark_and_cleanup_toc recorded one;
-    # otherwise re-derive from the outline line range.
-    sidecar_toc = sidecar.get("toc")
-    toc = sidecar_toc if isinstance(sidecar_toc, list) else _toc_lines(lines, toc_start, toc_end)
-    outline = {
-        "fileId": filename,
-        "tokens": tokens,
-        "chunked": True,
-        "toc": toc,
-    }
-    if toc_range is not None:
-        outline["tocStartLine"], outline["tocEndLine"] = toc_range
-    if backmatter_line is not None:
-        outline["backmatterLine"] = backmatter_line
+    # Write outline.json (identity + routing fields were stamped on the sidecar above).
     (chunks_dir / OUTLINE_NAME).write_text(
-        json.dumps(outline, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        json.dumps(sidecar, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
 
+    # Update the catalog.json
     catalog = {"fileId": filename, "chunks": catalog_chunks}
     (chunks_dir / CATALOG_NAME).write_text(
         json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
 
-    # The sidecar's findings are now folded into Chunks/outline.json above; remove it
-    # so a stale preliminary file never lingers beside the .md.
     output_file.with_name(OUTLINE_NAME).unlink(missing_ok=True)
 
     return chunks_dir
@@ -814,6 +870,13 @@ def _chunk_count(chunks_dir: Path) -> int:
     """Number of chunk entries in a freshly written chunks folder's catalog."""
     catalog = json.loads((chunks_dir / CATALOG_NAME).read_text(encoding="utf-8"))
     return len(catalog.get("chunks", []))
+
+
+def _outline_source(chunks_dir: Path) -> str:
+    """The recorded producer of the outline records for logging:
+    ``"pdf-bookmarks"`` | ``"md-toc"`` | ``"none"``."""
+    source = read_outline(chunks_dir / OUTLINE_NAME).get("outline_source")
+    return source if isinstance(source, str) else "none"
 
 
 def chunk_file(
@@ -846,18 +909,22 @@ def chunk_file(
     )
     if chunks_dir is None:
         tokens = len(markdown) // 4
+        source = _outline_source(path.parent / CHUNKS_DIRNAME)
         return {
             "chunks": 0,
             "logs": (
                 f"Skipped chunking '{path.name}' "
                 f"({tokens} tokens < {min_structure_tokens} min_structure_tokens); "
-                f"recorded chunked=false in {CHUNKS_DIRNAME}/{OUTLINE_NAME}"
+                f"recorded chunked=false, outline_source={source} in {CHUNKS_DIRNAME}/{OUTLINE_NAME}"
             ),
         }
     count = _chunk_count(chunks_dir)
     return {
         "chunks": count,
-        "logs": f"Split '{path.name}' into {count} chunk file(s) in '{CHUNKS_DIRNAME}/'",
+        "logs": (
+            f"Split '{path.name}' into {count} chunk file(s) in '{CHUNKS_DIRNAME}/' "
+            f"(outline_source={_outline_source(chunks_dir)})"
+        ),
     }
 
 

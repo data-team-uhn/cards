@@ -23,11 +23,10 @@ TOCs, clean leaders/tabs, and record the cleaned block's line range plus entry l
 in ``outline.json`` (``tocStartLine`` / ``tocEndLine`` / ``toc``). Entries over 10
 words or with a word over 100 characters are discarded.
 
-Appendix detection (:func:`mark_toc_and_appendix`): after TOC cleanup, find the first
-Reference/Appendix heading (ATX or isolated bold; see :data:`REFERENCE_HEADINGS` /
-:data:`APPENDIX_HEADINGS`) and record its line as ``backmatterLine`` in
-``outline.json``. Skips the first :data:`APPENDIX_SEARCH_SKIP_LINES` lines and any
-confirmed TOC block.
+Appendix detection (:func:`find_toc_and_appendix`): the first Reference/Appendix section
+title among the document's outline records (see :data:`REFERENCE_HEADINGS` /
+:data:`APPENDIX_HEADINGS`) is resolved to its body line and recorded as ``backmatterLine``
+in ``outline.json``.
 """
 
 from __future__ import annotations
@@ -35,6 +34,16 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+
+from bookmarks import (
+    BOOKMARKS_NAME,
+    line_pages,
+    read_bookmarks,
+    resolve_record_line,
+    verify_bookmarks,
+    write_bookmarks,
+)
+from heading_numbering import numbering_depth, roman_numbering
 
 # Maximum words per accepted heading, and maximum characters per word within it.
 MAX_HEADING_WORDS = 10
@@ -53,15 +62,10 @@ DENSITY_WINDOW = 8
 MAX_LEADING_WORDS_FOR_CONTINUATION = 12
 
 # Documents shorter than this (``len(md) // 4``) skip TOC/appendix marking — Stage 0.5
-# can send them whole. Overridable via :func:`mark_toc_and_appendix`'s ``min_structure_tokens``.
+# can send them whole. Overridable via :func:`find_toc_and_appendix`'s ``min_structure_tokens``.
 DEFAULT_MIN_STRUCTURE_TOKENS = 20000
 
-# How many lines from the start of the document mark_appendix() skips before searching
-# for a Reference/Appendix heading — avoids false hits from an early in-text mention
-# (e.g. an abstract citing "see References").
-APPENDIX_SEARCH_SKIP_LINES = 400
-
-# Reference-section heading words/phrases recognised by mark_appendix().
+# Reference-section heading words/phrases recognised in outline record titles.
 REFERENCE_HEADINGS = [
     "References",
     "Reference",
@@ -81,7 +85,7 @@ REFERENCE_HEADINGS = [
     "Bibliography and References",
 ]
 
-# Appendix-section heading words/phrases recognised by mark_appendix().
+# Appendix-section heading words/phrases recognised in outline record titles.
 APPENDIX_HEADINGS = [
     "Appendix",
     "Appendices",
@@ -104,14 +108,6 @@ _RULE_LINE = re.compile(r"^-{3,}$")
 # An ATX heading line ("## Glossary of Abbreviations", etc.) — a real heading is always a
 # hard content boundary, never tolerable "page-header noise", regardless of word count.
 _HEADING_LINE = re.compile(r"^#{1,6}\s+\S")
-
-# An ATX heading's text only, used by mark_appendix() (the level itself doesn't matter
-# there — any heading depth can start a Reference/Appendix section).
-_ATX_HEADING_TEXT = re.compile(r"^#{1,6}\s+(.*\S)\s*$")
-
-# A bold/bold+italic line (2 or 3 matching stars on each side, optional trailing colon
-# inside the closing stars), e.g. "**APPENDIX**", "**Appendix:**", "**12.0 References:**".
-_APPENDIX_BOLD_LINE = re.compile(r"^(\*{2,3})(.+?)\1:?$")
 
 # Leading section numbering to strip before matching a Reference/Appendix keyword, e.g.
 # "18.0 ", "13 ", "10.1. ", "17  ".
@@ -533,99 +529,127 @@ def mark_and_cleanup_toc(md: str, outline_path: Path | None = None) -> str:
     return result
 
 
-def _is_neutral_line(stripped: str) -> bool:
-    """Lines that neither extend nor break an isolation check: blanks, rules, page markers."""
-    return stripped == "" or _RULE_LINE.match(stripped) is not None \
-        or _PAGE_MARKER_LINE.match(stripped) is not None
+# Trailing "<separator><page number>" of a cleaned TOC entry, capturing the page (arabic or
+# roman). The separator is a dash, dot-leaders, or whitespace (a tab collapses to one space).
+_ENTRY_PAGE = re.compile(
+    r"""
+    (?:
+        \s+[-–—]\s+
+        | \s*[.…·]{2,}\s*
+        | \s+
+    )
+    (?:page\s*)?
+    (\d{1,4}|[ivxlcdm]{1,8})
+    \s*$
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
 
 
-def appendix_heading_kind(lines: list[str], index: int) -> str | None:
-    """Whether lines[index] is a Reference- or Appendix-section heading.
+def _page_number(token: str) -> int | None:
+    """Parse a TOC page token (arabic ``"12"`` or roman ``"iv"``) to an int, or ``None``."""
+    if token.isdigit():
+        return int(token)
+    vector = roman_numbering(token)
+    return vector[0] if vector else None
 
-    @return: "reference", "appendix", or None
+
+def _entry_to_record(entry: str) -> dict:
+    """Convert a cleaned TOC entry string into an outline record: title (trailing page
+    stripped), ``page`` (its page number, or ``None``), ``level`` (numbering depth, or ``None``).
     """
-    stripped = lines[index].strip()
-    atx = _ATX_HEADING_TEXT.match(stripped)
-    if atx:
-        text = atx.group(1).strip()
+    match = _ENTRY_PAGE.search(entry)
+    if match:
+        title = entry[: match.start()].strip()
+        page = _page_number(match.group(1))
     else:
-        bold = _APPENDIX_BOLD_LINE.match(stripped)
-        if not bold:
-            return None
-        before = lines[index - 1].strip() if index > 0 else ""
-        after = lines[index + 1].strip() if index + 1 < len(lines) else ""
-        if not _is_neutral_line(before) or not _is_neutral_line(after):
-            return None
-        text = bold.group(2).strip()
+        title = entry.strip()
+        page = None
+    return {"title": title, "level": numbering_depth(title) or None, "page": page}
 
-    text = _APPENDIX_NUMBERING_PREFIX.sub("", text).strip()
-    if _REFERENCE_HEADING_START.match(text):
-        return "reference"
-    if _APPENDIX_HEADING_START.match(text):
-        return "appendix"
+
+def _records_from_toc_strings(toc_strings: list) -> list[dict]:
+    """Build outline records from the entry strings recorded by :func:`mark_and_cleanup_toc`."""
+    records: list[dict] = []
+    for entry in toc_strings:
+        record = _entry_to_record(entry)
+        if record["title"]:
+            records.append(record)
+    return records
+
+
+def _is_backmatter_title(title: str) -> bool:
+    """Whether ``title`` names a Reference- or Appendix-section (numbering prefix ignored)."""
+    text = _APPENDIX_NUMBERING_PREFIX.sub("", title).strip()
+    return bool(_REFERENCE_HEADING_START.match(text) or _APPENDIX_HEADING_START.match(text))
+
+
+def backmatter_from_records(markdown: str, records: list[dict]) -> int | None:
+    """The body line of the first Reference/Appendix record that resolves to a unique line,
+    or ``None`` -- the outline-based replacement for the heuristic body scan."""
+    positions = line_pages(markdown)
+    for record in records:
+        if _is_backmatter_title(record.get("title") or ""):
+            line = resolve_record_line(positions, record)
+            if line is not None:
+                return line
     return None
 
 
-def mark_appendix(md: str, outline_path: Path | None = None) -> str:
-    """Detect the document's first Reference or Appendix section heading and record its
-    line index as ``backmatterLine`` in outline.json. The Markdown is left unchanged —
-    no ``<!-- Reference -->`` / ``<!-- Appendix -->`` marker is inserted.
-
-    Skips the first APPENDIX_SEARCH_SKIP_LINES lines (avoids false hits from an
-    early in-text mention, e.g. unheaded undetected TOC line "**10.4 Appendix**"). Also
-    skips past the TOC block when outline_path's outline.json has a confirmed
-    tocEndLine (written by mark_and_cleanup_toc) -- read only, no re-detection fallback:
-    with no outline_path, or no tocEndLine on file, only the fixed line-400 floor applies.
-
-    @param md: the full assembled Markdown document, ideally already passed through mark_and_cleanup_toc
-    @param outline_path: the document's outline.json file
-    @return: ``md`` unchanged (side effect: ``backmatterLine`` written when found)
-    """
-    if not md:
-        return md or ""
-
-    lines = md.split("\n")
-    n = len(lines)
-    outline = read_outline(outline_path)
-    toc_end = outline.get("tocEndLine")
-
-    # Never search inside or before the TOC — start after it when present. Still honour
-    # the skip floor so short docs and early in-text mentions are ignored.
-    index = APPENDIX_SEARCH_SKIP_LINES
-    if isinstance(toc_end, int):
-        index = max(index, toc_end + 1)
-
-    found_index = None
-    while index < n:
-        if appendix_heading_kind(lines, index) is not None:
-            found_index = index
-            break
-        index += 1
-
-    if found_index is not None and outline_path is not None:
-        write_outline(outline_path, {"backmatterLine": found_index})
-    return md
-
-
-def mark_toc_and_appendix(
+def find_toc_and_appendix(
     md: str,
     outline_path: Path | None = None,
     *,
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> str:
-    """Clean the TOC and locate the first Reference/Appendix heading; record both in outline.json.
+    """Derive the document's outline and record it in outline.json (``toc`` titles,
+    ``backmatterLine``), forking on whether PDF bookmarks are available.
 
-    Documents with fewer than ``min_structure_tokens`` (``len(md) // 4``) are returned
-    unchanged — no TOC/appendix detection — so small protocols can be sent whole later.
+    When a ``bookmarks.json`` sidecar already exists beside ``outline_path`` (real PDF
+    bookmarks, extracted upstream), it is the authoritative outline: the printed TOC is left
+    untouched. Otherwise the printed TOC is detected and cleaned in place, its entries are
+    harvested into outline records, verified/​corrected against the document, and written to
+    ``bookmarks.json``. Either way ``toc`` and ``backmatterLine`` come from the records.
+
+    A *bookmarked* document always records its outline (the bookmark path is cheap and leaves
+    the ``.md`` untouched) so even a small one carries a ``toc`` for Stage 0.5. A document with
+    **no** bookmarks and fewer than ``min_structure_tokens`` (``len(md) // 4``) is returned
+    unchanged with no outline — it is sent whole later.
 
     @param md: the full assembled Markdown document
     @param outline_path: the document's outline.json file
-    @param min_structure_tokens: skip detection when the document is smaller than this
-    @return: the document with TOC cleaned in place (when found); no marker lines added
+    @param min_structure_tokens: skip printed-TOC detection below this (no-bookmark path only)
+    @return: the document, with the printed TOC cleaned in place only on the no-bookmark path
     """
-    if len(md) // 4 < min_structure_tokens:
+    bookmarks_path = outline_path.with_name(BOOKMARKS_NAME) if outline_path is not None else None
+    records = read_bookmarks(bookmarks_path)
+    tokens = len(md) // 4
+    if records:
+        # Authoritative PDF bookmarks: record the outline regardless of size (cheap; the .md
+        # is left untouched), skipping printed-TOC detection and cleanup entirely.
+        result = md
+        outline_source = "pdf-bookmarks"
+    elif tokens < min_structure_tokens:
+        # Small document, no bookmarks: skip printed-TOC detection; it is sent whole later.
         return md
-    result = mark_appendix(mark_and_cleanup_toc(md, outline_path), outline_path)
-    if outline_path is not None:
-        write_outline(outline_path, {"tokens": len(result) // 4})
+    else:
+        # Large document, no bookmarks: clean the printed TOC in place, harvest it to records.
+        result = mark_and_cleanup_toc(md, outline_path)
+        records = verify_bookmarks(
+            _records_from_toc_strings(read_outline(outline_path).get("toc", [])), result
+        )
+        if records and bookmarks_path is not None:
+            write_bookmarks(bookmarks_path, records)
+        outline_source = "md-toc" if records else "none"
+
+    write_outline(outline_path, {
+        "tokens": tokens,
+        "outline_source": outline_source,
+        "toc": [r["title"] for r in records if r.get("title")],
+    })
+
+    backmatter_line = backmatter_from_records(result, records)
+    if backmatter_line is not None:
+        write_outline(outline_path, {"backmatterLine": backmatter_line})
+    write_outline(outline_path, {"tokens": len(result) // 4})
     return result
