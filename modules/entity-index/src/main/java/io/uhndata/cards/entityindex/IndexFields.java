@@ -94,6 +94,9 @@ public final class IndexFields
     /** Suffix for the analyzed full text version of a field. */
     public static final String TEXT_SUFFIX = ".text";
 
+    /** Suffix for the lowercased, whole-value version of a field, used for case-insensitive {@code ILIKE} matching. */
+    public static final String LOWER_SUFFIX = ".lower";
+
     /** Suffix for the whole-number version of a field. */
     public static final String LONG_SUFFIX = ".long";
 

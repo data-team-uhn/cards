@@ -163,12 +163,29 @@ class QueryTranslator
      */
     private boolean addConjunct(final BooleanQuery.Builder builder, final SearchCondition condition)
     {
-        if (condition.getOperator() == SearchCondition.Operator.NEQ) {
-            builder.add(equalityQuery(condition), Occur.MUST_NOT);
+        final Query negated = negatedClause(condition);
+        if (negated != null) {
+            builder.add(negated, Occur.MUST_NOT);
             return false;
         }
         builder.add(translateCondition(condition), Occur.MUST);
         return true;
+    }
+
+    /**
+     * For a negative operator, the positive query to subtract from the group; {@code null} for positive operators.
+     * An inequality subtracts the matching-value query, a {@code NOT ILIKE} subtracts the {@code ILIKE} match.
+     *
+     * @param condition the condition to translate
+     * @return the query to attach as a negative clause, or {@code null} if the operator is positive
+     */
+    private Query negatedClause(final SearchCondition condition)
+    {
+        return switch (condition.getOperator()) {
+            case NEQ -> equalityQuery(condition);
+            case NOT_ILIKE -> likeQuery(condition);
+            default -> null;
+        };
     }
 
     private Query translateDisjunction(final List<SearchCondition> group)
@@ -192,11 +209,43 @@ class QueryTranslator
                 .build();
             case IS_NOT_EMPTY -> hasValueQuery(condition.getField());
             case CONTAINS -> tokenWildcards(condition.getField() + IndexFields.TEXT_SUFFIX, condition.getValue());
+            case ILIKE -> likeQuery(condition);
             case NOTES_CONTAIN -> tokenWildcards(condition.getField() + IndexFields.NOTE_SUFFIX,
                 condition.getValue());
-            case NEQ -> negate(condition);
+            case NEQ -> negateQuery(equalityQuery(condition));
+            case NOT_ILIKE -> negateQuery(likeQuery(condition));
             default -> compareValue(condition);
         };
+    }
+
+    /**
+     * A case-insensitive {@code LIKE} match, implemented as a wildcard query over the lowercased whole-value field:
+     * the value is lowercased and its SQL wildcards ({@code %}, {@code _}) are translated to the Lucene ones
+     * ({@code *}, {@code ?}), while literal wildcard characters are escaped.
+     *
+     * @param condition the condition to translate
+     * @return a Lucene query
+     */
+    private Query likeQuery(final SearchCondition condition)
+    {
+        final String pattern =
+            sqlLikeToWildcard(StringUtils.defaultString(condition.getValue()).toLowerCase(Locale.ROOT));
+        return new WildcardQuery(new Term(condition.getField() + IndexFields.LOWER_SUFFIX, pattern));
+    }
+
+    private String sqlLikeToWildcard(final String pattern)
+    {
+        final StringBuilder result = new StringBuilder(pattern.length());
+        for (int i = 0; i < pattern.length(); i++) {
+            final char c = pattern.charAt(i);
+            switch (c) {
+                case '%' -> result.append('*');
+                case '_' -> result.append('?');
+                case '*', '?', '\\' -> result.append('\\').append(c);
+                default -> result.append(c);
+            }
+        }
+        return result.toString();
     }
 
     /**
@@ -228,19 +277,19 @@ class QueryTranslator
     }
 
     /**
-     * Translate a standalone inequality condition: any entity that does not have the compared value, whether because
-     * it has a different value or because it has no value at all. This mirrors {@code not field = value}: "not equal
-     * to X" includes "does not have X". A match-all base is needed because a purely negative query matches nothing;
-     * inside an AND group {@link #addConjunct} avoids it by attaching the negation to the group's own base instead.
+     * Wrap a positive query as a standalone negation: any entity that does not match it, including entities where the
+     * field has no value at all. This mirrors {@code not condition}: "not equal to X" / "not like X" includes "does
+     * not have X". A match-all base is needed because a purely negative query matches nothing; inside an AND group
+     * {@link #addConjunct} avoids it by attaching the negation to the group's own base instead.
      *
-     * @param condition the condition to translate
-     * @return a Lucene query
+     * @param positive the query to negate
+     * @return a Lucene query matching everything the given query does not
      */
-    private Query negate(final SearchCondition condition)
+    private Query negateQuery(final Query positive)
     {
         return new BooleanQuery.Builder()
             .add(new MatchAllDocsQuery(), Occur.MUST)
-            .add(equalityQuery(condition), Occur.MUST_NOT)
+            .add(positive, Occur.MUST_NOT)
             .build();
     }
 

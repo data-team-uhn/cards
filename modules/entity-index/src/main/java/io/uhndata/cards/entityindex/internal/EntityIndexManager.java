@@ -107,7 +107,7 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
     private static final String SCHEMA_VERSION_KEY = "entityIndexSchema";
 
     /** Bumped when the document format changes in a way that requires rebuilding existing indexes. */
-    private static final String DOCUMENT_FORMAT_VERSION = "2";
+    private static final String DOCUMENT_FORMAT_VERSION = "3";
 
     @Reference
     private volatile ResourceResolverFactory resolverFactory;

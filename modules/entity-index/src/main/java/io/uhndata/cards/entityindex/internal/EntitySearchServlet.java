@@ -67,6 +67,9 @@ import io.uhndata.cards.entityindex.SearchResults;
  * <li><code>fieldnames</code>, <code>fieldcomparators</code>, <code>fieldvalues</code>: fixed filters on entity
  * properties, as baked into the table URLs (e.g. {@code questionnaire}, {@code subject}, {@code type},
  * {@code statusFlags}); same as {@code filter*} but without an explicit type, which is resolved from the field</li>
+ * <li><code>filtergroups</code>, <code>fieldgroups</code>: optional group ids aligned with the filter/field names;
+ * conditions sharing a non-empty group are ORed together, distinct groups and ungrouped conditions are ANDed.
+ * Supported comparators include {@code ILIKE} and {@code NOT ILIKE}, case-insensitive {@code LIKE} matches</li>
  * <li><code>filterempty</code>, <code>filternotempty</code>: questions that must (not) be unanswered</li>
  * <li><code>filter</code>: a full text filter over the whole entity content</li>
  * <li><code>lucene</code>: a native Lucene query using the flattened field naming convention</li>
@@ -145,17 +148,21 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
         "cards:LastModifiedBy", new ResolvedField(IndexFields.LAST_MODIFIED_BY, SearchCondition.Type.TEXT, null),
         "statusFlags", new ResolvedField(IndexFields.STATUS_FLAGS, SearchCondition.Type.TEXT, null));
 
-    /** A parsed condition, together with the questionnaire it targets, if any. */
+    /** A parsed condition, together with the questionnaire it targets and the OR group it belongs to, if any. */
     private static final class ParsedCondition
     {
         private final SearchCondition condition;
 
         private final String questionnaire;
 
-        ParsedCondition(final SearchCondition condition, final String questionnaire)
+        /** The OR group this condition shares with others, or {@code null} for a standalone (ANDed) condition. */
+        private final String group;
+
+        ParsedCondition(final SearchCondition condition, final String questionnaire, final String group)
         {
             this.condition = condition;
             this.questionnaire = questionnaire;
+            this.group = group;
         }
     }
 
@@ -255,11 +262,22 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
         final EntityIndexer index, final boolean subjectMode)
     {
         final Map<String, List<SearchCondition>> joinGroups = new LinkedHashMap<>();
+        final Map<String, List<SearchCondition>> orGroups = new LinkedHashMap<>();
         for (final ParsedCondition parsed : conditions) {
             if (subjectMode && parsed.questionnaire != null) {
                 joinGroups.computeIfAbsent(parsed.questionnaire, k -> new ArrayList<>()).add(parsed.condition);
+            } else if (parsed.group != null) {
+                orGroups.computeIfAbsent(parsed.group, k -> new ArrayList<>()).add(parsed.condition);
             } else {
                 query.withCondition(parsed.condition);
+            }
+        }
+        for (final List<SearchCondition> group : orGroups.values()) {
+            // A single-member group is just a plain ANDed condition
+            if (group.size() == 1) {
+                query.withCondition(group.get(0));
+            } else {
+                query.withAnyOf(group);
             }
         }
         for (final List<SearchCondition> group : joinGroups.values()) {
@@ -399,6 +417,7 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
         final String[] comparators = parameters[1];
         final String[] values = parameters[2];
         final String[] types = parameters[3];
+        final String[] groups = optionalGroups(request, prefix, names.length);
         for (int i = 0; i < names.length; ++i) {
             if (StringUtils.isBlank(names[i])) {
                 continue;
@@ -409,9 +428,31 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
             // A filter on the questionnaire itself groups together with the questions of that questionnaire
             final String questionnaire =
                 QUESTIONNAIRE_IDENTIFIER.equals(names[i]) ? values[i] : field.questionnaire;
-            result.add(new ParsedCondition(condition, questionnaire));
+            final String group = groups == null || groups[i].isEmpty() ? null : groups[i];
+            result.add(new ParsedCondition(condition, questionnaire, group));
         }
         return result;
+    }
+
+    /**
+     * Reads the optional {@code <prefix>groups} parameter, which lets conditions be ORed together. Conditions sharing
+     * a non-empty group id are combined with OR; distinct groups and ungrouped conditions are ANDed.
+     *
+     * @param request the current request
+     * @param prefix the parameter name prefix, {@code filter}, {@code field} or {@code join}
+     * @param expectedLength the number of names the groups must align with
+     * @return the group ids aligned with the names, or {@code null} if the parameter is absent
+     * @throws IllegalArgumentException if the groups are present but don't align with the names
+     */
+    private String[] optionalGroups(final SlingJakartaHttpServletRequest request, final String prefix,
+        final int expectedLength)
+    {
+        final String[] groups = request.getParameterValues(prefix + "groups");
+        if (groups != null && groups.length != expectedLength) {
+            throw new IllegalArgumentException(
+                "Invalid request, a " + prefix + " group must be provided for every " + prefix + " name");
+        }
+        return groups;
     }
 
     /**
@@ -460,7 +501,7 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
             }
             final ResolvedField field = resolveField(name, null, session, subjectMode);
             result.add(new ParsedCondition(new SearchCondition(field.field, operator, null, field.type),
-                field.questionnaire));
+                field.questionnaire, null));
         }
         return result;
     }

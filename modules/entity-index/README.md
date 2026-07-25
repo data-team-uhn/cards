@@ -108,8 +108,15 @@ Filter names may be question uuids (as sent by the existing frontend), question 
 `cards:CreatedBy`, `cards:LastModified`, `cards:LastModifiedBy`, `statusFlags` names. The response
 has the same shape as `.paginate` (`rows`, `returnedrows`, `totalrows`, …) plus `searchtimems`.
 
+Grouping: filter names sharing a non-empty `filtergroups` / `fieldgroups` value are ORed together,
+while distinct groups and ungrouped conditions are ANDed — e.g. `status = a OR status = b` is two
+conditions sharing a group. (When searching subjects, grouping applies to the subject's own fields;
+per-questionnaire question filters are still grouped into joins.)
+
 Comparator semantics: `<>` matches every form that does not have the given value, including forms
-where the answer *has no value at all* (mirroring `not answer = value`); range comparators, in
+where the answer *has no value at all* (mirroring `not answer = value`); `ILIKE` / `NOT ILIKE` are
+case-insensitive `LIKE` matches over the whole value (SQL `%`/`_` wildcards), `NOT ILIKE` likewise
+matching forms with no value; range comparators, in
 contrast, only match forms where the answer *has* a value, since an absent value is neither above nor
 below the bound; dates compare with whole-day precision; `contains` matches substrings of analyzed
 words; `notes contain` searches the answer notes. Since everything is one document, results need no

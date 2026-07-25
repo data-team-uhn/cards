@@ -18,6 +18,7 @@ package io.uhndata.cards.entityindex.internal;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.util.Locale;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -151,6 +152,25 @@ public class QueryTranslatorTest
     }
 
     @Test
+    public void caseInsensitiveLikeMatchesRegardlessOfCase() throws IOException
+    {
+        // f1 is "Smith": ILIKE ignores case, and translates the SQL wildcards % and _
+        Assert.assertEquals(1, count(condition(Q_NAME, Operator.ILIKE, "smith", Type.TEXT)));
+        Assert.assertEquals(1, count(condition(Q_NAME, Operator.ILIKE, "SMITH", Type.TEXT)));
+        Assert.assertEquals(1, count(condition(Q_NAME, Operator.ILIKE, "smi%", Type.TEXT)));
+        Assert.assertEquals(1, count(condition(Q_NAME, Operator.ILIKE, "%mith", Type.TEXT)));
+        Assert.assertEquals(1, count(condition(Q_NAME, Operator.ILIKE, "sm_th", Type.TEXT)));
+        Assert.assertEquals(0, count(condition(Q_NAME, Operator.ILIKE, "%zzz%", Type.TEXT)));
+    }
+
+    @Test
+    public void negatedCaseInsensitiveLikeMatchesDifferentAndMissingValues() throws IOException
+    {
+        // f2 (Jones) differs and f3 has no name at all: both match "not ILIKE Smith", only f1 (Smith) is excluded
+        Assert.assertEquals(2, count(condition(Q_NAME, Operator.NOT_ILIKE, "smith", Type.TEXT)));
+    }
+
+    @Test
     public void containsMatchesSubstringsOfWords() throws IOException
     {
         Assert.assertEquals(1, count(condition(Q_NAME, Operator.CONTAINS, "mit", Type.TEXT)));
@@ -273,6 +293,7 @@ public class QueryTranslatorTest
             doc.add(new StringField(IndexFields.QUESTIONS, Q_NAME, Store.NO));
             doc.add(new StringField(IndexFields.ANSWERED_QUESTIONS, Q_NAME, Store.NO));
             doc.add(new StringField(Q_NAME, name, Store.NO));
+            doc.add(new StringField(Q_NAME + IndexFields.LOWER_SUFFIX, name.toLowerCase(Locale.ROOT), Store.NO));
             doc.add(new TextField(Q_NAME + IndexFields.TEXT_SUFFIX, name, Store.NO));
             doc.add(new TextField(IndexFields.FULLTEXT, name, Store.NO));
         } else {

@@ -64,6 +64,10 @@ public final class SearchCondition
         GTE(">="),
         /** Substring match on the value. */
         CONTAINS("contains"),
+        /** Case-insensitive SQL {@code LIKE} pattern match on the value, with {@code %} and {@code _} wildcards. */
+        ILIKE("ILIKE"),
+        /** Negated {@link #ILIKE}; also matches entities where the field has no value. */
+        NOT_ILIKE("NOT ILIKE"),
         /** Substring match on the notes accompanying the value. */
         NOTES_CONTAIN("notes contain"),
         /** The field has no value. */

@@ -18,6 +18,7 @@ package io.uhndata.cards.entityindex.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -416,6 +417,8 @@ class EntityDocumentBuilder
     {
         if (text.length() <= MAX_KEYWORD_LENGTH) {
             doc.add(new StringField(key, text, Store.NO));
+            // A lowercased whole-value copy, indexed as a single term, so ILIKE can match it with a wildcard query
+            doc.add(new StringField(key + IndexFields.LOWER_SUFFIX, text.toLowerCase(Locale.ROOT), Store.NO));
             doc.add(new SortedSetDocValuesField(key + IndexFields.SORT_SUFFIX,
                 new BytesRef(StringUtils.truncate(text, MAX_SORT_KEY_LENGTH))));
         }

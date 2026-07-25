@@ -73,6 +73,9 @@ import io.uhndata.cards.utils.DateUtils;
  * {@code (*blastoma OR *noma OR tumor*) recurrent}; no filter set by default</li>
  * <li><code>includeallstatus</code>: if true, incomplete forms will be included. Otherwise, they will be excluded
  * unless searched for directly using {@code fieldnames="statusFlags"}
+ * <li><code>fieldgroups</code>: optional group ids aligned with {@code fieldnames}; field conditions sharing a
+ * non-empty group are ORed together, while distinct groups and ungrouped fields are ANDed. Supported field
+ * comparators include {@code ILIKE} and {@code NOT ILIKE}, case-insensitive {@code LIKE} matches</li>
  * </ul>
  *
  * @version $Id$
@@ -89,6 +92,8 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
 
     protected static final String FIELDVALUES = "fieldvalues";
 
+    protected static final String FIELDGROUPS = "fieldgroups";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PaginationServlet.class);
 
     private static final long serialVersionUID = -6068156942302219324L;
@@ -97,8 +102,8 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
 
     // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
     private static final List<String> COMPARATORS =
-        Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain", "contains", " IS NULL",
-            " IS NOT NULL");
+        Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "ILIKE", "NOT ILIKE", "notes contain", "contains",
+            " IS NULL", " IS NOT NULL");
 
     private static final String SUBJECT_IDENTIFIER = "cards:Subject";
 
@@ -384,12 +389,7 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
         final Map<String, String[]> fieldParameters = getFieldParameters(request);
         final String[] fieldNames = fieldParameters.get(FIELDNAMES);
         if (fieldNames != null) {
-            final String[] fieldValues = fieldParameters.get(FIELDVALUES);
-            final String[] fieldComparators = fieldParameters.get(FIELDCOMPARATORS);
-
-            for (int i = 0; i < fieldNames.length; i++) {
-                addFieldConditionToQuery(query, fieldNames[i], fieldComparators[i], fieldValues[i]);
-            }
+            appendFieldConditions(query, fieldParameters);
         }
 
         // TODO, if more request options are required: convert includeAllStatus into a request mode
@@ -447,20 +447,96 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
             fieldParameters.put(FIELDNAMES, names);
             fieldParameters.put(FIELDVALUES, values);
             fieldParameters.put(FIELDCOMPARATORS, comparators);
+            putOptionalGroups(request, names.length, fieldParameters);
         }
 
         return fieldParameters;
+    }
+
+    /**
+     * Reads the optional {@code fieldgroups} parameter, which lets conditions be ORed together, and adds it to the
+     * parsed field parameters if present. Conditions sharing a non-empty group id are ORed; the parameter, when
+     * given, must align with the field names.
+     *
+     * @param request the current request
+     * @param expectedLength the number of field names the groups must align with
+     * @param fieldParameters the parsed field parameters to add the groups to
+     * @throws IllegalArgumentException if the groups are present but don't align with the field names
+     */
+    private void putOptionalGroups(final SlingJakartaHttpServletRequest request, final int expectedLength,
+        final Map<String, String[]> fieldParameters)
+    {
+        final String[] groups = request.getParameterValues(FIELDGROUPS);
+        if (groups == null) {
+            return;
+        }
+        if (groups.length != expectedLength) {
+            throw new IllegalArgumentException(
+                "Invalid request, a field group must be provided for every field name");
+        }
+        fieldParameters.put(FIELDGROUPS, groups);
     }
 
     protected void addFieldConditionToQuery(final StringBuilder query, final String field, final String comparator,
         final String value)
     {
         if (StringUtils.isNotBlank(field)) {
-            query.append(comparisonCondition(
-                String.format("n.'%s'", this.sanitizeValue(field)),
-                this.sanitizeComparator(comparator),
+            query.append(comparisonCondition(fieldProperty(field), this.sanitizeComparator(comparator),
                 this.sanitizeValue(value)));
         }
+    }
+
+    /**
+     * Appends the parent-node conditions to the query, ORing together those that share a field group. Ungrouped
+     * fields (and fields whose group id is empty) each become a standalone ANDed condition, while fields sharing a
+     * non-empty group id are ORed together inside parentheses, e.g. {@code and (n.'status'='a' or n.'status'='b')}.
+     * Groups appear in the query at the position of their first member.
+     *
+     * @param query the query being built
+     * @param fieldParameters the parsed field parameters: aligned names, comparators and values, and optional groups
+     */
+    private void appendFieldConditions(final StringBuilder query, final Map<String, String[]> fieldParameters)
+    {
+        final String[] names = fieldParameters.get(FIELDNAMES);
+        final String[] comparators = fieldParameters.get(FIELDCOMPARATORS);
+        final String[] values = fieldParameters.get(FIELDVALUES);
+        final String[] groups = fieldParameters.get(FIELDGROUPS);
+        final List<List<Integer>> ordered = new ArrayList<>();
+        final Map<String, List<Integer>> namedGroups = new HashMap<>();
+        for (int i = 0; i < names.length; i++) {
+            if (StringUtils.isBlank(names[i])) {
+                continue;
+            }
+            final Integer index = i;
+            final String group = groups == null || groups[i].isEmpty() ? null : groups[i];
+            if (group == null) {
+                ordered.add(List.of(index));
+            } else {
+                namedGroups.computeIfAbsent(group, key -> {
+                    final List<Integer> members = new ArrayList<>();
+                    ordered.add(members);
+                    return members;
+                }).add(index);
+            }
+        }
+        for (final List<Integer> group : ordered) {
+            if (group.size() == 1) {
+                final int i = group.get(0);
+                query.append(comparisonCondition(fieldProperty(names[i]), this.sanitizeComparator(comparators[i]),
+                    this.sanitizeValue(values[i])));
+            } else {
+                query.append(" and (")
+                    .append(group.stream().map(i -> bareComparison(fieldProperty(names[i]),
+                        this.sanitizeComparator(comparators[i]), this.sanitizeValue(values[i])))
+                        .collect(Collectors.joining(" or ")))
+                    .append(')');
+            }
+        }
+    }
+
+    private String fieldProperty(final String field)
+    {
+        return String.format("n.'%s'", this.sanitizeValue(field));
     }
 
     /**
@@ -476,10 +552,30 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
      */
     private String comparisonCondition(final String property, final String comparator, final String value)
     {
-        if ("<>".equals(comparator)) {
-            return String.format(" and not %s='%s'", property, value);
-        }
-        return String.format(" and %s%s'%s'", property, comparator, value);
+        return " and " + bareComparison(property, comparator, value);
+    }
+
+    /**
+     * Build a comparison condition on a single property, without the leading {@code " and "}, so that it can also be
+     * combined into an ORed group. A not-equals comparator becomes a negated equality (see
+     * {@link #comparisonCondition}); {@code ILIKE} / {@code NOT ILIKE} are the case-insensitive counterparts of
+     * {@code LIKE}, implemented by lowercasing both the property and the pattern, since JCR-SQL2 has no native
+     * case-insensitive matching.
+     *
+     * @param property the fully qualified property reference, e.g. {@code n.'statusFlags'}
+     * @param comparator the sanitized comparator
+     * @param value the sanitized value, quoted by this method
+     * @return a query fragment
+     */
+    private String bareComparison(final String property, final String comparator, final String value)
+    {
+        return switch (comparator) {
+            case "<>" -> String.format("not %s='%s'", property, value);
+            case "LIKE" -> String.format("%s LIKE '%s'", property, value);
+            case "ILIKE" -> String.format("LOWER(%s) LIKE '%s'", property, value.toLowerCase(Locale.ROOT));
+            case "NOT ILIKE" -> String.format("not LOWER(%s) LIKE '%s'", property, value.toLowerCase(Locale.ROOT));
+            case null, default -> String.format("%s%s'%s'", property, comparator, value);
+        };
     }
 
     /**
@@ -912,6 +1008,14 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
                     " and contains(%s.'note', '*%s*')",
                     filter.source,
                     this.sanitizeValue(filter.value)));
+        } else if ("ILIKE".equals(filter.comparator) || "NOT ILIKE".equals(filter.comparator)) {
+            // Case-insensitive LIKE, which JCR-SQL2 lacks: lowercase both the value and the property
+            condition.append(
+                String.format(
+                    " and %sLOWER(%s.'value') LIKE '%s'",
+                    "NOT ILIKE".equals(filter.comparator) ? "not " : "",
+                    filter.source,
+                    this.sanitizeValue(filter.value).toLowerCase(Locale.ROOT)));
         } else {
             condition.append(getValueComparisonString(filter));
         }
