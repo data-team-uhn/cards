@@ -259,7 +259,11 @@ The chunker's recorded `chunked` in `outline.json` flag is the routing decision;
 `chunkNNN: heading` correspondence comes from `catalog.json`:
 
 1. **`chunked: false` (small document)** — send the **whole** `.md` as
-   `INPUT (full document)`. No catalog; chunk stamp is a no-op.
+   `INPUT (full document)`. **Exception:** when the outline came from PDF bookmarks
+   (`outline_source == "pdf-bookmarks"`) and carries a `toc`, send `outline.toc` entry lines
+   **only** (header label `"table of contents"`) — a verified bookmark TOC already maps the
+   whole structure, so the full text is unnecessary. No catalog either way; chunk stamp is a
+   no-op. (`ProtocolGateService.selectInput`; `ParseOutline.outlineSource()`.)
 2. **`chunked: true` + TOC present** — send `outline.toc` entry lines **only** (no first
    chunk — a TOC already maps the whole document's structure). Header label:
    `"table of contents"`.
