@@ -179,7 +179,7 @@ function SubjectView(props) {
           hasSubjects
             ? <LiveTable
               columns={columns || defaultColumns}
-              customUrl={'/Subjects.paginate?fieldnames=type&fieldcomparators=%3D&fieldvalues='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
+              customUrl={'/Subjects.entitysearch?fieldnames=type&fieldcomparators=%3D&fieldvalues='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
               defaultLimit={10}
               entryType="Subject"
               actions={enabledActions.length > 0 ? enabledActions : undefined}

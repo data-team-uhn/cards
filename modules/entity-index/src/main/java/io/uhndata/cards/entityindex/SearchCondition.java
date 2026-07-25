@@ -52,7 +52,7 @@ public final class SearchCondition
     {
         /** Equality. */
         EQ("="),
-        /** Inequality, only matches entities where the field does have a value. */
+        /** Inequality; also matches entities where the field has no value, since "not equal to X" includes "no X". */
         NEQ("<>"),
         /** Strictly lower than. */
         LT("<"),

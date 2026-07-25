@@ -21,9 +21,11 @@ import java.util.List;
 
 /**
  * The outcome of a search against the {@link EntityIndexer entity index}: the paths of the matching entities, in the
- * requested order, together with the total number of matches. Note that the results reflect the content visible to
- * the index maintenance service; callers presenting results to a user must check that the user can actually read
- * each result, for example by resolving the paths through the user's own session.
+ * requested order, up to the requested maximum. Note that the results reflect the content visible to the index
+ * maintenance service; callers presenting results to a user must check that the user can actually read each result,
+ * for example by resolving the paths through the user's own session. No count of matching documents is exposed on
+ * purpose: a meaningful total can only be obtained by resolving the results and counting the readable ones, which is
+ * the caller's responsibility.
  *
  * @version $Id$
  * @since 0.9.41
@@ -32,23 +34,22 @@ public final class SearchResults
 {
     private final List<String> paths;
 
-    private final long totalMatches;
-
     private final long searchTimeMillis;
+
+    private final String luceneQuery;
 
     /**
      * Basic constructor.
      *
      * @param paths the paths of the retrieved entities, in order
-     * @param totalMatches the total number of documents matching the query, may be larger than the number of
-     *            retrieved paths
      * @param searchTimeMillis how long the index lookup took, in milliseconds
+     * @param luceneQuery the string form of the actual Lucene query that was executed, for diagnostics
      */
-    public SearchResults(final List<String> paths, final long totalMatches, final long searchTimeMillis)
+    public SearchResults(final List<String> paths, final long searchTimeMillis, final String luceneQuery)
     {
         this.paths = paths;
-        this.totalMatches = totalMatches;
         this.searchTimeMillis = searchTimeMillis;
+        this.luceneQuery = luceneQuery;
     }
 
     /**
@@ -62,16 +63,6 @@ public final class SearchResults
     }
 
     /**
-     * The total number of documents matching the query.
-     *
-     * @return a number of matches, may be larger than the number of retrieved paths
-     */
-    public long getTotalMatches()
-    {
-        return this.totalMatches;
-    }
-
-    /**
      * How long the index lookup took.
      *
      * @return a duration in milliseconds
@@ -79,5 +70,16 @@ public final class SearchResults
     public long getSearchTimeMillis()
     {
         return this.searchTimeMillis;
+    }
+
+    /**
+     * The string form of the actual Lucene query that was executed, useful for diagnosing why a search returned a
+     * given set of results.
+     *
+     * @return a Lucene query string, may be {@code null} when the index was not available
+     */
+    public String getLuceneQuery()
+    {
+        return this.luceneQuery;
     }
 }

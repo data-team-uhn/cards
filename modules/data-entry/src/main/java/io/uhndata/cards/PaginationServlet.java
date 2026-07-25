@@ -456,21 +456,30 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
         final String value)
     {
         if (StringUtils.isNotBlank(field)) {
-            if ("<>".equals(comparator)) {
-                // `x <> y` does not work intuitively when y is an array as it is run on each array entry
-                // and does not match empty arrays. Convert to `not x = y`
-                query.append(String.format(
-                    " and not n.'%s'='%s'",
-                    this.sanitizeValue(field),
-                    this.sanitizeValue(value)));
-            } else {
-                query.append(String.format(
-                    " and n.'%s'%s'%s'",
-                    this.sanitizeValue(field),
-                    this.sanitizeComparator(comparator),
-                    this.sanitizeValue(value)));
-            }
+            query.append(comparisonCondition(
+                String.format("n.'%s'", this.sanitizeValue(field)),
+                this.sanitizeComparator(comparator),
+                this.sanitizeValue(value)));
         }
+    }
+
+    /**
+     * Build a comparison condition on a single property, starting with {@code " and "}. A not-equals comparator is
+     * turned into a negated equality ({@code not property='value'} instead of {@code property<>'value'}), because the
+     * intended meaning of "not equal to" is "does not have this exact value", which {@code <>} fails to express: it is
+     * evaluated once per entry for multi-valued properties, and never matches missing or empty properties.
+     *
+     * @param property the fully qualified property reference, e.g. {@code n.'statusFlags'}
+     * @param comparator the sanitized comparator
+     * @param value the sanitized value, quoted by this method
+     * @return a query fragment starting with {@code " and "}
+     */
+    private String comparisonCondition(final String property, final String comparator, final String value)
+    {
+        if ("<>".equals(comparator)) {
+            return String.format(" and not %s='%s'", property, value);
+        }
+        return String.format(" and %s%s'%s'", property, comparator, value);
     }
 
     /**
@@ -820,19 +829,16 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
         StringBuilder filterdata = new StringBuilder();
         switch (filter.name) {
             case SUBJECT_IDENTIFIER:
-                filterdata.append(
-                    String.format(" and %s.'%s'%s'%s'",
-                        filter.source,
-                        subjectProperty,
-                        this.sanitizeComparator(filter.comparator),
-                        this.sanitizeValue(filter.value)));
+                filterdata.append(comparisonCondition(
+                    String.format("%s.'%s'", filter.source, subjectProperty),
+                    this.sanitizeComparator(filter.comparator),
+                    this.sanitizeValue(filter.value)));
                 break;
             case QUESTIONNAIRE_IDENTIFIER:
-                filterdata.append(
-                    String.format(" and %s.'questionnaire'%s'%s'",
-                        filter.source,
-                        this.sanitizeComparator(filter.comparator),
-                        this.sanitizeValue(filter.value)));
+                filterdata.append(comparisonCondition(
+                    String.format("%s.'questionnaire'", filter.source),
+                    this.sanitizeComparator(filter.comparator),
+                    this.sanitizeValue(filter.value)));
                 break;
             case CREATED_DATE_IDENTIFIER:
                 filterdata.append(" and ");
@@ -843,10 +849,10 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
                         this.sanitizeValue(filter.value)));
                 break;
             case CREATED_BY_IDENTIFIER:
-                filterdata.append(
-                    String.format(" and n.'jcr:createdBy'%s'%s'",
-                        this.sanitizeComparator(filter.comparator),
-                        this.sanitizeValue(filter.value)));
+                filterdata.append(comparisonCondition(
+                    "n.'jcr:createdBy'",
+                    this.sanitizeComparator(filter.comparator),
+                    this.sanitizeValue(filter.value)));
                 break;
             case MODIFIED_DATE_IDENTIFIER:
                 filterdata.append(" and ");
@@ -857,10 +863,10 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
                         this.sanitizeValue(filter.value)));
                 break;
             case MODIFIED_BY_IDENTIFIER:
-                filterdata.append(
-                    String.format(" and n.'jcr:lastModifiedBy'%s'%s'",
-                        this.sanitizeComparator(filter.comparator),
-                        this.sanitizeValue(filter.value)));
+                filterdata.append(comparisonCondition(
+                    "n.'jcr:lastModifiedBy'",
+                    this.sanitizeComparator(filter.comparator),
+                    this.sanitizeValue(filter.value)));
                 break;
             default:
                 break;

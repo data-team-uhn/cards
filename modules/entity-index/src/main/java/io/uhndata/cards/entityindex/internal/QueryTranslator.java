@@ -56,8 +56,9 @@ import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Translates a {@link SearchQuery} into a Lucene query over the flattened entity documents. All the criteria are
- * combined with AND. Note the semantics of negative and range operators on item fields: they only match entities
- * where the item does have a value, mirroring the behavior of the JOIN-based JCR queries they replace.
+ * combined with AND. Note the semantics on item fields: an inequality ({@code <>}) also matches entities where the
+ * item has no value at all, since "not equal to X" includes "does not have X"; range operators, on the other hand,
+ * only match entities that do have a value, as an absent value is neither greater nor lower than the bound.
  *
  * @version $Id$
  * @since 0.9.41
@@ -104,28 +105,32 @@ class QueryTranslator
         throws IOException
     {
         final BooleanQuery.Builder result = new BooleanQuery.Builder();
-        boolean empty = true;
+        boolean positive = false;
         for (final SearchCondition condition : query.getConditions()) {
-            result.add(translateCondition(condition), Occur.MUST);
-            empty = false;
+            positive |= addConjunct(result, condition);
         }
         for (final List<SearchCondition> group : query.getDisjunctions()) {
             result.add(translateDisjunction(group), Occur.MUST);
-            empty = false;
+            positive = true;
         }
         for (final SearchQuery.Join join : query.getSubjectJoins()) {
             result.add(joins.evaluate(join), Occur.MUST);
-            empty = false;
+            positive = true;
         }
         if (StringUtils.isNotBlank(query.getFulltext())) {
             result.add(parseFulltext(query.getFulltext()), Occur.MUST);
-            empty = false;
+            positive = true;
         }
         if (StringUtils.isNotBlank(query.getNativeQuery())) {
             result.add(parseNative(query.getNativeQuery(), searcher.getIndexReader()), Occur.MUST);
-            empty = false;
+            positive = true;
         }
-        return empty ? new MatchAllDocsQuery() : result.build();
+        // A purely negative query (only inequalities) matches nothing without a positive clause to subtract from, and
+        // an empty query should match everything: in both cases a single match-all base is enough for the whole query.
+        if (!positive) {
+            result.add(new MatchAllDocsQuery(), Occur.MUST);
+        }
+        return result.build();
     }
 
     /**
@@ -137,10 +142,33 @@ class QueryTranslator
     Query translateGroup(final List<SearchCondition> conditions)
     {
         final BooleanQuery.Builder result = new BooleanQuery.Builder();
+        boolean positive = false;
         for (final SearchCondition condition : conditions) {
-            result.add(translateCondition(condition), Occur.MUST);
+            positive |= addConjunct(result, condition);
+        }
+        if (!positive) {
+            result.add(new MatchAllDocsQuery(), Occur.MUST);
         }
         return result.build();
+    }
+
+    /**
+     * Add one condition of an AND group to a query builder. An inequality is attached directly as a negative
+     * ({@code MUST_NOT}) clause, so a single match-all base suffices for the whole group instead of wrapping every
+     * inequality in its own; all other conditions are positive ({@code MUST}) clauses.
+     *
+     * @param builder the query builder for the AND group
+     * @param condition the condition to add
+     * @return whether a positive clause was added, i.e. one that can match documents on its own
+     */
+    private boolean addConjunct(final BooleanQuery.Builder builder, final SearchCondition condition)
+    {
+        if (condition.getOperator() == SearchCondition.Operator.NEQ) {
+            builder.add(equalityQuery(condition), Occur.MUST_NOT);
+            return false;
+        }
+        builder.add(translateCondition(condition), Occur.MUST);
+        return true;
     }
 
     private Query translateDisjunction(final List<SearchCondition> group)
@@ -187,18 +215,32 @@ class QueryTranslator
     }
 
     /**
-     * Translate an inequality condition: the field must have a value, but not one equal to the compared value.
+     * The query matching entities whose field equals the condition's value, used both as the positive part of an
+     * equality and as the negated part of an inequality.
+     *
+     * @param condition the condition supplying the field, value and type
+     * @return a Lucene query
+     */
+    private Query equalityQuery(final SearchCondition condition)
+    {
+        return compareValue(new SearchCondition(condition.getField(), SearchCondition.Operator.EQ,
+            condition.getValue(), condition.getType()));
+    }
+
+    /**
+     * Translate a standalone inequality condition: any entity that does not have the compared value, whether because
+     * it has a different value or because it has no value at all. This mirrors {@code not field = value}: "not equal
+     * to X" includes "does not have X". A match-all base is needed because a purely negative query matches nothing;
+     * inside an AND group {@link #addConjunct} avoids it by attaching the negation to the group's own base instead.
      *
      * @param condition the condition to translate
      * @return a Lucene query
      */
     private Query negate(final SearchCondition condition)
     {
-        final SearchCondition equality = new SearchCondition(condition.getField(), SearchCondition.Operator.EQ,
-            condition.getValue(), condition.getType());
         return new BooleanQuery.Builder()
-            .add(hasValueQuery(condition.getField()), Occur.MUST)
-            .add(compareValue(equality), Occur.MUST_NOT)
+            .add(new MatchAllDocsQuery(), Occur.MUST)
+            .add(equalityQuery(condition), Occur.MUST_NOT)
             .build();
     }
 

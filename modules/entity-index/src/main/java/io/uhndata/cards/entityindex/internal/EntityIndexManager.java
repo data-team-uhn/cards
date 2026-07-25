@@ -276,21 +276,22 @@ public class EntityIndexManager implements EntityIndexer, ResourceChangeListener
     public SearchResults search(final SearchQuery query) throws IOException
     {
         if (this.searcherManager == null) {
-            return new SearchResults(Collections.emptyList(), 0, 0);
+            return new SearchResults(Collections.emptyList(), 0, null);
         }
         final long start = System.currentTimeMillis();
         final IndexSearcher searcher = this.searcherManager.acquire();
         try {
             final Query luceneQuery = this.translator.translate(query, searcher, this::evaluateJoin);
+            // Only the top hits are fetched, never a full count: an honest total that accounts for per-user access
+            // is computed by the caller while resolving the results.
             final TopDocs hits = searcher.search(luceneQuery, Math.max(1, query.getMaxHits()), getSort(query));
-            final long total = searcher.count(luceneQuery);
             final List<String> paths = new ArrayList<>(hits.scoreDocs.length);
             final Set<String> pathField = Collections.singleton(IndexFields.PATH);
             for (final org.apache.lucene.search.ScoreDoc hit : hits.scoreDocs) {
                 paths.add(searcher.getIndexReader().storedFields()
                     .document(hit.doc, pathField).get(IndexFields.PATH));
             }
-            return new SearchResults(paths, total, System.currentTimeMillis() - start);
+            return new SearchResults(paths, System.currentTimeMillis() - start, luceneQuery.toString());
         } finally {
             this.searcherManager.release(searcher);
         }

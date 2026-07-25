@@ -44,6 +44,13 @@ worked around from within it:
   same aggregation semantics, requires an external Elasticsearch cluster to operate, and only
   supports the `elastic-async` indexing lane. It brings operational cost without solving the JOIN
   problem.
+- **A JOIN filter can only see forms that have an answer node for the question.** A question in a
+  conditional section that is not shown never gets an answer node, so those forms are simply absent
+  from the JOIN and cannot be matched at all. This silently breaks any filter whose intended meaning
+  includes *absence*: `not-equals` (a missing answer is not the forbidden value, yet the form is
+  dropped), `is empty`, and the very notion of an unanswered question. A one-document-per-form index
+  makes "this form has no value for question X" a first-class, queryable fact, so those filters
+  finally behave the way someone reading the form would expect, conditional sections included.
 - The existing schema already carries scars from this limitation: the denormalized `form` string
   property on every `cards:Answer` and the `relatedSubjects` list on every `cards:Form` exist only
   to make the JOINs *possible* to index at all.
@@ -77,9 +84,11 @@ transparent: answers are indexed the same no matter how deeply nested in (recurr
 ## Querying
 
 `GET /Forms.entitysearch.json` accepts the same parameters as the `.paginate` servlet
-(`filternames`/`filtercomparators`/`filtervalues`/`filtertypes`, `filterempty`, `filternotempty`,
-`filter` for fulltext, `offset`, `limit`, `descending`, `includeallstatus`, `req`,
-`resourceSelectors`), plus:
+(`filternames`/`filtercomparators`/`filtervalues`/`filtertypes`,
+`fieldnames`/`fieldcomparators`/`fieldvalues` for the fixed filters baked into the table URLs — the
+questionnaire, subject, subject type and status flag filters, which carry no explicit type —
+`filterempty`, `filternotempty`, `filter` for fulltext, `offset`, `limit`, `descending`,
+`includeallstatus`, `req`, `resourceSelectors`), plus:
 
 - `lucene`: a native Lucene query over the flattened fields, e.g.
   `lucene=Patient\ information\/date_of_birth.long:[0 TO 1262304000000] AND \@statusFlags:SUBMITTED`
@@ -99,11 +108,15 @@ Filter names may be question uuids (as sent by the existing frontend), question 
 `cards:CreatedBy`, `cards:LastModified`, `cards:LastModifiedBy`, `statusFlags` names. The response
 has the same shape as `.paginate` (`rows`, `returnedrows`, `totalrows`, …) plus `searchtimems`.
 
-Comparator semantics mirror the JOIN queries being replaced: `<>` and range comparators only match
-forms where the answer *has* a value; dates compare with whole-day precision; `contains` matches
-substrings of analyzed words; `notes contain` searches the answer notes. Since everything is one
-document, Lucene also gives exact total counts (no in-memory deduplication) and free fulltext
-ranking, fuzzy (`~`), wildcard and phrase queries through the `lucene`/`filter` parameters.
+Comparator semantics: `<>` matches every form that does not have the given value, including forms
+where the answer *has no value at all* (mirroring `not answer = value`); range comparators, in
+contrast, only match forms where the answer *has* a value, since an absent value is neither above nor
+below the bound; dates compare with whole-day precision; `contains` matches substrings of analyzed
+words; `notes contain` searches the answer notes. Since everything is one document, results need no
+in-memory deduplication (unlike JOIN queries, which repeat a form once per matched answer), and
+free fulltext ranking, fuzzy (`~`), wildcard and phrase queries are available through the
+`lucene`/`filter` parameters. Result totals are not taken from the index; they are counted while
+resolving the results against the requesting user's access (see the access control caveat below).
 
 `POST /Forms.reindexEntities.json` (administrators only) triggers a full rebuild in the
 background.
@@ -150,15 +163,15 @@ replaced a four-JOIN JCR query used by the scheduled email notification jobs.
 
 ## Access control caveat
 
-The index itself contains everything readable by the service user. Query results are resolved
-through the *requesting user's* session and unreadable forms are dropped from the output, so no
-content is leaked directly. However, like Oak's own fulltext aggregation (which checks only the
-aggregate root's ACL), aggregate numbers can differ from what the user could enumerate themselves:
-`totalrows` may count forms the user cannot read (it is then flagged `totalIsApproximate`), and a
-crafted sequence of filters observing the totals could in principle probe answer values of
-unreadable forms. Deployments using restrictive per-form ACLs (`trusted`/`ownership` permission
-schemes) should either restrict access to the `.entitysearch` endpoint or accept this trade-off;
-the default `open` scheme is unaffected.
+The index itself contains everything readable by the service user, but nothing derived from it is
+returned without a per-user access check. Every result counted or returned is first resolved
+through the *requesting user's* session; entities the user cannot read do not resolve and are
+neither returned nor counted. The reported `totalrows` is therefore the number of results the
+requesting user can actually access — the index is never asked for a raw match count, so no
+aggregate can leak the existence or values of unreadable forms. `totalIsApproximate` reflects only
+whether the scan stopped at its look-ahead/`showTotalRows` limit before reaching the end, not
+access control. The cost of this honesty is that computing an exact total (`showTotalRows=true`)
+resolves every matching result up to the 10,000 hard cap.
 
 ## Configuration
 

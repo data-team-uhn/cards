@@ -38,7 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.SlingJakartaHttpServletResponse;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
@@ -65,6 +64,9 @@ import io.uhndata.cards.entityindex.SearchResults;
  * {@code /Questionnaires}, or one of the special values {@code cards:Questionnaire}, {@code cards:Subject},
  * {@code cards:Created}, {@code cards:CreatedBy}, {@code cards:LastModified}, {@code cards:LastModifiedBy},
  * {@code statusFlags}</li>
+ * <li><code>fieldnames</code>, <code>fieldcomparators</code>, <code>fieldvalues</code>: fixed filters on entity
+ * properties, as baked into the table URLs (e.g. {@code questionnaire}, {@code subject}, {@code type},
+ * {@code statusFlags}); same as {@code filter*} but without an explicit type, which is resolved from the field</li>
  * <li><code>filterempty</code>, <code>filternotempty</code>: questions that must (not) be unanswered</li>
  * <li><code>filter</code>: a full text filter over the whole entity content</li>
  * <li><code>lucene</code>: a native Lucene query using the flattened field naming convention</li>
@@ -95,7 +97,11 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntitySearchServlet.class);
 
-    private static final int MAX_SCANNED_HITS = 100000;
+    /** The hard cap on how many results are ever scanned for one request, whatever the requested page or total. */
+    private static final long MAX_SCANNED_HITS = 10000;
+
+    /** A batch is this many times the page size; the default scan looks ahead about one batch past the page. */
+    private static final int QUERY_SIZE_MULTIPLIER = 10;
 
     private static final String SUBJECT_IDENTIFIER = "cards:Subject";
 
@@ -123,6 +129,21 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
             this.questionnaire = questionnaire;
         }
     }
+
+    /**
+     * Entity-level filter names that map directly to an index metadata field, regardless of the searched entity. The
+     * subject filters ({@code cards:Subject} and the raw {@code subject}) are resolved separately since they depend on
+     * whether subjects or forms are being searched. Both the special {@code cards:*} names and the raw node property
+     * names sent by the frontend's fixed {@code field} filters are accepted.
+     */
+    private static final Map<String, ResolvedField> METADATA_FIELDS = Map.of(
+        QUESTIONNAIRE_IDENTIFIER, new ResolvedField(IndexFields.QUESTIONNAIRE, SearchCondition.Type.REFERENCE, null),
+        "questionnaire", new ResolvedField(IndexFields.QUESTIONNAIRE, SearchCondition.Type.REFERENCE, null),
+        "cards:Created", new ResolvedField(IndexFields.CREATED, SearchCondition.Type.DATE, null),
+        "cards:CreatedBy", new ResolvedField(IndexFields.CREATED_BY, SearchCondition.Type.TEXT, null),
+        "cards:LastModified", new ResolvedField(IndexFields.LAST_MODIFIED, SearchCondition.Type.DATE, null),
+        "cards:LastModifiedBy", new ResolvedField(IndexFields.LAST_MODIFIED_BY, SearchCondition.Type.TEXT, null),
+        "statusFlags", new ResolvedField(IndexFields.STATUS_FLAGS, SearchCondition.Type.TEXT, null));
 
     /** A parsed condition, together with the questionnaire it targets, if any. */
     private static final class ParsedCondition
@@ -173,9 +194,11 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
             }
             final long limit = NumberUtils.toLong(request.getParameter("limit"), 10);
             final long offset = NumberUtils.toLong(request.getParameter("offset"), 0);
-            final SearchQuery query = buildQuery(request, index, offset, limit);
+            final boolean showTotalRows = Boolean.parseBoolean(request.getParameter("showTotalRows"));
+            final Paging paging = new Paging(offset, limit, showTotalRows);
+            final SearchQuery query = buildQuery(request, index, paging);
             final SearchResults results = index.search(query);
-            writeResponse(request, response, results, offset, limit);
+            writeResponse(request, response, results, paging);
         } catch (final IllegalArgumentException e) {
             response.setStatus(400);
             response.setContentType("application/json");
@@ -188,13 +211,16 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
     }
 
     private SearchQuery buildQuery(final SlingJakartaHttpServletRequest request, final EntityIndexer index,
-        final long offset, final long limit)
+        final Paging paging)
     {
         final Session session = request.getResourceResolver().adaptTo(Session.class);
         final boolean subjectMode = request.getResource().isResourceType("cards/SubjectsHomepage");
         final SearchQuery query = new SearchQuery();
         final List<ParsedCondition> conditions = new ArrayList<>();
+        // `filter*` carries the interactive column filters (with an explicit type), `field*` the fixed filters
+        // baked into the table URL (questionnaire, subject, subject type, status flags), which omit the type.
         conditions.addAll(parseConditions(request, "filter", session, subjectMode));
+        conditions.addAll(parseConditions(request, "field", session, subjectMode));
         conditions.addAll(parseValuelessConditions(request, "filterempty", SearchCondition.Operator.IS_EMPTY,
             session, subjectMode));
         conditions.addAll(parseValuelessConditions(request, "filternotempty", SearchCondition.Operator.IS_NOT_EMPTY,
@@ -210,8 +236,7 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
         query.withFulltext(request.getParameter("filter"));
         query.withNativeQuery(request.getParameter("lucene"));
         addSort(request, session, query, subjectMode);
-        final long maxHits = Math.min(MAX_SCANNED_HITS, offset + Math.max(0, limit) * 10 + 1);
-        query.withMaxHits((int) maxHits);
+        query.withMaxHits((int) paging.scanLimit);
         return query;
     }
 
@@ -300,21 +325,18 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
     private ResolvedField resolveField(final String name, final String type, final Session session,
         final boolean subjectMode)
     {
-        return switch (name) {
-            case QUESTIONNAIRE_IDENTIFIER -> new ResolvedField(IndexFields.QUESTIONNAIRE,
+        // The subject filters depend on the searched entity: on subjects they match the subject itself, on forms the
+        // form's own subject (raw `subject`) or the whole subject hierarchy (the `cards:Subject` filter chip).
+        if (SUBJECT_IDENTIFIER.equals(name)) {
+            return new ResolvedField(subjectMode ? IndexFields.UUID : IndexFields.RELATED_SUBJECTS,
                 SearchCondition.Type.REFERENCE, null);
-            case SUBJECT_IDENTIFIER -> new ResolvedField(
-                subjectMode ? IndexFields.UUID : IndexFields.RELATED_SUBJECTS,
+        }
+        if ("subject".equals(name)) {
+            return new ResolvedField(subjectMode ? IndexFields.UUID : IndexFields.SUBJECT,
                 SearchCondition.Type.REFERENCE, null);
-            case "cards:Created" -> new ResolvedField(IndexFields.CREATED, SearchCondition.Type.DATE, null);
-            case "cards:CreatedBy" -> new ResolvedField(IndexFields.CREATED_BY, SearchCondition.Type.TEXT, null);
-            case "cards:LastModified" -> new ResolvedField(IndexFields.LAST_MODIFIED, SearchCondition.Type.DATE,
-                null);
-            case "cards:LastModifiedBy" -> new ResolvedField(IndexFields.LAST_MODIFIED_BY,
-                SearchCondition.Type.TEXT, null);
-            case "statusFlags" -> new ResolvedField(IndexFields.STATUS_FLAGS, SearchCondition.Type.TEXT, null);
-            case null, default -> resolveQuestion(name, type, session);
-        };
+        }
+        final ResolvedField metadata = name == null ? null : METADATA_FIELDS.get(name);
+        return metadata != null ? metadata : resolveQuestion(name, type, session);
     }
 
     private ResolvedField resolveQuestion(final String name, final String type, final Session session)
@@ -396,7 +418,7 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
      * Fetch and validate the four aligned condition parameters for the given prefix.
      *
      * @param request the current request
-     * @param prefix the parameter name prefix, {@code filter} or {@code join}
+     * @param prefix the parameter name prefix, {@code filter}, {@code field} or {@code join}
      * @return the names, comparators, values and types arrays, or {@code null} when no names are given
      * @throws IllegalArgumentException if the parameters are not aligned
      */
@@ -407,13 +429,18 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
             return null;
         }
         final String[] values = request.getParameterValues(prefix + "values");
-        final String[] types = request.getParameterValues(prefix + "types");
         final String[] comparators = request.getParameterValues(prefix + "comparators");
-        final boolean missing = values == null || types == null || comparators == null;
+        // The types array is optional: the fixed `field` filters send only names, comparators and values, and the
+        // value type is then resolved from the field definition. When present, it must be aligned with the rest.
+        String[] types = request.getParameterValues(prefix + "types");
+        if (types == null) {
+            types = new String[names.length];
+        }
+        final boolean missing = values == null || comparators == null;
         if (missing || names.length != values.length || names.length != types.length
             || names.length != comparators.length) {
             throw new IllegalArgumentException("Invalid request, the same number of " + prefix
-                + " names, values, types and comparators must be provided");
+                + " names, values and comparators must be provided");
         }
         return new String[][] { names, comparators, values, types };
     }
@@ -438,9 +465,72 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
         return result;
     }
 
+    /**
+     * The pagination parameters of one request, and the derived limit on how many results are scanned. The index
+     * lookup never applies an offset itself — results the user cannot read are only known once resolved, so the scan
+     * always starts at the first result and the offset is applied while resolving.
+     */
+    private static final class Paging
+    {
+        /** The requested 0-based offset, the number of readable results to skip before the page. */
+        private final long offset;
+
+        /** The requested page size, the maximum number of results to return. */
+        private final long limit;
+
+        /** Whether the exact total number of readable results is wanted, at the cost of scanning them all. */
+        private final boolean showTotalRows;
+
+        /**
+         * How many results are scanned at most: all of them when a total is wanted, one look-ahead batch otherwise,
+         * never beyond {@link #MAX_SCANNED_HITS}.
+         */
+        private final long scanLimit;
+
+        Paging(final long offset, final long limit, final boolean showTotalRows)
+        {
+            this.offset = offset;
+            this.limit = limit;
+            this.showTotalRows = showTotalRows;
+            this.scanLimit = scanLimit(offset, limit, showTotalRows);
+        }
+    }
+
+    /**
+     * How many results to scan for a request, mirroring the {@code .paginate} servlet. When a total is not wanted,
+     * scan up to the whole batch (ten pages) that contains the requested page, plus one extra result to tell "exactly
+     * N" from "more than N"; when a total is wanted, scan everything. Either way never past the hard cap. For example,
+     * a page size of 10 gives 101 at offset 0 and 301 at offset 110; a page size of 25 gives 751 at offset 500 and
+     * 1001 at offset 501.
+     *
+     * @param offset the requested 0-based offset
+     * @param limit the requested page size
+     * @param showTotalRows whether the exact total is wanted, at the cost of scanning every result
+     * @return the maximum number of results to scan
+     */
+    static long scanLimit(final long offset, final long limit, final boolean showTotalRows)
+    {
+        if (showTotalRows) {
+            return MAX_SCANNED_HITS;
+        }
+        final long batch = (long) QUERY_SIZE_MULTIPLIER * Math.max(1, limit);
+        final long lookAhead = ((long) Math.ceil((double) offset / batch) + 1) * batch + 1;
+        return Math.min(MAX_SCANNED_HITS, lookAhead);
+    }
+
+    /** The running counts of a page of results while it is being written. */
+    private static final class PageStats
+    {
+        /** Entities written to the current page. */
+        private long returned;
+
+        /** Entities readable by the requesting user that were scanned. */
+        private long readable;
+    }
+
     private void writeResponse(final SlingJakartaHttpServletRequest request,
-        final SlingJakartaHttpServletResponse response, final SearchResults results, final long offset,
-        final long limit) throws IOException
+        final SlingJakartaHttpServletResponse response, final SearchResults results, final Paging paging)
+        throws IOException
     {
         final String selectors =
             (request.getParameter("resourceSelectors") == null ? "" : "." + request.getParameter("resourceSelectors"))
@@ -451,38 +541,76 @@ public class EntitySearchServlet extends SlingJakartaSafeMethodsServlet
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
             jsonGen.writeStartObject();
             jsonGen.writeStartArray("rows");
-            long readable = 0;
-            long returned = 0;
-            boolean skipped = false;
-            for (final String path : results.getPaths()) {
-                if (returned >= limit && !skipped) {
-                    // The page is full and no entity was hidden so far, so the index total is exact,
-                    // no need to keep checking the remaining results
-                    break;
-                }
-                final Resource resource = request.getResourceResolver().resolve(path + selectors);
-                final JsonObject json = resource.adaptTo(JsonObject.class);
-                if (json == null) {
-                    // The current user is not allowed to see this entity
-                    skipped = true;
-                    continue;
-                }
-                ++readable;
-                if (readable > offset && returned < limit) {
+            final PageStats stats = writeRows(jsonGen, request, results, selectors, paging);
+            jsonGen.writeEnd();
+            writeMetadata(jsonGen, request, results, stats, paging);
+            jsonGen.writeEnd().flush();
+        }
+    }
+
+    /**
+     * Resolve every retrieved result through the requesting user's session, count the ones the user can actually
+     * read, and write those that fall in the requested page as the {@code rows} of the response. Results that do not
+     * resolve are skipped without being counted, so the resulting count reflects what the user can access, not the
+     * raw number of index matches.
+     *
+     * @param jsonGen the JSON generator writing the response
+     * @param request the current request, used to resolve entities through the user's session
+     * @param results the search results, holding the matching entity paths
+     * @param selectors the resource selectors to append when resolving each entity
+     * @param paging the pagination parameters
+     * @return the page counts
+     */
+    private PageStats writeRows(final JsonGenerator jsonGen, final SlingJakartaHttpServletRequest request,
+        final SearchResults results, final String selectors, final Paging paging)
+    {
+        final PageStats stats = new PageStats();
+        for (final String path : results.getPaths()) {
+            // A lightweight access check: an entity the current user cannot read does not resolve, and is not
+            // counted. The costlier full serialization is done only for the entities that fall in the requested page.
+            if (request.getResourceResolver().getResource(path) == null) {
+                continue;
+            }
+            ++stats.readable;
+            if (stats.readable > paging.offset && stats.returned < paging.limit) {
+                final JsonObject json =
+                    request.getResourceResolver().resolve(path + selectors).adaptTo(JsonObject.class);
+                if (json != null) {
                     jsonGen.write(json);
-                    ++returned;
+                    ++stats.returned;
                 }
             }
-            jsonGen.writeEnd();
-            jsonGen.write("req", StringUtils.defaultString(request.getParameter("req")));
-            jsonGen.write("offset", offset);
-            jsonGen.write("limit", limit);
-            jsonGen.write("returnedrows", returned);
-            jsonGen.write("totalrows", skipped ? readable : results.getTotalMatches());
-            jsonGen.write("totalIsApproximate",
-                skipped || results.getPaths().size() < results.getTotalMatches());
-            jsonGen.write("searchtimems", results.getSearchTimeMillis());
-            jsonGen.writeEnd().flush();
+        }
+        return stats;
+    }
+
+    /**
+     * Write the response metadata after the {@code rows} array: the echoed request parameters, the row counts, the
+     * search duration, and the actual Lucene query for diagnostics. The total is exact when the scan reached the end
+     * of the results, and approximate when it stopped at the scan limit, in which case at least that many results
+     * exist; the look-ahead scan carries one extra probe result past the batch, excluded from the reported total.
+     *
+     * @param jsonGen the JSON generator writing the response
+     * @param request the current request, used to echo the {@code req} parameter
+     * @param results the search results
+     * @param stats the counts gathered while writing the rows
+     * @param paging the pagination parameters
+     */
+    private void writeMetadata(final JsonGenerator jsonGen, final SlingJakartaHttpServletRequest request,
+        final SearchResults results, final PageStats stats, final Paging paging)
+    {
+        final boolean approximate = results.getPaths().size() >= paging.scanLimit;
+        final long total = approximate && !paging.showTotalRows && stats.readable >= paging.scanLimit
+            ? stats.readable - 1 : stats.readable;
+        jsonGen.write("req", StringUtils.defaultString(request.getParameter("req")));
+        jsonGen.write("offset", paging.offset);
+        jsonGen.write("limit", paging.limit);
+        jsonGen.write("returnedrows", stats.returned);
+        jsonGen.write("totalrows", total);
+        jsonGen.write("totalIsApproximate", approximate);
+        jsonGen.write("searchtimems", results.getSearchTimeMillis());
+        if (results.getLuceneQuery() != null) {
+            jsonGen.write("lucenequery", results.getLuceneQuery());
         }
     }
 }

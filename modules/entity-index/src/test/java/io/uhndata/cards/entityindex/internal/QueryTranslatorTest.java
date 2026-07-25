@@ -105,10 +105,23 @@ public class QueryTranslatorTest
     }
 
     @Test
-    public void inequalityRequiresAValue() throws IOException
+    public void inequalityMatchesDifferentAndMissingValues() throws IOException
     {
-        // f2 has a different name, f3 has no name at all and must not match
-        Assert.assertEquals(1, count(condition(Q_NAME, Operator.NEQ, SMITH, Type.TEXT)));
+        // f2 has a different name and f3 has no name at all: both differ from "Smith", only f1 (Smith) is excluded
+        Assert.assertEquals(2, count(condition(Q_NAME, Operator.NEQ, SMITH, Type.TEXT)));
+    }
+
+    @Test
+    public void inequalitiesInAnAndShareASingleMatchAllBase() throws IOException
+    {
+        final SearchQuery query = new SearchQuery()
+            .withCondition(new SearchCondition(Q_NAME, Operator.NEQ, SMITH, Type.TEXT))
+            .withCondition(new SearchCondition(Q_AGE, Operator.NEQ, "30", Type.LONG));
+        // The two inequalities are attached as negative clauses on one match-all base, not one base each
+        final String lucene = this.translator.translate(query, this.searcher, this::selfJoin).toString();
+        Assert.assertEquals(1, lucene.split("\\Q*:*\\E", -1).length - 1);
+        // f1 (Smith) excluded by name, f2 (Jones, 30) excluded by age, only f3 (no name, 55) differs from both
+        Assert.assertEquals(1, count(query));
     }
 
     @Test

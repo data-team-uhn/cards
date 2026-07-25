@@ -241,7 +241,7 @@ function FormView(props) {
         { typeof(qFilter) == "undefined" ? <LinearProgress /> :
           <LiveTable
             columns={props.columns || columns}
-            customUrl={`/Forms.paginate?descending=true${qFilter}${statusFilter}`}
+            customUrl={`/Forms.entitysearch?descending=true${qFilter}${statusFilter}`}
             defaultLimit={10}
             filters
             questionnaire={questionnaire}

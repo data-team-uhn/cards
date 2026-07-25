@@ -434,7 +434,7 @@ function SubjectMemberInternal (props) {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const customUrl=`/Forms.paginate?fieldnames=subject&fieldcomparators=%3D&fieldvalues=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true&limit=1000`;
+  const customUrl=`/Forms.entitysearch?fieldnames=subject&fieldcomparators=%3D&fieldvalues=${encodeURIComponent(data['jcr:uuid'])}&includeallstatus=true&limit=1000`;
 
   // Fetch the forms associated with the subject as JSON from the server
   // It will be stored in the `tableData` state variable
