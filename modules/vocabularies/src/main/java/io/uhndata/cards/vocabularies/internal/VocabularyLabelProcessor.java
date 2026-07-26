@@ -97,9 +97,9 @@ public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implem
         for (String value : propsMap.keySet()) {
             if (value.startsWith("/Vocabularies/") && node.getSession().nodeExists(value)) {
                 Node term = node.getSession().getNode(value);
-                String label = term.getProperty(PROP_LABEL).getValue().toString();
-                if (label != null) {
-                    propsMap.put(value, label);
+                // A term without a label keeps the raw value; it must not break the labels of the other values
+                if (term.hasProperty(PROP_LABEL)) {
+                    propsMap.put(value, term.getProperty(PROP_LABEL).getValue().toString());
                 }
             }
         }

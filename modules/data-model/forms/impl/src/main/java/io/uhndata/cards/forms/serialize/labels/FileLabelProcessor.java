@@ -66,7 +66,11 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     {
         try {
             if (node.hasProperty("value")) {
-                json.add(PROP_DISPLAYED_VALUE, getAnswerLabel(node, null));
+                final JsonValue label = getAnswerLabel(node, null);
+                // A label computation failure must not break the serialization of the rest of the resource
+                if (label != null) {
+                    json.add(PROP_DISPLAYED_VALUE, label);
+                }
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen
