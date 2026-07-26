@@ -38,8 +38,12 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
+            <!-- Use overwriteProperties, not overwrite, to refresh this extension's properties on upgrade.
+                 A full overwrite recreates the node, after which Oak reports its mandatory autocreated
+                 properties (e.g. cards:defaultOrder) as not-new; the content loader then skips them and
+                 leaves the autocreated default (0) instead of the value from this file. -->
             <Sling-Initial-Content>
-              SLING-INF/content/Extensions/PendingUsersView/;path:=/Extensions/PendingUsersView/;overwrite:=true
+              SLING-INF/content/Extensions/PendingUsersView/;path:=/Extensions/PendingUsersView/;overwriteProperties:=true;uninstall:=true
             </Sling-Initial-Content>
           </instructions>
         </configuration>
