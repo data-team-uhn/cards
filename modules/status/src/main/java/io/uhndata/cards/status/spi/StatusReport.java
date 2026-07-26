@@ -109,7 +109,8 @@ public class StatusReport
         return Json.createObjectBuilder()
             .add("name", getName())
             .add("status", getStatus().toString())
-            .add("text", getText())
+            // A null value is not accepted by the JSON builder
+            .add("text", getText() == null ? "" : getText())
             .build();
     }
 }

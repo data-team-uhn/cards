@@ -25,6 +25,7 @@ import java.util.Set;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.servlet.Servlet;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingJakartaHttpServletRequest;
@@ -50,9 +51,21 @@ public class StatusReportEndpoint extends SlingJakartaSafeMethodsServlet
     public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
     {
+        response.setCharacterEncoding("UTF-8");
         final boolean unprivileged = !("admin".equals(request.getRemoteUser()));
-        final StatusReport.Status targetStatus =
-            StatusReport.Status.valueOf(StringUtils.defaultIfBlank(request.getParameter("targetStatus"), "INFO"));
+        final StatusReport.Status targetStatus;
+        try {
+            targetStatus =
+                StatusReport.Status.valueOf(StringUtils.defaultIfBlank(request.getParameter("targetStatus"), "INFO"));
+        } catch (final IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("application/json");
+            response.getWriter().print(Json.createObjectBuilder()
+                .add("status", "error")
+                .add("error", "Invalid targetStatus: " + request.getParameter("targetStatus"))
+                .build().toString());
+            return;
+        }
         final Set<String> tags = request.getParameterValues("tags") == null ? Collections.emptySet()
             : Set.of(request.getParameterValues("tags"));
         final boolean txtOutput = request.getPathInfo().endsWith(".txt");
@@ -60,6 +73,7 @@ public class StatusReportEndpoint extends SlingJakartaSafeMethodsServlet
             final String result = StringUtils.join(
                 this.manager.getReports(unprivileged, targetStatus, tags).stream()
                     .map(StatusReport::getText)
+                    .map(StringUtils::defaultString)
                     .toList(),
                 "\n\n");
             response.setContentType("text/plain");

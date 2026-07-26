@@ -40,7 +40,7 @@ public interface StatusReporter
     /**
      * The tags used to categorize this reporter, used to enable/disable it for specific jobs.
      *
-     * @return a simple string
+     * @return a set of simple strings
      */
     Set<String> getTags();
 
