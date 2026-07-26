@@ -624,7 +624,7 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
         public boolean isSymmetric()
         {
             try {
-                return this.type.hasProperty("backLink") && getBacklink() != null;
+                return this.type.hasProperty(LinkDefinition.BACKLINK_PROPERTY) && getBacklink() != null;
             } catch (RepositoryException e) {
                 return false;
             }
