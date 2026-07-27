@@ -80,12 +80,10 @@ public class SelectorDetails
         this.name = name;
         this.description = description;
         this.enabledByDefault = enabledByDefault;
-        if (options.length >= 2) {
-            int numOptions = Math.floorDiv(options.length, 2);
-            this.options = new SelectorOption[numOptions];
-            for (int i = 0; i < numOptions; i++) {
-                this.options[i] = new SelectorOption(options[2 * i], options[2 * i + 1]);
-            }
+        int numOptions = Math.floorDiv(options.length, 2);
+        this.options = new SelectorOption[numOptions];
+        for (int i = 0; i < numOptions; i++) {
+            this.options[i] = new SelectorOption(options[2 * i], options[2 * i + 1]);
         }
     }
 

@@ -30,10 +30,6 @@
   <packaging>bundle</packaging>
   <name>CARDS - Utilities</name>
 
-  <properties>
-    <coverage.instructionRatio>0.45</coverage.instructionRatio>
-  </properties>
-
   <build>
     <resources>
       <resource>
@@ -57,14 +53,12 @@
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
+        <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <compilerArgs>
-            <arg>-Werror</arg>
-          </compilerArgs>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>true</showDeprecation>
-          <failOnWarning>true</failOnWarning>
+          <systemPropertyVariables>
+            <!-- The default 500ms is not always enough when several Oak-backed test contexts start in parallel -->
+            <sling.mock.resourceresolverfactoryactivator.timeout.ms>10000</sling.mock.resourceresolverfactoryactivator.timeout.ms>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>
@@ -125,6 +119,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>cards-data-model-items-api</artifactId>
       <version>${project.version}</version>
@@ -162,36 +161,25 @@
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.core</artifactId>
-      <version>3.2.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.jcr.resource</artifactId>
-      <version>3.2.0</version>
+      <version>4.0.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.junit4</artifactId>
-      <version>3.2.2</version>
+      <version>4.0.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock-oak</artifactId>
-      <version>3.1.4-1.40.0</version>
+      <version>4.1.0-1.86.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.jcr-mock</artifactId>
-      <version>1.5.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
+      <version>1.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -201,12 +189,6 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>3.24.2</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

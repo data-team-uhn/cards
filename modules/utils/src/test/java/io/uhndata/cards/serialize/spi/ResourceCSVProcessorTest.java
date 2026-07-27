@@ -14,30 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.serialize;
+package io.uhndata.cards.serialize.spi;
 
+import org.apache.sling.api.resource.Resource;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
 
 /**
- * Unit tests for {@link CSVString}.
+ * Unit tests for the default methods of {@link ResourceCSVProcessor}.
  *
  * @version $Id$
  */
-public class CSVStringTest
+public class ResourceCSVProcessorTest
 {
-    @Test
-    public void toStringReturnsInputData()
+    /** A processor relying on the default methods of the interface. */
+    private final ResourceCSVProcessor processor = new ResourceCSVProcessor()
     {
-        String input = "Input\ndata";
-        assertEquals(input, new CSVString(input).toString());
-    }
+        @Override
+        public String serialize(final Resource resource)
+        {
+            return "";
+        }
+
+        @Override
+        public java.util.List<SelectorDetails> getDetails()
+        {
+            return java.util.List.of();
+        }
+    };
 
     @Test
-    public void toStringWithNullDataReturnsNull()
+    public void canProcessReturnsFalseByDefault()
     {
-        assertNull(new CSVString(null).toString());
+        assertFalse(this.processor.canProcess(mock(Resource.class)));
     }
 }

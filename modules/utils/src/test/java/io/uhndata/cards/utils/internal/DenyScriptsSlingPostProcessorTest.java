@@ -18,23 +18,16 @@ package io.uhndata.cards.utils.internal;
 
 import java.util.List;
 
-import org.apache.sling.api.request.builder.impl.SlingHttpServletRequestImpl;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceMetadata;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.servlets.post.Modification;
 import org.apache.sling.servlets.post.ModificationType;
-import org.apache.sling.testing.mock.sling.ResourceResolverType;
-import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.assertj.core.api.Assertions;
-import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,155 +36,116 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class DenyScriptsSlingPostProcessorTest
 {
+    private static final String SOURCE_PATH = "/Forms/f1";
 
-    @Rule
-    public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
+    private static final String DESTINATION_PATH = "/Forms/f2";
 
-    @InjectMocks
-    private DenyScriptsSlingPostProcessor denyScriptsSlingPostProcessor;
+    private final DenyScriptsSlingPostProcessor processor = new DenyScriptsSlingPostProcessor();
+
+    private final SlingJakartaHttpServletRequest request = mock(SlingJakartaHttpServletRequest.class);
+
+    private final ResourceResolver resourceResolver = mock(ResourceResolver.class);
+
+    private final List<Modification> changes =
+        List.of(new Modification(ModificationType.COPY, SOURCE_PATH, DESTINATION_PATH));
 
     @Test
-    public void processAllowsResourceWithNullResourceMetadata()
+    public void processAllowsResourceWithNullResourceMetadata() throws Exception
     {
-        SlingHttpServletRequestImpl request = mock(SlingHttpServletRequestImpl.class);
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        List<Modification> changes = List.of(new Modification(ModificationType.COPY, "/Forms/f1", "/Forms/f2"));
         Resource resource = mock(Resource.class);
 
-        when(request.getResourceResolver()).thenReturn(resourceResolver);
-        when(resourceResolver.getResource("/Forms/f1")).thenReturn(resource);
+        when(this.request.getResourceResolver()).thenReturn(this.resourceResolver);
+        when(this.resourceResolver.getResource(SOURCE_PATH)).thenReturn(resource);
         when(resource.getResourceMetadata()).thenReturn(null);
 
-        Assertions.assertThatCode(() -> this.denyScriptsSlingPostProcessor.process(request, changes))
-                .doesNotThrowAnyException();
+        this.processor.process(this.request, this.changes);
     }
 
     @Test
-    public void processAllowsResourceWithNullContentType()
+    public void processAllowsResourceWithNullContentType() throws Exception
     {
-        SlingHttpServletRequestImpl request = mock(SlingHttpServletRequestImpl.class);
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        List<Modification> changes = List.of(new Modification(ModificationType.COPY, "/Forms/f1", "/Forms/f2"));
+        when(this.request.getResourceResolver()).thenReturn(this.resourceResolver);
+        mockResourceContentType(SOURCE_PATH, null);
 
-        when(request.getResourceResolver()).thenReturn(resourceResolver);
-        mockRecourseContentType(resourceResolver, "/Forms/f1", null);
-
-        Assertions.assertThatCode(() -> this.denyScriptsSlingPostProcessor.process(request, changes))
-                .doesNotThrowAnyException();
+        this.processor.process(this.request, this.changes);
     }
 
     @Test
     public void processScriptResourceThrowsException()
     {
-        SlingHttpServletRequestImpl request = mock(SlingHttpServletRequestImpl.class);
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        List<Modification> changes = List.of(new Modification(ModificationType.COPY, "/Forms/f1", "/Forms/f2"));
+        when(this.request.getResourceResolver()).thenReturn(this.resourceResolver);
+        mockResourceContentType(SOURCE_PATH, "text/script;charset=UTF-8");
 
-        when(request.getResourceResolver()).thenReturn(resourceResolver);
-        mockRecourseContentType(resourceResolver, "/Forms/f1", "text/script;charset=UTF-8");
-
-        Assert.assertThrows("Script files are not allowed", Exception.class,
-                () -> this.denyScriptsSlingPostProcessor.process(request, changes));
+        Exception e = assertThrows(Exception.class, () -> this.processor.process(this.request, this.changes));
+        assertEquals("Script files are not allowed", e.getMessage());
     }
 
     @Test
     public void processHtmlResourceThrowsException()
     {
-        SlingHttpServletRequestImpl request = mock(SlingHttpServletRequestImpl.class);
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        List<Modification> changes = List.of(new Modification(ModificationType.COPY, "/Forms/f1", "/Forms/f2"));
+        when(this.request.getResourceResolver()).thenReturn(this.resourceResolver);
+        mockResourceContentType(SOURCE_PATH, "text/html;charset=UTF-8");
 
-        when(request.getResourceResolver()).thenReturn(resourceResolver);
-        mockRecourseContentType(resourceResolver, "/Forms/f1", "text/html;charset=UTF-8");
-
-        Assert.assertThrows("HTML files are not allowed", Exception.class,
-                () -> this.denyScriptsSlingPostProcessor.process(request, changes));
+        Exception e = assertThrows(Exception.class, () -> this.processor.process(this.request, this.changes));
+        assertEquals("HTML files are not allowed", e.getMessage());
     }
 
     @Test
     public void processScriptResourceIgnoresCase()
     {
-        SlingHttpServletRequestImpl request = mock(SlingHttpServletRequestImpl.class);
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        List<Modification> changes = List.of(new Modification(ModificationType.COPY, "/Forms/f1", "/Forms/f2"));
+        when(this.request.getResourceResolver()).thenReturn(this.resourceResolver);
+        mockResourceContentType(SOURCE_PATH, "application/TypeScript");
 
-        when(request.getResourceResolver()).thenReturn(resourceResolver);
-        mockRecourseContentType(resourceResolver, "/Forms/f1", "application/TypeScript");
-
-        Assert.assertThrows("Script files are not allowed", Exception.class,
-                () -> this.denyScriptsSlingPostProcessor.process(request, changes));
+        Exception e = assertThrows(Exception.class, () -> this.processor.process(this.request, this.changes));
+        assertEquals("Script files are not allowed", e.getMessage());
     }
 
     @Test
     public void processHtmlResourceIgnoresCase()
     {
-        SlingHttpServletRequestImpl request = mock(SlingHttpServletRequestImpl.class);
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        List<Modification> changes = List.of(new Modification(ModificationType.COPY, "/Forms/f1", "/Forms/f2"));
+        when(this.request.getResourceResolver()).thenReturn(this.resourceResolver);
+        mockResourceContentType(SOURCE_PATH, "application/XHTML");
 
-        when(request.getResourceResolver()).thenReturn(resourceResolver);
-        mockRecourseContentType(resourceResolver, "/Forms/f1", "application/XHTML");
-
-        Assert.assertThrows("HTML files are not allowed", Exception.class,
-                () -> this.denyScriptsSlingPostProcessor.process(request, changes));
+        Exception e = assertThrows(Exception.class, () -> this.processor.process(this.request, this.changes));
+        assertEquals("HTML files are not allowed", e.getMessage());
     }
 
     @Test
-    public void processAllowsOtherContentTypeResource()
+    public void processAllowsOtherContentTypeResource() throws Exception
     {
-        SlingHttpServletRequestImpl request = mock(SlingHttpServletRequestImpl.class);
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        List<Modification> changes = List.of(new Modification(ModificationType.COPY, "/Forms/f1", "/Forms/f2"));
+        when(this.request.getResourceResolver()).thenReturn(this.resourceResolver);
+        mockResourceContentType(SOURCE_PATH, "text/plain;charset=UTF-8");
 
-        when(request.getResourceResolver()).thenReturn(resourceResolver);
-        mockRecourseContentType(resourceResolver, "/Forms/f1", "text/plain;charset=UTF-8");
-        mockRecourseContentType(resourceResolver, "/Forms/f2", "text/plain;charset=UTF-8");
-
-        Assertions.assertThatCode(() -> this.denyScriptsSlingPostProcessor.process(request, changes))
-                .doesNotThrowAnyException();
+        this.processor.process(this.request, this.changes);
     }
 
     @Test
-    public void processAllowsAllForAdminUser()
+    public void processAllowsAllForAdminUser() throws Exception
     {
-        SlingHttpServletRequestImpl request = mock(SlingHttpServletRequestImpl.class);
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        List<Modification> changes = List.of(new Modification(ModificationType.COPY, "/Forms/f1", "/Forms/f2"));
+        // Even a forbidden content type is accepted when the admin is uploading it
+        mockResourceContentType(SOURCE_PATH, "application/TypeScript");
 
-        when(request.getResourceResolver()).thenReturn(resourceResolver);
-        mockRecourseContentType(resourceResolver, "/Forms/f1", "application/XHTML");
-        mockRecourseContentType(resourceResolver, "/Forms/f2", "application/TypeScript");
-
-        when(request.getRemoteUser()).thenReturn("admin");
-        Assertions.assertThatCode(() -> this.denyScriptsSlingPostProcessor.process(request, changes))
-                .doesNotThrowAnyException();
+        when(this.request.getRemoteUser()).thenReturn("admin");
+        this.processor.process(this.request, this.changes);
     }
 
     @Test
-    public void processAllowsNullResource()
+    public void processAllowsNullResource() throws Exception
     {
-        SlingHttpServletRequestImpl request = mock(SlingHttpServletRequestImpl.class);
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        List<Modification> changes = List.of(new Modification(ModificationType.COPY, "/Forms/f1", "/Forms/f2"));
+        when(this.request.getResourceResolver()).thenReturn(this.resourceResolver);
+        when(this.resourceResolver.getResource(SOURCE_PATH)).thenReturn(null);
 
-        when(request.getResourceResolver()).thenReturn(resourceResolver);
-        when(resourceResolver.getResource("/Forms/f1")).thenReturn(null);
-        when(resourceResolver.getResource("/Forms/f2")).thenReturn(null);
-
-        Assertions.assertThatCode(() -> this.denyScriptsSlingPostProcessor.process(request, changes))
-                .doesNotThrowAnyException();
+        this.processor.process(this.request, this.changes);
     }
 
-    private void mockRecourseContentType(ResourceResolver resourceResolver, String resourcePath, String contentType)
+    private void mockResourceContentType(String resourcePath, String contentType)
     {
         Resource resource = mock(Resource.class);
         ResourceMetadata metadata = mock(ResourceMetadata.class);
-        when(resourceResolver.getResource(eq(resourcePath))).thenReturn(resource);
+        when(this.resourceResolver.getResource(resourcePath)).thenReturn(resource);
         when(resource.getResourceMetadata()).thenReturn(metadata);
         when(metadata.getContentType()).thenReturn(contentType);
     }
-
 }

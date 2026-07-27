@@ -16,28 +16,23 @@
  */
 package io.uhndata.cards.serialize.internal;
 
-import java.util.function.Function;
-
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.json.JsonValue;
 
+import jakarta.json.JsonValue;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.testing.mock.sling.ResourceResolverType;
-import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.forms.api.FormUtils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,37 +41,43 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class PropertiesProcessorTest
 {
     private static final String NAME = "properties";
     private static final int PRIORITY = 0;
 
-    @Rule
-    public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
+    private final PropertiesProcessor propertiesProcessor = new PropertiesProcessor();
 
-    @InjectMocks
-    private PropertiesProcessor propertiesProcessor;
+    private final FormUtils formUtils = mock(FormUtils.class);
 
-    @Mock
-    private FormUtils formUtils;
+    @Before
+    public void setUp() throws IllegalAccessException
+    {
+        FieldUtils.writeField(this.propertiesProcessor, "formUtils", this.formUtils, true);
+    }
 
     @Test
-    public void getNameReturnProperties()
+    public void getNameReturnsProperties()
     {
         assertEquals(NAME, this.propertiesProcessor.getName());
     }
 
     @Test
-    public void getPriorityTest()
+    public void getPriorityReturnsZero()
     {
         assertEquals(PRIORITY, this.propertiesProcessor.getPriority());
     }
 
     @Test
-    public void isEnabledByDefaultTest()
+    public void isEnabledByDefaultReturnsTrue()
     {
         assertTrue(this.propertiesProcessor.isEnabledByDefault(mock(Resource.class)));
+    }
+
+    @Test
+    public void getDescriptionIsNotEmpty()
+    {
+        assertFalse(this.propertiesProcessor.getDescription().isEmpty());
     }
 
     @Test
@@ -86,7 +87,7 @@ public class PropertiesProcessorTest
         when(this.formUtils.serializeProperty(any())).thenReturn(serializedProperty);
 
         JsonValue jsonValue = this.propertiesProcessor.processProperty(mock(Node.class), mock(Property.class), null,
-                mock(Function.class));
+                node -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(serializedProperty, jsonValue);
     }
@@ -96,7 +97,7 @@ public class PropertiesProcessorTest
     {
         JsonValue input = mock(JsonValue.class);
         JsonValue jsonValue = this.propertiesProcessor.processProperty(mock(Node.class), mock(Property.class), input,
-                mock(Function.class));
+                node -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(input, jsonValue);
     }

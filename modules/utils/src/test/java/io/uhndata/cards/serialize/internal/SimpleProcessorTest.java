@@ -16,23 +16,19 @@
  */
 package io.uhndata.cards.serialize.internal;
 
-import java.util.function.Function;
-
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.testing.mock.sling.ResourceResolverType;
-import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +37,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SimpleProcessorTest
 {
     private static final String BASE_VERSION = "jcr:baseVersion";
@@ -50,35 +45,37 @@ public class SimpleProcessorTest
     private static final String NAME = "simple";
     private static final int PRIORITY = 25;
 
-    @Rule
-    public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
-
-    @InjectMocks
-    private SimpleProcessor simpleProcessor;
+    private final SimpleProcessor simpleProcessor = new SimpleProcessor();
 
     @Test
-    public void getNameReturnSimple()
+    public void getNameReturnsSimple()
     {
         assertEquals(NAME, this.simpleProcessor.getName());
     }
 
     @Test
-    public void getPriorityTest()
+    public void getPriorityReturnsTwentyFive()
     {
         assertEquals(PRIORITY, this.simpleProcessor.getPriority());
     }
 
     @Test
-    public void isEnabledByDefaultTest()
+    public void isEnabledByDefaultReturnsFalse()
     {
         assertFalse(this.simpleProcessor.isEnabledByDefault(mock(Resource.class)));
+    }
+
+    @Test
+    public void getDescriptionIsNotEmpty()
+    {
+        assertFalse(this.simpleProcessor.getDescription().isEmpty());
     }
 
     @Test
     public void processPropertyForNullPropertyReturnsNull()
     {
         JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), null, mock(JsonValue.class),
-                mock(Function.class));
+                node -> JsonValue.NULL);
         assertNull(jsonValue);
     }
 
@@ -89,19 +86,19 @@ public class SimpleProcessorTest
         when(property.getName()).thenThrow(new RepositoryException());
         JsonValue input = mock(JsonValue.class);
         JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), property, input,
-                mock(Function.class));
+                node -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(input, jsonValue);
     }
 
     @Test
-    public void processPropertyReturnsInput() throws RepositoryException
+    public void processPropertyForKeptJcrPropertyReturnsInput() throws RepositoryException
     {
         Property property = mock(Property.class);
         when(property.getName()).thenReturn(CREATED);
         JsonValue input = mock(JsonValue.class);
         JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), property, input,
-                mock(Function.class));
+                node -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(input, jsonValue);
     }
@@ -112,7 +109,7 @@ public class SimpleProcessorTest
         Property property = mock(Property.class);
         when(property.getName()).thenReturn(BASE_VERSION);
         JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), property, mock(JsonValue.class),
-                mock(Function.class));
+                node -> JsonValue.NULL);
         assertNull(jsonValue);
     }
 
@@ -122,7 +119,7 @@ public class SimpleProcessorTest
         Property property = mock(Property.class);
         when(property.getName()).thenReturn(RESOURCE_TYPE);
         JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), property, mock(JsonValue.class),
-                mock(Function.class));
+                node -> JsonValue.NULL);
         assertNull(jsonValue);
     }
 
@@ -132,8 +129,7 @@ public class SimpleProcessorTest
         Property property = mock(Property.class);
         when(property.getName()).thenReturn("form");
         JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), property, mock(JsonValue.class),
-                mock(Function.class));
+                node -> JsonValue.NULL);
         assertNull(jsonValue);
     }
-
 }

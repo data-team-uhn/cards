@@ -19,21 +19,15 @@ package io.uhndata.cards.serialize;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.testing.mock.sling.ResourceResolverType;
-import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.internal.util.reflection.Whitebox;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.serialize.spi.ResourceCSVProcessor;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,18 +38,13 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ResourceToCSVAdapterFactoryTest
 {
     private static final String NODE_IDENTIFIER = "jcr:uuid";
     private static final String CREATED_BY_PROPERTY = "jcr:createdBy";
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
 
-    @Rule
-    public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
-
-    @InjectMocks
-    private ResourceToCSVAdapterFactory factory;
+    private final ResourceToCSVAdapterFactory factory = new ResourceToCSVAdapterFactory();
 
     @Test
     public void getAdapterForNullAdaptableObjectReturnsNull()
@@ -64,7 +53,7 @@ public class ResourceToCSVAdapterFactoryTest
     }
 
     @Test
-    public void getAdapterForResourceAdaptableObjectReturnsSerializedAdapter()
+    public void getAdapterForResourceAdaptableObjectReturnsSerializedAdapter() throws IllegalAccessException
     {
         Resource adaptable = mock(Resource.class);
         String identifier = UUID.randomUUID().toString();
@@ -75,41 +64,41 @@ public class ResourceToCSVAdapterFactoryTest
         when(processor.canProcess(adaptable)).thenReturn(true);
         when(processor.serialize(adaptable)).thenReturn(data);
 
-        Whitebox.setInternalState(this.factory, "allProcessors", List.of(processor));
+        setProcessors(List.of(processor));
         CSVString adapter = this.factory.getAdapter(adaptable, CSVString.class);
         assertNotNull(adapter);
         assertEquals(data, adapter.toString());
     }
 
     @Test
-    public void getAdapterForUnsupportedResourceReturnsResourcePath()
+    public void getAdapterForUnsupportedResourceReturnsResourcePath() throws IllegalAccessException
     {
         Resource adaptable = mock(Resource.class);
         ResourceCSVProcessor processor = mock(ResourceCSVProcessor.class);
 
         when(adaptable.getPath()).thenReturn(TEST_SUBJECT_PATH);
 
-        Whitebox.setInternalState(this.factory, "allProcessors", List.of(processor));
+        setProcessors(List.of(processor));
         CSVString adapter = this.factory.getAdapter(adaptable, CSVString.class);
         assertNotNull(adapter);
         assertEquals(TEST_SUBJECT_PATH, adapter.toString());
     }
 
     @Test
-    public void getAdapterWithNoProcessorsReturnsResourcePath()
+    public void getAdapterWithNoProcessorsReturnsResourcePath() throws IllegalAccessException
     {
         Resource adaptable = mock(Resource.class);
 
         when(adaptable.getPath()).thenReturn(TEST_SUBJECT_PATH);
 
-        Whitebox.setInternalState(this.factory, "allProcessors", List.of());
+        setProcessors(List.of());
         CSVString adapter = this.factory.getAdapter(adaptable, CSVString.class);
         assertNotNull(adapter);
         assertEquals(TEST_SUBJECT_PATH, adapter.toString());
     }
 
     @Test
-    public void getAdapterUsesFirstProcessorThatCanProcess()
+    public void getAdapterUsesFirstProcessorThatCanProcess() throws IllegalAccessException
     {
         Resource adaptable = mock(Resource.class);
 
@@ -124,8 +113,7 @@ public class ResourceToCSVAdapterFactoryTest
 
         ResourceCSVProcessor processor3 = mock(ResourceCSVProcessor.class);
 
-        Whitebox.setInternalState(this.factory, "allProcessors",
-                List.of(processor1, processor2, processor3));
+        setProcessors(List.of(processor1, processor2, processor3));
         CSVString adapter = this.factory.getAdapter(adaptable, CSVString.class);
         verify(processor1, times(0)).serialize(adaptable);
         verify(processor2, times(1)).serialize(adaptable);
@@ -134,4 +122,8 @@ public class ResourceToCSVAdapterFactoryTest
         assertEquals(data, adapter.toString());
     }
 
+    private void setProcessors(final List<ResourceCSVProcessor> processors) throws IllegalAccessException
+    {
+        FieldUtils.writeField(this.factory, "allProcessors", processors, true);
+    }
 }

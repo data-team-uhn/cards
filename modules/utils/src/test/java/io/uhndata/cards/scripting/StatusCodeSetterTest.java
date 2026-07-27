@@ -17,138 +17,140 @@
 package io.uhndata.cards.scripting;
 
 import javax.script.Bindings;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.sling.api.SlingHttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link StatusCodeSetter}.
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class StatusCodeSetterTest
 {
     private static final int LOCKED = 423;
-    @InjectMocks
-    private StatusCodeSetter statusCodeSetter;
 
-    @Mock
-    private SlingHttpServletResponse response;
+    private final StatusCodeSetter statusCodeSetter = new StatusCodeSetter();
+
+    private final Bindings bindings = mock(Bindings.class);
+
+    private final SlingJakartaHttpServletResponse response = mock(SlingJakartaHttpServletResponse.class);
+
+    @Before
+    public void setUp()
+    {
+        when(this.bindings.get("jakartaResponse")).thenReturn(this.response);
+        this.statusCodeSetter.init(this.bindings);
+    }
 
     @Test
-    public void initGetsResponseKeyFromBindings()
+    public void initGetsJakartaResponseFromBindings()
     {
-        Bindings bindings = mock(Bindings.class);
-        this.statusCodeSetter.init(bindings);
-        verify(bindings, times(1)).get("response");
+        verify(this.bindings).get("jakartaResponse");
     }
 
     @Test
     public void okSetsOkStatus()
     {
         this.statusCodeSetter.ok();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_OK);
+        verify(this.response).setStatus(HttpServletResponse.SC_OK);
     }
 
     @Test
     public void createdSetsCreatedStatus()
     {
         this.statusCodeSetter.created();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_CREATED);
+        verify(this.response).setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Test
     public void acceptedSetsAcceptedStatus()
     {
         this.statusCodeSetter.accepted();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_ACCEPTED);
+        verify(this.response).setStatus(HttpServletResponse.SC_ACCEPTED);
     }
 
     @Test
-    public void noContentNoContentSetsStatus()
+    public void noContentSetsNoContentStatus()
     {
         this.statusCodeSetter.noContent();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_NO_CONTENT);
+        verify(this.response).setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
     @Test
     public void badRequestSetsBadRequestStatus()
     {
         this.statusCodeSetter.badRequest();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        verify(this.response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Test
     public void unauthorizedSetsUnauthorizedStatus()
     {
         this.statusCodeSetter.unauthorized();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(this.response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     @Test
     public void forbiddenSetsForbiddenStatus()
     {
         this.statusCodeSetter.forbidden();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_FORBIDDEN);
+        verify(this.response).setStatus(HttpServletResponse.SC_FORBIDDEN);
     }
 
     @Test
     public void notFoundSetsNotFoundStatus()
     {
         this.statusCodeSetter.notFound();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_NOT_FOUND);
+        verify(this.response).setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 
     @Test
     public void methodNotAllowedSetsMethodNotAllowedStatus()
     {
         this.statusCodeSetter.methodNotAllowed();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        verify(this.response).setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 
     @Test
     public void notAcceptableSetsNotAcceptableStatus()
     {
         this.statusCodeSetter.notAcceptable();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+        verify(this.response).setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
     }
 
     @Test
     public void conflictSetsConflictStatus()
     {
         this.statusCodeSetter.conflict();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_CONFLICT);
+        verify(this.response).setStatus(HttpServletResponse.SC_CONFLICT);
     }
 
     @Test
     public void lockedSetsLockedStatus()
     {
         this.statusCodeSetter.locked();
-        verify(this.response, times(1)).setStatus(LOCKED);
+        verify(this.response).setStatus(LOCKED);
     }
 
     @Test
     public void internalServerErrorSetsInternalServerErrorStatus()
     {
         this.statusCodeSetter.internalServerError();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        verify(this.response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
     @Test
     public void notImplementedSetsNotImplementedStatus()
     {
         this.statusCodeSetter.notImplemented();
-        verify(this.response, times(1)).setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
+        verify(this.response).setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
     }
-
 }

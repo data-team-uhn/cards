@@ -16,14 +16,14 @@
  */
 package io.uhndata.cards.serialize.internal;
 
-import java.util.function.Function;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -31,9 +31,6 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -46,7 +43,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class IdentificationProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -67,25 +63,30 @@ public class IdentificationProcessorTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private IdentificationProcessor identificationProcessor;
+    private final IdentificationProcessor identificationProcessor = new IdentificationProcessor();
 
     @Test
-    public void getNameReturnIdentify()
+    public void getNameReturnsIdentify()
     {
         assertEquals(NAME, this.identificationProcessor.getName());
     }
 
     @Test
-    public void getPriorityTest()
+    public void getPriorityReturnsTen()
     {
         assertEquals(PRIORITY, this.identificationProcessor.getPriority());
     }
 
     @Test
-    public void isEnabledByDefaultTest()
+    public void isEnabledByDefaultReturnsTrue()
     {
         assertTrue(this.identificationProcessor.isEnabledByDefault(mock(Resource.class)));
+    }
+
+    @Test
+    public void getDescriptionIsNotEmpty()
+    {
+        assertFalse(this.identificationProcessor.getDescription().isEmpty());
     }
 
     @Test
@@ -94,7 +95,7 @@ public class IdentificationProcessorTest
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
         when(node.getPath()).thenThrow(new RepositoryException());
-        this.identificationProcessor.leave(node, json, mock(Function.class));
+        this.identificationProcessor.leave(node, json, n -> JsonValue.NULL);
         JsonObject jsonObject = json.build();
         assertTrue(jsonObject.isEmpty());
     }
@@ -105,7 +106,7 @@ public class IdentificationProcessorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node node = session.getNode(TEST_FORM_PATH);
         JsonObjectBuilder json = Json.createObjectBuilder();
-        this.identificationProcessor.leave(node, json, mock(Function.class));
+        this.identificationProcessor.leave(node, json, n -> JsonValue.NULL);
         JsonObject jsonObject = json.build();
         assertFalse(jsonObject.isEmpty());
         assertTrue(jsonObject.containsKey("@path"));

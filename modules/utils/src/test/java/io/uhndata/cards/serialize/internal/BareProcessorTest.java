@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.function.Function;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
@@ -29,12 +28,14 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -42,10 +43,6 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -62,7 +59,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class BareProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -84,42 +80,81 @@ public class BareProcessorTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private BareProcessor bareProcessor;
+    private final BareProcessor bareProcessor = new BareProcessor();
 
-    @Mock
-    private ThreadLocal<Integer> depth;
+    @SuppressWarnings("unchecked")
+    private final ThreadLocal<Integer> depth = mock(ThreadLocal.class);
 
     @Test
-    public void getNameReturnBare()
+    public void getNameReturnsBare()
     {
         assertEquals(NAME, this.bareProcessor.getName());
     }
 
     @Test
-    public void getPriorityTest()
+    public void getPriorityReturnsNinety()
     {
         assertEquals(PRIORITY, this.bareProcessor.getPriority());
     }
 
     @Test
-    public void isEnabledByDefaultTest()
+    public void isEnabledByDefaultReturnsFalse()
     {
         assertFalse(this.bareProcessor.isEnabledByDefault(mock(Resource.class)));
     }
 
     @Test
-    public void startTest()
+    public void getDescriptionIsNotEmpty()
+    {
+        assertFalse(this.bareProcessor.getDescription().isEmpty());
+    }
+
+    @Test
+    public void startResetsDepth()
     {
         this.bareProcessor.start(mock(Resource.class));
         verify(this.depth).set(0);
     }
 
     @Test
-    public void enterTest()
+    public void depthStartsAtZero() throws RepositoryException
+    {
+        // A pristine processor, without the mocked depth counter, to check the counter's initial value
+        BareProcessor processor = new BareProcessor();
+        Node node = mock(Node.class);
+        processor.enter(node, Json.createObjectBuilder(), n -> JsonValue.NULL);
+
+        // A balanced enter+leave returns to depth 0, where the root node's metadata is looked up
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        processor.leave(node, json, n -> JsonValue.NULL);
+        verify(node).hasProperty("jcr:created");
+        assertTrue(json.build().isEmpty());
+    }
+
+    @Test
+    public void leaveWithoutResourceChildDoesNotAddContent() throws RepositoryException
+    {
+        Node node = mock(Node.class);
+        when(this.depth.get()).thenReturn(2, 1);
+
+        NodeIterator iterator = mock(NodeIterator.class);
+        Node child = mock(Node.class);
+        when(node.isNodeType("nt:file")).thenReturn(true);
+        when(node.getNodes()).thenReturn(iterator);
+        when(iterator.hasNext()).thenReturn(true, false);
+        when(iterator.nextNode()).thenReturn(child);
+        when(child.isNodeType("nt:resource")).thenReturn(false);
+
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        this.bareProcessor.leave(node, json, n -> JsonValue.NULL);
+        assertFalse(json.build().containsKey("content"));
+    }
+
+    @Test
+    public void enterIncrementsDepth()
     {
         when(this.depth.get()).thenReturn(0);
-        this.bareProcessor.enter(mock(Node.class), mock(JsonObjectBuilder.class), mock(Function.class));
+        this.bareProcessor.enter(mock(Node.class), mock(JsonObjectBuilder.class), n -> JsonValue.NULL);
         verify(this.depth).get();
         verify(this.depth).set(1);
     }
@@ -130,7 +165,7 @@ public class BareProcessorTest
         Node node = this.context.resourceResolver().getResource(TEST_FORM_PATH).adaptTo(Node.class);
 
         JsonValue jsonValue = this.bareProcessor.processProperty(node, null, mock(JsonValue.class),
-                mock(Function.class));
+                n -> JsonValue.NULL);
         assertNull(jsonValue);
     }
 
@@ -142,7 +177,7 @@ public class BareProcessorTest
         Property property = mock(Property.class);
         when(property.getName()).thenThrow(new RepositoryException());
         JsonString value = Json.createValue(node.getProperty(QUESTIONNAIRE_PROPERTY).getString());
-        JsonValue jsonValue = this.bareProcessor.processProperty(node, property, value, mock(Function.class));
+        JsonValue jsonValue = this.bareProcessor.processProperty(node, property, value, n -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(value, jsonValue);
     }
@@ -154,7 +189,7 @@ public class BareProcessorTest
 
         Property property = node.getProperty(QUESTIONNAIRE_PROPERTY);
         JsonString input = Json.createValue(property.getString());
-        JsonValue jsonValue = this.bareProcessor.processProperty(node, property, input, mock(Function.class));
+        JsonValue jsonValue = this.bareProcessor.processProperty(node, property, input, n -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(input, jsonValue);
     }
@@ -166,7 +201,7 @@ public class BareProcessorTest
 
         Property property = node.getProperty(NODE_TYPE);
         JsonValue jsonValue = this.bareProcessor.processProperty(node, property, Json.createValue(property.getString()),
-                mock(Function.class));
+                n -> JsonValue.NULL);
         assertNull(jsonValue);
     }
 
@@ -177,7 +212,7 @@ public class BareProcessorTest
 
         Property property = node.getProperty(RESOURCE_TYPE);
         JsonValue jsonValue = this.bareProcessor.processProperty(node, property, Json.createValue(property.getString()),
-                mock(Function.class));
+                n -> JsonValue.NULL);
         assertNull(jsonValue);
     }
 
@@ -189,7 +224,7 @@ public class BareProcessorTest
 
         Property property = node.getProperty("form");
         JsonValue jsonValue = this.bareProcessor.processProperty(node, property, Json.createValue(property.getString()),
-                mock(Function.class));
+                n -> JsonValue.NULL);
         assertNull(jsonValue);
     }
 
@@ -200,7 +235,7 @@ public class BareProcessorTest
         Node child = mock(Node.class);
         when(child.getName()).thenReturn("jcr:name");
 
-        JsonValue jsonValue = this.bareProcessor.processChild(node, child, mock(JsonValue.class), mock(Function.class));
+        JsonValue jsonValue = this.bareProcessor.processChild(node, child, mock(JsonValue.class), n -> JsonValue.NULL);
         assertNull(jsonValue);
     }
 
@@ -212,7 +247,7 @@ public class BareProcessorTest
         when(child.getName()).thenThrow(new RepositoryException());
 
         JsonValue input = mock(JsonValue.class);
-        JsonValue jsonValue = this.bareProcessor.processChild(node, child, input, mock(Function.class));
+        JsonValue jsonValue = this.bareProcessor.processChild(node, child, input, n -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(input, jsonValue);
     }
@@ -225,7 +260,7 @@ public class BareProcessorTest
         Node child = session.getNode(TEST_FORM_PATH + "/a1");
 
         JsonValue input = mock(JsonValue.class);
-        JsonValue jsonValue = this.bareProcessor.processChild(node, child, input, mock(Function.class));
+        JsonValue jsonValue = this.bareProcessor.processChild(node, child, input, n -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(input, jsonValue);
     }
@@ -238,12 +273,11 @@ public class BareProcessorTest
 
         Calendar date = Calendar.getInstance();
         date.set(2023, Calendar.JANUARY, 1);
-        date.getTimeZone().getRawOffset();
         mockCreatedAndLastModifiedDate(node, date);
         mockFileContent(node, getMockedDataProperty());
 
         JsonObjectBuilder json = Json.createObjectBuilder();
-        this.bareProcessor.leave(node, json, mock(Function.class));
+        this.bareProcessor.leave(node, json, n -> JsonValue.NULL);
         JsonObject jsonObject = json.build();
 
         verify(this.depth, times(3)).get();
@@ -265,14 +299,11 @@ public class BareProcessorTest
         Node node = mock(Node.class);
         when(this.depth.get()).thenReturn(2, 1);
 
-        Calendar date = Calendar.getInstance();
-        date.set(2023, Calendar.JANUARY, 1);
-        date.getTimeZone().getRawOffset();
-        mockCreatedAndLastModifiedDate(node, date);
+        // No date stubbing: at non-root depth the processor must not even look at the date properties
         mockFileContent(node, getMockedDataProperty());
 
         JsonObjectBuilder json = Json.createObjectBuilder();
-        this.bareProcessor.leave(node, json, mock(Function.class));
+        this.bareProcessor.leave(node, json, n -> JsonValue.NULL);
         JsonObject jsonObject = json.build();
 
         verify(this.depth, times(3)).get();
@@ -292,7 +323,6 @@ public class BareProcessorTest
 
         Calendar date = Calendar.getInstance();
         date.set(2023, Calendar.JANUARY, 1);
-        date.getTimeZone().getRawOffset();
 
         // mocking data property with closed InputStream
         Property dataProperty = mock(Property.class);
@@ -306,7 +336,7 @@ public class BareProcessorTest
         mockFileContent(node, dataProperty);
 
         JsonObjectBuilder json = Json.createObjectBuilder();
-        this.bareProcessor.leave(node, json, mock(Function.class));
+        this.bareProcessor.leave(node, json, n -> JsonValue.NULL);
         JsonObject jsonObject = json.build();
 
         verify(this.depth, times(3)).get();
@@ -329,7 +359,7 @@ public class BareProcessorTest
         when(this.depth.get()).thenReturn(1, 0);
 
         JsonObjectBuilder json = Json.createObjectBuilder();
-        this.bareProcessor.leave(node, json, mock(Function.class));
+        this.bareProcessor.leave(node, json, n -> JsonValue.NULL);
         JsonObject jsonObject = json.build();
 
         verify(this.depth, times(3)).get();
@@ -342,8 +372,9 @@ public class BareProcessorTest
     }
 
     @Before
-    public void setUp() throws RepositoryException
+    public void setUp() throws IllegalAccessException, RepositoryException
     {
+        FieldUtils.writeField(this.bareProcessor, "depth", this.depth, true);
         this.context.build()
                 .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
                 .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")

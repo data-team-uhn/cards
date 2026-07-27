@@ -17,7 +17,6 @@
 package io.uhndata.cards.serialize.internal;
 
 import java.util.List;
-import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -25,10 +24,11 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonString;
-import javax.json.JsonValue;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -36,11 +36,9 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -51,7 +49,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class DereferenceProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -72,25 +69,30 @@ public class DereferenceProcessorTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private DereferenceProcessor dereferenceProcessor;
+    private final DereferenceProcessor dereferenceProcessor = new DereferenceProcessor();
 
     @Test
-    public void getNameReturnDereference()
+    public void getNameReturnsDereference()
     {
         assertEquals(NAME, this.dereferenceProcessor.getName());
     }
 
     @Test
-    public void getPriorityTest()
+    public void getPriorityReturnsTen()
     {
         assertEquals(PRIORITY, this.dereferenceProcessor.getPriority());
     }
 
     @Test
-    public void isEnabledByDefaultTest()
+    public void isEnabledByDefaultReturnsTrue()
     {
         assertTrue(this.dereferenceProcessor.isEnabledByDefault(mock(Resource.class)));
+    }
+
+    @Test
+    public void getDescriptionIsNotEmpty()
+    {
+        assertFalse(this.dereferenceProcessor.getDescription().isEmpty());
     }
 
     @Test
@@ -143,6 +145,28 @@ public class DereferenceProcessorTest
         assertTrue(jsonValue instanceof JsonArray);
         assertEquals(1, ((JsonArray) jsonValue).size());
         assertEquals(Json.createValue(valueName), ((JsonArray) jsonValue).get(0));
+    }
+
+    @Test
+    public void processPropertyForMultiValueAbsolutePathProperty() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Property property = mock(Property.class);
+        Value value = mock(Value.class);
+
+        when(property.isMultiple()).thenReturn(true);
+        when(property.getName()).thenReturn("paths");
+        when(property.getType()).thenReturn(PropertyType.PATH);
+        when(property.getValues()).thenReturn(new Value[] {value});
+        when(value.getString()).thenReturn(TEST_FORM_PATH);
+        when(property.getSession()).thenReturn(session);
+
+        JsonValue jsonValue = this.dereferenceProcessor.processProperty(mock(Node.class), property,
+                mock(JsonValue.class), this::serializeNode);
+        assertNotNull(jsonValue);
+        assertTrue(jsonValue instanceof JsonArray);
+        assertEquals(1, ((JsonArray) jsonValue).size());
+        assertEquals(Json.createValue("f1"), ((JsonArray) jsonValue).get(0));
     }
 
     @Test
@@ -202,7 +226,7 @@ public class DereferenceProcessorTest
         when(property.getSession()).thenThrow(new RepositoryException());
         JsonValue json = Json.createValue("relatedSubjects");
         JsonValue jsonValue = this.dereferenceProcessor.processProperty(mock(Node.class), property, json,
-                mock(Function.class));
+                n -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(json, jsonValue);
     }
@@ -241,7 +265,7 @@ public class DereferenceProcessorTest
         when(property.getNode()).thenThrow(new RepositoryException());
         JsonValue json = Json.createValue(QUESTIONNAIRE_PROPERTY);
         JsonValue jsonValue = this.dereferenceProcessor.processProperty(mock(Node.class), property, json,
-                mock(Function.class));
+                n -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(json, jsonValue);
     }
@@ -266,7 +290,7 @@ public class DereferenceProcessorTest
         when(property.isMultiple()).thenThrow(new RepositoryException());
         JsonValue json = Json.createValue(FORM_TYPE);
         JsonValue jsonValue = this.dereferenceProcessor.processProperty(mock(Node.class), property, json,
-                mock(Function.class));
+                n -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(json, jsonValue);
     }

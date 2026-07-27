@@ -18,78 +18,79 @@ package io.uhndata.cards.scripting;
 
 import javax.script.Bindings;
 
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link ContentTypeSetter}.
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ContentTypeSetterTest
 {
-    @InjectMocks
-    private ContentTypeSetter contentTypeSetter;
+    private final ContentTypeSetter contentTypeSetter = new ContentTypeSetter();
 
-    @Mock
-    private SlingHttpServletResponse response;
+    private final Bindings bindings = mock(Bindings.class);
+
+    private final SlingJakartaHttpServletResponse response = mock(SlingJakartaHttpServletResponse.class);
+
+    @Before
+    public void setUp()
+    {
+        when(this.bindings.get("jakartaResponse")).thenReturn(this.response);
+        this.contentTypeSetter.init(this.bindings);
+    }
 
     @Test
-    public void initGetsResponseKeyFromBindings()
+    public void initGetsJakartaResponseFromBindings()
     {
-        Bindings bindings = mock(Bindings.class);
-        this.contentTypeSetter.init(bindings);
-        verify(bindings, times(1)).get("response");
+        verify(this.bindings).get("jakartaResponse");
     }
 
     @Test
     public void htmlSetsHtmlContentType()
     {
         this.contentTypeSetter.html();
-        verify(this.response, times(1)).setContentType("text/html;charset=UTF-8");
+        verify(this.response).setContentType("text/html;charset=UTF-8");
     }
 
     @Test
     public void javascriptSetsJavascriptContentType()
     {
         this.contentTypeSetter.javascript();
-        verify(this.response, times(1)).setContentType("application/javascript;charset=UTF-8");
+        verify(this.response).setContentType("application/javascript;charset=UTF-8");
     }
 
     @Test
     public void jsonSetsJsonContentType()
     {
         this.contentTypeSetter.json();
-        verify(this.response, times(1)).setContentType("application/json;charset=UTF-8");
+        verify(this.response).setContentType("application/json;charset=UTF-8");
     }
 
     @Test
     public void csvSetsCsvContentType()
     {
         this.contentTypeSetter.csv();
-        verify(this.response, times(1)).setContentType("text/csv;charset=UTF-8");
+        verify(this.response).setContentType("text/csv;charset=UTF-8");
     }
 
     @Test
     public void textSetsPlainContentType()
     {
         this.contentTypeSetter.text();
-        verify(this.response, times(1)).setContentType("text/plain;charset=UTF-8");
+        verify(this.response).setContentType("text/plain;charset=UTF-8");
     }
 
     @Test
     public void markdownSetsMarkdownContentType()
     {
         this.contentTypeSetter.markdown();
-        verify(this.response, times(1)).setContentType("text/markdown;charset=UTF-8");
+        verify(this.response).setContentType("text/markdown;charset=UTF-8");
     }
 }

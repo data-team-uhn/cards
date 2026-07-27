@@ -16,23 +16,18 @@
  */
 package io.uhndata.cards.serialize.internal;
 
-import java.util.function.Function;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.json.Json;
-import javax.json.JsonValue;
+
+import jakarta.json.Json;
+import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.testing.mock.sling.ResourceResolverType;
-import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,35 +36,36 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class DeepProcessorTest
 {
     private static final String TEST_FORM_PATH = "/Forms/f1";
     private static final String NAME = "deep";
     private static final int PRIORITY = 10;
 
-    @Rule
-    public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
-
-    @InjectMocks
-    private DeepProcessor deepProcessor;
+    private final DeepProcessor deepProcessor = new DeepProcessor();
 
     @Test
-    public void getNameReturnDeep()
+    public void getNameReturnsDeep()
     {
         assertEquals(NAME, this.deepProcessor.getName());
     }
 
     @Test
-    public void getPriorityTest()
+    public void getPriorityReturnsTen()
     {
         assertEquals(PRIORITY, this.deepProcessor.getPriority());
     }
 
     @Test
-    public void isEnabledByDefaultTest()
+    public void isEnabledByDefaultReturnsFalse()
     {
         assertFalse(this.deepProcessor.isEnabledByDefault(mock(Resource.class)));
+    }
+
+    @Test
+    public void getDescriptionIsNotEmpty()
+    {
+        assertFalse(this.deepProcessor.getDescription().isEmpty());
     }
 
     @Test
@@ -88,7 +84,7 @@ public class DeepProcessorTest
     {
         JsonValue input = mock(JsonValue.class);
         JsonValue jsonValue = this.deepProcessor.processChild(mock(Node.class), mock(Node.class), input,
-                mock(Function.class));
+                node -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(input, jsonValue);
     }

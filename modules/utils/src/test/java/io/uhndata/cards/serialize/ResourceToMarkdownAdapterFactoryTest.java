@@ -19,15 +19,9 @@ package io.uhndata.cards.serialize;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.testing.mock.sling.ResourceResolverType;
-import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.internal.util.reflection.Whitebox;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.serialize.spi.ResourceMarkdownProcessor;
 
@@ -44,18 +38,13 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ResourceToMarkdownAdapterFactoryTest
 {
     private static final String NODE_IDENTIFIER = "jcr:uuid";
     private static final String CREATED_BY_PROPERTY = "jcr:createdBy";
     private static final String TEST_FORM_PATH = "/Forms/f1";
 
-    @Rule
-    public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
-
-    @InjectMocks
-    private ResourceToMarkdownAdapterFactory factory;
+    private final ResourceToMarkdownAdapterFactory factory = new ResourceToMarkdownAdapterFactory();
 
     @Test
     public void getAdapterForNullAdaptableObjectReturnsNull()
@@ -64,7 +53,7 @@ public class ResourceToMarkdownAdapterFactoryTest
     }
 
     @Test
-    public void getAdapterForResourceAdaptableObjectReturnsSerializedAdapter()
+    public void getAdapterForResourceAdaptableObjectReturnsSerializedAdapter() throws IllegalAccessException
     {
         Resource adaptable = mock(Resource.class);
         String identifier = UUID.randomUUID().toString();
@@ -75,41 +64,41 @@ public class ResourceToMarkdownAdapterFactoryTest
         when(processor.canProcess(adaptable)).thenReturn(true);
         when(processor.serialize(adaptable)).thenReturn(data);
 
-        Whitebox.setInternalState(this.factory, "allProcessors", List.of(processor));
+        setProcessors(List.of(processor));
         CharSequence adapter = this.factory.getAdapter(adaptable, CharSequence.class);
         assertNotNull(adapter);
         assertEquals(data, adapter);
     }
 
     @Test
-    public void getAdapterForUnsupportedResourceReturnsResourcePath()
+    public void getAdapterForUnsupportedResourceReturnsResourcePath() throws IllegalAccessException
     {
         Resource adaptable = mock(Resource.class);
         ResourceMarkdownProcessor processor = mock(ResourceMarkdownProcessor.class);
 
         when(adaptable.getPath()).thenReturn(TEST_FORM_PATH);
 
-        Whitebox.setInternalState(this.factory, "allProcessors", List.of(processor));
+        setProcessors(List.of(processor));
         CharSequence adapter = this.factory.getAdapter(adaptable, CharSequence.class);
         assertNotNull(adapter);
         assertEquals(TEST_FORM_PATH, adapter);
     }
 
     @Test
-    public void getAdapterWithNoProcessorsReturnsResourcePath()
+    public void getAdapterWithNoProcessorsReturnsResourcePath() throws IllegalAccessException
     {
         Resource adaptable = mock(Resource.class);
 
         when(adaptable.getPath()).thenReturn(TEST_FORM_PATH);
 
-        Whitebox.setInternalState(this.factory, "allProcessors", List.of());
+        setProcessors(List.of());
         CharSequence adapter = this.factory.getAdapter(adaptable, CharSequence.class);
         assertNotNull(adapter);
         assertEquals(TEST_FORM_PATH, adapter);
     }
 
     @Test
-    public void getAdapterUsesFirstProcessorThatCanProcess()
+    public void getAdapterUsesFirstProcessorThatCanProcess() throws IllegalAccessException
     {
         Resource adaptable = mock(Resource.class);
 
@@ -124,8 +113,7 @@ public class ResourceToMarkdownAdapterFactoryTest
 
         ResourceMarkdownProcessor processor3 = mock(ResourceMarkdownProcessor.class);
 
-        Whitebox.setInternalState(this.factory, "allProcessors",
-                List.of(processor1, processor2, processor3));
+        setProcessors(List.of(processor1, processor2, processor3));
         CharSequence adapter = this.factory.getAdapter(adaptable, CharSequence.class);
         verify(processor1, times(0)).serialize(adaptable);
         verify(processor2, times(1)).serialize(adaptable);
@@ -134,4 +122,8 @@ public class ResourceToMarkdownAdapterFactoryTest
         assertEquals(data, adapter);
     }
 
+    private void setProcessors(final List<ResourceMarkdownProcessor> processors) throws IllegalAccessException
+    {
+        FieldUtils.writeField(this.factory, "allProcessors", processors, true);
+    }
 }
