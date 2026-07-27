@@ -30,13 +30,9 @@ import org.apache.jackrabbit.oak.plugins.memory.EmptyNodeState;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -49,7 +45,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class DateRangeMinMaxAnswersValidatorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -65,11 +60,11 @@ public class DateRangeMinMaxAnswersValidatorTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private DateRangeMinMaxAnswersValidator dateRangeMinMaxAnswersValidator;
+    private final DateRangeMinMaxAnswersValidator dateRangeMinMaxAnswersValidator =
+        new DateRangeMinMaxAnswersValidator();
 
     @Test
-    public void getPriorityTest()
+    public void getPriorityReturnsValidatorPriority()
     {
         assertEquals(PRIORITY, this.dateRangeMinMaxAnswersValidator.getPriority());
     }
@@ -113,9 +108,8 @@ public class DateRangeMinMaxAnswersValidatorTest
         String answerInSectionUuid = UUID.randomUUID().toString();
         NodeBuilder answerInSectionNodeBuilder = createTestAnswer(answerInSectionUuid, UUID.randomUUID().toString());
 
-        Assertions.assertThatCode(
-                () -> this.dateRangeMinMaxAnswersValidator.validate(answerInSectionNodeBuilder, question,
-                        new HashMap<>())).doesNotThrowAnyException();
+        this.dateRangeMinMaxAnswersValidator.validate(answerInSectionNodeBuilder, question,
+                        new HashMap<>());
     }
 
     @Test

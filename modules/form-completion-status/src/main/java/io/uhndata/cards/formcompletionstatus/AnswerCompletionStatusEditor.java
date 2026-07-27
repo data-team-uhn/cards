@@ -17,11 +17,11 @@
 package io.uhndata.cards.formcompletionstatus;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.jcr.Node;
@@ -34,8 +34,6 @@ import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.formcompletionstatus.spi.AnswerValidator;
 import io.uhndata.cards.forms.api.FormUtils;
@@ -48,8 +46,6 @@ import io.uhndata.cards.forms.api.FormUtils;
  */
 public class AnswerCompletionStatusEditor extends DefaultEditor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerCompletionStatusEditor.class);
-
     private static final String STATUS_FLAGS = "statusFlags";
 
     private static final String STATUS_FLAG_INCOMPLETE = "INCOMPLETE";
@@ -152,13 +148,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             validateAnswer(node);
         } else if (this.formUtils.isForm(node)
             || this.formUtils.isAnswerSection(node)) {
-            try {
-                summarize(node);
-            } catch (final RepositoryException e) {
-                // This is not a fatal error, the form status is not required for a functional application
-                LOGGER.warn("Unexpected exception while checking the completion status of form {}",
-                    this.currentNodeBuilder.getString("jcr:uuid"), e);
-            }
+            summarize(node);
         }
     }
 
@@ -192,9 +182,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      * node.
      *
      * @param node the node to summarize, either a {@code cards:Form} or a {@code cards:AnswerSection} node
-     * @throws RepositoryException if accessing the repository fails
      */
-    private void summarize(final NodeBuilder node) throws RepositoryException
+    private void summarize(final NodeBuilder node)
     {
         final Set<String> flags = StreamSupport.stream(node.getChildNodeNames().spliterator(), false)
             .map(childName -> node.getChildNode(childName))
@@ -207,17 +196,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 }
             })
             .filter(child -> child.hasProperty(STATUS_FLAGS))
-            .map(child -> child.getProperty(STATUS_FLAGS).getValue(Type.STRINGS))
-            .<Set<String>>reduce(new HashSet<>(), (oldFlags, newFlags) -> {
-                newFlags.forEach(flag -> oldFlags.add(flag));
-                return oldFlags;
-            },
-                (l, r) -> {
-                    final Set<String> u = new HashSet<>();
-                    u.addAll(l);
-                    u.addAll(r);
-                    return u;
-                });
+            .flatMap(child -> StreamSupport.stream(
+                child.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).spliterator(), false))
+            .collect(Collectors.toSet());
         // Set the flags in selectedNodeBuilder accordingly
         final Set<String> statusFlags = new TreeSet<>();
         if (node.hasProperty(STATUS_FLAGS)) {

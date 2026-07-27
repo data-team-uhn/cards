@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -30,13 +31,9 @@ import org.apache.jackrabbit.oak.plugins.memory.EmptyNodeState;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -49,7 +46,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class MinMaxValueValidatorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -64,11 +60,10 @@ public class MinMaxValueValidatorTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private MinMaxValueValidator minMaxValueValidator;
+    private final MinMaxValueValidator minMaxValueValidator = new MinMaxValueValidator();
 
     @Test
-    public void getPriorityTest()
+    public void getPriorityReturnsValidatorPriority()
     {
         assertEquals(PRIORITY, this.minMaxValueValidator.getPriority());
     }
@@ -139,9 +134,94 @@ public class MinMaxValueValidatorTest
         String answerInSectionUuid = UUID.randomUUID().toString();
         NodeBuilder answerInSectionNodeBuilder = createTestAnswer(answerInSectionUuid, UUID.randomUUID().toString());
 
-        Assertions.assertThatCode(
-                () -> this.minMaxValueValidator.validate(answerInSectionNodeBuilder, question, new HashMap<>()))
-                .doesNotThrowAnyException();
+        this.minMaxValueValidator.validate(answerInSectionNodeBuilder, question, new HashMap<>());
+    }
+
+    @Test
+    public void validateForOutOfRangeAnswerOptionValueRemovesInvalidFlag() throws RepositoryException
+    {
+        Node question = this.context.resourceResolver().adaptTo(Session.class)
+                .getNode(TEST_QUESTIONNAIRE_PATH + "/question_6");
+        NodeBuilder answer = createTestAnswer(UUID.randomUUID().toString(), question.getIdentifier());
+        // -1 is below the minimum value, but it is one of the predefined answer options, so it is accepted
+        answer.setProperty(VALUE_PROPERTY, -1L);
+
+        Map<String, Boolean> flags = createStatusFlagsMap();
+        this.minMaxValueValidator.validate(answer, question, flags);
+        assertFalse(flags.containsKey(FLAG_INVALID));
+    }
+
+    @Test
+    public void validateForOutOfRangeValueNotMatchingOptionsSetsInvalidFlag() throws RepositoryException
+    {
+        Node question = this.context.resourceResolver().adaptTo(Session.class)
+                .getNode(TEST_QUESTIONNAIRE_PATH + "/question_6");
+        NodeBuilder answer = createTestAnswer(UUID.randomUUID().toString(), question.getIdentifier());
+        answer.setProperty(VALUE_PROPERTY, 10L);
+
+        Map<String, Boolean> flags = createStatusFlagsMap();
+        this.minMaxValueValidator.validate(answer, question, flags);
+        assertTrue(flags.get(FLAG_INVALID));
+    }
+
+    @Test
+    public void validateForQuestionWithoutLimitsRemovesInvalidFlag() throws RepositoryException
+    {
+        Node question = this.context.resourceResolver().adaptTo(Session.class)
+                .getNode(TEST_QUESTIONNAIRE_PATH + "/question_5");
+        NodeBuilder answer = createTestAnswer(UUID.randomUUID().toString(), question.getIdentifier());
+        answer.setProperty(VALUE_PROPERTY, 10L);
+
+        Map<String, Boolean> flags = createStatusFlagsMap();
+        this.minMaxValueValidator.validate(answer, question, flags);
+        assertFalse(flags.containsKey(FLAG_INVALID));
+    }
+
+    @Test
+    public void validateForSuggestedLimitsLeavesFlagsUntouched() throws RepositoryException
+    {
+        Node question = this.context.resourceResolver().adaptTo(Session.class)
+                .getNode(TEST_QUESTIONNAIRE_PATH + "/question_7");
+        NodeBuilder answer = createTestAnswer(UUID.randomUUID().toString(), question.getIdentifier());
+        answer.setProperty(VALUE_PROPERTY, 10L);
+
+        // The limits are only suggested, not enforced, so the out-of-range value is not flagged
+        Map<String, Boolean> flags = createStatusFlagsMap();
+        this.minMaxValueValidator.validate(answer, question, flags);
+        assertTrue(flags.containsKey(FLAG_INVALID));
+        assertFalse(flags.get(FLAG_INVALID));
+    }
+
+    @Test
+    public void validateCatchesRepositoryExceptionReadingLimits() throws RepositoryException
+    {
+        Node question = mock(Node.class);
+        Property dataType = mock(Property.class);
+        when(question.getProperty("dataType")).thenReturn(dataType);
+        when(dataType.getString()).thenReturn("long");
+        when(question.hasProperty("minValue")).thenReturn(true);
+        when(question.getProperty("minValue")).thenThrow(new RepositoryException());
+        NodeBuilder answer = createTestAnswer(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        answer.setProperty(VALUE_PROPERTY, 10L);
+
+        this.minMaxValueValidator.validate(answer, question, new HashMap<>());
+    }
+
+    @Test
+    public void validateCatchesRepositoryExceptionReadingOptions() throws RepositoryException
+    {
+        Node question = mock(Node.class);
+        Property dataType = mock(Property.class);
+        when(question.getProperty("dataType")).thenReturn(dataType);
+        when(dataType.getString()).thenReturn("long");
+        when(question.getNodes()).thenThrow(new RepositoryException());
+        NodeBuilder answer = createTestAnswer(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        answer.setProperty(VALUE_PROPERTY, 10L);
+
+        // Failing to read the answer options is treated as having no options
+        Map<String, Boolean> flags = createStatusFlagsMap();
+        this.minMaxValueValidator.validate(answer, question, flags);
+        assertFalse(flags.containsKey(FLAG_INVALID));
     }
 
     @Before

@@ -34,96 +34,96 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link MinMaxAnswersValidator}.
+ * Unit tests for {@link RangeMinMaxAnswersValidator}.
  *
  * @version $Id$
  */
-public class MinMaxAnswersValidatorTest
+public class RangeMinMaxAnswersValidatorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
+
     private static final String NODE_IDENTIFIER = "jcr:uuid";
+
     private static final String ANSWER_TYPE = "cards:Answer";
+
     private static final String QUESTION_PROPERTY = "question";
+
     private static final String VALUE_PROPERTY = "value";
+
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
+
     private static final String FLAG_INVALID = "INVALID";
+
     private static final String FLAG_INCOMPLETE = "INCOMPLETE";
-    private static final int PRIORITY = 10;
+
+    private static final int PRIORITY = 15;
 
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    private final MinMaxAnswersValidator minMaxAnswersValidator = new MinMaxAnswersValidator();
+    private final RangeMinMaxAnswersValidator rangeMinMaxAnswersValidator = new RangeMinMaxAnswersValidator();
 
     @Test
     public void getPriorityReturnsValidatorPriority()
     {
-        assertEquals(PRIORITY, this.minMaxAnswersValidator.getPriority());
+        assertEquals(PRIORITY, this.rangeMinMaxAnswersValidator.getPriority());
     }
 
     @Test
-    public void validateForAnswerWithoutValueProperty() throws RepositoryException
+    public void validateForIncompleteRangeSetsIncompleteFlag() throws RepositoryException
     {
-        Node question = this.context.resourceResolver().adaptTo(Session.class)
-                .getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_2");
-        String answerInSectionUuid = UUID.randomUUID().toString();
-        NodeBuilder answerInSectionNodeBuilder = createTestAnswer(answerInSectionUuid, question.getIdentifier());
+        Node question = getQuestion("question_5");
+        NodeBuilder answer = createTestAnswer(question.getIdentifier());
+        answer.setProperty(VALUE_PROPERTY, Set.of("100"), Type.STRINGS);
 
         Map<String, Boolean> flags = createStatusFlagsMap();
-        this.minMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, flags);
-        assertTrue(flags.containsKey(FLAG_INCOMPLETE));
+        this.rangeMinMaxAnswersValidator.validate(answer, question, flags);
         assertTrue(flags.get(FLAG_INCOMPLETE));
         assertFalse(flags.containsKey(FLAG_INVALID));
     }
 
     @Test
-    public void validateForAnswerWithMoreThanAllowedValueProperty() throws RepositoryException
+    public void validateForCompleteRangeRemovesFlags() throws RepositoryException
     {
-        Node question = this.context.resourceResolver().adaptTo(Session.class)
-                .getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_2");
-        String answerInSectionUuid = UUID.randomUUID().toString();
-        NodeBuilder answerInSectionNodeBuilder = createTestAnswer(answerInSectionUuid, question.getIdentifier());
-        answerInSectionNodeBuilder.setProperty(VALUE_PROPERTY, Set.of("100", "200", "300"), Type.STRINGS);
+        Node question = getQuestion("question_5");
+        NodeBuilder answer = createTestAnswer(question.getIdentifier());
+        answer.setProperty(VALUE_PROPERTY, Set.of("100", "200"), Type.STRINGS);
 
         Map<String, Boolean> flags = createStatusFlagsMap();
-        this.minMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, flags);
+        this.rangeMinMaxAnswersValidator.validate(answer, question, flags);
         assertFalse(flags.containsKey(FLAG_INCOMPLETE));
+        assertFalse(flags.containsKey(FLAG_INVALID));
+    }
+
+    @Test
+    public void validateForNonRangeQuestionLeavesFlagsUntouched() throws RepositoryException
+    {
+        Node question = getQuestion("question_1");
+        NodeBuilder answer = createTestAnswer(question.getIdentifier());
+
+        Map<String, Boolean> flags = createStatusFlagsMap();
+        this.rangeMinMaxAnswersValidator.validate(answer, question, flags);
+        assertTrue(flags.containsKey(FLAG_INCOMPLETE));
+        assertFalse(flags.get(FLAG_INCOMPLETE));
         assertTrue(flags.containsKey(FLAG_INVALID));
-        assertTrue(flags.get(FLAG_INVALID));
+        assertFalse(flags.get(FLAG_INVALID));
     }
 
     @Test
     public void validateCatchesRepositoryException() throws RepositoryException
     {
         Node question = mock(Node.class);
-        when(question.hasProperty("minAnswers")).thenThrow(new RepositoryException());
-        String answerInSectionUuid = UUID.randomUUID().toString();
-        NodeBuilder answerInSectionNodeBuilder = createTestAnswer(answerInSectionUuid, UUID.randomUUID().toString());
+        when(question.hasProperty("isRange")).thenThrow(new RepositoryException());
+        NodeBuilder answer = createTestAnswer(UUID.randomUUID().toString());
 
-        this.minMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, new HashMap<>());
-    }
-
-    @Test
-    public void validateForQuestionWithoutLimitsUsesDefaults() throws RepositoryException
-    {
-        // Real questions always have autocreated minAnswers/maxAnswers, but the validator may be handed other nodes
-        Node question = mock(Node.class);
-        when(question.hasProperty("minAnswers")).thenReturn(false);
-        when(question.hasProperty("maxAnswers")).thenReturn(false);
-        NodeBuilder answer = createTestAnswer(UUID.randomUUID().toString(), UUID.randomUUID().toString());
-        answer.setProperty(VALUE_PROPERTY, "AB123456");
-
-        Map<String, Boolean> flags = createStatusFlagsMap();
-        this.minMaxAnswersValidator.validate(answer, question, flags);
-        assertFalse(flags.containsKey(FLAG_INCOMPLETE));
-        assertFalse(flags.containsKey(FLAG_INVALID));
+        this.rangeMinMaxAnswersValidator.validate(answer, question, new HashMap<>());
     }
 
     @Before
@@ -131,6 +131,12 @@ public class MinMaxAnswersValidatorTest
     {
         this.context.build().resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage").commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
+    }
+
+    private Node getQuestion(final String name) throws RepositoryException
+    {
+        return this.context.resourceResolver().adaptTo(Session.class)
+            .getNode(TEST_QUESTIONNAIRE_PATH + "/" + name);
     }
 
     private Map<String, Boolean> createStatusFlagsMap()
@@ -141,14 +147,12 @@ public class MinMaxAnswersValidatorTest
         return flags;
     }
 
-    private NodeBuilder createTestAnswer(String uuid, String questionUuid)
+    private NodeBuilder createTestAnswer(String questionUuid)
     {
         NodeBuilder answerBuilder = EmptyNodeState.EMPTY_NODE.builder();
         answerBuilder.setProperty(NODE_TYPE, ANSWER_TYPE);
         answerBuilder.setProperty(QUESTION_PROPERTY, questionUuid);
-        answerBuilder.setProperty(NODE_IDENTIFIER, uuid);
-
+        answerBuilder.setProperty(NODE_IDENTIFIER, UUID.randomUUID().toString());
         return answerBuilder;
     }
-
 }

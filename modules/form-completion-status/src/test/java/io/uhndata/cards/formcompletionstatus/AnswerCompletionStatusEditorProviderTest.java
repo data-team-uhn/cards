@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -28,13 +29,9 @@ import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
@@ -50,23 +47,27 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AnswerCompletionStatusEditorProviderTest
 {
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private AnswerCompletionStatusEditorProvider answerCompletionStatusEditorProvider;
+    private final AnswerCompletionStatusEditorProvider answerCompletionStatusEditorProvider =
+        new AnswerCompletionStatusEditorProvider();
 
-    @Mock
-    private ThreadResourceResolverProvider rrp;
+    private final ThreadResourceResolverProvider rrp = mock(ThreadResourceResolverProvider.class);
 
-    @Mock
-    private FormUtils formUtils;
+    private final FormUtils formUtils = mock(FormUtils.class);
+
+    @Before
+    public void setUp() throws IllegalAccessException
+    {
+        FieldUtils.writeField(this.answerCompletionStatusEditorProvider, "rrp", this.rrp, true);
+        FieldUtils.writeField(this.answerCompletionStatusEditorProvider, "formUtils", this.formUtils, true);
+    }
 
     @Test
-    public void getRootEditorReturnsAnswerCompletionStatusEditor() throws CommitFailedException
+    public void getRootEditorReturnsAnswerCompletionStatusEditor() throws CommitFailedException, IllegalAccessException
     {
         final ResourceResolver resourceResolver = this.context.resourceResolver();
         final Session session = resourceResolver.adaptTo(Session.class);
@@ -74,7 +75,7 @@ public class AnswerCompletionStatusEditorProviderTest
         NodeBuilder currentNodeBuilder = mock(NodeBuilder.class);
         when(this.formUtils.isForm(currentNodeBuilder)).thenReturn(true);
         when(this.rrp.getThreadResourceResolver()).thenReturn(resourceResolver);
-        Whitebox.setInternalState(this.answerCompletionStatusEditorProvider, "allValidators", List.of());
+        FieldUtils.writeField(this.answerCompletionStatusEditorProvider, "allValidators", List.of(), true);
 
         Editor editor = this.answerCompletionStatusEditorProvider.getRootEditor(mock(NodeState.class),
                 mock(NodeState.class), currentNodeBuilder, new CommitInfo(session.toString(), session.getUserID()));

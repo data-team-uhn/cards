@@ -36,17 +36,22 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockedStatic;
 
+import io.uhndata.cards.formcompletionstatus.spi.AnswerValidator;
 import io.uhndata.cards.forms.api.FormUtils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +60,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AnswerCompletionStatusEditorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -84,15 +88,7 @@ public class AnswerCompletionStatusEditorTest
 
     private Session session;
 
-    @Mock
-    private FormUtils formUtils;
-
-    @Test
-    public void constructorTest()
-    {
-        initAnswerCompletionStatusEditor(true);
-        assertNotNull(this.answerCompletionStatusEditor);
-    }
+    private final FormUtils formUtils = mock(FormUtils.class);
 
     @Test
     public void childNodeAddedForFormNodeReturnsNull() throws CommitFailedException
@@ -165,6 +161,132 @@ public class AnswerCompletionStatusEditorTest
                 this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).iterator();
         assertEquals(STATUS_FLAG_DRAFT, statusFlagsIterator.next());
         assertEquals(STATUS_FLAG_INCOMPLETE, statusFlagsIterator.next());
+    }
+
+    @Test
+    public void leaveForSubmittedFormSkipsProcessing() throws CommitFailedException
+    {
+        this.currentNodeBuilder.setProperty(STATUS_FLAGS, List.of("SUBMITTED"), Type.STRINGS);
+        initAnswerCompletionStatusEditor(true);
+
+        this.answerCompletionStatusEditor.leave(mock(NodeState.class), mock(NodeState.class));
+
+        // The status of a submitted form is not recomputed
+        verify(this.formUtils, never()).isAnswer(any(NodeBuilder.class));
+        Iterator<String> statusFlagsIterator =
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).iterator();
+        assertEquals("SUBMITTED", statusFlagsIterator.next());
+        assertFalse(statusFlagsIterator.hasNext());
+    }
+
+    @Test
+    public void leaveForCompleteAndValidFormRemovesDraftFlag() throws CommitFailedException
+    {
+        NodeBuilder answer = EmptyNodeState.EMPTY_NODE.builder();
+        this.currentNodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
+        this.currentNodeBuilder.setChildNode("answer_1", answer.getNodeState());
+        this.currentNodeBuilder.setProperty(STATUS_FLAGS,
+                List.of(STATUS_FLAG_DRAFT, STATUS_FLAG_INCOMPLETE, STATUS_FLAG_INVALID), Type.STRINGS);
+        initAnswerCompletionStatusEditor(true);
+
+        // No answers or answer sections contribute INCOMPLETE or INVALID flags anymore
+        this.answerCompletionStatusEditor.leave(mock(NodeState.class), mock(NodeState.class));
+
+        Iterator<String> statusFlagsIterator =
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).iterator();
+        assertFalse(statusFlagsIterator.hasNext());
+    }
+
+    @Test
+    public void leaveInvokesTheRegisteredValidators() throws CommitFailedException, RepositoryException
+    {
+        AnswerValidator validator = mock(AnswerValidator.class);
+        when(this.formUtils.isForm(this.currentNodeBuilder)).thenReturn(true);
+        this.answerCompletionStatusEditor = new AnswerCompletionStatusEditor(this.currentNodeBuilder, true,
+                this.session, this.formUtils, List.of(validator));
+        when(this.formUtils.isAnswer(any(NodeBuilder.class))).thenReturn(true, false);
+        when(this.formUtils.getQuestion(any(NodeBuilder.class)))
+                .thenReturn(this.session.getNode(TEST_QUESTIONNAIRE_PATH + "/question_1"));
+
+        this.answerCompletionStatusEditor.leave(mock(NodeState.class), mock(NodeState.class));
+
+        verify(validator, atLeastOnce()).validate(any(NodeBuilder.class), any(Node.class), anyMap());
+    }
+
+    @Test
+    public void leaveExcludesUnsatisfiedAnswerSections() throws CommitFailedException
+    {
+        buildFormWithFlaggedAnswerInSection();
+        mockTypeBasedFormUtils();
+
+        try (MockedStatic<ConditionalSectionUtils> conditions = mockStatic(ConditionalSectionUtils.class)) {
+            conditions.when(() -> ConditionalSectionUtils.isConditionSatisfied(any(), any(), any()))
+                    .thenReturn(false);
+            this.answerCompletionStatusEditor.leave(mock(NodeState.class), mock(NodeState.class));
+        }
+
+        // The flags of the unsatisfied answer section are not aggregated into the form status
+        Iterator<String> statusFlagsIterator =
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).iterator();
+        assertFalse(statusFlagsIterator.hasNext());
+    }
+
+    @Test
+    public void leaveIncludesAnswerSectionsWithFailedConditionEvaluation() throws CommitFailedException
+    {
+        buildFormWithFlaggedAnswerInSection();
+        mockTypeBasedFormUtils();
+
+        try (MockedStatic<ConditionalSectionUtils> conditions = mockStatic(ConditionalSectionUtils.class)) {
+            conditions.when(() -> ConditionalSectionUtils.isConditionSatisfied(any(), any(), any()))
+                    .thenAnswer(invocation -> {
+                        throw new RepositoryException();
+                    });
+            this.answerCompletionStatusEditor.leave(mock(NodeState.class), mock(NodeState.class));
+        }
+
+        // If the condition cannot be evaluated, the section is included in the summary
+        Iterator<String> statusFlagsIterator =
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).iterator();
+        assertEquals(STATUS_FLAG_DRAFT, statusFlagsIterator.next());
+        assertEquals(STATUS_FLAG_INVALID, statusFlagsIterator.next());
+        assertFalse(statusFlagsIterator.hasNext());
+    }
+
+    /**
+     * Builds a form containing an answer section, which contains an answer carrying an INVALID flag, and initializes
+     * the editor on it.
+     */
+    private void buildFormWithFlaggedAnswerInSection()
+    {
+        NodeBuilder answer = EmptyNodeState.EMPTY_NODE.builder();
+        answer.setProperty(NODE_TYPE, ANSWER_TYPE);
+        answer.setProperty(STATUS_FLAGS, List.of(STATUS_FLAG_INVALID), Type.STRINGS);
+        NodeBuilder answerSection = EmptyNodeState.EMPTY_NODE.builder();
+        answerSection.setProperty(NODE_TYPE, ANSWER_SECTION_TYPE);
+        answerSection.setChildNode("answer_1", answer.getNodeState());
+        this.currentNodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
+        this.currentNodeBuilder.setProperty(NODE_TYPE, "cards:Form");
+        this.currentNodeBuilder.setChildNode("answerSection_1", answerSection.getNodeState());
+        initAnswerCompletionStatusEditor(true);
+    }
+
+    /**
+     * Makes the mocked form utils recognize nodes by their primary node type, since the node builders traversed by the
+     * editor are separate wrapper instances that cannot be matched by identity.
+     */
+    private void mockTypeBasedFormUtils()
+    {
+        when(this.formUtils.isAnswer(any(NodeBuilder.class)))
+                .thenAnswer(invocation -> ANSWER_TYPE.equals(getPrimaryType(invocation.getArgument(0))));
+        when(this.formUtils.isAnswerSection(any(NodeBuilder.class)))
+                .thenAnswer(invocation -> ANSWER_SECTION_TYPE.equals(getPrimaryType(invocation.getArgument(0))));
+        when(this.formUtils.getQuestion(any(NodeBuilder.class))).thenReturn(null);
+    }
+
+    private String getPrimaryType(final NodeBuilder node)
+    {
+        return node.hasProperty(NODE_TYPE) ? node.getProperty(NODE_TYPE).getValue(Type.STRING) : "";
     }
 
     @Before
