@@ -266,6 +266,13 @@ public class QueryCountHealthCheckTest
     }
 
     @Test
+    public void testNoJcrSession() throws Exception
+    {
+        when(this.rr.adaptTo(Session.class)).thenReturn(null);
+        Assert.assertEquals(Status.HEALTH_CHECK_ERROR, this.checker.execute().getStatus());
+    }
+
+    @Test
     public void testInvalidComparator() throws Exception
     {
         when(this.comparatorProp1.getString()).thenReturn("??");

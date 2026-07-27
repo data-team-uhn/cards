@@ -27,14 +27,11 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 
 import org.apache.felix.hc.api.Result;
 import org.apache.felix.hc.api.Result.Status;
 import org.apache.felix.hc.api.ResultLog.Entry;
 import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
-import org.apache.jackrabbit.value.LongValue;
-import org.apache.jackrabbit.value.StringValue;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -90,8 +87,6 @@ public class PropertiesPresentHealthCheckTest
     @Mock
     private Property value3;
 
-    private Value expectedValue = new StringValue("a");
-
     @Mock
     private Property value;
 
@@ -120,7 +115,7 @@ public class PropertiesPresentHealthCheckTest
         when(this.session.propertyExists("/node/property3")).thenReturn(true);
         when(this.config3.hasProperty(PropertiesPresentHealthCheck.VALUE_PROPERTY)).thenReturn(true);
         when(this.config3.getProperty(PropertiesPresentHealthCheck.VALUE_PROPERTY)).thenReturn(this.value3);
-        when(this.value3.getValue()).thenReturn(this.expectedValue);
+        when(this.value3.getString()).thenReturn("a");
         when(this.session.getProperty("/node/property3")).thenReturn(this.value);
     }
 
@@ -152,7 +147,7 @@ public class PropertiesPresentHealthCheckTest
     public void testWrongValue() throws Exception
     {
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config3)));
-        when(this.value.getValue()).thenReturn(new LongValue(2));
+        when(this.value.getString()).thenReturn("2");
         Result result = this.checker.execute();
         Assert.assertEquals(Status.CRITICAL, result.getStatus());
     }
@@ -161,7 +156,7 @@ public class PropertiesPresentHealthCheckTest
     public void testCorrectValue() throws Exception
     {
         when(this.configurations.getNodes()).thenReturn(new NodeIteratorAdapter(List.of(this.config3)));
-        when(this.value.getValue()).thenReturn(new StringValue("a"));
+        when(this.value.getString()).thenReturn("a");
         Result result = this.checker.execute();
         Assert.assertEquals(Status.OK, result.getStatus());
     }
@@ -186,6 +181,14 @@ public class PropertiesPresentHealthCheckTest
         Assert.assertEquals(Status.OK, entries.next().getStatus());
         Assert.assertEquals(Status.OK, entries.next().getStatus());
         Assert.assertFalse(entries.hasNext());
+    }
+
+    @Test
+    public void testNoJcrSession() throws Exception
+    {
+        when(this.rr.adaptTo(Session.class)).thenReturn(null);
+        Result result = this.checker.execute();
+        Assert.assertEquals(Status.HEALTH_CHECK_ERROR, result.getStatus());
     }
 
     @Test

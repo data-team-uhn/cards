@@ -22,7 +22,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 
 import org.apache.felix.hc.api.FormattingResultLog;
 import org.apache.felix.hc.api.HealthCheck;
@@ -39,8 +38,8 @@ import org.slf4j.LoggerFactory;
  * Check that all the required node properties are present. The list of properties to check is defined as nodes in the
  * repository, under {@code /libs/cards/healthcheck/requiredProperties/}, with the {@code propertyPath} property holding
  * the full JCR path to a property, and an optional {@code requiredValue} property holding the expected value for the
- * property. If the property value is not set, only the property's existence is checked.Other CARDS modules should
- * provide the actual required properties to check for.
+ * property, compared through its string representation. If the required value is not set, only the property's
+ * existence is checked. Other CARDS modules should provide the actual required properties to check for.
  *
  * @version $Id$
  * @since 0.9.37
@@ -72,6 +71,10 @@ public class PropertiesPresentHealthCheck implements HealthCheck
         try (ResourceResolver resolver =
             this.rrf.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "healthcheck"))) {
             final Session session = resolver.adaptTo(Session.class);
+            if (session == null) {
+                result.healthCheckError("The resource resolver is not backed by a JCR session");
+                return new Result(result);
+            }
             if (!session.nodeExists(CONFIGURATION_PATH)) {
                 result.warn("No required properties configuration, please check the system integrity");
                 return new Result(result);
@@ -80,30 +83,13 @@ public class PropertiesPresentHealthCheck implements HealthCheck
             while (configurations.hasNext()) {
                 final Node configuration = configurations.nextNode();
                 try {
-                    final String propertyPath = configuration.getProperty(PATH_PROPERTY).getString();
-                    if (!session.propertyExists(propertyPath)) {
-                        result.critical("Required property not found: {}", propertyPath);
-                        missing++;
-                        continue;
-                    }
-                    if (!configuration.hasProperty(VALUE_PROPERTY)) {
-                        result.debug("Required property exists: {}", propertyPath);
+                    if (checkProperty(configuration, session, result)) {
                         present++;
-                        continue;
-                    }
-
-                    final Value requiredValue = configuration.getProperty(VALUE_PROPERTY).getValue();
-                    final Value actualValue = session.getProperty(propertyPath).getValue();
-                    if (!requiredValue.equals(actualValue)) {
-                        result.critical("Required value for property {} is wrong {} -- {}",
-                            propertyPath, requiredValue.getString(), actualValue.getString());
-                        missing++;
                     } else {
-                        result.debug("Required property is correct: {}={}", propertyPath, actualValue);
-                        present++;
+                        missing++;
                     }
                 } catch (RepositoryException e) {
-                    LOGGER.error("Unexpected exception while checking required properties", e.getMessage(), e);
+                    LOGGER.error("Unexpected exception while checking required properties: {}", e.getMessage(), e);
                     result.healthCheckError("Cannot run status check: {}", e.getMessage(), e);
                 }
             }
@@ -112,5 +98,41 @@ public class PropertiesPresentHealthCheck implements HealthCheck
         }
         result.info("{} required properties present" + (missing != 0 ? " and {} wrong/missing" : ""), present, missing);
         return new Result(result);
+    }
+
+    /**
+     * Runs one configured check: the property must exist, and, when the configuration specifies a required value,
+     * its value must match it.
+     *
+     * @param configuration the configuration node describing the check
+     * @param session the session to read the checked property with
+     * @param result the result log to report into
+     * @return {@code true} if the property is present and correct
+     * @throws RepositoryException if accessing the configuration or the checked property fails unexpectedly
+     */
+    private boolean checkProperty(final Node configuration, final Session session, final FormattingResultLog result)
+        throws RepositoryException
+    {
+        final String propertyPath = configuration.getProperty(PATH_PROPERTY).getString();
+        if (!session.propertyExists(propertyPath)) {
+            result.critical("Required property not found: {}", propertyPath);
+            return false;
+        }
+        if (!configuration.hasProperty(VALUE_PROPERTY)) {
+            result.debug("Required property exists: {}", propertyPath);
+            return true;
+        }
+
+        // Compare string representations, so that a required value configured as a string can match an actual
+        // property of another type, e.g. a boolean or a long
+        final String requiredValue = configuration.getProperty(VALUE_PROPERTY).getString();
+        final String actualValue = session.getProperty(propertyPath).getString();
+        if (!requiredValue.equals(actualValue)) {
+            result.critical("Wrong value for required property {}: expected {}, got {}",
+                propertyPath, requiredValue, actualValue);
+            return false;
+        }
+        result.debug("Required property is correct: {}={}", propertyPath, actualValue);
+        return true;
     }
 }

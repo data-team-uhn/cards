@@ -176,6 +176,20 @@ public class ServicesPresentHealthCheckTest
     }
 
     @Test
+    public void testBlankServiceClass() throws Exception
+    {
+        Resource config4 = org.mockito.Mockito.mock(Resource.class);
+        ValueMap props4 = org.mockito.Mockito.mock(ValueMap.class);
+        when(config4.getValueMap()).thenReturn(props4);
+        when(props4.get(ServicesPresentHealthCheck.SERVICE_PROPERTY, "")).thenReturn(" ");
+        when(this.configurations.getChildren()).thenReturn(List.of(config4));
+        Result result = this.checker.execute();
+        Assert.assertEquals(Status.HEALTH_CHECK_ERROR, result.getStatus());
+        // The service registry must not be queried with a blank class name
+        verify(this.bc, times(0)).getAllServiceReferences(any(), any());
+    }
+
+    @Test
     public void testInvalidLogin() throws Exception
     {
         when(this.rrf.getServiceResourceResolver(any())).thenThrow(new LoginException("wrong login"));

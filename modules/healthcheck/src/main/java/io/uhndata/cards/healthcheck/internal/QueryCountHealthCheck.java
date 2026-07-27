@@ -102,7 +102,7 @@ public final class QueryCountHealthCheck implements HealthCheck
     public static final String TODAY_PLACEHOLDER = "${today}";
 
     /**
-     * Placeholder replaced with yesterday's date (at server's midnigh) at query execution time.
+     * Placeholder replaced with tomorrow's date (at server's midnight) at query execution time.
      */
     public static final String TOMORROW_PLACEHOLDER = "${tomorrow}";
 
@@ -136,6 +136,10 @@ public final class QueryCountHealthCheck implements HealthCheck
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "healthcheck"))) {
             final Session session = resolver.adaptTo(Session.class);
+            if (session == null) {
+                result.healthCheckError("The resource resolver is not backed by a JCR session");
+                return new Result(result);
+            }
             if (!session.nodeExists(CONFIGURATION_PATH)) {
                 result.info("No query count checks configured.");
                 return new Result(result);
