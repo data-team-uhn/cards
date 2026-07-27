@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.proms.internal.permissions;
+package io.uhndata.cards.permissions.internal.clinic;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -40,7 +40,7 @@ import io.uhndata.cards.permissions.spi.RestrictionFactory;
 @Component(immediate = true)
 public class ClinicRestrictionFactory implements RestrictionFactory
 {
-    /** @see #getName */
+    /** The name of this restriction. */
     public static final String NAME = "cards:clinicForms";
 
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,

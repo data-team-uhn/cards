@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.proms.internal.permissions;
-
-import java.util.Map;
+package io.uhndata.cards.permissions.internal.clinic;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -91,8 +89,7 @@ public class ClinicRestrictionPattern implements RestrictionPattern
         }
 
         // Grab the group named after this clinic, and see if the user is part of it
-        try (ResourceResolver srr = this.rrf.getServiceResourceResolver(
-            Map.of(ResourceResolverFactory.SUBSERVICE, "ClinicFormsRestriction"))) {
+        try (ResourceResolver srr = this.rrf.getServiceResourceResolver(null)) {
             ResourceResolver trr = this.rrf.getThreadResourceResolver();
             final JackrabbitSession serviceSession = (JackrabbitSession) srr.adaptTo(Session.class);
             final JackrabbitSession userSession = (JackrabbitSession) trr.adaptTo(Session.class);

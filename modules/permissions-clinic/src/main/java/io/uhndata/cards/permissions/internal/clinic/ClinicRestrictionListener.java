@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.proms.internal.permissions;
+package io.uhndata.cards.permissions.internal.clinic;
 
 import java.security.Principal;
 import java.util.HashSet;
@@ -44,9 +44,9 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.permissions.spi.PermissionsManager;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Change listener that applies the cards:clinicForms to all forms related to a visit, as well as the visit and its
@@ -96,8 +96,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
     public void onChange(final List<ResourceChange> changes)
     {
         // Acquire a service session with the right privileges for accessing visits and their forms
-        try (ResourceResolver localResolver = this.resolverFactory
-            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "ClinicFormsRestriction"))) {
+        try (ResourceResolver localResolver = this.resolverFactory.getServiceResourceResolver(null)) {
             this.rrp.push(localResolver);
             final Session session = localResolver.adaptTo(Session.class);
             this.versionManager.set(session.getWorkspace().getVersionManager());

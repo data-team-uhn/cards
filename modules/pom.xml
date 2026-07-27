@@ -47,6 +47,7 @@
     <module>utils</module>
     <module>principals</module>
     <module>permissions</module>
+    <module>permissions-clinic</module>
     <module>permissions-ownership</module>
     <module>permissions-trusted</module>
     <module>permissions-unsubmitted</module>
