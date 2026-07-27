@@ -20,6 +20,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.jackrabbit.oak.plugins.memory.EmptyNodeState;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
@@ -29,10 +30,6 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -49,7 +46,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SubjectTypeUtilsImplTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -63,11 +59,9 @@ public class SubjectTypeUtilsImplTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private SubjectTypeUtilsImpl subjectTypeUtils;
+    private final SubjectTypeUtilsImpl subjectTypeUtils = new SubjectTypeUtilsImpl();
 
-    @Mock
-    private ThreadResourceResolverProvider rrp;
+    private final ThreadResourceResolverProvider rrp = mock(ThreadResourceResolverProvider.class);
 
     @Test
     public void getSubjectTypeForActualSubjectTypeIdentifierReturnsSubjectTypeNode() throws RepositoryException
@@ -102,7 +96,7 @@ public class SubjectTypeUtilsImplTest
     public void isSubjectTypeForNodeThrowsExceptionReturnsFalse() throws RepositoryException
     {
         Node node = mock(Node.class);
-        when(node.isNodeType(ROOT_SUBJECT_TYPE_PATH)).thenThrow(new RepositoryException());
+        when(node.isNodeType("cards:SubjectType")).thenThrow(new RepositoryException());
         assertFalse(this.subjectTypeUtils.isSubjectType(node));
     }
 
@@ -211,8 +205,9 @@ public class SubjectTypeUtilsImplTest
     }
 
     @Before
-    public void setupRepo()
+    public void setupRepo() throws IllegalAccessException
     {
+        FieldUtils.writeField(this.subjectTypeUtils, "rrp", this.rrp, true);
         this.context.build()
                 .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
                 .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")

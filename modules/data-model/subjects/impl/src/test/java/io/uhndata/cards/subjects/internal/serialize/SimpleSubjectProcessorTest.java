@@ -16,13 +16,12 @@
  */
 package io.uhndata.cards.subjects.internal.serialize;
 
-import java.util.function.Function;
-
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.JsonValue;
+
+import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -30,9 +29,6 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -47,7 +43,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SimpleSubjectProcessorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -62,18 +57,22 @@ public class SimpleSubjectProcessorTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private SimpleSubjectProcessor simpleSubjectProcessor;
-
+    private final SimpleSubjectProcessor simpleSubjectProcessor = new SimpleSubjectProcessor();
 
     @Test
-    public void getNameTest()
+    public void getDescriptionIsNotEmpty()
+    {
+        assertFalse(this.simpleSubjectProcessor.getDescription().isEmpty());
+    }
+
+    @Test
+    public void getNameReturnsProcessorName()
     {
         assertEquals(NAME, this.simpleSubjectProcessor.getName());
     }
 
     @Test
-    public void getPriorityTest()
+    public void getPriorityReturnsProcessorPriority()
     {
         assertEquals(PRIORITY, this.simpleSubjectProcessor.getPriority());
     }
@@ -96,7 +95,7 @@ public class SimpleSubjectProcessorTest
     public void processPropertyForNullPropertyReturnNull()
     {
         assertNull(this.simpleSubjectProcessor.processProperty(mock(Node.class), null, mock(JsonValue.class),
-                mock(Function.class)));
+                n -> JsonValue.NULL));
     }
 
     @Test
@@ -106,7 +105,7 @@ public class SimpleSubjectProcessorTest
         when(property.getName()).thenThrow(new RepositoryException());
         JsonValue input = mock(JsonValue.class);
         JsonValue jsonValue = this.simpleSubjectProcessor.processProperty(mock(Node.class), property, input,
-                mock(Function.class));
+                n -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(input, jsonValue);
     }
@@ -118,7 +117,7 @@ public class SimpleSubjectProcessorTest
         Node node = session.getNode("/SubjectTypes/Root");
         Property property = node.getProperty(NODE_IDENTIFIER);
         JsonValue input = mock(JsonValue.class);
-        JsonValue jsonValue = this.simpleSubjectProcessor.processProperty(node, property, input, mock(Function.class));
+        JsonValue jsonValue = this.simpleSubjectProcessor.processProperty(node, property, input, n -> JsonValue.NULL);
         assertNull(jsonValue);
     }
 
@@ -129,7 +128,7 @@ public class SimpleSubjectProcessorTest
         Node node = session.getNode("/Subjects/r1");
         Property property = node.getProperty(NODE_TYPE);
         JsonValue input = mock(JsonValue.class);
-        JsonValue jsonValue = this.simpleSubjectProcessor.processProperty(node, property, input, mock(Function.class));
+        JsonValue jsonValue = this.simpleSubjectProcessor.processProperty(node, property, input, n -> JsonValue.NULL);
         assertNotNull(jsonValue);
         assertEquals(input, jsonValue);
     }

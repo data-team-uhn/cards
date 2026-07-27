@@ -29,9 +29,6 @@ import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -43,7 +40,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SubjectParentEditorProviderTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -52,8 +48,7 @@ public class SubjectParentEditorProviderTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private SubjectParentEditorProvider subjectParentEditorProvider;
+    private final SubjectParentEditorProvider subjectParentEditorProvider = new SubjectParentEditorProvider();
 
     @Test
     public void getRootEditorReturnsSubjectParentEditor() throws CommitFailedException

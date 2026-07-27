@@ -19,6 +19,9 @@ package io.uhndata.cards.subjects.internal;
 import java.util.Stack;
 import java.util.UUID;
 
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -31,10 +34,6 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -51,7 +50,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SubjectParentEditorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -65,15 +63,13 @@ public class SubjectParentEditorTest
     private static final String ORDER_PROPERTY = "cards:defaultOrder";
     private static final String SUBJECT_LIST_LABEL_PROPERTY = "subjectListLabel";
 
-
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     private NodeBuilder currentNodeBuilder;
-    @Mock
-    private Stack<String> ancestors;
+    @SuppressWarnings("unchecked")
+    private final Stack<String> ancestors = mock(Stack.class);
     private SubjectParentEditor subjectParentEditor;
-
 
     @Test
     public void constructorForSubjectNodeBuilder()
@@ -134,25 +130,40 @@ public class SubjectParentEditorTest
     }
 
     @Test
-    public void leaveForActualSubjectNodeBuilderWithAncestorsAddsParentsProperty() throws CommitFailedException
+    public void leaveForActualSubjectNodeBuilderWithAncestorsAddsParentsProperty()
+        throws IllegalAccessException, CommitFailedException
     {
         this.subjectParentEditor = new SubjectParentEditor(this.currentNodeBuilder, this.ancestors);
-        Whitebox.setInternalState(this.subjectParentEditor, "ancestors", fillAncestorsForBranchSubject());
+        FieldUtils.writeField(this.subjectParentEditor, "ancestors", fillAncestorsForBranchSubject(), true);
         this.subjectParentEditor.leave(mock(NodeState.class), mock(NodeState.class));
         assertTrue(this.currentNodeBuilder.hasProperty("parents"));
         assertEquals("Root", this.currentNodeBuilder.getProperty("parents").getValue(Type.WEAKREFERENCE));
     }
 
     @Test
-    public void leaveForActualSubjectNodeBuilderWithEmptyAncestorsRemovesParentsProperty() throws CommitFailedException
+    public void leaveForActualSubjectNodeBuilderWithEmptyAncestorsRemovesParentsProperty()
+        throws IllegalAccessException, CommitFailedException
     {
         this.currentNodeBuilder.setProperty("parents", "Root");
         this.subjectParentEditor = new SubjectParentEditor(this.currentNodeBuilder, this.ancestors);
         Stack<String> filledAncestors = fillAncestorsForBranchSubject();
         filledAncestors.pop();
-        Whitebox.setInternalState(this.subjectParentEditor, "ancestors", filledAncestors);
+        FieldUtils.writeField(this.subjectParentEditor, "ancestors", filledAncestors, true);
         this.subjectParentEditor.leave(mock(NodeState.class), mock(NodeState.class));
         assertFalse(this.currentNodeBuilder.hasProperty("parents"));
+    }
+
+    @Test
+    public void leaveCatchesRepositoryException() throws CommitFailedException
+    {
+        this.subjectParentEditor = new SubjectParentEditor(this.currentNodeBuilder, this.ancestors);
+        when(this.ancestors.isEmpty()).thenAnswer(i -> {
+            throw new RepositoryException();
+        });
+        this.subjectParentEditor.leave(mock(NodeState.class), mock(NodeState.class));
+        assertFalse(this.currentNodeBuilder.hasProperty("parents"));
+        // The ancestors stack is still unwound
+        verify(this.ancestors).pop();
     }
 
     @Before

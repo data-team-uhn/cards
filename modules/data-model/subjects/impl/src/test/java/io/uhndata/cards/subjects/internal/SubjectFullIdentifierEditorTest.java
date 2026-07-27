@@ -19,6 +19,9 @@ package io.uhndata.cards.subjects.internal;
 import java.util.Stack;
 import java.util.UUID;
 
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -31,12 +34,9 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.anyString;
@@ -50,7 +50,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SubjectFullIdentifierEditorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -63,15 +62,13 @@ public class SubjectFullIdentifierEditorTest
     private static final String ORDER_PROPERTY = "cards:defaultOrder";
     private static final String SUBJECT_LIST_LABEL_PROPERTY = "subjectListLabel";
 
-
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     private NodeBuilder currentNodeBuilder;
-    @Mock
-    private Stack<String> identifiers;
+    @SuppressWarnings("unchecked")
+    private final Stack<String> identifiers = mock(Stack.class);
     private SubjectFullIdentifierEditor subjectFullIdentifierEditor;
-
 
     @Test
     public void constructorForSubjectNodeBuilder()
@@ -116,13 +113,37 @@ public class SubjectFullIdentifierEditorTest
     }
 
     @Test
-    public void leaveForActualSubjectNodeBuilder() throws CommitFailedException
+    public void leaveForActualSubjectNodeBuilder() throws CommitFailedException, IllegalAccessException
     {
         this.subjectFullIdentifierEditor = new SubjectFullIdentifierEditor(this.currentNodeBuilder, this.identifiers);
-        Whitebox.setInternalState(this.subjectFullIdentifierEditor, "identifiers", fillIdentifiersForRootSubject());
+        FieldUtils.writeField(this.subjectFullIdentifierEditor, "identifiers", fillIdentifiersForRootSubject(), true);
         this.subjectFullIdentifierEditor.leave(mock(NodeState.class), mock(NodeState.class));
         assertTrue(this.currentNodeBuilder.hasProperty("fullIdentifier"));
         assertEquals("Root", this.currentNodeBuilder.getString("fullIdentifier"));
+    }
+
+    @Test
+    public void leaveJoinsAllAncestorIdentifiers() throws CommitFailedException, IllegalAccessException
+    {
+        this.subjectFullIdentifierEditor = new SubjectFullIdentifierEditor(this.currentNodeBuilder, this.identifiers);
+        Stack<String> filledIdentifiers = fillIdentifiersForRootSubject();
+        filledIdentifiers.push("Branch");
+        FieldUtils.writeField(this.subjectFullIdentifierEditor, "identifiers", filledIdentifiers, true);
+        this.subjectFullIdentifierEditor.leave(mock(NodeState.class), mock(NodeState.class));
+        assertEquals("Root / Branch", this.currentNodeBuilder.getString("fullIdentifier"));
+    }
+
+    @Test
+    public void leaveCatchesRepositoryException() throws CommitFailedException
+    {
+        this.subjectFullIdentifierEditor = new SubjectFullIdentifierEditor(this.currentNodeBuilder, this.identifiers);
+        when(this.identifiers.stream()).thenAnswer(i -> {
+            throw new RepositoryException();
+        });
+        this.subjectFullIdentifierEditor.leave(mock(NodeState.class), mock(NodeState.class));
+        assertFalse(this.currentNodeBuilder.hasProperty("fullIdentifier"));
+        // The ancestors stack is still unwound
+        verify(this.identifiers).pop();
     }
 
     @Before

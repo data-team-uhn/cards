@@ -20,6 +20,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.jackrabbit.oak.plugins.memory.EmptyNodeState;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
@@ -29,10 +30,6 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -49,7 +46,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SubjectUtilsImplTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -60,15 +56,12 @@ public class SubjectUtilsImplTest
     private static final String TYPE_PROPERTY = "type";
     private static final String LABEL_PROPERTY = "identifier";
 
-
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private SubjectUtilsImpl subjectUtils;
+    private final SubjectUtilsImpl subjectUtils = new SubjectUtilsImpl();
 
-    @Mock
-    private ThreadResourceResolverProvider rrp;
+    private final ThreadResourceResolverProvider rrp = mock(ThreadResourceResolverProvider.class);
 
     @Test
     public void getSubjectForActualSubjectIdentifierReturnsSubjectNode() throws RepositoryException
@@ -255,8 +248,9 @@ public class SubjectUtilsImplTest
     }
 
     @Before
-    public void setupRepo()
+    public void setupRepo() throws IllegalAccessException
     {
+        FieldUtils.writeField(this.subjectUtils, "rrp", this.rrp, true);
         this.context.build()
                 .resource("/SubjectTypes", NODE_TYPE, "cards:SubjectTypesHomepage")
                 .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")

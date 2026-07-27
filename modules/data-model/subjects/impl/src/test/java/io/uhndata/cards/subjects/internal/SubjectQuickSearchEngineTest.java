@@ -19,12 +19,19 @@ package io.uhndata.cards.subjects.internal;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -33,15 +40,16 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.spi.QuickSearchEngine;
 import io.uhndata.cards.spi.SearchParameters;
 import io.uhndata.cards.spi.SearchParametersFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +58,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SubjectQuickSearchEngineTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -59,12 +66,10 @@ public class SubjectQuickSearchEngineTest
     private static final String IDENTIFIER_PROPERTY = "identifier";
     private static final String QUICK_SEARCH_PARAMETER_TYPE = "quick";
 
-
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private SubjectQuickSearchEngine subjectQuickSearchEngine;
+    private final SubjectQuickSearchEngine subjectQuickSearchEngine = new SubjectQuickSearchEngine();
 
     @Test
     public void getSupportedTypesReturnsSubjectTypeList()
@@ -143,6 +148,54 @@ public class SubjectQuickSearchEngineTest
         QuickSearchEngine.Results output = this.subjectQuickSearchEngine.quickSearch(parameters,
                 this.context.resourceResolver());
         assertFalse(output.hasNext());
+    }
+
+    @Test
+    public void skipAdvancesOverResults()
+    {
+        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
+                .withQuery("leaf")
+                .withType(QUICK_SEARCH_PARAMETER_TYPE)
+                .build();
+
+        QuickSearchEngine.Results output = this.subjectQuickSearchEngine.quickSearch(parameters,
+                this.context.resourceResolver());
+        assertTrue(output.hasNext());
+        output.skip();
+        assertFalse(output.hasNext());
+    }
+
+    @Test
+    public void quickSearchForFoundItemWithNullIdentifierReturnsEmptyObject() throws RepositoryException
+    {
+        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
+                .withQuery("leaf")
+                .withType(QUICK_SEARCH_PARAMETER_TYPE)
+                .build();
+
+        Session session = mock(Session.class);
+        Workspace workspace = mock(Workspace.class);
+        QueryManager queryManager = mock(QueryManager.class);
+        Query query = mock(Query.class);
+        QueryResult queryResult = mock(QueryResult.class);
+        RowIterator rowIterator = mock(RowIterator.class);
+        Row row = mock(Row.class);
+        Node foundItem = mock(Node.class);
+        Property identifier = mock(Property.class);
+        ResourceResolver resourceResolver = mock(ResourceResolver.class);
+        when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+        when(session.getWorkspace()).thenReturn(workspace);
+        when(workspace.getQueryManager()).thenReturn(queryManager);
+        when(queryManager.createQuery(anyString(), anyString())).thenReturn(query);
+        when(query.execute()).thenReturn(queryResult);
+        when(queryResult.getRows()).thenReturn(rowIterator);
+        when(rowIterator.nextRow()).thenReturn(row);
+        when(row.getNode()).thenReturn(foundItem);
+        when(foundItem.getProperty("identifier")).thenReturn(identifier);
+        when(identifier.getString()).thenReturn(null);
+
+        QuickSearchEngine.Results output = this.subjectQuickSearchEngine.quickSearch(parameters, resourceResolver);
+        assertEquals(JsonValue.EMPTY_JSON_OBJECT, output.next());
     }
 
     @Before
