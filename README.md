@@ -40,6 +40,12 @@ On Windows, use `start_cards.bat` instead; the options are identical. Both are t
 
 `./start_cards.sh -p PORT` to run at a different port
 
+`./start_cards.sh --data DIR` to keep the runtime state (installed features, cache, logs, and the actual repository when running with filesystem storage) in a directory other than the default `.cards-data`. Each concurrently running instance needs its own data directory and port; the repository takes an exclusive lock on its data directory, so a second instance pointed at the same one will hang waiting for the lock.
+
+```bash
+./start_cards.sh --test -p 8089 --data .cards-data-test
+```
+
 `PROJECT_VERSION=1.0.0-SNAPSHOT PROJECT_NAME=project ./start_cards.sh` to run a specific project. Projects are built on top of cards in their own repos.
 
 Other supported parameters:

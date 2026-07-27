@@ -94,6 +94,10 @@ Starts CARDS via the Apache Sling feature launcher.
 
 Options:
   -p, --port <port>              Port for CARDS to bind to (default: 8080).
+      --data <dir>               Directory for the runtime state (repository,
+                                 cache, logs). Default: .cards-data. Each
+                                 concurrently running instance needs its own
+                                 data directory (and its own port).
       --permissions <scheme>     Permissions scheme to run with: `open` (the
                                  default), `trusted`, or `ownership`.
   -P, --project <project[,...]>  Launch one or more CARDS *projects*. Each
@@ -220,9 +224,9 @@ def is_listening(port, pid):
     return False
 
 
-def get_error_log_last_modified():
+def get_error_log_last_modified(data_dir):
     try:
-        return os.path.getmtime(str(ROOT / '.cards-data' / 'logs' / 'error.log'))
+        return os.path.getmtime(str(data_dir / 'logs' / 'error.log'))
     except OSError:
         return 0.0
 
@@ -251,6 +255,7 @@ def has_test_run_mode(argv):
 def parse_args(argv, cards_version):
     options = {
         'bind_port': 8080,
+        'data': '.cards-data',
         'permissions': os.environ.get('PERMISSIONS', ''),
         'permissions_explicit': False,
         'projects': [],
@@ -275,6 +280,9 @@ def parse_args(argv, cards_version):
                 options['bind_port'] = int(value)
             except ValueError:
                 sys.exit('Invalid port: %s' % value)
+        elif arg == '--data':
+            i += 1
+            options['data'] = require_value(argv, i, arg)
         elif arg == '--permissions':
             i += 1
             options['permissions'] = require_value(argv, i, arg)
@@ -453,14 +461,14 @@ def stop(process, interrupted=False):
     process.wait()
 
 
-def monitor_startup(process, cards_url, bind_port, use_psutil, debug, error_log_time_origin):
+def monitor_startup(process, cards_url, bind_port, use_psutil, debug, data_dir, error_log_time_origin):
     if debug:
         banner(TERMINAL_YELLOW,
                'Please connect JDB to localhost:5005 to continue with startup.',
                'jdb -attach 5005')
-        # As soon as we see CARDS writing to .cards-data/logs/error.log, we
+        # As soon as we see CARDS writing to <data_dir>/logs/error.log, we
         # can conclude that JDB has attached to the Java process.
-        while get_error_log_last_modified() <= error_log_time_origin:
+        while get_error_log_last_modified(data_dir) <= error_log_time_origin:
             time.sleep(5)
             print('Waiting for JDB attachment...')
 
@@ -517,6 +525,10 @@ def main(argv):
     options = parse_args(argv, cards_version)
     print('CARDS_VERSION', cards_version)
     bind_port = options['bind_port']
+    # The runtime state directory; a relative path is resolved against the repository root
+    data_dir = Path(options['data'])
+    if not data_dir.is_absolute():
+        data_dir = ROOT / data_dir
     cards_url = 'http://localhost:%d' % bind_port
     # install_vocabulary.py reads the address of the instance from the environment
     os.environ['CARDS_URL'] = cards_url
@@ -556,19 +568,20 @@ def main(argv):
         'https://repository.apache.org/content/groups/snapshots',
     ])
 
-    error_log_time_origin = get_error_log_last_modified()
+    error_log_time_origin = get_error_log_last_modified(data_dir)
 
     command = [str(launcher),
                '-u', repository_urls,
-               '-p', '.cards-data',
-               '-c', '.cards-data/cache',
+               '-p', str(data_dir),
+               '-c', str(data_dir / 'cache'),
                '-f', 'mvn:%s/cards/%s/slingosgifeature/core_%s' % (GROUP, cards_version, options['storage'])]
     command += launcher_args
     process = subprocess.Popen(command, env=env, cwd=str(ROOT))
     proxy = None
 
     try:
-        monitor_startup(process, cards_url, bind_port, use_psutil, options['debug'], error_log_time_origin)
+        monitor_startup(process, cards_url, bind_port, use_psutil, options['debug'], data_dir,
+                        error_log_time_origin)
 
         if options['test']:
             install_hancestro(cards_url)

@@ -55,7 +55,7 @@ node_modules
 
 # Running instance
 /sling/
-/.cards-data/
+/.cards-data*/
 /logs/backupExport/
 /distribution/sling/
 /distribution/launcher/
