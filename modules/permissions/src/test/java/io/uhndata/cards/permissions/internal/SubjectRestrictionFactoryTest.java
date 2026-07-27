@@ -18,17 +18,15 @@ package io.uhndata.cards.permissions.internal;
 
 import java.util.UUID;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -43,7 +41,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SubjectRestrictionFactoryTest
 {
     public static final String NAME = "cards:subject";
@@ -52,27 +49,36 @@ public class SubjectRestrictionFactoryTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private SubjectRestrictionFactory subjectRestrictionFactory;
+    private final SubjectRestrictionFactory subjectRestrictionFactory = new SubjectRestrictionFactory();
 
-    @Mock
-    private ThreadResourceResolverProvider rrp;
-
+    private final ThreadResourceResolverProvider rrp = mock(ThreadResourceResolverProvider.class);
 
     @Test
-    public void getNameTest()
+    public void forValueWithoutThreadResourceResolverCreatesPattern()
+    {
+        assertNotNull(this.subjectRestrictionFactory.forValue(mock(PropertyState.class)));
+    }
+
+    @Before
+    public void setUp() throws IllegalAccessException
+    {
+        FieldUtils.writeField(this.subjectRestrictionFactory, "rrp", this.rrp, true);
+    }
+
+    @Test
+    public void getNameReturnsRestrictionName()
     {
         assertEquals(NAME, this.subjectRestrictionFactory.getName());
     }
 
     @Test
-    public void getTypeTest()
+    public void getTypeReturnsRestrictionType()
     {
         assertEquals(TYPE, this.subjectRestrictionFactory.getType());
     }
 
     @Test
-    public void forValueTest()
+    public void forValueCreatesSubjectRestrictionPattern()
     {
         when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
         PropertyState value = mock(PropertyState.class);

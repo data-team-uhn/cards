@@ -27,11 +27,8 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -40,7 +37,6 @@ import static org.mockito.Mockito.mock;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AnswerRestrictionPatternTest
 {
     private static final String RESOURCE_SUPER_TYPE = "sling:resourceSuperType";
@@ -49,12 +45,6 @@ public class AnswerRestrictionPatternTest
 
     private AnswerRestrictionPattern answerRestrictionPattern;
     private String targetAnswerPath;
-
-    @Test
-    public void constructorTest()
-    {
-        assertNotNull(this.answerRestrictionPattern);
-    }
 
     @Test
     public void matchesForNotAnswerSuperTypeTreeReturnsFalse()
@@ -74,6 +64,13 @@ public class AnswerRestrictionPatternTest
     public void matchesForAnswerSuperTypeTreeReturnsFalse()
     {
         NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(), createNodeBuilder("cards/Answer"));
+        assertFalse(this.answerRestrictionPattern.matches(tree, mock(PropertyState.class)));
+    }
+
+    @Test
+    public void matchesForTreeWithoutResourceSuperTypePropertyReturnsFalse()
+    {
+        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(), EmptyNodeState.EMPTY_NODE.builder());
         assertFalse(this.answerRestrictionPattern.matches(tree, mock(PropertyState.class)));
     }
 

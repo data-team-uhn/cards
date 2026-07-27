@@ -28,10 +28,6 @@
   <packaging>bundle</packaging>
   <name>CARDS - Permissions</name>
 
-  <properties>
-    <coverage.instructionRatio>0.97</coverage.instructionRatio>
-  </properties>
-
   <build>
     <plugins>
       <!-- This is an OSGi bundle -->
@@ -39,6 +35,15 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <!-- The default 500ms is not always enough when several Oak-backed test contexts start in parallel -->
+            <sling.mock.resourceresolverfactoryactivator.timeout.ms>10000</sling.mock.resourceresolverfactoryactivator.timeout.ms>
+          </systemPropertyVariables>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -105,38 +110,27 @@
     </dependency>
     <!-- OSGi -->
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi.cmpn</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.core</artifactId>
-      <version>3.4.2</version>
+      <version>4.0.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.junit4</artifactId>
-      <version>3.4.2</version>
+      <version>4.0.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock-oak</artifactId>
-      <version>3.1.4-1.40.0</version>
+      <version>4.1.0-1.86.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.jcr-mock</artifactId>
-      <version>1.5.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>1.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>

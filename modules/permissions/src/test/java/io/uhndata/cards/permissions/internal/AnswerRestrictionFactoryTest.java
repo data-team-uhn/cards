@@ -25,9 +25,6 @@ import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,7 +37,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AnswerRestrictionFactoryTest
 {
     public static final String NAME = "cards:answer";
@@ -49,24 +45,22 @@ public class AnswerRestrictionFactoryTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private AnswerRestrictionFactory answerRestrictionFactory;
-
+    private final AnswerRestrictionFactory answerRestrictionFactory = new AnswerRestrictionFactory();
 
     @Test
-    public void getNameTest()
+    public void getNameReturnsRestrictionName()
     {
         assertEquals(NAME, this.answerRestrictionFactory.getName());
     }
 
     @Test
-    public void getTypeTest()
+    public void getTypeReturnsRestrictionType()
     {
         assertEquals(TYPE, this.answerRestrictionFactory.getType());
     }
 
     @Test
-    public void forValueTest()
+    public void forValueCreatesAnswerRestrictionPattern()
     {
         PropertyState value = mock(PropertyState.class);
         when(value.getValue(Type.STRING)).thenReturn(UUID.randomUUID().toString());

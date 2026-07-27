@@ -33,13 +33,10 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +45,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class QuestionnaireRestrictionPatternTest
 {
     private static final String RESOURCE_TYPE = "sling:resourceType";
@@ -61,12 +57,6 @@ public class QuestionnaireRestrictionPatternTest
 
     private QuestionnaireRestrictionPattern questionnaireRestrictionPattern;
     private Iterable<String> targetQuestionnaires;
-
-    @Test
-    public void constructorTest()
-    {
-        assertNotNull(this.questionnaireRestrictionPattern);
-    }
 
     @Test
     public void matchesForTreeAndQuestionnairePropertyInTargetQuestionnairesReturnsTrue() throws RepositoryException
@@ -82,6 +72,23 @@ public class QuestionnaireRestrictionPatternTest
         when(questionnaire.getPath()).thenReturn(TEST_QUESTIONNAIRE_PATH);
 
         assertTrue(this.questionnaireRestrictionPattern.matches(tree, mock(PropertyState.class)));
+    }
+
+    @Test
+    public void matchesForTreeAndQuestionnairePropertyNotInTargetQuestionnairesReturnsFalse()
+        throws RepositoryException
+    {
+        Session mockedSession = mock(Session.class);
+        this.questionnaireRestrictionPattern = new QuestionnaireRestrictionPattern(this.targetQuestionnaires,
+                mockedSession);
+        Node questionnaire = mock(Node.class);
+        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(),
+                createNodeBuilder("cards/Form", QUESTIONNAIRE_PROPERTY, UUID.randomUUID().toString()));
+
+        when(mockedSession.getNodeByIdentifier(anyString())).thenReturn(questionnaire);
+        when(questionnaire.getPath()).thenReturn(TEST_QUESTIONNAIRE_PATH + "-other");
+
+        assertFalse(this.questionnaireRestrictionPattern.matches(tree, mock(PropertyState.class)));
     }
 
     @Test

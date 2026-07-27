@@ -33,13 +33,10 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +45,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SectionRestrictionPatternTest
 {
     private static final String RESOURCE_TYPE = "sling:resourceType";
@@ -63,12 +59,6 @@ public class SectionRestrictionPatternTest
     private Iterable<String> targetSections;
 
     @Test
-    public void constructorTest()
-    {
-        assertNotNull(this.sectionRestrictionPattern);
-    }
-
-    @Test
     public void matchesForTreeAndQuestionPropertyInTargetSectionsReturnsTrue() throws RepositoryException
     {
         Session mockedSession = mock(Session.class);
@@ -81,6 +71,21 @@ public class SectionRestrictionPatternTest
         when(questionnaire.getPath()).thenReturn(TEST_SECTION_PATH);
 
         assertTrue(this.sectionRestrictionPattern.matches(tree, mock(PropertyState.class)));
+    }
+
+    @Test
+    public void matchesForTreeAndSectionPropertyNotInTargetSectionsReturnsFalse() throws RepositoryException
+    {
+        Session mockedSession = mock(Session.class);
+        this.sectionRestrictionPattern = new SectionRestrictionPattern(this.targetSections, mockedSession);
+        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(),
+                createNodeBuilder("cards/AnswerSection", SECTION_PROPERTY, UUID.randomUUID().toString()));
+        Node questionnaire = mock(Node.class);
+
+        when(mockedSession.getNodeByIdentifier(anyString())).thenReturn(questionnaire);
+        when(questionnaire.getPath()).thenReturn(TEST_SECTION_PATH + "-other");
+
+        assertFalse(this.sectionRestrictionPattern.matches(tree, mock(PropertyState.class)));
     }
 
     @Test

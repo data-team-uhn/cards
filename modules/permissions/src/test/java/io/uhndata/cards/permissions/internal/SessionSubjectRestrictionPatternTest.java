@@ -34,13 +34,10 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +46,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SessionSubjectRestrictionPatternTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -60,12 +56,6 @@ public class SessionSubjectRestrictionPatternTest
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     private SessionSubjectRestrictionPattern sessionSubjectRestrictionPattern;
-
-    @Test
-    public void constructorTest()
-    {
-        assertNotNull(this.sessionSubjectRestrictionPattern);
-    }
 
     @Test
     public void matchesForTreeAndNullSessionReturnsFalse()
@@ -114,6 +104,30 @@ public class SessionSubjectRestrictionPatternTest
     }
 
     @Test
+    public void matchesForTreeFormWithoutSubjectReturnsFalse()
+    {
+        Session mockedSession = mock(Session.class);
+        this.sessionSubjectRestrictionPattern = new SessionSubjectRestrictionPattern(mockedSession);
+        when(mockedSession.getAttribute(SESSION_SUBJECT_ATTRIBUTE)).thenReturn("/Subjects/r1");
+
+        String childName = "a1";
+        NodeBuilder childBuilder = EmptyNodeState.EMPTY_NODE.builder();
+
+        String formName = "f1";
+        NodeBuilder formBuilder = createNodeBuilder("cards:Form", childName, childBuilder.getNodeState());
+
+        String formsHomepageName = "Forms";
+        NodeBuilder formsHomepageBuilder =
+                createNodeBuilder("cards:FormsHomepage", formName, formBuilder.getNodeState());
+
+        NodeBuilderTree rootTree = new NodeBuilderTree("",
+                createNodeBuilder("jcr:root", formsHomepageName, formsHomepageBuilder.getNodeState()));
+        Tree tree = rootTree.addChild(formsHomepageName).addChild(formName).addChild(childName);
+
+        assertFalse(this.sessionSubjectRestrictionPattern.matches(tree, mock(PropertyState.class)));
+    }
+
+    @Test
     public void matchesForTreeSubjectReturnsTrue()
     {
         Session mockedSession = mock(Session.class);
@@ -137,7 +151,6 @@ public class SessionSubjectRestrictionPatternTest
 
         assertTrue(this.sessionSubjectRestrictionPattern.matches(tree, mock(PropertyState.class)));
     }
-
 
     @Test
     public void matchesForTreeNeitherFormForSubjectNorSubjectWithSubjectPropertyAndWithoutMatchedPathReturnsFalse()

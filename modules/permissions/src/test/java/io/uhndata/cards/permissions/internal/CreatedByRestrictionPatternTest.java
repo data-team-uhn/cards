@@ -29,11 +29,8 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -42,7 +39,6 @@ import static org.mockito.Mockito.mock;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class CreatedByRestrictionPatternTest
 {
     private static final String CREATED_BY_PROPERTY = "jcr:createdBy";
@@ -51,12 +47,6 @@ public class CreatedByRestrictionPatternTest
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     private CreatedByRestrictionPattern createdByRestrictionPattern;
-
-    @Test
-    public void constructorTest()
-    {
-        assertNotNull(this.createdByRestrictionPattern);
-    }
 
     @Test
     public void matchesForTreeWithoutCreatedByPropertyReturnsFalse()
@@ -80,6 +70,14 @@ public class CreatedByRestrictionPatternTest
     }
 
     @Test
+    public void matchesForNullSessionReturnsFalse()
+    {
+        CreatedByRestrictionPattern pattern = new CreatedByRestrictionPattern(null);
+        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(), createNodeBuilder("admin"));
+        assertFalse(pattern.matches(tree, null));
+    }
+
+    @Test
     public void matchesForPathReturnsFalse()
     {
         assertFalse(this.createdByRestrictionPattern.matches(UUID.randomUUID().toString()));
@@ -97,7 +95,6 @@ public class CreatedByRestrictionPatternTest
         this.createdByRestrictionPattern = new CreatedByRestrictionPattern(this.context.resourceResolver()
                 .adaptTo(Session.class));
     }
-
 
     private NodeBuilder createNodeBuilder(String createdBy)
     {

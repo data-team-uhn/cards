@@ -34,8 +34,6 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.permissions.spi.RestrictionFactory;
 
@@ -50,7 +48,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id $
  */
-@RunWith(MockitoJUnitRunner.class)
 public class FormsRestrictionProviderTest
 {
 
@@ -58,12 +55,6 @@ public class FormsRestrictionProviderTest
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     private FormsRestrictionProvider formsRestrictionProvider;
-
-    @Test
-    public void constructorTest()
-    {
-        assertNotNull(this.formsRestrictionProvider);
-    }
 
     @Test
     public void getPatternForNullOakPathAndNotEmptyRestrictionsSetReturnsEmptyRestrictionPattern()
@@ -90,6 +81,14 @@ public class FormsRestrictionProviderTest
                 Set.of(restriction));
         assertNotNull(pattern);
         assertTrue(pattern instanceof AnswerRestrictionPattern);
+    }
+
+    @Test
+    public void getPatternForOakPathAndEmptyRestrictionsSetReturnsEmptyRestrictionPattern()
+    {
+        RestrictionPattern pattern = this.formsRestrictionProvider.getPattern(UUID.randomUUID().toString(), Set.of());
+        assertNotNull(pattern);
+        assertEquals(RestrictionPattern.EMPTY, pattern);
     }
 
     @Test

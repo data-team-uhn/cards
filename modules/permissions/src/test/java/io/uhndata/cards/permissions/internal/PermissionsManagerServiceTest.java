@@ -33,9 +33,6 @@ import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -46,7 +43,6 @@ import static org.junit.Assert.assertTrue;
  *
  * @version $Id $
  */
-@RunWith(MockitoJUnitRunner.class)
 public class PermissionsManagerServiceTest
 {
     private static final String ROOT_PATH = "/";
@@ -54,8 +50,7 @@ public class PermissionsManagerServiceTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private PermissionsManagerService permissionsManagerService;
+    private final PermissionsManagerService permissionsManagerService = new PermissionsManagerService();
 
     @Test
     public void addAccessControlEntryWithStringPrivileges() throws RepositoryException
@@ -171,6 +166,95 @@ public class PermissionsManagerServiceTest
         String[] privilegesToRemove = new String[]{Privilege.JCR_WRITE, Privilege.JCR_READ};
         assertThrows(RepositoryException.class, () -> this.permissionsManagerService.removeAccessControlEntry(ROOT_PATH,
                 false, accessControlEntries[0].getPrincipal(), privilegesToRemove, Map.of(), session));
+    }
+
+    @Test
+    public void removeAccessControlEntryWithMatchingRestrictions() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        String[] privileges = new String[]{Privilege.JCR_WRITE};
+        Map<String, Value> restrictions = Map.of("rep:glob", session.getValueFactory().createValue("/f1/*"));
+        this.permissionsManagerService.addAccessControlEntry(ROOT_PATH, false, () -> "admin", privileges,
+                restrictions, session);
+        AccessControlPolicy[] policies = session.getAccessControlManager().getPolicies(ROOT_PATH);
+        AccessControlEntry[] accessControlEntries =
+                ((JackrabbitAccessControlList) policies[0]).getAccessControlEntries();
+        assertEquals(1, accessControlEntries.length);
+
+        this.permissionsManagerService.removeAccessControlEntry(ROOT_PATH, false,
+                accessControlEntries[0].getPrincipal(), privileges, restrictions, session);
+        policies = session.getAccessControlManager().getPolicies(ROOT_PATH);
+        assertEquals(0, ((JackrabbitAccessControlList) policies[0]).getAccessControlEntries().length);
+    }
+
+    @Test
+    public void removeAccessControlEntryForDifferentRestrictionValueThrowsRepositoryException()
+            throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        String[] privileges = new String[]{Privilege.JCR_WRITE};
+        Map<String, Value> restrictions = Map.of("rep:glob", session.getValueFactory().createValue("/f1/*"));
+        this.permissionsManagerService.addAccessControlEntry(ROOT_PATH, false, () -> "admin", privileges,
+                restrictions, session);
+        AccessControlPolicy[] policies = session.getAccessControlManager().getPolicies(ROOT_PATH);
+        AccessControlEntry[] accessControlEntries =
+                ((JackrabbitAccessControlList) policies[0]).getAccessControlEntries();
+        assertEquals(1, accessControlEntries.length);
+
+        Map<String, Value> otherRestrictions = Map.of("rep:glob", session.getValueFactory().createValue("/f2/*"));
+        assertThrows(RepositoryException.class, () -> this.permissionsManagerService.removeAccessControlEntry(ROOT_PATH,
+                false, accessControlEntries[0].getPrincipal(), privileges, otherRestrictions, session));
+    }
+
+    @Test
+    public void removeAccessControlEntryForDifferentRestrictionNameThrowsRepositoryException()
+            throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        String[] privileges = new String[]{Privilege.JCR_WRITE};
+        Map<String, Value> restrictions = Map.of("rep:glob", session.getValueFactory().createValue("/f1/*"));
+        this.permissionsManagerService.addAccessControlEntry(ROOT_PATH, false, () -> "admin", privileges,
+                restrictions, session);
+        AccessControlPolicy[] policies = session.getAccessControlManager().getPolicies(ROOT_PATH);
+        AccessControlEntry[] accessControlEntries =
+                ((JackrabbitAccessControlList) policies[0]).getAccessControlEntries();
+        assertEquals(1, accessControlEntries.length);
+
+        Map<String, Value> otherRestrictions = Map.of("name", session.getValueFactory().createValue("value"));
+        assertThrows(RepositoryException.class, () -> this.permissionsManagerService.removeAccessControlEntry(ROOT_PATH,
+                false, accessControlEntries[0].getPrincipal(), privileges, otherRestrictions, session));
+    }
+
+    @Test
+    public void removeAccessControlEntryForDifferentRuleThrowsRepositoryException() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        String[] privileges = new String[]{Privilege.JCR_WRITE};
+        this.permissionsManagerService.addAccessControlEntry(ROOT_PATH, false, () -> "admin", privileges, Map.of(),
+                session);
+        AccessControlPolicy[] policies = session.getAccessControlManager().getPolicies(ROOT_PATH);
+        AccessControlEntry[] accessControlEntries =
+                ((JackrabbitAccessControlList) policies[0]).getAccessControlEntries();
+        assertEquals(1, accessControlEntries.length);
+
+        assertThrows(RepositoryException.class, () -> this.permissionsManagerService.removeAccessControlEntry(ROOT_PATH,
+                true, accessControlEntries[0].getPrincipal(), privileges, Map.of(), session));
+    }
+
+    @Test
+    public void removeAccessControlEntryForDifferentPrincipalThrowsRepositoryException() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        String[] privileges = new String[]{Privilege.JCR_WRITE};
+        this.permissionsManagerService.addAccessControlEntry(ROOT_PATH, false, () -> "admin", privileges, Map.of(),
+                session);
+        AccessControlPolicy[] policies = session.getAccessControlManager().getPolicies(ROOT_PATH);
+        AccessControlEntry[] accessControlEntries =
+                ((JackrabbitAccessControlList) policies[0]).getAccessControlEntries();
+        assertEquals(1, accessControlEntries.length);
+
+        assertThrows(RepositoryException.class, () -> this.permissionsManagerService.removeAccessControlEntry(ROOT_PATH,
+                false, () -> "someoneElse", privileges, Map.of(), session));
     }
 
     @Test

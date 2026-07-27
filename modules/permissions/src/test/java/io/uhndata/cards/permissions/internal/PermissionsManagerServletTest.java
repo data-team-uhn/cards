@@ -21,149 +21,164 @@ import java.util.UUID;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 import javax.jcr.security.Privilege;
-import javax.servlet.ServletException;
 
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.request.builder.impl.SlingHttpServletRequestImpl;
+import jakarta.servlet.ServletException;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.apache.sling.api.request.builder.Builders;
+import org.apache.sling.api.request.builder.SlingHttpServletRequestBuilder;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.permissions.spi.PermissionsManager;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyMapOf;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link PermissionsManagerServlet}.
  *
- * @version $Id $
+ * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class PermissionsManagerServletTest
 {
     private static final String RULE_PARAMETER = ":rule";
+
     private static final String PRIVILEGES_PARAMETER = ":privileges";
+
     private static final String PRINCIPAL_PARAMETER = ":principal";
+
     private static final String RESTRICTION_PARAMETER = ":restriction";
+
     private static final String REMOVE_PARAMETER = ":remove";
+
+    private static final String TARGET_PATH = "/Forms/f1";
 
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private PermissionsManagerServlet permissionsManagerServlet;
+    private final PermissionsManagerServlet permissionsManagerServlet = new PermissionsManagerServlet();
 
-    @Mock
-    private PermissionsManager permissionsChangeServiceHandler;
+    private final PermissionsManager permissionsManager = mock(PermissionsManager.class);
 
-    @Test
-    public void doPostWithoutRemoveParameterAndAllowRule() throws ServletException
+    private final SlingJakartaHttpServletResponse response = mock(SlingJakartaHttpServletResponse.class);
+
+    @Before
+    public void setUp() throws IllegalAccessException
     {
-        Resource resource = mock(Resource.class);
-        when(resource.getResourceResolver()).thenReturn(this.context.resourceResolver());
-        when(resource.getPath()).thenReturn("/Forms/f1.json");
-        SlingHttpServletRequestImpl request = new SlingHttpServletRequestImpl(resource);
-        request.withParameter(RULE_PARAMETER, "allow");
-        request.withParameter(PRIVILEGES_PARAMETER, Privilege.JCR_ALL);
-        request.withParameter(PRINCIPAL_PARAMETER, "admin");
-        request.withParameter(RESTRICTION_PARAMETER, "cards:answer=" + UUID.randomUUID());
-        this.permissionsManagerServlet.doPost(request.build(), mock(SlingHttpServletResponse.class));
+        FieldUtils.writeField(this.permissionsManagerServlet, "permissionsChangeServiceHandler",
+            this.permissionsManager, true);
     }
 
     @Test
-    public void doPostWithRemoveParameterAndDenyRule() throws ServletException
+    public void doPostWithoutRemoveParameterAddsEntry() throws RepositoryException, ServletException
     {
-        Resource resource = mock(Resource.class);
-        when(resource.getResourceResolver()).thenReturn(this.context.resourceResolver());
-        when(resource.getPath()).thenReturn("/Forms/f1.json");
-        SlingHttpServletRequestImpl request = new SlingHttpServletRequestImpl(resource);
-        request.withParameter(RULE_PARAMETER, "deny");
-        request.withParameter(PRIVILEGES_PARAMETER, Privilege.JCR_ALL);
-        request.withParameter(PRINCIPAL_PARAMETER, "admin");
-        request.withParameter(RESTRICTION_PARAMETER, "cards:answer=" + UUID.randomUUID());
-        request.withParameter(REMOVE_PARAMETER, "true");
-        this.permissionsManagerServlet.doPost(request.build(), mock(SlingHttpServletResponse.class));
+        SlingJakartaHttpServletRequest request = requestBuilder()
+            .withParameter(RULE_PARAMETER, "allow")
+            .withParameter(PRIVILEGES_PARAMETER, Privilege.JCR_ALL)
+            .withParameter(PRINCIPAL_PARAMETER, "admin")
+            .withParameter(RESTRICTION_PARAMETER, "cards:answer=" + UUID.randomUUID())
+            .buildJakartaRequest();
+        this.permissionsManagerServlet.doPost(request, this.response);
+        verify(this.permissionsManager).addAccessControlEntry(eq(TARGET_PATH), eq(true), any(Principal.class),
+            eq(new String[] { Privilege.JCR_ALL }), anyMap(), any(Session.class));
+    }
+
+    @Test
+    public void doPostWithRemoveParameterRemovesEntry() throws RepositoryException, ServletException
+    {
+        SlingJakartaHttpServletRequest request = requestBuilder()
+            .withParameter(RULE_PARAMETER, "deny")
+            .withParameter(PRIVILEGES_PARAMETER, Privilege.JCR_ALL)
+            .withParameter(PRINCIPAL_PARAMETER, "admin")
+            .withParameter(RESTRICTION_PARAMETER, "cards:answer=" + UUID.randomUUID())
+            .withParameter(REMOVE_PARAMETER, "true")
+            .buildJakartaRequest();
+        this.permissionsManagerServlet.doPost(request, this.response);
+        verify(this.permissionsManager).removeAccessControlEntry(eq(TARGET_PATH), eq(false), any(Principal.class),
+            eq(new String[] { Privilege.JCR_ALL }), anyMap(), any(Session.class));
     }
 
     @Test
     public void doPostWithoutRuleThrowsIllegalArgumentException()
     {
-        Resource resource = mock(Resource.class);
-        when(resource.getResourceResolver()).thenReturn(this.context.resourceResolver());
-        when(resource.getPath()).thenReturn("/Forms/f1.json");
-        SlingHttpServletRequestImpl request = new SlingHttpServletRequestImpl(resource);
-        assertThrows("Required parameter \":rule\" missing", IllegalArgumentException.class,
-                () -> this.permissionsManagerServlet.doPost(request.build(), mock(SlingHttpServletResponse.class)));
+        SlingJakartaHttpServletRequest request = requestBuilder().buildJakartaRequest();
+        Exception e = assertThrows(IllegalArgumentException.class,
+            () -> this.permissionsManagerServlet.doPost(request, this.response));
+        assertEquals("Required parameter \":rule\" missing", e.getMessage());
     }
 
     @Test
     public void doPostWithIllegalValueOfRuleThrowsIllegalArgumentException()
     {
-        Resource resource = mock(Resource.class);
-        when(resource.getResourceResolver()).thenReturn(this.context.resourceResolver());
-        when(resource.getPath()).thenReturn("/Forms/f1.json");
-        SlingHttpServletRequestImpl request = new SlingHttpServletRequestImpl(resource);
-        request.withParameter(RULE_PARAMETER, "rule");
-        assertThrows("\":rule\" must be either 'allow' or 'deny'", IllegalArgumentException.class,
-                () -> this.permissionsManagerServlet.doPost(request.build(), mock(SlingHttpServletResponse.class)));
+        SlingJakartaHttpServletRequest request = requestBuilder()
+            .withParameter(RULE_PARAMETER, "rule")
+            .buildJakartaRequest();
+        Exception e = assertThrows(IllegalArgumentException.class,
+            () -> this.permissionsManagerServlet.doPost(request, this.response));
+        assertEquals("\":rule\" must be either 'allow' or 'deny'", e.getMessage());
     }
 
     @Test
     public void doPostWithoutRestrictionThrowsIllegalArgumentException()
     {
-        Resource resource = mock(Resource.class);
-        when(resource.getResourceResolver()).thenReturn(this.context.resourceResolver());
-        when(resource.getPath()).thenReturn("/Forms/f1.json");
-        SlingHttpServletRequestImpl request = new SlingHttpServletRequestImpl(resource);
-        request.withParameter(RULE_PARAMETER, "deny");
-        request.withParameter(PRIVILEGES_PARAMETER, Privilege.JCR_ALL);
-        assertThrows("Required parameter \":restriction\" missing", IllegalArgumentException.class,
-                () -> this.permissionsManagerServlet.doPost(request.build(), mock(SlingHttpServletResponse.class)));
+        SlingJakartaHttpServletRequest request = requestBuilder()
+            .withParameter(RULE_PARAMETER, "deny")
+            .withParameter(PRIVILEGES_PARAMETER, Privilege.JCR_ALL)
+            .buildJakartaRequest();
+        Exception e = assertThrows(IllegalArgumentException.class,
+            () -> this.permissionsManagerServlet.doPost(request, this.response));
+        assertEquals("Required parameter \":restriction\" missing", e.getMessage());
     }
 
     @Test
     public void doPostWithoutPrivilegesThrowsIllegalArgumentException()
     {
-        Resource resource = mock(Resource.class);
-        when(resource.getResourceResolver()).thenReturn(this.context.resourceResolver());
-        when(resource.getPath()).thenReturn("/Forms/f1.json");
-        SlingHttpServletRequestImpl request = new SlingHttpServletRequestImpl(resource);
-        request.withParameter(RULE_PARAMETER, "deny");
-        request.withParameter(RESTRICTION_PARAMETER, "cards:answer=" + UUID.randomUUID());
-        assertThrows("Required parameter \":privileges\" missing", IllegalArgumentException.class,
-                () -> this.permissionsManagerServlet.doPost(request.build(), mock(SlingHttpServletResponse.class)));
+        SlingJakartaHttpServletRequest request = requestBuilder()
+            .withParameter(RULE_PARAMETER, "deny")
+            .withParameter(RESTRICTION_PARAMETER, "cards:answer=" + UUID.randomUUID())
+            .buildJakartaRequest();
+        Exception e = assertThrows(IllegalArgumentException.class,
+            () -> this.permissionsManagerServlet.doPost(request, this.response));
+        assertEquals("Required parameter \":privileges\" missing", e.getMessage());
     }
 
     @Test
-    public void doPostCatchesRepositoryException() throws ServletException, RepositoryException
+    public void doPostCatchesRepositoryException() throws RepositoryException, ServletException
+    {
+        SlingJakartaHttpServletRequest request = requestBuilder()
+            .withParameter(RULE_PARAMETER, "allow")
+            .withParameter(PRIVILEGES_PARAMETER, Privilege.JCR_ALL)
+            .withParameter(PRINCIPAL_PARAMETER, "admin")
+            .withParameter(RESTRICTION_PARAMETER, "cards:answer=" + UUID.randomUUID())
+            .buildJakartaRequest();
+        doThrow(new RepositoryException()).when(this.permissionsManager).addAccessControlEntry(
+            anyString(), anyBoolean(), any(Principal.class), any(String[].class), anyMap(),
+            any(Session.class));
+        this.permissionsManagerServlet.doPost(request, this.response);
+    }
+
+    private SlingHttpServletRequestBuilder requestBuilder()
     {
         Resource resource = mock(Resource.class);
         when(resource.getResourceResolver()).thenReturn(this.context.resourceResolver());
-        when(resource.getPath()).thenReturn("/Forms/f1.json");
-        SlingHttpServletRequestImpl request = new SlingHttpServletRequestImpl(resource);
-        request.withParameter(RULE_PARAMETER, "allow");
-        request.withParameter(PRIVILEGES_PARAMETER, Privilege.JCR_ALL);
-        request.withParameter(PRINCIPAL_PARAMETER, "admin");
-        request.withParameter(RESTRICTION_PARAMETER, "cards:answer=" + UUID.randomUUID());
-        doThrow(new RepositoryException()).when(this.permissionsChangeServiceHandler).addAccessControlEntry(
-            anyString(), anyBoolean(), any(Principal.class), any(String[].class), anyMapOf(String.class, Value.class),
-            any(Session.class));
-        this.permissionsManagerServlet.doPost(request.build(), mock(SlingHttpServletResponse.class));
+        when(resource.getPath()).thenReturn(TARGET_PATH);
+        return Builders.newRequestBuilder(resource).withExtension("json");
     }
-
 }

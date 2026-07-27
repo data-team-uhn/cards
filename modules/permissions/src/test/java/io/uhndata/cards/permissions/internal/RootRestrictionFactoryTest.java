@@ -23,9 +23,6 @@ import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,7 +34,6 @@ import static org.mockito.Mockito.mock;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class RootRestrictionFactoryTest
 {
     public static final String NAME = "cards:root";
@@ -46,23 +42,22 @@ public class RootRestrictionFactoryTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private RootRestrictionFactory rootRestrictionFactory;
+    private final RootRestrictionFactory rootRestrictionFactory = new RootRestrictionFactory();
 
     @Test
-    public void getNameTest()
+    public void getNameReturnsRestrictionName()
     {
         assertEquals(NAME, this.rootRestrictionFactory.getName());
     }
 
     @Test
-    public void getTypeTest()
+    public void getTypeReturnsRestrictionType()
     {
         assertEquals(TYPE, this.rootRestrictionFactory.getType());
     }
 
     @Test
-    public void forValueTest()
+    public void forValueCreatesRootRestrictionPattern()
     {
         RestrictionPattern restrictionPattern = this.rootRestrictionFactory.forValue(mock(PropertyState.class));
         assertNotNull(restrictionPattern);
