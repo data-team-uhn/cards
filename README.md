@@ -4,7 +4,7 @@
 ## Prerequisites:
 * Java 21
 * Maven 3.9+
-* Python 2.5+ or Python 3.0+
+* Python 3.6+
 * psutil Python module (recommended)
 
 ## Build:
@@ -35,6 +35,8 @@ A docker image can optionally be built with `mvn clean install -Pdocker`, if doc
 
 ## Run:
 `./start_cards.sh` => the app will run at `http://localhost:8080` (default port)
+
+On Windows, use `start_cards.bat` instead; the options are identical. Both are thin wrappers around `start_cards.py`, where all of the start logic lives.
 
 `./start_cards.sh -p PORT` to run at a different port
 
