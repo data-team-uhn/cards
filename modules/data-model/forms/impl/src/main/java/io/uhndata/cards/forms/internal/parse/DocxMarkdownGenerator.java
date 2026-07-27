@@ -32,6 +32,7 @@ import org.apache.poi.xwpf.usermodel.IBodyElement;
 import org.apache.poi.xwpf.usermodel.IRunElement;
 import org.apache.poi.xwpf.usermodel.ISDTContent;
 import org.apache.poi.xwpf.usermodel.ISDTContents;
+import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFEndnote;
 import org.apache.poi.xwpf.usermodel.XWPFFooter;
@@ -39,6 +40,8 @@ import org.apache.poi.xwpf.usermodel.XWPFFootnote;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFHyperlink;
 import org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun;
+import org.apache.poi.xwpf.usermodel.XWPFNum;
+import org.apache.poi.xwpf.usermodel.XWPFNumbering;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFSDT;
@@ -47,6 +50,7 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.xmlbeans.XmlCursor;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1246,7 +1250,7 @@ public class DocxMarkdownGenerator
             }
             int level = this.getNumberingLevel(paragraph);
             int[] counters = this.getCounters(paragraph.getNumID());
-            this.updateCounters(counters, level, paragraph.getNumStartOverride());
+            this.updateCounters(counters, level, this.resolveStart(paragraph, level));
             return this.resolveNumberingText(paragraph.getNumLevelText(), counters, level);
         }
 
@@ -1272,16 +1276,62 @@ public class DocxMarkdownGenerator
             return this.countersByNumId.computeIfAbsent(numId, id -> new int[MAX_NUMBERING_LEVEL]);
         }
 
-        private void updateCounters(final int[] counters, final int level, final BigInteger startOverride)
+        private void updateCounters(final int[] counters, final int level, final BigInteger startValue)
         {
-            if (startOverride != null && counters[level] == 0) {
-                counters[level] = startOverride.intValue();
+            if (startValue != null && counters[level] == 0) {
+                counters[level] = startValue.intValue();
             } else {
                 counters[level]++;
             }
             for (int deeperLevel = level + 1; deeperLevel < MAX_NUMBERING_LEVEL; deeperLevel++) {
                 counters[deeperLevel] = 0;
             }
+        }
+
+        // The first item of a list starts at the list's start value, not always 1. Word stores that
+        // either as an explicit start override on the num, or as the start of the abstract list level.
+        private BigInteger resolveStart(final XWPFParagraph paragraph, final int level)
+        {
+            final BigInteger override = paragraph.getNumStartOverride();
+            if (override != null) {
+                return override;
+            }
+            return this.abstractLevelStart(paragraph, level);
+        }
+
+        private BigInteger abstractLevelStart(final XWPFParagraph paragraph, final int level)
+        {
+            final XWPFAbstractNum abstractNum = this.resolveAbstractNum(paragraph);
+            if (abstractNum == null || abstractNum.getCTAbstractNum() == null) {
+                return null;
+            }
+            BigInteger start = null;
+            for (final CTLvl levelDef : abstractNum.getCTAbstractNum().getLvlList()) {
+                final BigInteger ilvl = levelDef.getIlvl();
+                if (ilvl != null && ilvl.intValue() == level && levelDef.getStart() != null) {
+                    start = levelDef.getStart().getVal();
+                }
+            }
+            return start;
+        }
+
+        private XWPFAbstractNum resolveAbstractNum(final XWPFParagraph paragraph)
+        {
+            final XWPFDocument document = paragraph.getDocument();
+            final XWPFNumbering numbering = document == null ? null : document.getNumbering();
+            if (numbering == null) {
+                return null;
+            }
+            final BigInteger abstractId = extractAbstractId(numbering.getNum(paragraph.getNumID()));
+            return abstractId == null ? null : numbering.getAbstractNum(abstractId);
+        }
+
+        private static BigInteger extractAbstractId(final XWPFNum num)
+        {
+            if (num == null || num.getCTNum() == null || num.getCTNum().getAbstractNumId() == null) {
+                return null;
+            }
+            return num.getCTNum().getAbstractNumId().getVal();
         }
 
         private String resolveNumberingText(final String levelText, final int[] counters, final int level)
