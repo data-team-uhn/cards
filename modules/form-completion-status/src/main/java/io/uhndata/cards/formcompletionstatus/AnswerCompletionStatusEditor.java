@@ -180,7 +180,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             }
             // call each validator
             this.allValidators.forEach(validator -> {
-                validator.validate(answerNode, questionNode, this.newForm, flags);
+                validator.validate(answerNode, questionNode, flags);
             });
             // Write these statusFlags to the JCR repo
             answerNode.setProperty(STATUS_FLAGS, flags.keySet(), Type.STRINGS);

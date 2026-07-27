@@ -1,0 +1,33 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Questionnaire",
+  "description": "A test questionnaire",
+  "question_1": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Boolean Question",
+    "description": "A boolean question",
+    "dataType": "boolean"
+  },
+  "section_1": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section 1",
+    "question_2": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Long Question",
+      "dataType": "long",
+      "minAnswers": 1,
+      "maxAnswers": 2,
+      "minValue": 50,
+      "maxValue": 250
+    }
+  },
+  "question_3": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Date Question",
+    "description": "A date question",
+    "dataType": "date",
+    "dateFormat": "yyyy-MM-dd",
+    "type": "interval",
+    "minAnswers": 1
+  }
+}
