@@ -20,8 +20,8 @@ package io.uhndata.cards;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -75,7 +75,7 @@ public class CountServlet extends PaginationServlet
 
     private static final long serialVersionUID = -6068156942302219324L;
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Override
     public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
@@ -182,7 +182,7 @@ public class CountServlet extends PaginationServlet
         Node node = session.getNode("/QueryCache").addNode(UUID.randomUUID().toString(), "cards:QueryCache");
         node.setProperty("countType", "=");
         node.setProperty("count", count);
-        node.setProperty("time", DATE_FORMAT.format(new Date()));
+        node.setProperty("time", DATE_FORMAT.format(ZonedDateTime.now()));
         node.setProperty("resourceType", request.getResource().getName());
         if (filters.isEmpty()) {
             return;

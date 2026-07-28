@@ -20,11 +20,15 @@
 package io.uhndata.cards.torch.internal;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.ParsePosition;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -222,20 +226,17 @@ public class PatientLocalStorage
      */
     Boolean isAppointmentInTimeframe(final JsonObject appointment)
     {
-        try {
-            final Date thisDate = new SimpleDateFormat("yyyy-MM-dd").parse(appointment.getString("time"));
-            final Calendar thisCalendar = Calendar.getInstance();
-            thisCalendar.setTime(thisDate);
-            if (this.datesToQuery.size() > 0 && !listContainsDate(this.datesToQuery, thisCalendar)) {
-                return false;
-            }
-
-            return thisCalendar.after(this.startDate) && thisCalendar.before(this.endDate);
-        } catch (final ParseException e) {
-            LOGGER.error("Could not parse date for appointment {}: {}",
-                appointment.getString(PatientLocalStorage.FHIR_FIELD), e.getMessage(), e);
+        // Only the date part of the appointment time is relevant here, so the time of day is dropped
+        final Calendar thisCalendar = toCalendar(appointment.getString("time"), "yyyy-MM-dd");
+        if (thisCalendar == null) {
+            LOGGER.error("Could not parse date for appointment {}",
+                appointment.getString(PatientLocalStorage.FHIR_FIELD));
+            return false;
         }
-        return false;
+        if (this.datesToQuery.size() > 0 && !listContainsDate(this.datesToQuery, thisCalendar)) {
+            return false;
+        }
+        return thisCalendar.after(this.startDate) && thisCalendar.before(this.endDate);
     }
 
     /**
@@ -401,11 +402,6 @@ public class PatientLocalStorage
     interface JsonGetter
     {
         Object get(JsonObject in);
-    }
-
-    interface JsonDateGetter
-    {
-        Date get(JsonObject in) throws ParseException;
     }
 
     /**
@@ -604,11 +600,19 @@ public class PatientLocalStorage
         if (StringUtils.isBlank(dateStr)) {
             return null;
         }
+        final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+            .appendPattern(format)
+            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .toFormatter();
         try {
-            final Calendar result = Calendar.getInstance();
-            result.setTime(new SimpleDateFormat(format).parse(dateStr));
-            return result;
-        } catch (ParseException e) {
+            // Parsing from a position, instead of the whole string, tolerates trailing text that the format
+            // doesn't cover, e.g. reading just the date out of a full datetime
+            final LocalDateTime parsed =
+                LocalDateTime.from(formatter.parse(dateStr, new ParsePosition(0)));
+            return GregorianCalendar.from(parsed.atZone(ZoneId.systemDefault()));
+        } catch (RuntimeException e) {
             return null;
         }
     }

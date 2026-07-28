@@ -19,9 +19,12 @@
 
 package io.uhndata.cards.clarity.importer.internal;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -62,9 +65,11 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscardExistingVisitsFilter.class);
 
-    private static final SimpleDateFormat SQL_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+    private static final DateTimeFormatter SQL_DATE_FORMAT =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd' 'HH:mm:ss");
 
-    private static final SimpleDateFormat JCR_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    private static final DateTimeFormatter JCR_DATE_FORMAT =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -119,19 +124,18 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
             deleteEvents(input);
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to process entry: {}", e.getMessage(), e);
-        } catch (ParseException e) {
+        } catch (DateTimeParseException e) {
             LOGGER.warn("Invalid date: {}", input.getOrDefault(this.dateColumn, ""), e);
         }
         return this.discardNewEvent ? null : input;
     }
 
-    private void deleteEvents(final Map<String, String> input) throws RepositoryException, ParseException
+    private void deleteEvents(final Map<String, String> input) throws RepositoryException
     {
-        final Calendar startTime = Calendar.getInstance();
-        startTime.setTime(SQL_DATE_FORMAT.parse(input.getOrDefault(this.dateColumn, "")));
-        atMidnight(startTime);
-        final Calendar endTime = (Calendar) startTime.clone();
-        endTime.add(Calendar.DATE, 1);
+        final ZonedDateTime startTime =
+            LocalDateTime.parse(input.getOrDefault(this.dateColumn, ""), SQL_DATE_FORMAT)
+                .atZone(ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS);
+        final ZonedDateTime endTime = startTime.plusDays(1);
         final Session session = this.rrp.getThreadResourceResolver().adaptTo(Session.class);
         final String patientUuid = findSubject(input, session);
         final String formQuery = String.format(
@@ -144,8 +148,8 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
             session.getNode("/Questionnaires/Visit information").getIdentifier(),
             patientUuid,
             session.getNode("/Questionnaires/Visit information/time").getIdentifier(),
-            JCR_DATE_FORMAT.format(startTime.getTime()),
-            JCR_DATE_FORMAT.format(endTime.getTime()));
+            JCR_DATE_FORMAT.format(startTime),
+            JCR_DATE_FORMAT.format(endTime));
         final NodeIterator visits =
             session.getWorkspace().getQueryManager().createQuery(formQuery, "JCR-SQL2").execute().getNodes();
         while (visits.hasNext()) {
@@ -207,14 +211,6 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to delete visit form: {}", e.getMessage(), e);
         }
-    }
-
-    private void atMidnight(final Calendar c)
-    {
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
     }
 
     private Node findVersionableAncestor(final Node n) throws RepositoryException

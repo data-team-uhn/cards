@@ -16,7 +16,6 @@
  */
 package io.uhndata.cards.forms.internal;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -39,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * An {@link Editor} that fills out any reference answers for a new form.
@@ -177,11 +177,8 @@ public class ReferenceAnswersEditor extends AnswersEditor
     private Object serializeValue(final Object rawValue)
     {
         if (rawValue instanceof Calendar) {
-            final Calendar value = (Calendar) rawValue;
             // Use the ISO 8601 date+time format
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            sdf.setTimeZone(value.getTimeZone());
-            return sdf.format(value.getTime());
+            return DateUtils.toString((Calendar) rawValue);
         } else if (rawValue instanceof Object[]) {
             return Arrays.asList((Object[]) rawValue);
         }

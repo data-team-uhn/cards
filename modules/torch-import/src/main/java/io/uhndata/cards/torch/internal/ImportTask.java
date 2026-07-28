@@ -28,10 +28,13 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URLConnection;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +65,8 @@ public class ImportTask implements Runnable
 {
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportTask.class);
+
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /** Number of days to query. */
     private final int daysToQuery;
@@ -122,13 +127,11 @@ public class ImportTask implements Runnable
         this.clinicNames = clinicNames;
         // Parse the query dates
         this.queryDates = new LinkedList<>();
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         for (String queryDate : queryDates) {
             try {
-                final Calendar date = Calendar.getInstance();
-                date.setTime(formatter.parse(queryDate));
-                this.queryDates.add(date);
-            } catch (ParseException e) {
+                this.queryDates.add(GregorianCalendar.from(
+                    LocalDate.parse(queryDate, DATE_FORMAT).atStartOfDay(ZoneId.systemDefault())));
+            } catch (DateTimeParseException e) {
                 LOGGER.error("Query date invalid: {}", e.getMessage(), e);
             }
         }
@@ -197,14 +200,10 @@ public class ImportTask implements Runnable
             + "participants {physician {name {prefix given family suffix} eID} role}} }}\"}";
 
         long importedAppointmentsCount = 0;
-        final Calendar startDate = Calendar.getInstance();
-        final Date today = new Date();
-        startDate.setTime(today);
-        final Calendar endDate = (Calendar) startDate.clone();
-        endDate.add(Calendar.DATE, daysToQuery);
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        final String postRequest = String.format(postRequestTemplate, formatter.format(startDate.getTime()),
-            formatter.format(endDate.getTime()), formatter.format(new Date()));
+        final ZonedDateTime startDate = ZonedDateTime.now();
+        final ZonedDateTime endDate = startDate.plusDays(daysToQuery);
+        final String postRequest = String.format(postRequestTemplate, DATE_FORMAT.format(startDate),
+            DATE_FORMAT.format(endDate), DATE_FORMAT.format(startDate));
 
         // Query the torch server
         try {
@@ -221,7 +220,8 @@ public class ImportTask implements Runnable
                 Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"))) {
                 this.rrp.push(resolver);
                 mustPopResolver = true;
-                final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
+                final PatientLocalStorage storage = new PatientLocalStorage(resolver,
+                    GregorianCalendar.from(startDate), GregorianCalendar.from(endDate),
                     this.providerIDs, this.providerRoles, this.queryDates);
 
                 data.forEach(storage::store);

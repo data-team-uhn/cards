@@ -19,7 +19,6 @@ package io.uhndata.cards.forms.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -58,6 +57,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.spi.AbstractNodeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Basic utilities for working with Form data.
@@ -732,9 +732,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     private JsonValue serializeDate(final Calendar value)
     {
         // Use the ISO 8601 date+time format
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(value.getTimeZone());
-        return Json.createValue(sdf.format(value.getTime()));
+        return Json.createValue(DateUtils.toString(value));
     }
 
     private JsonValue serializeInputStream(final InputStream value)

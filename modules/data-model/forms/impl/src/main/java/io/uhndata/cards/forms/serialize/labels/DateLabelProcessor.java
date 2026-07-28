@@ -18,8 +18,8 @@
  */
 package io.uhndata.cards.forms.serialize.labels;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Calendar;
 import java.util.function.Function;
 
@@ -45,7 +45,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
-    private static final DateFormat DEFAULT_FORMAT = DateFormat.getDateInstance(DateFormat.LONG);
+    private static final DateTimeFormatter DEFAULT_FORMAT = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
 
     @Override
     public String getDescription()
@@ -88,25 +88,33 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
                     }
                 }
 
-                DateFormat format = question.hasProperty("dateFormat")
-                    ? new SimpleDateFormat(question.getProperty("dateFormat").getString()) : DEFAULT_FORMAT;
+                final DateTimeFormatter format = question.hasProperty("dateFormat")
+                    ? DateTimeFormatter.ofPattern(question.getProperty("dateFormat").getString()) : DEFAULT_FORMAT;
                 if (property.isMultiple()) {
                     JsonArrayBuilder result = Json.createArrayBuilder();
                     for (Value v : property.getValues()) {
-                        Calendar rawValue = v.getDate();
-                        format.setTimeZone(rawValue.getTimeZone());
-                        result.add(Json.createValue(format.format(rawValue.getTime())));
+                        result.add(Json.createValue(format(format, v.getDate())));
                     }
                     return result.build();
                 } else {
-                    Calendar rawValue = property.getDate();
-                    format.setTimeZone(rawValue.getTimeZone());
-                    return Json.createValue(format.format(rawValue.getTime()));
+                    return Json.createValue(format(format, property.getDate()));
                 }
             }
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }
         return null;
+    }
+
+    /**
+     * Format a date in its own timezone, the way it was stored.
+     *
+     * @param format the formatter to use
+     * @param value the date to format
+     * @return the formatted date
+     */
+    private static String format(final DateTimeFormatter format, final Calendar value)
+    {
+        return format.format(value.toInstant().atZone(value.getTimeZone().toZoneId()));
     }
 }

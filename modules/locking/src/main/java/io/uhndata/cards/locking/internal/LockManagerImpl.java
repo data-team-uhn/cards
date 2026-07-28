@@ -18,7 +18,7 @@
  */
 package io.uhndata.cards.locking.internal;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +62,8 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 public class LockManagerImpl implements LockManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(LockManagerImpl.class);
+
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private static final String SUBJECT_NODE_TYPE = "cards:Subject";
 
@@ -222,8 +224,8 @@ public class LockManagerImpl implements LockManager
                 // Node is already locked
                 Node existingLock = serviceNode.getProperty(LOCK_PROPERTY).getNode();
                 String author = existingLock.getProperty("author").getString();
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                String time = format.format(existingLock.getProperty("time").getDate().getTime());
+                Calendar lockTime = existingLock.getProperty("time").getDate();
+                String time = DATE_FORMAT.format(lockTime.toInstant().atZone(lockTime.getTimeZone().toZoneId()));
                 return String.format("Node has already been locked by %s on %s", author, time);
             }
 

@@ -21,7 +21,6 @@ package io.uhndata.cards.serialize.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.function.Function;
 
@@ -42,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Simplify serialization for all resource types by removing all technical properties, renaming {@code "jcr:created"} to
@@ -202,9 +202,7 @@ public class BareProcessor implements ResourceJsonProcessor
     private JsonValue serializeDate(final Calendar value)
     {
         // Use the ISO 8601 date+time format
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(value.getTimeZone());
-        return Json.createValue(sdf.format(value.getTime()));
+        return Json.createValue(DateUtils.toString(value));
     }
 
     private JsonValue serializeInputStream(final InputStream value)

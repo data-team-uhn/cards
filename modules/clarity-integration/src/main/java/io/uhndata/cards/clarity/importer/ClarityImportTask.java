@@ -24,11 +24,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -80,6 +82,10 @@ public class ClarityImportTask implements Runnable
     private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
 
     private static final String VALUE_PROP = "value";
+
+    /** The date+time format used by the Clarity database. */
+    private static final DateTimeFormatter CLARITY_DATE_FORMAT =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd' 'HH:mm:ss");
 
     private final ClarityImportConfigDefinition config;
 
@@ -308,7 +314,7 @@ public class ClarityImportTask implements Runnable
                 try {
                     createFormsAndSubjects(resolver, results, sortedProcessors);
                     session.save();
-                } catch (ParseException | PersistenceException e) {
+                } catch (DateTimeParseException | PersistenceException e) {
                     LOGGER.error("Exception while importing data to JCR", e);
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception while importing data: {}", e.getMessage(), e);
@@ -474,7 +480,7 @@ public class ClarityImportTask implements Runnable
 
     private void createFormsAndSubjects(ResourceResolver resolver, ResultSet sqlRow,
         List<ClarityDataProcessor> processors)
-        throws ParseException, PersistenceException, RepositoryException, SQLException
+        throws PersistenceException, RepositoryException, SQLException
     {
         Map<String, String> row = new HashMap<>();
         final int columnCount = sqlRow.getMetaData().getColumnCount();
@@ -512,7 +518,7 @@ public class ClarityImportTask implements Runnable
 
     private boolean walkThroughLocalConfig(ResourceResolver resolver, Map<String, String> row,
         ClaritySubjectMapping subjectMapping, Resource subjectParent)
-        throws ParseException, PersistenceException, RepositoryException, SQLException
+        throws PersistenceException, RepositoryException, SQLException
     {
         boolean imported = false;
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
@@ -671,7 +677,7 @@ public class ClarityImportTask implements Runnable
 
     private void updateExistingForm(ResourceResolver resolver, Resource formNode,
         ClarityQuestionnaireMapping questionnaireMapping, Map<String, String> row)
-        throws ParseException, RepositoryException, SQLException
+        throws RepositoryException, SQLException
     {
         this.versionManager.get().checkout(formNode.getPath());
         for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
@@ -720,7 +726,7 @@ public class ClarityImportTask implements Runnable
 
     private void populateEmptyForm(ResourceResolver resolver, Resource formNode,
         ClarityQuestionnaireMapping questionnaireMapping, Map<String, String> row)
-        throws ParseException, PersistenceException, SQLException
+        throws PersistenceException, SQLException
     {
         for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
             if (StringUtils.isBlank(questionMapping.question)) {
@@ -733,7 +739,7 @@ public class ClarityImportTask implements Runnable
     }
 
     private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver,
-        final ClarityQuestionMapping questionMapping, final Map<String, String> row) throws ParseException, SQLException
+        final ClarityQuestionMapping questionMapping, final Map<String, String> row) throws SQLException
     {
         String questionPath = questionMapping.question;
         String column = questionMapping.column;
@@ -743,7 +749,7 @@ public class ClarityImportTask implements Runnable
     }
 
     private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver, final QuestionType qType,
-        final String questionPath, final String answerValue) throws ParseException
+        final String questionPath, final String answerValue)
     {
         Map<String, Object> props = new HashMap<>();
         Resource questionResource = resolver.resolve(questionPath);
@@ -755,15 +761,8 @@ public class ClarityImportTask implements Runnable
             props.put(ClarityImportTask.VALUE_PROP, answerValue == null ? "" : answerValue);
         } else if (qType == QuestionType.DATE) {
             props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:DateAnswer");
-            SimpleDateFormat clarityDateFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-            Date date = clarityDateFormat.parse(answerValue);
-            if (date != null) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                props.put(ClarityImportTask.VALUE_PROP, calendar);
-            } else {
-                LOGGER.warn("Could not parse date");
-            }
+            final LocalDateTime date = LocalDateTime.parse(answerValue, CLARITY_DATE_FORMAT);
+            props.put(ClarityImportTask.VALUE_PROP, GregorianCalendar.from(date.atZone(ZoneId.systemDefault())));
         } else if (qType == QuestionType.BOOLEAN) {
             // Note that the MS-SQL database doesn't save booleans as true/false
             // So instead we have to check if it is Yes or No

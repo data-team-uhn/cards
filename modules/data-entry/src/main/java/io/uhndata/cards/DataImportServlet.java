@@ -19,18 +19,12 @@ package io.uhndata.cards;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -67,6 +61,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.spi.SearchUtils;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * A servlet for importing CARDS data from CSV files.
@@ -94,21 +89,6 @@ public class DataImportServlet extends SlingJakartaAllMethodsServlet
     private static final String NOTE_SUFFIX = "_notes";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataImportServlet.class);
-
-    /** Supported date formats. */
-    private static final List<SimpleDateFormat> DATE_FORMATS = Arrays.asList(
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSz"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSSz"),
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ssz"),
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS"),
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"),
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm"),
-        new SimpleDateFormat("yyyy-MM-dd"),
-        new SimpleDateFormat("M/d/y"));
 
     /** Cached Question nodes. */
     private final ThreadLocal<Map<String, Node>> questionCache = ThreadLocal.withInitial(HashMap::new);
@@ -521,7 +501,7 @@ public class DataImportServlet extends SlingJakartaAllMethodsServlet
                         BooleanUtils.toInteger(BooleanUtils.toBooleanObject(rawValue), 1, 0, -1));
                     break;
                 case "date":
-                    result = valueFactory.createValue(parseDate(rawValue));
+                    result = valueFactory.createValue(DateUtils.parseCalendar(rawValue));
                     break;
                 case "text":
                 case null, default:
@@ -534,29 +514,6 @@ public class DataImportServlet extends SlingJakartaAllMethodsServlet
             return null;
         }
         return result;
-    }
-
-    /**
-     * Parses a date from the given input string.
-     *
-     * @param str the serialized date to parse
-     * @return the parsed date, or {@code null} if the date cannot be parsed
-     */
-    private Calendar parseDate(final String str)
-    {
-        final Date date = DATE_FORMATS.stream().map(format -> {
-            try {
-                return format.parse(str);
-            } catch (Exception ex) {
-                return null;
-            }
-        }).filter(Objects::nonNull).findFirst().orElse(null);
-        if (date == null) {
-            return null;
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar;
     }
 
     /**

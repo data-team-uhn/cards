@@ -19,8 +19,8 @@
 package io.uhndata.cards.forms.internal;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.servlet.Servlet;
 
@@ -45,6 +45,8 @@ public class QuestionnaireCSVServlet extends SlingJakartaSafeMethodsServlet
 {
     private static final long serialVersionUID = -677311295300436475L;
 
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HHmm");
+
     @Override
     public void doGet(final SlingJakartaHttpServletRequest request, final SlingJakartaHttpServletResponse response)
         throws IOException
@@ -53,9 +55,8 @@ public class QuestionnaireCSVServlet extends SlingJakartaSafeMethodsServlet
         final String csvPath = questionnaire.getPath() + ".data"
             + questionnaire.getResourceMetadata().getResolutionPathInfo();
         final CSVString csv = questionnaire.getResourceResolver().resolve(csvPath).adaptTo(CSVString.class);
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HHmm");
         response.addHeader("Content-disposition", "attachment; filename=" + questionnaire.getName()
-            + "_" + dateFormat.format(new Date()) + ".csv");
+            + "_" + DATE_FORMAT.format(ZonedDateTime.now()) + ".csv");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(csv.toString());
     }

@@ -18,8 +18,7 @@ package io.uhndata.cards.statistics;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -63,6 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * A servlet for querying Statistics that returns a JSON object containing values for the x and y axes.
@@ -153,8 +153,7 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
 
             String xLabel = question.getProperty("text").getString();
             String yLabel = correctSubjectType.getProperty("label").getString();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            String date = simpleDateFormat.format(new Date());
+            String date = DateUtils.toString(Calendar.getInstance());
 
             // Add inputs and time generated to the output JSON
             JsonObjectBuilder builder = Json.createObjectBuilder();
