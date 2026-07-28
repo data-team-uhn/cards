@@ -25,10 +25,9 @@
     <version>0.9.41-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards</artifactId>
-  <packaging>slingosgifeature</packaging>
-  <name>CARDS standalone distribution</name>
-  <description>The ready to use CARDS distribution.</description>
+  <artifactId>cards-distribution-parent</artifactId>
+  <name>CARDS - Distribution</name>
+  <packaging>pom</packaging>
 
   <properties>
     <sling.feature.launcher.version>1.3.6</sling.feature.launcher.version>
@@ -36,47 +35,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingfeature-maven-plugin</artifactId>
-        <configuration>
-          <aggregates>
-            <aggregate>
-              <classifier>core_tar</classifier>
-              <filesInclude>*.json</filesInclude>
-              <filesInclude>oak/*.json</filesInclude>
-              <filesInclude>oak/persistence/oak_persistence_sns.json</filesInclude>
-              <filesInclude>core/*.json</filesInclude>
-              <title>CARDS With Oak Segment NS Persistence</title>
-            </aggregate>
-            <aggregate>
-              <classifier>core_mongo</classifier>
-              <filesInclude>*.json</filesInclude>
-              <filesInclude>oak/*.json</filesInclude>
-              <filesInclude>oak/persistence/oak_persistence_mongods.json</filesInclude>
-              <filesInclude>core/*.json</filesInclude>
-              <title>CARDS With Oak Document NS Mongo Persistence</title>
-            </aggregate>
-          </aggregates>
-          <scans>
-            <scan>
-              <includeClassifier>core_tar</includeClassifier>
-              <includeClassifier>core_mongo</includeClassifier>
-            </scan>
-          </scans>
-        </configuration>
-        <executions>
-          <execution>
-            <id>aggregate-features</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>aggregate-features</goal>
-              <goal>analyse-features</goal>
-              <goal>attach-features</goal>
-            </goals>
-          </execution>
-         </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
@@ -109,6 +67,10 @@
     </plugins>
   </build>
 
+  <modules>
+    <module>slingfeature</module>
+  </modules>
+
   <profiles>
     <profile>
       <!-- If Docker is available, also build a Docker image -->
@@ -116,89 +78,9 @@
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <!-- Harvest all the reactor's feature files and prepare the artifacts and
-                  metadata layers of the image, right after the aggregates are built -->
-                <id>prepare-docker-context</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>bash</executable>
-                  <workingDirectory>${project.basedir}</workingDirectory>
-                  <commandlineArgs>prepare_context.sh harvest ${project.version}</commandlineArgs>
-                </configuration>
-              </execution>
-              <execution>
-                <!-- Copy the project artifact repository into the image context, after the
-                  current build's artifacts were deployed to it by the local-deploy step -->
-                <id>copy-mvnrepo</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>bash</executable>
-                  <workingDirectory>${project.basedir}</workingDirectory>
-                  <commandlineArgs>prepare_context.sh mvnrepo ${project.version}</commandlineArgs>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>io.fabric8</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>build</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>build</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <!-- Fills the image's artifact repository with every artifact referenced by any feature
-        built by the reactor, making the image fully self-contained. -->
-      <id>production</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.sling</groupId>
-            <artifactId>slingfeature-maven-plugin</artifactId>
-            <configuration>
-              <generatedFeatures>${project.build.directory}/generated-features</generatedFeatures>
-              <repositories>
-                <repository>
-                  <repositoryDir>context/artifacts</repositoryDir>
-                  <filesInclude>**/*.json</filesInclude>
-                </repository>
-              </repositories>
-            </configuration>
-            <executions>
-              <execution>
-                <id>self-contained-repository</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>repository</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
+      <modules>
+        <module>docker</module>
+      </modules>
     </profile>
   </profiles>
 </project>

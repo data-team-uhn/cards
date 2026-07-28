@@ -1,8 +1,9 @@
 # CARDS distribution and Docker image
 
-This module aggregates all the features making up the CARDS platform into the two deployable
-feature models (`core_tar` for the TAR segment store, `core_mongo` for MongoDB persistence),
-and, with `-Pdocker`, builds the `cards/cards` Docker image.
+The `slingfeature` submodule aggregates all the features making up the CARDS platform into
+the two deployable feature models (`core_tar` for the TAR segment store, `core_mongo` for
+MongoDB persistence), and, with `-Pdocker`, the `docker` submodule builds the `cards/cards`
+Docker image.
 
 One image definition serves two flavors, differing only in how much of the artifact
 repository is baked in:

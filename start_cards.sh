@@ -78,7 +78,7 @@ function handle_missing_mailcap_fail() {
   echo -e "${TERMINAL_RED}********************************************************************************${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}*                                                                              *${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}*   The file ~/.mailcap is missing. Exiting.                                   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*   You can create ~/.mailcap by running: cp distribution/mailcap ~/.mailcap   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*   You can create ~/.mailcap by running: cp distribution/docker/mailcap ~/.mailcap   *${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}*                                                                              *${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}********************************************************************************${TERMINAL_NOCOLOR}"
   exit -1
@@ -387,12 +387,12 @@ do
     do
       # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
       PROJECT="cards4${PROJECT#cards4}"
-      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${PROJECT_VERSION}/slingosgifeature,$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${PROJECT_VERSION}/slingosgifeature,$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/docker/get_project_dependency_features.py distribution/docker/sling-features.json)
       TEMPDEPDIR=$(mktemp -d)
       mvn --quiet --non-recursive dependency:copy -Dartifact=io.uhndata.cards:${PROJECT#cards4}-docker-packaging:${PROJECT_VERSION}:dependencies -DoutputDirectory=${TEMPDEPDIR} 2>&1 > /dev/null
       if [[ -f ${TEMPDEPDIR}/${PROJECT#cards4}-docker-packaging-${PROJECT_VERSION}.dependencies ]]
       then
-        ARGS[$i]=${ARGS[$i]%,},$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py ${TEMPDEPDIR}/*.dependencies)
+        ARGS[$i]=${ARGS[$i]%,},$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/docker/get_project_dependency_features.py ${TEMPDEPDIR}/*.dependencies)
       fi
       rm -rf ${TEMPDEPDIR}
       PROJECT_SPECIFIED=true
@@ -405,7 +405,7 @@ if [ $PROJECT_SPECIFIED = false ]
 then
   ARGS[$ARGS_LENGTH]=-f
   ARGS_LENGTH=${ARGS_LENGTH}+1
-  ARGS[$ARGS_LENGTH]=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME="" PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+  ARGS[$ARGS_LENGTH]=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME="" PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/docker/get_project_dependency_features.py distribution/docker/sling-features.json)
   ARGS_LENGTH=${ARGS_LENGTH}+1
 fi
 
@@ -423,7 +423,7 @@ then
   then
     handle_missing_mailcap_fail
   fi
-  diff -q ~/.mailcap distribution/mailcap || warn_different_mailcap
+  diff -q ~/.mailcap distribution/docker/mailcap || warn_different_mailcap
 fi
 
 if [ $SAML_IN_USE = true ]
