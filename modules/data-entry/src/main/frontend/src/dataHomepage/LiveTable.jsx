@@ -90,7 +90,9 @@ function LiveTable(props) {
       "fetchError": false,
     }
   );
-  // Ref for the in-flight request number so async callbacks (handleResponse) see the correct value
+  // The number of the most recently issued request, so async callbacks (handleResponse) see the
+  // correct value. It must keep increasing for the lifetime of the table: handleResponse identifies
+  // superseded responses by their number, so reusing one would let a stale response through.
   const requestNumberRef = useRef(-1);
   // The base URL to fetch from.
   // This can either be a custom URL provided in props,
@@ -116,7 +118,8 @@ function LiveTable(props) {
     if (response.status == 404) {
       err = "Access to data is pending the approval of your account";
     }
-    setFetchStatus(Object.assign({}, fetchStatus, {
+    setFetchStatus(oldStatus => ({
+      ...oldStatus,
       "currentFetch": false,
       "fetchError": err,
     }));
@@ -128,7 +131,7 @@ function LiveTable(props) {
       // TODO: abort previous request
     }
 
-    const nextRequestNumber = fetchStatus.currentRequestNumber + 1;
+    const nextRequestNumber = requestNumberRef.current + 1;
     requestNumberRef.current = nextRequestNumber;
 
     let url = new URL(urlBase);
@@ -151,7 +154,8 @@ function LiveTable(props) {
       filters["notempties"].forEach((value) => url.searchParams.append("filternotempty", value));
     }
     let currentFetch = fetchWithReLogin(globalLoginDisplay, url);
-    setFetchStatus(Object.assign({}, fetchStatus, {
+    setFetchStatus(oldStatus => ({
+      ...oldStatus,
       "currentRequestNumber": nextRequestNumber,
       "currentFetch": currentFetch,
       "fetchError": false,
@@ -183,8 +187,11 @@ function LiveTable(props) {
     );
   };
 
+  // Rewinding the trigger to -1 makes the initialization effect fetch the data again. The request
+  // number itself keeps increasing, so responses to requests issued before the refresh are dropped.
   let refresh = () => {
-    setFetchStatus(Object.assign({}, fetchStatus, {
+    setFetchStatus(oldStatus => ({
+      ...oldStatus,
       "currentRequestNumber": -1,
     }));
   }
