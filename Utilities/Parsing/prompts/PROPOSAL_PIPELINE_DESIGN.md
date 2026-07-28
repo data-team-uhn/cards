@@ -45,10 +45,13 @@ parse + clean + outline (PDF bookmarks / printed TOC) ─> Stage 0  size gate + 
 
 ## Stage 0 — Chunking (code only, the cheap way)
 
-Done by `chunker.py` (the single splitting module), invoked two ways:
-`docling_parser.py --chunk` (CLI, per file, same-process), and the daemon's `POST /chunk`
-(`chunk_file(file_path)` in the same module, taking one exact already-parsed `.md`;
-also its CLI: `python chunker.py <file_path>`).
+Done by `chunker.py` (the single splitting module). The production entry point is
+`chunker.build_chunk_tree()` — **pure**: it takes the Markdown plus any known outline records and
+**returns** the tree (outline + catalog + chunk texts) instead of writing it. The daemon calls it
+inside `POST /parse`, so the whole tree comes back to Java in the same reply as the Markdown and the
+daemon never touches Java's filesystem. `chunker.write_chunk_files()` is the thin writer over the
+same function, used by the CLI (`docling_parser.py --chunk`, `python chunker.py <file>`) and by the
+legacy path-based `POST /chunk` — both of which need a shared filesystem.
 **No LLM, no ML tokenizer, no Docling re-convert** — pure regex/string work over the
 already-produced Markdown (milliseconds). The heavyweight chat-chunking path
 (HybridChunker + HuggingFace Qwen tokenizer + document re-conversion) is deleted, and
@@ -62,6 +65,11 @@ the only parse artifacts.
 - `chunked: false` — document cleaned/marked but **left unchunked**: `Chunks/` holds only
   `outline.json` (`toc: []`, no `catalog.json`, no `Chunk-*.md`). Downstream
   stages send the whole `.md` (synthetic `chunk001` via `WholeDocument`).
+  `unchunkedReason` records **why**, and the two values are not interchangeable:
+  `"below_min_structure_tokens"` (Python, deliberate — small enough to send whole) versus
+  `"chunker_unavailable"` (Java, written by `ParsedMarkdownStore.saveUnchunkedOutline` when the
+  pure-Java PDFBox/POI fallback produced the Markdown and no chunker ran at all). Only the first is
+  safe to send whole — see [Open items](#open-items).
 - `chunked: true` — full split + slim catalog as below.
 
 Rules (when `chunked: true`):
@@ -154,6 +162,7 @@ everything Stage 0.5 needs for input selection.
   "fileId": "protocol.pdf",
   "tokens": 21184,           // len(md)//4
   "chunked": true,           // size-gate outcome; false → whole-document path, no catalog
+  // "unchunkedReason": "below_min_structure_tokens" | "chunker_unavailable"   (only when chunked=false)
   "outline_source": "pdf-bookmarks",  // who produced the outline: pdf-bookmarks | md-toc | none
   "toc": ["1.0 Introduction", "1.1 Background", "…"],  // outline record titles; [] when none
   "tocStartLine": 42,        // printed-TOC path only — cleaned TOC block line range in the .md
@@ -162,10 +171,12 @@ everything Stage 0.5 needs for input selection.
 }
 ```
 
-The full outline **records** (`{title, level, page, verified}`) live only in the sibling
-`bookmarks.json` — they are not duplicated into `outline.json`. The values above are what
-`find_toc_and_appendix` records in the sidecar; `write_chunk_files` **preserves** them into
-`Chunks/outline.json` (adding `fileId` / `chunked`) rather than re-deriving `toc`.
+The full outline **records** (`{title, level, page, verified}`) are never duplicated into
+`outline.json` — only the derived `toc` titles are. On the `/parse` path they exist purely in memory
+for the duration of the call. On the CLI path they are written to a `bookmarks.json` sidecar beside
+the `.md` and **deleted again once chunking finishes**: leaving one behind was a real bug, because a
+later run read it back as authoritative PDF bookmarks and reported the *previous* document's
+outline.
 
 `tocStartLine`/`tocEndLine` are recorded only on the printed-TOC path (omitted on the
 bookmark path, and when no TOC is present — never nulled). `backmatterLine` is omitted when
@@ -180,18 +191,23 @@ available, otherwise the printed TOC** — one shape either way, owned by `bookm
 `toc_and_appendix_detection.py`. There are **no** `<!-- Reference -->` / TOC marker lines in
 the Markdown; the outline lives only in JSON.
 
-Pre-chunk pipeline (`chunker._prepare_markdown`, run for every chunking entry point):
+Pre-chunk pipeline (inside `chunker.build_chunk_tree`, run for every chunking entry point):
 
 1. **`markdown_cleanup.clean_markdown(md)`** — strips garbage / collapses blanks (idempotent).
-2. **`chunker._extract_and_save_bookmarks(md, output_file)`** — when a source PDF sits beside
-   the `.md` (`<stem>.pdf`, co-located by the Java parse pipeline via
-   `ParsedMarkdownStore.saveArtifact` — native PDFs **and** DOCX→PDF renditions), extract its
-   bookmark outline (`pdf_bookmarks.extract_outline`, pypdf), verify/correct each record's page
-   against the `<!-- page: N -->` markers (`bookmarks.verify_bookmarks` — searches page N then
-   N±1, rewriting an off-by-one page or flagging `verified:false`), and write the records to a
-   `bookmarks.json` sidecar. A missing / bookmark-less PDF leaves no sidecar.
-3. **`toc_and_appendix_detection.find_toc_and_appendix(md, outline_path)`** — the fork
-   (size-gated: below `min_structure_tokens` the document is returned unchanged, no outline):
+2. **Outline records are supplied by the caller**, not discovered from disk. On the `/parse` path the
+   daemon extracts them from the **uploaded PDF itself**
+   (`pdf_bookmarks.extract_verified_outline`, pypdf) — no sibling file needed, which is what makes
+   the container work. On the CLI path `chunker._sibling_pdf_records` reads `<stem>.pdf` beside the
+   `.md` (native PDFs **and** DOCX→PDF renditions co-located by
+   `ParsedMarkdownStore.saveArtifact`), falling back to an existing `bookmarks.json`. Either way
+   each record's page is verified against the `<!-- page: N -->` markers
+   (`bookmarks.verify_bookmarks` — searches page N then N±1, rewriting an off-by-one page or
+   flagging `verified:false`). No PDF, or one without bookmarks, means no records.
+3. **`toc_and_appendix_detection.derive_outline(md, records=…)`** — the fork, **pure**: it takes the
+   records as an argument and returns `(document, outline_fields, records)` instead of reading
+   `bookmarks.json` and writing `outline.json`. (`find_toc_and_appendix` is the disk-writing wrapper
+   around it, kept for the CLI.) Size-gated: below `min_structure_tokens` the document is returned
+   unchanged, with no outline:
    - **`bookmarks.json` present** (real PDF bookmarks from step 2) → authoritative outline;
      the printed TOC is left untouched;
    - **no bookmarks** → `mark_and_cleanup_toc` finds + cleans the printed TOC in place and
@@ -199,21 +215,28 @@ Pre-chunk pipeline (`chunker._prepare_markdown`, run for every chunking entry po
      (`_entry_to_record`: title, page-from-entry, level-from-numbering-depth), verified, and
      written to `bookmarks.json`;
    - either way it records `toc` (record titles), `backmatterLine` (first Reference/Appendix
-     record resolved to a body line — `backmatter_from_records`), and `tokens`.
-4. **`chunker.write_chunk_files()`** — uses the records (`bookmarks.json`) to drive
-   record-based sub-chunk cuts (`_record_cut_keys` → `_subchunk_blocks`), and **preserves**
-   the sidecar's outline (`toc`, `outline_source`, `backmatterLine`, TOC range) into
-   `Chunks/outline.json` — adding only `fileId` / `chunked`, never re-deriving `toc` and never
-   copying the records in — alongside `catalog.json` + `Chunk-*.md`. The `outline.json` sidecar
-   beside the `.md` is removed after folding; `bookmarks.json` persists (regenerated on
-   reconvert). `clear_prior_outputs` (CLI reconvert) first deletes any stale `outline.json` /
-   `bookmarks.json` / `Chunks/` tree.
+     record resolved to a body line — `backmatter_from_records`, which is given the printed-TOC line
+     range to exclude; without it a page-less TOC entry matches the same text as the body heading it
+     points at and the backmatter split is silently lost), and `tokens`.
+4. **Split + assemble** — the records drive record-based sub-chunk cuts (`_record_cut_keys` →
+   `_subchunk_blocks`); the outline fields carry through into the returned tree, which adds only
+   `fileId` / `chunked` / `unchunkedReason` and never re-derives `toc` nor copies the records in.
+   `write_chunk_files` then writes that tree to `Chunks/` (CLI path), or the daemon returns it
+   (`/parse`). Both sidecars beside the `.md` (`outline.json`, `bookmarks.json`) are deleted once
+   done; `clear_prior_outputs` (CLI reconvert) also drops a stale `Chunks/` tree up front.
 
-**Daemon path**: `POST /convert` returns markdown only — Java writes `<stem>.md` and
-co-locates `<stem>.pdf`. `POST /chunk` (`chunk_file`) then runs the whole pre-chunk pipeline
-above against the `.md` + its sibling PDF, so the outline is derived **uniformly at chunk
-time** regardless of which generator produced the markdown (Docling daemon, Docling CLI, or
-the Java PDFBox/POI fallback).
+**Daemon path**: one call. `POST /parse` takes the document bytes and returns
+`{markdown, chunked, outline, catalog, chunks[], logs}` — the Markdown *and* the whole tree — gzipped
+(~5x on a real protocol). Java writes `<stem>.md`, writes `Chunks/` via
+`ParsedMarkdownStore.saveChunkTree`, and co-locates `<stem>.pdf`. Python writes nothing, so no
+filesystem is shared and the daemon runs in its own container.
+
+The one asymmetry: **the Java PDFBox/POI fallback cannot chunk** — that logic exists only in Python.
+It writes `outline.json` with `chunked: false` and `unchunkedReason: "chunker_unavailable"` rather
+than leaving no `Chunks/` at all, so the state is explicit instead of inferred from a missing
+directory. There is no local-Python CLI fallback for converting or chunking any more: it needed
+Docling installed next to the JVM and passed filesystem paths, neither of which survives a container
+boundary.
 
 `tag_basis`/`tag_confidence`/`uncertain`/`excluded`/`exclusion_reason` are stamped by
 code from LLM output, never asked of the model directly as catalog fields:
@@ -274,6 +297,11 @@ The chunker's recorded `chunked` in `outline.json` flag is the routing decision;
 The document head is **never** sent. A chunked document with neither a TOC nor a catalog
 assembles no INPUT, so the gate fails open (treated as a protocol) rather than sending a
 raw prefix of the document.
+
+**Caveat:** case 1 assumes `chunked: false` means *small*. That holds for
+`unchunkedReason: "below_min_structure_tokens"`, but **not** for `"chunker_unavailable"`, where a
+large document simply never reached a chunker — sending it whole would overflow the context. No
+stage inspects the field yet; see [Open items](#open-items).
 
 Whenever the catalog is non-empty **and** the selected INPUT is not already the catalog
 outline (case 3), a separate `## CATALOG` block of `chunkNNN: heading` lines is appended
@@ -722,3 +750,14 @@ claim; say "not stated in the proposal" when the text does not answer; injection
    summary+tags+exclude and the chat router/answer path are still to be wired.
 8. **Stage 1.2 parallelism** — batches run sequentially today; parallelizing
    independent extract batches (with append-only tracker) remains an optimization.
+9. **Sequential windowing when there is no chunk tree (deferred past MVP)** — a document with
+   `unchunkedReason: "chunker_unavailable"` has no catalog and may be far too large to send whole.
+   It is a rare case: it needs Docling to have failed outright, or the daemon to be unreachable, and
+   the document to be large. Intended behaviour: **every** LLM phase splits such a document into
+   consecutive pieces sized to the active LLM configuration's max chunk size and sends them in
+   sequence until all answers for that phase are obtained. Notes for whoever builds it — it belongs
+   in the shared send path rather than in each phase; the window size must come from live LLM
+   settings so there is still one definition of document size limits; and windows are not chunks, so
+   nothing should be handed a synthetic `catalog.json`. Until it exists, treat `chunker_unavailable`
+   on a large document as an **alerting condition, not a silent state**. Also recorded in
+   `PARSING_PIPELINE.md`.

@@ -17,6 +17,7 @@
 package io.uhndata.cards.forms.internal.parse;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,9 +27,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonWriter;
+import jakarta.json.JsonWriterFactory;
+import jakarta.json.stream.JsonGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +55,13 @@ public final class ParsedMarkdownStore
 {
     /** Name of the aggregated markdown file written into each answer's subfolder. */
     public static final String AGGREGATED_FILE_NAME = "aggregated.md";
+
+    /**
+     * {@code unchunkedReason} recorded when the chunker never ran, because the Markdown came from a pure-Java
+     * fallback generator rather than from Docling. Distinct from a document that is merely below the structure
+     * threshold, which is also unchunked but deliberately so.
+     */
+    public static final String UNCHUNKED_CHUNKER_UNAVAILABLE = "chunker_unavailable";
 
     /** Name of the subfolder, within an answer's subfolder, that holds the markdown chunks. */
     public static final String CHUNKS_SUBDIR = "chunks";
@@ -147,6 +161,119 @@ public final class ParsedMarkdownStore
     public static Path resolveBaseOutputDir()
     {
         return baseOutputDir().toAbsolutePath();
+    }
+
+    /**
+     * Persist a chunk tree the daemon built and returned, rather than wrote itself.
+     *
+     * <p>Used with {@link DoclingParseClient}: because the daemon returns the tree instead of writing it, it needs
+     * no access to this filesystem and can run in its own container. Writing stays here, which also keeps one
+     * definition of the output layout — the Markdown itself may have come from the pure-Java fallback generators
+     * rather than from Docling.</p>
+     *
+     * <p>The existing tree is replaced wholesale, so a re-parse cannot leave chunk files from a previous, longer
+     * document behind. A failure never throws — it is logged and swallowed, like the rest of this class.</p>
+     *
+     * @param outputSubfolder subfolder to write into (typically the owning answer's UUID)
+     * @param outline the outline JSON to write as {@code outline.json}; skipped when {@code null}
+     * @param catalog the catalog JSON to write as {@code catalog.json}; skipped when {@code null}, which is the
+     *            case for a document left unchunked
+     * @param chunks the chunk files to write, each named by {@link DoclingParseClient.ChunkFile#getFile()}
+     * @return {@code true} when the tree was written
+     */
+    public static boolean saveChunkTree(final String outputSubfolder, final JsonObject outline,
+        final JsonObject catalog, final List<DoclingParseClient.ChunkFile> chunks)
+    {
+        try {
+            final Path answerDir = resolveOutputDir(outputSubfolder);
+            final Path chunkDir = answerDir.resolve(CHUNK_TREE_SUBDIR);
+            clearChunkTree(answerDir);
+            Files.createDirectories(chunkDir);
+            if (outline != null) {
+                Files.writeString(chunkDir.resolve("outline.json"), prettyJson(outline), StandardCharsets.UTF_8);
+            }
+            if (catalog != null) {
+                Files.writeString(chunkDir.resolve("catalog.json"), prettyJson(catalog), StandardCharsets.UTF_8);
+            }
+            for (DoclingParseClient.ChunkFile chunk : chunks) {
+                final String name = chunk.getFile();
+                if (StringUtils.isBlank(name) || !safeChunkName(name)) {
+                    LOGGER.warn("Skipping chunk with an unusable name '{}'", name);
+                    continue;
+                }
+                Files.writeString(chunkDir.resolve(name), chunk.getText() + "\n", StandardCharsets.UTF_8);
+            }
+            LOGGER.info("Saved chunk tree ({} file(s)) to {}", chunks.size(), chunkDir);
+            return true;
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("Could not save chunk tree for '{}': {}", outputSubfolder, e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Write an outline recording that a document was parsed but never chunked, in the same shape the Python
+     * chunker writes.
+     *
+     * <p>Chunking exists only in Python, so a document produced by the pure-Java fallback generators has no
+     * chunk tree. Leaving no {@value #CHUNK_TREE_SUBDIR} folder at all would be ambiguous: a document that is
+     * simply too small to chunk also ends up unchunked, but that is a legitimate "send it whole" state, whereas
+     * this one means the chunker never ran. Writing an outline with an explicit reason lets downstream tell the
+     * two apart instead of inferring it from a missing directory.</p>
+     *
+     * @param outputSubfolder subfolder to write into (typically the owning answer's UUID)
+     * @param fileName the source file name, recorded as {@code fileId}
+     * @param markdown the parsed Markdown, used for the token estimate
+     * @param reason why the document is unchunked; see {@link #UNCHUNKED_CHUNKER_UNAVAILABLE}
+     * @return {@code true} when the outline was written
+     */
+    public static boolean saveUnchunkedOutline(final String outputSubfolder, final String fileName,
+        final String markdown, final String reason)
+    {
+        // Same token heuristic as markdown_markers.count_tokens, so the figure means the same thing on both
+        // sides of the pipeline.
+        final int tokens = markdown == null ? 0 : markdown.length() / 4;
+        final JsonObject outline = Json.createObjectBuilder()
+            .add("fileId", StringUtils.defaultString(fileName))
+            .add("tokens", tokens)
+            .add("chunked", false)
+            .add("unchunkedReason", reason)
+            .add("outline_source", "none")
+            .add("toc", Json.createArrayBuilder().build())
+            .build();
+        return saveChunkTree(outputSubfolder, outline, null, List.of());
+    }
+
+    /**
+     * Render JSON indented rather than on one line, matching what the Python writer produces, so the chunk tree
+     * stays readable when someone opens it to check a parse.
+     *
+     * @param json the object to render
+     * @return the indented JSON text, newline-terminated
+     */
+    private static String prettyJson(final JsonObject json)
+    {
+        final StringWriter out = new StringWriter();
+        final JsonWriterFactory factory =
+            Json.createWriterFactory(Map.of(JsonGenerator.PRETTY_PRINTING, true));
+        try (JsonWriter writer = factory.createWriter(out)) {
+            writer.writeObject(json);
+        }
+        return out.toString().strip() + "\n";
+    }
+
+    /**
+     * Whether a daemon-supplied chunk file name is safe to resolve against the chunk directory. The name comes
+     * over HTTP, so it is treated as untrusted: anything with a path separator or a parent reference is refused
+     * rather than allowed to escape the directory.
+     *
+     * @param name the candidate file name
+     * @return {@code true} when the name is a plain {@code .md} file name
+     */
+    private static boolean safeChunkName(final String name)
+    {
+        return name.endsWith(".md") && name.indexOf('/') < 0 && name.indexOf('\\') < 0
+            && !name.contains("..") && Paths.get(name).getNameCount() == 1;
     }
 
     /**

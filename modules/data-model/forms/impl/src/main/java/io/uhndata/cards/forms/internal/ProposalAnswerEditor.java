@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.internal.parse.DoclingChatChunker;
+import io.uhndata.cards.forms.internal.parse.SimpleDocumentParser;
 import io.uhndata.cards.forms.internal.parse.DocumentParseException;
 import io.uhndata.cards.forms.internal.parse.FileParser;
 import io.uhndata.cards.forms.internal.parse.FileParserFactory;
@@ -183,7 +184,14 @@ public class ProposalAnswerEditor extends DefaultEditor
         for (final String fileName : removed) {
             ParsedMarkdownStore.deleteParsedFile(answerFolder, fileName);
         }
-        applyParseResults(answerFolder, parseFiles(toParse, answerFolder));
+        // Chunking happens inside the parse call now, but the threshold comes from the LLM configuration, which
+        // only this editor can resolve. Hand it to the parsers for the duration of this (same-thread) parse.
+        SimpleDocumentParser.setChunkingThreshold(wholeDocumentTokenLimit());
+        try {
+            applyParseResults(answerFolder, parseFiles(toParse, answerFolder));
+        } finally {
+            SimpleDocumentParser.clearChunkingThreshold();
+        }
     }
 
     private void applyParseResults(final String answerFolder, final List<String> parseErrors)
@@ -193,9 +201,11 @@ public class ProposalAnswerEditor extends DefaultEditor
             this.currentNodeBuilder.setProperty(NOTE_PROPERTY, String.join("\n\n", parseErrors), Type.STRING);
         }
         if (parseErrors.isEmpty()) {
-            // All per-file markdown is written, so kick off the chunker. This runs asynchronously.
-            DoclingChatChunker.requestChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder),
-                wholeDocumentTokenLimit());
+            // The chunk tree already arrived with the Markdown from the daemon's /parse call and was written
+            // by SimpleDocumentParser, so there is no separate chunking request to make. All that is left is
+            // to advance the generation, which is what downstream summarization uses to notice that a newer
+            // parse has superseded its work.
+            DoclingChatChunker.markChunksWritten(ParsedMarkdownStore.resolveAnswerDir(answerFolder));
         } else {
             DoclingChatChunker.invalidateChunking(ParsedMarkdownStore.resolveAnswerDir(answerFolder));
             ParsedMarkdownStore.clearChunks(answerFolder);

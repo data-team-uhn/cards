@@ -713,36 +713,70 @@ def find_toc_and_appendix(
     @return: the document, with the printed TOC cleaned in place only on the no-bookmark path
     """
     bookmarks_path = outline_path.with_name(BOOKMARKS_NAME) if outline_path is not None else None
-    records = read_bookmarks(bookmarks_path)
+    result, updates, records = derive_outline(
+        md,
+        records=read_bookmarks(bookmarks_path),
+        min_structure_tokens=min_structure_tokens,
+    )
+    if not updates:
+        # Size-gated out: nothing detected, nothing to record.
+        return result
+    if records and bookmarks_path is not None and updates.get("outline_source") == "md-toc":
+        write_bookmarks(bookmarks_path, records)
+    write_outline(outline_path, updates)
+    return result
+
+
+def derive_outline(
+    md: str,
+    *,
+    records: list[dict] | None = None,
+    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
+) -> tuple[str, dict, list[dict]]:
+    """Derive a document's outline without touching the filesystem.
+
+    The pure core of :func:`find_toc_and_appendix`: it takes any already-known outline records
+    (real PDF bookmarks) as an argument instead of reading ``bookmarks.json``, and returns the
+    outline fields instead of writing ``outline.json``. This is what lets the daemon serve a
+    document it was handed over HTTP, with no shared filesystem — see ``docling_daemon``'s
+    ``/parse``.
+
+    @param md: the full assembled Markdown document
+    @param records: outline records already known for the document (e.g. extracted from a PDF's
+        embedded bookmarks); when non-empty these are authoritative and the printed TOC is left
+        alone
+    @param min_structure_tokens: skip printed-TOC detection below this (no-records path only)
+    @return: ``(document, outline_fields, records)``. The document has its printed TOC cleaned
+        in place only on the no-records path. ``outline_fields`` is empty when the document was
+        gated out by size, in which case the document is returned unchanged.
+    """
+    known = list(records) if records else []
     updates: dict = {}
     toc_range: tuple[int, int] | None = None
 
-    if records:
+    if known:
         # Authoritative PDF bookmarks: record the outline regardless of size (cheap; the .md
         # is left untouched), skipping printed-TOC detection and cleanup entirely.
         result = md
         outline_source = "pdf-bookmarks"
     elif count_tokens(md) < min_structure_tokens:
         # Small document, no bookmarks: skip printed-TOC detection; it is sent whole later.
-        return md
+        return md, {}, []
     else:
         # Large document, no bookmarks: clean the printed TOC in place, harvest it to records.
         result, updates = _detect_toc(md)
         if "tocStartLine" in updates:
             toc_range = (updates["tocStartLine"], updates["tocEndLine"])
-        records = verify_bookmarks(_records_from_toc_strings(updates.get("toc", [])), result)
-        if records and bookmarks_path is not None:
-            write_bookmarks(bookmarks_path, records)
-        outline_source = "md-toc" if records else "none"
+        known = verify_bookmarks(_records_from_toc_strings(updates.get("toc", [])), result)
+        outline_source = "md-toc" if known else "none"
 
-    # One write for the whole outline: the fields below used to be spread over three
+    # One dict for the whole outline: these fields used to be spread over three
     # read-modify-write cycles of the same file, which wrote ``tokens`` twice with two
     # different values before the final one won.
     updates["tokens"] = count_tokens(result)
     updates["outline_source"] = outline_source
-    updates["toc"] = [record["title"] for record in records if record.get("title")]
-    backmatter_line = backmatter_from_records(result, records, toc_range=toc_range)
+    updates["toc"] = [record["title"] for record in known if record.get("title")]
+    backmatter_line = backmatter_from_records(result, known, toc_range=toc_range)
     if backmatter_line is not None:
         updates["backmatterLine"] = backmatter_line
-    write_outline(outline_path, updates)
-    return result
+    return result, updates, known
