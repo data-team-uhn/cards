@@ -237,21 +237,6 @@ def require_value(argv, i, name):
     return argv[i]
 
 
-def has_test_run_mode(argv):
-    """Check whether the launcher arguments request the `test` run mode."""
-    for i, arg in enumerate(argv):
-        if arg.startswith('-D') and len(arg) > 2:
-            prop = arg[2:]
-        elif arg == '-D' and i + 1 < len(argv):
-            prop = argv[i + 1]
-        else:
-            continue
-        key, _, value = prop.partition('=')
-        if key == 'sling.run.modes' and 'test' in value.split(','):
-            return True
-    return False
-
-
 def parse_args(argv, cards_version):
     options = {
         'bind_port': 8080,
@@ -261,7 +246,7 @@ def parse_args(argv, cards_version):
         'projects': [],
         'storage': 'tar',
         'debug': False,
-        'test': has_test_run_mode(argv),
+        'test': False,
         'saml': False,
         'cloud_iam_demo': False,
         'feature_args': [],
@@ -565,7 +550,6 @@ def main(argv):
         (ROOT / '.mvnrepo').as_uri(),
         (Path.home() / '.m2' / 'repository').as_uri(),
         'https://repo.maven.apache.org/maven2',
-        'https://repository.apache.org/content/groups/snapshots',
     ])
 
     error_log_time_origin = get_error_log_last_modified(data_dir)
