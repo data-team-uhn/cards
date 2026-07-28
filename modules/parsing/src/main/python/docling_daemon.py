@@ -18,7 +18,7 @@
 #
 
 """
-Long-running Docling worker daemon for CARDS.
+Long-running Docling worker daemon.
 
 Keeps a warm ProcessPoolExecutor (with loaded PDF models) alive across requests.
 Java calls this over HTTP instead of spawning docling_parser.py per file.
@@ -28,7 +28,7 @@ Endpoints:
     POST /convert  -> {"input_path": "/abs/path/file.pdf", "source_file": "orig.pdf"?}
                      -> {"markdown": "...", "logs": "..."}
     POST /chunk    -> {"file_path": "/abs/path/file.md"} -> {"status": "ok", "chunks": N, "logs": "..."}
-    POST /shutdown -> graceful stop (used when CARDS owns the daemon process)
+    POST /shutdown -> graceful stop (used when the caller owns the daemon process)
 """
 
 from __future__ import annotations
@@ -50,15 +50,20 @@ from typing import Any
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 
 from chunker import chunk_file
-from docling_batch_sizing import GB_PER_WORKER, calc_workers
+from docling_batch_sizing import GB_PER_WORKER, calc_workers, positive_int
 from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
 from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
+from markdown_markers import SUPPORTED_SUFFIXES
 
-SUPPORTED_SUFFIXES = (".pdf", ".docx")
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 18765
-DEFAULT_PARSE_OUTPUT_SUBDIR = "cards-parsed-markdown"
-PARSE_OUTPUT_DIR_ENV = "CARDS_PARSE_OUTPUT_DIR"
+DEFAULT_PARSE_OUTPUT_SUBDIR = "parsed-markdown"
+PARSE_OUTPUT_DIR_ENV = "PARSE_OUTPUT_DIR"
+
+# Cap on a request body. The endpoints only ever carry a small JSON object of paths, so
+# anything larger is a bug or an abusive client; without a cap the Content-Length header
+# alone dictates how much the daemon reads into memory.
+MAX_REQUEST_BYTES = 64 * 1024
 
 
 class DaemonState:
@@ -112,6 +117,8 @@ def _read_json_body(handler: BaseHTTPRequestHandler) -> dict[str, Any]:
     length = int(handler.headers.get("Content-Length", "0"))
     if length <= 0:
         return {}
+    if length > MAX_REQUEST_BYTES:
+        raise ValueError(f"request body too large ({length} > {MAX_REQUEST_BYTES} bytes)")
     raw = handler.rfile.read(length)
     parsed = json.loads(raw.decode("utf-8"))
     if not isinstance(parsed, dict):
@@ -120,6 +127,11 @@ def _read_json_body(handler: BaseHTTPRequestHandler) -> dict[str, Any]:
 
 
 def _is_under_root(path: Path, root: Path) -> bool:
+    """Whether ``path`` resolves to something inside ``root``.
+
+    Resolving first is what makes this a real containment check rather than a string test:
+    a symlink pointing out of ``root`` resolves to its target and fails.
+    """
     resolved = path.resolve()
     try:
         return resolved.is_relative_to(root)
@@ -137,16 +149,14 @@ def _resolve_parse_output_root(explicit: str | None) -> Path:
 
 
 def _is_allowed_path(path: Path) -> bool:
+    """Whether a ``/convert`` input path is acceptable: an existing PDF/DOCX that Java
+    staged under the system temp directory."""
     resolved = path.resolve()
     if not resolved.is_file():
         return False
     if resolved.suffix.lower() not in SUPPORTED_SUFFIXES:
         return False
-    temp_root = Path(tempfile.gettempdir()).resolve()
-    try:
-        return resolved.is_relative_to(temp_root)
-    except AttributeError:
-        return str(resolved).startswith(str(temp_root) + os.sep)
+    return _is_under_root(resolved, Path(tempfile.gettempdir()).resolve())
 
 
 def _is_allowed_chunk_file(path: Path) -> bool:
@@ -267,7 +277,7 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             file_path = Path(file_value)
             if not _is_allowed_chunk_file(file_path):
                 raise ValueError(
-                    "file_path must be a parsed .md file under the CARDS parse output directory"
+                    "file_path must be a parsed .md file under the parse output directory"
                 )
 
             kwargs: dict[str, Any] = {}
@@ -303,7 +313,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--host",
         default=DEFAULT_HOST,
-        help=f"bind address (default: {DEFAULT_HOST})",
+        help=(
+            f"bind address (default: {DEFAULT_HOST}). The endpoints are unauthenticated "
+            "and convert files from local paths, so binding anywhere but loopback exposes "
+            "them to the network"
+        ),
     )
     parser.add_argument(
         "--port",
@@ -313,7 +327,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--workers",
-        type=int,
+        type=positive_int,
         default=None,
         metavar="N",
         help=(
@@ -326,7 +340,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         metavar="DIR",
         help=(
-            "root directory for CARDS parse output (default: "
+            "root directory for parse output (default: "
             f"${PARSE_OUTPUT_DIR_ENV} or ./{DEFAULT_PARSE_OUTPUT_SUBDIR})"
         ),
     )

@@ -37,8 +37,10 @@ CLI mapping
     Everything else is auto-derived; no CLI flags.
 """
 
+import argparse
 import math
 import os
+
 import psutil
 
 # --- tuning constants ---------------------------------------------------------
@@ -122,13 +124,12 @@ PHYSICAL_CORE_COUNT = read_physical_core_count()
 TOTAL_RAM_GB = read_total_ram_gb()
 AVAILABLE_RAM_GB = read_available_ram_gb()
 
-# Calculate RAM budget and worker cap from RAM at startup.
 # RAM_BUDGET_GB       — safe RAM for model loads.
-# MAX_WORKERS_BY_CPU  — worker cap from CPU.
+# MAX_WORKERS_BY_RAM  — worker cap from that RAM budget.
 RAM_BUDGET_GB = calc_ram_budget_gb(TOTAL_RAM_GB, AVAILABLE_RAM_GB)
 MAX_WORKERS_BY_RAM = calc_max_workers_by_ram(RAM_BUDGET_GB)
 
-# worker cap from RAM
+# MAX_WORKERS_BY_CPU  — worker cap from CPU topology.
 MAX_WORKERS_BY_CPU = LOGICAL_CORE_COUNT
 DEFAULT_MAX_WORKERS = max(1, min(MAX_WORKERS_BY_CPU, MAX_WORKERS_BY_RAM))
 
@@ -137,12 +138,33 @@ DEFAULT_MAX_WORKERS = max(1, min(MAX_WORKERS_BY_CPU, MAX_WORKERS_BY_RAM))
 # Per PDF parse — call before each conversion
 # =============================================================================
 
+def positive_int(value: str) -> int:
+    """An ``argparse`` type for options that must be 1 or greater (``--workers``,
+    ``--batch-pages``), so a bad value is rejected with a clear message up front instead
+    of failing deep inside ``ProcessPoolExecutor`` or ``range``.
+
+    @param value: the raw command-line string
+    @return: the parsed integer
+    @raise argparse.ArgumentTypeError: when ``value`` is not an integer of 1 or more
+    """
+    try:
+        parsed = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected an integer, got {value!r}") from None
+    if parsed < 1:
+        raise argparse.ArgumentTypeError(f"must be 1 or greater, got {parsed}")
+    return parsed
+
+
 def calc_workers(workers_override: int | None = None) -> int:
     """
     Resolve the number of parallel worker processes. CLI: --workers
+
+    Clamped to at least 1: ``ProcessPoolExecutor(max_workers=0)`` raises, so a bad
+    override must not reach it even if it bypassed :func:`positive_int`.
     """
     if workers_override is not None:
-        return workers_override
+        return max(1, workers_override)
     return DEFAULT_MAX_WORKERS
 
 
@@ -153,9 +175,11 @@ def calc_batch_pages(
 ) -> int:
     """
     Resolve pages processed per worker chunk. CLI: --batch-pages
+
+    Clamped to at least 1: this becomes a ``range`` step, and a step of 0 raises.
     """
     if batch_pages_override is not None:
-        return batch_pages_override
+        return max(1, batch_pages_override)
     if total_pages <= 0:
         return 1
     target_chunks = max(workers * CHUNKS_PER_WORKER_TARGET, workers)
@@ -191,9 +215,14 @@ def print_parallelism_summary(
     active_workers: int,
     workers_override: bool,
     batch_pages_override: bool,
+    log=print,
 ) -> None:
     """
-    Print startup snapshot and resolved per-parse parallelism values on start of each PDF conversion.
+    Report startup snapshot and resolved per-parse parallelism values on start of each PDF conversion.
+
+    @param log: line sink; defaults to ``print``. The daemon passes its per-request
+        collector, so the summary reaches the caller's ``logs`` instead of only the
+        daemon's own stdout.
     """
     ram_line = (
         f"{TOTAL_RAM_GB:.0f} GB total, {AVAILABLE_RAM_GB:.1f} GB available "
@@ -203,17 +232,13 @@ def print_parallelism_summary(
     workers_source = "manual" if workers_override else "auto"
     batch_source = "manual" if batch_pages_override else "auto"
 
-    print("=== Parallelism tuning ===")
-    print(
-        f"CPU: {PHYSICAL_CORE_COUNT} physical / {LOGICAL_CORE_COUNT} logical cores"
-    )
-    print(f"RAM: {ram_line}")
-    print(
+    log("=== Parallelism tuning ===")
+    log(f"CPU: {PHYSICAL_CORE_COUNT} physical / {LOGICAL_CORE_COUNT} logical cores")
+    log(f"RAM: {ram_line}")
+    log(
         f"Workers: {workers} ({workers_source}; "
         f"cpu cap={MAX_WORKERS_BY_CPU}, ram cap={MAX_WORKERS_BY_RAM})"
     )
-    print(
-        f"Batch pages: {batch_pages} ({batch_source}; max={MAX_BATCH_PAGES})"
-    )
-    print(f"Chunks: {chunk_count} for {total_pages} pages")
-    print(f"Active workers: {active_workers}")
+    log(f"Batch pages: {batch_pages} ({batch_source}; max={MAX_BATCH_PAGES})")
+    log(f"Chunks: {chunk_count} for {total_pages} pages")
+    log(f"Active workers: {active_workers}")

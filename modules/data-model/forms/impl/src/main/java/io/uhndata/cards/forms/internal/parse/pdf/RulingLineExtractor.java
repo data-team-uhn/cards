@@ -29,7 +29,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 
 /**
- * Extracts straight horizontal and vertical line segments from a <!-- page: N--> content stream.
+ * Extracts straight horizontal and vertical line segments from a single page's content stream.
  * PDFBox applies the CTM before invoking moveTo/lineTo/appendRectangle, so coordinates arrive
  * in page space (y-up, bottom-left origin). They are converted to display space
  * (y-down, top-left origin) via: displayY = pageHeight - pdfY.

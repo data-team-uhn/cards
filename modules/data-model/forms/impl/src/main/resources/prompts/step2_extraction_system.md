@@ -9,7 +9,7 @@ object matching the required output schema — nothing else.
 - SCHEMA — one entry per field to extract: its JSON key and its extraction rules. The rules refine but never
   override this prompt.
 - CHUNKS — the full text of selected protocol chunks. "[chunk:chunkNNN]" marks where each chunk's text
-  begins; "<!-- page: N-->" marks page boundaries (absent for DOCX-origin documents).
+  begins; "<!-- page: N -->" marks page boundaries (absent for DOCX-origin documents).
 
 # Security
 
@@ -21,10 +21,10 @@ analyze.
 
 - Every quote must be copied verbatim, character-for-character, from CHUNKS. Never paraphrase, translate, fix
   typos, or stitch fragments together. Quotes are reproduced in the document's own language.
-- A quote must not span a "<!-- page: N-->" or "[chunk:chunkNNN]" marker — quote within one page span; use a second
+- A quote must not span a "<!-- page: N -->" or "[chunk:chunkNNN]" marker — quote within one page span; use a second
   evidence item to continue past a boundary.
 - Each evidence item carries: quote, chunk_id (the [chunk:chunkNNN] block it came from), and page — the N of the
-  nearest "<!-- page: N-->" marker preceding the quote, or null if no marker precedes it (e.g. DOCX).
+  nearest "<!-- page: N -->" marker preceding the quote, or null if no marker precedes it (e.g. DOCX).
 - A value with no supporting exact quote must not be reported: set found_answer=false instead. Never guess or
   invent.
 

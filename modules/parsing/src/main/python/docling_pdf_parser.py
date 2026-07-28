@@ -55,6 +55,7 @@ from docling_error_detection import (
     ensure_conversion_ok,
 )
 from markdown_cleanup import clean_markdown, resolve_source_file_name, source_file_header
+from markdown_markers import count_tokens, page_marker
 from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 
@@ -124,8 +125,7 @@ def _run_pdf_chunks(
         if error:
             had_failure = True
             log(f"FAILED pages {r_start}-{r_end}: {error}")
-            for pending in future_to_chunk:
-                pending.cancel()
+            _abandon_batches(future_to_chunk, log=log)
             break
         log(
             f"Completed pages {r_start}-{r_end}: status={status}, "
@@ -137,6 +137,26 @@ def _run_pdf_chunks(
 
     completed_results.sort(key=lambda item: item[0])
     return completed_results
+
+
+def _abandon_batches(futures, *, log: LogFn) -> None:
+    """Cancel what has not started and wait out what already has, before giving up on a
+    conversion.
+
+    ``cancel()`` cannot stop a batch that is already running. In daemon mode the executor is
+    shared and outlives the request, so simply returning would leave those batches consuming
+    workers and RAM on behalf of a conversion whose result is already discarded — starving
+    the next request. Waiting here bounds that to the in-flight batches only.
+    """
+    still_running = [future for future in futures if not future.cancel() and not future.done()]
+    if not still_running:
+        return
+    log(f"Waiting for {len(still_running)} in-flight page batch(es) to stop")
+    for future in still_running:
+        try:
+            future.result()
+        except Exception:  # noqa: BLE001 -- already failing; a batch's outcome is moot now
+            pass
 
 
 def convert_pdf_to_markdown(
@@ -185,6 +205,7 @@ def convert_pdf_to_markdown(
         active_workers=active_workers,
         workers_override=workers_override,
         batch_pages_override=batch_pages_override,
+        log=log_fn,
     )
 
     chunks: list[tuple[str, int, int]] = []
@@ -209,15 +230,16 @@ def convert_pdf_to_markdown(
     for _start_page, _end_page, _status, md, _md_len, _elapsed, _error in completed_results:
         all_markdown.append(md)
 
+    parallel_end = perf_counter()
     cleaned = clean_markdown("".join(all_markdown))
     display_name = resolve_source_file_name(input_path, source_file)
     markdown_content = f"{source_file_header(display_name)}\n{cleaned}"
-    write_end = perf_counter()
-    t2 = perf_counter()
+    total_end = perf_counter()
 
     log_fn("\n=== Timing ===")
-    log_fn(f"Parallel processing:  {write_end - t0:.2f}s")
-    log_fn(f"Total:                {t2 - t0:.2f}s")
+    log_fn(f"Parallel processing:  {parallel_end - t0:.2f}s")
+    log_fn(f"Cleanup and assembly: {total_end - parallel_end:.2f}s")
+    log_fn(f"Total:                {total_end - t0:.2f}s")
     log_fn(f"Chunks attempted:     {chunk_count}")
     log_fn(f"Markdown characters:  {len(markdown_content):,}")
 
@@ -269,7 +291,7 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
 
         chunk_parts: list[str] = []
         for page_no in range(start_page, end_page + 1):
-            chunk_parts.append(f"\n<!-- page: {page_no}-->\n")
+            chunk_parts.append(f"\n{page_marker(page_no)}\n")
             page_md = result.document.export_to_markdown(page_no=page_no)
             chunk_parts.append(page_md)
 
@@ -282,8 +304,10 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
         return start_page, end_page, "failed", "", 0, elapsed, str(e)
 
     finally:
-        if end_page > start_page:
-            gc.collect()
+        # Every batch, not just multi-page ones: auto-sizing routinely lands on 1 page per
+        # batch, which is exactly where per-batch churn is highest, so the old
+        # ``end_page > start_page`` gate skipped the collection whenever it mattered most.
+        gc.collect()
 
 
 def convert_pdf(
@@ -328,7 +352,7 @@ def convert_pdf(
         f.write(markdown_content)
     write_end = perf_counter()
     print(f"File write:           {write_end - write_start:.2f}s")
-    print(f"Token estimate:       {len(markdown_content) // 4:,}")
+    print(f"Token estimate:       {count_tokens(markdown_content):,}")
 
     if chunk:
         split_start = perf_counter()
@@ -347,5 +371,6 @@ def convert_pdf(
         else:
             print(
                 f"Chunking skipped "
-                f"({len(markdown_content) // 4} tokens < {min_structure_tokens} min_structure_tokens)"
+                f"({count_tokens(markdown_content)} tokens < "
+                f"{min_structure_tokens} min_structure_tokens)"
             )

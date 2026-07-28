@@ -128,7 +128,7 @@ the saved `.md` and its sibling PDF, not off which generator ran.
 |---|---|
 | `docling_daemon.py` | Long-running HTTP worker: `GET /health`, `POST /convert`, `POST /chunk`, `POST /shutdown` |
 | `docling_parser.py` | CLI entry: convert one file (`--chunk` also chunks in-process) |
-| `docling_pdf_parser.py` | `convert_pdf_to_markdown` — **page-sharded parallel** Docling (`ProcessPoolExecutor`, one worker per page-range, emits `<!-- page: N-->`); `convert_pdf` (CLI convert+write+chunk) |
+| `docling_pdf_parser.py` | `convert_pdf_to_markdown` — **page-sharded parallel** Docling (`ProcessPoolExecutor`, one worker per page-range, emits `<!-- page: N -->`); `convert_pdf` (CLI convert+write+chunk) |
 | `docling_docx_parser.py` | DOCX → Markdown (Docling; no page markers) |
 | `docling_batch_sizing.py` | Worker-count / page-batch sizing from RAM + cores |
 | `docling_config.py` / `docling_error_detection.py` | Shared Docling pipeline options; parse-failure detection |
@@ -145,13 +145,13 @@ the saved `.md` and its sibling PDF, not off which generator ran.
 
 - **PDF, primary (Docling)** — `convert_pdf_to_markdown` reads the page count with `pypdf`,
   splits the pages into batches, and converts each batch in a **separate worker process**
-  (`ProcessPoolExecutor`), exporting Markdown **per page** with a `<!-- page: N-->` marker
+  (`ProcessPoolExecutor`), exporting Markdown **per page** with a `<!-- page: N -->` marker
   before each. Fragments are concatenated in page order. (This per-page-range sharding is why
   bookmark/outline inference cannot run inside Docling — no single process sees the whole
   document; it runs later, in the chunker, over the assembled `.md` + sibling PDF.)
 - **PDF, fallback (PDFBox)** — Java `PdfMarkdownGenerator` when Docling is unavailable or
   returns too little. No page markers.
-- **DOCX** — Docling primary, Apache POI fallback. No physical pages ⇒ no `<!-- page: N-->`
+- **DOCX** — Docling primary, Apache POI fallback. No physical pages ⇒ no `<!-- page: N -->`
   markers (so `evidence.page` is null downstream). A DOCX→PDF rendition is saved beside the
   `.md` for the bookmark path.
 - **DOC** — LibreOffice converts to DOCX first, then the DOCX path.

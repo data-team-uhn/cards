@@ -69,11 +69,12 @@ All chunks are summarised in ``catalog.json``
 ``summary``, ``rubric_tags``, ``questions_answered`` and ``extraction_hints`` are always left
 empty here so they can be filled in later. ``isAppendix`` is ``true`` only for the
 backmatter (Reference/Appendix) chunk; that chunk is never sent to the summarizer.
-``pages`` lists the -- page: numbers referenced within a chunk (from the
-``<!-- page: N-->`` markers the PDF parser emits); it is empty for DOCX.
+``pages`` lists the <!-- page: N --> numbers referenced within a chunk (from the
+``<!-- page: N -->`` markers the PDF parser emits); it is empty for DOCX.
 ``length`` is the character count of the chunk file's content.
 
-Token counts use a cheap character-based heuristic (``len(text) // 4``); no ML tokenizer is loaded.
+Token counts come from :func:`markdown_markers.count_tokens`, a cheap character-based
+heuristic (``len(text) // 4``); no ML tokenizer is loaded.
 
 Two entry points cover the two flows:
 
@@ -97,6 +98,7 @@ from typing import Any, Callable
 
 from bookmarks import (
     BOOKMARKS_NAME,
+    build_line_index,
     line_pages,
     normalize_title,
     read_bookmarks,
@@ -105,12 +107,18 @@ from bookmarks import (
 )
 from heading_numbering import numbering_depth
 from markdown_cleanup import clean_markdown
+from markdown_markers import (
+    HEADING,
+    MIN_HEADING_CHARS,
+    PAGE_MARKER,
+    PAGE_MARKER_LINE,
+    RULE_LINE,
+    count_tokens,
+    within_word_limits,
+)
 from pdf_bookmarks import extract_verified_outline
 from toc_and_appendix_detection import (
     DEFAULT_MIN_STRUCTURE_TOKENS,
-    MAX_HEADING_WORDS,
-    MAX_WORD_CHARS,
-    MIN_HEADING_CHARS,
     is_toc_entry_line,
     find_toc_and_appendix,
     read_outline,
@@ -135,7 +143,8 @@ CATALOG_NAME = "catalog.json"
 # Same base name as the preliminary sidecar :func:`toc_and_appendix_detection.find_toc_and_appendix`
 # writes beside the .md (no collision -- that one lives beside output_file, this one inside
 # Chunks/, which is wiped and recreated below); write_chunk_files folds the sidecar's
-# findings into this final version and removes the sidecar once done.
+# findings into this final version and removes both sidecars once done
+# (see :func:`_remove_sidecars`).
 OUTLINE_NAME = "outline.json"
 
 # Name of the folder, beside a document's .md, holding its chunk files, catalog and outline.
@@ -145,38 +154,24 @@ CHUNKS_DIRNAME = "Chunks"
 # optionally ending with ':'), e.g. "**13.0 Funding**" or "***13.0 Funding***".
 _BOLD_LINE = re.compile(r"^(\*{2,3})(.+?)\1:?$")
 
-# ATX heading line; group 1 = the '#' run, group 2 = the text.
-HEADING = re.compile(r"^(#{1,6})(?!#)\s+(.*\S)\s*$")
-
-_RULE_LINE = re.compile(r"^-{3,}$")
-
-# A "<!-- page: N-->" marker, page number captured.
-_PAGE_MARKER = re.compile(r"<!-- page: (\d+)-->", re.IGNORECASE)
-
-# A page marker alone on its own line.
-_PAGE_MARKER_LINE = re.compile(rf"^{_PAGE_MARKER.pattern}$", re.IGNORECASE)
-
 
 def is_neutral(stripped: str) -> bool:
     """Lines that neither extend nor break a region: blanks, page markers, rules."""
-    return stripped == "" or _RULE_LINE.match(stripped) is not None \
-        or _PAGE_MARKER_LINE.match(stripped) is not None
+    return stripped == "" or RULE_LINE.match(stripped) is not None \
+        or PAGE_MARKER_LINE.match(stripped) is not None
 
 
 def valid_heading(text: str) -> bool:
     """Whether a heading candidate is usable: longer than 4 characters
-    (:data:`MIN_HEADING_CHARS`), at most :data:`MAX_HEADING_WORDS` words, no word
-    over :data:`MAX_WORD_CHARS` characters, and not a table caption (text already
+    (:data:`markdown_markers.MIN_HEADING_CHARS`), within the shared word limits
+    (:func:`markdown_markers.within_word_limits`), and not a table caption (text already
     stripped of ``#`` / ``**`` markers must not start with ``Table ``).
     """
     if text.casefold().startswith("table "):
         return False
     if len(text) < MIN_HEADING_CHARS:
         return False
-    words = text.split()
-    if not words or len(words) > MAX_HEADING_WORDS:
-        return False
-    return all(len(word) <= MAX_WORD_CHARS for word in words)
+    return within_word_limits(text)
 
 
 def _standout_heading(lines: list[str], index: int) -> str | None:
@@ -242,11 +237,6 @@ def _split_lines_at(lines: list[str], is_boundary: Callable[[int], bool]) -> lis
     return [block for block in blocks if block]
 
 
-def _count_tokens(text: str) -> int:
-    """Estimate the token count of a string with a cheap character-based heuristic."""
-    return len(text) // 4
-
-
 def _match_heading(line: str) -> tuple[int, str] | None:
     """Match ``line`` against the ATX heading regex once, returning ``(level, text)`` —
     the heading level (number of leading ``#``) and its text with the ``#`` markers
@@ -283,17 +273,16 @@ def _heading_text(line: str) -> str | None:
     return matched[1]
 
 
-def _min_heading_level(
-    text: str, deeper_than: int = 0, lines: list[str] | None = None
-) -> int | None:
-    """Return the shallowest heading level appearing in ``text`` that is deeper than
+def _min_heading_level(lines: list[str], deeper_than: int = 0) -> int | None:
+    """Return the shallowest heading level appearing in ``lines`` that is deeper than
     ``deeper_than``, or ``None`` if no such heading exists.
 
-    @param lines: ``text`` already split on newlines, when the caller has it split
-        already
+    @param lines: the already-split lines to scan
+    @param deeper_than: only levels strictly deeper than this count
+    @return: the shallowest qualifying heading level, or ``None``
     """
     best: int | None = None
-    for line in (lines if lines is not None else text.split("\n")):
+    for line in lines:
         level = _heading_level(line)
         if level is not None and level > deeper_than and (best is None or level < best):
             best = level
@@ -301,9 +290,9 @@ def _min_heading_level(
 
 
 def _pages_in(text: str) -> list[int]:
-    """Return the sorted, de-duplicated -- page: numbers referenced in a string."""
+    """Return the sorted, de-duplicated ``<!-- page: N -->`` numbers referenced in a string."""
     pages: set[int] = set()
-    for match in _PAGE_MARKER.finditer(text or ""):
+    for match in PAGE_MARKER.finditer(text or ""):
         pages.add(int(match.group(1)))
     return sorted(pages)
 
@@ -336,27 +325,28 @@ def _split_into_top_chunks(lines: list[str], boundary_level: int | None) -> list
     @param boundary_level: the document's shallowest ATX heading level, or ``None`` when it
         has none at all — computed once by the caller (:func:`write_chunk_files`) via
         :func:`_min_heading_level`
-    @return: chunks in document order, each ``{"number", "heading", "level", "text"}``;
-        content before the first boundary heading (if any) is chunk ``number == 0`` with an
-        empty heading, and the remaining chunks are numbered from 1
+    @return: chunks in document order, each ``{"number", "text"}``; content before the first
+        boundary heading (if any) is chunk ``number == 0``, and the remaining chunks are
+        numbered from 1. Each chunk's own heading line stays at the head of its ``text``;
+        catalog labels are derived later by :func:`_part_heading`, per emitted part.
     """
     if boundary_level is None:
         text = "\n".join(lines).strip()
-        return [{"number": 0, "heading": "", "level": 0, "text": text}] if text else []
+        return [{"number": 0, "text": text}] if text else []
 
     preamble_lines: list[str] = []
-    chunks: list[dict] = []
-    current: dict | None = None
+    chunks: list[list[str]] = []
+    current: list[str] | None = None
 
     for line in lines:
         if _heading_level(line) == boundary_level:
             if current is not None:
                 chunks.append(current)
-            current = {"heading": _heading_text(line), "lines": [line]}
+            current = [line]
         elif current is None:
             preamble_lines.append(line)
         else:
-            current["lines"].append(line)
+            current.append(line)
 
     if current is not None:
         chunks.append(current)
@@ -364,14 +354,9 @@ def _split_into_top_chunks(lines: list[str], boundary_level: int | None) -> list
     result: list[dict] = []
     preamble_text = "\n".join(preamble_lines).strip()
     if preamble_text:
-        result.append({"number": 0, "heading": "", "level": boundary_level, "text": preamble_text})
-    for chunk_number, chunk in enumerate(chunks, start=1):
-        result.append({
-            "number": chunk_number,
-            "heading": chunk["heading"],
-            "level": boundary_level,
-            "text": "\n".join(chunk["lines"]).strip(),
-        })
+        result.append({"number": 0, "text": preamble_text})
+    for chunk_number, chunk_lines in enumerate(chunks, start=1):
+        result.append({"number": chunk_number, "text": "\n".join(chunk_lines).strip()})
     return result
 
 
@@ -389,7 +374,7 @@ def _subchunk_blocks(chunk_text: str, boundary_level: int, cut_keys=frozenset())
     none of these, the whole text is a single block.
     """
     lines = chunk_text.split("\n")
-    sub_level = _min_heading_level(chunk_text, deeper_than=boundary_level, lines=lines)
+    sub_level = _min_heading_level(lines, deeper_than=boundary_level)
     if sub_level is not None:
         return _split_lines_at(lines, lambda index: _heading_level(lines[index]) == sub_level)
 
@@ -415,19 +400,19 @@ def _subchunk_blocks(chunk_text: str, boundary_level: int, cut_keys=frozenset())
 
 
 def _split_trailing_page_markers(text: str) -> tuple[str, str] | None:
-    """If ``text`` ends with one or more ``<!-- page: N-->`` lines (and blank lines around
+    """If ``text`` ends with one or more ``<!-- page: N -->`` lines (and blank lines around
     them), return ``(body, markers_block)``. ``None`` when it does not end that way.
     """
     lines = text.split("\n")
     end = len(lines) - 1
     while end >= 0 and lines[end].strip() == "":
         end -= 1
-    if end < 0 or not _PAGE_MARKER_LINE.match(lines[end].strip()):
+    if end < 0 or not PAGE_MARKER_LINE.match(lines[end].strip()):
         return None
     start = end
     while start > 0:
         prev = lines[start - 1].strip()
-        if prev == "" or _PAGE_MARKER_LINE.match(prev):
+        if prev == "" or PAGE_MARKER_LINE.match(prev):
             start -= 1
             continue
         break
@@ -455,7 +440,7 @@ def _flush_without_trailing_page_markers(current: str, nxt: str) -> tuple[str | 
 
 
 def _move_trailing_page_markers(parts: list[str]) -> list[str]:
-    """Never leave a ``<!-- page: N-->`` marker at the end of a part: move trailing marker
+    """Never leave a ``<!-- page: N -->`` marker at the end of a part: move trailing marker
     runs to the start of the next part. Empty parts left behind are dropped. The last
     part is unchanged (nowhere to move markers).
     """
@@ -476,7 +461,7 @@ def _split_by_paragraphs(text: str, max_tokens: int) -> list[str]:
     """Split text into parts no larger than the budget at blank-line (paragraph) boundaries.
 
     A single paragraph larger than the budget is kept whole (nothing is split mid-paragraph).
-    When a part is closed, a trailing ``<!-- page: N-->`` run is moved onto the next paragraph.
+    When a part is closed, a trailing ``<!-- page: N -->`` run is moved onto the next paragraph.
     """
     parts: list[str] = []
     current: str | None = None
@@ -484,7 +469,7 @@ def _split_by_paragraphs(text: str, max_tokens: int) -> list[str]:
         if paragraph.strip() == "":
             continue
         candidate = paragraph if current is None else current + "\n\n" + paragraph
-        if current is None or _count_tokens(candidate) <= max_tokens:
+        if current is None or count_tokens(candidate) <= max_tokens:
             current = candidate
             continue
         body, current = _flush_without_trailing_page_markers(current, paragraph)
@@ -515,7 +500,7 @@ def _pack_blocks(blocks: list[str], max_tokens: int) -> list[str]:
     flushes alone — it always takes at least the following block (even over budget; the
     oversized splitter handles that later).
 
-    Trailing ``<!-- page: N-->`` markers are never left at the end of a flushed part — they
+    Trailing ``<!-- page: N -->`` markers are never left at the end of a flushed part — they
     move onto the start of the next part.
     """
     parts: list[str] = []
@@ -532,7 +517,7 @@ def _pack_blocks(blocks: list[str], max_tokens: int) -> list[str]:
         if _is_standalone_heading(block) and index + 1 < n:
             following = blocks[index + 1]
             lookahead = current + "\n\n" + block + "\n\n" + following
-            if _count_tokens(lookahead) <= max_tokens:
+            if count_tokens(lookahead) <= max_tokens:
                 current = current + "\n\n" + block
                 index += 1
                 continue
@@ -543,7 +528,7 @@ def _pack_blocks(blocks: list[str], max_tokens: int) -> list[str]:
             continue
 
         candidate = current + "\n\n" + block
-        if _count_tokens(candidate) <= max_tokens:
+        if count_tokens(candidate) <= max_tokens:
             current = candidate
             index += 1
             continue
@@ -579,7 +564,7 @@ def _split_oversized(
 
     parts: list[str] = []
     for part in packed:
-        if _count_tokens(part) > max_tokens:
+        if count_tokens(part) > max_tokens:
             parts.extend(_split_by_paragraphs(part, max_tokens))
         else:
             parts.append(part)
@@ -596,7 +581,8 @@ def _merge_small_text_tails(parts: list[str], min_tokens: int) -> list[str]:
     """
     merged: list[str] = []
     for part in parts:
-        if merged and _min_heading_level(part) is None and _count_tokens(part) < min_tokens:
+        if merged and _min_heading_level(part.split("\n")) is None \
+                and count_tokens(part) < min_tokens:
             merged[-1] = merged[-1].rstrip() + "\n\n" + part.lstrip()
         else:
             merged.append(part)
@@ -664,13 +650,26 @@ def _prepare_markdown(markdown_content: str, output_file: Path, min_structure_to
     return prepared
 
 
-def clear_prior_outputs(output_file: Path) -> None:
-    """Remove a previous convert's sibling ``outline.json`` and ``Chunks/`` folder
-    (including ``catalog.json``) beside ``output_file``, so a reconvert cannot reuse
-    stale ranges or chunk files.
+def _remove_sidecars(output_file: Path) -> None:
+    """Delete the transient ``outline.json`` / ``bookmarks.json`` sidecars beside
+    ``output_file``.
+
+    Both are per-run scratch state: they are produced during a chunking pass and consumed
+    within it (their findings end up in ``Chunks/outline.json``). Leaving either behind is
+    actively harmful — a stale ``bookmarks.json`` is read back on the next run as
+    *authoritative PDF bookmarks*, which suppresses printed-TOC detection and reports the
+    previous document's outline for the current one.
     """
     output_file.with_name(OUTLINE_NAME).unlink(missing_ok=True)
     output_file.with_name(BOOKMARKS_NAME).unlink(missing_ok=True)
+
+
+def clear_prior_outputs(output_file: Path) -> None:
+    """Remove a previous convert's sibling sidecars and ``Chunks/`` folder
+    (including ``catalog.json``) beside ``output_file``, so a reconvert cannot reuse
+    stale ranges or chunk files.
+    """
+    _remove_sidecars(output_file)
     chunks_dir = output_file.parent / CHUNKS_DIRNAME
     if chunks_dir.exists():
         shutil.rmtree(chunks_dir)
@@ -692,10 +691,10 @@ def _record_cut_keys(
     exclude = {index for index, line in enumerate(lines) if _match_heading(line) is not None}
     if toc_range is not None:
         exclude |= set(range(toc_range[0], toc_range[1] + 1))
-    positions = line_pages(markdown_content)
+    index = build_line_index(line_pages(markdown_content, lines))
     keys: set[str] = set()
     for record in records:
-        if resolve_record_line(positions, record, exclude=exclude) is not None:
+        if resolve_record_line(index, record, exclude=exclude) is not None:
             key = normalize_title(record.get("title") or "")
             if key:
                 keys.add(key)
@@ -748,7 +747,7 @@ def write_chunk_files(
     # the .md (not the maybe-absent sidecar) and stamp the identity/routing fields + defaults
     # here so the outline is complete and uniform on both paths.
     sidecar = read_outline(output_file.with_name(OUTLINE_NAME))
-    tokens = len(markdown_content) // 4
+    tokens = count_tokens(markdown_content)
     to_be_chunked = tokens >= min_structure_tokens
     sidecar.setdefault("outline_source", "none")
     sidecar.setdefault("toc", [])
@@ -760,7 +759,7 @@ def write_chunk_files(
         (chunks_dir / OUTLINE_NAME).write_text(
             json.dumps(sidecar, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
         )
-        output_file.with_name(OUTLINE_NAME).unlink(missing_ok=True)
+        _remove_sidecars(output_file)
         return None
 
     # One shared split of the full document, reused by every detection pass below
@@ -784,7 +783,7 @@ def write_chunk_files(
     backmatter_text = (
         "\n".join(lines[backmatter_line:]).strip() if backmatter_line is not None else None
     )
-    boundary_level = _min_heading_level("", lines=main_lines)
+    boundary_level = _min_heading_level(main_lines)
 
     catalog_chunks: list[dict] = []
     next_id = 1
@@ -804,7 +803,7 @@ def write_chunk_files(
 
     for offset, packed_text in enumerate(packed):
         number = first_number + offset
-        if _count_tokens(packed_text) > max_tokens:
+        if count_tokens(packed_text) > max_tokens:
             parts = _split_oversized(packed_text, split_level, max_tokens, cut_keys)
         else:
             parts = [packed_text]
@@ -861,7 +860,7 @@ def write_chunk_files(
         json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
 
-    output_file.with_name(OUTLINE_NAME).unlink(missing_ok=True)
+    _remove_sidecars(output_file)
 
     return chunks_dir
 
@@ -908,7 +907,7 @@ def chunk_file(
         min_structure_tokens=min_structure_tokens,
     )
     if chunks_dir is None:
-        tokens = len(markdown) // 4
+        tokens = count_tokens(markdown)
         source = _outline_source(path.parent / CHUNKS_DIRNAME)
         return {
             "chunks": 0,
@@ -930,7 +929,7 @@ def chunk_file(
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Light chunker for a single parsed CARDS proposal Markdown file."
+        description="Light chunker for a single parsed Markdown file."
     )
     parser.add_argument(
         "file_path",

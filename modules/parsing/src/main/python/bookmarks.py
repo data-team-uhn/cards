@@ -30,6 +30,11 @@ using the ``<!-- page: N -->`` markers the PDF parser emits, and corrects an off
 pointer (bookmarks often point one page early, to the bottom of the previous page). A record
 is only ever marked ``"verified": False`` -- when its title cannot be located on its page or
 either neighbour; a located/corrected record carries no ``verified`` key.
+
+Resolving records to body lines goes through a :class:`LineIndex` built once per document by
+:func:`build_line_index`: :func:`resolve_record_line` then costs only as much as the number
+of lines sharing the record's title, instead of re-scanning every line of the document for
+every record.
 """
 
 from __future__ import annotations
@@ -37,12 +42,12 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+from typing import NamedTuple
+
+from markdown_markers import PAGE_MARKER_LINE
 
 # Name of the outline sidecar written beside a document's ``.md``.
 BOOKMARKS_NAME = "bookmarks.json"
-
-# A ``<!-- page: N -->`` marker alone on its line (lenient on inner spacing).
-_PAGE_MARKER_LINE = re.compile(r"^\s*<!--\s*page:\s*(\d+)\s*-->\s*$", re.IGNORECASE)
 
 _NON_ALNUM = re.compile(r"[^a-z0-9]+")
 
@@ -53,21 +58,72 @@ def normalize_title(text: str) -> str:
     return _NON_ALNUM.sub("", text.casefold())
 
 
-def page_line_texts(markdown: str) -> dict[int, set[str]]:
-    """Map each 1-based page number to the set of normalized full-line keys on that page,
-    per the ``<!-- page: N -->`` markers. Lines before the first marker (the source header)
-    are page 0; an unpaged document (DOCX) yields only page 0."""
-    pages: dict[int, set[str]] = {}
+def line_pages(markdown: str, lines: list[str] | None = None) -> list[tuple[int, int, str]]:
+    """``(line_index, page, key)`` for every non-marker line with a non-empty normalized
+    key, where ``page`` is the 1-based page from the preceding ``<!-- page: N -->`` marker
+    (0 before the first). The single scan every other lookup in this module is built on.
+
+    @param markdown: the assembled Markdown document
+    @param lines: ``markdown`` already split on newlines, when the caller has it split
+        already (avoids re-splitting a large document)
+    @return: one tuple per keyed line, in document order
+    """
+    positions: list[tuple[int, int, str]] = []
     current = 0
-    for line in markdown.split("\n"):
-        marker = _PAGE_MARKER_LINE.match(line)
+    for index, line in enumerate(lines if lines is not None else markdown.split("\n")):
+        marker = PAGE_MARKER_LINE.match(line)
         if marker:
             current = int(marker.group(1))
             continue
         key = normalize_title(line)
         if key:
-            pages.setdefault(current, set()).add(key)
+            positions.append((index, current, key))
+    return positions
+
+
+def page_line_texts(markdown: str, lines: list[str] | None = None) -> dict[int, set[str]]:
+    """Map each 1-based page number to the set of normalized full-line keys on that page,
+    per the ``<!-- page: N -->`` markers. Lines before the first marker (the source header)
+    are page 0; an unpaged document (DOCX) yields only page 0.
+
+    @param markdown: the assembled Markdown document
+    @param lines: ``markdown`` already split on newlines, when available
+    @return: page number -> set of normalized line keys
+    """
+    pages: dict[int, set[str]] = {}
+    for _index, page, key in line_pages(markdown, lines):
+        pages.setdefault(page, set()).add(key)
     return pages
+
+
+class LineIndex(NamedTuple):
+    """A document's keyed body lines, arranged for repeated record lookup.
+
+    @param by_key: normalized title -> the ``(line_index, page)`` pairs carrying it
+    @param has_pages: whether the document carries any real page markers (``False`` for
+        DOCX and anything else unpaged, where a record's claimed page means nothing)
+    """
+
+    by_key: dict[str, list[tuple[int, int]]]
+    has_pages: bool
+
+
+def build_line_index(positions: list[tuple[int, int, str]]) -> LineIndex:
+    """Group :func:`line_pages` output by normalized title.
+
+    Build this once per document and hand it to :func:`resolve_record_line` for every
+    record; resolving then touches only the lines that share the record's title.
+
+    @param positions: output of :func:`line_pages`
+    @return: the index
+    """
+    by_key: dict[str, list[tuple[int, int]]] = {}
+    has_pages = False
+    for index, page, key in positions:
+        by_key.setdefault(key, []).append((index, page))
+        if page > 0:
+            has_pages = True
+    return LineIndex(by_key=by_key, has_pages=has_pages)
 
 
 def _locate_page(pages: dict[int, set[str]], key: str, claimed: int) -> int | None:
@@ -79,7 +135,9 @@ def _locate_page(pages: dict[int, set[str]], key: str, claimed: int) -> int | No
     return None
 
 
-def verify_bookmarks(records: list[dict], markdown: str) -> list[dict]:
+def verify_bookmarks(
+    records: list[dict], markdown: str, *, lines: list[str] | None = None
+) -> list[dict]:
     """Verify each record's page against ``markdown`` and correct off-by-one pointers.
 
     For a record with an integer ``page``: if its title is found on that page, it is left
@@ -90,9 +148,10 @@ def verify_bookmarks(records: list[dict], markdown: str) -> list[dict]:
 
     @param records: outline records (each ``{"title", "level"|None, "page"|None}``)
     @param markdown: the assembled Markdown, carrying ``<!-- page: N -->`` markers
+    @param lines: ``markdown`` already split on newlines, when available
     @return: a new list of records with pages corrected and non-locatable ones flagged
     """
-    pages = page_line_texts(markdown)
+    pages = page_line_texts(markdown, lines)
     has_pages = any(page_no > 0 for page_no in pages)
     verified: list[dict] = []
     for record in records:
@@ -125,25 +184,8 @@ def write_bookmarks(path: Path, records: list[dict]) -> None:
     path.write_text(json.dumps(records, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def line_pages(markdown: str) -> list[tuple[int, int, str]]:
-    """``(line_index, page, key)`` for every non-marker line with a non-empty normalized
-    key, where ``page`` is the 1-based page from the preceding ``<!-- page: N -->`` marker
-    (0 before the first). Used to resolve an outline record to a body line."""
-    positions: list[tuple[int, int, str]] = []
-    current = 0
-    for index, line in enumerate(markdown.split("\n")):
-        marker = _PAGE_MARKER_LINE.match(line)
-        if marker:
-            current = int(marker.group(1))
-            continue
-        key = normalize_title(line)
-        if key:
-            positions.append((index, current, key))
-    return positions
-
-
 def resolve_record_line(
-    positions: list[tuple[int, int, str]], record: dict, *, exclude=frozenset()
+    index: LineIndex, record: dict, *, exclude=frozenset()
 ) -> int | None:
     """The body line index a record's title maps to, or ``None`` when it is absent or
     ambiguous. When the document is paged and the record's ``page`` is trusted (an integer,
@@ -151,7 +193,7 @@ def resolve_record_line(
     page. The match must be unique among non-``exclude`` lines -- zero or several yield
     ``None`` (fail-open, never resolve to the wrong line).
 
-    @param positions: output of :func:`line_pages` for the document
+    @param index: output of :func:`build_line_index` for the document
     @param record: an outline record (``{"title", "page"|None, "verified"?}``)
     @param exclude: line indices that are not eligible (e.g. ATX headings, the TOC range)
     @return: the unique matching line index, or ``None``
@@ -159,12 +201,17 @@ def resolve_record_line(
     key = normalize_title(record.get("title") or "")
     if not key:
         return None
+    candidates = index.by_key.get(key)
+    if not candidates:
+        return None
     page = record.get("page")
-    has_pages = any(page_no > 0 for _, page_no, _ in positions)
-    trust_page = has_pages and isinstance(page, int) and record.get("verified") is not False
-    matches = [
-        index
-        for index, page_no, line_key in positions
-        if line_key == key and index not in exclude and (page_no == page if trust_page else True)
-    ]
-    return matches[0] if len(matches) == 1 else None
+    trust_page = index.has_pages and isinstance(page, int) and record.get("verified") is not False
+    found: int | None = None
+    for line_index, page_no in candidates:
+        if line_index in exclude or (trust_page and page_no != page):
+            continue
+        if found is not None:
+            # Several eligible lines carry this title -- fail open rather than guess.
+            return None
+        found = line_index
+    return found

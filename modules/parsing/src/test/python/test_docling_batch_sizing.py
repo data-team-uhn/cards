@@ -21,7 +21,10 @@
 derive Docling's outer parallelism. Machine-dependent snapshot values are not asserted;
 every function here is exercised with explicit inputs."""
 
+import argparse
 import math
+
+import pytest
 
 import docling_batch_sizing as bs
 from docling_batch_sizing import (
@@ -35,6 +38,7 @@ from docling_batch_sizing import (
     calc_max_workers_by_ram,
     calc_ram_budget_gb,
     calc_workers,
+    positive_int,
 )
 
 
@@ -68,6 +72,11 @@ class TestCalcWorkers:
     def test_default_is_positive(self):
         assert calc_workers() >= 1
         assert calc_workers() == bs.DEFAULT_MAX_WORKERS
+
+    def test_non_positive_override_clamped_to_one(self):
+        # ProcessPoolExecutor(max_workers=0) raises, so 0 must never reach it.
+        assert calc_workers(workers_override=0) == 1
+        assert calc_workers(workers_override=-4) == 1
 
 
 class TestBatchPages:
@@ -105,6 +114,54 @@ class TestActiveWorkers:
 
     def test_never_more_chunks_than_workers(self):
         assert calc_active_workers(2, 10) == 2
+
+
+class TestBatchPagesOverrideClamped:
+    def test_non_positive_override_clamped_to_one(self):
+        # This value becomes a range() step; a step of 0 raises.
+        assert calc_batch_pages(100, 4, batch_pages_override=0) == 1
+        assert calc_batch_pages(100, 4, batch_pages_override=-2) == 1
+
+    def test_clamped_override_still_produces_usable_page_ranges(self):
+        batch = calc_batch_pages(10, 4, batch_pages_override=0)
+        assert list(range(1, 11, batch)) == list(range(1, 11))
+
+
+class TestPositiveInt:
+    def test_accepts_one_and_above(self):
+        assert positive_int("1") == 1
+        assert positive_int("12") == 12
+
+    def test_rejects_zero_and_negative(self):
+        for value in ("0", "-1", "-99"):
+            with pytest.raises(argparse.ArgumentTypeError, match="1 or greater"):
+                positive_int(value)
+
+    def test_rejects_non_integers(self):
+        for value in ("abc", "", "2.5"):
+            with pytest.raises(argparse.ArgumentTypeError, match="expected an integer"):
+                positive_int(value)
+
+
+class TestPrintParallelismSummary:
+    def test_routes_every_line_to_the_given_sink(self):
+        # The daemon passes its per-request collector; using bare print would strand the
+        # summary on the daemon's stdout instead of returning it to the caller.
+        lines = []
+        bs.print_parallelism_summary(
+            total_pages=10, workers=2, batch_pages=4, chunk_count=3, active_workers=2,
+            workers_override=False, batch_pages_override=True, log=lines.append,
+        )
+        assert lines[0] == "=== Parallelism tuning ==="
+        assert any("Batch pages: 4 (manual" in line for line in lines)
+        assert any("Workers: 2 (auto" in line for line in lines)
+
+    def test_defaults_to_print(self, capsys):
+        bs.print_parallelism_summary(
+            total_pages=1, workers=1, batch_pages=1, chunk_count=1, active_workers=1,
+            workers_override=False, batch_pages_override=False,
+        )
+        assert "=== Parallelism tuning ===" in capsys.readouterr().out
 
 
 class TestModuleSnapshot:

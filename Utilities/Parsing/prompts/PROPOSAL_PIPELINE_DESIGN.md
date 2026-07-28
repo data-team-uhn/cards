@@ -187,7 +187,7 @@ Pre-chunk pipeline (`chunker._prepare_markdown`, run for every chunking entry po
    the `.md` (`<stem>.pdf`, co-located by the Java parse pipeline via
    `ParsedMarkdownStore.saveArtifact` — native PDFs **and** DOCX→PDF renditions), extract its
    bookmark outline (`pdf_bookmarks.extract_outline`, pypdf), verify/correct each record's page
-   against the `<!-- page: N-->` markers (`bookmarks.verify_bookmarks` — searches page N then
+   against the `<!-- page: N -->` markers (`bookmarks.verify_bookmarks` — searches page N then
    N±1, rewriting an off-by-one page or flagging `verified:false`), and write the records to a
    `bookmarks.json` sidecar. A missing / bookmark-less PDF leaves no sidecar.
 3. **`toc_and_appendix_detection.find_toc_and_appendix(md, outline_path)`** — the fork
@@ -330,7 +330,7 @@ contains are extraction-enabled; administrative/contractual fields stay as manua
 | 3 | PROTOCOL_STRUCTURE_GLOSSARY — `protocol_structure_glossary.md` (B.1–B.17) | ~360 |
 | 4 | SCHEMA — the extraction-enabled questions' rules prompts | ~600–900 |
 | 5 | CATALOG — plain `chunkNNN: heading` lines (never raw catalog.json); ~150-char opening snippet **only** for chunks not in the excerpt | 0.4–1.2k |
-| 6 | CHUNK — excerpt with inline `[chunk:chunkNNN]` markers, `<!-- page: N-->` preserved | ~18–20k |
+| 6 | CHUNK — excerpt with inline `[chunk:chunkNNN]` markers, `<!-- page: N -->` preserved | ~18–20k |
 
 **Excerpt selection** (`IntakePayload`): when the selectable non-reference text fits the
 active model's `wholeDocumentTokenLimit` (default **20000**, same threshold recorded as
@@ -394,7 +394,7 @@ one `prompt`-bearing question per field, `promptKey` = the JSON key below):
   degrade gracefully (persist fields as unreviewed, mark all chunks uncertain) —
   never block the upload pipeline on a failed intake call.
 - Verify every extracted filed evidence quote by normalized fuzzy match against the chunk `.md`
-  (strip `<!-- page: N-->` / `[chunk:chunkNNN]` markers from both sides first — they
+  (strip `<!-- page: N -->` / `[chunk:chunkNNN]` markers from both sides first — they
   interrupt sentences). Failed match → downgrade confidence, route field to Step 2.
 - Append the intake line to `llm_call_tracker.jsonl` (line 2, after the gate's line 1):
   `{"call": 2, "step": "intake", "fields":

@@ -215,3 +215,225 @@ class TestMarkTocAndAppendixFork:
         outline_path = tmp_path / "outline.json"
         find_toc_and_appendix("# Title\n\n" + ("body paragraph. " * 40), outline_path, min_structure_tokens=1)
         assert read_outline(outline_path)["outline_source"] == "none"
+
+
+# A running header of the kind Docling leaves at the top of every protocol page. Well over
+# MAX_LEADING_WORDS_FOR_CONTINUATION on its own, which is the point: the in-block prose
+# tolerance cannot absorb it, so a TOC split across pages needs the page-break probe.
+RUNNING_HEADER = "REB Protocol 24-5450 Version 3.0 dated 12 March 2026 Confidential Page 2 of 48"
+
+
+class TestTocAcrossPageBreaks:
+    """A printed TOC that continues on the next PDF page.
+
+    Regression: the module's page-marker pattern required a space before ``-->`` that the
+    PDF parser never emits, so ``_scan_block`` never reported a page boundary and the whole
+    cross-page continuation branch was unreachable. A two-page TOC lost its second half.
+    """
+
+    def _doc(self, separator):
+        return "\n".join([
+            "<!-- page: 1 -->",
+            "## TABLE OF CONTENTS",
+            "1.0 Background and Rationale\t3",
+            "2.0 Study Objectives\t5",
+            "3.0 Eligibility Criteria\t7",
+            "4.0 Study Design\t9",
+            "<!-- page: 2 -->",
+            *separator,
+            "5.0 Statistical Analysis\t12",
+            "6.0 Data Management\t15",
+            "7.0 Ethical Considerations\t18",
+            "8.0 References and Appendices\t22",
+            "",
+            "<!-- page: 3 -->",
+            "## 1.0 Background and Rationale",
+            "Body text of the background section.",
+        ])
+
+    def _entries(self, tmp_path, separator):
+        outline_path = tmp_path / "outline.json"
+        mark_and_cleanup_toc(self._doc(separator), outline_path)
+        return read_outline(outline_path)["toc"]
+
+    def test_continues_straight_across_a_page_marker(self, tmp_path):
+        entries = self._entries(tmp_path, [])
+        assert len(entries) == 8
+        assert any("Statistical Analysis" in entry for entry in entries)
+
+    def test_continues_past_a_running_header(self, tmp_path):
+        entries = self._entries(tmp_path, [RUNNING_HEADER])
+        assert len(entries) == 8, entries
+        assert any("References and Appendices" in entry for entry in entries)
+
+    def test_running_header_is_not_kept_as_an_entry(self, tmp_path):
+        entries = self._entries(tmp_path, [RUNNING_HEADER])
+        assert not any("Confidential" in entry for entry in entries)
+
+    def test_stops_when_the_next_page_is_body_text(self, tmp_path):
+        body = ["## Introduction Section", "Real body prose starts here."]
+        entries = self._entries(tmp_path, body)
+        # A real heading after the break is a hard boundary: only page 1's entries.
+        assert len(entries) == 4
+
+    def test_gives_up_after_too_much_header_noise(self, tmp_path):
+        noise = [f"{RUNNING_HEADER} line {i}" for i in range(6)]
+        entries = self._entries(tmp_path, noise)
+        assert len(entries) == 4
+
+
+class TestResumeAfterPageBreak:
+    LINES = ["<!-- page: 2 -->", RUNNING_HEADER, "5.0 Statistical Analysis\t12"]
+
+    def test_finds_the_resumption_line_past_noise(self):
+        assert tad._resume_after_page_break(self.LINES, 1, tad.is_toc_entry_line) == 2
+
+    def test_none_at_a_real_heading(self):
+        lines = ["<!-- page: 2 -->", "## Real Heading Here", "1.0 Entry\t3"]
+        assert tad._resume_after_page_break(lines, 1, tad.is_toc_entry_line) is None
+
+    def test_none_when_the_label_reappears(self):
+        lines = ["<!-- page: 2 -->", "## Table of Contents", "1.0 Entry\t3"]
+        assert tad._resume_after_page_break(lines, 1, tad.is_toc_entry_line) is None
+
+    def test_none_past_end_of_document(self):
+        assert tad._resume_after_page_break(["<!-- page: 2 -->"], 1, tad.is_toc_entry_line) is None
+
+    def test_none_when_noise_exceeds_the_allowance(self):
+        noise = [f"noise line {i} with several words in it" for i in range(6)]
+        lines = ["<!-- page: 2 -->", *noise, "1.0 Entry\t3"]
+        assert tad._resume_after_page_break(lines, 1, tad.is_toc_entry_line) is None
+
+
+class TestOverlongTocEntry:
+    """One TOC entry longer than the word limit must not end the block.
+
+    Regression: such an entry fails ``is_toc_entry_line`` on word count, was then charged
+    against the prose tolerance as if it were body text, and ended the TOC — silently
+    dropping every entry after it, References and Appendices included, which in turn left
+    ``backmatterLine`` unset.
+    """
+
+    def _doc(self):
+        return "\n".join([
+            "## TABLE OF CONTENTS",
+            "1.0 Background\t3",
+            "2.0 Objectives\t5",
+            # 15 words: over MAX_HEADING_WORDS, but structurally a page-numbered entry.
+            "6.11 Adaptations for outcome assessment for patients who cannot attend "
+            "facility based outcome assessment\t15",
+            "7.0 Ethics\t16",
+            "19.0 References\t20",
+            "20.0 Appendices\t27",
+            "",
+            "## 1.0 Background",
+            "body",
+        ])
+
+    def test_entries_after_the_long_one_survive(self, tmp_path):
+        outline_path = tmp_path / "outline.json"
+        mark_and_cleanup_toc(self._doc(), outline_path)
+        entries = read_outline(outline_path)["toc"]
+        assert any("References" in entry for entry in entries), entries
+        assert any("Appendices" in entry for entry in entries), entries
+
+    def test_the_long_entry_itself_is_still_not_recorded(self, tmp_path):
+        outline_path = tmp_path / "outline.json"
+        mark_and_cleanup_toc(self._doc(), outline_path)
+        entries = read_outline(outline_path)["toc"]
+        assert not any("Adaptations" in entry for entry in entries)
+
+    def test_page_numbered_entry_predicate_ignores_length(self):
+        long_entry = ("6.11 Adaptations for outcome assessment for patients who cannot "
+                      "attend facility based outcome assessment\t15")
+        assert is_toc_entry_line(long_entry) is False
+        assert tad.is_page_numbered_entry(long_entry) is True
+
+    def test_numbered_body_prose_is_not_page_numbered_entry(self):
+        # The trailing-page-number requirement is what keeps this safe: ordinary numbered
+        # prose must not look like an entry, or the scan would run on into a numbered list.
+        for prose in ("1. The patient will be assessed for eligibility at baseline.",
+                      "2) Participants receive standard of care prehabilitation therapy.",
+                      "3.1 Data will be collected using the validated instrument above."):
+            assert tad.is_page_numbered_entry(prose) is False, prose
+
+
+class TestBackmatterTocExclusion:
+    """The printed TOC stays in the document, so a page-less TOC entry is textually
+    identical to the body heading it points at. Without the TOC range excluded both lines
+    match the record, ``resolve_record_line`` fails open, and the backmatter split is lost.
+    """
+
+    MD = "\n".join([
+        "TABLE OF CONTENTS",
+        "1.0 Background",
+        "2.0 Study Design",
+        "8.0 References",
+        "",
+        "## 1.0 Background",
+        "body",
+        "## 8.0 References",
+        "Smith J et al. Lancet. 2020.",
+    ])
+    RECORDS = [{"title": "8.0 References", "level": 1, "page": None}]
+
+    def test_ambiguous_without_the_toc_range(self):
+        assert tad.backmatter_from_records(self.MD, self.RECORDS) is None
+
+    def test_resolves_to_the_body_heading_with_the_toc_range(self):
+        assert tad.backmatter_from_records(self.MD, self.RECORDS, toc_range=(0, 3)) == 7
+
+    def test_no_backmatter_record_short_circuits(self):
+        records = [{"title": "1.0 Background", "page": None}]
+        assert tad.backmatter_from_records(self.MD, records, toc_range=(0, 3)) is None
+
+    def test_end_to_end_records_backmatter_for_a_pageless_toc(self, tmp_path):
+        outline_path = tmp_path / "outline.json"
+        doc = "\n".join([
+            "## Table of Contents",
+            "1.0 Background",
+            "2.0 Study Design",
+            "8.0 References",
+            "",
+            "## 1.0 Background",
+            "body paragraph. " * 20,
+            "## 2.0 Study Design",
+            "body paragraph. " * 20,
+            "## 8.0 References",
+            "Smith J et al. Lancet. 2020.",
+        ])
+        find_toc_and_appendix(doc, outline_path, min_structure_tokens=1)
+        outline = read_outline(outline_path)
+        assert outline["outline_source"] == "md-toc"
+        assert isinstance(outline["backmatterLine"], int)
+        # It must point at the body heading, not the TOC entry.
+        assert outline["backmatterLine"] > outline["tocEndLine"]
+
+
+class TestOutlineWrittenOnce:
+    def test_single_write_per_document(self, tmp_path, monkeypatch):
+        # The outline fields used to be spread over three read-modify-write cycles of the
+        # same file, which wrote "tokens" twice with two different values.
+        calls = []
+        real_write = tad.write_outline
+        monkeypatch.setattr(
+            tad, "write_outline",
+            lambda path, updates: (calls.append(sorted(updates)), real_write(path, updates))[1],
+        )
+        doc = "\n".join([
+            "## Table of Contents",
+            "1.0 Background\t3",
+            "2.0 Objectives\t5",
+            "3.0 Design\t7",
+            "",
+            "## 1.0 Background",
+            "body paragraph. " * 60,
+        ])
+        find_toc_and_appendix(doc, tmp_path / "outline.json", min_structure_tokens=1)
+        assert len(calls) == 1, calls
+
+    def test_tokens_reflect_the_returned_document(self, tmp_path):
+        outline_path = tmp_path / "outline.json"
+        doc = "# Title\n\n" + ("Some content paragraph. " * 40)
+        result = find_toc_and_appendix(doc, outline_path, min_structure_tokens=1)
+        assert read_outline(outline_path)["tokens"] == len(result) // 4

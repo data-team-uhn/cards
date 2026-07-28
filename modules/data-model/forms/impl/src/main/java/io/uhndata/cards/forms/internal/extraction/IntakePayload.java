@@ -33,7 +33,7 @@ import io.uhndata.cards.forms.internal.extraction.ProposalExtractionService.Fiel
  * Assembles the per-document blocks of the Stage 1.1 intake user message: the SCHEMA (the extraction fields'
  * rules), the CATALOG (one {@code chunkNNN: heading} line per chunk, plus an opening snippet for chunks not
  * sent in full), and the CHUNK (the excerpt sent in full, each chunk prefixed with a
- * {@code [chunk:chunkNNN]} marker with its {@code <!-- page: N-->} markers preserved). Chunk selection follows
+ * {@code [chunk:chunkNNN]} marker with its {@code <!-- page: N -->} markers preserved). Chunk selection follows
  * the design: reference lists are dropped, the whole document is sent when it fits the active model's
  * {@code wholeDocumentTokenLimit}; otherwise selection is tag-driven — the chunks whose Stage 0.5 gate-assigned
  * rubric tags match any of the extraction fields' {@code tags} are sent (document order, up to the budget),

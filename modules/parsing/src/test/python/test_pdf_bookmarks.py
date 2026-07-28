@@ -64,10 +64,10 @@ class TestExtractOutline:
 class TestExtractVerified:
     def test_corrects_page(self):
         out = pdf_bookmarks.extract_verified_outline(FakeReader([FakeDest("Methods", 0)]),
-                                                     "<!-- page: 2-->\n## Methods")
+                                                     "<!-- page: 2 -->\n## Methods")
         assert out[0]["page"] == 2 and "verified" not in out[0]
 
     def test_flags_missing(self):
         out = pdf_bookmarks.extract_verified_outline(FakeReader([FakeDest("Ghost", 4)]),
-                                                     "<!-- page: 1-->\n## Real")
+                                                     "<!-- page: 1 -->\n## Real")
         assert out[0]["verified"] is False
