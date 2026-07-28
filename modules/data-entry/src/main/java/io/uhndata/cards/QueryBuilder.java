@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.jcr.Node;
@@ -92,6 +93,8 @@ import io.uhndata.cards.spi.SearchParametersFactory;
  * <li>{@code serializeChildren=1} causes the direct children of the results to be serialized as well</li>
  * <li>{@code rawResults=true} causes the exact query results, as specified in the query selectors, to be returned as an
  * array, instead of serializing the matching nodes</li>
+ * <li>a {@code query} starting with {@code explain} or {@code measure} always uses the {@code rawResults} format,
+ * whether or not it was requested, since such a query reports on the query itself instead of matching nodes</li>
  * <li>{@code showTotalRows=false} causes the total number of results to not be computed, resulting in slightly better
  * performance</li>
  * </ul>
@@ -120,6 +123,13 @@ public class QueryBuilder implements Use
 {
     private static final int QUERY_SIZE_MULTIPLIER = 10;
 
+    /**
+     * A JCR-SQL2 statement with one of these prefixes reports on the query itself, the plan for {@code explain} and
+     * the number of scanned nodes for {@code measure}, instead of returning the nodes that match it.
+     */
+    private static final Pattern REPORTING_QUERY =
+        Pattern.compile("^\\s*+(explain|measure)\\s", Pattern.CASE_INSENSITIVE);
+
     private Logger logger = LoggerFactory.getLogger(QueryBuilder.class);
 
     private String content;
@@ -140,6 +150,9 @@ public class QueryBuilder implements Use
 
     /** Whether to show the total number of results. */
     private boolean showTotalRows;
+
+    /** Whether to return the query results as they are, instead of serializing the matching nodes. */
+    private boolean rawResults;
 
     /** Selectors to use when serializing a resource. */
     private String resourceSelectors;
@@ -182,6 +195,7 @@ public class QueryBuilder implements Use
             this.disableEscaping = "true".equals(doNotEscape);
             final String showTotalRowsParam = request.getParameter("showTotalRows");
             this.showTotalRows = "true".equals(showTotalRowsParam);
+            this.rawResults = "true".equals(request.getParameter("rawResults"));
 
             QueryResult results = query(request);
             if (results == null) {
@@ -190,7 +204,7 @@ public class QueryBuilder implements Use
 
             // output the results into our content
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            if ("true".equals(request.getParameter("rawResults"))) {
+            if (this.rawResults) {
                 this.outputRawQueryResults(builder, results);
             } else {
                 this.outputQueryResults(builder, results);
@@ -212,8 +226,12 @@ public class QueryBuilder implements Use
 
         QueryResult results;
         if (StringUtils.isNotBlank(jcrQuery)) {
+            final String query = this.urlDecode(jcrQuery);
+            // The rows of a reporting query describe the query, and have no path to serialize a node from,
+            // so the raw output is the only one that can render them
+            this.rawResults |= REPORTING_QUERY.matcher(query).find();
             results = queryJCR(QueryPathResolver.resolveReferencePaths(
-                this.resourceResolver.adaptTo(Session.class), this.urlDecode(jcrQuery)));
+                this.resourceResolver.adaptTo(Session.class), query));
         } else if (StringUtils.isNotBlank(luceneQuery)) {
             results = queryLucene(this.urlDecode(luceneQuery));
         } else if (StringUtils.isNotBlank(fullTextQuery)) {
