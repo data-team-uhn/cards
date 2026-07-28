@@ -33,14 +33,15 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * A servlet that returns the current Google API key.
+ * A servlet that returns the current Google API key. It is bound to the configuration node itself, rather than to
+ * the homepage, because {@code /content} is denied to patients, who need the key for the address question.
  *
  * @version $Id$
  */
 @Component(service = { Servlet.class },
-    property = { "sling.auth.requirements=-/content.googleApiKey", "sling.auth.requirements=-/.googleApiKey" })
+    property = { "sling.auth.requirements=-/libs/cards/conf/GoogleApiKey.googleApiKey" })
 @SlingServletResourceTypes(
-    resourceTypes = { "cards/Homepage" },
+    resourceTypes = { "cards/GoogleApiKeyConf" },
     methods = { "GET" },
     selectors = { "googleApiKey" })
 public class GoogleApiKeyServlet extends SlingJakartaSafeMethodsServlet

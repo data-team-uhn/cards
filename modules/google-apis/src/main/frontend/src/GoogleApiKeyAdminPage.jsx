@@ -32,7 +32,8 @@ import AdminScreen from "./adminDashboard/AdminScreen.jsx";
 import FormattedText from "./components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 
-const APIKEY_SERVLET_URL = "/.googleApiKey";
+const APIKEY_NODE_URL = "/libs/cards/conf/GoogleApiKey";
+const APIKEY_SERVLET_URL = `${APIKEY_NODE_URL}.googleApiKey`;
 
 export default function GoogleApiKeyAdminPage() {
   const [ googleApiKey, setGoogleApiKey ] = useState("");
@@ -59,7 +60,7 @@ export default function GoogleApiKeyAdminPage() {
 
   // function to create / edit node
   function updateKey() {
-    const URL = `/libs/cards/conf/GoogleApiKey`;
+    const URL = APIKEY_NODE_URL;
     let request_data = new FormData();
     request_data.append('key', googleApiKey);
     fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })

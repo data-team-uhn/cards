@@ -46,6 +46,7 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Initial-Content>
               SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
+              SLING-INF/content/libs/cards/conf/GoogleApiKey.json;path:=/libs/cards/conf/GoogleApiKey;overwriteProperties:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwriteProperties:=true;uninstall:=true,

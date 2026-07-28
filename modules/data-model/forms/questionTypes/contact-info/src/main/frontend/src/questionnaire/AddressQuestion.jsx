@@ -33,7 +33,7 @@ import StyledTextQuestion from "./TextQuestion";
 
 
 let googleApiKey;
-const APIKEY_SERVLET_URL = "/.googleApiKey";
+const APIKEY_SERVLET_URL = "/libs/cards/conf/GoogleApiKey.googleApiKey";
 fetch(APIKEY_SERVLET_URL)
   .then((response) => response.ok ? response.json() : Promise.reject(response))
   .then((keyJson) => {
