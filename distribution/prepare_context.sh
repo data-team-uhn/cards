@@ -22,7 +22,7 @@
 #              artifact, including every module's feature file
 # - artifacts/ placeholder for the self-contained third-party artifact repository, filled in
 #              by the slingfeature-maven-plugin `repository` goal when building the
-#              production image (-Pdocker-production)
+#              production image (-Pproduction)
 # - metadata/  build information supporting security audits of production deployments
 #
 # It also harvests every feature file produced by the current reactor build into

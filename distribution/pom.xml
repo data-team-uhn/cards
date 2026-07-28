@@ -68,7 +68,7 @@
         <executions>
           <execution>
             <id>aggregate-features</id>
-            <phase>prepare-package</phase>
+            <phase>process-resources</phase>
             <goals>
               <goal>aggregate-features</goal>
               <goal>analyse-features</goal>
@@ -172,12 +172,7 @@
     <profile>
       <!-- Fills the image's artifact repository with every artifact referenced by any feature
         built by the reactor, making the image fully self-contained. -->
-      <id>docker-production</id>
-      <activation>
-        <property>
-          <name>docker.production</name>
-        </property>
-      </activation>
+      <id>production</id>
       <build>
         <plugins>
           <plugin>

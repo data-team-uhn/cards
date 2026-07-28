@@ -19,7 +19,7 @@
 # repository is baked in by the Maven build preparing the build context:
 # - the developer flavor (default) only embeds the project artifacts (mvnrepo/); third-party
 #   artifacts come from a volume-mounted ~/.m2, or are downloaded on first start
-# - the production flavor (-Pdocker-production) also embeds every third-party artifact
+# - the production flavor (-Pproduction) also embeds every third-party artifact
 #   referenced by any feature in the repository (artifacts/), needing no network access
 
 # Start from a small Alpine Linux base image
