@@ -284,6 +284,9 @@ function RegistrationForm(props) {
           onSubmit={submitValues}
           onReset={handleExit}
           innerRef={formRef}
+          // Without this, the initial errors are empty, so the form counts as valid and the submit
+          // button starts out enabled, even though all the required fields are still blank
+          validateOnMount
         >
           {props => <FormFieldsComponent {...props} />}
         </Formik>
