@@ -31,8 +31,6 @@ public final class DataMigratorUtils
 
     static final String VERSION_PROPERTY = "Version";
 
-    static final String VERSION_PATH = "/libs/cards/conf/Version";
-
     /**
      * Hide the utility class constructor.
      */

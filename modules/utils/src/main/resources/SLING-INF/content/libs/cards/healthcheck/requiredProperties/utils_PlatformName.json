@@ -1,4 +1,4 @@
 {
-  "propertyPath": "/libs/cards/conf/PlatformName/PlatformName",
+  "propertyPath": "/libs/cards/conf/meta/PlatformName/platformName",
   "requiredValue": "CARDS"
 }

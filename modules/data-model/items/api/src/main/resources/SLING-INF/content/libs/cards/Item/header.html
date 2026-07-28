@@ -22,36 +22,11 @@
     <meta charset="utf-8">
     <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <sly data-sly-use.config="/libs/cards/conf/Version">
-      <meta name="version" content="${config['Version']}">
-    </sly>
-    <sly data-sly-use.config="/libs/cards/conf/PlatformName">
-      <meta name="platformName" content="${config['PlatformName']}">
-    </sly>
-    <sly data-sly-use.config="/libs/cards/conf/AppName">
-      <meta name="title" content="${config['AppName']}">
-      <title>${config.AppName}</title>
-    </sly>
-    <sly data-sly-use.config="/libs/cards/conf/AppVersion">
-      <sly data-sly-test="${config.AppVersion}">
-        <meta name="appVersion" content="${config['AppVersion']}">
+    <sly data-sly-use.config="io.uhndata.cards.scripting.ConfigMetadata">
+      <sly data-sly-test="${config.properties.title}">
+        <title>${config.properties.title}</title>
       </sly>
-    </sly>
-    <sly data-sly-use.config="/libs/cards/conf/LoginPage">
-      <sly data-sly-test="${config.loginTitle}">
-        <meta name="loginTitle" content="${config['loginTitle']}">
-      </sly>
-      <sly data-sly-test="${config.loginDescription}">
-        <meta name="loginDescription" content="${config['loginDescription']}">
-      </sly>
-    </sly>
-    <sly data-sly-use.config="/libs/cards/conf/ThemeColor">
-      <sly data-sly-repeat="${config.valueMap.entrySet.iterator}">
-        <meta name="${item.key}" content="${item.value}">
-      </sly>
-    </sly>
-    <sly data-sly-use.config="/libs/cards/conf/Media">
-      <sly data-sly-repeat="${config.valueMap.entrySet.iterator}">
+      <sly data-sly-repeat="${config.properties.entrySet.iterator}">
         <meta name="${item.key}" content="${item.value}">
       </sly>
     </sly>
