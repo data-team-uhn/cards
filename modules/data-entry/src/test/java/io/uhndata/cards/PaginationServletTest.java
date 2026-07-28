@@ -29,12 +29,12 @@ import java.util.function.Function;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonReader;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -43,14 +43,11 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletRequest;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletResponse;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
 import static org.junit.Assert.assertEquals;
@@ -62,7 +59,6 @@ import static org.mockito.Mockito.mock;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class PaginationServletTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -106,8 +102,7 @@ public class PaginationServletTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private PaginationServlet paginationServlet;
+    private final PaginationServlet paginationServlet = new PaginationServlet();
 
     private BundleContext slingBundleContext;
 
@@ -120,7 +115,7 @@ public class PaginationServletTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         String questionnaireUuid = session.getNode(TEST_QUESTIONNAIRE_PATH).getIdentifier();
 
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of(
                 INCLUDE_ALL_STATUS_PARAMETER, "true",
                 FILTER_NAMES_PARAMETER, QUESTIONNAIRE_TYPE,
@@ -129,7 +124,7 @@ public class PaginationServletTest
                 FILTER_TYPES_PARAMETER, QUESTIONNAIRE_PROPERTY,
                 REQUIRED_PARAMETER, "2"
         ));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -166,7 +161,7 @@ public class PaginationServletTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         String questionUuid = session.getNode(TEST_QUESTIONNAIRE_PATH + "/question_1").getIdentifier();
 
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of(
                 INCLUDE_ALL_STATUS_PARAMETER, "true",
                 FILTER_NAMES_PARAMETER, questionUuid,
@@ -176,7 +171,7 @@ public class PaginationServletTest
                 FILTER_NODE_TYPES_PARAMETER, "cards:TextAnswer",
                 REQUIRED_PARAMETER, "2"
         ));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -195,7 +190,7 @@ public class PaginationServletTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         String questionUuid = session.getNode(TEST_QUESTIONNAIRE_PATH + "/question_1").getIdentifier();
 
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of(
                 INCLUDE_ALL_STATUS_PARAMETER, "true",
                 FILTER_NAMES_PARAMETER, new String[]{questionUuid, QUESTIONNAIRE_TYPE},
@@ -206,8 +201,8 @@ public class PaginationServletTest
                 REQUIRED_PARAMETER, "2"
         ));
 
-        MockSlingHttpServletResponse primaryResponse = new MockSlingHttpServletResponse();
-        MockSlingHttpServletResponse changeableResponse = primaryResponse;
+        MockSlingJakartaHttpServletResponse primaryResponse = new MockSlingJakartaHttpServletResponse();
+        MockSlingJakartaHttpServletResponse changeableResponse = primaryResponse;
 
         this.paginationServlet.doGet(request, changeableResponse);
         assertEquals(primaryResponse, changeableResponse);
@@ -220,7 +215,7 @@ public class PaginationServletTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         String questionUuid = session.getNode(TEST_TEXT_QUESTIONNAIRE_PATH + "/question_1").getIdentifier();
 
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of(
                 INCLUDE_ALL_STATUS_PARAMETER, "true",
                 "descending", "true",
@@ -231,7 +226,7 @@ public class PaginationServletTest
                 FILTER_NODE_TYPES_PARAMETER, "cards:TextAnswer",
                 REQUIRED_PARAMETER, "2"
         ));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -250,7 +245,7 @@ public class PaginationServletTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         String questionUuid = session.getNode(TEST_TEXT_QUESTIONNAIRE_PATH + "/question_1").getIdentifier();
 
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of(
                 INCLUDE_ALL_STATUS_PARAMETER, "true",
                 FILTER_NAMES_PARAMETER, questionUuid,
@@ -260,7 +255,7 @@ public class PaginationServletTest
                 FILTER_NODE_TYPES_PARAMETER, "cards:TextAnswer",
                 REQUIRED_PARAMETER, "2"
         ));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -279,7 +274,7 @@ public class PaginationServletTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         String questionUuid = session.getNode(TEST_TEXT_QUESTIONNAIRE_PATH + "/question_1").getIdentifier();
 
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
         request.setParameterMap(Map.of(
                 INCLUDE_ALL_STATUS_PARAMETER, "true",
                 FILTER_NAMES_PARAMETER, questionUuid,
@@ -289,7 +284,7 @@ public class PaginationServletTest
                 FILTER_NODE_TYPES_PARAMETER, "cards:TextAnswer",
                 REQUIRED_PARAMETER, "2"
         ));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -308,7 +303,7 @@ public class PaginationServletTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         String subjectUuid = session.getNode(TEST_SUBJECT_PATH + "/b1").getIdentifier();
 
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of(
                 INCLUDE_ALL_STATUS_PARAMETER, "true",
                 FILTER_NAMES_PARAMETER, SUBJECT_TYPE,
@@ -317,7 +312,7 @@ public class PaginationServletTest
                 FILTER_TYPES_PARAMETER, SUBJECT_PROPERTY,
                 REQUIRED_PARAMETER, "2"
         ));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -351,9 +346,9 @@ public class PaginationServletTest
     public void doGetForSubjectsResourceAndCreatedDateParameterAndLessOrEqualsComparatorWrites2Matches()
             throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
         request.setParameterMap(generateParameterMapWithCreatedDateFilter("<="));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         JsonObject responseJson = getResponseJsonReader(response);
@@ -368,9 +363,9 @@ public class PaginationServletTest
     public void doGetForSubjectsResourceAndCreatedDateParameterAndMoreOrEqualsComparatorWrites2Matches()
             throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
         request.setParameterMap(generateParameterMapWithCreatedDateFilter(">="));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         JsonObject responseJson = getResponseJsonReader(response);
@@ -385,9 +380,9 @@ public class PaginationServletTest
     public void doGetForSubjectsResourceAndCreatedDateParameterAndEqualsComparatorWrites2Matches()
             throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
         request.setParameterMap(generateParameterMapWithCreatedDateFilter("="));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         JsonObject responseJson = getResponseJsonReader(response);
@@ -402,9 +397,9 @@ public class PaginationServletTest
     public void doGetForSubjectsResourceAndCreatedDateParameterAndNotEqualsComparatorWritesNoMatches()
             throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
         request.setParameterMap(generateParameterMapWithCreatedDateFilter("<>"));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         JsonObject responseJson = getResponseJsonReader(response);
@@ -419,9 +414,9 @@ public class PaginationServletTest
     public void doGetForSubjectsResourceAndCreatedDateParameterAndLessComparatorWritesNoMatches()
             throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
         request.setParameterMap(generateParameterMapWithCreatedDateFilter("<"));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         JsonObject responseJson = getResponseJsonReader(response);
@@ -436,9 +431,9 @@ public class PaginationServletTest
     public void doGetForSubjectsResourceAndCreatedDateParameterAndMoreComparatorWritesNoMatches()
             throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_PATH);
         request.setParameterMap(generateParameterMapWithCreatedDateFilter(">"));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         JsonObject responseJson = getResponseJsonReader(response);
@@ -456,13 +451,13 @@ public class PaginationServletTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         String formUuid = session.getNode("/Forms/f1").getIdentifier();
 
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of(
                 "fieldname", "jcr:uuid",
                 "fieldcomparator", "=",
                 "fieldvalue", formUuid
         ));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -496,9 +491,9 @@ public class PaginationServletTest
     public void doGetForFormsResourceAndQuestionnaireEmptyParameterWritesEmptyResponse()
             throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of("filterempty", QUESTIONNAIRE_TYPE));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -532,9 +527,9 @@ public class PaginationServletTest
     public void doGetForFormsResourceAndSubjectEmptyParameterWritesEmptyResponse()
             throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of("filterempty", SUBJECT_TYPE));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -550,9 +545,9 @@ public class PaginationServletTest
     public void doGetForFormsResourceAndCreatedDateEmptyParameterWritesEmptyResponse()
             throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_FORM_PATH);
         request.setParameterMap(Map.of("filterempty", CREATED_DATE_TYPE));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.paginationServlet.doGet(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -568,14 +563,14 @@ public class PaginationServletTest
     public void doGetForFormsResourceCatchesNullPointerException() throws IOException
     {
         ResourceResolver resolver = mock(ResourceResolver.class);
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(resolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(resolver, this.slingBundleContext);
         request.setResource(this.context.resourceResolver().getResource("/Forms"));
         request.setRemoteUser(ADMIN_USERNAME);
         request.setParameterMap(Map.of("filternotempty", CREATED_DATE_TYPE));
 
-        MockSlingHttpServletResponse primaryResponse = new MockSlingHttpServletResponse();
-        MockSlingHttpServletResponse changeableResponse = primaryResponse;
+        MockSlingJakartaHttpServletResponse primaryResponse = new MockSlingJakartaHttpServletResponse();
+        MockSlingJakartaHttpServletResponse changeableResponse = primaryResponse;
 
         this.paginationServlet.doGet(request, changeableResponse);
         assertEquals(primaryResponse, changeableResponse);
@@ -707,10 +702,10 @@ public class PaginationServletTest
         );
     }
 
-    private MockSlingHttpServletRequest mockServletRequest(String resourcePath)
+    private MockSlingJakartaHttpServletRequest mockServletRequest(String resourcePath)
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setResource(this.context.resourceResolver().getResource(resourcePath));
         request.setRemoteUser(ADMIN_USERNAME);
         return request;
@@ -724,13 +719,13 @@ public class PaginationServletTest
         return formatter.format(date.getTime());
     }
 
-    private JsonObject getResponseJsonReader(MockSlingHttpServletResponse response)
+    private JsonObject getResponseJsonReader(MockSlingJakartaHttpServletResponse response)
     {
         JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
         return reader.readObject();
     }
 
-    private void assertCharacterEncodingAndContentType(MockSlingHttpServletResponse response)
+    private void assertCharacterEncodingAndContentType(MockSlingJakartaHttpServletResponse response)
     {
         assertEquals("UTF-8", response.getCharacterEncoding());
         assertEquals("application/json;charset=UTF-8", response.getContentType());

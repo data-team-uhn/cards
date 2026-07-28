@@ -29,11 +29,11 @@ import java.util.function.Function;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonReader;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -42,14 +42,11 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletRequest;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletResponse;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
 import static org.junit.Assert.assertEquals;
@@ -60,7 +57,6 @@ import static org.junit.Assert.assertNotNull;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class FilterServletTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -76,8 +72,7 @@ public class FilterServletTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private FilterServlet filterServlet;
+    private final FilterServlet filterServlet = new FilterServlet();
 
     private BundleContext slingBundleContext;
 
@@ -86,11 +81,11 @@ public class FilterServletTest
     @Test
     public void doGetForRequestWithQuestionnaireParameterWithoutDeepJsonSuffix() throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest("/Questionnaires");
+        MockSlingJakartaHttpServletRequest request = mockServletRequest("/Questionnaires");
         request.setParameterMap(Map.of(
                 QUESTIONNAIRE_PROPERTY, TEST_TEXT_QUESTIONNAIRE_PATH
         ));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.filterServlet.doGet(request, response);
         JsonObject jsonObject = getResponseJsonReader(response);
@@ -101,11 +96,11 @@ public class FilterServletTest
     @Test
     public void doGetForRequestWithQuestionnaireParameterWithDeepJsonSuffix() throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest("/Questionnaires");
+        MockSlingJakartaHttpServletRequest request = mockServletRequest("/Questionnaires");
         request.setParameterMap(Map.of(
                 QUESTIONNAIRE_PROPERTY, TEST_TEXT_QUESTIONNAIRE_PATH + ".deep.json"
         ));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.filterServlet.doGet(request, response);
         JsonObject jsonObject = getResponseJsonReader(response);
@@ -116,8 +111,8 @@ public class FilterServletTest
     @Test
     public void doGetForRequestWithoutQuestionnaireParameter() throws IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest("/Questionnaires");
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = mockServletRequest("/Questionnaires");
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.filterServlet.doGet(request, response);
         JsonObject jsonObject = getResponseJsonReader(response);
@@ -203,15 +198,15 @@ public class FilterServletTest
         return this.context.resourceResolver().adaptTo(Session.class).getNodeByIdentifier(identifier).getPath();
     }
 
-    private MockSlingHttpServletRequest mockServletRequest(String resourcePath)
+    private MockSlingJakartaHttpServletRequest mockServletRequest(String resourcePath)
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setResource(this.context.resourceResolver().getResource(resourcePath));
         return request;
     }
 
-    private JsonObject getResponseJsonReader(MockSlingHttpServletResponse response)
+    private JsonObject getResponseJsonReader(MockSlingJakartaHttpServletResponse response)
     {
         JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
         return reader.readObject();

@@ -2252,7 +2252,6 @@
 
   <modules>
     <module>modules</module>
-    <module>aggregated-cnd</module>
     <module>aggregated-frontend</module>
     <module>test-resources</module>
     <module>distribution</module>

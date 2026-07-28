@@ -29,17 +29,17 @@ import java.util.function.Function;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonReader;
 import javax.script.Bindings;
 import javax.script.SimpleBindings;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -48,15 +48,11 @@ import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.MockSlingScriptHelper;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletRequest;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletResponse;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
 import io.uhndata.cards.spi.QuickSearchEngine;
@@ -65,6 +61,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -72,7 +69,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class QueryBuilderTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -107,18 +103,16 @@ public class QueryBuilderTest
     private static final String ROWS = "rows";
     private static final String RETURNED_ROWS = "returnedrows";
     private static final String TOTAL_ROWS = "totalrows";
-    private static final String REQUEST = "request";
+    private static final String REQUEST = "jakartaRequest";
     private static final String RESOLVER = "resolver";
     private static final String SLING = "sling";
 
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private QueryBuilder queryBuilder;
+    private final QueryBuilder queryBuilder = new QueryBuilder();
 
-    @Mock
-    private QuickSearchEngine quickSearchEngine;
+    private final QuickSearchEngine quickSearchEngine = mock(QuickSearchEngine.class);
 
     private BundleContext slingBundleContext;
 
@@ -127,7 +121,7 @@ public class QueryBuilderTest
     @Test
     public void initForJcrQuerySelectsQuestionnairesAndSerializesChildren()
     {
-        MockSlingHttpServletRequest request = mockServletRequest(TEST_TEXT_QUESTIONNAIRE_PATH, true);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(TEST_TEXT_QUESTIONNAIRE_PATH, true);
         request.setParameterMap(Map.of(
                 ALLOWED_RESOURCE_TYPES, new String[]{},
                 QUERY, "SELECT q.* FROM [cards:Questionnaire] as q",
@@ -172,7 +166,7 @@ public class QueryBuilderTest
     @Test
     public void initForJcrQueryWithNotParsableLimitValueAndDoesNotSerializeChildren()
     {
-        MockSlingHttpServletRequest request = mockServletRequest(TEST_TEXT_QUESTIONNAIRE_PATH, true);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(TEST_TEXT_QUESTIONNAIRE_PATH, true);
         request.setParameterMap(Map.of(
                 ALLOWED_RESOURCE_TYPES, new String[]{},
                 QUERY, "SELECT q.* FROM [cards:Questionnaire] as q",
@@ -210,7 +204,7 @@ public class QueryBuilderTest
     public void initForQuickQuerySelectsForms()
     {
         when(this.quickSearchEngine.isTypeSupported(QUICK)).thenReturn(true);
-        MockSlingHttpServletRequest request = mockServletRequest("/Forms/f1", true);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest("/Forms/f1", true);
         request.setParameterMap(Map.of(
                 ALLOWED_RESOURCE_TYPES, new String[]{FORM_TYPE},
                 QUICK, "searchValue",
@@ -247,7 +241,7 @@ public class QueryBuilderTest
     @Test
     public void initForFullTextQuery()
     {
-        MockSlingHttpServletRequest request = mockServletRequest("/Forms/f1", true);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest("/Forms/f1", true);
         request.setParameterMap(Map.of(
                 ALLOWED_RESOURCE_TYPES, new String[]{},
                 FULL_TEXT, "searchValue",
@@ -281,7 +275,7 @@ public class QueryBuilderTest
     @Test
     public void initForLuceneQuery()
     {
-        MockSlingHttpServletRequest request = mockServletRequest("/Forms/f1", true);
+        MockSlingJakartaHttpServletRequest request = mockServletRequest("/Forms/f1", true);
         request.setParameterMap(Map.of(
                 ALLOWED_RESOURCE_TYPES, new String[]{},
                 LUCENE, "value: 'searchValue'",
@@ -428,18 +422,18 @@ public class QueryBuilderTest
         return this.context.resourceResolver().adaptTo(Session.class).getNodeByIdentifier(identifier).getPath();
     }
 
-    private MockSlingHttpServletRequest mockServletRequest(String resourcePath, boolean isRecursive)
+    private MockSlingJakartaHttpServletRequest mockServletRequest(String resourcePath, boolean isRecursive)
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setResource(this.context.resourceResolver().getResource(resourcePath));
 
         return request;
     }
 
-    private Bindings createBindings(SlingHttpServletRequest request)
+    private Bindings createBindings(SlingJakartaHttpServletRequest request)
     {
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         MockSlingScriptHelper sling = new MockSlingScriptHelper(request, response, this.slingBundleContext);
 
         Bindings bindings = new SimpleBindings();

@@ -24,22 +24,19 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletRequest;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletResponse;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
 import static org.junit.Assert.assertEquals;
@@ -53,7 +50,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class CountServletTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -72,8 +68,7 @@ public class CountServletTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private CountServlet countServlet;
+    private final CountServlet countServlet = new CountServlet();
 
     private BundleContext slingBundleContext;
 
@@ -85,8 +80,8 @@ public class CountServletTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         String questionnaireUuid = session.getNode(TEST_QUESTIONNAIRE_PATH).getIdentifier();
 
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setResource(this.context.resourceResolver().getResource("/Forms"));
         request.setRemoteUser("admin");
         request.setParameterMap(Map.of(
@@ -99,7 +94,7 @@ public class CountServletTest
                 "fieldname", new String[]{NODE_TYPE},
                 "fieldcomparator", new String[]{"="},
                 "fieldvalue", new String[]{FORM_TYPE}));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.countServlet.doGet(request, response);
         assertEquals("UTF-8", response.getCharacterEncoding());
@@ -131,12 +126,12 @@ public class CountServletTest
     @Test
     public void doGetForSpecialEmptyFilterWritesEmptyResponse() throws IOException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setResource(this.context.resourceResolver().getResource("/Forms"));
         request.setRemoteUser("admin");
         request.setParameterMap(Map.of("filterempty", new String[]{QUESTIONNAIRE_TYPE}));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.countServlet.doGet(request, response);
         assertEquals("UTF-8", response.getCharacterEncoding());
@@ -152,14 +147,14 @@ public class CountServletTest
     public void doGetForNotSpecialEmptyAndNonEmptyFilterWritesNotEmptyResponse() throws IOException, RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setResource(this.context.resourceResolver().getResource("/Forms"));
         request.setRemoteUser("admin");
         request.setParameterMap(Map.of(
                 "filterempty", new String[]{QUESTION_TYPE},
                 "filternotempty", new String[]{SUBJECT_TYPE}));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.countServlet.doGet(request, response);
         assertEquals("UTF-8", response.getCharacterEncoding());
@@ -192,10 +187,10 @@ public class CountServletTest
     @Test
     public void doGetForNotAdminRemoteUserWritesError() throws IOException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setRemoteUser("notAdmin");
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.countServlet.doGet(request, response);
         assertEquals(403, response.getStatus());
@@ -212,10 +207,10 @@ public class CountServletTest
     @Test
     public void doGetForNotAdminRemoteUserCatchesException() throws IOException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setRemoteUser("notAdmin");
-        SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
+        SlingJakartaHttpServletResponse response = mock(SlingJakartaHttpServletResponse.class);
         when(response.getWriter()).thenThrow(new IOException());
         this.countServlet.doGet(request, response);
         verify(response).setStatus(403);

@@ -18,16 +18,14 @@
  */
 package io.uhndata.cards.spi;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -40,7 +38,6 @@ import static org.junit.Assert.assertTrue;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SearchUtilsTest
 {
 

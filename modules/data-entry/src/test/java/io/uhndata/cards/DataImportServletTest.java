@@ -28,29 +28,25 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.query.Query;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
-import org.assertj.core.api.Assertions;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletRequest;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletResponse;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -59,7 +55,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class DataImportServletTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -94,8 +89,7 @@ public class DataImportServletTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private DataImportServlet dataImportServlet;
+    private final DataImportServlet dataImportServlet = new DataImportServlet();
 
     private BundleContext slingBundleContext;
 
@@ -104,15 +98,15 @@ public class DataImportServletTest
     @Test
     public void doPostWithoutDataTypeParameterValueSendsError() throws IOException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setParameterMap(Map.of(
                 SUBJECT_TYPE_PARAMETER, ROOT_SUBJECT_TYPE,
                 QUESTIONNAIRE_PARAMETER, TEST_QUESTIONNAIRE_PATH,
                 PATCH_PARAMETER, "true"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
         assertEquals("Required parameter \":data\" missing", response.getStatusMessage());
@@ -121,15 +115,15 @@ public class DataImportServletTest
     @Test
     public void doPostWithoutQuestionnaireTypeParameterValueSendsError() throws IOException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setParameterMap(Map.of(
                 SUBJECT_TYPE_PARAMETER, ROOT_SUBJECT_TYPE,
                 DATA_PARAMETER, "",
                 PATCH_PARAMETER, "true"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
         assertEquals("Required parameter \":questionnaire\" missing", response.getStatusMessage());
@@ -138,8 +132,8 @@ public class DataImportServletTest
     @Test
     public void doPostWithInvalidQuestionnaireTypeParameterValueSendsError() throws IOException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         String invalidQuestionnaireName = "/Questionnaires/InvalidQuestionnaire";
         request.setParameterMap(Map.of(
                 SUBJECT_TYPE_PARAMETER, ROOT_SUBJECT_TYPE,
@@ -148,7 +142,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "true"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
         assertEquals("Invalid questionnaire name " + invalidQuestionnaireName, response.getStatusMessage());
@@ -157,8 +151,8 @@ public class DataImportServletTest
     @Test
     public void doPostUpdatesValueInTextAnswer() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tText Question\tText Question_notes\r\n"
                 + "f3\tRoot Subject\tnewValue\tnewNote";
@@ -169,7 +163,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "true"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
         Node form = this.context.resourceResolver().getResource("/Forms/f3").adaptTo(Node.class);
         assertEquals("newValue", form.getNode("a1").getProperty(VALUE_PROPERTY).getString());
@@ -179,8 +173,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesValueInTextAnswerOfDoubleNestedSection() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tText Question\r\n"
                 + "f1\tRoot Subject\tnewValue";
@@ -191,7 +185,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "true"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
         Node form = this.context.resourceResolver().getResource("/Forms/f1").adaptTo(Node.class);
         assertTrue(form.getNode("s1").getNode("a6").hasProperty(VALUE_PROPERTY));
@@ -203,8 +197,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesValueInLongAnswerForChildSubject() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tBranch ID\tLong Question\r\n"
                 + "f2\tRoot Subject\tBranch Subject\t100";
@@ -215,7 +209,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "true"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
         Node form = this.context.resourceResolver().getResource("/Forms/f2").adaptTo(Node.class);
         assertEquals(100, form.getNode("a1").getProperty(VALUE_PROPERTY).getLong());
@@ -225,8 +219,8 @@ public class DataImportServletTest
     public void doPostCreatesSubjectOfPatientTypeAndCreatesNewFormWithTextValueAnswers() throws IOException,
             RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tPatient ID\tText Question\tText2 Question\r\n"
                 + "f5\tPatient Subject\tnewValue\tnewValue2";
@@ -236,7 +230,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node formBySubject = getFormOfPatientSubjectType();
@@ -248,8 +242,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesNewFormWithLongValueAnswer() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tLong Question\r\n"
                 + "f5\tRoot2 Subject\t100";
@@ -260,7 +254,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node subject = this.context.resourceResolver().getResource(TEST_SUBJECT_2_PATH).adaptTo(Node.class);
@@ -272,8 +266,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesNewFormWithDoubleValueAnswer() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tDouble Question\r\n"
                 + "f5\tRoot2 Subject\t100";
@@ -284,7 +278,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node subject = this.context.resourceResolver().getResource(TEST_SUBJECT_2_PATH).adaptTo(Node.class);
@@ -296,8 +290,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesNewFormWithDecimalValueAnswer() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tDecimal Question\r\n"
                 + "f5\tRoot2 Subject\t100";
@@ -308,7 +302,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node subject = this.context.resourceResolver().getResource(TEST_SUBJECT_2_PATH).adaptTo(Node.class);
@@ -320,8 +314,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesNewFormWithBooleanValueAnswer() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tBoolean Question\r\n"
                 + "f5\tRoot2 Subject\ttrue";
@@ -332,7 +326,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node subject = this.context.resourceResolver().getResource(TEST_SUBJECT_2_PATH).adaptTo(Node.class);
@@ -343,8 +337,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesNewFormWithVocabularyValueAnswer() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tOptions Question\r\n"
                 + "f5\tRoot2 Subject\t/Vocabularies/Option1";
@@ -355,7 +349,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node subject = this.context.resourceResolver().getResource(TEST_SUBJECT_2_PATH).adaptTo(Node.class);
@@ -366,8 +360,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesNewFormWithVocabularyValueAnswerIgnoresCase() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tOptions Question\r\n"
                 + "f5\tRoot2 Subject\t/VOCABULARIES/OPTION2";
@@ -378,7 +372,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node subject = this.context.resourceResolver().getResource(TEST_SUBJECT_2_PATH).adaptTo(Node.class);
@@ -389,8 +383,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesNewFormWithTimeValueAnswer() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tTime Question\r\n"
                 + "f5\tRoot2 Subject\t01:23:13";
@@ -401,7 +395,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node subject = this.context.resourceResolver().getResource(TEST_SUBJECT_2_PATH).adaptTo(Node.class);
@@ -412,8 +406,8 @@ public class DataImportServletTest
     @Test
     public void doPostCreatesNewFormWithDateValueAnswer() throws IOException, RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         final String date = "2023-01-01";
         String dataCsv = "Identifier\tRoot ID\tDate Question\r\n"
                 + "f5\tRoot2 Subject\t" + date;
@@ -424,7 +418,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node subject = this.context.resourceResolver().getResource(TEST_SUBJECT_2_PATH).adaptTo(Node.class);
@@ -434,7 +428,7 @@ public class DataImportServletTest
     }
 
     @Test
-    public void doPostCatchesRepositoryException() throws RepositoryException
+    public void doPostCatchesRepositoryException() throws RepositoryException, IOException
     {
         ResourceResolver resolver = mock(ResourceResolver.class);
         Session mockedSession = mock(Session.class);
@@ -445,18 +439,18 @@ public class DataImportServletTest
         when(mockedSession.getWorkspace()).thenReturn(mockedWorkspace);
         when(mockedWorkspace.getQueryManager()).thenThrow(new RepositoryException());
 
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resolver, this.slingBundleContext);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = new MockSlingJakartaHttpServletRequest(resolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
-        Assertions.assertThatCode(() -> this.dataImportServlet.doPost(request, response)).doesNotThrowAnyException();
+        this.dataImportServlet.doPost(request, response);
     }
 
     @Test
     public void doPostCatchesNumberFormatExceptionAndCreatesNewFormWithAnswerWithoutValue() throws IOException,
             RepositoryException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tRoot ID\tDouble Question\r\n"
                 + "f5\tRoot2 Subject\tnotParsableValue";
@@ -467,7 +461,7 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "false"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
         this.dataImportServlet.doPost(request, response);
 
         Node subject = this.context.resourceResolver().getResource(TEST_SUBJECT_2_PATH).adaptTo(Node.class);
@@ -477,10 +471,10 @@ public class DataImportServletTest
     }
 
     @Test
-    public void doPostForUnrealSubject()
+    public void doPostForUnrealSubject() throws IOException
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         String dataCsv = "Identifier\tUnreal ID\tText Question\r\n"
                 + "f3\tUnreal Subject\tnewValue";
@@ -491,8 +485,8 @@ public class DataImportServletTest
                 PATCH_PARAMETER, "true"
         ));
 
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
-        Assertions.assertThatCode(() -> this.dataImportServlet.doPost(request, response)).doesNotThrowAnyException();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
+        this.dataImportServlet.doPost(request, response);
     }
 
     @Before

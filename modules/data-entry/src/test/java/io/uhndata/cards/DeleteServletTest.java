@@ -30,25 +30,22 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.version.VersionManager;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
-import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletRequest;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingJakartaHttpServletResponse;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.BundleContext;
 
 import static org.junit.Assert.assertEquals;
@@ -64,7 +61,6 @@ import static org.mockito.Mockito.when;
  *
  * @version $Id$
  */
-@RunWith(MockitoJUnitRunner.class)
 public class DeleteServletTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
@@ -94,8 +90,7 @@ public class DeleteServletTest
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
-    @InjectMocks
-    private DeleteServlet deleteServlet;
+    private final DeleteServlet deleteServlet = new DeleteServlet();
 
     private BundleContext slingBundleContext;
 
@@ -105,8 +100,8 @@ public class DeleteServletTest
     public void doDeleteNotRecursiveForFormResourceWithItsSectionAndAnswerChildren() throws ServletException,
             IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest("/Forms/f1", false);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = mockServletRequest("/Forms/f1", false);
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         ResourceResolver resolver = this.context.resourceResolver();
         this.deleteServlet.doDelete(request, response);
@@ -119,8 +114,8 @@ public class DeleteServletTest
     public void doDeleteNotRecursiveForSubjectResourceWithReferencesSendsJsonError() throws ServletException,
             IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(TEST_SUBJECT_PATH, false);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(TEST_SUBJECT_PATH, false);
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         ResourceResolver resolver = this.context.resourceResolver();
         this.deleteServlet.doDelete(request, response);
@@ -138,8 +133,8 @@ public class DeleteServletTest
         Node rootSubjectType = session.getNode(ROOT_SUBJECT_TYPE);
         questionnaire.setProperty("requiredSubjectTypes", rootSubjectType.getIdentifier(), PropertyType.REFERENCE);
 
-        MockSlingHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_TYPE, false);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(ROOT_SUBJECT_TYPE, false);
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         ResourceResolver resolver = this.context.resourceResolver();
         this.deleteServlet.doDelete(request, response);
@@ -153,8 +148,8 @@ public class DeleteServletTest
     public void doDeleteNotRecursiveForSectionResourceWithReferencesSendsJsonError() throws ServletException,
             IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(TEST_QUESTIONNAIRE_PATH + "/section_1", false);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(TEST_QUESTIONNAIRE_PATH + "/section_1", false);
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         ResourceResolver resolver = this.context.resourceResolver();
         this.deleteServlet.doDelete(request, response);
@@ -167,9 +162,9 @@ public class DeleteServletTest
     public void doDeleteNotRecursiveForQuestionResourceWithReferencesSendsJsonError() throws ServletException,
             IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(TEST_QUESTIONNAIRE_PATH + "/section_1/question_6",
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(TEST_QUESTIONNAIRE_PATH + "/section_1/question_6",
                 false);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         ResourceResolver resolver = this.context.resourceResolver();
         this.deleteServlet.doDelete(request, response);
@@ -182,8 +177,8 @@ public class DeleteServletTest
     public void doDeleteNotRecursiveForSubjectTypeResourceWithReferencesInSubjectSendsJsonError()
             throws ServletException, IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(BRANCH_SUBJECT_TYPE, false);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(BRANCH_SUBJECT_TYPE, false);
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         ResourceResolver resolver = this.context.resourceResolver();
         this.deleteServlet.doDelete(request, response);
@@ -205,8 +200,8 @@ public class DeleteServletTest
                         "reference",
                         this.context.resourceResolver().getResource(LEAF_SUBJECT_TYPE).adaptTo(Node.class))
                 .commit();
-        MockSlingHttpServletRequest request = mockServletRequest(LEAF_SUBJECT_TYPE, false);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(LEAF_SUBJECT_TYPE, false);
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         ResourceResolver resolver = this.context.resourceResolver();
         this.deleteServlet.doDelete(request, response);
@@ -227,8 +222,8 @@ public class DeleteServletTest
                         "requiredSubjectTypes",
                         this.context.resourceResolver().getResource(LEAF_SUBJECT_TYPE).adaptTo(Node.class))
                 .commit();
-        MockSlingHttpServletRequest request = mockServletRequest(LEAF_SUBJECT_TYPE, false);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(LEAF_SUBJECT_TYPE, false);
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         ResourceResolver resolver = this.context.resourceResolver();
         this.deleteServlet.doDelete(request, response);
@@ -241,8 +236,8 @@ public class DeleteServletTest
     @Test
     public void doDeleteRecursiveForQuestionnaireResourceWithReferences() throws ServletException, IOException
     {
-        MockSlingHttpServletRequest request = mockServletRequest(TEST_TEXT_QUESTIONNAIRE_PATH, true);
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletRequest request = mockServletRequest(TEST_TEXT_QUESTIONNAIRE_PATH, true);
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         ResourceResolver resolver = this.context.resourceResolver();
         this.deleteServlet.doDelete(request, response);
@@ -261,9 +256,9 @@ public class DeleteServletTest
         when(mockedSession.getWorkspace()).thenReturn(mockedWorkspace);
         when(mockedWorkspace.getVersionManager()).thenThrow(new RepositoryException());
 
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request = new MockSlingJakartaHttpServletRequest(resolver, this.slingBundleContext);
         request.setResource(this.resourceResolver.getResource("/Forms/f1"));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.deleteServlet.doDelete(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -294,10 +289,10 @@ public class DeleteServletTest
         when(mockedWorkspace.getVersionManager()).thenReturn(mockedVersionManager);
         doThrow(new AccessDeniedException()).when(mockedSession).save();
 
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request = new MockSlingJakartaHttpServletRequest(resolver, this.slingBundleContext);
         request.setParameterMap(Map.of("recursive", false));
         request.setResource(this.resourceResolver.getResource("/Forms/f1"));
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.deleteServlet.doDelete(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -321,11 +316,11 @@ public class DeleteServletTest
         when(mockedWorkspace.getVersionManager()).thenReturn(mockedVersionManager);
         doThrow(new AccessDeniedException()).when(mockedSession).save();
 
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request = new MockSlingJakartaHttpServletRequest(resolver, this.slingBundleContext);
         request.setParameterMap(Map.of("recursive", false));
         request.setResource(this.resourceResolver.getResource("/Forms/f1"));
         request.setRemoteUser("notAdmin");
-        MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
+        MockSlingJakartaHttpServletResponse response = new MockSlingJakartaHttpServletResponse();
 
         this.deleteServlet.doDelete(request, response);
         assertCharacterEncodingAndContentType(response);
@@ -393,10 +388,10 @@ public class DeleteServletTest
     }
 
 
-    private MockSlingHttpServletRequest mockServletRequest(String resourcePath, boolean isRecursive)
+    private MockSlingJakartaHttpServletRequest mockServletRequest(String resourcePath, boolean isRecursive)
     {
-        MockSlingHttpServletRequest request =
-                new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
+        MockSlingJakartaHttpServletRequest request =
+                new MockSlingJakartaHttpServletRequest(this.resourceResolver, this.slingBundleContext);
         request.setResource(this.context.resourceResolver().getResource(resourcePath));
         request.setParameterMap(Map.of(
                 "recursive", isRecursive
@@ -404,13 +399,13 @@ public class DeleteServletTest
         return request;
     }
 
-    private JsonObject getResponseJsonReader(MockSlingHttpServletResponse response)
+    private JsonObject getResponseJsonReader(MockSlingJakartaHttpServletResponse response)
     {
         JsonReader reader = Json.createReader(new StringReader(response.getOutputAsString()));
         return reader.readObject();
     }
 
-    private void assertConflictResponseError(MockSlingHttpServletResponse response, String expectedMessage)
+    private void assertConflictResponseError(MockSlingJakartaHttpServletResponse response, String expectedMessage)
     {
         assertEquals(HttpServletResponse.SC_CONFLICT, response.getStatus());
         JsonObject responseJson = getResponseJsonReader(response);
@@ -421,7 +416,7 @@ public class DeleteServletTest
     }
 
 
-    private void assertCharacterEncodingAndContentType(MockSlingHttpServletResponse response)
+    private void assertCharacterEncodingAndContentType(MockSlingJakartaHttpServletResponse response)
     {
         assertEquals("UTF-8", response.getCharacterEncoding());
         assertEquals("application/json;charset=UTF-8", response.getContentType());
