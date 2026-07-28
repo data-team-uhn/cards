@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { WebpackAssetsManifest } from 'webpack-assets-manifest';
 import MinimizerPlugin from 'minimizer-webpack-plugin';
 import ESLintPlugin from 'eslint-webpack-plugin';
@@ -100,7 +99,6 @@ export default (env) => {
 ENTRY_CONTENT
     },
     plugins: [
-      new CleanWebpackPlugin(),
       new WebpackAssetsManifest({
         output: "assets.json"
       }),
@@ -141,7 +139,7 @@ ENTRY_CONTENT
       extensions: ['.*', '.js', '.jsx', '.ts', '.tsx']
     },
     optimization: {
-      usedExports: false,
+      usedExports: true,
       minimize: isProduction,
       minimizer: [
         new MinimizerPlugin({
@@ -166,7 +164,7 @@ ENTRY_CONTENT
           },
           default: {
             minChunks: 2,
-            minSize: 10000000,
+            minSize: 1000,
             name: false,
             priority: -20,
             reuseExistingChunk: true
@@ -175,6 +173,7 @@ ENTRY_CONTENT
       }
     },
     output: {
+      clean: true,
       library: {
         type: "modern-module",
       },
