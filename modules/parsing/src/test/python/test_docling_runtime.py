@@ -287,6 +287,33 @@ class TestDrainRequestBody:
         assert handler.unread == 0
 
 
+class TestPositiveOption:
+    """Chunking options read from a ``/chunk`` JSON body.
+
+    ``bool`` is the case that matters: it subclasses ``int``, so the inline
+    ``isinstance(..., int) and > 0`` check this replaced accepted ``{"max_tokens": true}`` and
+    passed ``max_tokens=1`` to the chunker — a one-token budget that shatters the document.
+    """
+
+    def test_positive_int_accepted(self):
+        assert daemon._positive_option({"max_tokens": 2000}, "max_tokens") == 2000
+
+    def test_absent_is_none(self):
+        assert daemon._positive_option({}, "max_tokens") is None
+
+    def test_zero_and_negative_rejected(self):
+        assert daemon._positive_option({"max_tokens": 0}, "max_tokens") is None
+        assert daemon._positive_option({"max_tokens": -5}, "max_tokens") is None
+
+    def test_bool_rejected(self):
+        assert daemon._positive_option({"max_tokens": True}, "max_tokens") is None
+        assert daemon._positive_option({"max_tokens": False}, "max_tokens") is None
+
+    def test_non_integers_rejected(self):
+        for value in ("2000", 2.5, None, [2000], {"n": 1}):
+            assert daemon._positive_option({"max_tokens": value}, "max_tokens") is None, value
+
+
 class TestSafeSuffix:
     def test_accepts_supported_types(self):
         assert daemon._safe_suffix("proto.pdf") == ".pdf"
