@@ -104,7 +104,8 @@ public class ConfiguredGenericMapper extends AbstractConditionalClarityDataProce
     {
         String usedValue = this.value;
         if (usedValue.matches("%\\{.*\\}%")) {
-            usedValue = input.get(usedValue.substring(2, usedValue.length() - 1));
+            // Strip both the leading "%{" and the trailing "}%" to be left with just the column name
+            usedValue = input.get(usedValue.substring(2, usedValue.length() - 2));
         }
         input.put(this.column, usedValue);
         if (this.enableLogging) {
