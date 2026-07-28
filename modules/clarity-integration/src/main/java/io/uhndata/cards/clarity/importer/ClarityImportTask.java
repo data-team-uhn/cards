@@ -39,8 +39,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 import javax.jcr.version.VersionManager;
 
 import org.apache.commons.lang3.StringUtils;
@@ -669,38 +672,98 @@ public class ClarityImportTask implements Runnable
         ClarityQuestionnaireMapping questionnaireMapping, Map<String, String> row)
         throws ParseException, RepositoryException, SQLException
     {
-        this.versionManager.get().checkout(formNode.getPath());
+        boolean changed = false;
         for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
             if (StringUtils.isBlank(questionMapping.question)) {
                 continue;
             }
-            replaceFormAnswer(resolver, formNode,
+            changed |= replaceFormAnswer(resolver, formNode,
                 generateAnswerNodeProperties(resolver, questionMapping, row));
-            LOGGER.info("{} Updated form {}", this.config.name(), formNode.getPath());
         }
-        // Perform a JCR check-in to this cards:Form node once the import is completed
-        this.nodesToCheckin.get().add(formNode.getPath());
+        // Importers that re-read the same data on every run would otherwise pile up identical
+        // revisions, so leave the form checked in and untouched when none of its answers moved
+        if (changed) {
+            LOGGER.info("{} Updated form {}", this.config.name(), formNode.getPath());
+            // Perform a JCR check-in to this cards:Form node once the import is completed
+            this.nodesToCheckin.get().add(formNode.getPath());
+        }
     }
 
-    private void replaceFormAnswer(final ResourceResolver resolver, final Resource form,
+    /**
+     * Copy an answer value into the matching answer node of a form, if it isn't already there.
+     *
+     * @param resolver ResourceResolver to use for reading and writing to the JCR
+     * @param form the form holding the answer to update
+     * @param props the answer properties, as built by {@link #generateAnswerNodeProperties}
+     * @return {@code true} if an answer was actually modified, {@code false} if the form already
+     *         held this value and was left alone
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private boolean replaceFormAnswer(final ResourceResolver resolver, final Resource form,
         final Map<String, Object> props) throws RepositoryException
     {
         final String questionUUID = ((Node) props.get(QUESTION_PROP)).getIdentifier();
+        final Value newValue = toJcrValue(resolver, props.get(ClarityImportTask.VALUE_PROP));
+        if (newValue == null) {
+            return false;
+        }
+        boolean changed = false;
         for (Resource answer : form.getChildren()) {
             String thisAnswersQuestionUUID = answer.getValueMap().get(QUESTION_PROP, "");
-            if (questionUUID.equals(thisAnswersQuestionUUID)) {
-                // Now, copy the value from the props Map into the cards:Answer JCR node
-                Object newValue = props.get(ClarityImportTask.VALUE_PROP);
-                if (newValue instanceof String) {
-                    answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP, (String) newValue);
-                } else if (newValue instanceof Calendar) {
-                    answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP, (Calendar) newValue);
-                } else if (newValue instanceof Integer) {
-                    answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP,
-                        ((Integer) newValue).longValue());
-                }
+            if (!questionUUID.equals(thisAnswersQuestionUUID)) {
+                continue;
             }
+            final Node answerNode = answer.adaptTo(Node.class);
+            if (holdsValue(answerNode, newValue)) {
+                continue;
+            }
+            // A versionable node may only be modified while it is checked out, so do it now that
+            // we know there is something to write
+            this.versionManager.get().checkout(form.getPath());
+            answerNode.setProperty(ClarityImportTask.VALUE_PROP, newValue);
+            changed = true;
         }
+        return changed;
+    }
+
+    /**
+     * Convert an answer value generated from a Clarity row into a JCR value.
+     *
+     * @param resolver ResourceResolver providing the JCR session
+     * @param value the value to convert
+     * @return the equivalent JCR value, or {@code null} if the value is missing or of a type that
+     *         the importer doesn't store
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private Value toJcrValue(final ResourceResolver resolver, final Object value) throws RepositoryException
+    {
+        final ValueFactory valueFactory = resolver.adaptTo(Session.class).getValueFactory();
+        if (value instanceof String) {
+            return valueFactory.createValue((String) value);
+        } else if (value instanceof Calendar) {
+            return valueFactory.createValue((Calendar) value);
+        } else if (value instanceof Integer) {
+            return valueFactory.createValue(((Integer) value).longValue());
+        }
+        return null;
+    }
+
+    /**
+     * Check whether an answer node already stores exactly the given value.
+     *
+     * @param answer the answer node to inspect
+     * @param value the value to compare against
+     * @return {@code true} if the answer already holds this single value, with the same type
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private boolean holdsValue(final Node answer, final Value value) throws RepositoryException
+    {
+        if (!answer.hasProperty(ClarityImportTask.VALUE_PROP)) {
+            return false;
+        }
+        final Property property = answer.getProperty(ClarityImportTask.VALUE_PROP);
+        return !property.isMultiple() && property.getType() == value.getType()
+            && property.getString().equals(value.getString());
     }
 
     // Methods for storing a new form
