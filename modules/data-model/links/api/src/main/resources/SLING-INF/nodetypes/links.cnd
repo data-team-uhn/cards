@@ -59,6 +59,12 @@
   // Set on link definition that cannot be instantiated directly, but only as automatically created backlinks.
   - backlinkOnly (BOOLEAN) = false
 
+  // Whether links of this type should be listed in the UI along with the linked resource.
+  // Some links are purely technical and should not be displayed to the users. And sometimes
+  // a link is often only worth following in one direction, so the definition used for the reverse direction
+  // can be hidden while the forward one remains visible.
+  - displayed (BOOLEAN) = true
+
   // How the current resource should behave when the referenced resource is deleted.
   // Accepted values:
   // - IGNORE -> keep the link as a broken reference; only valid for weak links

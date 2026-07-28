@@ -71,6 +71,12 @@ public interface LinkDefinition
     String BACKLINK_ONLY_PROPERTY = "backlinkOnly";
 
     /**
+     * The name of the property of a LinkDefinition node that specifies whether links of this type are displayed in the
+     * UI.
+     */
+    String DISPLAYED_PROPERTY = "displayed";
+
+    /**
      * The name of the property of a LinkDefinition node that specifies what happens with the referencing resource when
      * the reference resource is deleted.
      */
@@ -175,6 +181,16 @@ public interface LinkDefinition
      * @return {@code true} if this type of link should not be offered to users as a valid link type
      */
     boolean isBacklinkOnly();
+
+    /**
+     * Check if links of this type should be listed in the UI along with the resource they link to. A backlink is often
+     * only worth following in one direction, so the definition used for the reverse direction can be hidden while the
+     * forward one remains visible.
+     *
+     * @return {@code true} if this type of link should be displayed, which is the case unless it is explicitly turned
+     *         off
+     */
+    boolean isDisplayed();
 
     /**
      * Retrieve the policy to use when the linked resource is deleted.

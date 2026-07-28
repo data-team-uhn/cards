@@ -527,6 +527,19 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
         }
 
         @Override
+        public boolean isDisplayed()
+        {
+            try {
+                // Unless explicitly disabled, links are displayed by default
+                return this.definition.hasProperty(DISPLAYED_PROPERTY)
+                    ? this.definition.getProperty(DISPLAYED_PROPERTY).getBoolean() : true;
+            } catch (RepositoryException e) {
+                LOGGER.warn("Invalid displayed setting on {}", this.definition);
+                return true;
+            }
+        }
+
+        @Override
         public OnDelete getOnDeletePolicy()
         {
             try {
@@ -777,7 +790,8 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
             }
             result.add("label", this.getLabel())
                 .add("resourceLabel", this.getResourceLabel())
-                .add("weak", this.isWeak());
+                .add("weak", this.isWeak())
+                .add("displayed", this.getDefinition().isDisplayed());
             return result.build();
         }
     }
