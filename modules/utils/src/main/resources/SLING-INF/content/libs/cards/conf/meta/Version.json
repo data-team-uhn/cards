@@ -1,4 +1,4 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "PlatformName": "${platform.name}"
+  "version": "${cards.version}"
 }
