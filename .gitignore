@@ -53,6 +53,9 @@ node_modules
 **/aggregated-frontend/src/main/frontend/src/
 **/aggregated-frontend/src/main/frontend/webpack.config.js
 
+# Python bytecode caches
+__pycache__/
+
 # Running instance
 /sling/
 /.cards-data*/
