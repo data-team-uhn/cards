@@ -28,10 +28,10 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `mvn install -PintegrationTests` to run integration tests
 
-A docker image can optionally be built with `mvn install -Pdocker`, if docker is installed, running, and the current user has access to the docker agent.
+A docker image can optionally be built with `mvn clean install -Pdocker`, if docker is installed, running, and the current user has access to the docker agent.
 
 #### To build a self-contained Docker image:
-`mvn clean install -Pdocker -Ddocker.verbose -Ddocker.buildArg.build_jars=true`
+`mvn clean install -Pdocker,production`
 
 ## Run:
 `./start_cards.sh` => the app will run at `http://localhost:8080` (default port)
@@ -69,9 +69,9 @@ A Google API key enables access to Google services such as address autocomplete.
 
 ## Running with Docker
 
-If Docker is installed, then the build can also create a new image named `cards/cards:latest` if building with `mvn install -Pdocker`. This image only contains the necessary modules for running the basic CARDS application, and will not be able to use optional modules. For production images, you can use the `build_self_contained.sh` script:
+If Docker is installed, then the build can also create a new image named `cards/cards:latest` if building with `mvn install -Pdocker`. This image only contains the necessary modules for running the basic CARDS application, and will not be able to use optional modules. For production images, also enable the `production` profile:
 
-`cd Utilities/Packaging/Docker ; ./build_self_contained.sh cards/cards:latest` (or replace `latest` with the version you want)
+`mvn clean install -Pdocker,production`
 
 ### Test/Development Environments
 

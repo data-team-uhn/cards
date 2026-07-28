@@ -191,5 +191,9 @@ done
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
 export JAVA_OPTS="${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -Djdk.xml.entityExpansionLimit=0"
+# Resolve artifacts from the repositories baked into the image first: the project artifacts
+# (including all the feature files) in mvnrepo/, and, in the self-contained production
+# flavor, the complete third-party repository in artifacts/. A volume-mounted ~/.m2, the
+# tooling-injected ~/.cards-generic-m2, and the remote repositories are fallbacks.
 chmod +x ./org.apache.sling.feature.launcher/bin/launcher
-./org.apache.sling.feature.launcher/bin/launcher -u "file://$(realpath ${HOME}/.m2/repository),file://$(realpath ${HOME}/.cards-generic-m2/repository),https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f ./${CARDS_ARTIFACTID}-${CARDS_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}
+./org.apache.sling.feature.launcher/bin/launcher -u "file:///opt/cards/mvnrepo,file:///opt/cards/artifacts,file://$(realpath ${HOME}/.m2/repository),file://$(realpath ${HOME}/.cards-generic-m2/repository),https://repo.maven.apache.org/maven2" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/${CARDS_ARTIFACTID}/${CARDS_VERSION}/slingosgifeature/core_${STORAGE}${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}
