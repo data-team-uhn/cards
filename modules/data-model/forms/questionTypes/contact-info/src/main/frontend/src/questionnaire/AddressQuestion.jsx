@@ -38,7 +38,10 @@ fetch(APIKEY_SERVLET_URL)
   .then((response) => response.ok ? response.json() : Promise.reject(response))
   .then((keyJson) => {
     if (!keyJson.apikey) {
-      throw "no API key in APIKEY servlet response";
+      // Not having a key configured is a valid setup, the question just falls back to a plain text field,
+      // so this isn't an error
+      console.log("No Google API key configured, address autocompletion is disabled");
+      return;
     }
     googleApiKey = keyJson.apikey;
   })
