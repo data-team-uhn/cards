@@ -355,7 +355,12 @@ def _spool_upload(handler: BaseHTTPRequestHandler, suffix: str) -> Path:
 
 
 def _positive_option(body: dict[str, Any], name: str) -> int | None:
-    """A positive integer option from a request body, or ``None`` when absent/invalid."""
+    """A positive integer option from a JSON request body, or ``None`` when absent or unusable.
+
+    ``bool`` is excluded deliberately: it is a subclass of ``int`` in Python, so a body of
+    ``{"max_tokens": true}`` would otherwise pass an ``isinstance(..., int)`` check and arrive as
+    ``max_tokens=1`` — a one-token budget that shatters the document into fragments.
+    """
     value = body.get(name)
     return value if isinstance(value, int) and not isinstance(value, bool) and value > 0 else None
 
@@ -611,10 +616,10 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
                 )
 
             kwargs: dict[str, Any] = {}
-            if isinstance(body.get("max_tokens"), int) and body["max_tokens"] > 0:
-                kwargs["max_tokens"] = body["max_tokens"]
-            if isinstance(body.get("min_structure_tokens"), int) and body["min_structure_tokens"] > 0:
-                kwargs["min_structure_tokens"] = body["min_structure_tokens"]
+            for name in ("max_tokens", "min_structure_tokens"):
+                value = _positive_option(body, name)
+                if value is not None:
+                    kwargs[name] = value
 
             summary = chunk_file(str(file_path), **kwargs)
             _json_response(self, HTTPStatus.OK, {"status": "ok", **summary})
