@@ -164,6 +164,82 @@ class TestPrintParallelismSummary:
         assert "=== Parallelism tuning ===" in capsys.readouterr().out
 
 
+class TestCgroupLimits:
+    """Container limits must win over host figures.
+
+    ``os.cpu_count()`` and ``psutil.virtual_memory()`` both report the *host* inside a
+    container. Budgeting from those in a 4 GB container on a 32 GB host picks 8 workers at
+    ~2 GB each — 16 GB against a 4 GB ceiling, i.e. a guaranteed OOM kill.
+    """
+
+    def _cgroup_v2(self, tmp_path, monkeypatch, cpu_max, memory_max):
+        (tmp_path / "cpu.max").write_text(cpu_max, encoding="utf-8")
+        (tmp_path / "memory.max").write_text(memory_max, encoding="utf-8")
+        monkeypatch.setattr(bs, "_CGROUP_V2_CPU_MAX", str(tmp_path / "cpu.max"))
+        monkeypatch.setattr(bs, "_CGROUP_V2_MEMORY_MAX", str(tmp_path / "memory.max"))
+
+    def test_cpu_quota_read_as_cores(self, tmp_path, monkeypatch):
+        self._cgroup_v2(tmp_path, monkeypatch, "200000 100000\n", "max\n")
+        assert bs.read_cgroup_cpu_limit() == 2.0
+
+    def test_fractional_cpu_quota_rounds_up_to_one_worker(self, tmp_path, monkeypatch):
+        self._cgroup_v2(tmp_path, monkeypatch, "50000 100000\n", "max\n")
+        assert bs.read_cgroup_cpu_limit() == 0.5
+        assert bs.read_logical_core_count() == 1
+
+    def test_cpu_max_means_unlimited(self, tmp_path, monkeypatch):
+        self._cgroup_v2(tmp_path, monkeypatch, "max 100000\n", "max\n")
+        assert bs.read_cgroup_cpu_limit() is None
+
+    def test_memory_limit_read_as_gb(self, tmp_path, monkeypatch):
+        self._cgroup_v2(tmp_path, monkeypatch, "max 100000\n", f"{4 * 1024 ** 3}\n")
+        assert bs.read_cgroup_memory_limit_gb() == 4.0
+
+    def test_memory_max_means_unlimited(self, tmp_path, monkeypatch):
+        self._cgroup_v2(tmp_path, monkeypatch, "max 100000\n", "max\n")
+        assert bs.read_cgroup_memory_limit_gb() is None
+
+    def test_absurdly_large_memory_limit_treated_as_unlimited(self, tmp_path, monkeypatch):
+        # Some runtimes write a sentinel near 2^63 rather than "max".
+        self._cgroup_v2(tmp_path, monkeypatch, "max 100000\n", "9223372036854771712\n")
+        assert bs.read_cgroup_memory_limit_gb() is None
+
+    def test_garbage_contents_ignored(self, tmp_path, monkeypatch):
+        self._cgroup_v2(tmp_path, monkeypatch, "not a quota\n", "not a number\n")
+        assert bs.read_cgroup_cpu_limit() is None
+        assert bs.read_cgroup_memory_limit_gb() is None
+
+    def test_missing_files_ignored(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(bs, "_CGROUP_V2_CPU_MAX", str(tmp_path / "absent"))
+        monkeypatch.setattr(bs, "_CGROUP_V2_MEMORY_MAX", str(tmp_path / "absent"))
+        monkeypatch.setattr(bs, "_CGROUP_V1_CPU_QUOTA", str(tmp_path / "absent"))
+        monkeypatch.setattr(bs, "_CGROUP_V1_MEMORY_LIMIT", str(tmp_path / "absent"))
+        assert bs.read_cgroup_cpu_limit() is None
+        assert bs.read_cgroup_memory_limit_gb() is None
+
+    def test_cgroup_v1_fallback(self, tmp_path, monkeypatch):
+        (tmp_path / "quota").write_text("400000\n", encoding="utf-8")
+        (tmp_path / "period").write_text("100000\n", encoding="utf-8")
+        (tmp_path / "limit").write_text(f"{2 * 1024 ** 3}\n", encoding="utf-8")
+        monkeypatch.setattr(bs, "_CGROUP_V2_CPU_MAX", str(tmp_path / "absent"))
+        monkeypatch.setattr(bs, "_CGROUP_V2_MEMORY_MAX", str(tmp_path / "absent"))
+        monkeypatch.setattr(bs, "_CGROUP_V1_CPU_QUOTA", str(tmp_path / "quota"))
+        monkeypatch.setattr(bs, "_CGROUP_V1_CPU_PERIOD", str(tmp_path / "period"))
+        monkeypatch.setattr(bs, "_CGROUP_V1_MEMORY_LIMIT", str(tmp_path / "limit"))
+        assert bs.read_cgroup_cpu_limit() == 4.0
+        assert bs.read_cgroup_memory_limit_gb() == 2.0
+
+    def test_ram_readings_capped_by_the_container(self, tmp_path, monkeypatch):
+        self._cgroup_v2(tmp_path, monkeypatch, "max 100000\n", f"{1 * 1024 ** 3}\n")
+        assert bs.read_total_ram_gb() == 1.0
+        assert bs.read_available_ram_gb() <= 1.0
+
+    def test_cores_never_exceed_the_quota(self, tmp_path, monkeypatch):
+        self._cgroup_v2(tmp_path, monkeypatch, "200000 100000\n", "max\n")
+        assert bs.read_logical_core_count() == 2
+        assert bs.read_physical_core_count() <= 2
+
+
 class TestModuleSnapshot:
     def test_default_max_workers_is_positive(self):
         assert bs.DEFAULT_MAX_WORKERS >= 1

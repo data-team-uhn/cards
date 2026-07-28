@@ -41,6 +41,17 @@ public abstract class SimpleDocumentParser implements FileParser
     /** Name of the generator that produced the current parse result (request-scoped). */
     private static final ThreadLocal<String> ACTIVE_GENERATOR = new ThreadLocal<>();
 
+    /**
+     * The active LLM model's small-document chunking threshold, for the duration of one parse.
+     * <p>
+     * Chunking now happens inside the parse call, but the threshold comes from the LLM configuration, which only
+     * the editor can resolve — these parsers are plain classes, not OSGi components, so they cannot reference the
+     * configuration service. The editor sets this before parsing on the same thread and clears it afterwards,
+     * mirroring how {@link #ACTIVE_GENERATOR} is already scoped. Unset means the daemon applies its own default.
+     * </p>
+     */
+    private static final ThreadLocal<Long> CHUNKING_THRESHOLD = new ThreadLocal<>();
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DoclingMarkdownGenerator doclingGenerator = new DoclingMarkdownGenerator();
@@ -62,9 +73,14 @@ public abstract class SimpleDocumentParser implements FileParser
         }
         onDocumentBytes(content, fileName, outputSubfolder);
         try {
-            final String primary = runPrimaryGeneratorSafely(content, fileName);
+            final DoclingParseClient.ParsedDocument parsed = runPrimaryParseSafely(content, fileName);
+            final String primary = parsed == null ? "" : parsed.getMarkdown();
             if (isSufficient(primary)) {
                 ParsedMarkdownStore.save(outputSubfolder, fileName, primary);
+                // The daemon returned the chunk tree with the Markdown, so it is written here rather
+                // than fetched by a second, path-based call.
+                ParsedMarkdownStore.saveChunkTree(outputSubfolder, parsed.getOutline(), parsed.getCatalog(),
+                    parsed.getChunks());
                 logParseFinished(fileName, startTimestamp, primary, "primary");
                 return primary;
             }
@@ -73,6 +89,12 @@ public abstract class SimpleDocumentParser implements FileParser
             final String fallback = runFallbackGenerator(content, fileName);
             if (isSufficient(fallback)) {
                 ParsedMarkdownStore.save(outputSubfolder, fileName, fallback);
+                // The pure-Java generators produce Markdown but cannot chunk — that logic exists only in
+                // Python. Record an outline saying so, rather than leaving no Chunks/ at all: downstream
+                // must be able to tell "no chunker ran" from "document was too small to chunk", which is
+                // also an unchunked state but a legitimate send-it-whole one.
+                ParsedMarkdownStore.saveUnchunkedOutline(outputSubfolder, fileName, fallback,
+                    ParsedMarkdownStore.UNCHUNKED_CHUNKER_UNAVAILABLE);
                 logParseFinished(fileName, startTimestamp, fallback, "fallback");
                 return fallback;
             }
@@ -84,13 +106,13 @@ public abstract class SimpleDocumentParser implements FileParser
         }
     }
 
-    private String runPrimaryGeneratorSafely(final byte[] content, final String fileName)
+    private DoclingParseClient.ParsedDocument runPrimaryParseSafely(final byte[] content, final String fileName)
     {
         try {
-            return runPrimaryGenerator(content, fileName);
+            return runPrimaryParse(content, fileName);
         } catch (RuntimeException | LinkageError e) {
             this.logger.warn("Primary generator failed for '{}': {}", fileName, e.getMessage());
-            return "";
+            return null;
         }
     }
 
@@ -145,18 +167,38 @@ public abstract class SimpleDocumentParser implements FileParser
 
     /**
      * Run the primary generator against the document bytes.
-     * The default implementation delegates to {@link DoclingMarkdownGenerator}.
+     * The default implementation delegates to {@link DoclingMarkdownGenerator}, which returns the Markdown and
+     * the chunk tree from one daemon call.
      * Subclasses may override to supply a format-specific primary generator.
-     * Must not throw — return an empty string on any generator error.
+     * Must not throw — return {@code null} on any generator error.
      *
      * @param content raw document bytes
      * @param fileName source file name
-     * @return markdown text, or an empty string on failure
+     * @return the parsed document, or {@code null} on failure
      */
-    protected String runPrimaryGenerator(final byte[] content, final String fileName)
+    protected DoclingParseClient.ParsedDocument runPrimaryParse(final byte[] content, final String fileName)
     {
         setActiveGenerator("Docling");
-        return this.doclingGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
+        final Long threshold = CHUNKING_THRESHOLD.get();
+        return this.doclingGenerator.parse(new ByteArrayInputStream(content), fileName,
+            threshold == null ? 0L : threshold);
+    }
+
+    /**
+     * Set the small-document chunking threshold for parses on this thread.
+     *
+     * @param minStructureTokens the active LLM model's {@code wholeDocumentTokenLimit}; {@code 0} or less leaves
+     *            the daemon's own default in force
+     */
+    public static void setChunkingThreshold(final long minStructureTokens)
+    {
+        CHUNKING_THRESHOLD.set(minStructureTokens);
+    }
+
+    /** Clear the thread's chunking threshold once parsing is done. */
+    public static void clearChunkingThreshold()
+    {
+        CHUNKING_THRESHOLD.remove();
     }
 
     /**

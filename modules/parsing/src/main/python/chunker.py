@@ -103,7 +103,6 @@ from bookmarks import (
     normalize_title,
     read_bookmarks,
     resolve_record_line,
-    write_bookmarks,
 )
 from heading_numbering import numbering_depth
 from markdown_cleanup import clean_markdown
@@ -119,8 +118,8 @@ from markdown_markers import (
 from pdf_bookmarks import extract_verified_outline
 from toc_and_appendix_detection import (
     DEFAULT_MIN_STRUCTURE_TOKENS,
+    derive_outline,
     is_toc_entry_line,
-    find_toc_and_appendix,
     read_outline,
 )
 
@@ -139,16 +138,20 @@ DEFAULT_HEADING = "General Information"
 # Name of the per-document catalog file written into the chunks folder.
 CATALOG_NAME = "catalog.json"
 
-# Per-document outline file written beside the catalog (TOC / token size).
-# Same base name as the preliminary sidecar :func:`toc_and_appendix_detection.find_toc_and_appendix`
-# writes beside the .md (no collision -- that one lives beside output_file, this one inside
-# Chunks/, which is wiped and recreated below); write_chunk_files folds the sidecar's
-# findings into this final version and removes both sidecars once done
-# (see :func:`_remove_sidecars`).
+# Per-document outline file written inside Chunks/ (TOC / token size / routing). The same base
+# name is used by the transient sidecar an older pipeline wrote beside the .md; write_chunk_files
+# deletes any such leftover once done (see :func:`_remove_sidecars`) so it cannot be read back on
+# a later run as if it were real PDF bookmarks.
 OUTLINE_NAME = "outline.json"
 
 # Name of the folder, beside a document's .md, holding its chunk files, catalog and outline.
 CHUNKS_DIRNAME = "Chunks"
+
+# ``unchunkedReason`` recorded when a document was deliberately left whole because it is below
+# ``min_structure_tokens``. The Java side writes "chunker_unavailable" instead when its fallback
+# generators produced the Markdown and no chunker ran; both are ``chunked: false``, and only this
+# field distinguishes "send it whole on purpose" from "never reached a chunker".
+UNCHUNKED_BELOW_THRESHOLD = "below_min_structure_tokens"
 
 # A line that is entirely bold or bold+italic (2 or 3 matching stars on each side,
 # optionally ending with ':'), e.g. "**13.0 Funding**" or "***13.0 Funding***".
@@ -620,34 +623,20 @@ def _part_heading(part_text: str, previous_heading: list[str] | None) -> list[st
     return previous_heading or [DEFAULT_HEADING]
 
 
-def _extract_and_save_bookmarks(markdown_content: str, output_file: Path) -> None:
-    """When a source PDF is available, extract its bookmark outline,
-    verify/correct each record's page against ``markdown_content``, and write the result to
-    ``bookmarks.json``. A missing sibling PDF, an unreadable one, or a PDF with no bookmarks
-    leaves no sidecar (the document then falls back to manual TOC harvesting).
+
+def _sibling_pdf_records(markdown_content: str, output_file: Path) -> list[dict]:
+    """Outline records for ``output_file``, from a sibling PDF's embedded bookmarks when there
+    is one, otherwise from an existing ``bookmarks.json`` sidecar.
+
+    The sibling PDF wins: it is the real source, and re-extracting keeps the records in step
+    with the document actually being chunked.
     """
     pdf_file = output_file.with_suffix(".pdf")
-    if not pdf_file.is_file():
-        return
-    records = extract_verified_outline(pdf_file, markdown_content)
-    if records:
-        write_bookmarks(output_file.with_name(BOOKMARKS_NAME), records)
-
-
-def _prepare_markdown(markdown_content: str, output_file: Path, min_structure_tokens: int) -> str:
-    """Run the shared pre-chunking pipeline on a document: garbage-line cleanup, then
-    TOC extraction/appendix detection.
-    """
-    prepared = clean_markdown(markdown_content)
-    _extract_and_save_bookmarks(prepared, output_file)
-    prepared = find_toc_and_appendix(
-        prepared,
-        output_file.with_name(OUTLINE_NAME),
-        min_structure_tokens=min_structure_tokens,
-    )
-    if prepared != markdown_content:
-        output_file.write_text(prepared, encoding="utf-8")
-    return prepared
+    if pdf_file.is_file():
+        records = extract_verified_outline(pdf_file, markdown_content)
+        if records:
+            return records
+    return read_bookmarks(output_file.with_name(BOOKMARKS_NAME))
 
 
 def _remove_sidecars(output_file: Path) -> None:
@@ -735,48 +724,105 @@ def write_chunk_files(
     @param min_structure_tokens: skip chunking when the document is smaller than this
     @return: the path to the created chunks folder, or ``None`` when chunking was skipped
     """
-    markdown_content = _prepare_markdown(markdown_content, output_file, min_structure_tokens)
+    records = _sibling_pdf_records(clean_markdown(markdown_content), output_file)
+    tree = build_chunk_tree(
+        markdown_content,
+        filename,
+        max_tokens=max_tokens,
+        min_structure_tokens=min_structure_tokens,
+        records=records,
+    )
+
+    if tree["markdown"] != markdown_content:
+        output_file.write_text(tree["markdown"], encoding="utf-8")
 
     chunks_dir = output_file.parent / CHUNKS_DIRNAME
     if chunks_dir.exists():
         shutil.rmtree(chunks_dir)
     chunks_dir.mkdir(parents=True, exist_ok=True)
 
-    # find_toc_and_appendix's outline (the sidecar) is the base for Chunks/outline.json; it is
-    # empty for a small no-bookmark document (that path is size-gated). Compute the gate from
-    # the .md (not the maybe-absent sidecar) and stamp the identity/routing fields + defaults
-    # here so the outline is complete and uniform on both paths.
-    sidecar = read_outline(output_file.with_name(OUTLINE_NAME))
-    tokens = count_tokens(markdown_content)
+    (chunks_dir / OUTLINE_NAME).write_text(
+        json.dumps(tree["outline"], indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    _remove_sidecars(output_file)
+
+    if not tree["chunked"]:
+        return None
+
+    for chunk in tree["chunks"]:
+        (chunks_dir / chunk["file"]).write_text(chunk["text"] + "\n", encoding="utf-8")
+    (chunks_dir / CATALOG_NAME).write_text(
+        json.dumps(tree["catalog"], indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    return chunks_dir
+
+
+def build_chunk_tree(
+    markdown_content: str,
+    filename: str,
+    *,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
+    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
+    records: list[dict] | None = None,
+) -> dict[str, Any]:
+    """Clean, analyse and split a document into its chunk tree, touching no filesystem.
+
+    The pure core of :func:`write_chunk_files`. It takes any already-known outline records
+    instead of reading ``bookmarks.json``, and returns the whole tree instead of writing it,
+    so a caller that received the document over HTTP can chunk it without sharing a filesystem
+    — see ``docling_daemon``'s ``/parse``.
+
+    Keeping this pure also removes a coupling that used to bite: the chunker no longer has to
+    re-read Markdown it just wrote and agree with the writer about page-marker spelling.
+
+    @param markdown_content: the full Markdown document
+    @param filename: the original input file name (with extension), recorded as ``fileId``
+    @param max_tokens: target maximum tokens per chunk
+    @param min_structure_tokens: leave the document unchunked below this size
+    @param records: outline records already known for the document (real PDF bookmarks)
+    @return: ``{"markdown", "chunked", "outline", "catalog", "chunks"}``, where ``chunks`` is a
+        list of ``{"file", "text"}`` in document order and ``catalog`` is ``None`` when the
+        document was left unchunked
+    """
+    prepared = clean_markdown(markdown_content)
+    prepared, outline, resolved_records = derive_outline(
+        prepared, records=records, min_structure_tokens=min_structure_tokens
+    )
+
+    # The size gate is the pipeline's single binary routing decision, recorded as ``chunked``
+    # in the outline — which is always produced, even when chunking is skipped, so downstream
+    # routing has a uniform answer. ``derive_outline`` returns no fields when it gated out, so
+    # stamp the identity/defaults here to keep both paths' outlines the same shape.
+    tokens = count_tokens(prepared)
     to_be_chunked = tokens >= min_structure_tokens
-    sidecar.setdefault("outline_source", "none")
-    sidecar.setdefault("toc", [])
-    sidecar["fileId"] = filename
-    sidecar["tokens"] = tokens
-    sidecar["chunked"] = to_be_chunked
+    outline.setdefault("outline_source", "none")
+    outline.setdefault("toc", [])
+    outline["fileId"] = filename
+    outline["tokens"] = tokens
+    outline["chunked"] = to_be_chunked
 
     if not to_be_chunked:
-        (chunks_dir / OUTLINE_NAME).write_text(
-            json.dumps(sidecar, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-        )
-        _remove_sidecars(output_file)
-        return None
+        # Say *why* it is unchunked. Java writes an outline with the same field when the pure-Java
+        # fallback generators produced the Markdown and no chunker ran at all, so downstream can
+        # tell a deliberate send-it-whole document from one that never reached a chunker.
+        outline["unchunkedReason"] = UNCHUNKED_BELOW_THRESHOLD
+        return {
+            "markdown": prepared,
+            "chunked": False,
+            "outline": outline,
+            "catalog": None,
+            "chunks": [],
+        }
 
     # One shared split of the full document, reused by every detection pass below
     # instead of each re-splitting the same (potentially large) document on "\n".
-    lines = markdown_content.split("\n")
+    lines = prepared.split("\n")
 
-    # TOC range and backmatter split come from the sidecar outline.json written by
-    # find_toc_and_appendix in _prepare_markdown above — no Markdown markers.
-    toc_start = sidecar.get("tocStartLine")
-    toc_end = sidecar.get("tocEndLine")
-    if isinstance(toc_start, int) and isinstance(toc_end, int):
-        toc_range = (toc_start, toc_end)
-    else:
-        toc_start = None
-        toc_end = None
-        toc_range = None
-    backmatter_line = sidecar.get("backmatterLine")
+    toc_start = outline.get("tocStartLine")
+    toc_end = outline.get("tocEndLine")
+    toc_range = (toc_start, toc_end) if isinstance(toc_start, int) and isinstance(toc_end, int) \
+        else None
+    backmatter_line = outline.get("backmatterLine")
     if not isinstance(backmatter_line, int):
         backmatter_line = None
     main_lines = lines[:backmatter_line] if backmatter_line is not None else lines
@@ -786,6 +832,7 @@ def write_chunk_files(
     boundary_level = _min_heading_level(main_lines)
 
     catalog_chunks: list[dict] = []
+    chunks: list[dict] = []
     next_id = 1
 
     # Unite consecutive top-level sections up to the token budget, then split only
@@ -797,9 +844,24 @@ def write_chunk_files(
     # Prefer Chunk-0 when the document has a leading preamble; otherwise start at 1.
     first_number = 0 if (top_chunks and top_chunks[0]["number"] == 0) else 1
     split_level = boundary_level if boundary_level is not None else 0
-    # Full outline records (title / page / verified) for record-based sub-chunk cut points.
-    bookmark_records = read_bookmarks(output_file.with_name(BOOKMARKS_NAME))
-    cut_keys = _record_cut_keys(markdown_content, lines, bookmark_records, toc_range)
+    cut_keys = _record_cut_keys(prepared, lines, resolved_records, toc_range)
+
+    def add(name: str, text: str, heading: list[str], is_appendix: bool) -> None:
+        nonlocal next_id
+        chunks.append({"file": name, "text": text})
+        catalog_chunks.append({
+            "chunk_id": f"chunk{next_id:03d}",
+            "file": name,
+            "heading": heading,
+            "summary": "",
+            "rubric_tags": [],
+            "questions_answered": [],
+            "extraction_hints": [],
+            "pages": _pages_in(text),
+            "length": len(text),
+            "isAppendix": is_appendix,
+        })
+        next_id += 1
 
     for offset, packed_text in enumerate(packed):
         number = first_number + offset
@@ -812,57 +874,23 @@ def write_chunk_files(
         single_part = len(parts) == 1
         for part_index, part_text in enumerate(parts, start=1):
             name = f"Chunk-{number}.md" if single_part else f"Chunk-{number}.{part_index}.md"
-            (chunks_dir / name).write_text(part_text + "\n", encoding="utf-8")
             previous_heading = catalog_chunks[-1]["heading"] if catalog_chunks else None
             detected = _part_heading(part_text, previous_heading)
             # The very first chunk is always the default header, regardless of content.
             heading = detected if catalog_chunks else [DEFAULT_HEADING]
-            catalog_entry = {
-                "chunk_id": f"chunk{next_id:03d}",
-                "file": name,
-                "heading": heading,
-                "summary": "",
-                "rubric_tags": [],
-                "questions_answered": [],
-                "extraction_hints": [],
-                "pages": _pages_in(part_text),
-                "length": len(part_text),
-                "isAppendix": False,
-            }
-            catalog_chunks.append(catalog_entry)
-            next_id += 1
+            add(name, part_text, heading, False)
 
     if backmatter_text:
-        name = f"Chunk-{first_number + len(packed)}.md"
-        (chunks_dir / name).write_text(backmatter_text + "\n", encoding="utf-8")
-        catalog_chunks.append({
-            "chunk_id": f"chunk{next_id:03d}",
-            "file": name,
-            "heading": _backmatter_heading(backmatter_text),
-            "summary": "",
-            "rubric_tags": [],
-            "questions_answered": [],
-            "extraction_hints": [],
-            "pages": _pages_in(backmatter_text),
-            "length": len(backmatter_text),
-            "isAppendix": True,
-        })
-        next_id += 1
+        add(f"Chunk-{first_number + len(packed)}.md", backmatter_text,
+            _backmatter_heading(backmatter_text), True)
 
-    # Write outline.json (identity + routing fields were stamped on the sidecar above).
-    (chunks_dir / OUTLINE_NAME).write_text(
-        json.dumps(sidecar, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
-
-    # Update the catalog.json
-    catalog = {"fileId": filename, "chunks": catalog_chunks}
-    (chunks_dir / CATALOG_NAME).write_text(
-        json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
-
-    _remove_sidecars(output_file)
-
-    return chunks_dir
+    return {
+        "markdown": prepared,
+        "chunked": True,
+        "outline": outline,
+        "catalog": {"fileId": filename, "chunks": catalog_chunks},
+        "chunks": chunks,
+    }
 
 
 def _chunk_count(chunks_dir: Path) -> int:
