@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 /**
  * Verifies that an extracted evidence quote actually occurs in the chunk text it claims to come from. Both
- * sides are normalized first — the reserved parse markers ({@code <!-- page: N-->},
+ * sides are normalized first — the reserved parse markers ({@code <!-- page: N -->},
  * {@code [chunk:chunkNNN]}) are removed, all whitespace runs collapse to a single space, and case is folded —
  * because those markers interrupt sentences and the model's verbatim quote may differ from the source only in
  * incidental whitespace. A quote counts as verified when the normalized quote is a substring of the normalized
@@ -35,8 +35,11 @@ public final class QuoteVerifier
     /** The shortest normalized quote worth verifying; anything shorter matches too easily to be evidence. */
     static final int MIN_QUOTE_LENGTH = 6;
 
+    /**
+     * The reserved parse markers stripped before comparison.
+     */
     private static final Pattern MARKER =
-        Pattern.compile("<!-- page: \\d+-->|\\[chunk:chunk\\d+\\]");
+        Pattern.compile("<!-- page: \\d+ -->|\\[chunk:chunk\\d+\\]");
 
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 

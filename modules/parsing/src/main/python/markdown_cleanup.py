@@ -22,6 +22,8 @@
 import re
 from pathlib import Path
 
+from markdown_markers import PAGE_MARKER_SPLIT
+
 #
 # Matches empty Markdown-like headings, decorative lines, symbol-only lines, box-drawing lines.
 #
@@ -32,12 +34,11 @@ _GARBAGE_LINE = re.compile(
 
 MIN_RUN_LENGTH = 25
 
-# Reserved marker recorded at the top of a document once clean_markdown has run, so a
+# Reserved marker appended at the end of a document once clean_markdown has run, so a
 # second pass (e.g. the chunker re-cleaning an already-cleaned parse output) is a no-op.
 CLEANED_MARKER = "<!-- cleaned -->"
 
 _LINE_NUMBER = re.compile(r"^\d+$")
-_PAGE_MARKER = re.compile(r"(\n<!-- page: \d+-->\n)")
 _IMAGE_PLACEHOLDER = re.compile(r"^\s*<!--\s*image\s*-->\s*$")
 
 def _is_consecutive(values: list[int]) -> bool:
@@ -76,7 +77,7 @@ def cleanup_page_leading_line_numbers(page_md: str) -> str:
     """
     Remove a leading leading line-number block from one page body.
 
-    @param page_md: markdown for a single -- page: (no page header)
+    @param page_md: markdown for a single page body (no page header)
     @return: page markdown with leading line numbers removed when detected
     """
     if not page_md:
@@ -97,7 +98,7 @@ def cleanup_leading_line_numbers(md: str) -> str:
     """
     Remove leading line-number blocks from assembled PDF markdown.
 
-    Splits on ``<!-- page: N-->`` markers inserted by ``docling_pdf_parser`` and
+    Splits on ``<!-- page: N -->`` markers inserted by ``docling_pdf_parser`` and
     cleans each page body independently.
 
     @param md: full markdown document
@@ -106,7 +107,7 @@ def cleanup_leading_line_numbers(md: str) -> str:
     if not md:
         return md or ""
 
-    parts = _PAGE_MARKER.split(md)
+    parts = PAGE_MARKER_SPLIT.split(md)
     if len(parts) == 1:
         return cleanup_page_leading_line_numbers(md)
 

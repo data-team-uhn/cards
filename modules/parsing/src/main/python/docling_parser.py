@@ -25,12 +25,11 @@ from pathlib import Path
 
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 
-from docling_batch_sizing import GB_PER_WORKER, MAX_BATCH_PAGES
+from docling_batch_sizing import GB_PER_WORKER, MAX_BATCH_PAGES, positive_int
 from docling_docx_parser import convert_docx
 from docling_pdf_parser import convert_pdf
+from markdown_markers import SUPPORTED_SUFFIXES
 from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
-
-SUPPORTED_SUFFIXES = (".pdf", ".docx")
 
 
 def parse_args():
@@ -40,7 +39,7 @@ def parse_args():
     parser.add_argument("input_file", help="Path to a .pdf or .docx file")
     parser.add_argument(
         "--workers",
-        type=int,
+        type=positive_int,
         default=None,
         metavar="N",
         help=(
@@ -50,7 +49,7 @@ def parse_args():
     )
     parser.add_argument(
         "--batch-pages",
-        type=int,
+        type=positive_int,
         default=None,
         metavar="N",
         help=(
@@ -69,7 +68,7 @@ def parse_args():
     )
     parser.add_argument(
         "--min-structure-tokens",
-        type=int,
+        type=positive_int,
         default=DEFAULT_MIN_STRUCTURE_TOKENS,
         metavar="N",
         help=(

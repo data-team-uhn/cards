@@ -32,7 +32,7 @@ required output schema — nothing else.
 - INPUT — material from the document, in one of three forms; its header states which:
   "full document" (the complete text), "table of contents" (the document's own TOC, one
   entry per line), or "catalog outline" (one "chunkNNN: heading" line per chunk).
-  "<!-- page: N-->" lines are page markers, not content.
+  "<!-- page: N -->" lines are page markers, not content.
 - CATALOG — present whenever the document was split into chunks and INPUT is not already
   the catalog outline: one "chunkNNN: heading" line per chunk, in document order. Its
   headings are the document's section outline: use them both to judge is_protocol (map

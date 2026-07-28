@@ -101,7 +101,7 @@ class TestLeadingLineNumbers:
         numbers = "\n".join(str(n) for n in range(1, 31))
         md = (
             "Intro\n"
-            "<!-- page: 1-->\n"
+            "<!-- page: 1 -->\n"
             + numbers
             + "\nPage one body.\n"
         )

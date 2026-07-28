@@ -26,6 +26,7 @@ import json
 import pytest
 
 import chunker
+from bookmarks import BOOKMARKS_NAME
 from chunker import (
     CATALOG_NAME,
     CHUNKS_DIRNAME,
@@ -77,10 +78,10 @@ class TestHeadingMatching:
 
     def test_min_heading_level(self):
         # Every heading text must clear MIN_HEADING_CHARS (5) to count as a boundary.
-        text = "# Alpha\n## Bravo\n### Gamma"
-        assert chunker._min_heading_level(text) == 1
-        assert chunker._min_heading_level(text, deeper_than=1) == 2
-        assert chunker._min_heading_level("no headings here") is None
+        lines = "# Alpha\n## Bravo\n### Gamma".split("\n")
+        assert chunker._min_heading_level(lines) == 1
+        assert chunker._min_heading_level(lines, deeper_than=1) == 2
+        assert chunker._min_heading_level(["no headings here"]) is None
 
 
 class TestStandoutHeading:
@@ -101,12 +102,12 @@ class TestNeutralAndTokens:
     def test_is_neutral(self):
         assert is_neutral("") is True
         assert is_neutral("---") is True
-        assert is_neutral("<!-- page: 3-->") is True
+        assert is_neutral("<!-- page: 3 -->") is True
         assert is_neutral("Real content") is False
 
     def test_count_tokens_is_quarter_of_length(self):
-        assert chunker._count_tokens("a" * 40) == 10
-        assert chunker._count_tokens("") == 0
+        assert chunker.count_tokens("a" * 40) == 10
+        assert chunker.count_tokens("") == 0
 
 
 class TestChunkFile:
@@ -167,3 +168,72 @@ class TestChunkFile:
         )
         assert outline["chunked"] is False
         assert not (path.parent / CHUNKS_DIRNAME / CATALOG_NAME).exists()
+
+
+class TestSidecarCleanup:
+    """``bookmarks.json`` / ``outline.json`` beside the .md are per-run scratch state.
+
+    Regression: ``chunk_file`` never cleared them and ``write_chunk_files`` removed only the
+    outline, so a run that harvested a printed TOC left ``bookmarks.json`` behind. The next
+    run read it back as *authoritative PDF bookmarks*, skipped printed-TOC detection, and
+    reported the previous document's outline for the current one — the ``POST /chunk``
+    endpoint's exact usage pattern.
+    """
+
+    PARAGRAPH = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " * 60
+
+    def _write(self, path, toc_titles):
+        toc = ["## TABLE OF CONTENTS"] + [f"{t}\t{i + 2}" for i, t in enumerate(toc_titles)] + [""]
+        body = [f"# Section {i} Heading\n\n{self.PARAGRAPH}\n" for i in range(1, 51)]
+        path.write_text("\n".join(toc + body), encoding="utf-8")
+
+    def _outline(self, path):
+        return json.loads(
+            (path.parent / CHUNKS_DIRNAME / OUTLINE_NAME).read_text(encoding="utf-8")
+        )
+
+    def test_no_sidecars_left_beside_the_md(self, tmp_path):
+        path = tmp_path / "proto.md"
+        self._write(path, ["1.0 Background", "2.0 Objectives", "3.0 Design", "4.0 Analysis"])
+        chunk_file(str(path))
+        assert self._outline(path)["outline_source"] == "md-toc"
+        assert not (tmp_path / BOOKMARKS_NAME).exists()
+        assert not (tmp_path / OUTLINE_NAME).exists()
+
+    def test_rerun_on_new_content_does_not_reuse_the_old_outline(self, tmp_path):
+        path = tmp_path / "proto.md"
+        self._write(path, ["1.0 Background", "2.0 Objectives", "3.0 Design", "4.0 Analysis"])
+        chunk_file(str(path))
+        assert self._outline(path)["toc"] == [
+            "1.0 Background", "2.0 Objectives", "3.0 Design", "4.0 Analysis",
+        ]
+
+        # Same output path, entirely different document.
+        self._write(path, ["9.0 Completely New", "8.0 Other Topic", "7.0 Third Thing"])
+        chunk_file(str(path))
+        outline = self._outline(path)
+        assert outline["outline_source"] == "md-toc"
+        assert outline["toc"] == ["9.0 Completely New", "8.0 Other Topic", "7.0 Third Thing"]
+
+    def test_unchunked_path_also_clears_sidecars(self, tmp_path):
+        path = tmp_path / "small.md"
+        path.write_text("# Tiny protocol\n\nShort content.\n", encoding="utf-8")
+        (tmp_path / BOOKMARKS_NAME).write_text(
+            json.dumps([{"title": "Alpha Section", "level": 1, "page": 1}]), encoding="utf-8"
+        )
+        chunk_file(str(path), min_structure_tokens=10 ** 9)
+        # The pre-placed sidecar is honoured for this run, then cleaned up.
+        assert self._outline(path)["toc"] == ["Alpha Section"]
+        assert not (tmp_path / BOOKMARKS_NAME).exists()
+
+    def test_clear_prior_outputs_removes_both_sidecars_and_chunks(self, tmp_path):
+        path = tmp_path / "doc.md"
+        path.write_text("# Doc\n\nbody\n", encoding="utf-8")
+        (tmp_path / BOOKMARKS_NAME).write_text("[]", encoding="utf-8")
+        (tmp_path / OUTLINE_NAME).write_text("{}", encoding="utf-8")
+        (tmp_path / CHUNKS_DIRNAME).mkdir()
+        (tmp_path / CHUNKS_DIRNAME / "Chunk-1.md").write_text("stale", encoding="utf-8")
+        chunker.clear_prior_outputs(path)
+        assert not (tmp_path / BOOKMARKS_NAME).exists()
+        assert not (tmp_path / OUTLINE_NAME).exists()
+        assert not (tmp_path / CHUNKS_DIRNAME).exists()

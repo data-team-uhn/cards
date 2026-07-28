@@ -21,7 +21,7 @@
 
 These carry the fiddliest logic in the module — page-marker migration, standalone-heading
 look-ahead, over-budget splitting, small-tail folding — and were previously exercised only
-indirectly through chunk_file(). Tokens are len(text) // 4 (see chunker._count_tokens), so
+indirectly through chunk_file(). Tokens are len(text) // 4 (see markdown_markers.count_tokens), so
 a block of N tokens is a string of length 4*N."""
 
 import json
@@ -32,7 +32,7 @@ from chunker import DEFAULT_HEADING
 
 class TestPagesIn:
     def test_sorted_and_deduplicated(self):
-        text = "a\n<!-- page: 3-->\nb\n<!-- page: 1-->\n<!-- page: 3-->"
+        text = "a\n<!-- page: 3 -->\nb\n<!-- page: 1 -->\n<!-- page: 3 -->"
         assert chunker._pages_in(text) == [1, 3]
 
     def test_no_markers(self):
@@ -57,12 +57,12 @@ class TestBackmatterHeading:
 
 class TestSplitTrailingPageMarkers:
     def test_single_trailing_marker(self):
-        assert chunker._split_trailing_page_markers("Body text\n\n<!-- page: 5-->") \
-            == ("Body text", "<!-- page: 5-->")
+        assert chunker._split_trailing_page_markers("Body text\n\n<!-- page: 5 -->") \
+            == ("Body text", "<!-- page: 5 -->")
 
     def test_multiple_trailing_markers(self):
-        result = chunker._split_trailing_page_markers("X\n\n<!-- page: 5-->\n<!-- page: 6-->")
-        assert result == ("X", "<!-- page: 5-->\n<!-- page: 6-->")
+        result = chunker._split_trailing_page_markers("X\n\n<!-- page: 5 -->\n<!-- page: 6 -->")
+        assert result == ("X", "<!-- page: 5 -->\n<!-- page: 6 -->")
 
     def test_no_trailing_marker(self):
         assert chunker._split_trailing_page_markers("No markers here") is None
@@ -70,15 +70,15 @@ class TestSplitTrailingPageMarkers:
 
 class TestMoveTrailingPageMarkers:
     def test_marker_moved_to_next_part(self):
-        result = chunker._move_trailing_page_markers(["A\n\n<!-- page: 2-->", "B body"])
-        assert result == ["A", "<!-- page: 2-->\n\nB body"]
+        result = chunker._move_trailing_page_markers(["A\n\n<!-- page: 2 -->", "B body"])
+        assert result == ["A", "<!-- page: 2 -->\n\nB body"]
 
     def test_single_part_unchanged(self):
         assert chunker._move_trailing_page_markers(["only"]) == ["only"]
 
     def test_last_part_marker_left_in_place(self):
         # Nowhere to move a marker at the very end.
-        parts = ["A", "B\n\n<!-- page: 9-->"]
+        parts = ["A", "B\n\n<!-- page: 9 -->"]
         assert chunker._move_trailing_page_markers(parts) == parts
 
 
@@ -140,14 +140,15 @@ class TestSplitIntoTopChunks:
         lines = ["preamble text", "# Section One", "body one", "# Section Two", "body two"]
         chunks = chunker._split_into_top_chunks(lines, 1)
         assert [c["number"] for c in chunks] == [0, 1, 2]
-        assert chunks[0]["heading"] == "" and chunks[0]["text"] == "preamble text"
-        assert chunks[1]["heading"] == "Section One"
+        assert chunks[0]["text"] == "preamble text"
+        # Each section keeps its own heading line at the head of its text; catalog labels
+        # are derived per emitted part later, by _part_heading.
         assert chunks[1]["text"] == "# Section One\nbody one"
-        assert chunks[2]["heading"] == "Section Two"
+        assert chunks[2]["text"] == "# Section Two\nbody two"
 
     def test_no_headings_single_chunk(self):
         assert chunker._split_into_top_chunks(["just", "text"], None) == \
-            [{"number": 0, "heading": "", "level": 0, "text": "just\ntext"}]
+            [{"number": 0, "text": "just\ntext"}]
 
     def test_empty(self):
         assert chunker._split_into_top_chunks([], None) == []
@@ -192,7 +193,7 @@ class TestSplitOversized:
         chunk_text = "\n\n".join(["p" * 40] * 4)  # four 10-token paragraphs
         parts = chunker._split_oversized(chunk_text, 0, 15)
         assert len(parts) == 4
-        assert all(chunker._count_tokens(p) <= 15 for p in parts)
+        assert all(chunker.count_tokens(p) <= 15 for p in parts)
 
     def test_with_subheadings_packs_then_stays_within_budget(self):
         chunk_text = "# Top Heading\n\n" + "\n\n".join(
@@ -200,7 +201,7 @@ class TestSplitOversized:
         )
         parts = chunker._split_oversized(chunk_text, 1, 25)
         assert len(parts) >= 2
-        assert all(chunker._count_tokens(p) <= 25 for p in parts)
+        assert all(chunker.count_tokens(p) <= 25 for p in parts)
 
 
 class TestSubchunkBlocksNumberedFallback:
@@ -258,17 +259,17 @@ class TestBookmarksStorage:
 
 class TestRecordCutKeys:
     def test_resolves_unique_non_atx(self):
-        md = "<!-- page: 1-->\n## 5 Analysis\n\nData Sharing\n\nbody"
+        md = "<!-- page: 1 -->\n## 5 Analysis\n\nData Sharing\n\nbody"
         keys = chunker._record_cut_keys(md, md.split("\n"), [{"title": "Data Sharing", "page": 1}], None)
         assert keys == frozenset({chunker.normalize_title("Data Sharing")})
 
     def test_excludes_atx_match(self):
-        md = "<!-- page: 1-->\n## Data Sharing\n\nbody"
+        md = "<!-- page: 1 -->\n## Data Sharing\n\nbody"
         keys = chunker._record_cut_keys(md, md.split("\n"), [{"title": "Data Sharing", "page": 1}], None)
         assert keys == frozenset()
 
     def test_excludes_toc_range(self):
-        md = "<!-- page: 1-->\nData Sharing\n\nbody"  # "Data Sharing" is line index 1
+        md = "<!-- page: 1 -->\nData Sharing\n\nbody"  # "Data Sharing" is line index 1
         keys = chunker._record_cut_keys(md, md.split("\n"), [{"title": "Data Sharing", "page": 1}], (1, 1))
         assert keys == frozenset()
 

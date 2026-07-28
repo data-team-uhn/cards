@@ -31,6 +31,7 @@ from docling.document_converter import DocumentConverter, WordFormatOption
 from chunker import clear_prior_outputs, write_chunk_files
 from docling_error_detection import ensure_conversion_ok
 from markdown_cleanup import clean_markdown, resolve_source_file_name, source_file_header
+from markdown_markers import count_tokens
 from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 _docx_converter: DocumentConverter | None = None
@@ -109,12 +110,11 @@ def convert_docx(
         sys.exit(1)
 
     t2 = perf_counter()
-    t3 = perf_counter()
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(markdown_content)
 
-    t4 = perf_counter()
+    t3 = perf_counter()
 
     chunks_dir = None
     if chunk:
@@ -126,24 +126,24 @@ def convert_docx(
             min_structure_tokens=min_structure_tokens,
         )
 
-    t5 = perf_counter()
+    t4 = perf_counter()
+    tokens = count_tokens(markdown_content)
 
     print(f"Markdown length: {len(markdown_content):,} characters")
-    print(f"Token estimate:  {len(markdown_content) // 4:,}")
+    print(f"Token estimate:  {tokens:,}")
 
     print("\n=== Timing ===")
     print(f"Converter init:      {t1 - t0:.2f}s")
-    print(f"Document convert:    {t2 - t1:.2f}s")
-    print(f"Markdown export:     {t3 - t2:.2f}s")
-    print(f"File write:          {t4 - t3:.2f}s")
+    print(f"Convert and export:  {t2 - t1:.2f}s")
+    print(f"File write:          {t3 - t2:.2f}s")
     if chunk:
-        print(f"Chunk split:         {t5 - t4:.2f}s")
+        print(f"Chunk split:         {t4 - t3:.2f}s")
         if chunks_dir is not None:
             chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
             print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")
         else:
             print(
                 f"Chunking skipped "
-                f"({len(markdown_content) // 4} tokens < {min_structure_tokens} min_structure_tokens)"
+                f"({tokens} tokens < {min_structure_tokens} min_structure_tokens)"
             )
-    print(f"Total:               {t5 - t0:.2f}s")
+    print(f"Total:               {t4 - t0:.2f}s")

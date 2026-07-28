@@ -29,7 +29,8 @@ chunking.
 
 ### Installation
 
-1. **Pre-req:** Python 3.9+
+1. **Pre-req:** Python 3.10+ (the pipeline uses PEP 604 `X | None` annotations in
+   runtime-evaluated positions, which 3.9 cannot parse)
 2. Use a clean virtual environment so our dependencies stay isolated:
 
    ```

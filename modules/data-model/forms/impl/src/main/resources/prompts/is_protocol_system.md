@@ -13,7 +13,7 @@ required output schema — nothing else.
   "full document" (the complete text), "table of contents" (the document's own TOC, one
   entry per line), or "catalog outline + first chunk" (one "chunkNNN: heading" line per
   chunk, followed by a "### FIRST CHUNK" sub-header and the text of the document's first
-  chunk). "<!-- page: N-->" lines are page markers, not content.
+  chunk). "<!-- page: N -->" lines are page markers, not content.
 - CATALOG — present whenever the document was split into chunks and INPUT is not already
   the catalog outline: one "chunkNNN: heading" line per chunk, in document order. Its
   headings are the document's section outline: use them both to judge is_protocol (map
