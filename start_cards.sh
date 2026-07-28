@@ -23,12 +23,14 @@
 
 cd "$(dirname "$0")" || exit 1
 
+# -u keeps the start messages unbuffered, so that they still appear as startup progresses
+# when the output is redirected to a file instead of a terminal
 if command -v python3 > /dev/null 2>&1
 then
-  exec python3 start_cards.py "$@"
+  exec python3 -u start_cards.py "$@"
 elif command -v python > /dev/null 2>&1
 then
-  exec python start_cards.py "$@"
+  exec python -u start_cards.py "$@"
 else
   echo "Python 3 is required to start CARDS, but neither 'python3' nor 'python' was found on the PATH." >&2
   exit 1
