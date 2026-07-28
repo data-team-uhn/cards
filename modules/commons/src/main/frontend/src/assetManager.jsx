@@ -17,6 +17,8 @@
 //  under the License.
 //
 
+import { useEffect, useState } from "react";
+
 const ASSET_PREFIX="asset:";
 
 // The assets map, from simple asset name to the contenthashed real path
@@ -180,4 +182,31 @@ var loadAsset = async function(assetURL) {
   return assets[assetURL];
 };
 
-export { getAssetURL, loadAsset };
+// Renders a component loaded on demand from an `asset:` URL, only once actually mounted.
+// Useful for a `?lazy` asset (see `loadRemoteComponents` in extensionManager.jsx): instead
+// of a consumer having to fetch and evaluate such an asset itself, rendering <LazyAsset>
+// defers the fetch to whenever it is actually mounted - e.g. only once a matching route
+// is navigated to, when used as a route's element. Nothing is rendered until the asset
+// resolves; all props other than `url` are forwarded to the loaded component.
+//
+// @param {string} url the asset to load, may be an actual URL, or a special `asset:`-prefixed string followed by the asset name
+// @param {object} props any additional props, forwarded to the loaded component once resolved
+function LazyAsset({ url, ...props }) {
+  const [ Component, setComponent ] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadAsset(url)
+      .then(component => {
+        if (!cancelled) {
+          setComponent(() => component);
+        }
+      })
+      .catch(err => console.error(`Something went wrong loading the asset [${url}]`, err));
+    return () => { cancelled = true; };
+  }, [url]);
+
+  return Component ? <Component {...props} /> : null;
+}
+
+export { getAssetURL, getURLParameters, loadAsset, LazyAsset };

@@ -3,5 +3,5 @@
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Users",
   "cards:targetURL": "/content.html/admin/userlist",
-  "cards:extensionRenderURL": "asset:cards-principals.UsersContainer.js"
+  "cards:extensionRenderURL": "asset:cards-principals.UsersContainer.js?lazy"
 }

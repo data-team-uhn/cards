@@ -3,5 +3,5 @@
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Patient Portal Survey Instructions",
   "cards:targetURL": "/content.html/admin/SurveyInstructionsConfiguration",
-  "cards:extensionRenderURL": "asset:patient-portal.SurveyInstructionsConfiguration.js"
+  "cards:extensionRenderURL": "asset:patient-portal.SurveyInstructionsConfiguration.js?lazy"
 }

@@ -3,5 +3,5 @@
     "cards:extensionPointId": "cards/coreUI/view",
     "cards:extensionName": "Admin Statistics",
     "cards:targetURL": "/content.html/admin/Statistics",
-    "cards:extensionRenderURL": "asset:cards-statistics.AdminStatistics.js"
+    "cards:extensionRenderURL": "asset:cards-statistics.AdminStatistics.js?lazy"
 }

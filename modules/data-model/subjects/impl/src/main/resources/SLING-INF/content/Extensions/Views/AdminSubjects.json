@@ -4,5 +4,5 @@
   "cards:extensionName": "Admin Subjects",
   "cards:targetURL": "/content.html/admin/Subjects",
   "cards:extensionURL": "admin",
-  "cards:extensionRenderURL": "asset:cards-dataentry.Subjects.js"
+  "cards:extensionRenderURL": "asset:cards-dataentry.Subjects.js?lazy"
 }

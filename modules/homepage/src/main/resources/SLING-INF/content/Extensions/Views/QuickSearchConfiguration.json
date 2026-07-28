@@ -3,5 +3,5 @@
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Quick Search Configuration",
   "cards:targetURL": "/content.html/admin/QuickSearchConfiguration",
-  "cards:extensionRenderURL": "asset:cards-homepage.QuickSearchConfiguration.js"
+  "cards:extensionRenderURL": "asset:cards-homepage.QuickSearchConfiguration.js?lazy"
 }

@@ -3,5 +3,5 @@
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Forms",
   "cards:targetURL": "/content.html/Forms",
-  "cards:extensionRenderURL": "asset:cards-dataentry.Forms.js"
+  "cards:extensionRenderURL": "asset:cards-dataentry.Forms.js?lazy"
 }
