@@ -156,9 +156,17 @@ CHUNKS_DIRNAME = "Chunks"
 # field distinguishes "send it whole on purpose" from "never reached a chunker".
 UNCHUNKED_BELOW_THRESHOLD = "below_min_structure_tokens"
 
+# A line recurring at least this many times across the document is page furniture (a running
+# header or footer), never a heading — see :func:`repeated_lines`. Three rather than two so a
+# heading that genuinely appears twice is not discarded.
+MIN_RUNNING_HEADER_PAGES = 3
+
 # A line that is entirely bold or bold+italic (2 or 3 matching stars on each side,
 # optionally ending with ':'), e.g. "**13.0 Funding**" or "***13.0 Funding***".
 _BOLD_LINE = re.compile(r"^(\*{2,3})(.+?)\1:?$")
+
+# A leading Markdown list marker, e.g. the "- " of "- 20.0 **Appendices**".
+_LIST_MARKER = re.compile(r"^[-*+]\s+")
 
 
 def is_neutral(stripped: str) -> bool:
@@ -304,8 +312,14 @@ def _pages_in(text: str) -> list[int]:
 
 
 def _backmatter_heading(text: str) -> list[str]:
-    """The heading array for a backmatter chunk: the text of the block's first
-    non-empty line, ATX ``#`` markers or bold ``**`` stripped."""
+    """The heading array for a backmatter chunk: the text of the block's first non-empty line as a
+    displayable label, with ATX ``#``, a leading list marker and Markdown emphasis removed.
+
+    The list marker and inline emphasis matter because Docling routinely emits a backmatter
+    heading as a list item with only part of it bold — ``- 20.0 **Appendices**`` on one real
+    protocol, which reached the catalog verbatim because it is neither an ATX heading nor a
+    fully-bold line.
+    """
     for line in text.split("\n"):
         stripped = line.strip()
         if not stripped:
@@ -313,10 +327,12 @@ def _backmatter_heading(text: str) -> list[str]:
         atx = _match_heading(line)
         if atx:
             return [atx[1]]
-        bold = _BOLD_LINE.match(stripped)
+        candidate = _LIST_MARKER.sub("", stripped)
+        bold = _BOLD_LINE.match(candidate)
         if bold:
             return [bold.group(2).strip()]
-        return [stripped]
+        cleaned = candidate.replace("*", "").strip()
+        return [cleaned or candidate]
     return [DEFAULT_HEADING]
 
 
@@ -595,7 +611,34 @@ def _merge_small_text_tails(parts: list[str], min_tokens: int) -> list[str]:
     return merged
 
 
-def _part_heading(part_text: str, previous_heading: list[str] | None) -> list[str]:
+def repeated_lines(lines: list[str], min_occurrences: int = MIN_RUNNING_HEADER_PAGES) -> frozenset:
+    """Normalized keys of lines that recur at least ``min_occurrences`` times in the document —
+    running headers and footers.
+
+    Recurrence is the signal that separates the two, because nothing else does: a running header
+    like ``CONFIDENTIAL`` sits immediately after a ``<!-- page: N -->`` marker with a blank line
+    after it, which is exactly as *isolated* as a genuine stand-out heading at the top of a page.
+    Rejecting anything adjacent to a page marker would throw the real headings away with it; a real
+    heading appears once, a running header appears on every page.
+
+    @param lines: the document's lines
+    @param min_occurrences: how many times a line must recur to count as furniture
+    @return: normalized keys to refuse as headings
+    """
+    counts: dict[str, int] = {}
+    for line in lines:
+        stripped = line.strip()
+        if not stripped or PAGE_MARKER_LINE.match(stripped):
+            continue
+        key = normalize_title(stripped)
+        if key:
+            counts[key] = counts.get(key, 0) + 1
+    return frozenset(key for key, count in counts.items() if count >= min_occurrences)
+
+
+def _part_heading(
+    part_text: str, previous_heading: list[str] | None, repeated: frozenset = frozenset()
+) -> list[str]:
     """Derive the heading array for one chunk file part in the order they appear.
 
     Collects ATX headings and any bold or isolated ALL-CAPS stand-out lines.
@@ -603,6 +646,12 @@ def _part_heading(part_text: str, previous_heading: list[str] | None) -> list[st
     A part with no heading of its own copies the heading array of previous chunk.
     ``[`` :data:`DEFAULT_HEADING` ``]`` is used only when the
     beginning heading is missing and there is no preceding entry to copy from.
+
+    @param part_text: the emitted chunk part
+    @param previous_heading: the preceding catalog entry's heading array, when there is one
+    @param repeated: normalized keys of document-wide recurring lines to refuse
+        (see :func:`repeated_lines`) — page furniture, not headings
+    @return: the heading array for this part
     """
     lines = part_text.split("\n")
     beginning_level: int | None = None
@@ -619,7 +668,7 @@ def _part_heading(part_text: str, previous_heading: list[str] | None) -> list[st
             text = _standout_heading(lines, index)
             if text is None:
                 continue
-        if valid_heading(text):
+        if valid_heading(text) and normalize_title(text) not in repeated:
             headings.append(text)
     if headings:
         return headings
@@ -727,9 +776,10 @@ def write_chunk_files(
     @param min_structure_tokens: skip chunking when the document is smaller than this
     @return: the path to the created chunks folder, or ``None`` when chunking was skipped
     """
-    records = _sibling_pdf_records(clean_markdown(markdown_content), output_file)
+    cleaned = clean_markdown(markdown_content)
+    records = _sibling_pdf_records(cleaned, output_file)
     tree = build_chunk_tree(
-        markdown_content,
+        cleaned,
         filename,
         max_tokens=max_tokens,
         min_structure_tokens=min_structure_tokens,
@@ -775,9 +825,6 @@ def build_chunk_tree(
     so a caller that received the document over HTTP can chunk it without sharing a filesystem
     — see ``docling_daemon``'s ``/parse``.
 
-    Keeping this pure also removes a coupling that used to bite: the chunker no longer has to
-    re-read Markdown it just wrote and agree with the writer about page-marker spelling.
-
     @param markdown_content: the full Markdown document
     @param filename: the original input file name (with extension), recorded as ``fileId``
     @param max_tokens: target maximum tokens per chunk
@@ -801,7 +848,7 @@ def build_chunk_tree(
     outline.setdefault("outline_source", "none")
     outline.setdefault("toc", [])
     outline["fileId"] = filename
-    outline["tokens"] = tokens
+    outline.setdefault("tokens", tokens)
     outline["chunked"] = to_be_chunked
 
     if not to_be_chunked:
@@ -820,6 +867,9 @@ def build_chunk_tree(
     # One shared split of the full document, reused by every detection pass below
     # instead of each re-splitting the same (potentially large) document on "\n".
     lines = prepared.split("\n")
+    # Page furniture, identified once for the whole document: a per-part view cannot tell a
+    # running header from a heading, because within one page each appears exactly once.
+    repeated = repeated_lines(lines)
 
     toc_start = outline.get("tocStartLine")
     toc_end = outline.get("tocEndLine")
@@ -878,9 +928,17 @@ def build_chunk_tree(
         for part_index, part_text in enumerate(parts, start=1):
             name = f"Chunk-{number}.md" if single_part else f"Chunk-{number}.{part_index}.md"
             previous_heading = catalog_chunks[-1]["heading"] if catalog_chunks else None
-            detected = _part_heading(part_text, previous_heading)
-            # The very first chunk is always the default header, regardless of content.
-            heading = detected if catalog_chunks else [DEFAULT_HEADING]
+            if first_number == 0 and not catalog_chunks:
+                # The preamble chunk is labelled DEFAULT_HEADING whatever it contains: it is
+                # front matter ahead of the document's first real section, and any bold or
+                # ALL-CAPS line in it (a title block, an investigator list) is a field label
+                # rather than a section title.
+                heading = [DEFAULT_HEADING]
+            else:
+                # Everything else gets its real heading. This used to be forced to
+                # DEFAULT_HEADING for the first entry regardless, which threw away a heading
+                # like "1.0 Introduction" on every document that has no preamble at all.
+                heading = _part_heading(part_text, previous_heading, repeated)
             add(name, part_text, heading, False)
 
     if backmatter_text:

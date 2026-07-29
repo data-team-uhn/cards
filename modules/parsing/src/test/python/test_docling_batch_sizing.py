@@ -60,9 +60,12 @@ class TestMaxWorkersByRam:
     def test_floor_division_by_gb_per_worker(self):
         assert calc_max_workers_by_ram(10.0) == int(10.0 // GB_PER_WORKER)
 
-    def test_minimum_of_two(self):
-        # A tiny budget still yields at least 2 workers.
-        assert calc_max_workers_by_ram(1.0) == 2
+    def test_minimum_of_one(self):
+        # A budget too small for even one worker still yields 1, never 2: a floor of 2 meant
+        # ~4 GB of model stacks in a container that may only have 2, reinstating the OOM the
+        # cgroup limits are read to avoid.
+        assert calc_max_workers_by_ram(1.0) == 1
+        assert calc_max_workers_by_ram(0.0) == 1
 
 
 class TestCalcWorkers:

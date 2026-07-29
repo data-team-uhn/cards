@@ -207,6 +207,48 @@ class TestSpoolUpload:
             path.unlink(missing_ok=True)
 
 
+class TestSpoolUploadRejections:
+    """The Content-Length checks, which are also the drain-sensitive paths.
+
+    _spool_upload raises before or partway through reading the body, so its caller must drain the
+    remainder before answering — otherwise the 400 goes into a connection the client is still
+    writing to and the client sees a transport failure instead. That is why body_consumed is only
+    set after this function returns.
+    """
+
+    def test_missing_content_length_rejected(self):
+        handler = _FakeHandler(b"data")
+        del handler.headers["Content-Length"]
+        with pytest.raises(ValueError, match="Content-Length is required"):
+            daemon._spool_upload(handler, ".pdf")
+
+    def test_unparseable_content_length_rejected(self):
+        handler = _FakeHandler(b"data", headers={"Content-Length": "abc"})
+        handler.headers["Content-Length"] = "abc"
+        with pytest.raises(ValueError, match="invalid Content-Length"):
+            daemon._spool_upload(handler, ".pdf")
+
+    def test_negative_content_length_rejected(self):
+        handler = _FakeHandler(b"data", headers={"Content-Length": "-1"})
+        handler.headers["Content-Length"] = "-1"
+        with pytest.raises(ValueError, match="invalid Content-Length"):
+            daemon._spool_upload(handler, ".pdf")
+
+    def test_oversized_declared_length_reports_the_number_not_the_string(self):
+        # The message used to be matched by substring to tell these errors apart; it now carries
+        # the parsed int, and nothing depends on the wording.
+        handler = _FakeHandler(b"x", content_length=daemon.MAX_UPLOAD_BYTES + 5)
+        with pytest.raises(ValueError, match=str(daemon.MAX_UPLOAD_BYTES + 5)):
+            daemon._spool_upload(handler, ".pdf")
+
+    def test_body_is_left_unread_when_the_declared_length_is_rejected(self):
+        # Precisely why the caller must drain: nothing has been consumed at this point.
+        handler = _FakeHandler(b"y" * 4096, content_length=daemon.MAX_UPLOAD_BYTES + 1)
+        with pytest.raises(ValueError):
+            daemon._spool_upload(handler, ".pdf")
+        assert handler.unread == 4096
+
+
 class TestAuthorization:
     def test_open_when_no_token_configured(self, monkeypatch):
         monkeypatch.delenv(daemon.AUTH_TOKEN_ENV, raising=False)

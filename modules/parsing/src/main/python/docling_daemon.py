@@ -71,6 +71,7 @@ from chunker import DEFAULT_MAX_TOKENS, build_chunk_tree
 from docling_batch_sizing import GB_PER_WORKER, calc_workers, positive_int
 from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
 from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
+from markdown_cleanup import clean_markdown
 from markdown_markers import SUPPORTED_SUFFIXES
 from pdf_bookmarks import extract_verified_outline
 from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
@@ -235,21 +236,25 @@ def _spool_upload(handler: BaseHTTPRequestHandler, suffix: str) -> Path:
     @param handler: the active request
     @param suffix: the extension to give the temp file, which Docling uses to pick a backend
     @return: the temp file's path; the caller must delete it
-    @raise ValueError: when the body is empty or exceeds :data:`MAX_UPLOAD_BYTES`
+    @raise ValueError: when ``Content-Length`` is missing or unparseable, or the body is empty or
+        exceeds :data:`MAX_UPLOAD_BYTES`
     """
     declared = handler.headers.get("Content-Length")
-    if declared is not None:
-        try:
-            if int(declared) > MAX_UPLOAD_BYTES:
-                raise ValueError(
-                    f"document too large ({declared} > {MAX_UPLOAD_BYTES} bytes)"
-                )
-        except ValueError as exc:
-            if "too large" in str(exc):
-                raise
-            raise ValueError(f"invalid Content-Length: {declared!r}") from None
+    if declared is None:
+        # Refused rather than read up to the cap: BaseHTTPRequestHandler does not decode chunked
+        # transfer-encoding, so a bodiless-looking request would otherwise block this thread on
+        # rfile.read() until the client sent MAX_UPLOAD_BYTES or hung up.
+        raise ValueError("Content-Length is required")
+    try:
+        length = int(declared)
+    except ValueError:
+        raise ValueError(f"invalid Content-Length: {declared!r}") from None
+    if length < 0:
+        raise ValueError(f"invalid Content-Length: {declared!r}")
+    if length > MAX_UPLOAD_BYTES:
+        raise ValueError(f"document too large ({length} > {MAX_UPLOAD_BYTES} bytes)")
 
-    remaining = int(declared) if declared is not None else MAX_UPLOAD_BYTES
+    remaining = length
     written = 0
     handle = tempfile.NamedTemporaryFile(prefix="docling-upload-", suffix=suffix, delete=False)
     path = Path(handle.name)
@@ -298,14 +303,20 @@ def _parse_document(
     if not chunk:
         return {"markdown": markdown, "chunked": False, "logs": logs}
 
+    # Cleaned once here so bookmark pages are verified against the same text build_chunk_tree
+    # analyses — write_chunk_files does the same, and the two paths disagreeing about the
+    # verification input is a trap even while cleanup only strips garbage lines. It also makes
+    # build_chunk_tree's own clean_markdown a no-op via CLEANED_MARKER rather than a second pass.
+    cleaned = clean_markdown(markdown)
+
     records = []
     if input_path.suffix.lower() == ".pdf":
         # The PDF is right here, so its embedded bookmarks are available without the caller
         # having to ship them or the daemon having to find a sibling file on a shared disk.
-        records = extract_verified_outline(input_path, markdown)
+        records = extract_verified_outline(input_path, cleaned)
 
     tree = build_chunk_tree(
-        markdown,
+        cleaned,
         filename,
         max_tokens=max_tokens,
         min_structure_tokens=min_structure_tokens,
@@ -435,8 +446,13 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
                         raise ValueError(f"{name} must be 1 or greater; got {parsed}")
                     options[name] = parsed
 
-            body_consumed = True
             temp_path = _spool_upload(self, suffix)
+            # Only now is the body genuinely consumed. Setting this before the call meant the
+            # except branches below skipped the drain in exactly the cases where _spool_upload
+            # raises with body still unread — an oversized declared Content-Length (raises before
+            # reading a byte) or an over-cap stream (raises mid-body) — so the 400 was written into
+            # a connection the client was still writing to.
+            body_consumed = True
             payload = _parse_document(
                 temp_path,
                 filename=filename,
@@ -480,9 +496,9 @@ def parse_args() -> argparse.Namespace:
         "--host",
         default=DEFAULT_HOST,
         help=(
-            f"bind address (default: {DEFAULT_HOST}). The endpoints are unauthenticated "
-            "and convert files from local paths, so binding anywhere but loopback exposes "
-            "them to the network"
+            f"bind address (default: {DEFAULT_HOST}). Binding anywhere but loopback exposes the "
+            f"endpoints to the network, so set ${AUTH_TOKEN_ENV} when you do — without it every "
+            "endpoint except /health is unauthenticated"
         ),
     )
     parser.add_argument(

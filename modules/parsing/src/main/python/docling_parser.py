@@ -75,14 +75,14 @@ def main() -> None:
     input_path = Path(args.input_file)
 
     if not input_path.exists():
-        print(f"File not found: {input_path}")
+        print(f"File not found: {input_path}", file=sys.stderr)
         sys.exit(1)
 
     suffix = input_path.suffix.lower()
 
     if suffix not in SUPPORTED_SUFFIXES:
-        print(f"Unsupported file type: {suffix}")
-        print("Only .pdf and .docx are supported.")
+        print(f"Unsupported file type: {suffix}", file=sys.stderr)
+        print("Only .pdf and .docx are supported.", file=sys.stderr)
         sys.exit(1)
 
     output_file = input_path.with_suffix(".md")
