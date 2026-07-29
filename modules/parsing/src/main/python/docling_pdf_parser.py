@@ -171,9 +171,6 @@ def convert_pdf_to_markdown(
     """
     Convert a PDF file to Markdown and return the text.
 
-    (:func:`chunker.write_chunk_files`) runs cleanup and structure detection for every
-    chunking entry point, including Markdown that never passed through this parser.
-
     @param input_path: path to the source .pdf file
     @param batch_pages: optional override for pages per worker batch
     @param workers: optional override for parallel worker process count
@@ -316,21 +313,20 @@ def convert_pdf(
     *,
     batch_pages: int | None = None,
     workers: int | None = None,
-    chunk: bool = False,
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
-    source_file: str | None = None,
 ) -> None:
     """
-    Convert a PDF file to Markdown and write it to output_file.
+    Convert a PDF file to Markdown and write it, plus its chunk tree, beside ``output_file``.
+
+    Always chunks, mirroring the daemon's ``POST /parse`` (which defaults ``chunk=true``), so the
+    CLI and the service produce the same artifacts for the same document — that is what makes the
+    two paths comparable when checking they have not drifted apart.
 
     @param input_path: path to the source .pdf file
     @param output_file: path where Markdown output is written
     @param batch_pages: optional override for pages per worker batch
     @param workers: optional override for parallel worker process count
-    @param chunk: also write per-chunk .md files and catalog.json beside output_file
-        when the document is at least ``min_structure_tokens``
-    @param min_structure_tokens: skip TOC/appendix marking and chunking below this size
-    @param source_file: optional original upload name for the source_file header
+    @param min_structure_tokens: leave the document unchunked below this size, as the daemon does
     """
     # Drop any previous convert's outline sidecar and Chunks/ before writing anew.
     clear_prior_outputs(output_file)
@@ -339,7 +335,6 @@ def convert_pdf(
             input_path,
             batch_pages=batch_pages,
             workers=workers,
-            source_file=source_file,
         )
     except Exception as exc:
         # Includes RuntimeError from failed page batches as well as reader errors from an
@@ -354,23 +349,21 @@ def convert_pdf(
     print(f"File write:           {write_end - write_start:.2f}s")
     print(f"Token estimate:       {count_tokens(markdown_content):,}")
 
-    if chunk:
-        split_start = perf_counter()
-        display_name = resolve_source_file_name(input_path, source_file)
-        chunks_dir = write_chunk_files(
-            markdown_content,
-            output_file,
-            display_name,
-            min_structure_tokens=min_structure_tokens,
+    split_start = perf_counter()
+    chunks_dir = write_chunk_files(
+        markdown_content,
+        output_file,
+        resolve_source_file_name(input_path),
+        min_structure_tokens=min_structure_tokens,
+    )
+    split_end = perf_counter()
+    print(f"Chunk split:          {split_end - split_start:.2f}s")
+    if chunks_dir is not None:
+        chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
+        print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")
+    else:
+        print(
+            f"Chunking skipped "
+            f"({count_tokens(markdown_content)} tokens < "
+            f"{min_structure_tokens} min_structure_tokens)"
         )
-        split_end = perf_counter()
-        print(f"Chunk split:          {split_end - split_start:.2f}s")
-        if chunks_dir is not None:
-            chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
-            print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")
-        else:
-            print(
-                f"Chunking skipped "
-                f"({count_tokens(markdown_content)} tokens < "
-                f"{min_structure_tokens} min_structure_tokens)"
-            )

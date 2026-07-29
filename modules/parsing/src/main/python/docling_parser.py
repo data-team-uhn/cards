@@ -58,15 +58,6 @@ def parse_args():
         ),
     )
     parser.add_argument(
-        "--chunk",
-        action="store_true",
-        help=(
-            "also write per-chunk .md files and catalog.json into a "
-            "Chunks/ folder beside the output .md (skipped when the document is "
-            f"under --min-structure-tokens, default {DEFAULT_MIN_STRUCTURE_TOKENS})"
-        ),
-    )
-    parser.add_argument(
         "--min-structure-tokens",
         type=positive_int,
         default=DEFAULT_MIN_STRUCTURE_TOKENS,
@@ -74,15 +65,6 @@ def parse_args():
         help=(
             "skip TOC/appendix marking and chunking when document tokens (len//4) "
             f"are below this (default: {DEFAULT_MIN_STRUCTURE_TOKENS})"
-        ),
-    )
-    parser.add_argument(
-        "--source-file",
-        default=None,
-        metavar="NAME",
-        help=(
-            "original upload basename for the <!-- source_file: ... --> header "
-            "(defaults to the input file name)"
         ),
     )
     return parser.parse_args()
@@ -111,17 +93,13 @@ def main() -> None:
             output_file,
             batch_pages=args.batch_pages,
             workers=args.workers,
-            chunk=args.chunk,
             min_structure_tokens=args.min_structure_tokens,
-            source_file=args.source_file,
         )
     else:
         convert_docx(
             input_path,
             output_file,
-            chunk=args.chunk,
             min_structure_tokens=args.min_structure_tokens,
-            source_file=args.source_file,
         )
 
     print(f"\nSaved to {output_file}")

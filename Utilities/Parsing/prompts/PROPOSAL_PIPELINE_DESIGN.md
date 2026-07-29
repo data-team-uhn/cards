@@ -50,8 +50,8 @@ Done by `chunker.py` (the single splitting module). The production entry point i
 **returns** the tree (outline + catalog + chunk texts) instead of writing it. The daemon calls it
 inside `POST /parse`, so the whole tree comes back to Java in the same reply as the Markdown and the
 daemon never touches Java's filesystem. `chunker.write_chunk_files()` is the thin writer over the
-same function, used by the CLI (`docling_parser.py --chunk`, `python chunker.py <file>`) and by the
-legacy path-based `POST /chunk` — both of which need a shared filesystem.
+same function, used by the CLI (`docling_parser.py <file>`, `python chunker.py <file>`), which is
+the only remaining caller that writes the tree to disk itself.
 **No LLM, no ML tokenizer, no Docling re-convert** — pure regex/string work over the
 already-produced Markdown (milliseconds). The heavyweight chat-chunking path
 (HybridChunker + HuggingFace Qwen tokenizer + document re-conversion) is deleted, and

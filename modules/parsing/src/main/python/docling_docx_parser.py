@@ -76,20 +76,18 @@ def convert_docx(
     input_path: Path,
     output_file: Path,
     *,
-    chunk: bool = False,
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
-    source_file: str | None = None,
 ) -> None:
     """
-    Convert a DOCX file to Markdown and write it to output_file.
+    Convert a DOCX file to Markdown and write it, plus its chunk tree, beside ``output_file``.
+
+    Always chunks, mirroring the daemon's ``POST /parse`` (which defaults ``chunk=true``), so the
+    CLI and the service produce the same artifacts for the same document — that is what makes the
+    two paths comparable when checking they have not drifted apart.
 
     @param input_path: path to the source .docx file
     @param output_file: path where Markdown output is written
-    @param chunk: also write per-chunk .md files and catalog.json beside output_file
-        when the document is at least ``min_structure_tokens``
-    @param min_structure_tokens: skip chunking (and TOC/appendix marking within it)
-        below this size
-    @param source_file: optional original upload name for the source_file header
+    @param min_structure_tokens: leave the document unchunked below this size, as the daemon does
     """
     t0 = perf_counter()
 
@@ -100,9 +98,7 @@ def convert_docx(
     # Drop any previous convert's outline sidecar and Chunks/ before writing anew.
     clear_prior_outputs(output_file)
     try:
-        markdown_content = convert_docx_to_markdown(
-            input_path, converter=converter, source_file=source_file
-        )
+        markdown_content = convert_docx_to_markdown(input_path, converter=converter)
     except Exception as exc:
         # Includes RuntimeError from a failed conversion as well as reader errors from an
         # unreadable/corrupt DOCX; surface a clean message instead of a traceback.
@@ -116,15 +112,12 @@ def convert_docx(
 
     t3 = perf_counter()
 
-    chunks_dir = None
-    if chunk:
-        display_name = resolve_source_file_name(input_path, source_file)
-        chunks_dir = write_chunk_files(
-            markdown_content,
-            output_file,
-            display_name,
-            min_structure_tokens=min_structure_tokens,
-        )
+    chunks_dir = write_chunk_files(
+        markdown_content,
+        output_file,
+        resolve_source_file_name(input_path),
+        min_structure_tokens=min_structure_tokens,
+    )
 
     t4 = perf_counter()
     tokens = count_tokens(markdown_content)
@@ -136,14 +129,13 @@ def convert_docx(
     print(f"Converter init:      {t1 - t0:.2f}s")
     print(f"Convert and export:  {t2 - t1:.2f}s")
     print(f"File write:          {t3 - t2:.2f}s")
-    if chunk:
-        print(f"Chunk split:         {t4 - t3:.2f}s")
-        if chunks_dir is not None:
-            chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
-            print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")
-        else:
-            print(
-                f"Chunking skipped "
-                f"({tokens} tokens < {min_structure_tokens} min_structure_tokens)"
-            )
+    print(f"Chunk split:         {t4 - t3:.2f}s")
+    if chunks_dir is not None:
+        chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
+        print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")
+    else:
+        print(
+            f"Chunking skipped "
+            f"({tokens} tokens < {min_structure_tokens} min_structure_tokens)"
+        )
     print(f"Total:               {t4 - t0:.2f}s")

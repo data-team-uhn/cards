@@ -21,9 +21,10 @@
 
 The ``docling_*`` conversion modules import the heavy ``docling`` package, so the whole file
 skips when it is not installed — the rest of the suite still runs anywhere. What is covered
-here is the plumbing around Docling rather than Docling itself: the request-path allowlists
-that form the daemon's security boundary, the body-size cap, and the batch-abandon path that
-runs when a page batch fails.
+here is the plumbing around Docling rather than Docling itself: upload spooling and its size
+cap, body draining, authentication, gzip, and the batch-abandon path that runs when a page
+batch fails. There are no path allowlists left to test — the daemon accepts no filesystem
+paths at all, which :class:`TestNoPathBasedEndpoints` guards.
 """
 
 import gzip
@@ -40,6 +41,46 @@ pytest.importorskip("docling", reason="docling not installed; conversion plumbin
 
 import docling_daemon as daemon  # noqa: E402 -- must follow the importorskip guard
 from docling_pdf_parser import _abandon_batches  # noqa: E402
+
+
+class _FakeHandler:
+    """Minimal stand-in for BaseHTTPRequestHandler's body-reading and response surface."""
+
+    def __init__(self, body: bytes, content_length=None, headers=None):
+        declared = len(body) if content_length is None else content_length
+        self.headers = {"Content-Length": str(declared)}
+        if headers:
+            self.headers.update(headers)
+        self._body = body
+        self._offset = 0
+        self.sent = []
+        self.written = b""
+        self.rfile = SimpleNamespace(read=self._read)
+        self.wfile = SimpleNamespace(write=self._write)
+
+    def _read(self, size):
+        block = self._body[self._offset:self._offset + size]
+        self._offset += len(block)
+        return block
+
+    def _write(self, data):
+        self.written += data
+
+    @property
+    def unread(self):
+        return len(self._body) - self._offset
+
+    def send_response(self, status):
+        self.sent.append(("status", status))
+
+    def send_header(self, name, value):
+        self.sent.append((name.lower(), value))
+
+    def end_headers(self):
+        self.sent.append(("end", None))
+
+    def header_value(self, name):
+        return next((v for k, v in self.sent if k == name.lower()), None)
 
 
 class TestAbandonBatches:
@@ -84,175 +125,6 @@ class TestAbandonBatches:
         assert messages == []
 
 
-class TestIsUnderRoot:
-    def test_direct_child(self, tmp_path):
-        child = tmp_path / "sub" / "file.md"
-        child.parent.mkdir()
-        child.write_text("x", encoding="utf-8")
-        assert daemon._is_under_root(child, tmp_path.resolve()) is True
-
-    def test_sibling_outside_root(self, tmp_path):
-        root = tmp_path / "root"
-        root.mkdir()
-        outside = tmp_path / "outside.md"
-        outside.write_text("x", encoding="utf-8")
-        assert daemon._is_under_root(outside, root.resolve()) is False
-
-    def test_parent_traversal_rejected(self, tmp_path):
-        root = tmp_path / "root"
-        root.mkdir()
-        assert daemon._is_under_root(root / ".." / "escape.md", root.resolve()) is False
-
-
-class TestIsAllowedPath:
-    def _temp_file(self, suffix):
-        handle = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
-        handle.close()
-        return Path(handle.name)
-
-    def test_pdf_under_temp_allowed(self):
-        path = self._temp_file(".pdf")
-        try:
-            assert daemon._is_allowed_path(path) is True
-        finally:
-            path.unlink()
-
-    def test_docx_under_temp_allowed(self):
-        path = self._temp_file(".docx")
-        try:
-            assert daemon._is_allowed_path(path) is True
-        finally:
-            path.unlink()
-
-    def test_unsupported_suffix_rejected(self):
-        path = self._temp_file(".txt")
-        try:
-            assert daemon._is_allowed_path(path) is False
-        finally:
-            path.unlink()
-
-    def test_missing_file_rejected(self):
-        assert daemon._is_allowed_path(Path(tempfile.gettempdir()) / "nope-missing.pdf") is False
-
-    def test_outside_temp_rejected(self, tmp_path):
-        # tmp_path is pytest's own directory, not the system temp root.
-        path = tmp_path / "elsewhere.pdf"
-        path.write_text("x", encoding="utf-8")
-        if daemon._is_under_root(path, Path(tempfile.gettempdir()).resolve()):
-            pytest.skip("pytest tmp_path lives under the system temp root on this platform")
-        assert daemon._is_allowed_path(path) is False
-
-
-class TestIsAllowedChunkFile:
-    def test_md_under_the_parse_root_allowed(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(
-            daemon, "_STATE", SimpleNamespace(parse_output_root=tmp_path.resolve())
-        )
-        path = tmp_path / "proto.md"
-        path.write_text("x", encoding="utf-8")
-        assert daemon._is_allowed_chunk_file(path) is True
-
-    def test_non_md_rejected(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(
-            daemon, "_STATE", SimpleNamespace(parse_output_root=tmp_path.resolve())
-        )
-        path = tmp_path / "proto.pdf"
-        path.write_text("x", encoding="utf-8")
-        assert daemon._is_allowed_chunk_file(path) is False
-
-    def test_outside_the_parse_root_rejected(self, tmp_path, monkeypatch):
-        root = tmp_path / "root"
-        root.mkdir()
-        monkeypatch.setattr(daemon, "_STATE", SimpleNamespace(parse_output_root=root.resolve()))
-        path = tmp_path / "outside.md"
-        path.write_text("x", encoding="utf-8")
-        assert daemon._is_allowed_chunk_file(path) is False
-
-    def test_no_state_rejects_everything(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(daemon, "_STATE", None)
-        path = tmp_path / "proto.md"
-        path.write_text("x", encoding="utf-8")
-        assert daemon._is_allowed_chunk_file(path) is False
-
-    def test_unconfigured_root_rejects_everything(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(daemon, "_STATE", SimpleNamespace(parse_output_root=None))
-        path = tmp_path / "proto.md"
-        path.write_text("x", encoding="utf-8")
-        assert daemon._is_allowed_chunk_file(path) is False
-
-
-class TestParseOutputRootHasNoDefault:
-    """The chunk root must be given explicitly.
-
-    Regression: it used to default to ``<cwd>/parsed-markdown``, a directory nothing else in
-    the system writes to. A daemon started without the flag then rejected every chunk request
-    with a message about the path being outside the root, which reads as a caller mistake
-    rather than a misconfigured daemon.
-    """
-
-    def test_no_flag_and_no_env_yields_none(self, monkeypatch):
-        monkeypatch.delenv(daemon.PARSE_OUTPUT_DIR_ENV, raising=False)
-        assert daemon._resolve_parse_output_root(None) is None
-
-    def test_explicit_flag_wins(self, tmp_path, monkeypatch):
-        monkeypatch.setenv(daemon.PARSE_OUTPUT_DIR_ENV, str(tmp_path / "from-env"))
-        assert daemon._resolve_parse_output_root(str(tmp_path)) == tmp_path.resolve()
-
-    def test_env_used_when_no_flag(self, tmp_path, monkeypatch):
-        monkeypatch.setenv(daemon.PARSE_OUTPUT_DIR_ENV, str(tmp_path))
-        assert daemon._resolve_parse_output_root(None) == tmp_path.resolve()
-
-    def test_chunking_configured_reflects_the_root(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(daemon, "_STATE", SimpleNamespace(parse_output_root=None))
-        assert daemon._is_chunking_configured() is False
-        monkeypatch.setattr(daemon, "_STATE", SimpleNamespace(parse_output_root=tmp_path))
-        assert daemon._is_chunking_configured() is True
-
-    def test_chunking_not_configured_without_state(self, monkeypatch):
-        monkeypatch.setattr(daemon, "_STATE", None)
-        assert daemon._is_chunking_configured() is False
-
-
-class _FakeHandler:
-    """Minimal stand-in for BaseHTTPRequestHandler's body-reading surface."""
-
-    def __init__(self, body: bytes, content_length=None, headers=None):
-        declared = len(body) if content_length is None else content_length
-        self.headers = {"Content-Length": str(declared)}
-        if headers:
-            self.headers.update(headers)
-        self._body = body
-        self._offset = 0
-        self.sent = []
-        self.written = b""
-        self.rfile = SimpleNamespace(read=self._read)
-        self.wfile = SimpleNamespace(write=self._write)
-
-    def _read(self, size):
-        block = self._body[self._offset:self._offset + size]
-        self._offset += len(block)
-        return block
-
-    def _write(self, data):
-        self.written += data
-
-    @property
-    def unread(self):
-        return len(self._body) - self._offset
-
-    def send_response(self, status):
-        self.sent.append(("status", status))
-
-    def send_header(self, name, value):
-        self.sent.append((name.lower(), value))
-
-    def end_headers(self):
-        self.sent.append(("end", None))
-
-    def header_value(self, name):
-        return next((v for k, v in self.sent if k == name.lower()), None)
-
-
 class TestDrainRequestBody:
     """An error response written while the client is still uploading resets the connection
     before the client can read it, so the caller sees a transport failure rather than the 400
@@ -285,33 +157,6 @@ class TestDrainRequestBody:
         handler = _FakeHandler(b"x" * 100, content_length=daemon.MAX_UPLOAD_BYTES * 10)
         daemon._drain_request_body(handler)
         assert handler.unread == 0
-
-
-class TestPositiveOption:
-    """Chunking options read from a ``/chunk`` JSON body.
-
-    ``bool`` is the case that matters: it subclasses ``int``, so the inline
-    ``isinstance(..., int) and > 0`` check this replaced accepted ``{"max_tokens": true}`` and
-    passed ``max_tokens=1`` to the chunker — a one-token budget that shatters the document.
-    """
-
-    def test_positive_int_accepted(self):
-        assert daemon._positive_option({"max_tokens": 2000}, "max_tokens") == 2000
-
-    def test_absent_is_none(self):
-        assert daemon._positive_option({}, "max_tokens") is None
-
-    def test_zero_and_negative_rejected(self):
-        assert daemon._positive_option({"max_tokens": 0}, "max_tokens") is None
-        assert daemon._positive_option({"max_tokens": -5}, "max_tokens") is None
-
-    def test_bool_rejected(self):
-        assert daemon._positive_option({"max_tokens": True}, "max_tokens") is None
-        assert daemon._positive_option({"max_tokens": False}, "max_tokens") is None
-
-    def test_non_integers_rejected(self):
-        for value in ("2000", 2.5, None, [2000], {"n": 1}):
-            assert daemon._positive_option({"max_tokens": value}, "max_tokens") is None, value
 
 
 class TestSafeSuffix:
@@ -418,25 +263,29 @@ class TestJsonResponseGzip:
         assert int(handler.header_value("Content-Length")) == len(handler.written)
 
 
-class TestReadJsonBody:
-    def test_parses_an_object(self):
-        handler = _FakeHandler(json.dumps({"file_path": "/tmp/x.md"}).encode("utf-8"))
-        assert daemon._read_json_body(handler) == {"file_path": "/tmp/x.md"}
 
-    def test_empty_body_is_an_empty_dict(self):
-        assert daemon._read_json_body(_FakeHandler(b"")) == {}
+class TestNoPathBasedEndpoints:
+    """The daemon must not accept filesystem paths again.
 
-    def test_non_object_rejected(self):
-        with pytest.raises(ValueError, match="must be an object"):
-            daemon._read_json_body(_FakeHandler(b"[1, 2, 3]"))
+    ``POST /convert`` (an ``input_path``) and ``POST /chunk`` (a ``file_path``) were removed: both
+    required the daemon to see the caller's filesystem, which cannot work once it runs in its own
+    container. With no path ever accepted there is nothing to allowlist, which is why the helpers
+    below are gone too. This test exists so re-adding one is a deliberate act rather than an
+    accident — if it fails, the filesystem-free property has been given up.
+    """
 
-    def test_oversized_body_rejected_without_reading_it(self):
-        # Guards on the declared length, so an abusive Content-Length cannot dictate how
-        # much the daemon pulls into memory.
-        handler = _FakeHandler(b"{}", content_length=daemon.MAX_REQUEST_BYTES + 1)
-        with pytest.raises(ValueError, match="too large"):
-            daemon._read_json_body(handler)
+    def test_path_accepting_helpers_are_gone(self):
+        for name in ("_is_allowed_path", "_is_allowed_chunk_file", "_is_under_root",
+                     "_is_chunking_configured", "_resolve_parse_output_root",
+                     "_read_json_body", "_positive_option"):
+            assert not hasattr(daemon, name), name
 
-    def test_body_at_the_cap_is_accepted(self):
-        payload = json.dumps({"pad": "x" * 100}).encode("utf-8")
-        assert daemon._read_json_body(_FakeHandler(payload)) == json.loads(payload)
+    def test_chunk_handler_is_gone(self):
+        assert not hasattr(daemon.DoclingDaemonHandler, "_handle_chunk")
+
+    def test_no_chunk_root_on_the_daemon_state(self):
+        assert "parse_output_root" not in daemon.DaemonState.__init__.__code__.co_varnames
+
+    def test_no_parse_output_dir_argument(self):
+        parser_source = daemon.parse_args.__code__.co_consts
+        assert not any(isinstance(c, str) and "parse-output-dir" in c for c in parser_source)

@@ -76,13 +76,16 @@ backmatter (Reference/Appendix) chunk; that chunk is never sent to the summarize
 Token counts come from :func:`markdown_markers.count_tokens`, a cheap character-based
 heuristic (``len(text) // 4``); no ML tokenizer is loaded.
 
-Two entry points cover the two flows:
+Three entry points, one shared core:
 
-* :func:`write_chunk_files` — one Markdown document already in hand; used by
-  ``docling_parser.py --chunk`` right after parsing.
-* :func:`chunk_file` — one already-parsed ``.md`` file, given its exact path (MVP: one
-  proposal file per answer, so there is exactly one file to chunk). Invoked in-process
-  from the Docling daemon (``POST /chunk``) or as a standalone CLI fallback:
+* :func:`build_chunk_tree` — **pure**: Markdown and any known outline records in, the whole tree
+  (outline + catalog + chunk texts) out, nothing written. This is what the daemon calls inside
+  ``POST /parse``, so the tree travels back to its caller in the reply and the daemon needs no
+  shared filesystem.
+* :func:`write_chunk_files` — the thin writer over it, for a document already in hand on this
+  filesystem; used by ``docling_parser.py`` right after parsing.
+* :func:`chunk_file` — one already-parsed ``.md`` file, given its exact path (MVP: one proposal
+  file per answer, so there is exactly one file to chunk). CLI only:
   ``python chunker.py <file_path>``.
 """
 
