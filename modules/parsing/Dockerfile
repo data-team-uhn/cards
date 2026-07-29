@@ -55,11 +55,14 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
+# No tokenizer package: token counts are len(text) // 4 (markdown_markers.count_tokens).
+# tiktoken used to be installed here for a chunker that no longer exists; nothing imports it,
+# and it is not pulled in transitively either — docling-core wants it only under the optional
+# "chunking-openai" extra — so it was 2.2 MB of image for nothing.
 RUN pip install --no-cache-dir \
         "docling>=2.115" \
         pypdf \
-        psutil \
-        tiktoken
+        psutil
 
 # Bake the model weights into the image. Without this the first conversion tries to reach
 # huggingface.co and fails on any host with no egress or with TLS interception — the container

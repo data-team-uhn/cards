@@ -130,6 +130,46 @@ class TestPackBlocks:
         assert chunker._pack_blocks([a, heading, c], 25) == [a, heading + "\n\n" + c]
 
 
+class TestOutlineSizeGate:
+    """The gate that decides whether the outline pass runs at all.
+
+    It moved here from inside ``derive_outline``, which only needed ``min_structure_tokens`` to
+    answer a question ``build_chunk_tree`` was already asking two lines later. The behaviour it
+    has to preserve is the asymmetry: records beat the gate, because a bookmarked document's
+    outline is already in hand and even a small one needs its ``toc`` downstream.
+    """
+
+    SMALL = "# Tiny\n\n## Table of Contents\n\nAlpha\t1\nBeta\t2\nGamma\t3\n\n## Alpha\n\nbody\n"
+
+    def _tree(self, records=None):
+        return chunker.build_chunk_tree(
+            self.SMALL, "doc.md", min_structure_tokens=10 ** 9, records=records
+        )
+
+    def test_small_document_without_records_is_left_alone(self):
+        tree = self._tree()
+        # Not even the TOC is rewritten: the document is sent whole, so there is nothing to route.
+        assert tree["markdown"] == self.SMALL
+        assert tree["outline"]["outline_source"] == "none"
+        assert tree["outline"]["toc"] == []
+        assert tree["records"] == []
+
+    def test_small_document_with_records_still_gets_its_outline(self):
+        tree = self._tree(records=[{"title": "Alpha", "level": 1, "page": 1}])
+        assert tree["outline"]["outline_source"] == "pdf-bookmarks"
+        assert tree["outline"]["toc"] == ["Alpha"]
+
+    def test_both_are_still_unchunked(self):
+        # The gate above is about the outline; the chunking decision is separate and unaffected.
+        assert self._tree()["chunked"] is False
+        assert self._tree(records=[{"title": "Alpha", "level": 1, "page": 1}])["chunked"] is False
+
+    def test_a_large_document_runs_the_outline_pass_without_records(self):
+        big = self.SMALL + ("Body sentence that carries it along. " * 200)
+        tree = chunker.build_chunk_tree(big, "doc.md", min_structure_tokens=1)
+        assert tree["outline"]["outline_source"] == "md-toc"
+
+
 class TestIsHeadingOnly:
     def test_single_heading(self):
         assert chunker._is_heading_only("# 6.0 Schedule of Assessments") is True

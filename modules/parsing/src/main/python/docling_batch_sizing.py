@@ -294,7 +294,7 @@ def print_parallelism_summary(
     workers: int,
     batch_pages: int,
     chunk_count: int,
-    active_workers: int,
+    active_workers: int | None,
     workers_override: bool,
     batch_pages_override: bool,
     log=print,
@@ -302,6 +302,10 @@ def print_parallelism_summary(
     """
     Report startup snapshot and resolved per-parse parallelism values on start of each PDF conversion.
 
+    @param active_workers: how many workers this conversion will actually occupy, or ``None``
+        when the pool is not ours to size. It only bounds anything on the path that creates its
+        own ProcessPoolExecutor; in daemon mode the pool is shared and pre-warmed at whatever
+        size the daemon chose, so reporting a number here claimed a limit that was not applied.
     @param log: line sink; defaults to ``print``. The daemon passes its per-request
         collector, so the summary reaches the caller's ``logs`` instead of only the
         daemon's own stdout.
@@ -323,4 +327,7 @@ def print_parallelism_summary(
     )
     log(f"Batch pages: {batch_pages} ({batch_source}; max={MAX_BATCH_PAGES})")
     log(f"Chunks: {chunk_count} for {total_pages} pages")
-    log(f"Active workers: {active_workers}")
+    if active_workers is not None:
+        log(f"Active workers: {active_workers}")
+    else:
+        log(f"Active workers: shared daemon pool ({workers})")

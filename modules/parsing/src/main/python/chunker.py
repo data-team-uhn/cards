@@ -253,8 +253,7 @@ def _match_heading(line: str) -> tuple[int, str] | None:
     stripped — or ``None`` if the line is not an ATX heading.
 
     Does **not** apply :func:`valid_heading`; callers that decide chunk cuts or catalog
-    labels must filter via :func:`_heading_level` / :func:`_heading_text` or
-    :func:`valid_heading` themselves.
+    labels must filter via :func:`_heading_level` or :func:`valid_heading` themselves.
     """
     match = HEADING.match(line)
     if match is None:
@@ -271,16 +270,6 @@ def _heading_level(line: str) -> int | None:
     if matched is None or not valid_heading(matched[1]):
         return None
     return matched[0]
-
-
-def _heading_text(line: str) -> str | None:
-    """Return a cut-worthy heading's text (``#`` stripped), or ``None`` if the line is
-    not an ATX heading or fails :func:`valid_heading`.
-    """
-    matched = _match_heading(line)
-    if matched is None or not valid_heading(matched[1]):
-        return None
-    return matched[1]
 
 
 def _min_heading_level(lines: list[str], deeper_than: int = 0) -> int | None:
@@ -873,9 +862,11 @@ def build_chunk_tree(
         actually analysed against — the ``records`` argument when it was supplied, otherwise
         whatever was harvested from the printed TOC (empty when the size gate skipped detection)
     """
-    prepared, outline, resolved_records = derive_outline(
-        markdown_content, records=records, min_structure_tokens=min_structure_tokens
-    )
+    # The outline pass is skipped outright for a small document with no records
+    if records or count_tokens(markdown_content) >= min_structure_tokens:
+        prepared, outline, resolved_records = derive_outline(markdown_content, records=records)
+    else:
+        prepared, outline, resolved_records = markdown_content, {}, []
 
     # The size gate is the pipeline's single binary routing decision, recorded as ``chunked``
     # in the outline — which is always produced, even when chunking is skipped, so downstream

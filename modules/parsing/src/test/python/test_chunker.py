@@ -70,10 +70,6 @@ class TestHeadingMatching:
         # A "Table ..." caption is a heading syntactically but not a chunk boundary.
         assert chunker._heading_level("## Table 1: Overview") is None
 
-    def test_heading_text_strips_markers(self):
-        assert chunker._heading_text("### Study Design") == "Study Design"
-        assert chunker._heading_text("not a heading") is None
-
     def test_min_heading_level(self):
         # Every heading text must clear MIN_HEADING_CHARS (5) to count as a boundary.
         lines = "# Alpha\n## Bravo\n### Gamma".split("\n")
