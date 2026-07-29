@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -713,7 +714,12 @@ public class EmailTemplate
         private String readFileAsString(final Node node) throws IOException, RepositoryException
         {
             try {
-                return IOUtils.toString(getFileStream(node), StandardCharsets.UTF_8);
+                final Binary content = getBinary(node);
+                try (InputStream stream = content.getStream()) {
+                    return IOUtils.toString(stream, StandardCharsets.UTF_8);
+                } finally {
+                    content.dispose();
+                }
             } catch (RepositoryException e) {
                 return "";
             }
@@ -721,12 +727,26 @@ public class EmailTemplate
 
         private byte[] readFileAsBytes(final Node node) throws IOException, RepositoryException
         {
-            return getFileStream(node).readAllBytes();
+            final Binary content = getBinary(node);
+            try (InputStream stream = content.getStream()) {
+                return stream.readAllBytes();
+            } finally {
+                content.dispose();
+            }
         }
 
-        private InputStream getFileStream(final Node node) throws RepositoryException
+        /*
+         * The binary content of a file node. A repository binary, and the stream taken from it, hold resources until
+         * they are closed and disposed of, which the callers above are careful to do: a template is read for every
+         * email sent, so leaking here leaks steadily.
+         *
+         * @param node an nt:file node
+         * @return its content
+         * @throws RepositoryException if the node is not a readable file
+         */
+        private Binary getBinary(final Node node) throws RepositoryException
         {
-            return node.getNode("jcr:content").getProperty("jcr:data").getBinary().getStream();
+            return node.getNode("jcr:content").getProperty("jcr:data").getBinary();
         }
 
         private String getMimeType(final Node node, final ResourceResolver resolver)

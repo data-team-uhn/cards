@@ -87,11 +87,16 @@ public final class EmailUtils
     {
         final MessageBuilder message = mailService.getMessageBuilder()
             .from(email.getSenderAddress(), email.getSenderName())
-            .to(email.getRecipientAddress(), email.getRecipientName())
             .replyTo(email.getReplyToAddress(), email.getReplyToName())
             .subject(email.getSubject())
             .text(email.getTextBody())
             .html(email.getHtmlBody());
+        // A recipient with no display name must be addressed by its address alone, as sendTextEmail already does
+        if (email.getRecipientName() == null) {
+            message.to(email.getRecipientAddress());
+        } else {
+            message.to(email.getRecipientAddress(), email.getRecipientName());
+        }
         for (Map.Entry<String, String> header : email.getExtraHeaders().entrySet()) {
             message.header(header.getKey(), header.getValue());
         }
