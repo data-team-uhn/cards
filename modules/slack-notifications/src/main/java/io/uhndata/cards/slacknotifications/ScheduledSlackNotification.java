@@ -58,6 +58,11 @@ public class ScheduledSlackNotification
     protected void activate(Configuration config) throws Exception
     {
         LOGGER.info("ScheduledSlackNotifications activating");
+        if (StringUtils.isBlank(resolveFromEnvironment(config.endpoint()))) {
+            // Scheduling a job that can only ever fail would report the same failure every single night
+            LOGGER.warn("The {} notification has no endpoint configured, it will not be scheduled", config.name());
+            return;
+        }
         final String nightlyNotificationsSchedule = getSchedule(config.schedule());
 
         ScheduleOptions slackNotificationsOptions = this.scheduler.EXPR(nightlyNotificationsSchedule);
@@ -84,10 +89,21 @@ public class ScheduledSlackNotification
 
     private String getSchedule(final String config)
     {
-        String result = config;
-        if (result != null && result.startsWith("%ENV%")) {
-            result = System.getenv(config.substring("%ENV%".length()));
+        return StringUtils.defaultIfEmpty(resolveFromEnvironment(config), "0 0 0 * * ? *");
+    }
+
+    /*
+     * Reads a configuration value that names an environment variable rather than holding the value itself, which is
+     * how a secret such as a webhook address is kept out of the configuration files.
+     *
+     * @param config the configured value
+     * @return the value itself, or what the named environment variable holds
+     */
+    private String resolveFromEnvironment(final String config)
+    {
+        if (config != null && config.startsWith("%ENV%")) {
+            return System.getenv(config.substring("%ENV%".length()));
         }
-        return StringUtils.defaultIfEmpty(result, "0 0 0 * * ? *");
+        return config;
     }
 }
