@@ -34,10 +34,6 @@ _GARBAGE_LINE = re.compile(
 
 MIN_RUN_LENGTH = 25
 
-# Reserved marker appended at the end of a document once clean_markdown has run, so a
-# second pass (e.g. the chunker re-cleaning an already-cleaned parse output) is a no-op.
-CLEANED_MARKER = "<!-- cleaned -->"
-
 _LINE_NUMBER = re.compile(r"^\d+$")
 _IMAGE_PLACEHOLDER = re.compile(r"^\s*<!--\s*image\s*-->\s*$")
 
@@ -149,21 +145,23 @@ def source_file_header(source_file: str) -> str:
 def clean_markdown(md: str) -> str:
     """
     Collapse blank lines, remove empty headings / image placeholders, and strip
-    decorative garbage lines. Cleanup never runs twice on the same output.
+    decorative garbage lines.
+
+    Called exactly once per document, by the converter that produced it — nothing downstream
+    re-cleans, and no sentinel is written into the output to enforce that. Every step here is a
+    removal or a collapse, so a second call would be harmless anyway.
+
+    @param md: Markdown as exported by Docling, or an empty value
+    @return: the cleaned text; ``""`` for empty input
     """
-    if md and CLEANED_MARKER in md:
-        return md
-
     if not md:
-        cleaned = md or ""
-    else:
-        # Special case: cleanup leading line numbers at every line
-        md = cleanup_leading_line_numbers(md)
-        kept_lines = [
-            line
-            for line in md.split("\n")
-            if not _GARBAGE_LINE.match(line) and not _IMAGE_PLACEHOLDER.match(line)
-        ]
-        cleaned = re.sub(r"\n{3,}", "\n\n", "\n".join(kept_lines)).strip()
+        return ""
 
-    return f"{cleaned}\n\n{CLEANED_MARKER}" if cleaned else CLEANED_MARKER
+    # Special case: cleanup leading line numbers at every line
+    without_line_numbers = cleanup_leading_line_numbers(md)
+    kept_lines = [
+        line
+        for line in without_line_numbers.split("\n")
+        if not _GARBAGE_LINE.match(line) and not _IMAGE_PLACEHOLDER.match(line)
+    ]
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(kept_lines)).strip()

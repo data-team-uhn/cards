@@ -161,9 +161,9 @@ Notes for whoever picks this up:
 | `docling_docx_parser.py` | DOCX → Markdown (Docling; no page markers) |
 | `docling_batch_sizing.py` | Worker-count / page-batch sizing from RAM + cores |
 | `docling_config.py` / `docling_error_detection.py` | Shared Docling pipeline options; parse-failure detection |
-| `markdown_cleanup.py` | `clean_markdown` — strip garbage lines, collapse blanks (idempotent) |
-| **`chunker.py`** | `chunk_file` / `write_chunk_files` — the single splitting module: prepare, size-gate, split, catalog + outline |
-| `toc_and_appendix_detection.py` | `find_toc_and_appendix` — the outline **fork**; printed-TOC clean/harvest; `backmatter_from_records` |
+| `markdown_cleanup.py` | `clean_markdown` — strip garbage lines, collapse blanks (idempotent). Called **once per document**, by the converter only |
+| **`chunker.py`** | `chunk_file` / `write_chunk_files` / `build_chunk_tree` — the single splitting module: size-gate, split, catalog + outline. Never cleans |
+| `toc_and_appendix_detection.py` | `derive_outline` — the outline **fork** (pure); `find_toc_and_appendix` is its disk wrapper; printed-TOC clean/harvest; `backmatter_from_records` |
 | `bookmarks.py` | Outline-record helpers: `normalize_title`, `verify_bookmarks` (page verify + off-by-one correct), `resolve_record_line`, sidecar IO |
 | `pdf_bookmarks.py` | `extract_outline` — flatten a PDF's embedded bookmarks (pypdf, lazy import) |
 | `heading_numbering.py` | Section-numbering depth (`1.2.3`→3, `1.0`→1) for heading levels |
@@ -195,26 +195,33 @@ same `/parse` response, and co-locates `<answerDir>/<stem>.pdf`.
 Pure regex/string work over the already-produced Markdown — **no LLM, no ML tokenizer, no
 Docling re-convert** (milliseconds). Token counts are the cheap `len(text) // 4`.
 
+The chunker does **not** clean. `clean_markdown` runs exactly once per document, in the
+converter that produced the `.md`, and everything below takes that text as-is.
+
 ```
-chunk_file(<stem>.md)
+chunk_file(<stem>.md)                                        # md is already cleaned
   └─ write_chunk_files(md, output_file)
-       ├─ _prepare_markdown(md, output_file)
-       │    ├─ clean_markdown(md)                            # idempotent cleanup
-       │    ├─ _extract_and_save_bookmarks(md, output_file)  # <stem>.pdf → bookmarks.json (verified)
-       │    └─ find_toc_and_appendix(md, outline.json)       # fork → toc, backmatterLine, tokens
+       ├─ _sibling_pdf_records(md, output_file)   # <stem>.pdf bookmarks, pages verified vs md
+       └─ build_chunk_tree(md, filename, records) # pure: no filesystem, returns the whole tree
+            ├─ derive_outline(md, records)        # fork → toc, backmatterLine, tokens, source
+            │
+            ├─ size gate:  tokens = len(md)//4  vs  DEFAULT_MIN_STRUCTURE_TOKENS (20000)
+            │    ├─ below → outline only {chunked:false}; STOP (whole-doc used downstream)
+            │    └─ at/above ↓
+            │
+            ├─ split main content at the shallowest ATX heading level
+            ├─ unite consecutive sections up to DEFAULT_MAX_TOKENS (2000)
+            ├─ over-budget piece → _split_oversized → _subchunk_blocks, in order:
+            │       ATX sub-heading → outline-record cut → numbered stand-out → paragraph
+            ├─ small text-only tail (< MIN_TAIL_TOKENS 500) folded into the previous part
+            └─ backmatterLine..EOF → one standalone backmatter chunk (no sub-splitting)
        │
-       ├─ size gate:  tokens = len(md)//4  vs  DEFAULT_MIN_STRUCTURE_TOKENS (20000)
-       │    ├─ below → Chunks/outline.json {chunked:false}; STOP (whole-doc used downstream)
-       │    └─ at/above ↓
-       │
-       ├─ split main content at the shallowest ATX heading level
-       ├─ unite consecutive sections up to DEFAULT_MAX_TOKENS (2000)
-       ├─ over-budget piece → _split_oversized → _subchunk_blocks, boundaries in order:
-       │       ATX sub-heading → outline-record cut → numbered stand-out → paragraph
-       ├─ small text-only tail (< MIN_TAIL_TOKENS 500) folded back into the previous part
-       ├─ backmatterLine..EOF → one standalone backmatter chunk (no sub-splitting)
        └─ write Chunks/ : Chunk-*.md, catalog.json, outline.json
 ```
+
+`build_chunk_tree` is also the daemon's entry point: `POST /parse` calls it directly and
+returns the tree as JSON, writing nothing. That is why the split above is where it is — the
+disk writing all lives in `write_chunk_files`, the analysis in `build_chunk_tree`.
 
 Entry points (both land in `write_chunk_files`):
 
@@ -233,14 +240,14 @@ See `PROPOSAL_PIPELINE_DESIGN.md` § *Stage 0 — Chunking* for the full splitti
 The document **outline** is a list of records `{title, level|null, page|null, verified?}`,
 stored in a `bookmarks.json` sidecar and folded into `Chunks/outline.json`. It drives three
 things: the `toc` array, `backmatterLine`, and record-based sub-chunk cut points. Records
-come from one of two sources, decided by a **fork** in `find_toc_and_appendix`:
+come from one of two sources, decided by a **fork** in `derive_outline`:
 
 ```mermaid
 flowchart TD
-    A["_extract_and_save_bookmarks(md, output_file)"] --> B{"sibling stem.pdf has bookmarks?"}
+    A["_sibling_pdf_records(md, output_file)"] --> B{"sibling stem.pdf has bookmarks?"}
     B -->|yes| C["extract_outline pypdf, then verify_bookmarks page-correct, write bookmarks.json"]
     B -->|no| D["no sidecar written"]
-    C --> E{"find_toc_and_appendix: bookmarks.json present?"}
+    C --> E{"derive_outline: any records passed in?"}
     D --> E
     E -->|yes| F["AUTHORITATIVE: use records; printed TOC left untouched"]
     E -->|no| G["mark_and_cleanup_toc: clean printed TOC in place; harvest entries to records"]
