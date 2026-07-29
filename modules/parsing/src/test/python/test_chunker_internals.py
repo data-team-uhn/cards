@@ -1,20 +1,18 @@
+# Copyright 2026 DATA @ UHN. See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.
 #
-#  Licensed to the Apache Software Foundation (ASF) under one
-#  or more contributor license agreements.  See the NOTICE file
-#  distributed with this work for additional information
-#  regarding copyright ownership.  The ASF licenses this file
-#  to you under the Apache License, Version 2.0 (the
-#  "License"); you may not use this file except in compliance
-#  with the License.  You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#  Unless required by applicable law or agreed to in writing,
-#  software distributed under the License is distributed on an
-#  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-#  KIND, either express or implied.  See the License for the
-#  specific language governing permissions and limitations
-#  under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 
 """Direct unit tests for the chunker's internal split/pack/heading helpers.
@@ -130,6 +128,93 @@ class TestPackBlocks:
         c = "c" * 80   # 20 tokens
         # a + heading + c is over 25, so a flushes and the heading attaches to c.
         assert chunker._pack_blocks([a, heading, c], 25) == [a, heading + "\n\n" + c]
+
+
+class TestIsHeadingOnly:
+    def test_single_heading(self):
+        assert chunker._is_heading_only("# 6.0 Schedule of Assessments") is True
+
+    def test_two_headings_with_no_prose(self):
+        # Broader than _is_standalone_heading, which requires exactly one content line: two
+        # headings back to back are just as unusable as a chunk file.
+        assert chunker._is_heading_only("# 7.0 Analysis\n\n## 7.1 Primary") is True
+
+    def test_heading_with_body_is_not(self):
+        assert chunker._is_heading_only("# 6.0 Schedule\n\nSome prose.") is False
+
+    def test_blank_and_neutral_lines_ignored(self):
+        assert chunker._is_heading_only("\n<!-- page: 4 -->\n# 6.0 Schedule\n\n---\n") is True
+
+    def test_body_only_is_not(self):
+        assert chunker._is_heading_only("Just prose, no heading.") is False
+
+    def test_empty_is_not(self):
+        assert chunker._is_heading_only("") is False
+
+
+class TestMergeHeadingOnlyParts:
+    """No chunk file may be a bare title.
+
+    Regression, reproduced at default settings: a section whose body is one over-budget
+    paragraph made _split_by_paragraphs flush the heading alone, giving a 29-byte
+    'Chunk-1.1.md' holding '# 6.0 Schedule of Assessments' and nothing else, with the table
+    next to it labelled only by inheritance. Docling emits a table as consecutive '|' lines
+    with no blank line, so the whole table is one paragraph and this is not an edge case.
+    """
+
+    def test_heading_takes_the_following_part(self):
+        assert chunker._merge_heading_only_parts(["# 6.0 Schedule", "| a | b |"]) == \
+            ["# 6.0 Schedule\n\n| a | b |"]
+
+    def test_trailing_heading_folds_backwards(self):
+        # _pack_blocks guards its lookahead with `index + 1 < n`, so a document ending on a bare
+        # heading leaves it last — where there is nothing after it to take.
+        assert chunker._merge_heading_only_parts(["Body text.", "## 5.2 Deferred"]) == \
+            ["Body text.\n\n## 5.2 Deferred"]
+
+    def test_consecutive_headings_take_the_body(self):
+        parts = ["# 7.0 Analysis", "## 7.1 Primary", "Prose body."]
+        assert chunker._merge_heading_only_parts(parts) == \
+            ["# 7.0 Analysis\n\n## 7.1 Primary\n\nProse body."]
+
+    def test_middle_heading_merges_forwards_not_backwards(self):
+        parts = ["First body.", "## 5.2 Second", "Second body."]
+        assert chunker._merge_heading_only_parts(parts) == \
+            ["First body.", "## 5.2 Second\n\nSecond body."]
+
+    def test_a_lone_heading_part_is_left_alone(self):
+        # Nothing to merge with; a document that is only a heading has no better answer.
+        assert chunker._merge_heading_only_parts(["# 6.0 Schedule"]) == ["# 6.0 Schedule"]
+
+    def test_parts_without_bare_headings_are_untouched(self):
+        parts = ["# 1.0 Intro\n\nbody", "## 1.1 More\n\nbody"]
+        assert chunker._merge_heading_only_parts(parts) == parts
+
+    def test_empty(self):
+        assert chunker._merge_heading_only_parts([]) == []
+
+
+class TestNoHeadingOnlyChunkFiles:
+    """The same two cases end to end, at default max_tokens."""
+
+    def _files(self, md):
+        tree = chunker.build_chunk_tree(md, "doc.md", min_structure_tokens=1)
+        return [(entry["file"], len(chunk["text"]))
+                for entry, chunk in zip(tree["catalog"]["chunks"], tree["chunks"])]
+
+    def test_heading_stays_with_an_over_budget_table(self):
+        # One row of ten cells is ~20 tokens, so 130 rows clears the 2000-token budget.
+        row = "| " + " | ".join(["Procedure with a realistic label"] + ["X"] * 9) + " |"
+        table = "\n".join(["| A | B | C | D | E | F | G | H | I | J |"] + [row] * 130)
+        files = self._files(f"# 6.0 Schedule of Assessments\n\n{table}")
+        assert len(files) == 1, files
+        assert files[0][1] > 1000, files
+
+    def test_trailing_bare_heading_is_not_its_own_file(self):
+        md = ("# 5.0 Methods\n\n## 5.1 First Subsection\n\n"
+              + ("Body sentence that carries it along. " * 220)
+              + "\n\n## 5.2 Deferred Subsection\n")
+        assert all(size > 100 for _, size in self._files(md)), self._files(md)
 
 
 class TestMergeSmallTextTails:

@@ -1,20 +1,18 @@
+# Copyright 2026 DATA @ UHN. See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.
 #
-#  Licensed to the Apache Software Foundation (ASF) under one
-#  or more contributor license agreements.  See the NOTICE file
-#  distributed with this work for additional information
-#  regarding copyright ownership.  The ASF licenses this file
-#  to you under the Apache License, Version 2.0 (the
-#  "License"); you may not use this file except in compliance
-#  with the License.  You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#  Unless required by applicable law or agreed to in writing,
-#  software distributed under the License is distributed on an
-#  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-#  KIND, either express or implied.  See the License for the
-#  specific language governing permissions and limitations
-#  under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 
 """
@@ -591,6 +589,48 @@ def _split_oversized(
     return parts
 
 
+def _is_heading_only(part: str) -> bool:
+    """Whether ``part`` is nothing but cut-worthy ATX headings — no body text at all.
+
+    Broader than :func:`_is_standalone_heading`, which requires exactly one content line: two
+    consecutive headings with no prose between them are just as unusable as a chunk.
+    """
+    content = [line for line in part.split("\n") if not is_neutral(line.strip())]
+    return bool(content) and all(_heading_level(line) is not None for line in content)
+
+
+def _merge_heading_only_parts(parts: list[str]) -> list[str]:
+    """Fold a part that is only a heading into a neighbour, so no chunk file is a bare title.
+
+    Two paths produce one. :func:`_split_by_paragraphs` flushes the heading alone whenever the
+    section's body is a single over-budget paragraph — routine for a schedule-of-assessments
+    table, which Docling emits as consecutive ``|`` lines with no blank line, hence one
+    paragraph. And :func:`_pack_blocks` guards its stand-alone-heading lookahead with
+    ``index + 1 < n``, so a document ending on a bare heading (an empty final section) leaves
+    it as the last part.
+
+    The direction has to vary: a heading takes the part *after* it, which is the rule
+    :func:`_pack_blocks` already applies to blocks, but a trailing heading has nothing to take
+    and folds *backwards* instead. :func:`_merge_small_text_tails` cannot do this — it only
+    merges backwards, and it refuses any part carrying a heading.
+
+    Merging can push a part over ``max_tokens``. That is the existing trade in
+    :func:`_pack_blocks` ("pull the next block in even over budget") and it is the better one:
+    a 29-byte chunk carries no content for the summarizer, and splitting a heading from its
+    table leaves the table identified only by an inherited label.
+    """
+    merged: list[str] = []
+    for part in parts:
+        if merged and _is_heading_only(merged[-1]):
+            merged[-1] = merged[-1].rstrip() + "\n\n" + part.lstrip()
+            continue
+        merged.append(part)
+    if len(merged) > 1 and _is_heading_only(merged[-1]):
+        trailing = merged.pop()
+        merged[-1] = merged[-1].rstrip() + "\n\n" + trailing.lstrip()
+    return merged
+
+
 def _merge_small_text_tails(parts: list[str], min_tokens: int) -> list[str]:
     """Fold a text-only continuation part smaller than ``min_tokens`` back into the part
     before it, so a small tail cut off from the previous part is not emitted as its own file.
@@ -921,6 +961,7 @@ def build_chunk_tree(
             parts = _split_oversized(packed_text, split_level, max_tokens, cut_keys)
         else:
             parts = [packed_text]
+        parts = _merge_heading_only_parts(parts)
         parts = _move_trailing_page_markers(_merge_small_text_tails(parts, MIN_TAIL_TOKENS))
 
         single_part = len(parts) == 1
