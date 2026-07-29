@@ -207,8 +207,10 @@ public class ExportTask implements Runnable
             }
         } catch (LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
+            ErrorLogger.logError(e);
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to access data: {}", e.getMessage(), e);
+            ErrorLogger.logError(e);
         } finally {
             if (mustPopResolver) {
                 this.rrp.pop();

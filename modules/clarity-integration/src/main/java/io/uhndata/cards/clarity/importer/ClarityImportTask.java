@@ -54,6 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
+import io.uhndata.cards.errortracking.ErrorLogger;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -326,10 +327,13 @@ public class ClarityImportTask implements Runnable
 
         } catch (SQLException e) {
             LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
+            ErrorLogger.logError(e);
         } catch (LoginException e) {
             LOGGER.error("Could not find service user while writing results: {}", e.getMessage(), e);
+            ErrorLogger.logError(e);
         } catch (RepositoryException e) {
             LOGGER.error("Error during Clarity import: {}", e.getMessage(), e);
+            ErrorLogger.logError(e);
         } finally {
             cleanupState();
             this.metricsAdjustments.remove();
