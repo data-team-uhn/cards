@@ -170,14 +170,77 @@ class TestChunkFile:
         assert not (path.parent / CHUNKS_DIRNAME / CATALOG_NAME).exists()
 
 
-class TestSidecarCleanup:
-    """``bookmarks.json`` / ``outline.json`` beside the .md are per-run scratch state.
+class TestRecordsWrittenIntoChunks:
+    """The resolved outline records land in ``Chunks/bookmarks.json``.
 
-    Regression: ``chunk_file`` never cleared them and ``write_chunk_files`` removed only the
-    outline, so a run that harvested a printed TOC left ``bookmarks.json`` behind. The next
-    run read it back as *authoritative PDF bookmarks*, skipped printed-TOC detection, and
-    reported the previous document's outline for the current one — the ``POST /chunk``
-    endpoint's exact usage pattern.
+    Regression: they were briefly written beside the ``.md`` instead, which is the exact path
+    ``_remove_sidecars`` unlinks at the end of the same call — so the file never survived. And
+    they were the pre-chunk PDF records rather than the resolved ones, so a document whose
+    outline came from a printed TOC (no PDF at all) wrote nothing.
+    """
+
+    PARAGRAPH = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " * 60
+
+    def _records(self, path):
+        return json.loads(
+            (path.parent / CHUNKS_DIRNAME / BOOKMARKS_NAME).read_text(encoding="utf-8")
+        )
+
+    def _protocol(self, path):
+        # Four entries, not two: the no-table path needs MIN_DENSITY_MATCHES (3) of the lines
+        # after the label to look like entries before it accepts the block as a TOC.
+        toc = ["## TABLE OF CONTENTS"] + [
+            "1.0 Background\t2", "2.0 Objectives\t3", "3.0 Design\t4", "4.0 Analysis\t5", "",
+        ]
+        body = [f"# Section {i} Heading\n\n{self.PARAGRAPH}\n" for i in range(1, 51)]
+        path.write_text("\n".join(toc + body), encoding="utf-8")
+
+    def test_printed_toc_records_are_written(self, tmp_path):
+        # No sibling PDF: the records exist only because derive_outline harvested the printed
+        # TOC, so this is the case the first attempt missed entirely.
+        path = tmp_path / "proto.md"
+        self._protocol(path)
+        chunk_file(str(path))
+        titles = [record["title"] for record in self._records(path)]
+        assert "1.0 Background" in titles
+        assert "4.0 Analysis" in titles
+
+    def test_written_inside_chunks_not_beside_the_md(self, tmp_path):
+        path = tmp_path / "proto.md"
+        self._protocol(path)
+        chunk_file(str(path))
+        assert (path.parent / CHUNKS_DIRNAME / BOOKMARKS_NAME).is_file()
+        assert not (tmp_path / BOOKMARKS_NAME).exists()
+
+    def test_absent_when_no_records_were_resolved(self, tmp_path):
+        # Nothing to inspect, and outline.json's outline_source says why.
+        path = tmp_path / "plain.md"
+        path.write_text("# Title\n\n" + self.PARAGRAPH, encoding="utf-8")
+        chunk_file(str(path))
+        assert not (path.parent / CHUNKS_DIRNAME / BOOKMARKS_NAME).exists()
+
+    def test_written_on_the_unchunked_path_too(self, tmp_path, monkeypatch):
+        # Same reasoning as outline.json: a size-gated document still reports what it found.
+        # It has to be the PDF path — the size gate skips printed-TOC harvesting altogether,
+        # so a small document only has records when they came from real bookmarks.
+        records = [{"title": "Alpha Section", "level": 1, "page": 1}]
+        monkeypatch.setattr(chunker, "extract_verified_outline", lambda *a, **k: records)
+        path = tmp_path / "small.md"
+        path.write_text("# Tiny\n\nshort body\n", encoding="utf-8")
+        (tmp_path / "small.pdf").write_bytes(b"%PDF-1.4")
+        assert chunk_file(str(path), min_structure_tokens=10 ** 9)["chunks"] == 0
+        assert self._records(path) == records
+
+
+class TestSidecarCleanup:
+    """Nothing is left beside the ``.md``: the outline and the records go into ``Chunks/``.
+
+    Regression: a run that harvested a printed TOC used to leave ``bookmarks.json`` beside the
+    ``.md``, and the next run read it back as *authoritative PDF bookmarks*, skipped
+    printed-TOC detection, and reported the previous document's outline for the current one.
+    Neither half is possible now — nothing writes that path and nothing reads it — but the
+    cleanup stays, because an older version's leftover is indistinguishable from a fresh file
+    to anyone inspecting the folder.
     """
 
     PARAGRAPH = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " * 60
@@ -222,8 +285,10 @@ class TestSidecarCleanup:
             json.dumps([{"title": "Alpha Section", "level": 1, "page": 1}]), encoding="utf-8"
         )
         chunk_file(str(path), min_structure_tokens=10 ** 9)
-        # The pre-placed sidecar is honoured for this run, then cleaned up.
-        assert self._outline(path)["toc"] == ["Alpha Section"]
+        # A leftover sidecar is neither honoured nor left behind: the outline comes from
+        # the document alone, and the stale file is removed on the unchunked path too.
+        assert self._outline(path)["toc"] == []
+        assert self._outline(path)["outline_source"] == "none"
         assert not (tmp_path / BOOKMARKS_NAME).exists()
 
     def test_clear_prior_outputs_removes_both_sidecars_and_chunks(self, tmp_path):

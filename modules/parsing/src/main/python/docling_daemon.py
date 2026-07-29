@@ -302,14 +302,8 @@ def _parse_document(
     if not chunk:
         return {"markdown": markdown, "chunked": False, "logs": logs}
 
-    # _convert_file's markdown is already cleaned: clean_markdown runs exactly once per
-    # document, inside the converter. Bookmark verification and build_chunk_tree below both get
-    # that same string, which is the point — a page pointer verified against one version of the
-    # text and stored beside another version would be wrong.
     records = []
     if input_path.suffix.lower() == ".pdf":
-        # The PDF is right here, so its embedded bookmarks are available without the caller
-        # having to ship them or the daemon having to find a sibling file on a shared disk.
         records = extract_verified_outline(input_path, markdown)
 
     tree = build_chunk_tree(

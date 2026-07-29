@@ -79,11 +79,11 @@ heuristic (``len(text) // 4``); no ML tokenizer is loaded.
 Three entry points, one shared core:
 
 * :func:`build_chunk_tree` — **pure**: Markdown and any known outline records in, the whole tree
-  (outline + catalog + chunk texts) out, nothing written. This is what the daemon calls inside
-  ``POST /parse``, so the tree travels back to its caller in the reply and the daemon needs no
-  shared filesystem.
-* :func:`write_chunk_files` — the thin writer over it, for a document already in hand on this
-  filesystem; used by ``docling_parser.py`` right after parsing.
+  (outline + catalog + chunk texts + the records it resolved) out, nothing written. This is what
+  the daemon calls inside ``POST /parse``, so the tree travels back to its caller in the reply
+  and the daemon needs no shared filesystem.
+* :func:`write_chunk_files` — the thin writer over it, CLI only: it needs the document on this
+  filesystem, and writes ``Chunks/`` beside it.
 * :func:`chunk_file` — one already-parsed ``.md`` file, given its exact path (MVP: one proposal
   file per answer, so there is exactly one file to chunk). CLI only:
   ``python chunker.py <file_path>``.
@@ -104,7 +104,6 @@ from bookmarks import (
     build_line_index,
     line_pages,
     normalize_title,
-    read_bookmarks,
     resolve_record_line,
 )
 from heading_numbering import numbering_depth
@@ -674,31 +673,21 @@ def _part_heading(
     return previous_heading or [DEFAULT_HEADING]
 
 
-
-def _sibling_pdf_records(markdown_content: str, output_file: Path) -> list[dict]:
-    """Outline records for ``output_file``, from a sibling PDF's embedded bookmarks when there
-    is one, otherwise from an existing ``bookmarks.json`` sidecar.
-
-    The sibling PDF wins: it is the real source, and re-extracting keeps the records in step
-    with the document actually being chunked.
-    """
-    pdf_file = output_file.with_suffix(".pdf")
-    if pdf_file.is_file():
-        records = extract_verified_outline(pdf_file, markdown_content)
-        if records:
-            return records
-    return read_bookmarks(output_file.with_name(BOOKMARKS_NAME))
+def _write_json(path: Path, data: object) -> None:
+    """Write ``data`` as pretty-printed UTF-8 JSON with a trailing newline."""
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def _remove_sidecars(output_file: Path) -> None:
-    """Delete the transient ``outline.json`` / ``bookmarks.json`` sidecars beside
+    """Delete any leftover ``outline.json`` / ``bookmarks.json`` sitting *beside*
     ``output_file``.
 
-    Both are per-run scratch state: they are produced during a chunking pass and consumed
-    within it (their findings end up in ``Chunks/outline.json``). Leaving either behind is
-    actively harmful — a stale ``bookmarks.json`` is read back on the next run as
-    *authoritative PDF bookmarks*, which suppresses printed-TOC detection and reports the
-    previous document's outline for the current one.
+    Nothing writes those paths any more — the outline and the records go into ``Chunks/`` —
+    so this only clears artefacts left by an older version of the pipeline. It matters
+    because a stale sidecar beside the ``.md`` is indistinguishable from a fresh one to
+    anyone inspecting the folder, and an earlier revision read it back as *authoritative PDF
+    bookmarks*, which suppressed printed-TOC detection and reported the previous document's
+    outline for the current one.
     """
     output_file.with_name(OUTLINE_NAME).unlink(missing_ok=True)
     output_file.with_name(BOOKMARKS_NAME).unlink(missing_ok=True)
@@ -778,7 +767,15 @@ def write_chunk_files(
     @param min_structure_tokens: skip chunking when the document is smaller than this
     @return: the path to the created chunks folder, or ``None`` when chunking was skipped
     """
-    records = _sibling_pdf_records(markdown_content, output_file)
+    # A sibling <stem>.pdf is the only disk source of real bookmarks: native PDFs and the
+    # DOCX→PDF renditions Java co-locates via ParsedMarkdownStore.saveArtifact. Re-extracted
+    # every run rather than read from a sidecar, so the records always match the document
+    # actually being chunked.
+    records = []
+    pdf_file = output_file.with_suffix(".pdf")
+    if pdf_file.is_file():
+        records = extract_verified_outline(pdf_file, markdown_content)
+
     tree = build_chunk_tree(
         markdown_content,
         filename,
@@ -795,9 +792,10 @@ def write_chunk_files(
         shutil.rmtree(chunks_dir)
     chunks_dir.mkdir(parents=True, exist_ok=True)
 
-    (chunks_dir / OUTLINE_NAME).write_text(
-        json.dumps(tree["outline"], indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
+    _write_json(chunks_dir / OUTLINE_NAME, tree["outline"])
+
+    if tree["records"]:
+        _write_json(chunks_dir / BOOKMARKS_NAME, tree["records"])
     _remove_sidecars(output_file)
 
     if not tree["chunked"]:
@@ -805,9 +803,7 @@ def write_chunk_files(
 
     for chunk in tree["chunks"]:
         (chunks_dir / chunk["file"]).write_text(chunk["text"] + "\n", encoding="utf-8")
-    (chunks_dir / CATALOG_NAME).write_text(
-        json.dumps(tree["catalog"], indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
+    _write_json(chunks_dir / CATALOG_NAME, tree["catalog"])
     return chunks_dir
 
 
@@ -826,21 +822,16 @@ def build_chunk_tree(
     so a caller that received the document over HTTP can chunk it without sharing a filesystem
     — see ``docling_daemon``'s ``/parse``.
 
-    ``markdown_content`` must already be cleaned. :func:`markdown_cleanup.clean_markdown` runs
-    exactly once per document, in the converter that produced it, and every caller here gets its
-    text from a converter: the daemon straight from ``_convert_file``, the CLI paths from the
-    ``.md`` a converter wrote. Cleaning again here split the contract in two, because a caller
-    feeding raw text got it cleaned for chunking while the pages verified against that text by
-    ``_sibling_pdf_records`` came from the uncleaned version.
-
     @param markdown_content: the full Markdown document, already cleaned
     @param filename: the original input file name (with extension), recorded as ``fileId``
     @param max_tokens: target maximum tokens per chunk
     @param min_structure_tokens: leave the document unchunked below this size
     @param records: outline records already known for the document (real PDF bookmarks)
-    @return: ``{"markdown", "chunked", "outline", "catalog", "chunks"}``, where ``chunks`` is a
-        list of ``{"file", "text"}`` in document order and ``catalog`` is ``None`` when the
-        document was left unchunked
+    @return: ``{"markdown", "chunked", "outline", "catalog", "chunks", "records"}``, where
+        ``chunks`` is a list of ``{"file", "text"}`` in document order, ``catalog`` is ``None``
+        when the document was left unchunked, and ``records`` is the outline the document was
+        actually analysed against — the ``records`` argument when it was supplied, otherwise
+        whatever was harvested from the printed TOC (empty when the size gate skipped detection)
     """
     prepared, outline, resolved_records = derive_outline(
         markdown_content, records=records, min_structure_tokens=min_structure_tokens
@@ -869,6 +860,7 @@ def build_chunk_tree(
             "outline": outline,
             "catalog": None,
             "chunks": [],
+            "records": resolved_records,
         }
 
     # One shared split of the full document, reused by every detection pass below
@@ -936,15 +928,10 @@ def build_chunk_tree(
             name = f"Chunk-{number}.md" if single_part else f"Chunk-{number}.{part_index}.md"
             previous_heading = catalog_chunks[-1]["heading"] if catalog_chunks else None
             if first_number == 0 and not catalog_chunks:
-                # The preamble chunk is labelled DEFAULT_HEADING whatever it contains: it is
-                # front matter ahead of the document's first real section, and any bold or
-                # ALL-CAPS line in it (a title block, an investigator list) is a field label
-                # rather than a section title.
+                # The preamble chunk is labelled DEFAULT_HEADING whatever it contains
                 heading = [DEFAULT_HEADING]
             else:
-                # Everything else gets its real heading. This used to be forced to
-                # DEFAULT_HEADING for the first entry regardless, which threw away a heading
-                # like "1.0 Introduction" on every document that has no preamble at all.
+                # Everything else gets its real heading
                 heading = _part_heading(part_text, previous_heading, repeated)
             add(name, part_text, heading, False)
 
@@ -958,6 +945,7 @@ def build_chunk_tree(
         "outline": outline,
         "catalog": {"fileId": filename, "chunks": catalog_chunks},
         "chunks": chunks,
+        "records": resolved_records,
     }
 
 
@@ -986,10 +974,8 @@ def chunk_file(
     already cleaned — nothing in the chunker cleans. Pointed at a hand-written ``.md``, this
     chunks it as-is.
 
-    MVP scope: one proposal file per answer, so this takes the exact file to chunk rather
-    than scanning a folder for inputs. Documents under ``min_structure_tokens`` are not
-    chunked (``chunks`` is 0), but the decision is still recorded in
-    ``Chunks/outline.json`` (``chunked: false``) for downstream routing.
+    Documents under ``min_structure_tokens`` are not chunked (``chunks`` is 0),
+    but the decision is still recorded in ``Chunks/outline.json`` (``chunked: false``).
 
     Returns a summary dict: ``{"chunks", "logs"}``. Raises :class:`FileNotFoundError` when
     the file does not exist.

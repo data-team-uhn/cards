@@ -199,23 +199,22 @@ Pre-chunk pipeline (inside `chunker.build_chunk_tree`, run for every chunking en
 2. **Outline records are supplied by the caller**, not discovered from disk. On the `/parse` path the
    daemon extracts them from the **uploaded PDF itself**
    (`pdf_bookmarks.extract_verified_outline`, pypdf) — no sibling file needed, which is what makes
-   the container work. On the CLI path `chunker._sibling_pdf_records` reads `<stem>.pdf` beside the
-   `.md` (native PDFs **and** DOCX→PDF renditions co-located by
-   `ParsedMarkdownStore.saveArtifact`), falling back to an existing `bookmarks.json`. Either way
-   each record's page is verified against the `<!-- page: N -->` markers
+   the container work. On the CLI path `write_chunk_files` calls the same
+   `pdf_bookmarks.extract_verified_outline` on `<stem>.pdf` beside the `.md` (native PDFs
+   **and** DOCX→PDF renditions co-located by `ParsedMarkdownStore.saveArtifact`). There is no
+   sidecar fallback: no PDF means no records, and the printed TOC is harvested instead. Either
+   way each record's page is verified against the `<!-- page: N -->` markers
    (`bookmarks.verify_bookmarks` — searches page N then N±1, rewriting an off-by-one page or
    flagging `verified:false`). No PDF, or one without bookmarks, means no records.
-3. **`toc_and_appendix_detection.derive_outline(md, records=…)`** — the fork, **pure**: it takes the
-   records as an argument and returns `(document, outline_fields, records)` instead of reading
-   `bookmarks.json` and writing `outline.json`. (`find_toc_and_appendix` is the disk-writing wrapper
-   around it, kept for the CLI.) Size-gated: below `min_structure_tokens` the document is returned
-   unchanged, with no outline:
-   - **`bookmarks.json` present** (real PDF bookmarks from step 2) → authoritative outline;
+3. **`toc_and_appendix_detection.derive_outline(md, records=…)`** — the fork, **pure** and the only
+   entry point: it takes the records as an argument and returns
+   `(document, outline_fields, records)` rather than reading or writing anything. Size-gated:
+   below `min_structure_tokens` the document is returned unchanged, with no outline:
+   - **records present** (real PDF bookmarks from step 2) → authoritative outline;
      the printed TOC is left untouched;
-   - **no bookmarks** → `mark_and_cleanup_toc` finds + cleans the printed TOC in place and
-     records `tocStartLine` / `tocEndLine`; its entries are harvested into records
-     (`_entry_to_record`: title, page-from-entry, level-from-numbering-depth), verified, and
-     written to `bookmarks.json`;
+   - **no records** → `_detect_toc` finds + cleans the printed TOC in place and reports
+     `tocStartLine` / `tocEndLine`; its entries are harvested into records
+     (`_entry_to_record`: title, page-from-entry, level-from-numbering-depth) and verified;
    - either way it records `toc` (record titles), `backmatterLine` (first Reference/Appendix
      record resolved to a body line — `backmatter_from_records`, which is given the printed-TOC line
      range to exclude; without it a page-less TOC entry matches the same text as the body heading it
