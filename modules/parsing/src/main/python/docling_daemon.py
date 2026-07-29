@@ -42,17 +42,18 @@ what makes "touches no filesystem" an enforced property rather than a convention
 accepted, there is nothing to allowlist. The CLI (``docling_parser.py``, ``chunker.py``) calls the
 same chunker functions in-process and never needed the endpoints.
 
-Every endpoint except ``/health`` requires ``Authorization: Bearer <token>`` when
-``$DOCLING_AUTH_TOKEN`` is set; unset means no authentication, which is only safe on loopback.
+The daemon has no authentication: every endpoint is open to whoever can reach the port, including
+``/shutdown``. Loopback is the access control, so keep it on the ``--host`` default. A container is
+the one case where the process itself must bind ``0.0.0.0`` — Docker forwards a published port to
+the container's ``eth0``, not its loopback — so there confine it by publishing to ``127.0.0.1`` on
+the host side (``-p 127.0.0.1:18765:18765``) rather than by changing the bind address.
 """
 
 from __future__ import annotations
 
 import argparse
 import gzip
-import hmac
 import json
-import os
 import signal
 import sys
 import tempfile
@@ -77,10 +78,6 @@ from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 18765
-
-# Shared secret required on every endpoint except /health. Unset means no authentication,
-# which is only defensible on loopback — see the --host help text.
-AUTH_TOKEN_ENV = "DOCLING_AUTH_TOKEN"
 
 # Cap on an uploaded document on /parse. The body is streamed to a temp file rather than held in
 # memory, and the limit is enforced as bytes arrive rather than trusted from Content-Length.
@@ -156,35 +153,6 @@ def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: dict[s
     handler.send_header("Content-Length", str(len(body)))
     handler.end_headers()
     handler.wfile.write(body)
-
-
-def _expected_token() -> str | None:
-    """The configured shared secret, or ``None`` when authentication is disabled."""
-    token = os.environ.get(AUTH_TOKEN_ENV)
-    return token if token else None
-
-
-def _is_authorized(handler: BaseHTTPRequestHandler) -> bool:
-    """Whether the request carries the shared secret.
-
-    Always true when no token is configured, so a loopback deployment needs no change. The
-    comparison is constant-time: the token is a fixed secret, and an early-exit compare would
-    leak it a byte at a time to a caller that can retry.
-    """
-    expected = _expected_token()
-    if expected is None:
-        return True
-    header = handler.headers.get("Authorization", "") or ""
-    prefix = "Bearer "
-    if not header.startswith(prefix):
-        return False
-    return hmac.compare_digest(header[len(prefix):].strip(), expected)
-
-
-
-
-
-
 
 
 def _safe_suffix(filename: str) -> str:
@@ -375,12 +343,8 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
         )
 
     def do_POST(self) -> None:
-        if not _is_authorized(self):
-            # Drain first, or a rejected upload resets before the client can read the 401.
-            _drain_request_body(self)
-            _json_response(self, HTTPStatus.UNAUTHORIZED, {"error": "unauthorized"})
-            return
-
+        # No credential is checked: anyone who can reach the port can parse or shut the daemon
+        # down, so the bind address is the whole access control. See the module docstring.
         if self.path == "/shutdown":
             _request_shutdown()
             _json_response(self, HTTPStatus.OK, {"status": "shutting_down"})
@@ -487,9 +451,9 @@ def parse_args() -> argparse.Namespace:
         "--host",
         default=DEFAULT_HOST,
         help=(
-            f"bind address (default: {DEFAULT_HOST}). Binding anywhere but loopback exposes the "
-            f"endpoints to the network, so set ${AUTH_TOKEN_ENV} when you do — without it every "
-            "endpoint except /health is unauthenticated"
+            f"bind address (default: {DEFAULT_HOST}). The endpoints have no authentication, so "
+            "binding anywhere but loopback lets the network parse documents and call /shutdown; "
+            "in a container bind 0.0.0.0 but publish the port to 127.0.0.1 on the host"
         ),
     )
     parser.add_argument(
