@@ -193,19 +193,38 @@ def _drain_request_body(handler: BaseHTTPRequestHandler) -> None:
     socket buffers, which makes it intermittent — worse than a consistent failure. Draining
     first keeps the exchange well-formed, and leaves the connection reusable now that the
     handler speaks HTTP/1.1 and no longer closes after every response.
+
+    A body that cannot be *fully* drained closes the connection after the response instead:
+    under keep-alive, any bytes left in the socket would be read as the start of the next
+    request. That covers a declared length over :data:`MAX_UPLOAD_BYTES` (drained only up to
+    the cap, so a lying header cannot make the daemon read without bound just to save the
+    connection), an unparseable or negative length and a chunked body (no way to know where
+    either ends), and a client that hung up early (nothing left to reuse anyway).
     """
+    if handler.headers.get("Transfer-Encoding"):
+        # BaseHTTPRequestHandler does not decode chunked transfer-encoding, so where this
+        # body ends is unknowable.
+        handler.close_connection = True
+        return
     declared = handler.headers.get("Content-Length")
     if not declared:
         return
     try:
-        remaining = min(int(declared), MAX_UPLOAD_BYTES)
+        length = int(declared)
     except ValueError:
+        length = -1
+    if length < 0:
+        handler.close_connection = True
         return
+    remaining = min(length, MAX_UPLOAD_BYTES)
     while remaining > 0:
         block = handler.rfile.read(min(_UPLOAD_CHUNK_BYTES, remaining))
         if not block:
+            handler.close_connection = True
             return
         remaining -= len(block)
+    if length > MAX_UPLOAD_BYTES:
+        handler.close_connection = True
 
 
 def _spool_upload(handler: BaseHTTPRequestHandler, suffix: str) -> Path:

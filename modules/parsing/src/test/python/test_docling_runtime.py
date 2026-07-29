@@ -56,6 +56,7 @@ class _FakeHandler:
         self._offset = 0
         self.sent = []
         self.written = b""
+        self.close_connection = False
         self.rfile = SimpleNamespace(read=self._read)
         self.wfile = SimpleNamespace(write=self._write)
 
@@ -130,33 +131,65 @@ class TestDrainRequestBody:
     """An error response written while the client is still uploading resets the connection
     before the client can read it, so the caller sees a transport failure rather than the 400
     explaining what was wrong. Whether it happens depends on socket buffering, which makes it
-    intermittent — it showed up as HTTP 000 on some rejects and not others."""
+    intermittent — it showed up as HTTP 000 on some rejects and not others.
+
+    Under HTTP/1.1 keep-alive the drain also owns the framing decision: a body it fully
+    consumed leaves the connection reusable, and one it could not must close the connection,
+    or the leftover bytes become the start of the next request."""
 
     def test_drains_the_whole_body(self):
         handler = _FakeHandler(b"x" * 5000)
         daemon._drain_request_body(handler)
         assert handler.unread == 0
+        assert handler.close_connection is False
 
     def test_no_content_length_is_a_noop(self):
         handler = _FakeHandler(b"abc")
         del handler.headers["Content-Length"]
         daemon._drain_request_body(handler)
         assert handler.unread == 3
+        assert handler.close_connection is False
 
-    def test_bad_content_length_is_a_noop(self):
+    def test_bad_content_length_closes_the_connection(self):
+        # Where the body ends is unknowable, so the connection must not be reused.
         handler = _FakeHandler(b"abc", headers={"Content-Length": "not-a-number"})
         daemon._drain_request_body(handler)
+        assert handler.close_connection is True
+
+    def test_negative_content_length_closes_the_connection(self):
+        handler = _FakeHandler(b"abc", headers={"Content-Length": "-5"})
+        daemon._drain_request_body(handler)
+        assert handler.unread == 3
+        assert handler.close_connection is True
+
+    def test_chunked_body_closes_the_connection(self):
+        # BaseHTTPRequestHandler does not decode chunked bodies, so it cannot be drained.
+        handler = _FakeHandler(b"3\r\nabc\r\n0\r\n\r\n")
+        handler.headers["Transfer-Encoding"] = "chunked"
+        daemon._drain_request_body(handler)
+        assert handler.close_connection is True
 
     def test_stops_at_a_short_body(self):
-        # Declared longer than what actually arrives: must not block forever.
+        # Declared longer than what actually arrives: must not block forever. The client hung
+        # up mid-body, so there is no connection worth keeping either.
         handler = _FakeHandler(b"abc", content_length=10_000)
         daemon._drain_request_body(handler)
         assert handler.unread == 0
+        assert handler.close_connection is True
 
     def test_bounded_by_the_upload_cap(self):
+        # Regression: the drain stops at the cap by design, but under keep-alive the surplus
+        # beyond it used to stay in the socket and be read as the next request's start.
         handler = _FakeHandler(b"x" * 100, content_length=daemon.MAX_UPLOAD_BYTES * 10)
         daemon._drain_request_body(handler)
         assert handler.unread == 0
+        assert handler.close_connection is True
+
+    def test_a_body_drained_exactly_keeps_the_connection(self):
+        handler = _FakeHandler(b"x" * 100, content_length=100)
+        daemon._drain_request_body(handler)
+        assert handler.unread == 0
+        assert handler.close_connection is False
 
 
 class TestSafeSuffix:
