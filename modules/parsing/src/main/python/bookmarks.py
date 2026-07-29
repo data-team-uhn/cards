@@ -18,12 +18,13 @@
 #
 
 """
-Shared helpers for the document-outline records stored in ``bookmarks.json`` beside a
-parsed ``.md``. A record is ``{"title", "level"|None, "page"|None, "verified"?}``, produced
-either from a PDF's embedded bookmarks (see :mod:`pdf_bookmarks`) or, when there are none,
-from the printed table of contents. This module carries only the dependency-free pieces
-(title normalization, page-region lookup, verification, sidecar IO) so both the pypdf-backed
-extractor and the chunker can use them.
+Shared helpers for a document's outline records. A record is
+``{"title", "level"|None, "page"|None, "verified"?}``, produced either from a PDF's embedded
+bookmarks (see :mod:`pdf_bookmarks`) or, when there are none, from the printed table of
+contents. Records live in memory for the whole run; the copy in ``Chunks/bookmarks.json`` is
+written for inspection only. This module carries the dependency-free pieces (title
+normalization, page-region lookup, verification) so both the pypdf-backed extractor and the
+chunker can use them.
 
 Verification (:func:`verify_bookmarks`) matches a record's title against the page it claims,
 using the ``<!-- page: N -->`` markers the PDF parser emits, and corrects an off-by-one page
@@ -39,14 +40,13 @@ every record.
 
 from __future__ import annotations
 
-import json
 import re
-from pathlib import Path
 from typing import NamedTuple
 
-from markdown_markers import PAGE_MARKER_LINE
+from markdown_markers import PAGE_MARKER, PAGE_MARKER_LINE
 
-# Name of the outline sidecar written beside a document's ``.md``.
+# Name of the file the resolved outline records are written to, inside ``Chunks/``. Written for
+# inspecting a CLI run and read back by nothing; see ``chunker.write_chunk_files``.
 BOOKMARKS_NAME = "bookmarks.json"
 
 _NON_ALNUM = re.compile(r"[^a-z0-9]+")
@@ -146,19 +146,34 @@ def verify_bookmarks(
     Records without a page, or with an empty title key, are returned unchanged. Never sets
     ``"verified": True``.
 
+    An unpaged document verifies nothing: without ``<!-- page: N -->`` markers a record's
+    claimed page cannot be confirmed or contradicted, so every record passes through untouched
+    rather than being flagged. Both exits still return fresh dicts, so a caller mutating the
+    result cannot reach into ``records``.
+
     @param records: outline records (each ``{"title", "level"|None, "page"|None}``)
     @param markdown: the assembled Markdown, carrying ``<!-- page: N -->`` markers
     @param lines: ``markdown`` already split on newlines, when available
     @return: a new list of records with pages corrected and non-locatable ones flagged
     """
+    # Checked before page_line_texts, which walks and normalizes every line of the document to
+    # build a map that an unpaged document then discards unused. A necessary condition only:
+    # line_pages matches the marker anchored to its own line, so a hit here still has to be
+    # confirmed below — but a miss is conclusive, and it is the DOCX case every time.
+    if not PAGE_MARKER.search(markdown):
+        return [dict(record) for record in records]
+
     pages = page_line_texts(markdown, lines)
-    has_pages = any(page_no > 0 for page_no in pages)
+    if not any(page_no > 0 for page_no in pages):
+        # Markers exist, but none on a line of its own, so no real page was ever opened.
+        return [dict(record) for record in records]
+
     verified: list[dict] = []
     for record in records:
         result = dict(record)
         page = result.get("page")
         key = normalize_title(result.get("title") or "")
-        if has_pages and isinstance(page, int) and key:
+        if isinstance(page, int) and key:
             located = _locate_page(pages, key, page)
             if located is None:
                 result["verified"] = False
@@ -166,22 +181,6 @@ def verify_bookmarks(
                 result["page"] = located
         verified.append(result)
     return verified
-
-
-def read_bookmarks(path: Path | None) -> list[dict]:
-    """Read a ``bookmarks.json`` sidecar, or ``[]`` when it is missing or unreadable."""
-    if path is None or not path.is_file():
-        return []
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return []
-    return data if isinstance(data, list) else []
-
-
-def write_bookmarks(path: Path, records: list[dict]) -> None:
-    """Write outline ``records`` to a ``bookmarks.json`` sidecar."""
-    path.write_text(json.dumps(records, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def resolve_record_line(

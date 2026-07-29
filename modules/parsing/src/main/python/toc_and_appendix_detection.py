@@ -23,7 +23,7 @@ TOCs, clean leaders/tabs, and record the cleaned block's line range plus entry l
 in ``outline.json`` (``tocStartLine`` / ``tocEndLine`` / ``toc``). Entries over 10
 words or with a word over 100 characters are discarded.
 
-Appendix detection (:func:`find_toc_and_appendix`): the first Reference/Appendix section
+Appendix detection (:func:`derive_outline`): the first Reference/Appendix section
 title among the document's outline records (see :data:`REFERENCE_HEADINGS` /
 :data:`APPENDIX_HEADINGS`) is resolved to its body line and recorded as ``backmatterLine``
 in ``outline.json``.
@@ -36,13 +36,10 @@ import re
 from pathlib import Path
 
 from bookmarks import (
-    BOOKMARKS_NAME,
     build_line_index,
     line_pages,
-    read_bookmarks,
     resolve_record_line,
     verify_bookmarks,
-    write_bookmarks,
 )
 from heading_numbering import numbering_depth, roman_numbering
 from markdown_markers import (
@@ -73,7 +70,7 @@ MAX_LEADING_WORDS_FOR_CONTINUATION = 12
 MAX_HEADER_LINES_AFTER_PAGE_BREAK = 3
 
 # Documents shorter than this (``len(md) // 4``) skip TOC/appendix marking — Stage 0.5
-# can send them whole. Overridable via :func:`find_toc_and_appendix`'s ``min_structure_tokens``.
+# can send them whole. Overridable via :func:`derive_outline`'s ``min_structure_tokens``.
 DEFAULT_MIN_STRUCTURE_TOKENS = 20000
 
 # Reference-section heading words/phrases recognised in outline record titles.
@@ -196,6 +193,7 @@ TOC_OUTLINE_ENTRY_PATTERN = re.compile(
     re.IGNORECASE | re.VERBOSE,
 )
 
+
 def read_outline(outline_path: Path | None) -> dict:
     """Read the outline.json file."""
     if outline_path is None or not outline_path.is_file():
@@ -204,18 +202,6 @@ def read_outline(outline_path: Path | None) -> dict:
         return json.loads(outline_path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
-
-
-def write_outline(outline_path: Path | None, updates: dict) -> None:
-    """Update the outline.json file with the given updates.
-    """
-    if outline_path is None:
-        return
-    existing = read_outline(outline_path)
-    existing.update(updates)
-    outline_path.write_text(
-        json.dumps(existing, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
 
 
 def is_toc_entry_line(line: str) -> bool:
@@ -260,8 +246,8 @@ def toc_label_line(lines: list[str]) -> int | None:
     and/or ``*``), or the bare phrase "table of contents" alone, isolated by blank-line
     neighbors (or start/end of document).
 
-    Used by :func:`mark_and_cleanup_toc` to locate the TOC label before the full block
-    scan (density / table-flatten) can run.
+    Used by :func:`_detect_toc` to locate the TOC label before the full block scan
+    (density / table-flatten) can run.
     """
     n = len(lines)
     for index, line in enumerate(lines):
@@ -505,10 +491,9 @@ def _detect_toc(md: str) -> tuple[str, dict]:
     """Detect the document's TOC and clean it in place, returning the outline fields it
     yields rather than writing them anywhere.
 
-    Splitting this out of :func:`mark_and_cleanup_toc` lets :func:`find_toc_and_appendix`
-    take the entries straight from memory. It used to write them to ``outline.json`` and
-    read them back to build records — a file round-trip used as a data channel, which also
-    forced several read-modify-write cycles over the same file.
+    :func:`derive_outline` takes the entries straight from memory. They used to be written to
+    ``outline.json`` and read back to build records — a file round-trip used as a data channel,
+    which also forced several read-modify-write cycles over the same file.
 
     @param md: the full assembled Markdown document
     @return: ``(document, fields)`` — the document with its TOC (if any) cleaned, and
@@ -587,22 +572,6 @@ def _detect_toc(md: str) -> tuple[str, dict]:
     return result, fields
 
 
-def mark_and_cleanup_toc(md: str, outline_path: Path | None = None) -> str:
-    """Detect the document's TOC, clean it in place, and record its line range in outline.json.
-
-    When ``outline_path`` is set and a TOC was found, writes ``tocStartLine`` /
-    ``tocEndLine`` and the entry-only ``toc`` array.
-
-    @param md: the full assembled Markdown document
-    @param outline_path: the document's outline.json file
-    @return: the document with its TOC (if any) cleaned; unchanged when no TOC is found
-    """
-    result, fields = _detect_toc(md)
-    if fields and outline_path is not None:
-        write_outline(outline_path, fields)
-    return result
-
-
 # Trailing "<separator><page number>" of a cleaned TOC entry, capturing the page (arabic or
 # roman). The separator is a dash, dot-leaders, or whitespace (a tab collapses to one space).
 _ENTRY_PAGE = re.compile(
@@ -643,7 +612,7 @@ def _entry_to_record(entry: str) -> dict:
 
 
 def _records_from_toc_strings(toc_strings: list) -> list[dict]:
-    """Build outline records from the entry strings recorded by :func:`mark_and_cleanup_toc`."""
+    """Build outline records from the entry strings recorded by :func:`_detect_toc`."""
     records: list[dict] = []
     for entry in toc_strings:
         record = _entry_to_record(entry)
@@ -694,46 +663,6 @@ def backmatter_from_records(
     return None
 
 
-def find_toc_and_appendix(
-    md: str,
-    outline_path: Path | None = None,
-    *,
-    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
-) -> str:
-    """Derive the document's outline and record it in outline.json (``toc`` titles,
-    ``backmatterLine``), forking on whether PDF bookmarks are available.
-
-    When a ``bookmarks.json`` sidecar already exists beside ``outline_path`` (real PDF
-    bookmarks, extracted upstream), it is the authoritative outline: the printed TOC is left
-    untouched. Otherwise the printed TOC is detected and cleaned in place, its entries are
-    harvested into outline records, verified/​corrected against the document, and written to
-    ``bookmarks.json``. Either way ``toc`` and ``backmatterLine`` come from the records.
-
-    A *bookmarked* document always records its outline (the bookmark path is cheap and leaves
-    the ``.md`` untouched) so even a small one carries a ``toc`` for Stage 0.5. A document with
-    **no** bookmarks and fewer than ``min_structure_tokens`` (``len(md) // 4``) is returned
-    unchanged with no outline — it is sent whole later.
-
-    @param md: the full assembled Markdown document
-    @param outline_path: the document's outline.json file
-    @param min_structure_tokens: skip printed-TOC detection below this (no-bookmark path only)
-    @return: the document, with the printed TOC cleaned in place only on the no-bookmark path
-    """
-    bookmarks_path = outline_path.with_name(BOOKMARKS_NAME) if outline_path is not None else None
-    result, updates, records = derive_outline(
-        md,
-        records=read_bookmarks(bookmarks_path),
-        min_structure_tokens=min_structure_tokens,
-    )
-    if not updates:
-        # Size-gated out: nothing detected, nothing to record.
-        return result
-    if records and bookmarks_path is not None and updates.get("outline_source") == "md-toc":
-        write_bookmarks(bookmarks_path, records)
-    write_outline(outline_path, updates)
-    return result
-
-
 def derive_outline(
     md: str,
     *,
@@ -742,11 +671,10 @@ def derive_outline(
 ) -> tuple[str, dict, list[dict]]:
     """Derive a document's outline without touching the filesystem.
 
-    The pure core of :func:`find_toc_and_appendix`: it takes any already-known outline records
-    (real PDF bookmarks) as an argument instead of reading ``bookmarks.json``, and returns the
-    outline fields instead of writing ``outline.json``. This is what lets the daemon serve a
-    document it was handed over HTTP, with no shared filesystem — see ``docling_daemon``'s
-    ``/parse``.
+    The only outline entry point, and pure: it takes any already-known outline records (real
+    PDF bookmarks) as an argument rather than reading them off disk, and returns the outline
+    fields rather than writing them. That is what lets the daemon serve a document it was
+    handed over HTTP, with no shared filesystem — see ``docling_daemon``'s ``/parse``.
 
     @param md: the full assembled Markdown document
     @param records: outline records already known for the document (e.g. extracted from a PDF's

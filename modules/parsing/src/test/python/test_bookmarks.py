@@ -79,20 +79,52 @@ class TestVerifyBookmarks:
         assert records == [{"title": "Results", "page": 2}]
 
 
-class TestSidecarIO:
-    def test_roundtrip(self, tmp_path):
-        path = tmp_path / bookmarks.BOOKMARKS_NAME
-        records = [{"title": "A", "level": 1, "page": 1}]
-        bookmarks.write_bookmarks(path, records)
-        assert bookmarks.read_bookmarks(path) == records
+class TestUnpagedDocument:
+    """No page markers means no verification, and an early exit before the page map is built.
 
-    def test_missing_returns_empty(self, tmp_path):
-        assert bookmarks.read_bookmarks(tmp_path / "nope.json") == []
+    A record's claimed page cannot be confirmed or contradicted in an unpaged document, so it
+    must pass through rather than being flagged ``verified: False`` — which is what would
+    happen if the records were run through the lookup against an empty page map.
+    """
 
-    def test_non_list_returns_empty(self, tmp_path):
-        path = tmp_path / bookmarks.BOOKMARKS_NAME
-        path.write_text('{"not": "a list"}', encoding="utf-8")
-        assert bookmarks.read_bookmarks(path) == []
+    UNPAGED = "## Introduction\n\nbody\n\n## Methods\n\nbody\n"
+
+    def test_records_pass_through_untouched(self):
+        records = [{"title": "Methods", "level": 1, "page": 7}]
+        assert bookmarks.verify_bookmarks(records, self.UNPAGED) == records
+
+    def test_nothing_is_flagged_unverified(self):
+        out = bookmarks.verify_bookmarks([{"title": "Nowhere At All", "page": 3}], self.UNPAGED)
+        assert "verified" not in out[0]
+
+    def test_still_returns_fresh_dicts(self):
+        # The early exit must keep the no-aliasing contract the loop had.
+        records = [{"title": "Methods", "page": 7}]
+        out = bookmarks.verify_bookmarks(records, self.UNPAGED)
+        out[0]["page"] = 999
+        assert records[0]["page"] == 7
+
+    def test_marker_not_on_its_own_line_is_not_a_page(self):
+        # PAGE_MARKER.search is only the cheap necessary condition: line_pages requires the
+        # marker anchored to its own line, so this document is still unpaged.
+        inline = "Some prose <!-- page: 4 --> continues here\n## Methods\n"
+        out = bookmarks.verify_bookmarks([{"title": "Methods", "page": 9}], inline)
+        assert out == [{"title": "Methods", "page": 9}]
+
+    def test_empty_records(self):
+        assert bookmarks.verify_bookmarks([], self.UNPAGED) == []
+
+
+class TestBookmarksName:
+    # There is no sidecar IO here any more: records live in memory for the whole run, and the
+    # only file is Chunks/bookmarks.json, written by chunker.write_chunk_files for inspection
+    # and read back by nothing. This module just owns the name.
+    def test_name_is_the_json_file(self):
+        assert bookmarks.BOOKMARKS_NAME == "bookmarks.json"
+
+    def test_no_io_helpers_remain(self):
+        assert not hasattr(bookmarks, "read_bookmarks")
+        assert not hasattr(bookmarks, "write_bookmarks")
 
 
 class TestLinePages:

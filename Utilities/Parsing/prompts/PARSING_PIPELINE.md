@@ -163,8 +163,8 @@ Notes for whoever picks this up:
 | `docling_config.py` / `docling_error_detection.py` | Shared Docling pipeline options; parse-failure detection |
 | `markdown_cleanup.py` | `clean_markdown` — strip garbage lines, collapse blanks (idempotent). Called **once per document**, by the converter only |
 | **`chunker.py`** | `chunk_file` / `write_chunk_files` / `build_chunk_tree` — the single splitting module: size-gate, split, catalog + outline. Never cleans |
-| `toc_and_appendix_detection.py` | `derive_outline` — the outline **fork** (pure); `find_toc_and_appendix` is its disk wrapper; printed-TOC clean/harvest; `backmatter_from_records` |
-| `bookmarks.py` | Outline-record helpers: `normalize_title`, `verify_bookmarks` (page verify + off-by-one correct), `resolve_record_line`, sidecar IO |
+| `toc_and_appendix_detection.py` | `derive_outline` — the outline **fork**, pure and the only entry point; printed-TOC clean/harvest (`_detect_toc`); `backmatter_from_records`; `read_outline` |
+| `bookmarks.py` | Outline-record helpers: `normalize_title`, `verify_bookmarks` (page verify + off-by-one correct), `resolve_record_line`. No IO — records stay in memory |
 | `pdf_bookmarks.py` | `extract_outline` — flatten a PDF's embedded bookmarks (pypdf, lazy import) |
 | `heading_numbering.py` | Section-numbering depth (`1.2.3`→3, `1.0`→1) for heading levels |
 
@@ -201,7 +201,7 @@ converter that produced the `.md`, and everything below takes that text as-is.
 ```
 chunk_file(<stem>.md)                                        # md is already cleaned
   └─ write_chunk_files(md, output_file)
-       ├─ _sibling_pdf_records(md, output_file)   # <stem>.pdf bookmarks, pages verified vs md
+       ├─ extract_verified_outline(<stem>.pdf, md)  # sibling PDF bookmarks, pages verified
        └─ build_chunk_tree(md, filename, records) # pure: no filesystem, returns the whole tree
             ├─ derive_outline(md, records)        # fork → toc, backmatterLine, tokens, source
             │
@@ -216,7 +216,8 @@ chunk_file(<stem>.md)                                        # md is already cle
             ├─ small text-only tail (< MIN_TAIL_TOKENS 500) folded into the previous part
             └─ backmatterLine..EOF → one standalone backmatter chunk (no sub-splitting)
        │
-       └─ write Chunks/ : Chunk-*.md, catalog.json, outline.json
+       └─ write Chunks/ : Chunk-*.md, catalog.json, outline.json,
+                          bookmarks.json (the resolved records, when there are any)
 ```
 
 `build_chunk_tree` is also the daemon's entry point: `POST /parse` calls it directly and
@@ -238,19 +239,23 @@ See `PROPOSAL_PIPELINE_DESIGN.md` § *Stage 0 — Chunking* for the full splitti
 ## The outline subsystem
 
 The document **outline** is a list of records `{title, level|null, page|null, verified?}`,
-stored in a `bookmarks.json` sidecar and folded into `Chunks/outline.json`. It drives three
+held in memory for the whole run and folded into `Chunks/outline.json`. It drives three
 things: the `toc` array, `backmatterLine`, and record-based sub-chunk cut points. Records
 come from one of two sources, decided by a **fork** in `derive_outline`:
 
+The CLI also drops the resolved records into `Chunks/bookmarks.json` so a run can be
+inspected. Nothing reads that file back — records are always re-derived — which is what keeps
+a stale copy from being mistaken for authoritative bookmarks on a later run.
+
 ```mermaid
 flowchart TD
-    A["_sibling_pdf_records(md, output_file)"] --> B{"sibling stem.pdf has bookmarks?"}
-    B -->|yes| C["extract_outline pypdf, then verify_bookmarks page-correct, write bookmarks.json"]
-    B -->|no| D["no sidecar written"]
+    A["write_chunk_files / daemon POST /parse"] --> B{"a PDF with bookmarks in hand?"}
+    B -->|yes| C["extract_outline pypdf, then verify_bookmarks page-correct"]
+    B -->|no| D["no records to pass in"]
     C --> E{"derive_outline: any records passed in?"}
     D --> E
     E -->|yes| F["AUTHORITATIVE: use records; printed TOC left untouched"]
-    E -->|no| G["mark_and_cleanup_toc: clean printed TOC in place; harvest entries to records"]
+    E -->|no| G["_detect_toc: clean printed TOC in place; harvest entries to records"]
     F --> H["toc = record titles; backmatterLine from records; record cut-keys drive splits"]
     G --> H
 ```
@@ -308,7 +313,7 @@ output — staleness is handled by **wipe-and-redo**, not versioning.
 
 | | Daemon (production) | CLI / inline |
 |---|---|---|
-| Convert + chunk | Java `POST /parse` (bytes) → `convert_*_to_markdown` + `build_chunk_tree`, returned together | `docling_parser.py <file>` writes `<stem>.md` + `Chunks/`, or `python chunker.py <file>` chunks an existing `.md` |
+| Convert + chunk | Java `POST /parse` (bytes) → `convert_*_to_markdown` + `build_chunk_tree`, returned together; nothing written | `docling_parser.py <file>` writes `<stem>.md` + `Chunks/`, or `python chunker.py <file>` chunks an existing `.md` |
 | Files owned by | Java (`ParsedMarkdownStore`) | Python (writes `.md` + `Chunks/` itself) |
 | Source PDF for outline | Java co-locates `<stem>.pdf` | present only if a sibling `<stem>.pdf` exists beside the `.md` |
 

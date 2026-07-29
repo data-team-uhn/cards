@@ -18,21 +18,21 @@
 #
 
 """Tests for toc_and_appendix_detection: TOC entry recognition, label finding, in-place
-TOC cleanup with outline.json side effects, Reference/Appendix heading detection, the
-size gate, and the outline read/write helpers."""
+TOC cleanup, Reference/Appendix heading detection, the size gate, and the outline reader.
 
-import json
+The outline is derived by derive_outline, which writes nothing and returns
+``(document, updates, records)`` — so what these tests used to write to outline.json and read
+back is simply the second return value."""
+
 from pathlib import Path
 
 import toc_and_appendix_detection as tad
 from toc_and_appendix_detection import (
     DEFAULT_MIN_STRUCTURE_TOKENS,
+    derive_outline,
     is_toc_entry_line,
-    mark_and_cleanup_toc,
-    find_toc_and_appendix,
     read_outline,
     toc_label_line,
-    write_outline,
 )
 
 
@@ -104,68 +104,63 @@ class TestMarkAndCleanupToc:
 
     def test_no_label_returns_unchanged(self):
         md = "# Title\n\nJust body text, no contents label.\n"
-        assert mark_and_cleanup_toc(md, None) == md
+        result, fields = tad._detect_toc(md)
+        assert result == md
+        assert fields == {}
 
-    def test_outline_records_range_and_entries(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
-        result = mark_and_cleanup_toc(self._doc(), outline_path)
+    def test_reports_range_and_entries(self):
+        result, fields = tad._detect_toc(self._doc())
         # The label survives cleanup with its markers stripped.
         assert "Table of Contents" in result
-        outline = read_outline(outline_path)
-        assert outline["tocStartLine"] == 2
-        assert outline["tocEndLine"] >= outline["tocStartLine"]
-        # Tab separators are normalized to a space in the stored entries.
-        assert "Introduction 1" in outline["toc"]
-        assert "Results 4" in outline["toc"]
+        assert fields["tocStartLine"] == 2
+        assert fields["tocEndLine"] >= fields["tocStartLine"]
+        # Tab separators are normalized to a space in the reported entries.
+        assert "Introduction 1" in fields["toc"]
+        assert "Results 4" in fields["toc"]
 
     def test_empty_input(self):
-        assert mark_and_cleanup_toc("", None) == ""
+        assert tad._detect_toc("") == ("", {})
 
 
 class TestMarkTocAndAppendix:
-    def test_small_document_skipped_unchanged(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
+    def test_small_document_skipped_unchanged(self):
         md = "# Small\n\nToo short for structure detection.\n"
-        assert find_toc_and_appendix(md, outline_path) == md
-        # Gated out before any outline is written.
-        assert not outline_path.exists()
+        result, updates, records = derive_outline(md)
+        assert result == md
+        # Gated out before anything is derived.
+        assert updates == {}
+        assert records == []
 
     def test_default_threshold_constant(self):
         assert DEFAULT_MIN_STRUCTURE_TOKENS == 20000
 
-    def test_records_tokens_when_not_gated(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
+    def test_records_tokens_when_not_gated(self):
         md = "# Title\n\n" + ("Some content paragraph. " * 40)
-        find_toc_and_appendix(md, outline_path, min_structure_tokens=1)
-        assert read_outline(outline_path)["tokens"] == len(md) // 4
+        _, updates, _ = derive_outline(md, min_structure_tokens=1)
+        assert updates["tokens"] == len(md) // 4
 
-    def test_bookmark_path_records_outline_even_when_small(self, tmp_path):
-        # Bookmarks present -> outline recorded regardless of the size gate, so a small
+    def test_bookmark_path_records_outline_even_when_small(self):
+        # Records supplied -> outline derived regardless of the size gate, so a small
         # document still carries a toc (for the Stage 0.5 toc-only path).
-        (tmp_path / "bookmarks.json").write_text(
-            json.dumps([{"title": "Alpha", "level": 1, "page": 1}]) + "\n", encoding="utf-8")
-        outline_path = tmp_path / "outline.json"
-        find_toc_and_appendix("# Tiny\n\nbody\n", outline_path, min_structure_tokens=10 ** 9)
-        outline = read_outline(outline_path)
-        assert outline["outline_source"] == "pdf-bookmarks"
-        assert outline["toc"] == ["Alpha"]
+        known = [{"title": "Alpha", "level": 1, "page": 1}]
+        _, updates, _ = derive_outline(
+            "# Tiny\n\nbody\n", records=known, min_structure_tokens=10 ** 9
+        )
+        assert updates["outline_source"] == "pdf-bookmarks"
+        assert updates["toc"] == ["Alpha"]
 
 
-class TestOutlineReadWrite:
+class TestOutlineReader:
+    # Only the reader survives: outline.json is written by chunker.write_chunk_files, in one
+    # shot from the tree, so there is no merging writer here any more.
     def test_read_missing_returns_empty(self, tmp_path):
         assert read_outline(tmp_path / "nope.json") == {}
         assert read_outline(None) == {}
 
-    def test_write_then_read_roundtrip_merges(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
-        write_outline(outline_path, {"fileId": "doc.md", "tokens": 10})
-        write_outline(outline_path, {"tokens": 20, "chunked": True})
-        outline = read_outline(outline_path)
-        assert outline == {"fileId": "doc.md", "tokens": 20, "chunked": True}
-
-    def test_write_none_path_is_noop(self):
-        # Must not raise.
-        write_outline(None, {"tokens": 1})
+    def test_read_unparseable_returns_empty(self, tmp_path):
+        broken = tmp_path / "outline.json"
+        broken.write_text("{not json", encoding="utf-8")
+        assert read_outline(broken) == {}
 
 
 class TestEntryToRecord:
@@ -190,31 +185,30 @@ class TestMarkTocAndAppendixFork:
             "## 1.0 Introduction\n\nbody\n\n## 2.0 Methods\n\nbody\n\n## References\n\ncites\n"
         )
 
-    def test_manual_path_records_toc_and_backmatter(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
-        find_toc_and_appendix(self._doc_with_toc(), outline_path, min_structure_tokens=1)
-        outline = read_outline(outline_path)
-        assert outline["outline_source"] == "md-toc"
-        assert outline["toc"] == ["1.0 Introduction", "2.0 Methods", "References"]
-        assert "backmatterLine" in outline
-        records = json.loads((tmp_path / "bookmarks.json").read_text(encoding="utf-8"))
+    def test_manual_path_records_toc_and_backmatter(self):
+        _, updates, records = derive_outline(self._doc_with_toc(), min_structure_tokens=1)
+        assert updates["outline_source"] == "md-toc"
+        assert updates["toc"] == ["1.0 Introduction", "2.0 Methods", "References"]
+        assert "backmatterLine" in updates
+        # The harvested records come back as the third return value instead of being written
+        # to a sidecar; write_chunk_files puts them in Chunks/bookmarks.json for inspection.
         assert {"title": "1.0 Introduction", "level": 1, "page": 1} in records
 
-    def test_bookmark_path_skips_printed_toc(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
-        # A bookmarks.json already present -> printed TOC left untouched; toc comes from records.
-        (tmp_path / "bookmarks.json").write_text(
-            json.dumps([{"title": "Alpha", "level": 1, "page": 1}]) + "\n", encoding="utf-8")
-        result = find_toc_and_appendix(self._doc_with_toc(), outline_path, min_structure_tokens=1)
+    def test_bookmark_path_skips_printed_toc(self):
+        # Records supplied -> printed TOC left untouched; toc comes from the records.
+        known = [{"title": "Alpha", "level": 1, "page": 1}]
+        result, updates, _ = derive_outline(
+            self._doc_with_toc(), records=known, min_structure_tokens=1
+        )
         assert "## Table of Contents" in result
-        outline = read_outline(outline_path)
-        assert outline["outline_source"] == "pdf-bookmarks"
-        assert outline["toc"] == ["Alpha"]
+        assert updates["outline_source"] == "pdf-bookmarks"
+        assert updates["toc"] == ["Alpha"]
 
-    def test_outline_source_none_when_nothing_found(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
-        find_toc_and_appendix("# Title\n\n" + ("body paragraph. " * 40), outline_path, min_structure_tokens=1)
-        assert read_outline(outline_path)["outline_source"] == "none"
+    def test_outline_source_none_when_nothing_found(self):
+        _, updates, _ = derive_outline(
+            "# Title\n\n" + ("body paragraph. " * 40), min_structure_tokens=1
+        )
+        assert updates["outline_source"] == "none"
 
 
 # A running header of the kind Docling leaves at the top of every protocol page. Well over
@@ -251,34 +245,32 @@ class TestTocAcrossPageBreaks:
             "Body text of the background section.",
         ])
 
-    def _entries(self, tmp_path, separator):
-        outline_path = tmp_path / "outline.json"
-        mark_and_cleanup_toc(self._doc(separator), outline_path)
-        return read_outline(outline_path)["toc"]
+    def _entries(self, separator):
+        return tad._detect_toc(self._doc(separator))[1]["toc"]
 
-    def test_continues_straight_across_a_page_marker(self, tmp_path):
-        entries = self._entries(tmp_path, [])
+    def test_continues_straight_across_a_page_marker(self):
+        entries = self._entries([])
         assert len(entries) == 8
         assert any("Statistical Analysis" in entry for entry in entries)
 
-    def test_continues_past_a_running_header(self, tmp_path):
-        entries = self._entries(tmp_path, [RUNNING_HEADER])
+    def test_continues_past_a_running_header(self):
+        entries = self._entries([RUNNING_HEADER])
         assert len(entries) == 8, entries
         assert any("References and Appendices" in entry for entry in entries)
 
-    def test_running_header_is_not_kept_as_an_entry(self, tmp_path):
-        entries = self._entries(tmp_path, [RUNNING_HEADER])
+    def test_running_header_is_not_kept_as_an_entry(self):
+        entries = self._entries([RUNNING_HEADER])
         assert not any("Confidential" in entry for entry in entries)
 
-    def test_stops_when_the_next_page_is_body_text(self, tmp_path):
+    def test_stops_when_the_next_page_is_body_text(self):
         body = ["## Introduction Section", "Real body prose starts here."]
-        entries = self._entries(tmp_path, body)
+        entries = self._entries(body)
         # A real heading after the break is a hard boundary: only page 1's entries.
         assert len(entries) == 4
 
-    def test_gives_up_after_too_much_header_noise(self, tmp_path):
+    def test_gives_up_after_too_much_header_noise(self):
         noise = [f"{RUNNING_HEADER} line {i}" for i in range(6)]
-        entries = self._entries(tmp_path, noise)
+        entries = self._entries(noise)
         assert len(entries) == 4
 
 
@@ -330,18 +322,16 @@ class TestOverlongTocEntry:
             "body",
         ])
 
-    def test_entries_after_the_long_one_survive(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
-        mark_and_cleanup_toc(self._doc(), outline_path)
-        entries = read_outline(outline_path)["toc"]
+    def _entries(self):
+        return tad._detect_toc(self._doc())[1]["toc"]
+
+    def test_entries_after_the_long_one_survive(self):
+        entries = self._entries()
         assert any("References" in entry for entry in entries), entries
         assert any("Appendices" in entry for entry in entries), entries
 
-    def test_the_long_entry_itself_is_still_not_recorded(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
-        mark_and_cleanup_toc(self._doc(), outline_path)
-        entries = read_outline(outline_path)["toc"]
-        assert not any("Adaptations" in entry for entry in entries)
+    def test_the_long_entry_itself_is_still_not_recorded(self):
+        assert not any("Adaptations" in entry for entry in self._entries())
 
     def test_page_numbered_entry_predicate_ignores_length(self):
         long_entry = ("6.11 Adaptations for outcome assessment for patients who cannot "
@@ -402,24 +392,18 @@ class TestBackmatterTocExclusion:
             "## 8.0 References",
             "Smith J et al. Lancet. 2020.",
         ])
-        find_toc_and_appendix(doc, outline_path, min_structure_tokens=1)
-        outline = read_outline(outline_path)
-        assert outline["outline_source"] == "md-toc"
-        assert isinstance(outline["backmatterLine"], int)
+        _, updates, _ = derive_outline(doc, min_structure_tokens=1)
+        assert updates["outline_source"] == "md-toc"
+        assert isinstance(updates["backmatterLine"], int)
         # It must point at the body heading, not the TOC entry.
-        assert outline["backmatterLine"] > outline["tocEndLine"]
+        assert updates["backmatterLine"] > updates["tocEndLine"]
 
 
-class TestOutlineWrittenOnce:
-    def test_single_write_per_document(self, tmp_path, monkeypatch):
-        # The outline fields used to be spread over three read-modify-write cycles of the
-        # same file, which wrote "tokens" twice with two different values.
-        calls = []
-        real_write = tad.write_outline
-        monkeypatch.setattr(
-            tad, "write_outline",
-            lambda path, updates: (calls.append(sorted(updates)), real_write(path, updates))[1],
-        )
+class TestOutlineIsOneObject:
+    def test_all_fields_arrive_in_a_single_dict(self):
+        # The fields used to be spread over three read-modify-write cycles of outline.json,
+        # which wrote "tokens" twice with two different values. Returning one dict makes that
+        # class of bug unrepresentable, so this asserts the shape rather than a call count.
         doc = "\n".join([
             "## Table of Contents",
             "1.0 Background\t3",
@@ -429,11 +413,10 @@ class TestOutlineWrittenOnce:
             "## 1.0 Background",
             "body paragraph. " * 60,
         ])
-        find_toc_and_appendix(doc, tmp_path / "outline.json", min_structure_tokens=1)
-        assert len(calls) == 1, calls
+        _, updates, _ = derive_outline(doc, min_structure_tokens=1)
+        assert {"tocStartLine", "tocEndLine", "toc", "tokens", "outline_source"} <= set(updates)
 
-    def test_tokens_reflect_the_returned_document(self, tmp_path):
-        outline_path = tmp_path / "outline.json"
+    def test_tokens_reflect_the_returned_document(self):
         doc = "# Title\n\n" + ("Some content paragraph. " * 40)
-        result = find_toc_and_appendix(doc, outline_path, min_structure_tokens=1)
-        assert read_outline(outline_path)["tokens"] == len(result) // 4
+        result, updates, _ = derive_outline(doc, min_structure_tokens=1)
+        assert updates["tokens"] == len(result) // 4

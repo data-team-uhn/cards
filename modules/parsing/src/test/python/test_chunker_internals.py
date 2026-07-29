@@ -351,18 +351,18 @@ class TestBookmarksStorage:
     def _outline(self, tmp_path):
         return json.loads((tmp_path / "Chunks" / "outline.json").read_text(encoding="utf-8"))
 
-    def test_small_bookmarked_doc_gets_toc_preserved(self, tmp_path):
-        # A small doc + bookmarks.json: find_toc_and_appendix records a bookmark-derived toc
-        # (ungated on the bookmark path) and write_chunk_files preserves it. No sibling PDF, so
-        # the pre-placed bookmarks.json is used as-is. The records are NOT copied into outline.
+    def test_a_leftover_sidecar_is_not_treated_as_bookmarks(self, tmp_path):
+        # Records now come from a sibling PDF or the printed TOC only. A bookmarks.json left
+        # beside the .md by an older run is ignored, which is what stops it reporting the
+        # previous document's outline for this one.
         md = tmp_path / "doc.md"
         md.write_text("# Title\n\nshort body\n", encoding="utf-8")
         records = [{"title": "Alpha Section", "level": 1, "page": 1}]
         (tmp_path / "bookmarks.json").write_text(json.dumps(records) + "\n", encoding="utf-8")
         chunker.chunk_file(str(md), min_structure_tokens=10 ** 9)
         outline = self._outline(tmp_path)
-        assert outline["outline_source"] == "pdf-bookmarks"
-        assert outline["toc"] == ["Alpha Section"]
+        assert outline["outline_source"] == "none"
+        assert outline["toc"] == []
         assert "bookmarks" not in outline
 
     def test_no_sibling_pdf_no_toc(self, tmp_path):
