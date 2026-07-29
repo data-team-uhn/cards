@@ -1,9 +1,9 @@
 # CARDS distribution and Docker image
 
 The `slingfeature` submodule aggregates all the features making up the CARDS platform into
-the two deployable feature models (`core_tar` for the TAR segment store, `core_mongo` for
-MongoDB persistence), and, with `-Pdocker`, the `docker` submodule builds the `cards/cards`
-Docker image.
+the three deployable feature models (`core_tar` for the TAR segment store, `core_mongo` for
+MongoDB persistence, `core_rdb` for a relational database), and, with `-Pdocker`, the `docker`
+submodule builds the `cards/cards` Docker image.
 
 One image definition serves two flavors, differing only in how much of the artifact
 repository is baked in:
@@ -16,8 +16,9 @@ mvn clean install -Pdocker,production    # production flavor: fully self-contain
 ## How the image works
 
 The container starts the Sling Feature Launcher on
-`mvn:io.uhndata.cards/cards/<version>/slingosgifeature/core_<storage>` (`tar` or `mongo`,
-chosen by the `OAK_FILESYSTEM` environment variable), resolving artifacts from, in order:
+`mvn:io.uhndata.cards/cards/<version>/slingosgifeature/core_<storage>` (one of `tar`, `mongo`
+or `rdb`, named by the `OAK_STORAGE` environment variable — without it, `tar` when
+`OAK_FILESYSTEM` is set and `mongo` otherwise), resolving artifacts from, in order:
 
 1. `/opt/cards/mvnrepo` — the project's own artifacts, including **every feature file
    produced by the repository**, copied from the build's `.mvnrepo`;
@@ -38,6 +39,17 @@ docker run --rm --volume ~/.m2:/root/.m2 -e OAK_FILESYSTEM=true -p 8080:8080 -it
 Without the mount, third-party artifacts are downloaded on first start and cached in the
 `/opt/cards/.cards-data` volume.
 
+**Relational persistence**: with `OAK_STORAGE=rdb` the repository lives in a relational
+database, which must be reachable and must hold a database the connecting user may create
+tables in — Oak creates its own tables on first start. Only the PostgreSQL JDBC driver is
+bundled in the image; `RDB_DRIVER` exists for deployments that add another vendor's driver
+through `ADDITIONAL_SLING_FEATURES`:
+
+```
+docker run --rm -e OAK_STORAGE=rdb -e EXTERNAL_RDB_URI=jdbc:postgresql://db:5432/cards \
+  -e RDB_USER=cards -e RDB_PASSWORD=secret -p 8080:8080 -it cards/cards
+```
+
 **Production flavor**: the build harvests every feature file built by the reactor and
 materializes all their referenced artifacts (via the `slingfeature-maven-plugin` `repository`
 goal) into `/opt/cards/artifacts`, one deduplicated Maven-layout repository. The image needs
@@ -54,8 +66,8 @@ root), since the harvest covers the features produced by the current build.
 and current:
 
 - `build-info.txt` — version, git commit, and build timestamp;
-- `core_tar.json` / `core_mongo.json` — the aggregated feature models, the complete versioned
-  inventory of every Java artifact in the deployment;
+- `core_tar.json` / `core_mongo.json` / `core_rdb.json` — the aggregated feature models, the
+  complete versioned inventory of every Java artifact in the deployment;
 - `yarn.lock` — the complete inventory of the frontend JavaScript dependencies;
 - `logo.png` — the platform logo shipped with this build.
 

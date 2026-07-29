@@ -67,6 +67,8 @@ Other supported parameters:
 
 `--mongo` to use mongo DB for Oak storage
 
+`--postgres` to use a PostgreSQL database for Oak storage. The database must already exist, and its user must be allowed to create tables — Oak creates its own on first start. The connection defaults to `jdbc:postgresql://localhost:5432/cards`, and can be overridden with `--jdbc <url>`, `--db-user <user>` and `--db-password <password>`
+
 `--debug` to turn on remote debugging on port 5005
 
 By default, the app will run with username `admin` and password `admin`.

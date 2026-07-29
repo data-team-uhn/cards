@@ -1,0 +1,52 @@
+{
+    "variables": {
+        "rdb.jdbc.uri":"jdbc:postgresql://postgres:5432/cards",
+        "rdb.jdbc.driver":"org.postgresql.Driver",
+        "rdb.jdbc.user":"cards",
+        "rdb.jdbc.password":"cards"
+    },
+    "bundles":[
+        {
+             "id":"com.h2database:h2-mvstore:2.4.240",
+             "start-order":"15"
+        },
+        {
+            "id":"org.postgresql:postgresql:42.7.13",
+            "start-order":"14"
+        },
+        {
+            "id":"org.apache.sling:org.apache.sling.datasource:1.0.4",
+            "start-order":"14"
+        }
+    ],
+    "configurations":{
+        // The DocumentNodeStore resolves its store through a `javax.sql.DataSource` service
+        // selected by `(datasource.name=oak)`, so the pool must advertise that exact name.
+        "org.apache.sling.datasource.DataSourceFactory~oak":{
+            "datasource.name":"oak",
+            "driverClassName":"${rdb.jdbc.driver}",
+            "url":"${rdb.jdbc.uri}",
+            "username":"${rdb.jdbc.user}",
+            "password":"${rdb.jdbc.password}",
+            // Oak drives its own transactions, so connections must be handed out committing
+            // each statement; leaving this at the driver default breaks the document store.
+            "defaultAutoCommit":"true",
+            "maxActive:Integer":"64",
+            "maxIdle:Integer":"16",
+            "minIdle:Integer":"4",
+            "initialSize:Integer":"4",
+            // Recycle connections dropped by the database or an intermediate proxy, rather
+            // than handing a dead one to Oak on the next repository operation.
+            "testOnBorrow":true,
+            "testWhileIdle":true,
+            "validationQuery":"SELECT 1",
+            "validationInterval:Integer":"30000",
+            // The default interceptor chain includes a statement cache, which conflicts with
+            // the prepared statements Oak reuses across pooled connections.
+            "jdbcInterceptors":"ConnectionState"
+        },
+        "org.apache.jackrabbit.oak.plugins.document.DocumentNodeStoreService":{
+            "documentStoreType":"RDB"
+        }
+    }
+}

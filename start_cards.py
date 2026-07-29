@@ -107,6 +107,18 @@ Options:
       --mongo                    Use a MongoDB document store for the repository
                                  instead of the default file-based (TAR/segment)
                                  store. Requires a running MongoDB instance.
+      --postgres                 Use a relational document store for the
+                                 repository instead of the default file-based
+                                 (TAR/segment) store. Requires a reachable
+                                 PostgreSQL database, which the connecting user
+                                 may create tables in - Oak creates its own on
+                                 first start.
+      --jdbc <url>               The JDBC URL to connect to with `--postgres`
+                                 (default:
+                                 `jdbc:postgresql://localhost:5432/cards`).
+      --db-user <user>           The user to authenticate to the database as.
+      --db-password <password>   The password to authenticate to the database
+                                 with.
       --debug                    Enable Java remote debugging (JDWP) on port
                                  `5005`. Startup pauses until a debugger
                                  attaches - connect with `jdb -attach 5005` (or
@@ -245,6 +257,11 @@ def parse_args(argv, cards_version):
         'permissions_explicit': False,
         'projects': [],
         'storage': 'tar',
+        # The distribution's own default targets the `postgres` host of a container deployment,
+        # which does not resolve on a developer machine.
+        'jdbc_uri': 'jdbc:postgresql://localhost:5432/cards',
+        'db_user': '',
+        'db_password': '',
         'debug': False,
         'test': False,
         'saml': False,
@@ -277,6 +294,17 @@ def parse_args(argv, cards_version):
             options['projects'] += require_value(argv, i, arg).split(',')
         elif arg == '--mongo':
             options['storage'] = 'mongo'
+        elif arg == '--postgres':
+            options['storage'] = 'rdb'
+        elif arg == '--jdbc':
+            i += 1
+            options['jdbc_uri'] = require_value(argv, i, arg)
+        elif arg == '--db-user':
+            i += 1
+            options['db_user'] = require_value(argv, i, arg)
+        elif arg == '--db-password':
+            i += 1
+            options['db_password'] = require_value(argv, i, arg)
         elif arg == '--debug':
             options['debug'] = True
         elif arg == '--saml':
@@ -499,6 +527,13 @@ def build_launcher_args(options, cards_version, project_version):
             ROOT / 'distribution' / 'docker' / 'sling-features.json')
     if features:
         launcher_args += ['-f', ','.join(features)]
+    if options['storage'] == 'rdb':
+        # Override the container-oriented connection baked into the distribution feature
+        launcher_args += ['-V', 'rdb.jdbc.uri=%s' % options['jdbc_uri']]
+        if options['db_user']:
+            launcher_args += ['-V', 'rdb.jdbc.user=%s' % options['db_user']]
+        if options['db_password']:
+            launcher_args += ['-V', 'rdb.jdbc.password=%s' % options['db_password']]
     return launcher_args
 
 

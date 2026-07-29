@@ -45,9 +45,14 @@ The following environment variables are read by the CARDS Docker container _entr
 | `SAML_AUTH_ENABLED` | If set to `true`, enables user authentication via SAML | `true` |
 | `SAML_CLOUD_IAM_DEMO` | If specified, allows SAML authentication via https://lemur-15.cloud-iam.com/auth/realms/uhn-cards-test/protocol/saml. (Only useful for UHN DATA Team Developers) | `true` |
 | `OAK_FILESYSTEM` | If specified, the local file system, as opposed to a Mongo database, will be used for JCR data storage. | `true` |
+| `OAK_STORAGE` | Names the JCR data storage back-end explicitly, taking precedence over `OAK_FILESYSTEM`. Without it, the file system is used when `OAK_FILESYSTEM` is set, and Mongo otherwise. | `tar`, `mongo`, `rdb` |
 | `PERMISSIONS` | The _permissions mode_ to use for the data entered into CARDS | `open`, `trusted`, `ownership` |
 | `EXTERNAL_MONGO_URI` | The URI of a Mongo database to use for data persistence | `mongodb.example.com:27017` |
 | `MONGO_AUTH` | If specified, authenticates to the Mongo database as `<username>:<password>` | `mongouser:password` |
 | `CUSTOM_MONGO_DB_NAME` | If specified, uses the specified name as the Mongo database for JCR persistence instead of the default `oak`. | `sling` |
+| `EXTERNAL_RDB_URI` | The JDBC URL of the relational database to use for data persistence, with `OAK_STORAGE=rdb`. The database must exist, and its user must be allowed to create tables — Oak creates its own on first start. | `jdbc:postgresql://db.example.com:5432/cards` |
+| `RDB_USER` | The user to authenticate to the relational database as | `cards` |
+| `RDB_PASSWORD` | The password to authenticate to the relational database with | `password` |
+| `RDB_DRIVER` | The JDBC driver class to use. Only the PostgreSQL driver ships in the image; another vendor's driver must be added via `ADDITIONAL_SLING_FEATURES`. | `org.postgresql.Driver` |
 | `SMTPS_ENABLED` | If set to `true`, enables the sending of _SMTPS_ email notifications from CARDS. | `true` |
 | `ADDITIONAL_SLING_FEATURES` | If set, enables the listed Sling features. | `mvn:io.uhndata.cards/some-other-sling-feature/VERSION/slingosgifeature` |
