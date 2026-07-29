@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.httprequests.HttpRequests;
+import io.uhndata.cards.httprequests.HttpResponse;
 import io.uhndata.cards.slacknotifications.spi.SlackNotificationProducer;
 
 public class SlackNotificationsTask implements Runnable
@@ -79,17 +80,20 @@ public class SlackNotificationsTask implements Runnable
     public void run()
     {
         LOGGER.debug("Running SlackNotificationsTask");
-        List<List<JsonObject>> result = this.notifications.stream()
+        // Flattened, because a producer with nothing to say gives back an empty list rather than nothing at all:
+        // counting those as content made skipEmpty useless, posting an empty message on every run
+        List<JsonObject> result = this.notifications.stream()
             .filter(n -> this.include.isEmpty() || this.include.contains(n.getName()))
             .map(n -> n.prepareMessages(this.extraParameters))
             .filter(Objects::nonNull)
+            .flatMap(List::stream)
             .collect(Collectors.toList());
         LOGGER.debug("Got these results: {}", result);
         postToSlack(result);
         LOGGER.debug("Done SlackNotificationsTask");
     }
 
-    private void postToSlack(List<List<JsonObject>> messages)
+    private void postToSlack(List<JsonObject> messages)
     {
         if (messages.isEmpty() && this.skipEmpty) {
             return;
@@ -104,16 +108,22 @@ public class SlackNotificationsTask implements Runnable
                     .add(SlackNotificationProducer.COLOR, SlackNotificationProducer.INFO);
                 attachments.add(nothing);
             } else {
-                messages.forEach(innerList -> innerList.forEach(attachments::add));
+                messages.forEach(attachments::add);
             }
 
             if (StringUtils.isNotBlank(this.title)) {
                 slackApiReq.add("text", this.title);
             }
             slackApiReq.add("attachments", attachments);
-            HttpRequests.getPostResponse(this.endpoint, slackApiReq.build().toString(), "application/json");
+            final HttpResponse response =
+                HttpRequests.doHttpPost(this.endpoint, slackApiReq.build().toString(), "application/json");
+            if (response.getStatusCode() < 200 || response.getStatusCode() >= 300) {
+                // Slack was reached and refused the message, which no exception would have told us about
+                LOGGER.warn("Slack refused the notification with status {}: {}", response.getStatusCode(),
+                    response.getResponsePayload());
+            }
         } catch (IOException e) {
-            LOGGER.warn("Failed to send performance update to Slack");
+            LOGGER.warn("Failed to post the notification to Slack: {}", e.getMessage(), e);
         }
     }
 
