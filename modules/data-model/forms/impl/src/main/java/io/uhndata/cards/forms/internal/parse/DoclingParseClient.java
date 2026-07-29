@@ -62,8 +62,6 @@ public final class DoclingParseClient
 
     private static final String DAEMON_URL_PROPERTY = "cards.docling.daemon.url";
 
-    private static final String AUTH_TOKEN_PROPERTY = "cards.docling.auth.token";
-
     private static final String TIMEOUT_MINUTES_PROPERTY = "cards.docling.timeout.minutes";
 
     private static final String DEFAULT_DAEMON_URL = "http://127.0.0.1:18765";
@@ -123,10 +121,6 @@ public final class DoclingParseClient
                 // highly compressible text.
                 .header("Accept-Encoding", "gzip")
                 .POST(HttpRequest.BodyPublishers.ofByteArray(content));
-            final String token = System.getProperty(AUTH_TOKEN_PROPERTY);
-            if (StringUtils.isNotBlank(token)) {
-                builder.header("Authorization", "Bearer " + token);
-            }
             final HttpResponse<byte[]> response =
                 HTTP_CLIENT.send(builder.build(), HttpResponse.BodyHandlers.ofByteArray());
             final String body = decodeBody(response);

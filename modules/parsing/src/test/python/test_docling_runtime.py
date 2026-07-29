@@ -249,35 +249,6 @@ class TestSpoolUploadRejections:
         assert handler.unread == 4096
 
 
-class TestAuthorization:
-    def test_open_when_no_token_configured(self, monkeypatch):
-        monkeypatch.delenv(daemon.AUTH_TOKEN_ENV, raising=False)
-        assert daemon._is_authorized(_FakeHandler(b"")) is True
-
-    def test_correct_bearer_token_accepted(self, monkeypatch):
-        monkeypatch.setenv(daemon.AUTH_TOKEN_ENV, "s3cret")
-        handler = _FakeHandler(b"", headers={"Authorization": "Bearer s3cret"})
-        assert daemon._is_authorized(handler) is True
-
-    def test_wrong_token_rejected(self, monkeypatch):
-        monkeypatch.setenv(daemon.AUTH_TOKEN_ENV, "s3cret")
-        handler = _FakeHandler(b"", headers={"Authorization": "Bearer nope"})
-        assert daemon._is_authorized(handler) is False
-
-    def test_missing_header_rejected(self, monkeypatch):
-        monkeypatch.setenv(daemon.AUTH_TOKEN_ENV, "s3cret")
-        assert daemon._is_authorized(_FakeHandler(b"")) is False
-
-    def test_wrong_scheme_rejected(self, monkeypatch):
-        monkeypatch.setenv(daemon.AUTH_TOKEN_ENV, "s3cret")
-        handler = _FakeHandler(b"", headers={"Authorization": "Basic s3cret"})
-        assert daemon._is_authorized(handler) is False
-
-    def test_empty_env_token_means_disabled(self, monkeypatch):
-        monkeypatch.setenv(daemon.AUTH_TOKEN_ENV, "")
-        assert daemon._is_authorized(_FakeHandler(b"")) is True
-
-
 class TestJsonResponseGzip:
     def _payload(self, size):
         return {"markdown": "a" * size}

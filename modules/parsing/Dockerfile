@@ -25,8 +25,11 @@
 # Build:
 #   docker build -t cards-docling -f modules/parsing/Dockerfile modules/parsing
 # Run:
-#   docker run --rm -p 18765:18765 --cpus=4 --memory=8g \
-#     -e DOCLING_AUTH_TOKEN=change-me cards-docling
+#   docker run --rm -p 127.0.0.1:18765:18765 --cpus=4 --memory=8g cards-docling
+#
+# The 127.0.0.1 prefix on the published port is not optional decoration: the daemon has no
+# authentication, so it is the only thing keeping the network off /parse and /shutdown. A bare
+# "-p 18765:18765" binds every host interface and exposes both to anyone who can route here.
 
 FROM python:3.13-slim AS base
 
@@ -75,11 +78,12 @@ USER docling
 
 EXPOSE 18765
 
-# /health needs no auth, so it works as a container probe even with a token configured.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
     CMD curl -fsS http://127.0.0.1:18765/health || exit 1
 
-# 0.0.0.0 is required to be reachable from outside the container. That is safe only because
-# the endpoints are token-protected — set DOCLING_AUTH_TOKEN. No volume is needed: /parse takes
-# the document in the request body and returns the result, so the daemon accepts no paths.
+# 0.0.0.0 is required here and cannot be tightened to 127.0.0.1: Docker forwards a published port
+# to the container's eth0 address, so a daemon listening only on the container's loopback would
+# refuse every forwarded connection. Confine it from the host side instead, by publishing to
+# 127.0.0.1 (see the run example above). No volume is needed: /parse takes the document in the
+# request body and returns the result, so the daemon accepts no paths.
 ENTRYPOINT ["python", "docling_daemon.py", "--host", "0.0.0.0", "--port", "18765"]

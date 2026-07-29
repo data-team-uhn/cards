@@ -122,15 +122,19 @@ cannot work once it runs in a container, and `/parse` supersedes both. They now 
 `--parse-output-dir` / `$PARSE_OUTPUT_DIR` no longer exist. To chunk a `.md` that is already on
 disk, use the CLI: `python chunker.py <file>`.
 
-Send `Authorization: Bearer $DOCLING_AUTH_TOKEN` when the daemon has a token configured, and
-`Accept-Encoding: gzip` — a parsed protocol's reply compresses roughly 5x.
+Send `Accept-Encoding: gzip` — a parsed protocol's reply compresses roughly 5x.
+
+The daemon has **no authentication**. Every endpoint, `/shutdown` included, is open to whoever can
+reach the port, so it must stay on loopback: keep the `--host 127.0.0.1` default when running it by
+hand, and publish the container port as `127.0.0.1:18765:18765` rather than `18765:18765`. In a
+container the process itself still binds `0.0.0.0`, because Docker forwards published ports to the
+container's `eth0` and not to its loopback — the host-side publish address is what confines it.
 
 ### Configuration (system properties)
 
 | Property | Default | Purpose |
 |----------|---------|---------|
 | `cards.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
-| `cards.docling.auth.token` | *(unset)* | Shared secret sent as `Authorization: Bearer …`; must match the daemon's `$DOCLING_AUTH_TOKEN` |
 | `cards.docling.timeout.minutes` | `30` | Per-document parse timeout |
 | `cards.parse.output.dir` | `<user.dir>/cards-parsed-markdown` | Where Java writes `<answer-uuid>/<name>.md` and `Chunks/`. Java-side only — the daemon never sees it |
 
