@@ -207,6 +207,83 @@ class TestSpoolUpload:
             path.unlink(missing_ok=True)
 
 
+class TestHealthReporting:
+    """``/health`` must fail its status line, not just its body, when the daemon is unusable.
+
+    Regression: it answered 200 with ``ready: false``. Both container probes are
+    ``curl -fsS .../health``, which reads the status line and never the body, so a daemon that
+    returned 503 from every /parse was reported healthy forever and nothing restarted it.
+    """
+
+    def _state(self, **flags):
+        state = SimpleNamespace(
+            shutdown_requested=False, pdf_executor_broken=False, worker_count=2,
+        )
+        for name, value in flags.items():
+            setattr(state, name, value)
+        state.is_ready = lambda: not state.shutdown_requested and not state.pdf_executor_broken
+        return state
+
+    def test_status_is_ok_when_ready(self, monkeypatch):
+        monkeypatch.setattr(daemon, "_STATE", self._state())
+        assert daemon._health_status() == "ok"
+
+    def test_broken_pool_says_so_rather_than_shutting_down(self, monkeypatch):
+        # It used to report "shutting_down" for a broken pool, sending whoever was debugging it
+        # looking for a shutdown that never happened.
+        monkeypatch.setattr(daemon, "_STATE", self._state(pdf_executor_broken=True))
+        assert daemon._health_status() == "pdf_pool_broken"
+
+    def test_shutdown_still_says_shutting_down(self, monkeypatch):
+        monkeypatch.setattr(daemon, "_STATE", self._state(shutdown_requested=True))
+        assert daemon._health_status() == "shutting_down"
+
+    def test_broken_pool_wins_over_shutdown(self, monkeypatch):
+        # _request_shutdown sets shutdown_requested, so both flags are on once the pool breaks;
+        # the pool is the cause and the more useful thing to report.
+        monkeypatch.setattr(
+            daemon, "_STATE", self._state(pdf_executor_broken=True, shutdown_requested=True)
+        )
+        assert daemon._health_status() == "pdf_pool_broken"
+
+    def test_no_state_yet_says_starting(self, monkeypatch):
+        monkeypatch.setattr(daemon, "_STATE", None)
+        assert daemon._health_status() == "starting"
+
+
+class TestBrokenPoolShutsDown:
+    """A broken PDF pool has to end the process, not just flip a flag.
+
+    The pool cannot be rebuilt in-process, so a fresh process is the only recovery — and only an
+    exit triggers one, because a container restart policy reacts to the process ending and never
+    to health status. Staying up answering 503 forever was the failure mode.
+    """
+
+    def test_broken_pool_requests_shutdown(self, monkeypatch, tmp_path):
+        from concurrent.futures.process import BrokenProcessPool
+
+        state = SimpleNamespace(
+            shutdown_requested=False, pdf_executor_broken=False,
+            pdf_executor=None, worker_count=1,
+        )
+        monkeypatch.setattr(daemon, "_STATE", state)
+        monkeypatch.setattr(daemon, "_SERVER", None)
+
+        def explode(*args, **kwargs):
+            raise BrokenProcessPool("forced")
+
+        monkeypatch.setattr(daemon, "convert_pdf_to_markdown", explode)
+        pdf = tmp_path / "doc.pdf"
+        pdf.write_bytes(b"%PDF-1.4")
+
+        with pytest.raises(RuntimeError, match="PDF worker pool is broken"):
+            daemon._convert_file(pdf, source_file="doc.pdf")
+
+        assert state.pdf_executor_broken is True
+        # _request_shutdown was reached, so serve_forever stops and main() exits non-zero.
+        assert state.shutdown_requested is True
+
+
 class TestSpoolUploadRejections:
     """The Content-Length checks, which are also the drain-sensitive paths.
 

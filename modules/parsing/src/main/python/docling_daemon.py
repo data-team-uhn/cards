@@ -1,20 +1,18 @@
+# Copyright 2026 DATA @ UHN. See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.
 #
-#  Licensed to the Apache Software Foundation (ASF) under one
-#  or more contributor license agreements.  See the NOTICE file
-#  distributed with this work for additional information
-#  regarding copyright ownership.  The ASF licenses this file
-#  to you under the Apache License, Version 2.0 (the
-#  "License"); you may not use this file except in compliance
-#  with the License.  You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#  Unless required by applicable law or agreed to in writing,
-#  software distributed under the License is distributed on an
-#  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-#  KIND, either express or implied.  See the License for the
-#  specific language governing permissions and limitations
-#  under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 
 """
@@ -309,6 +307,12 @@ def _convert_file(input_path: Path, source_file: str | None = None) -> tuple[str
             )
         except BrokenProcessPool as exc:
             _STATE.pdf_executor_broken = True
+            # Stop serving and exit, rather than staying up answering 503 forever. The pool
+            # cannot be rebuilt in-process, so a fresh process is the only recovery, and only
+            # an exit triggers one: a container restart policy reacts to the process ending,
+            # never to health status. The shutdown runs on its own thread, so this request
+            # still gets its error response and the caller can fall back.
+            _request_shutdown()
             raise RuntimeError("PDF worker pool is broken; restart the daemon") from exc
     elif suffix == ".docx":
         with _STATE.docx_lock:
@@ -318,6 +322,21 @@ def _convert_file(input_path: Path, source_file: str | None = None) -> tuple[str
         raise ValueError(f"Unsupported file type: {suffix}")
 
     return markdown, "\n".join(logs)
+
+
+def _health_status() -> str:
+    """The reason ``/health`` is refusing, for an operator reading the body.
+
+    A broken PDF pool used to report ``shutting_down``, which sends whoever is debugging it
+    looking for a shutdown that never happened.
+    """
+    if _STATE is None:
+        return "starting"
+    if _STATE.pdf_executor_broken:
+        return "pdf_pool_broken"
+    if _STATE.shutdown_requested:
+        return "shutting_down"
+    return "ok"
 
 
 class DoclingDaemonHandler(BaseHTTPRequestHandler):
@@ -332,11 +351,14 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             return
 
         ready = _STATE is not None and _STATE.is_ready()
+        # 503, not 200-with-ready-false. Container probes are `curl -fsS .../health`, which
+        # reads the status line and never the body, so answering 200 here reported a daemon as
+        # healthy while every /parse returned 503.
         _json_response(
             self,
-            HTTPStatus.OK,
+            HTTPStatus.OK if ready else HTTPStatus.SERVICE_UNAVAILABLE,
             {
-                "status": "ok" if ready else "shutting_down",
+                "status": _health_status(),
                 "workers": _STATE.worker_count if _STATE is not None else 0,
                 "ready": ready,
             },
@@ -498,9 +520,21 @@ def main() -> None:
     try:
         _SERVER.serve_forever()
     finally:
+        pool_broke = _STATE.pdf_executor_broken
         _STATE.close()
         _SERVER.server_close()
         print("Docling daemon stopped", flush=True)
+
+    if pool_broke:
+        # Non-zero so the exit is distinguishable from a requested /shutdown in the container
+        # logs. Either way the restart policy brings up a fresh daemon with a working pool.
+        print(
+            "PDF worker pool broke and cannot be rebuilt in-process; exiting so a fresh "
+            "daemon is started",
+            file=sys.stderr,
+            flush=True,
+        )
+        sys.exit(1)
 
 
 if __name__ == "__main__":
