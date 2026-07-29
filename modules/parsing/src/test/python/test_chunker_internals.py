@@ -50,6 +50,17 @@ class TestBackmatterHeading:
     def test_plain_first_line(self):
         assert chunker._backmatter_heading("Plain first line\n\nmore") == ["Plain first line"]
 
+    def test_list_marker_and_partial_emphasis_stripped(self):
+        # Docling emits backmatter headings as list items with only part of them bold, e.g.
+        # "- 20.0 **Appendices**" on a real protocol — neither an ATX heading nor fully bold,
+        # so it used to reach the catalog verbatim.
+        assert chunker._backmatter_heading("- 20.0 **Appendices**\n\nbody") == ["20.0 Appendices"]
+        assert chunker._backmatter_heading("* 19.0 References") == ["19.0 References"]
+        assert chunker._backmatter_heading("+ **Annexes**") == ["Annexes"]
+
+    def test_a_plain_list_item_keeps_its_text(self):
+        assert chunker._backmatter_heading("- plain item") == ["plain item"]
+
     def test_empty_uses_default(self):
         assert chunker._backmatter_heading("") == [DEFAULT_HEADING]
         assert chunker._backmatter_heading("   \n  ") == [DEFAULT_HEADING]
@@ -186,6 +197,113 @@ class TestPartHeading:
 
     def test_no_heading_no_previous_uses_default(self):
         assert chunker._part_heading("no heading text", None) == [DEFAULT_HEADING]
+
+
+class TestFirstChunkHeading:
+    """The first catalog entry must use its real heading when it has one.
+
+    Regression: the first entry was forced to DEFAULT_HEADING regardless of content, so every
+    document without a preamble lost a perfectly good label like "1.0 Introduction" — and it
+    contradicted _part_heading's own documented contract, which already falls back to
+    DEFAULT_HEADING exactly when a part has no heading and there is no previous entry to copy.
+    """
+
+    PARAGRAPH = "Body sentence that carries the section text along. " * 40
+
+    def _tree(self, markdown):
+        return chunker.build_chunk_tree(markdown, "doc.md", min_structure_tokens=1)
+
+    def test_no_preamble_uses_the_real_heading(self):
+        md = f"# 1.0 Introduction{chr(10)}{chr(10)}{self.PARAGRAPH}"
+        first = self._tree(md)["catalog"]["chunks"][0]
+        assert first["heading"] == ["1.0 Introduction"]
+        assert first["file"] == "Chunk-1.md"
+
+    def test_preamble_with_no_headings_uses_the_default(self):
+        # The preamble has to be over budget to stand alone: a short one is packed together with
+        # the following section, and that combined chunk really does contain "1.0 Introduction",
+        # so labelling it with the heading is right.
+        preamble = "Loose front matter carrying no heading whatsoever. " * 40
+        md = (f"{preamble}{chr(10)}{chr(10)}"
+              f"# 1.0 Introduction{chr(10)}{chr(10)}{self.PARAGRAPH}")
+        chunks = chunker.build_chunk_tree(
+            md, "doc.md", max_tokens=300, min_structure_tokens=1
+        )["catalog"]["chunks"]
+        assert chunks[0]["file"] == "Chunk-0.md"
+        assert chunks[0]["heading"] == [DEFAULT_HEADING]
+        # And the section that follows keeps its own heading.
+        assert any(c["heading"] == ["1.0 Introduction"] for c in chunks[1:]), \
+            [c["heading"] for c in chunks]
+
+    def test_preamble_chunk_keeps_the_default_even_when_packed(self):
+        # A short preamble is packed together with the following section, so the chunk does
+        # contain "1.0 Introduction" — but Chunk-0 is front matter and is labelled as such
+        # regardless of what got packed into it.
+        md = (f"One short front-matter line.{chr(10)}{chr(10)}"
+              f"# 1.0 Introduction{chr(10)}{chr(10)}{self.PARAGRAPH}")
+        first = self._tree(md)["catalog"]["chunks"][0]
+        assert first["file"] == "Chunk-0.md"
+        assert first["heading"] == [DEFAULT_HEADING]
+
+    def test_preamble_stand_out_lines_do_not_become_the_label(self):
+        # A title block's bold/ALL-CAPS lines are field labels, not section titles.
+        preamble = (f"**PRINCIPAL INVESTIGATOR:**{chr(10)}{chr(10)}Dr Somebody{chr(10)}{chr(10)}"
+                    + "Front matter prose that runs on for a while. " * 40)
+        md = (f"{preamble}{chr(10)}{chr(10)}# 1.0 Introduction{chr(10)}{chr(10)}{self.PARAGRAPH}")
+        chunks = chunker.build_chunk_tree(
+            md, "doc.md", max_tokens=300, min_structure_tokens=1
+        )["catalog"]["chunks"]
+        assert chunks[0]["heading"] == [DEFAULT_HEADING]
+
+    def test_later_chunks_unaffected(self):
+        md = "".join(
+            f"# {i}.0 Section Heading{chr(10)}{chr(10)}{self.PARAGRAPH}{chr(10)}{chr(10)}"
+            for i in range(1, 6)
+        )
+        headings = [c["heading"] for c in self._tree(md)["catalog"]["chunks"]]
+        assert all(h != [DEFAULT_HEADING] for h in headings), headings
+
+
+class TestRepeatedLines:
+    """Running headers/footers must not become catalog headings.
+
+    A line like CONFIDENTIAL sits immediately after a page marker with a blank line after it,
+    which is exactly as isolated as a real stand-out heading at the top of a page. Recurrence is
+    the only signal that separates them, so refusing anything next to a page marker would throw
+    the real headings away too.
+    """
+
+    def test_detects_a_line_repeated_on_every_page(self):
+        lines = []
+        for page in range(1, 5):
+            lines += [f"<!-- page: {page} -->", "CONFIDENTIAL", "", "Body text."]
+        repeated = chunker.repeated_lines(lines)
+        assert chunker.normalize_title("CONFIDENTIAL") in repeated
+        assert chunker.normalize_title("Body text.") in repeated
+
+    def test_a_heading_appearing_once_is_not_repeated(self):
+        lines = ["<!-- page: 1 -->", "REAL HEADING", "", "prose", "more prose"]
+        assert chunker.repeated_lines(lines) == frozenset()
+
+    def test_twice_is_not_enough(self):
+        lines = ["SEEN TWICE", "", "SEEN TWICE", "", "other"]
+        assert chunker.repeated_lines(lines) == frozenset()
+
+    def test_page_markers_themselves_are_ignored(self):
+        lines = [f"<!-- page: {n} -->" for n in range(1, 6)]
+        assert chunker.repeated_lines(lines) == frozenset()
+
+    def test_part_heading_refuses_a_repeated_line(self):
+        part = f"<!-- page: 7 -->{chr(10)}CONFIDENTIAL{chr(10)}{chr(10)}Body text follows."
+        repeated = frozenset({chunker.normalize_title("CONFIDENTIAL")})
+        # Without the set it is accepted as a stand-out heading; with it, the part falls through.
+        assert chunker._part_heading(part, None) == ["CONFIDENTIAL"]
+        assert chunker._part_heading(part, None, repeated) == [DEFAULT_HEADING]
+
+    def test_a_real_heading_after_a_page_marker_still_counts(self):
+        part = f"<!-- page: 7 -->{chr(10)}**5.0 METHODS**{chr(10)}{chr(10)}Body text follows."
+        repeated = frozenset({chunker.normalize_title("CONFIDENTIAL")})
+        assert chunker._part_heading(part, None, repeated) == ["5.0 METHODS"]
 
 
 class TestSplitOversized:

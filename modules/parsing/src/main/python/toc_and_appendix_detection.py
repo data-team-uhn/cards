@@ -774,7 +774,16 @@ def derive_outline(
         result, updates = _detect_toc(md)
         if "tocStartLine" in updates:
             toc_range = (updates["tocStartLine"], updates["tocEndLine"])
-        known = verify_bookmarks(_records_from_toc_strings(updates.get("toc", [])), result)
+
+    # Split once and share it: verification and the backmatter lookup both scan the whole
+    # document line by line, and each would otherwise re-split it.
+    result_lines = result.split("\n")
+    if not records:
+        # Only this path harvests a printed TOC, so only it needs verification; the source it
+        # ends up reporting depends on whether any harvested entry could be found in the body.
+        known = verify_bookmarks(
+            _records_from_toc_strings(updates.get("toc", [])), result, lines=result_lines
+        )
         outline_source = "md-toc" if known else "none"
 
     # One dict for the whole outline: these fields used to be spread over three
@@ -783,7 +792,9 @@ def derive_outline(
     updates["tokens"] = count_tokens(result)
     updates["outline_source"] = outline_source
     updates["toc"] = [record["title"] for record in known if record.get("title")]
-    backmatter_line = backmatter_from_records(result, known, toc_range=toc_range)
+    backmatter_line = backmatter_from_records(
+        result, known, toc_range=toc_range, lines=result_lines
+    )
     if backmatter_line is not None:
         updates["backmatterLine"] = backmatter_line
     return result, updates, known

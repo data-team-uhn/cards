@@ -192,8 +192,12 @@ def calc_ram_budget_gb(total_gb: float, available_gb: float) -> float:
 def calc_max_workers_by_ram(ram_budget_gb: float) -> int:
     """
     Upper bound on workers from RAM budget.
+
+    Floors at 1, not 2. A floor of 2 guaranteed roughly 4 GB of model stacks regardless of the
+    budget, which in a 2-3 GB container recreated exactly the OOM kill the cgroup reading above
+    exists to prevent. One worker that fits beats two that do not.
     """
-    return max(2, int(ram_budget_gb // GB_PER_WORKER))
+    return max(1, int(ram_budget_gb // GB_PER_WORKER))
 
 
 # CPU topology at startup.
