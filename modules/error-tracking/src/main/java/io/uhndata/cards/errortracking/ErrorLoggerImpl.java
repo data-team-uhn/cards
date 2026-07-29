@@ -25,14 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,13 +52,18 @@ public final class ErrorLoggerImpl implements ErrorLoggerService
         ErrorLogger.setService(this);
     }
 
+    @Deactivate
+    protected void deactivate()
+    {
+        // Without this, the static facade would keep calling this component after it stopped, when its service
+        // references are already gone
+        ErrorLogger.unsetService(this);
+    }
+
     @Override
     public void logError(final Throwable loggedError)
     {
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
-            if (resolver == null) {
-                return;
-            }
             Resource eventsFolderResource = resolver.getResource(LOGGED_EVENTS_PATH);
             if (eventsFolderResource == null) {
                 return;
@@ -83,9 +87,10 @@ public final class ErrorLoggerImpl implements ErrorLoggerService
 
             // Commit these changes to JCR
             resolver.commit();
-        } catch (LoginException | PersistenceException e) {
+        } catch (Exception e) {
+            // The caller is already handling a failure; recording it must not raise a second one, so nothing
+            // escapes from here, not even a runtime exception
             LOGGER.error("logError failed.", e);
-            return;
         }
     }
 }
