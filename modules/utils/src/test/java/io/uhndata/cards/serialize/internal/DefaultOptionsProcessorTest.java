@@ -1,0 +1,109 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.uhndata.cards.serialize.internal;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import jakarta.json.Json;
+import jakarta.json.JsonValue;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+/**
+ * Unit tests for {@link DefaultOptionsProcessor}.
+ *
+ * @version $Id$
+ */
+public class DefaultOptionsProcessorTest
+{
+    private static final String DEFAULT_OPTIONS = "defaultOptions";
+
+    private final DefaultOptionsProcessor processor = new DefaultOptionsProcessor();
+
+    @Test
+    public void getNameReturnsIncludeDefaultOptions()
+    {
+        assertEquals("includeDefaultOptions", this.processor.getName());
+    }
+
+    @Test
+    public void getPriorityReturnsTen()
+    {
+        assertEquals(10, this.processor.getPriority());
+    }
+
+    @Test
+    public void getDescriptionIsNotEmpty()
+    {
+        assertNotNull(this.processor.getDescription());
+    }
+
+    @Test
+    public void processChildSerializesDefaultOptionsChild() throws RepositoryException
+    {
+        Node node = mock(Node.class);
+        Node child = mock(Node.class);
+        when(child.getName()).thenReturn(DEFAULT_OPTIONS);
+
+        JsonValue serialized = Json.createValue("serialized");
+        JsonValue result = this.processor.processChild(node, child, null, n -> serialized);
+        assertEquals(serialized, result);
+    }
+
+    @Test
+    public void processChildSerializesChildrenOfDefaultOptions() throws RepositoryException
+    {
+        Node node = mock(Node.class);
+        Node child = mock(Node.class);
+        when(child.getName()).thenReturn("option1");
+        when(node.getName()).thenReturn(DEFAULT_OPTIONS);
+
+        JsonValue serialized = Json.createValue("serialized");
+        JsonValue result = this.processor.processChild(node, child, null, n -> serialized);
+        assertEquals(serialized, result);
+    }
+
+    @Test
+    public void processChildForOtherChildReturnsInput() throws RepositoryException
+    {
+        Node node = mock(Node.class);
+        Node child = mock(Node.class);
+        when(child.getName()).thenReturn("a1");
+        when(node.getName()).thenReturn("f1");
+
+        JsonValue input = mock(JsonValue.class);
+        JsonValue result = this.processor.processChild(node, child, input, n -> JsonValue.NULL);
+        assertEquals(input, result);
+    }
+
+    @Test
+    public void processChildCatchesRepositoryExceptionReturnsInput() throws RepositoryException
+    {
+        Node child = mock(Node.class);
+        when(child.getName()).thenThrow(new RepositoryException());
+
+        JsonValue input = mock(JsonValue.class);
+        JsonValue result = this.processor.processChild(mock(Node.class), child, input, n -> JsonValue.NULL);
+        assertEquals(input, result);
+    }
+}

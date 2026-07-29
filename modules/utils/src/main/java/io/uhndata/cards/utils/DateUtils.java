@@ -141,14 +141,13 @@ public final class DateUtils
                 if (result instanceof ZonedDateTime) {
                     // Good, we managed to parse the timezone from the string, just return the result
                     return (ZonedDateTime) result;
-                } else if (result instanceof LocalDateTime) {
-                    // No timezone in the string, use the system default
-                    return ((LocalDateTime) result).atZone(ZoneId.systemDefault());
                 }
+                // No timezone in the string, use the system default
+                return ((LocalDateTime) result).atZone(ZoneId.systemDefault());
             } catch (Exception ex) {
                 // Not important, the date string doesn't match the expected format, just try the next format
+                return null;
             }
-            return null;
         }).filter(Objects::nonNull).findFirst().orElse(null);
         return date;
     }
