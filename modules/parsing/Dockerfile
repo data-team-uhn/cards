@@ -80,7 +80,6 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
     CMD curl -fsS http://127.0.0.1:18765/health || exit 1
 
 # 0.0.0.0 is required to be reachable from outside the container. That is safe only because
-# the endpoints are token-protected — set DOCLING_AUTH_TOKEN. --parse-output-dir is
-# deliberately omitted: /chunk needs a filesystem shared with the caller, so it stays disabled
-# here and /parse is used instead.
+# the endpoints are token-protected — set DOCLING_AUTH_TOKEN. No volume is needed: /parse takes
+# the document in the request body and returns the result, so the daemon accepts no paths.
 ENTRYPOINT ["python", "docling_daemon.py", "--host", "0.0.0.0", "--port", "18765"]

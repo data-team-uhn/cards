@@ -155,8 +155,8 @@ Notes for whoever picks this up:
 
 | Module | Role |
 |---|---|
-| `docling_daemon.py` | Long-running HTTP worker. **`POST /parse`** (bytes in, Markdown + chunk tree out) is the endpoint Java uses; `POST /convert` and `POST /chunk` are the older path-based pair and need a shared filesystem. Also `GET /health`, `POST /shutdown` |
-| `docling_parser.py` | CLI entry: convert one file (`--chunk` also chunks in-process) |
+| `docling_daemon.py` | Long-running HTTP worker: **`POST /parse`** (bytes in, Markdown + chunk tree out), `GET /health`, `POST /shutdown`. It accepts no filesystem paths, so it needs no volume shared with its caller |
+| `docling_parser.py` | CLI entry: convert one file to `<stem>.md` **and** its `Chunks/` tree, in-process. Always chunks, mirroring the daemon |
 | `docling_pdf_parser.py` | `convert_pdf_to_markdown` — **page-sharded parallel** Docling (`ProcessPoolExecutor`, one worker per page-range, emits `<!-- page: N -->`); `convert_pdf` (CLI convert+write+chunk) |
 | `docling_docx_parser.py` | DOCX → Markdown (Docling; no page markers) |
 | `docling_batch_sizing.py` | Worker-count / page-batch sizing from RAM + cores |
@@ -218,9 +218,9 @@ chunk_file(<stem>.md)
 
 Entry points (both land in `write_chunk_files`):
 
-- `chunk_file(file_path)` — one already-parsed `.md`; used by the daemon's `POST /chunk` and
+- `chunk_file(file_path)` — one already-parsed `.md`; used by
   the `python chunker.py <file>` CLI.
-- `convert_pdf(..., chunk=True)` — the inline CLI path (`docling_parser.py --chunk`): parse,
+- `convert_pdf(...)` — the inline CLI path (`docling_parser.py <file>`): parse,
   write `.md`, then chunk in the same process.
 
 See `PROPOSAL_PIPELINE_DESIGN.md` § *Stage 0 — Chunking* for the full splitting rules and the
@@ -301,8 +301,7 @@ output — staleness is handled by **wipe-and-redo**, not versioning.
 
 | | Daemon (production) | CLI / inline |
 |---|---|---|
-| Convert | Java `POST /convert` → `convert_pdf_to_markdown` (returns a string) | `docling_parser.py <file>` writes `<stem>.md` |
-| Chunk | Java `POST /chunk` → `chunk_file(<stem>.md)` | `docling_parser.py --chunk`, or `python chunker.py <file>` |
+| Convert + chunk | Java `POST /parse` (bytes) → `convert_*_to_markdown` + `build_chunk_tree`, returned together | `docling_parser.py <file>` writes `<stem>.md` + `Chunks/`, or `python chunker.py <file>` chunks an existing `.md` |
 | Files owned by | Java (`ParsedMarkdownStore`) | Python (writes `.md` + `Chunks/` itself) |
 | Source PDF for outline | Java co-locates `<stem>.pdf` | present only if a sibling `<stem>.pdf` exists beside the `.md` |
 

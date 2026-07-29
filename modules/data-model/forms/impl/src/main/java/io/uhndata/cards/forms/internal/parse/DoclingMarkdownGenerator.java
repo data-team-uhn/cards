@@ -19,6 +19,7 @@ package io.uhndata.cards.forms.internal.parse;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +73,13 @@ public class DoclingMarkdownGenerator
                 fileName, endTimestamp, endTimestamp - startTimestamp,
                 result == null ? 0 : result.getMarkdown().length(),
                 result == null ? 0 : result.getChunks().size());
+            // The daemon's per-request log carries the page-shard timings and the resolved
+            // parallelism. Inside a container its own stdout goes to `docker logs`, unattached to
+            // any document, so this reply field is the only path by which per-document parse
+            // timings reach error.log — log it or the numbers are collected and thrown away.
+            if (result != null && StringUtils.isNotBlank(result.getLogs())) {
+                LOGGER.info("Docling daemon log for '{}':\n{}", fileName, result.getLogs());
+            }
         }
     }
 

@@ -535,7 +535,14 @@ def _detect_toc(md: str) -> tuple[str, dict]:
     if not block_lines:
         return md, {}
 
-    label_line = _clean_toc_line(lines[label_index])
+    # The label is normalized to a level-2 ATX heading rather than stripped bare. Removing its
+    # markers entirely left a plain line that :func:`toc_label_line` no longer recognises, so
+    # cleaning the TOC destroyed its own detectability — a second pass over an already-cleaned
+    # document found no label and reported no outline at all. Rewriting it as "## <text>" keeps it
+    # detectable *and* tidies what Docling emits, which is often an invalid run of '#' (11 of them
+    # on one real protocol). It never becomes a chunk boundary: :func:`chunker.valid_heading`
+    # rejects any heading starting with "Table ".
+    label_line = f"## {_clean_toc_line(lines[label_index])}".rstrip()
     body_text = _block_cleanup("\n".join(block_lines))
     body_lines: list[str] = []
     for line in body_text.split("\n"):

@@ -113,10 +113,14 @@ python modules/parsing/src/main/python/docling_daemon.py --host 127.0.0.1 --port
   "worker".
 - `POST http://localhost:18765/parse?filename=proto.pdf&chunk=true` — the document bytes as the
   request body → `{"markdown", "chunked", "outline", "catalog", "chunks":[{"file","text"}], "logs"}`.
-  This is what Java uses.
-- `POST http://localhost:18765/convert` — `{"input_path": "/tmp/…​.pdf"}` → `{"markdown", "logs"}`.
-  Path-based, so it needs a shared filesystem; kept for local CLI-style testing only.
+  The only conversion endpoint.
 - `POST http://localhost:18765/shutdown` — graceful stop.
+
+The daemon accepts **no filesystem paths**. The earlier `POST /convert` (an `input_path`) and
+`POST /chunk` (a `file_path`) are gone: both needed the daemon to see the caller's filesystem, which
+cannot work once it runs in a container, and `/parse` supersedes both. They now return 404, and
+`--parse-output-dir` / `$PARSE_OUTPUT_DIR` no longer exist. To chunk a `.md` that is already on
+disk, use the CLI: `python chunker.py <file>`.
 
 Send `Authorization: Bearer $DOCLING_AUTH_TOKEN` when the daemon has a token configured, and
 `Accept-Encoding: gzip` — a parsed protocol's reply compresses roughly 5x.
@@ -128,7 +132,7 @@ Send `Authorization: Bearer $DOCLING_AUTH_TOKEN` when the daemon has a token con
 | `cards.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
 | `cards.docling.auth.token` | *(unset)* | Shared secret sent as `Authorization: Bearer …`; must match the daemon's `$DOCLING_AUTH_TOKEN` |
 | `cards.docling.timeout.minutes` | `30` | Per-document parse timeout |
-| `cards.parse.output.dir` | `<user.dir>/cards-parsed-markdown` | Where Java writes `<answer-uuid>/<name>.md` and `Chunks/` |
+| `cards.parse.output.dir` | `<user.dir>/cards-parsed-markdown` | Where Java writes `<answer-uuid>/<name>.md` and `Chunks/`. Java-side only — the daemon never sees it |
 
 Java never starts the daemon. Run it yourself — in Docker for a real deployment, or by hand for
 local work (see [Manual daemon start](#manual-http-daemon-start-optional)). There is no

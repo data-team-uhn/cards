@@ -24,24 +24,23 @@ Keeps a warm ProcessPoolExecutor (with loaded PDF models) alive across requests.
 Java calls this over HTTP instead of spawning docling_parser.py per file.
 
 Endpoints:
-    GET  /health   -> {"status": "ok", "workers": N, "ready": true,
-                       "chunking": true, "parse_output_root": "/abs/path"|null}
-    POST /convert  -> {"input_path": "/abs/path/file.pdf", "source_file": "orig.pdf"?}
-                     -> {"markdown": "...", "logs": "..."}
+    GET  /health   -> {"status": "ok", "workers": N, "ready": true}
     POST /parse    -> raw document bytes in the body,
                       ?filename=proto.pdf&chunk=true[&max_tokens=&min_structure_tokens=]
                      -> {"markdown", "chunked", "outline", "catalog", "chunks":[{"file","text"}], "logs"}
-    POST /chunk    -> {"file_path": "/abs/path/file.md"} -> {"status": "ok", "chunks": N, "logs": "..."}
     POST /shutdown -> graceful stop (used when the caller owns the daemon process)
 
-``/parse`` is the filesystem-free endpoint: the document arrives as bytes and the entire result
-(Markdown plus the chunk tree) is returned, so the daemon can run in its own container with no
-volume shared with its caller. Prefer it.
+The daemon exchanges **no filesystem paths at all**. A document arrives as bytes on ``/parse`` and
+the entire result — Markdown plus the chunk tree — is returned in the reply, so nothing needs to be
+shared with the caller and the daemon runs in its own container. The only file it ever writes is the
+temp spool for the upload it is currently handling.
 
-``/convert`` and ``/chunk`` are the older path-based pair and require a shared filesystem.
-``/convert`` reads from the system temp directory and writes nothing; ``/chunk`` reads and writes
-under ``--parse-output-dir``, which has no default — without it ``/chunk`` is disabled and says
-so, and ``/health`` reports the root it is using.
+An earlier path-based pair (``POST /convert`` with an ``input_path``, ``POST /chunk`` with a
+``file_path``) has been removed. Both required the daemon to see the caller's filesystem, which
+cannot work across a container boundary, and both are superseded by ``/parse``. Their removal is
+what makes "touches no filesystem" an enforced property rather than a convention: with no path ever
+accepted, there is nothing to allowlist. The CLI (``docling_parser.py``, ``chunker.py``) calls the
+same chunker functions in-process and never needed the endpoints.
 
 Every endpoint except ``/health`` requires ``Authorization: Bearer <token>`` when
 ``$DOCLING_AUTH_TOKEN`` is set; unset means no authentication, which is only safe on loopback.
@@ -68,7 +67,7 @@ from urllib.parse import parse_qs, urlsplit
 
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 
-from chunker import DEFAULT_MAX_TOKENS, build_chunk_tree, chunk_file
+from chunker import DEFAULT_MAX_TOKENS, build_chunk_tree
 from docling_batch_sizing import GB_PER_WORKER, calc_workers, positive_int
 from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
 from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
@@ -78,19 +77,13 @@ from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 18765
-PARSE_OUTPUT_DIR_ENV = "PARSE_OUTPUT_DIR"
 
 # Shared secret required on every endpoint except /health. Unset means no authentication,
 # which is only defensible on loopback — see the --host help text.
 AUTH_TOKEN_ENV = "DOCLING_AUTH_TOKEN"
 
-# Cap on a JSON request body. Those endpoints carry only a small object of paths and options,
-# so anything larger is a bug or an abusive client; without a cap the Content-Length header
-# alone dictates how much the daemon reads into memory.
-MAX_REQUEST_BYTES = 64 * 1024
-
-# Cap on an uploaded document on /parse. Documents are megabytes, so MAX_REQUEST_BYTES would
-# reject every real one; this body is streamed to a temp file rather than held in memory.
+# Cap on an uploaded document on /parse. The body is streamed to a temp file rather than held in
+# memory, and the limit is enforced as bytes arrive rather than trusted from Content-Length.
 MAX_UPLOAD_BYTES = 256 * 1024 * 1024
 
 # Chunks of the upload stream read at a time.
@@ -104,12 +97,8 @@ MIN_GZIP_BYTES = 8 * 1024
 class DaemonState:
     """Shared daemon resources."""
 
-    def __init__(self, workers: int | None, parse_output_root: Path | None) -> None:
+    def __init__(self, workers: int | None) -> None:
         self.worker_count = calc_workers(workers)
-        # ``None`` means no chunk root was configured, so /chunk is refused with an
-        # explanatory error rather than silently rejecting every path (see
-        # :func:`_resolve_parse_output_root`).
-        self.parse_output_root = parse_output_root.resolve() if parse_output_root else None
         self.pdf_executor = ProcessPoolExecutor(
             max_workers=self.worker_count,
             initializer=_init_worker,
@@ -192,81 +181,10 @@ def _is_authorized(handler: BaseHTTPRequestHandler) -> bool:
     return hmac.compare_digest(header[len(prefix):].strip(), expected)
 
 
-def _read_json_body(handler: BaseHTTPRequestHandler) -> dict[str, Any]:
-    length = int(handler.headers.get("Content-Length", "0"))
-    if length <= 0:
-        return {}
-    if length > MAX_REQUEST_BYTES:
-        # Drain before the caller writes its 400: this is exactly the case where the body is
-        # big, so responding mid-upload is what resets the connection.
-        _drain_request_body(handler)
-        raise ValueError(f"request body too large ({length} > {MAX_REQUEST_BYTES} bytes)")
-    raw = handler.rfile.read(length)
-    parsed = json.loads(raw.decode("utf-8"))
-    if not isinstance(parsed, dict):
-        raise ValueError("JSON body must be an object")
-    return parsed
 
 
-def _is_under_root(path: Path, root: Path) -> bool:
-    """Whether ``path`` resolves to something inside ``root``.
-
-    Resolving first is what makes this a real containment check rather than a string test:
-    a symlink pointing out of ``root`` resolves to its target and fails.
-    """
-    resolved = path.resolve()
-    try:
-        return resolved.is_relative_to(root)
-    except AttributeError:
-        return str(resolved).startswith(str(root) + os.sep)
 
 
-def _resolve_parse_output_root(explicit: str | None) -> Path | None:
-    """The directory ``/chunk`` file paths must live under, or ``None`` when none was given.
-
-    There is deliberately no default. The old fallback of ``<cwd>/parsed-markdown`` pointed at
-    a directory nothing else in the system writes to, so a daemon started without the flag
-    accepted no chunk request at all — and said only that the path was outside the root, which
-    reads like a caller mistake rather than a misconfigured daemon. ``DoclingDaemonLauncher``
-    always passes ``--parse-output-dir``; a hand-started daemon must too.
-
-    @param explicit: the ``--parse-output-dir`` value, when given
-    @return: the resolved root, or ``None`` when chunking is not configured
-    """
-    if explicit:
-        return Path(explicit).resolve()
-    env_value = os.environ.get(PARSE_OUTPUT_DIR_ENV)
-    if env_value:
-        return Path(env_value).resolve()
-    return None
-
-
-def _is_allowed_path(path: Path) -> bool:
-    """Whether a ``/convert`` input path is acceptable: an existing PDF/DOCX that Java
-    staged under the system temp directory."""
-    resolved = path.resolve()
-    if not resolved.is_file():
-        return False
-    if resolved.suffix.lower() not in SUPPORTED_SUFFIXES:
-        return False
-    return _is_under_root(resolved, Path(tempfile.gettempdir()).resolve())
-
-
-def _is_allowed_chunk_file(path: Path) -> bool:
-    """Whether a ``/chunk`` path is acceptable: an existing ``.md`` under the configured
-    parse output root. Callers must check :func:`_is_chunking_configured` first, so that an
-    unconfigured daemon is reported as such instead of looking like a bad path."""
-    if _STATE is None or _STATE.parse_output_root is None:
-        return False
-    resolved = path.resolve()
-    if not resolved.is_file() or resolved.suffix.lower() != ".md":
-        return False
-    return _is_under_root(resolved, _STATE.parse_output_root)
-
-
-def _is_chunking_configured() -> bool:
-    """Whether the daemon was given a parse output root, and so can serve ``/chunk``."""
-    return _STATE is not None and _STATE.parse_output_root is not None
 
 
 def _safe_suffix(filename: str) -> str:
@@ -353,16 +271,6 @@ def _spool_upload(handler: BaseHTTPRequestHandler, suffix: str) -> Path:
         path.unlink(missing_ok=True)
         raise
 
-
-def _positive_option(body: dict[str, Any], name: str) -> int | None:
-    """A positive integer option from a JSON request body, or ``None`` when absent or unusable.
-
-    ``bool`` is excluded deliberately: it is a subclass of ``int`` in Python, so a body of
-    ``{"max_tokens": true}`` would otherwise pass an ``isinstance(..., int)`` check and arrive as
-    ``max_tokens=1`` — a one-token budget that shatters the document into fragments.
-    """
-    value = body.get(name)
-    return value if isinstance(value, int) and not isinstance(value, bool) and value > 0 else None
 
 
 def _parse_document(
@@ -454,7 +362,6 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             return
 
         ready = _STATE is not None and _STATE.is_ready()
-        root = _STATE.parse_output_root if _STATE is not None else None
         _json_response(
             self,
             HTTPStatus.OK,
@@ -462,10 +369,6 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
                 "status": "ok" if ready else "shutting_down",
                 "workers": _STATE.worker_count if _STATE is not None else 0,
                 "ready": ready,
-                # Reported so the caller can assert the daemon agrees with where it writes
-                # parsed Markdown, instead of finding out per request via a 400.
-                "chunking": _is_chunking_configured(),
-                "parse_output_root": str(root) if root is not None else None,
             },
         )
 
@@ -481,57 +384,21 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             _json_response(self, HTTPStatus.OK, {"status": "shutting_down"})
             return
 
-        if self.path == "/chunk":
-            self._handle_chunk()
-            return
-
         if self.path.split("?", 1)[0] == "/parse":
             self._handle_parse()
             return
 
-        if self.path != "/convert":
-            _json_response(self, HTTPStatus.NOT_FOUND, {"error": "not found"})
-            return
-
-        if _STATE is None or not _STATE.is_ready():
-            _json_response(self, HTTPStatus.SERVICE_UNAVAILABLE, {"error": "daemon shutting down"})
-            return
-
-        try:
-            body = _read_json_body(self)
-            input_value = body.get("input_path")
-            if not input_value or not isinstance(input_value, str):
-                raise ValueError("input_path is required")
-
-            input_path = Path(input_value)
-            if not _is_allowed_path(input_path):
-                raise ValueError("input_path must be an existing .pdf or .docx under the system temp directory")
-
-            source_value = body.get("source_file")
-            source_file = source_value.strip() if isinstance(source_value, str) and source_value.strip() else None
-
-            markdown, logs = _convert_file(input_path, source_file=source_file)
-
-            _json_response(
-                self,
-                HTTPStatus.OK,
-                {
-                    "markdown": markdown,
-                    "logs": logs,
-                },
-            )
-        except ValueError as exc:
-            _json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})
-        except Exception as exc:
-            _json_response(self, HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(exc)})
+        # No path-based endpoints remain, so an unknown route is drained before answering:
+        # the caller may already be streaming a document body.
+        _drain_request_body(self)
+        _json_response(self, HTTPStatus.NOT_FOUND, {"error": "not found"})
 
     def _handle_parse(self) -> None:
         """Convert (and optionally chunk) a document uploaded in the request body.
 
-        The filesystem-free counterpart to ``/convert`` + ``/chunk``: the document arrives as
-        bytes and the whole result is returned, so caller and daemon need not share a disk.
-        That is what makes running the daemon in its own container viable, and it also removes
-        the disk round-trip between converting and chunking.
+        The document arrives as bytes and the whole result is returned, so caller and daemon
+        need not share a disk. That is what makes running the daemon in its own container
+        viable, and it avoids a disk round-trip between converting and chunking.
 
         Options come from the query string so the body can be the raw document:
         ``?filename=proto.pdf&chunk=true&max_tokens=2000&min_structure_tokens=20000``.
@@ -592,42 +459,6 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             if temp_path is not None:
                 temp_path.unlink(missing_ok=True)
 
-    def _handle_chunk(self) -> None:
-        """Split one parsed Markdown file into its chunk tree. Unlike PDF/DOCX conversion this
-        does not need the warm worker pool, so it is served even while the pool is unavailable."""
-        try:
-            if not _is_chunking_configured():
-                raise ValueError(
-                    "chunking is not configured: this daemon was started without "
-                    f"--parse-output-dir (or ${PARSE_OUTPUT_DIR_ENV}), so it has no directory "
-                    "it is allowed to read .md files from"
-                )
-
-            body = _read_json_body(self)
-            file_value = body.get("file_path")
-            if not file_value or not isinstance(file_value, str):
-                raise ValueError("file_path is required")
-
-            file_path = Path(file_value)
-            if not _is_allowed_chunk_file(file_path):
-                raise ValueError(
-                    "file_path must be an existing .md file under the parse output directory "
-                    f"({_STATE.parse_output_root})"
-                )
-
-            kwargs: dict[str, Any] = {}
-            for name in ("max_tokens", "min_structure_tokens"):
-                value = _positive_option(body, name)
-                if value is not None:
-                    kwargs[name] = value
-
-            summary = chunk_file(str(file_path), **kwargs)
-            _json_response(self, HTTPStatus.OK, {"status": "ok", **summary})
-        except (ValueError, FileNotFoundError) as exc:
-            _json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})
-        except Exception as exc:
-            _json_response(self, HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(exc)})
-
 
 def _request_shutdown() -> None:
     global _STATE, _SERVER
@@ -670,17 +501,6 @@ def parse_args() -> argparse.Namespace:
             f"and RAM budget / {GB_PER_WORKER:.1f} GB per worker)"
         ),
     )
-    parser.add_argument(
-        "--parse-output-dir",
-        default=None,
-        metavar="DIR",
-        help=(
-            "directory holding parsed .md files, which /chunk is allowed to read from; must "
-            f"match where the caller writes them (falls back to ${PARSE_OUTPUT_DIR_ENV}). "
-            "There is no default: without it /chunk is disabled rather than pointed at a "
-            "directory nothing writes to"
-        ),
-    )
     return parser.parse_args()
 
 
@@ -688,9 +508,8 @@ def main() -> None:
     global _STATE, _SERVER
 
     args = parse_args()
-    parse_output_root = _resolve_parse_output_root(args.parse_output_dir)
     try:
-        _STATE = DaemonState(args.workers, parse_output_root)
+        _STATE = DaemonState(args.workers)
     except Exception as e:
         print(f"Docling daemon initialization failed: {e}", file=sys.stderr, flush=True)
         sys.exit(1)
@@ -699,18 +518,9 @@ def main() -> None:
     signal.signal(signal.SIGINT, _handle_signal)
 
     _SERVER = ThreadingHTTPServer((args.host, args.port), DoclingDaemonHandler)
-    if parse_output_root is None:
-        print(
-            "Docling daemon: no --parse-output-dir given, so /chunk is disabled; "
-            "/convert is unaffected",
-            file=sys.stderr,
-            flush=True,
-        )
-    chunk_state = parse_output_root if parse_output_root is not None else "disabled"
     print(
         f"Docling daemon listening on http://{args.host}:{args.port} "
-        f"with {_STATE.worker_count} warm PDF workers "
-        f"(parse output root: {chunk_state})",
+        f"with {_STATE.worker_count} warm PDF workers",
         flush=True,
     )
 
