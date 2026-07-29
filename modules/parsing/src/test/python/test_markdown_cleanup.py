@@ -24,7 +24,6 @@ from pathlib import Path
 
 import markdown_cleanup as mc
 from markdown_cleanup import (
-    CLEANED_MARKER,
     clean_markdown,
     cleanup_leading_line_numbers,
     cleanup_page_leading_line_numbers,
@@ -34,20 +33,19 @@ from markdown_cleanup import (
 
 
 class TestCleanMarkdown:
-    def test_empty_input_returns_bare_marker(self):
-        assert clean_markdown("") == CLEANED_MARKER
-        assert clean_markdown(None) == CLEANED_MARKER
+    def test_empty_input_returns_empty(self):
+        assert clean_markdown("") == ""
+        assert clean_markdown(None) == ""
 
-    def test_marker_appended_to_cleaned_content(self):
+    def test_content_is_kept(self):
         result = clean_markdown("# Title\n\nBody text.")
-        assert result.endswith(CLEANED_MARKER)
-        assert "# Title" in result
-        assert "Body text." in result
+        assert result == "# Title\n\nBody text."
 
-    def test_idempotent_when_marker_present(self):
-        once = clean_markdown("# Title\n\nBody text.")
-        twice = clean_markdown(once)
-        assert twice == once
+    def test_running_it_again_changes_nothing(self):
+        # There is no sentinel in the output any more, so this holds structurally: every step
+        # is a removal or a collapse, and the pipeline calls it once regardless.
+        once = clean_markdown("# Title\n\n\n\n***\n\n<!-- image -->\n\nBody text.")
+        assert clean_markdown(once) == once
 
     def test_symbol_only_garbage_lines_removed(self):
         # Lines with no alphanumerics and no '|' or '-' are decorative garbage.
@@ -69,9 +67,7 @@ class TestCleanMarkdown:
         assert "After" in result
 
     def test_multiple_blank_lines_collapsed(self):
-        result = clean_markdown("A\n\n\n\n\nB")
-        body = result.replace("\n\n" + CLEANED_MARKER, "")
-        assert "\n\n\n" not in body
+        assert clean_markdown("A\n\n\n\n\nB") == "A\n\nB"
 
 
 class TestLeadingLineNumbers:

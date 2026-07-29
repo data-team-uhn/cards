@@ -108,7 +108,6 @@ from bookmarks import (
     resolve_record_line,
 )
 from heading_numbering import numbering_depth
-from markdown_cleanup import clean_markdown
 from markdown_markers import (
     HEADING,
     MIN_HEADING_CHARS,
@@ -753,9 +752,12 @@ def write_chunk_files(
     """Write per-chunk Markdown files, an ``outline.json`` and a ``catalog.json`` into a
     ``Chunks/`` folder beside ``output_file``.
 
-    The document first goes through the shared pre-chunking pipeline
-    (:func:`_prepare_markdown`): garbage-line cleanup and TOC extraction/appendix detection,
-    with the result written back to ``output_file`` when anything changed.
+    The document goes through TOC extraction and appendix detection, with the result written
+    back to ``output_file`` when anything changed.
+
+    ``markdown_content`` must already be cleaned. :func:`markdown_cleanup.clean_markdown` runs
+    exactly once per document, in the converter that produced the ``.md``, so nothing here or
+    below re-runs it.
 
     The size gate is the single binary routing decision of the pipeline, recorded as the
     ``chunked`` boolean in ``Chunks/outline.json`` — which is **always** written, even
@@ -769,17 +771,16 @@ def write_chunk_files(
     The remaining main content is split at the shallowest heading level, then consecutive
     sections are united up to ``max_tokens`` before any over-budget piece is split further.
 
-    @param markdown_content: the full Markdown document
+    @param markdown_content: the full Markdown document, already cleaned
     @param output_file: the main ``.md`` file
     @param filename: the original input file name (with extension)
     @param max_tokens: target maximum tokens per chunk file
     @param min_structure_tokens: skip chunking when the document is smaller than this
     @return: the path to the created chunks folder, or ``None`` when chunking was skipped
     """
-    cleaned = clean_markdown(markdown_content)
-    records = _sibling_pdf_records(cleaned, output_file)
+    records = _sibling_pdf_records(markdown_content, output_file)
     tree = build_chunk_tree(
-        cleaned,
+        markdown_content,
         filename,
         max_tokens=max_tokens,
         min_structure_tokens=min_structure_tokens,
@@ -818,14 +819,21 @@ def build_chunk_tree(
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
     records: list[dict] | None = None,
 ) -> dict[str, Any]:
-    """Clean, analyse and split a document into its chunk tree, touching no filesystem.
+    """Analyse and split an already-cleaned document into its chunk tree, touching no filesystem.
 
     The pure core of :func:`write_chunk_files`. It takes any already-known outline records
     instead of reading ``bookmarks.json``, and returns the whole tree instead of writing it,
     so a caller that received the document over HTTP can chunk it without sharing a filesystem
     — see ``docling_daemon``'s ``/parse``.
 
-    @param markdown_content: the full Markdown document
+    ``markdown_content`` must already be cleaned. :func:`markdown_cleanup.clean_markdown` runs
+    exactly once per document, in the converter that produced it, and every caller here gets its
+    text from a converter: the daemon straight from ``_convert_file``, the CLI paths from the
+    ``.md`` a converter wrote. Cleaning again here split the contract in two, because a caller
+    feeding raw text got it cleaned for chunking while the pages verified against that text by
+    ``_sibling_pdf_records`` came from the uncleaned version.
+
+    @param markdown_content: the full Markdown document, already cleaned
     @param filename: the original input file name (with extension), recorded as ``fileId``
     @param max_tokens: target maximum tokens per chunk
     @param min_structure_tokens: leave the document unchunked below this size
@@ -834,9 +842,8 @@ def build_chunk_tree(
         list of ``{"file", "text"}`` in document order and ``catalog`` is ``None`` when the
         document was left unchunked
     """
-    prepared = clean_markdown(markdown_content)
     prepared, outline, resolved_records = derive_outline(
-        prepared, records=records, min_structure_tokens=min_structure_tokens
+        markdown_content, records=records, min_structure_tokens=min_structure_tokens
     )
 
     # The size gate is the pipeline's single binary routing decision, recorded as ``chunked``
@@ -974,6 +981,10 @@ def chunk_file(
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> dict[str, Any]:
     """Split one already-parsed Markdown file into its chunk tree.
+
+    "Already-parsed" means written by one of the converters, which is what makes the file
+    already cleaned — nothing in the chunker cleans. Pointed at a hand-written ``.md``, this
+    chunks it as-is.
 
     MVP scope: one proposal file per answer, so this takes the exact file to chunk rather
     than scanning a folder for inputs. Documents under ``min_structure_tokens`` are not

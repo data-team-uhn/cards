@@ -71,7 +71,6 @@ from chunker import DEFAULT_MAX_TOKENS, build_chunk_tree
 from docling_batch_sizing import GB_PER_WORKER, calc_workers, positive_int
 from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
 from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
-from markdown_cleanup import clean_markdown
 from markdown_markers import SUPPORTED_SUFFIXES
 from pdf_bookmarks import extract_verified_outline
 from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
@@ -303,20 +302,18 @@ def _parse_document(
     if not chunk:
         return {"markdown": markdown, "chunked": False, "logs": logs}
 
-    # Cleaned once here so bookmark pages are verified against the same text build_chunk_tree
-    # analyses — write_chunk_files does the same, and the two paths disagreeing about the
-    # verification input is a trap even while cleanup only strips garbage lines. It also makes
-    # build_chunk_tree's own clean_markdown a no-op via CLEANED_MARKER rather than a second pass.
-    cleaned = clean_markdown(markdown)
-
+    # _convert_file's markdown is already cleaned: clean_markdown runs exactly once per
+    # document, inside the converter. Bookmark verification and build_chunk_tree below both get
+    # that same string, which is the point — a page pointer verified against one version of the
+    # text and stored beside another version would be wrong.
     records = []
     if input_path.suffix.lower() == ".pdf":
         # The PDF is right here, so its embedded bookmarks are available without the caller
         # having to ship them or the daemon having to find a sibling file on a shared disk.
-        records = extract_verified_outline(input_path, cleaned)
+        records = extract_verified_outline(input_path, markdown)
 
     tree = build_chunk_tree(
-        cleaned,
+        markdown,
         filename,
         max_tokens=max_tokens,
         min_structure_tokens=min_structure_tokens,

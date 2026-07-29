@@ -3,8 +3,8 @@
 Unit tests for the document-parsing Python code in `../main/python`. They cover the
 pieces that run without the heavy `docling` dependency:
 
-- `markdown_cleanup.py` — garbage-line stripping, blank-line collapsing, the
-  `<!-- cleaned -->` idempotency marker, leading line-number removal, source-file headers.
+- `markdown_cleanup.py` — garbage-line stripping, blank-line collapsing, leading
+  line-number removal, source-file headers.
 - `toc_and_appendix_detection.py` — TOC entry recognition, label finding, in-place TOC
   cleanup with `outline.json` side effects, Reference/Appendix heading detection, the
   size gate, and the outline read/write helpers.

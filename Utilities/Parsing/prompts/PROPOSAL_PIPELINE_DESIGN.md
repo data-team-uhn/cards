@@ -193,7 +193,9 @@ the Markdown; the outline lives only in JSON.
 
 Pre-chunk pipeline (inside `chunker.build_chunk_tree`, run for every chunking entry point):
 
-1. **`markdown_cleanup.clean_markdown(md)`** — strips garbage / collapses blanks (idempotent).
+1. **Cleanup is not part of this pipeline.** `markdown_cleanup.clean_markdown` — strips garbage,
+   collapses blanks — runs exactly once per document, in the converter that produced the `.md`.
+   Every chunking entry point receives converter output and takes it as-is.
 2. **Outline records are supplied by the caller**, not discovered from disk. On the `/parse` path the
    daemon extracts them from the **uploaded PDF itself**
    (`pdf_bookmarks.extract_verified_outline`, pypdf) — no sibling file needed, which is what makes
