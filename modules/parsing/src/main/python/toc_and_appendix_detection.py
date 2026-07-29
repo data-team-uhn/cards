@@ -68,7 +68,9 @@ MAX_LEADING_WORDS_FOR_CONTINUATION = 12
 MAX_HEADER_LINES_AFTER_PAGE_BREAK = 3
 
 # Documents shorter than this (``len(md) // 4``) skip TOC/appendix marking — Stage 0.5
-# can send them whole. Overridable via :func:`derive_outline`'s ``min_structure_tokens``.
+# can send them whole. The gate itself lives in ``chunker.build_chunk_tree``, which also takes
+# the override; a document with known outline records bypasses it, since those are already in
+# hand and even a small document needs its ``toc`` downstream.
 DEFAULT_MIN_STRUCTURE_TOKENS = 20000
 
 # Reference-section heading words/phrases recognised in outline record titles.
@@ -467,9 +469,9 @@ def _scan_region(lines: list[str], start: int, is_of_type) -> tuple[list[str], i
 
 def _block_cleanup(text: str) -> str:
     """Whole-block cleanup: normalize long dot/dash/ellipsis-leader runs (5 or more) to
-    `` - ``, remove tabs and escaped underscores (``\\_``), collapse runs of more than 2
-    consecutive whitespace characters within a line to one space, and collapse blank
-    lines (no double newlines)."""
+    `` - ``, remove tabs and escaped underscores (``\\_``), and collapse runs of 3 or more
+    consecutive whitespace characters within a line to one space."""
+
     text = text.replace("\t", " ")
     text = text.replace("\\_", "")
     text = re.sub(r"\.{5,}", " - ", text)
@@ -492,6 +494,11 @@ def _detect_toc(md: str) -> tuple[str, dict]:
     :func:`derive_outline` takes the entries straight from memory. They used to be written to
     ``outline.json`` and read back to build records — a file round-trip used as a data channel,
     which also forced several read-modify-write cycles over the same file.
+
+    ``tocStartLine`` / ``tocEndLine`` describe the *returned* document, which is the only one
+    any caller sees now that cleanup is unconditional. They are not interchangeable with a range
+    in the input: flattening a table TOC collapses its header and separator rows, so the cleaned
+    block can be shorter than the block it replaced and everything after it shifts up.
 
     @param md: the full assembled Markdown document
     @return: ``(document, fields)`` — the document with its TOC (if any) cleaned, and
@@ -665,46 +672,29 @@ def derive_outline(
     md: str,
     *,
     records: list[dict] | None = None,
-    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> tuple[str, dict, list[dict]]:
     """Derive a document's outline without touching the filesystem.
 
-    The only outline entry point, and pure: it takes any already-known outline records (real
-    PDF bookmarks) as an argument rather than reading them off disk, and returns the outline
-    fields rather than writing them. That is what lets the daemon serve a document it was
-    handed over HTTP, with no shared filesystem — see ``docling_daemon``'s ``/parse``.
-
     @param md: the full assembled Markdown document
     @param records: outline records already known for the document (e.g. extracted from a PDF's
-        embedded bookmarks); when non-empty these are authoritative and the printed TOC is left
-        alone
-    @param min_structure_tokens: skip printed-TOC detection below this (no-records path only)
-    @return: ``(document, outline_fields, records)``. The document has its printed TOC cleaned
-        in place only on the no-records path. ``outline_fields`` is empty when the document was
-        gated out by size, in which case the document is returned unchanged.
+        embedded bookmarks); when non-empty these are authoritative and the printed TOC's own
+        entries are discarded in their favour
+    @return: ``(document, outline_fields, records)`` — the document with its printed TOC cleaned
+        in place, the outline fields, and the records the outline was built from
     """
-    known = list(records) if records else []
-    updates: dict = {}
-    toc_range: tuple[int, int] | None = None
-
-    if known:
-        # Authoritative PDF bookmarks: record the outline regardless of size (cheap; the .md
-        # is left untouched), skipping printed-TOC detection and cleanup entirely.
-        result = md
-        outline_source = "pdf-bookmarks"
-    elif count_tokens(md) < min_structure_tokens:
-        # Small document, no bookmarks: skip printed-TOC detection; it is sent whole later.
-        return md, {}, []
-    else:
-        # Large document, no bookmarks: clean the printed TOC in place, harvest it to records.
-        result, updates = _detect_toc(md)
-        if "tocStartLine" in updates:
-            toc_range = (updates["tocStartLine"], updates["tocEndLine"])
+    result, updates = _detect_toc(md)
+    toc_range = (
+        (updates["tocStartLine"], updates["tocEndLine"]) if "tocStartLine" in updates else None
+    )
 
     # Split once and share it: verification and the backmatter lookup both scan the whole
     # document line by line, and each would otherwise re-split it.
     result_lines = result.split("\n")
-    if not records:
+
+    known = list(records) if records else []
+    if known:
+        outline_source = "pdf-bookmarks"
+    else:
         # Only this path harvests a printed TOC, so only it needs verification; the source it
         # ends up reporting depends on whether any harvested entry could be found in the body.
         known = verify_bookmarks(

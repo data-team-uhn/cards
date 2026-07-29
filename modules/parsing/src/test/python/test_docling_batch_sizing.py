@@ -236,8 +236,10 @@ class TestCgroupLimits:
         assert bs.read_available_ram_gb() <= 1.0
 
     def test_cores_never_exceed_the_quota(self, tmp_path, monkeypatch):
+        # <= rather than ==, which is what the name claims: the function returns
+        # min(usable, ceil(quota)), so on a single-core runner the answer is 1, not 2.
         self._cgroup_v2(tmp_path, monkeypatch, "200000 100000\n", "max\n")
-        assert bs.read_logical_core_count() == 2
+        assert bs.read_logical_core_count() <= 2
         assert bs.read_physical_core_count() <= 2
 
 

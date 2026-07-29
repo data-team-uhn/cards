@@ -22,9 +22,10 @@
 The ``docling_*`` conversion modules import the heavy ``docling`` package, so the whole file
 skips when it is not installed — the rest of the suite still runs anywhere. What is covered
 here is the plumbing around Docling rather than Docling itself: upload spooling and its size
-cap, body draining, authentication, gzip, and the batch-abandon path that runs when a page
-batch fails. There are no path allowlists left to test — the daemon accepts no filesystem
-paths at all, which :class:`TestNoPathBasedEndpoints` guards.
+cap, truncation and body draining, health reporting, gzip negotiation, and the batch-abandon
+path that runs when a page batch fails. Nothing authenticates any more — the bind address is
+the whole access control — and there are no path allowlists left to test, since the daemon
+accepts no filesystem paths at all, which :class:`TestNoPathBasedEndpoints` guards.
 """
 
 import gzip
@@ -144,7 +145,6 @@ class TestDrainRequestBody:
 
     def test_bad_content_length_is_a_noop(self):
         handler = _FakeHandler(b"abc", headers={"Content-Length": "not-a-number"})
-        handler.headers["Content-Length"] = "not-a-number"
         daemon._drain_request_body(handler)
 
     def test_stops_at_a_short_body(self):
@@ -189,20 +189,57 @@ class TestSpoolUpload:
         with pytest.raises(ValueError, match="too large"):
             daemon._spool_upload(handler, ".pdf")
 
-    def test_leaves_no_temp_file_behind_on_rejection(self, monkeypatch):
+    def test_leaves_no_temp_file_behind_on_rejection(self):
         before = set(Path(tempfile.gettempdir()).glob("docling-upload-*"))
         with pytest.raises(ValueError):
             daemon._spool_upload(_FakeHandler(b""), ".pdf")
         assert set(Path(tempfile.gettempdir()).glob("docling-upload-*")) == before
 
-    def test_actual_bytes_over_the_cap_rejected(self, monkeypatch):
-        # A lying Content-Length must not let the daemon write an unbounded file.
+    def test_reads_only_the_declared_length(self, monkeypatch):
+        # Renamed from test_actual_bytes_over_the_cap_rejected, which asserted the opposite of
+        # its name: it declared 50 under a patched cap of 100 and checked the file *was* written.
+        # Nothing is rejected here, and nothing can be — the cap is checked against
+        # Content-Length before a byte is read, and only that many bytes are ever read, so a
+        # header claiming less than the client sends just leaves the surplus in the socket.
         monkeypatch.setattr(daemon, "MAX_UPLOAD_BYTES", 100)
         handler = _FakeHandler(b"x" * 500, content_length=50)
-        # Declared 50 so the header check passes; only 50 bytes are read, under the cap.
         path = daemon._spool_upload(handler, ".pdf")
         try:
             assert path.stat().st_size == 50
+            assert handler.unread == 450
+        finally:
+            path.unlink(missing_ok=True)
+
+
+class TestTruncatedUpload:
+    """A body that stops short of ``Content-Length`` must be rejected, not parsed.
+
+    Regression: the read loop broke on the first empty read and returned the partial file, so a
+    client disconnecting mid-upload had its half-document handed to Docling, which parsed
+    whatever it could and the daemon answered 200 with the result.
+    """
+
+    def test_short_body_rejected(self):
+        handler = _FakeHandler(b"x" * 40, content_length=200)
+        with pytest.raises(ValueError, match="truncated upload: got 40 of 200"):
+            daemon._spool_upload(handler, ".pdf")
+
+    def test_no_temp_file_left_behind(self):
+        before = set(Path(tempfile.gettempdir()).glob("docling-upload-*"))
+        with pytest.raises(ValueError, match="truncated"):
+            daemon._spool_upload(_FakeHandler(b"x" * 40, content_length=200), ".pdf")
+        assert set(Path(tempfile.gettempdir()).glob("docling-upload-*")) == before
+
+    def test_empty_body_still_reports_empty(self):
+        # The more specific message wins when nothing at all arrived.
+        with pytest.raises(ValueError, match="request body is empty"):
+            daemon._spool_upload(_FakeHandler(b"", content_length=200), ".pdf")
+
+    def test_exact_length_accepted(self):
+        handler = _FakeHandler(b"x" * 200, content_length=200)
+        path = daemon._spool_upload(handler, ".pdf")
+        try:
+            assert path.stat().st_size == 200
         finally:
             path.unlink(missing_ok=True)
 
@@ -301,13 +338,11 @@ class TestSpoolUploadRejections:
 
     def test_unparseable_content_length_rejected(self):
         handler = _FakeHandler(b"data", headers={"Content-Length": "abc"})
-        handler.headers["Content-Length"] = "abc"
         with pytest.raises(ValueError, match="invalid Content-Length"):
             daemon._spool_upload(handler, ".pdf")
 
     def test_negative_content_length_rejected(self):
         handler = _FakeHandler(b"data", headers={"Content-Length": "-1"})
-        handler.headers["Content-Length"] = "-1"
         with pytest.raises(ValueError, match="invalid Content-Length"):
             daemon._spool_upload(handler, ".pdf")
 

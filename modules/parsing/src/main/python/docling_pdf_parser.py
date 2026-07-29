@@ -197,7 +197,9 @@ def convert_pdf_to_markdown(
         workers=worker_count,
         batch_pages=batch_page_count,
         chunk_count=chunk_count,
-        active_workers=active_workers,
+        # None when the caller handed us its pool: active_workers only caps the one we build
+        # ourselves below, so reporting it for a shared daemon pool overstates the limit.
+        active_workers=active_workers if executor is None else None,
         workers_override=workers_override,
         batch_pages_override=batch_pages_override,
         log=log_fn,

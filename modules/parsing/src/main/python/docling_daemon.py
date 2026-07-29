@@ -127,9 +127,25 @@ _SERVER: ThreadingHTTPServer | None = None
 
 
 def _accepts_gzip(handler: BaseHTTPRequestHandler) -> bool:
-    """Whether the client advertised gzip in ``Accept-Encoding``."""
+    """Whether the client will accept a gzipped body.
+
+    Each ``Accept-Encoding`` coding is checked with its q-value, because ``gzip;q=0`` is an
+    explicit *refusal* that a substring test reads as consent.
+    """
     header = handler.headers.get("Accept-Encoding", "") or ""
-    return "gzip" in header.lower()
+    for coding in header.lower().split(","):
+        name, _, params = coding.strip().partition(";")
+        if name.strip() != "gzip":
+            continue
+        for param in params.split(";"):
+            key, _, value = param.partition("=")
+            if key.strip() == "q":
+                try:
+                    return float(value.strip()) > 0
+                except ValueError:
+                    return False
+        return True
+    return False
 
 
 def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: dict[str, Any]) -> None:
@@ -175,7 +191,8 @@ def _drain_request_body(handler: BaseHTTPRequestHandler) -> None:
     before the client can read it, so the caller sees a transport failure instead of the 400
     that says what was wrong. Whether it happens depends on how much of the body fitted in
     socket buffers, which makes it intermittent — worse than a consistent failure. Draining
-    first keeps the exchange well-formed and leaves a keep-alive connection reusable.
+    first keeps the exchange well-formed, and leaves the connection reusable now that the
+    handler speaks HTTP/1.1 and no longer closes after every response.
     """
     declared = handler.headers.get("Content-Length")
     if not declared:
@@ -194,15 +211,20 @@ def _drain_request_body(handler: BaseHTTPRequestHandler) -> None:
 def _spool_upload(handler: BaseHTTPRequestHandler, suffix: str) -> Path:
     """Stream the request body to a temp file inside the daemon's own filesystem.
 
-    Streamed rather than read whole so a large document does not have to fit in memory, and the
-    length is enforced as bytes arrive rather than trusted from ``Content-Length`` — a lying
-    header must not be able to make the daemon write an unbounded file.
+    Streamed rather than read whole so a large document does not have to fit in memory. The cap
+    comes from ``Content-Length``, which is required and checked before a byte is read; only that
+    many bytes are ever read, so a header claiming less than the client sends cannot overrun it
+    and the surplus simply stays in the socket.
+
+    A body that stops early is rejected rather than parsed. The client disconnecting mid-upload
+    used to break the read loop and return the partial file, which Docling would then parse into
+    whatever it could make of a truncated document and the daemon would answer 200.
 
     @param handler: the active request
     @param suffix: the extension to give the temp file, which Docling uses to pick a backend
     @return: the temp file's path; the caller must delete it
-    @raise ValueError: when ``Content-Length`` is missing or unparseable, or the body is empty or
-        exceeds :data:`MAX_UPLOAD_BYTES`
+    @raise ValueError: when ``Content-Length`` is missing, unparseable or over
+        :data:`MAX_UPLOAD_BYTES`, or the body is empty or ends before the declared length
     """
     declared = handler.headers.get("Content-Length")
     if declared is None:
@@ -230,12 +252,14 @@ def _spool_upload(handler: BaseHTTPRequestHandler, suffix: str) -> Path:
                 if not block:
                     break
                 written += len(block)
-                if written > MAX_UPLOAD_BYTES:
-                    raise ValueError(f"document exceeds {MAX_UPLOAD_BYTES} bytes")
                 handle.write(block)
                 remaining -= len(block)
         if written == 0:
             raise ValueError("request body is empty")
+        if remaining > 0:
+            raise ValueError(
+                f"truncated upload: got {written} of {length} declared bytes"
+            )
         return path
     except BaseException:
         path.unlink(missing_ok=True)
@@ -341,6 +365,17 @@ def _health_status() -> str:
 
 class DoclingDaemonHandler(BaseHTTPRequestHandler):
     """HTTP request handler for the Docling worker daemon."""
+
+    # BaseHTTPRequestHandler defaults to HTTP/1.0, under which CPython never answers
+    # ``Expect: 100-continue`` — it requires both sides to be 1.1 — so a client that sends it
+    # waits out its own continue timeout (measured: 1.14s per upload) before the body moves.
+    # Safe to raise because _json_response always sets Content-Length, so a 1.1 client always
+    # knows where each response ends.
+    protocol_version = "HTTP/1.1"
+
+    # Required by the line above: 1.1 keeps the connection alive, and ThreadingHTTPServer holds
+    # one thread per connection, so without a timeout an idle client pins a thread for good.
+    timeout = 120
 
     def log_message(self, format: str, *args: Any) -> None:
         sys.stderr.write("%s - %s\n" % (self.address_string(), format % args))
@@ -497,10 +532,34 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def _warn_if_exposed(host: str) -> None:
+    """Say so, loudly, when the bind address is not loopback.
+
+    Nothing here authenticates, so the bind address is the whole access control. The container
+    entrypoint has to pass ``--host 0.0.0.0`` — Docker forwards a published port to the
+    container's eth0 address, so a loopback-only daemon would be unreachable — which leaves the
+    published port's ``127.0.0.1:`` prefix as the only thing between ``/parse`` and ``/shutdown``
+    and the network. That prefix is easy to drop, and nothing else would notice.
+
+    A warning rather than a refusal: the container's own bind is legitimately non-loopback, so
+    refusing would make the normal deployment impossible.
+    """
+    if host in ("127.0.0.1", "::1", "localhost"):
+        return
+    print(
+        f"WARNING: binding {host}, not loopback. No endpoint authenticates, so anyone who can "
+        f"reach this port can upload documents, spend the worker pool and call /shutdown. In "
+        f"Docker, publish as \"127.0.0.1:<port>:{DEFAULT_PORT}\" so only this host can reach it.",
+        file=sys.stderr,
+        flush=True,
+    )
+
+
 def main() -> None:
     global _STATE, _SERVER
 
     args = parse_args()
+    _warn_if_exposed(args.host)
     try:
         _STATE = DaemonState(args.workers)
     except Exception as e:

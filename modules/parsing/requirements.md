@@ -1,16 +1,15 @@
-# `parsing` module — Python requirements & setup
+# `processing` module — Python requirements & setup
 
-The `parsing` module holds the Python pipeline that converts uploaded PDF/DOC/DOCX
+The `processing` module holds the Python pipeline that converts uploaded PDF/DOCX
 documents into cleaned, chunked Markdown plus its pytest suite. The Java side operates daemons and runs communication.
 
 ## Runtime dependencies
 
 | Package | Why |
 |---------|-----|
-| `docling` | Main processor: `.pdf` / `.doc` / `.docx` → `.md`; also drives hierarchical chunking |
+| `docling` | Main processor: `.pdf` / `.docx` → `.md`; also drives hierarchical chunking |
 | `pypdf` | Page counting / PDF reading before batching |
 | `psutil` | Lets the batch-sizing script self-optimise workers to CPU/RAM |
-| `tiktoken` | Token counting support |
 
 Test-only: `pytest`.
 
@@ -48,13 +47,12 @@ Main processor from `.pdf` and `.docx` to `.md`.
    pip install docling
    pip install pypdf
    pip install psutil
-   pip install tiktoken
    ```
 
    Or in one line (with the extra tooling used during development):
 
    ```
-   python -m pip install docling openai pypdf httpx pyinstaller tiktoken psutil
+   python -m pip install docling openai pypdf httpx pyinstaller psutil
    ```
 
 5. Set the threading environment variables (keeps per-process threads at 1 so the outer

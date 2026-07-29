@@ -20,8 +20,10 @@
 The page-marker pattern used to be re-declared in four modules with three different
 spellings, and one copy required a space before ``-->`` while the Python parser emitted none,
 so that copy silently never matched. The tests here pin the canonical emitted format, assert
-that every consumer agrees on it, and assert that the older no-space spelling still parses —
-documents written before the formats were unified are still on disk."""
+that every consumer agrees on it, and assert that every other spacing — including the older
+no-space spelling — is rejected outright. A document carrying a pre-unification marker has to be
+re-parsed rather than half-read: a marker that matches in one consumer and not another is how
+the original bug produced page numbers that disagreed across the pipeline."""
 
 import re
 
