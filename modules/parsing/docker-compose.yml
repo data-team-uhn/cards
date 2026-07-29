@@ -1,41 +1,40 @@
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
+# Copyright 2026 DATA @ UHN. See the NOTICE file
 # distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
+# regarding copyright ownership.
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-# Run the Docling parsing daemon on its own.
+# Run the Docling processing daemon on its own.
 #
 # No volumes are mounted on purpose: POST /parse takes the document in the request body and
 # returns the Markdown and chunk tree in the response, so nothing needs to be shared with the
 # caller. That is the whole point of the endpoint.
 #
-# On the JVM side, point CARDS at it and switch on the combined endpoint:
-#   -Dcards.docling.daemon.url=http://localhost:18765
-#   -Dcards.docling.daemon.autostart=false   # do not also launch a local daemon
-#   -Dcards.docling.parse.combined=true
+# On the JVM side, point IAP at it:
+#   -Diap.docling.daemon.url=http://localhost:18765
+#   -Diap.docling.timeout.minutes=30
+#   -Diap.parse.output.dir=<user.dir>/iap-parsed-markdown
 
 services:
   docling:
     build:
       context: .
       dockerfile: Dockerfile
-    image: cards-docling:latest
+    image: iap-docling:latest
     ports:
       # The 127.0.0.1 prefix is the access control. The daemon authenticates nothing, so dropping
       # it back to "18765:18765" publishes /parse and /shutdown on every host interface. Keep the
-      # prefix, and reach the daemon from CARDS on the same host as http://localhost:18765.
+      # prefix, and reach the daemon from IAP on the same host as http://localhost:18765.
       - "127.0.0.1:18765:18765"
     # Worker sizing reads the container's cgroup quota, not the host's CPU and RAM, so these
     # limits are what the daemon budgets against. Allow roughly 2 GB per PDF worker.

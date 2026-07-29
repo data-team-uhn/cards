@@ -1,4 +1,4 @@
-# Parsing Python tests
+# Processing Python tests
 
 Unit tests for the document-parsing Python code in `../main/python`. They cover the
 pieces that run without the heavy `docling` dependency:
@@ -17,7 +17,7 @@ exercised through the running application instead.
 
 ## Running
 
-From `modules/parsing/`:
+From `modules/documents/processing/`:
 
 ```
 python -m pytest
@@ -31,7 +31,7 @@ Requires `pytest` and `psutil` on the interpreter used.
 
 ## From the Maven build
 
-The tests run in the `test` phase of the `cards-parsing` module, gated by the shared
+The tests run in the `test` phase of the `iap-parsing` module, gated by the shared
 `skipTests` flag (so `-Pquick` skips them, matching the Java tests):
 
 ```
