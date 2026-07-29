@@ -1,21 +1,20 @@
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
+# Copyright 2026 DATA @ UHN. See the NOTICE file
 # distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
+# regarding copyright ownership.
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-# Docling parsing daemon.
+# Docling processing daemon.
 #
 # Serves POST /parse, which takes the document bytes and returns the Markdown plus its chunk
 # tree. That endpoint touches no shared filesystem, which is what makes this container usable
@@ -23,9 +22,9 @@
 # and a caller's paths do not exist in here (on a Windows host they cannot be made to).
 #
 # Build:
-#   docker build -t cards-docling -f modules/parsing/Dockerfile modules/parsing
+#   docker build -t iap-docling -f modules/documents/processing/Dockerfile modules/documents/processing
 # Run:
-#   docker run --rm -p 127.0.0.1:18765:18765 --cpus=4 --memory=8g cards-docling
+#   docker run --rm -p 127.0.0.1:18765:18765 --cpus=4 --memory=8g iap-docling
 #
 # The 127.0.0.1 prefix on the published port is not optional decoration: the daemon has no
 # authentication, so it is the only thing keeping the network off /parse and /shutdown. A bare

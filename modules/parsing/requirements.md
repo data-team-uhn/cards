@@ -134,20 +134,13 @@ container's `eth0` and not to its loopback — the host-side publish address is 
 
 | Property | Default | Purpose |
 |----------|---------|---------|
-| `cards.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
-| `cards.docling.timeout.minutes` | `30` | Per-document parse timeout |
-| `cards.parse.output.dir` | `<user.dir>/cards-parsed-markdown` | Where Java writes `<answer-uuid>/<name>.md` and `Chunks/`. Java-side only — the daemon never sees it |
+| `iap.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
+| `iap.docling.timeout.minutes` | `30` | Per-document parse timeout |
+| `iap.parse.output.dir` | `<user.dir>/iap-parsed-markdown` | Where Java writes `<answer-uuid>/<name>.md` and `Chunks/`. Java-side only — the daemon never sees it |
 
 Java never starts the daemon. Run it yourself — in Docker for a real deployment, or by hand for
-local work (see [Manual daemon start](#manual-http-daemon-start-optional)). There is no
-`cards.docling.daemon.autostart`, `cards.docling.daemon.script`, `cards.docling.daemon.python` or
-`cards.docling.python`: the OSGi component that used those (`DoclingDaemonLauncher`) has been
-removed, so Java has no local-Python dependency of any kind.
+local work (see [Manual daemon start](#manual-http-daemon-start-optional)).
 
-There is no CLI fallback. Java talks to the daemon over `POST /parse` and nothing else; when the
+Java talks to the daemon over `POST /parse` and nothing else; when the
 daemon cannot be reached, parsing falls through to the pure-Java PDFBox/POI generators, which need
-nothing external. The properties that configured the old local-Python path
-(`cards.docling.script`, `cards.docling.daemon.enabled`, `cards.docling.daemon.fallback`,
-`cards.docling.chunk.enabled`, `cards.docling.chunk.fallback`, `cards.docling.chunk.script`) and the
-launcher (`cards.docling.daemon.autostart`, `cards.docling.daemon.script`,
-`cards.docling.daemon.python`, `cards.docling.python`) no longer exist — setting them does nothing.
+nothing external.
