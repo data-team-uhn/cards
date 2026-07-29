@@ -21,7 +21,8 @@ package io.uhndata.cards.errortracking;
 
 public final class ErrorLogger
 {
-    private static ErrorLoggerService errorLoggerService;
+    /** Written by the service component as it starts and stops, read from arbitrary threads. */
+    private static volatile ErrorLoggerService errorLoggerService;
 
     // Hide the constructor
     private ErrorLogger()
@@ -31,6 +32,19 @@ public final class ErrorLogger
     static void setService(ErrorLoggerService service)
     {
         errorLoggerService = service;
+    }
+
+    /*
+     * Withdraws the service backing this facade, so that a stopped component, whose service references are gone,
+     * is not called any more. A component that was already replaced by a newer one withdraws nothing.
+     *
+     * @param service the service that is going away
+     */
+    static void unsetService(ErrorLoggerService service)
+    {
+        if (errorLoggerService == service) {
+            errorLoggerService = null;
+        }
     }
 
     /*
