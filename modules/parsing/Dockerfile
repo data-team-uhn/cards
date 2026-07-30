@@ -37,13 +37,16 @@
 
 FROM python:3.13-slim AS base
 
-# Docling's PDF pipeline pulls in native imaging/OpenMP libraries that the slim image lacks.
+# Docling's PDF pipeline needs native imaging/OpenMP; LibreOffice handles DOC/DOCX→PDF/DOCX.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         libgl1 \
         libglib2.0-0 \
         libgomp1 \
         curl \
+        libreoffice-writer \
+        libreoffice-java-common \
+        fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \

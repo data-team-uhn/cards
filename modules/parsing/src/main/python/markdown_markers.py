@@ -74,8 +74,8 @@ MAX_WORD_CHARS = 100
 # Minimum characters for a heading extracted from a chunk ('#' markers already stripped).
 MIN_HEADING_CHARS = 5
 
-# Input file types the pipeline can convert.
-SUPPORTED_SUFFIXES = (".pdf", ".docx")
+# Input file types the pipeline can convert (.doc/.docx go through LibreOffice first).
+SUPPORTED_SUFFIXES = (".pdf", ".docx", ".doc")
 
 
 def count_tokens(text: str) -> int:

@@ -70,6 +70,7 @@ from chunker import DEFAULT_MAX_TOKENS, build_chunk_tree
 from docling_batch_sizing import GB_PER_WORKER, calc_workers, positive_int
 from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
 from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
+from libreoffice_convert import prepare_office_document
 from markdown_cleanup import source_file_basename
 from markdown_markers import SUPPORTED_SUFFIXES
 from pdf_bookmarks import extract_verified_outline
@@ -176,7 +177,7 @@ def _safe_suffix(filename: str) -> str:
     """The supported extension of ``filename``, lowercased.
 
     @param filename: the client-supplied document name
-    @return: ``".pdf"`` or ``".docx"``
+    @return: ``".pdf"``, ``".docx"``, or ``".doc"``
     @raise ValueError: when the name has no supported extension
     """
     suffix = Path(filename or "").suffix.lower()
@@ -295,11 +296,11 @@ def _parse_document(
     max_tokens: int,
     min_structure_tokens: int,
 ) -> dict[str, Any]:
-    """Convert a document and, when asked, build its chunk tree — all in memory.
+    """Convert a document and, when asked, build its chunk tree.
 
-    This is the filesystem-free path: nothing is written except the caller's own upload temp
-    file, so the daemon can run in a separate container with no volume shared with its caller.
-    Records come from the uploaded PDF itself, so bookmark-derived outlines still work.
+    LibreOffice prep for ``.doc`` / ``.docx`` runs first and writes converted siblings beside
+    the upload temp file. Docling conversion and chunking still return payloads in the HTTP
+    response (Java persists Markdown/Chunks until the shared-docs refactor).
 
     @param input_path: the spooled upload
     @param filename: the original document name, used for the source_file header and fileId
@@ -308,13 +309,14 @@ def _parse_document(
     @param min_structure_tokens: leave the document unchunked below this size
     @return: the response payload
     """
-    markdown, logs = _convert_file(input_path, source_file=filename)
+    docling_input = prepare_office_document(input_path)
+    markdown, logs = _convert_file(docling_input, source_file=filename)
     if not chunk:
         return {"markdown": markdown, "chunked": False, "logs": logs}
 
     records = []
-    if input_path.suffix.lower() == ".pdf":
-        records = extract_verified_outline(input_path, markdown)
+    if docling_input.suffix.lower() == ".pdf":
+        records = extract_verified_outline(docling_input, markdown)
 
     tree = build_chunk_tree(
         markdown,

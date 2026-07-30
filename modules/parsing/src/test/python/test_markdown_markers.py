@@ -201,4 +201,4 @@ class TestWithinWordLimits:
 
 class TestSupportedSuffixes:
     def test_pdf_and_docx(self):
-        assert mm.SUPPORTED_SUFFIXES == (".pdf", ".docx")
+        assert mm.SUPPORTED_SUFFIXES == (".pdf", ".docx", ".doc")

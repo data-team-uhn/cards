@@ -27,8 +27,7 @@ import org.slf4j.LoggerFactory;
  * Routing rules:
  * </p>
  * <ul>
- *   <li>PDF and DOCX — parsed with Docling</li>
- *   <li>DOC — LibreOffice conversion to DOCX, then parsed with Docling</li>
+ *   <li>PDF, DOCX, and DOC — parsed with Docling (DOC/DOCX LibreOffice prep runs in Python)</li>
  *   <li>any other extension — returns {@code null} (caller skips the file)</li>
  * </ul>
  *

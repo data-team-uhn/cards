@@ -22,7 +22,6 @@ flowchart TB
         PP["PdfParser"]
         DXP["DocxParser / DocParser"]
         DMG["DoclingMarkdownGenerator"]
-        LOC["LibreOfficeConverter"]
         PMS["ParsedMarkdownStore"]
         DCC["DoclingChatChunker"]
         PO["ParseOutline.read"]
@@ -30,6 +29,7 @@ flowchart TB
 
     subgraph Py["Docling worker - Python (modules/parsing)"]
         DAEMON["docling_daemon.py HTTP"]
+        LO["libreoffice_convert.py"]
         GEN["docling_pdf_parser / docling_docx_parser"]
         CF["chunker.py"]
     end
@@ -43,10 +43,9 @@ flowchart TB
     DXP -->|extends| SDP
     SDP --> DMG
     PP -.->|co-locate stem.pdf| PMS
-    DXP -.->|DOCX to PDF| LOC
-    LOC -->|saveArtifact| PMS
     DMG -->|POST /parse bytes| DAEMON
-    DAEMON --> GEN
+    DAEMON --> LO
+    LO --> GEN
     DAEMON -->|build_chunk_tree| CF
     CF -->|markdown + chunk tree| SDP
     SDP -->|save stem.md| PMS
@@ -113,9 +112,8 @@ send-it-whole document.
 | `FileParserFactory` | Route by extension → `PdfParser` / `DocxParser` / `DocParser` |
 | `SimpleDocumentParser` | Shared flow: read bytes → `onDocumentBytes` hook → Docling → `ParsedMarkdownStore.save`; failure or insufficient output fails the parse |
 | `PdfParser` | Docling parse; `onDocumentBytes` co-locates the uploaded **`<stem>.pdf`** via `saveArtifact` |
-| `DocxParser` / `DocParser` | Docling parse; DOC→DOCX via LibreOffice; `onDocumentBytes` renders a DOCX→PDF sibling |
+| `DocxParser` / `DocParser` | Docling parse; LibreOffice DOC/DOCX prep runs in the Python daemon |
 | `DoclingMarkdownGenerator` | Sends the bytes to the daemon's `POST /parse` via `DoclingParseClient`; no local-Python path |
-| `LibreOfficeConverter` | Office→PDF rendition; `ParsedMarkdownStore.saveArtifact(..., "pdf", …)` |
 | `ParsedMarkdownStore` | `save(<stem>.md)`, `saveChunkTree(Chunks/)`, `saveArtifact`, `clearChunks` |
 | `DoclingChatChunker` | Chunk-generation bookkeeping only (staleness for catalog summarization); it no longer requests chunking |
 | `ProposalParseFolder` / `ParseOutline` | Locate `<answerDir>/<stem>.md` + `Chunks/`; read `Chunks/outline.json` |
@@ -124,7 +122,8 @@ send-it-whole document.
 
 | Module | Role |
 |---|---|
-| `docling_daemon.py` | Long-running HTTP worker: **`POST /parse`** (bytes in, Markdown + chunk tree out), `GET /health`, `POST /shutdown`. It accepts no filesystem paths, so it needs no volume shared with its caller |
+| `docling_daemon.py` | Long-running HTTP worker: **`POST /parse`** (bytes in, Markdown + chunk tree out), `GET /health`, `POST /shutdown`. LibreOffice prep for DOC/DOCX runs before Docling |
+| `libreoffice_convert.py` | Headless `soffice`: DOC→DOCX+PDF, DOCX→PDF beside the upload temp file |
 | `docling_parser.py` | CLI entry: convert one file to `<stem>.md` **and** its `Chunks/` tree, in-process. Always chunks, mirroring the daemon |
 | `docling_pdf_parser.py` | `convert_pdf_to_markdown` — **page-sharded parallel** Docling (`ProcessPoolExecutor`, one worker per page-range, emits `<!-- page: N -->`); `convert_pdf` (CLI convert+write+chunk) |
 | `docling_docx_parser.py` | DOCX → Markdown (Docling; no page markers) |
@@ -247,9 +246,9 @@ Key behaviours:
   non-TOC-range body line become sub-chunk boundaries — recovering section headings Docling
   emitted as plain/bold text instead of `#`.
 
-The source PDF reaches the chunker because Java co-locates it beside the `.md`
-(`ParsedMarkdownStore.saveArtifact`): DOCX→PDF renditions via `LibreOfficeConverter`, native
-PDFs via `PdfParser.onDocumentBytes`.
+The source PDF reaches the chunker when Java co-locates a native upload beside the `.md`
+(`ParsedMarkdownStore.saveArtifact`). Office→PDF renditions are written by Python
+(`libreoffice_convert.py`) beside the daemon upload temp file.
 
 ---
 

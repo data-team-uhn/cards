@@ -17,21 +17,12 @@
 package io.uhndata.cards.forms.internal.parse;
 
 /**
- * Parser for DOCX files. Delegates orchestration to {@link SimpleDocumentParser}, which parses through
- * {@link DoclingMarkdownGenerator}, and renders a PDF sibling of the document beside the parse output.
+ * Parser for DOCX files. Delegates orchestration to {@link SimpleDocumentParser}, which parses
+ * through {@link DoclingMarkdownGenerator}. LibreOffice DOCX→PDF conversion runs in the Python
+ * daemon before Docling starts (see {@code libreoffice_convert.py}).
  *
  * @version $Id$
  */
 public class DocxParser extends SimpleDocumentParser
 {
-    @Override
-    protected void onDocumentBytes(final byte[] content, final String fileName, final String outputSubfolder)
-    {
-        // Skip when the DOC path is driving this parse: it converts the original DOC to PDF itself, so the
-        // intermediate DOCX must not also be rendered.
-        if (LibreOfficeConverter.isDocxPdfSuppressed()) {
-            return;
-        }
-        LibreOfficeConverter.convertToPdfAsync(content, "docx", fileName, outputSubfolder);
-    }
 }

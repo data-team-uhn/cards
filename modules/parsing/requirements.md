@@ -10,6 +10,7 @@ documents into cleaned, chunked Markdown plus its pytest suite. The Java side op
 | `docling` | Main processor: `.pdf` / `.docx` → `.md`; also drives hierarchical chunking |
 | `pypdf` | Page counting / PDF reading before batching |
 | `psutil` | Lets the batch-sizing script self-optimise workers to CPU/RAM |
+| LibreOffice (`soffice`) | DOC→DOCX+PDF and DOCX→PDF before Docling (`libreoffice_convert.py`) |
 
 Test-only: `pytest`.
 
