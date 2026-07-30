@@ -133,7 +133,7 @@ def parse_document(
     return {
         "ok": True,
         "markdown_path": str(output_md.resolve()),
-        "chunked": chunked,
+        "chunked": True,
         "chunks_dir": str(chunks_dir_path.resolve()),
         "logs": "\n".join(logs),
         "filename": filename,

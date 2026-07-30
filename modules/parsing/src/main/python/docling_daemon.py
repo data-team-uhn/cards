@@ -28,16 +28,9 @@ Endpoints:
                      -> {"ok", "markdown_path", "chunked", "chunks_dir", "logs", "filename"}
     POST /shutdown -> graceful stop (used when the caller owns the daemon process)
 
-The daemon and the main app share ``/shared-docs`` (env ``CARDS_SHARED_DOCS``). Java stages
-the upload onto that volume and POSTs its absolute path; Python runs LibreOffice prep, Docling,
-and writes ``{stem}.md`` + ``Chunks/`` through :func:`chunker.write_chunk_files`. The HTTP
-reply is a small summary — not the Markdown or chunk payloads.
+The daemon and the main app share ``/shared-docs`` (env ``CARDS_SHARED_DOCS``).
 
-The daemon has no authentication: every endpoint is open to whoever can reach the port, including
-``/shutdown``. Loopback is the access control, so keep it on the ``--host`` default. A container is
-the one case where the process itself must bind ``0.0.0.0`` — Docker forwards a published port to
-the container's ``eth0``, not its loopback — so there confine it by publishing to ``127.0.0.1`` on
-the host side (``-p 127.0.0.1:18765:18765``) rather than by changing the bind address.
+The daemon has no authentication: every endpoint is open including ``/shutdown``.
 """
 
 from __future__ import annotations
