@@ -120,6 +120,16 @@ def _escape_comment(value: str) -> str:
     return value.replace("--", "\u2014")
 
 
+def source_file_basename(source_file: str) -> str:
+    """Return the final component of a client-supplied file name.
+
+    Upload names may originate on an operating system other than the one running this code.
+    Normalize Windows separators before handing the value to :class:`Path`, so a Windows path
+    received by the Linux daemon cannot leak its directory components into generated metadata.
+    """
+    return Path(source_file.replace("\\", "/")).name
+
+
 def resolve_source_file_name(input_path: Path, source_file: str | None = None) -> str:
     """Return the display name for a ``source_file`` header.
 
@@ -128,7 +138,7 @@ def resolve_source_file_name(input_path: Path, source_file: str | None = None) -
     full path cannot leak into the markdown comment.
     """
     if source_file and source_file.strip():
-        return Path(source_file.strip()).name
+        return source_file_basename(source_file.strip())
     return input_path.name
 
 
