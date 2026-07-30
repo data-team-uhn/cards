@@ -26,7 +26,7 @@ import docling_config  # noqa: F401 — apply shared Docling settings on import
 from docling.datamodel.base_models import InputFormat
 from docling.document_converter import DocumentConverter, WordFormatOption
 
-from chunker import clear_prior_outputs, write_chunk_files
+from chunker import write_chunk_files
 from docling_error_detection import ensure_conversion_ok
 from markdown_cleanup import clean_markdown, resolve_source_file_name, source_file_header
 from markdown_markers import count_tokens
@@ -93,8 +93,6 @@ def convert_docx(
 
     t1 = perf_counter()
 
-    # Drop any previous convert's outline sidecar and Chunks/ before writing anew.
-    clear_prior_outputs(output_file)
     try:
         markdown_content = convert_docx_to_markdown(input_path, converter=converter)
     except Exception as exc:

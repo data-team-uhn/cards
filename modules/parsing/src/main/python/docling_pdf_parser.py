@@ -39,7 +39,7 @@ from docling.document_converter import DocumentConverter, PdfFormatOption
 
 from typing import Callable
 
-from chunker import clear_prior_outputs, write_chunk_files
+from chunker import write_chunk_files
 from docling_batch_sizing import (
     calc_active_workers,
     calc_batch_pages,
@@ -328,8 +328,6 @@ def convert_pdf(
     @param workers: optional override for parallel worker process count
     @param min_structure_tokens: leave the document unchunked below this size, as the daemon does
     """
-    # Drop any previous convert's outline sidecar and Chunks/ before writing anew.
-    clear_prior_outputs(output_file)
     try:
         markdown_content = convert_pdf_to_markdown(
             input_path,

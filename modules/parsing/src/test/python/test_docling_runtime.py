@@ -178,11 +178,11 @@ class TestDrainRequestBody:
         assert handler.close_connection is True
 
     def test_bounded_by_the_upload_cap(self):
-        # Regression: the drain stops at the cap by design, but under keep-alive the surplus
-        # beyond it used to stay in the socket and be read as the next request's start.
+        # An over-cap body is not drained at all — the connection is closed instead, so a lying
+        # header cannot make the daemon read without bound just to save the connection.
         handler = _FakeHandler(b"x" * 100, content_length=daemon.MAX_UPLOAD_BYTES * 10)
         daemon._drain_request_body(handler)
-        assert handler.unread == 0
+        assert handler.unread == 100
         assert handler.close_connection is True
 
     def test_a_body_drained_exactly_keeps_the_connection(self):

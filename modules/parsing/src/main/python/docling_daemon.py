@@ -70,6 +70,7 @@ from chunker import DEFAULT_MAX_TOKENS, build_chunk_tree
 from docling_batch_sizing import GB_PER_WORKER, calc_workers, positive_int
 from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
 from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
+from markdown_cleanup import source_file_basename
 from markdown_markers import SUPPORTED_SUFFIXES
 from pdf_bookmarks import extract_verified_outline
 from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
@@ -164,6 +165,8 @@ def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: dict[s
     handler.send_header("Content-Type", "application/json; charset=utf-8")
     if encoding:
         handler.send_header("Content-Encoding", encoding)
+    if handler.close_connection:
+        handler.send_header("Connection", "close")
     handler.send_header("Content-Length", str(len(body)))
     handler.end_headers()
     handler.wfile.write(body)
@@ -191,40 +194,38 @@ def _drain_request_body(handler: BaseHTTPRequestHandler) -> None:
     before the client can read it, so the caller sees a transport failure instead of the 400
     that says what was wrong. Whether it happens depends on how much of the body fitted in
     socket buffers, which makes it intermittent — worse than a consistent failure. Draining
-    first keeps the exchange well-formed, and leaves the connection reusable now that the
-    handler speaks HTTP/1.1 and no longer closes after every response.
+    first keeps the exchange well-formed and leaves an ordinary connection reusable.
 
     A body that cannot be *fully* drained closes the connection after the response instead:
     under keep-alive, any bytes left in the socket would be read as the start of the next
-    request. That covers a declared length over :data:`MAX_UPLOAD_BYTES` (drained only up to
-    the cap, so a lying header cannot make the daemon read without bound just to save the
-    connection), an unparseable or negative length and a chunked body (no way to know where
-    either ends), and a client that hung up early (nothing left to reuse anyway).
+    request. That covers a chunked body (BaseHTTPRequestHandler does not decode chunked
+    transfer-encoding, so where it ends is unknowable), an unparseable or negative length,
+    a declared length over :data:`MAX_UPLOAD_BYTES` (deliberately not drained, so a lying
+    header cannot make the daemon read without bound just to save the connection), and a
+    client that hung up early (nothing left to reuse anyway).
     """
     if handler.headers.get("Transfer-Encoding"):
-        # BaseHTTPRequestHandler does not decode chunked transfer-encoding, so where this
-        # body ends is unknowable.
         handler.close_connection = True
         return
     declared = handler.headers.get("Content-Length")
     if not declared:
         return
     try:
-        length = int(declared)
+        remaining = int(declared)
     except ValueError:
-        length = -1
-    if length < 0:
         handler.close_connection = True
         return
-    remaining = min(length, MAX_UPLOAD_BYTES)
+    if remaining < 0 or remaining > MAX_UPLOAD_BYTES:
+        # The body cannot be drained within the amount of work this endpoint permits. Keeping
+        # HTTP/1.1 alive would leave its bytes to be parsed as the next request on this socket.
+        handler.close_connection = True
+        return
     while remaining > 0:
         block = handler.rfile.read(min(_UPLOAD_CHUNK_BYTES, remaining))
         if not block:
             handler.close_connection = True
             return
         remaining -= len(block)
-    if length > MAX_UPLOAD_BYTES:
-        handler.close_connection = True
 
 
 def _spool_upload(handler: BaseHTTPRequestHandler, suffix: str) -> Path:
@@ -461,7 +462,7 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
                 raise ValueError("filename query parameter is required")
             # Only the basename: the value names the document for the source_file header and
             # fileId, and must not be able to steer any path.
-            filename = Path(filename).name
+            filename = source_file_basename(filename)
             suffix = _safe_suffix(filename)
 
             chunk = (query.get("chunk", ["true"])[0] or "true").lower() not in ("false", "0", "no")
