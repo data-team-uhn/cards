@@ -356,6 +356,8 @@ def http_ok(url, auth=None):
 
 def check_smtps_configuration(launcher_args):
     """Check the configuration that sending emails over SMTPS depends on."""
+    if IS_WINDOWS or IS_WSL:
+        return
     if not any('mvn:%s/cards-email-notifications/' % GROUP in arg for arg in launcher_args):
         return
     if not os.environ.get('SLING_COMMONS_CRYPTO_PASSWORD'):
