@@ -22,7 +22,6 @@ flowchart TB
         PP["PdfParser"]
         DXP["DocxParser / DocParser"]
         DMG["DoclingMarkdownGenerator"]
-        PBX["PdfMarkdownGenerator - PDFBox / POI"]
         LOC["LibreOfficeConverter"]
         PMS["ParsedMarkdownStore"]
         DCC["DoclingChatChunker"]
@@ -42,8 +41,7 @@ flowchart TB
     FPF --> DXP
     PP -->|extends| SDP
     DXP -->|extends| SDP
-    SDP -->|primary| DMG
-    SDP -->|fallback| PBX
+    SDP --> DMG
     PP -.->|co-locate stem.pdf| PMS
     DXP -.->|DOCX to PDF| LOC
     LOC -->|saveArtifact| PMS
@@ -97,40 +95,12 @@ running `docling_parser.py` as a subprocess needed Docling installed next to the
 dependency the container removes — and it passed filesystem paths, which cannot cross a container
 boundary.
 
-If Docling fails or returns too little, `SimpleDocumentParser` falls back to the Java
-**PDFBox/POI** generator, which needs nothing external. That fallback exists mainly for the case
-where **Docling errors and produces no Markdown at all**, not for a daemon outage; in practice the
-container is expected to be running.
-
-The fallback produces Markdown but **no chunk tree** — chunking exists only in Python. So it writes
-`Chunks/outline.json` with `chunked: false` and `unchunkedReason: "chunker_unavailable"`, which is
-deliberately distinguishable from a document that is merely below the size gate (that one records
-`unchunkedReason: "below_min_structure_tokens"`). Downstream must switch on that field: both are
-unchunked, but only the second is a legitimate send-it-whole document.
-
-### Planned: sequential windowing when no chunk tree exists — NOT IMPLEMENTED
-
-`unchunkedReason: "chunker_unavailable"` currently has no special downstream handling. It is a rare
-case: it needs Docling to have failed outright, or the daemon to be unreachable, and the document to
-be too large to send whole.
-
-The intended behaviour, **deferred past the MVP**:
-
-> When a phase needs to send a document that has no chunk tree, split it into consecutive pieces
-> sized to the **max chunk size from the active LLM configuration** and send them in sequence,
-> continuing until every answer for that phase has been obtained — rather than sending the whole
-> document and overflowing the context, or failing the phase.
-
-Notes for whoever picks this up:
-
-- It applies to *every* LLM communication phase (intake, extraction, summarization), so it belongs
-  in the shared send path, not in one phase.
-- The window size must come from the live LLM settings, like the chunking threshold already does
-  (`wholeDocumentTokenLimit`), so there is still only one place defining document size limits.
-- Windows are not chunks: no outline, no catalog, no headings. Anything that assumes a
-  `catalog.json` must tolerate its absence rather than be fed a synthetic one.
-- Until this exists, a large document with `chunker_unavailable` will not be processed correctly.
-  Treat it as an alerting condition, not a silent state.
+**There is no pure-Java fallback either.** The former PDFBox/POI generators were removed: Docling
+(the daemon, or the CLI when run by hand) is the only processor. If Docling fails or returns too
+little, `SimpleDocumentParser` fails the parse with a `DocumentParseException` and no stale output
+is left behind. The only unchunked state that remains is the deliberate one — a document below the
+size gate, recorded as `unchunkedReason: "below_min_structure_tokens"` — which is a legitimate
+send-it-whole document.
 
 ---
 
@@ -141,13 +111,12 @@ Notes for whoever picks this up:
 | Class | Role |
 |---|---|
 | `FileParserFactory` | Route by extension → `PdfParser` / `DocxParser` / `DocParser` |
-| `SimpleDocumentParser` | Shared flow: read bytes → `onDocumentBytes` hook → primary generator → fallback → `ParsedMarkdownStore.save` |
-| `PdfParser` | Docling primary, PDFBox fallback; `onDocumentBytes` co-locates the uploaded **`<stem>.pdf`** via `saveArtifact` |
-| `DocxParser` / `DocParser` | Docling primary, Apache POI fallback; DOC→DOCX via LibreOffice; `onDocumentBytes` renders a DOCX→PDF sibling |
+| `SimpleDocumentParser` | Shared flow: read bytes → `onDocumentBytes` hook → Docling → `ParsedMarkdownStore.save`; failure or insufficient output fails the parse |
+| `PdfParser` | Docling parse; `onDocumentBytes` co-locates the uploaded **`<stem>.pdf`** via `saveArtifact` |
+| `DocxParser` / `DocParser` | Docling parse; DOC→DOCX via LibreOffice; `onDocumentBytes` renders a DOCX→PDF sibling |
 | `DoclingMarkdownGenerator` | Sends the bytes to the daemon's `POST /parse` via `DoclingParseClient`; no local-Python path |
-| `PdfMarkdownGenerator` / `StyledPdfTextStripper` | Java PDFBox PDF→Markdown fallback (no Python) |
 | `LibreOfficeConverter` | Office→PDF rendition; `ParsedMarkdownStore.saveArtifact(..., "pdf", …)` |
-| `ParsedMarkdownStore` | `save(<stem>.md)`, `saveChunkTree(Chunks/)`, `saveUnchunkedOutline`, `saveArtifact`, `clearChunks` |
+| `ParsedMarkdownStore` | `save(<stem>.md)`, `saveChunkTree(Chunks/)`, `saveArtifact`, `clearChunks` |
 | `DoclingChatChunker` | Chunk-generation bookkeeping only (staleness for catalog summarization); it no longer requests chunking |
 | `ProposalParseFolder` / `ParseOutline` | Locate `<answerDir>/<stem>.md` + `Chunks/`; read `Chunks/outline.json` |
 
@@ -172,15 +141,13 @@ Notes for whoever picks this up:
 
 ## Markdown generation
 
-- **PDF, primary (Docling)** — `convert_pdf_to_markdown` reads the page count with `pypdf`,
+- **PDF (Docling)** — `convert_pdf_to_markdown` reads the page count with `pypdf`,
   splits the pages into batches, and converts each batch in a **separate worker process**
   (`ProcessPoolExecutor`), exporting Markdown **per page** with a `<!-- page: N -->` marker
   before each. Fragments are concatenated in page order. (This per-page-range sharding is why
   bookmark/outline inference cannot run inside Docling — no single process sees the whole
   document; it runs later, in the chunker, over the assembled `.md` + sibling PDF.)
-- **PDF, fallback (PDFBox)** — Java `PdfMarkdownGenerator` when Docling is unavailable or
-  returns too little. No page markers.
-- **DOCX** — Docling primary, Apache POI fallback. No physical pages ⇒ no `<!-- page: N -->`
+- **DOCX** — Docling. No physical pages ⇒ no `<!-- page: N -->`
   markers (so `evidence.page` is null downstream). A DOCX→PDF rendition is saved beside the
   `.md` for the bookmark path.
 - **DOC** — LibreOffice converts to DOCX first, then the DOCX path.

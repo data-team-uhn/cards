@@ -88,8 +88,8 @@ creation is skipped. On start you get:
 - The daemon is **not** started by Java. Start it with Docker, or by hand for local work.
 - **`DoclingMarkdownGenerator`** / **`DoclingParseClient`** — send the document *bytes* to
   `POST /parse` and receive the Markdown and chunk tree in one reply. No paths are exchanged, so
-  the daemon needs no access to the JVM's filesystem. If it cannot be reached, parsing falls
-  through to the pure-Java PDFBox/POI generators.
+  the daemon needs no access to the JVM's filesystem. If it cannot be reached, parsing fails —
+  the daemon (or the CLI, run by hand) is the only processor.
 
 ### Daemon internals
 
@@ -140,5 +140,4 @@ Java never starts the daemon. Run it yourself — in Docker for a real deploymen
 local work (see [Manual daemon start](#manual-http-daemon-start-optional)).
 
 Java talks to the daemon over `POST /parse` and nothing else; when the
-daemon cannot be reached, parsing falls through to the pure-Java PDFBox/POI generators, which need
-nothing external.
+daemon cannot be reached, parsing fails. There is no fallback processor.

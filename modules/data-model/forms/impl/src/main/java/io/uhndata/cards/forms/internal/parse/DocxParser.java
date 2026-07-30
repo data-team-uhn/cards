@@ -16,25 +16,14 @@
  */
 package io.uhndata.cards.forms.internal.parse;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * Parser for DOCX files. Delegates orchestration to {@link SimpleDocumentParser} and supplies
- * {@link DoclingMarkdownGenerator} as the primary generator, with
- * {@link DocxMarkdownGenerator} (Apache POI) as the fallback.
+ * Parser for DOCX files. Delegates orchestration to {@link SimpleDocumentParser}, which parses through
+ * {@link DoclingMarkdownGenerator}, and renders a PDF sibling of the document beside the parse output.
  *
  * @version $Id$
  */
 public class DocxParser extends SimpleDocumentParser
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DocxParser.class);
-
-    private final DocxMarkdownGenerator poiGenerator = new DocxMarkdownGenerator();
-
     @Override
     protected void onDocumentBytes(final byte[] content, final String fileName, final String outputSubfolder)
     {
@@ -44,22 +33,5 @@ public class DocxParser extends SimpleDocumentParser
             return;
         }
         LibreOfficeConverter.convertToPdfAsync(content, "docx", fileName, outputSubfolder);
-    }
-
-    @Override
-    protected String runFallbackGenerator(final byte[] content, final String fileName)
-    {
-        setActiveGenerator("Apache POI");
-        return this.runPoiGenerator(content, fileName);
-    }
-
-    private String runPoiGenerator(final byte[] content, final String fileName)
-    {
-        try {
-            return this.poiGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
-        } catch (IOException | LinkageError e) {
-            LOGGER.warn("Apache POI DOCX generation failed for '{}': {}", fileName, e.getMessage());
-            return "";
-        }
     }
 }

@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
  * Routing rules:
  * </p>
  * <ul>
- *   <li>PDF — Docling primary with PDFBox fallback; DOCX — Docling primary with Apache POI fallback</li>
- *   <li>DOC — LibreOffice conversion to DOCX, then processed with DocxMarkdownGenerator</li>
+ *   <li>PDF and DOCX — parsed with Docling</li>
+ *   <li>DOC — LibreOffice conversion to DOCX, then parsed with Docling</li>
  *   <li>any other extension — returns {@code null} (caller skips the file)</li>
  * </ul>
  *

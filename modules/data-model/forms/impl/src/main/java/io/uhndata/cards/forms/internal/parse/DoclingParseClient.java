@@ -36,6 +36,8 @@ import java.util.zip.GZIPInputStream;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +53,8 @@ import org.slf4j.LoggerFactory;
  * of the Markdown between converting and chunking, and with it the risk of the two sides disagreeing about the
  * document's reserved markers.</p>
  *
- * <p>Writing the result stays this side: Markdown is produced by either Docling or the pure-Java fallback
- * generators, so a single writer in Java is the only way to keep one definition of the output layout.</p>
+ * <p>Writing the result stays this side, so a single writer in Java keeps one definition of the output
+ * layout.</p>
  *
  * @version $Id$
  */
@@ -82,8 +84,7 @@ public final class DoclingParseClient
      * @param fileName the original document name; its extension selects the Docling backend, and it is recorded
      *            as the {@code source_file} header and the catalog's {@code fileId}
      * @param chunk whether to also build the chunk tree
-     * @return the parsed document, or {@code null} when the daemon could not be reached or refused the request,
-     *         so the caller can fall back exactly as it does for {@code /convert}
+     * @return the parsed document, or {@code null} when the daemon could not be reached or refused the request
      */
     public static ParsedDocument parse(final byte[] content, final String fileName, final boolean chunk)
     {
@@ -147,10 +148,10 @@ public final class DoclingParseClient
             .map(value -> value.toLowerCase(java.util.Locale.ROOT).contains("gzip"))
             .orElse(false);
         if (!gzipped) {
-            return new String(raw, StandardCharsets.UTF_8);
+            return IOUtils.toString(new ByteArrayInputStream(raw), StandardCharsets.UTF_8);
         }
         try (GZIPInputStream unzipped = new GZIPInputStream(new ByteArrayInputStream(raw))) {
-            return new String(unzipped.readAllBytes(), StandardCharsets.UTF_8);
+            return IOUtils.toString(unzipped, StandardCharsets.UTF_8);
         }
     }
 

@@ -65,11 +65,9 @@ the only parse artifacts.
 - `chunked: false` — document cleaned/marked but **left unchunked**: `Chunks/` holds only
   `outline.json` (`toc: []`, no `catalog.json`, no `Chunk-*.md`). Downstream
   stages send the whole `.md` (synthetic `chunk001` via `WholeDocument`).
-  `unchunkedReason` records **why**, and the two values are not interchangeable:
-  `"below_min_structure_tokens"` (Python, deliberate — small enough to send whole) versus
-  `"chunker_unavailable"` (Java, written by `ParsedMarkdownStore.saveUnchunkedOutline` when the
-  pure-Java PDFBox/POI fallback produced the Markdown and no chunker ran at all). Only the first is
-  safe to send whole — see [Open items](#open-items).
+  `unchunkedReason` records **why**: `"below_min_structure_tokens"` (deliberate — small enough to
+  send whole). Since Docling is the only processor there is no chunker-less state any more: a
+  parse either yields Markdown **and** its chunk-tree decision, or fails outright.
 - `chunked: true` — full split + slim catalog as below.
 
 Rules (when `chunked: true`):
@@ -162,7 +160,7 @@ everything Stage 0.5 needs for input selection.
   "fileId": "protocol.pdf",
   "tokens": 21184,           // len(md)//4
   "chunked": true,           // size-gate outcome; false → whole-document path, no catalog
-  // "unchunkedReason": "below_min_structure_tokens" | "chunker_unavailable"   (only when chunked=false)
+  // "unchunkedReason": "below_min_structure_tokens"   (only when chunked=false)
   "outline_source": "pdf-bookmarks",  // who produced the outline: pdf-bookmarks | md-toc | none
   "toc": ["1.0 Introduction", "1.1 Background", "…"],  // outline record titles; [] when none
   "tocStartLine": 42,        // printed-TOC path only — cleaned TOC block line range in the .md
@@ -232,12 +230,11 @@ Pre-chunk pipeline (inside `chunker.build_chunk_tree`, run for every chunking en
 `ParsedMarkdownStore.saveChunkTree`, and co-locates `<stem>.pdf`. Python writes nothing, so no
 filesystem is shared and the daemon runs in its own container.
 
-The one asymmetry: **the Java PDFBox/POI fallback cannot chunk** — that logic exists only in Python.
-It writes `outline.json` with `chunked: false` and `unchunkedReason: "chunker_unavailable"` rather
-than leaving no `Chunks/` at all, so the state is explicit instead of inferred from a missing
-directory. There is no local-Python CLI fallback for converting or chunking any more: it needed
-Docling installed next to the JVM and passed filesystem paths, neither of which survives a container
-boundary.
+There is no fallback processor. The pure-Java PDFBox/POI generators were removed, and there is no
+local-Python CLI fallback for converting or chunking either: it needed Docling installed next to
+the JVM and passed filesystem paths, neither of which survives a container boundary. When the
+daemon is unreachable or Docling produces nothing usable, the parse fails with a
+`DocumentParseException` instead of degrading.
 
 `tag_basis`/`tag_confidence`/`uncertain`/`excluded`/`exclusion_reason` are stamped by
 code from LLM output, never asked of the model directly as catalog fields:
@@ -299,10 +296,9 @@ The document head is **never** sent. A chunked document with neither a TOC nor a
 assembles no INPUT, so the gate fails open (treated as a protocol) rather than sending a
 raw prefix of the document.
 
-**Caveat:** case 1 assumes `chunked: false` means *small*. That holds for
-`unchunkedReason: "below_min_structure_tokens"`, but **not** for `"chunker_unavailable"`, where a
-large document simply never reached a chunker — sending it whole would overflow the context. No
-stage inspects the field yet; see [Open items](#open-items).
+Case 1's assumption that `chunked: false` means *small* now always holds: the only unchunked state
+left is `unchunkedReason: "below_min_structure_tokens"`, since a parse that never reaches the
+chunker fails outright instead of producing Markdown without a chunk tree.
 
 Whenever the catalog is non-empty **and** the selected INPUT is not already the catalog
 outline (case 3), a separate `## CATALOG` block of `chunkNNN: heading` lines is appended
@@ -751,14 +747,7 @@ claim; say "not stated in the proposal" when the text does not answer; injection
    summary+tags+exclude and the chat router/answer path are still to be wired.
 8. **Stage 1.2 parallelism** — batches run sequentially today; parallelizing
    independent extract batches (with append-only tracker) remains an optimization.
-9. **Sequential windowing when there is no chunk tree (deferred past MVP)** — a document with
-   `unchunkedReason: "chunker_unavailable"` has no catalog and may be far too large to send whole.
-   It is a rare case: it needs Docling to have failed outright, or the daemon to be unreachable, and
-   the document to be large. Intended behaviour: **every** LLM phase splits such a document into
-   consecutive pieces sized to the active LLM configuration's max chunk size and sends them in
-   sequence until all answers for that phase are obtained. Notes for whoever builds it — it belongs
-   in the shared send path rather than in each phase; the window size must come from live LLM
-   settings so there is still one definition of document size limits; and windows are not chunks, so
-   nothing should be handed a synthetic `catalog.json`. Until it exists, treat `chunker_unavailable`
-   on a large document as an **alerting condition, not a silent state**. Also recorded in
-   `PARSING_PIPELINE.md`.
+9. ~~Sequential windowing when there is no chunk tree~~ — obsolete. The chunker-less state
+   (`unchunkedReason: "chunker_unavailable"`) existed only when the pure-Java PDFBox/POI fallback
+   produced Markdown without a chunk tree; those fallbacks were removed, and a parse that never
+   reaches the chunker now fails outright instead.

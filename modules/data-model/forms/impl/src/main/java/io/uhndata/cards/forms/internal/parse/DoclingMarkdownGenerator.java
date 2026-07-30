@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
  * There is no local-Python path. Running {@code docling_parser.py} as a subprocess used to be the fallback when
  * the daemon was unreachable, but it required Docling installed next to the JVM — the very dependency the
  * container removes — and it passed filesystem paths, which cannot work across a container boundary. When the
- * daemon cannot be reached this returns an empty result and {@link SimpleDocumentParser} falls through to the
- * pure-Java generator (PDFBox or Apache POI), which needs nothing external.
+ * daemon cannot be reached this returns an empty result and {@link SimpleDocumentParser} fails the parse; there
+ * is no other processor.
  * </p>
  *
  * @version $Id$
@@ -49,7 +49,9 @@ public class DoclingMarkdownGenerator
      *
      * @param stream the input document stream
      * @param fileName source file name; its extension selects the Docling backend
-     * @return the parsed document, or {@code null} on any failure, so the caller can fall back
+     * @param minStructureTokens documents under this many estimated tokens are left unchunked; pass {@code 0}
+     *            or less to let the daemon apply its own default
+     * @return the parsed document, or {@code null} on any failure
      */
     public DoclingParseClient.ParsedDocument parse(final InputStream stream, final String fileName,
         final long minStructureTokens)

@@ -100,17 +100,13 @@ public final class DoclingChatChunker
     }
 
     /**
-     * Request chat chunking for an answer folder, returning immediately. Does nothing when chunking is
-     * disabled, the folder is {@code null}, or a single parsed {@code .md} file cannot be resolved under
-     * it (MVP: one proposal file per answer). The chunker always uses its own single hardcoded tokenizer
-     * model, so no model is passed here. Any failure is logged, never thrown.
+     * Record that a new chunk tree was written for an answer folder, advancing its generation counter.
+     * Later {@link #isSummarizationCurrent} checks compare against the returned generation to detect
+     * whether a newer chunking has superseded the work they belong to.
      *
      * @param answerDir the absolute parse output folder of the answer, as produced by
      *            {@link ParsedMarkdownStore#resolveAnswerDir(String)}
-     * @param minStructureTokens the small-document threshold (the active LLM model's
-     *            {@code wholeDocumentTokenLimit}): documents under this many estimated tokens are not chunked
-     *            and are recorded as {@code chunked: false} in {@code outline.json}; pass {@code 0} or a
-     *            negative value to let the chunker use its own default
+     * @return the folder's new chunk-tree generation, or {@code 0} when the folder is {@code null}
      */
     public static long markChunksWritten(final Path answerDir)
     {

@@ -16,7 +16,6 @@
  */
 package io.uhndata.cards.forms.internal.parse;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,20 +23,15 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.forms.internal.parse.pdf.PdfMarkdownGenerator;
-
 /**
- * Parser for PDF files. Delegates orchestration to {@link SimpleDocumentParser} and supplies
- * {@link DoclingMarkdownGenerator} as the primary generator, with
- * {@link PdfMarkdownGenerator} (PDFBox) as the fallback.
+ * Parser for PDF files. Delegates orchestration to {@link SimpleDocumentParser}, which parses through
+ * {@link DoclingMarkdownGenerator}, and co-locates the uploaded PDF beside the parse output.
  *
  * @version $Id$
  */
 public class PdfParser extends SimpleDocumentParser
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdfParser.class);
-
-    private final PdfMarkdownGenerator pdfBoxGenerator = new PdfMarkdownGenerator();
 
     @Override
     protected void onDocumentBytes(final byte[] content, final String fileName, final String outputSubfolder)
@@ -59,17 +53,6 @@ public class PdfParser extends SimpleDocumentParser
                     LOGGER.debug("Could not delete temp PDF source {}: {}", uploadedPdfPath, e.getMessage());
                 }
             }
-        }
-    }
-
-    @Override
-    protected String runFallbackGenerator(final byte[] content, final String fileName)
-    {
-        try {
-            setActiveGenerator("PDFBox");
-            return this.pdfBoxGenerator.toMarkdown(new ByteArrayInputStream(content), fileName);
-        } catch (IOException | LinkageError e) {
-            return "";
         }
     }
 }

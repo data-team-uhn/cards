@@ -25,11 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base class for document parsers that apply a primary generator and fall back to a secondary
- * generator when the primary fails, returns empty output, or produces insufficient content.
+ * Base class for document parsers. Docling (daemon or CLI) is the only processor: the document is sent to the
+ * Docling daemon, and when the daemon cannot be reached or returns empty or insufficient output the parse fails
+ * with a {@link DocumentParseException} — there is no pure-Java fallback generator.
  * <p>
- * Subclasses implement {@link #runFallbackGenerator} to supply a format-specific fallback.
  * All shared orchestration logic — stream reading, error handling, and sufficiency check — lives here.
+ * Subclasses override {@link #onDocumentBytes} for format-specific side work.
  * </p>
  *
  * @version $Id$
@@ -38,16 +39,13 @@ public abstract class SimpleDocumentParser implements FileParser
 {
     private static final int MIN_CONTENT_CHARS = 50;
 
-    /** Name of the generator that produced the current parse result (request-scoped). */
-    private static final ThreadLocal<String> ACTIVE_GENERATOR = new ThreadLocal<>();
-
     /**
      * The active LLM model's small-document chunking threshold, for the duration of one parse.
      * <p>
      * Chunking now happens inside the parse call, but the threshold comes from the LLM configuration, which only
      * the editor can resolve — these parsers are plain classes, not OSGi components, so they cannot reference the
-     * configuration service. The editor sets this before parsing on the same thread and clears it afterwards,
-     * mirroring how {@link #ACTIVE_GENERATOR} is already scoped. Unset means the daemon applies its own default.
+     * configuration service. The editor sets this before parsing on the same thread and clears it afterwards.
+     * Unset means the daemon applies its own default.
      * </p>
      */
     private static final ThreadLocal<Long> CHUNKING_THRESHOLD = new ThreadLocal<>();
@@ -72,38 +70,19 @@ public abstract class SimpleDocumentParser implements FileParser
             throw new DocumentParseException("Document is empty", null);
         }
         onDocumentBytes(content, fileName, outputSubfolder);
-        try {
-            final DoclingParseClient.ParsedDocument parsed = runPrimaryParseSafely(content, fileName);
-            final String primary = parsed == null ? "" : parsed.getMarkdown();
-            if (isSufficient(primary)) {
-                ParsedMarkdownStore.save(outputSubfolder, fileName, primary);
-                // The daemon returned the chunk tree with the Markdown, so it is written here rather
-                // than fetched by a second, path-based call.
-                ParsedMarkdownStore.saveChunkTree(outputSubfolder, parsed.getOutline(), parsed.getCatalog(),
-                    parsed.getChunks());
-                logParseFinished(fileName, startTimestamp, primary, "primary");
-                return primary;
-            }
-            this.logger.info("Primary generator '{}' failed or produced insufficient output for '{}', using fallback",
-                currentGeneratorName("primary"), fileName);
-            final String fallback = runFallbackGenerator(content, fileName);
-            if (isSufficient(fallback)) {
-                ParsedMarkdownStore.save(outputSubfolder, fileName, fallback);
-                // The pure-Java generators produce Markdown but cannot chunk — that logic exists only in
-                // Python. Record an outline saying so, rather than leaving no Chunks/ at all: downstream
-                // must be able to tell "no chunker ran" from "document was too small to chunk", which is
-                // also an unchunked state but a legitimate send-it-whole one.
-                ParsedMarkdownStore.saveUnchunkedOutline(outputSubfolder, fileName, fallback,
-                    ParsedMarkdownStore.UNCHUNKED_CHUNKER_UNAVAILABLE);
-                logParseFinished(fileName, startTimestamp, fallback, "fallback");
-                return fallback;
-            }
-            this.logger.warn("Fallback generator '{}' produced insufficient output for '{}', document is empty",
-                currentGeneratorName("fallback"), fileName);
+        final DoclingParseClient.ParsedDocument parsed = runPrimaryParseSafely(content, fileName);
+        final String markdown = parsed == null ? "" : parsed.getMarkdown();
+        if (!isSufficient(markdown)) {
+            this.logger.warn("Docling produced no usable output for '{}', parsing failed", fileName);
             throw new DocumentParseException("Generated output is empty", null);
-        } finally {
-            ACTIVE_GENERATOR.remove();
         }
+        ParsedMarkdownStore.save(outputSubfolder, fileName, markdown);
+        // The daemon returned the chunk tree with the Markdown, so it is written here rather
+        // than fetched by a second, path-based call.
+        ParsedMarkdownStore.saveChunkTree(outputSubfolder, parsed.getOutline(), parsed.getCatalog(),
+            parsed.getChunks());
+        logParseFinished(fileName, startTimestamp, markdown);
+        return markdown;
     }
 
     private DoclingParseClient.ParsedDocument runPrimaryParseSafely(final byte[] content, final String fileName)
@@ -125,30 +104,12 @@ public abstract class SimpleDocumentParser implements FileParser
         return stripped.length() >= MIN_CONTENT_CHARS;
     }
 
-    private void logParseFinished(final String fileName, final long startTimestamp, final String result,
-        final String path)
+    private void logParseFinished(final String fileName, final long startTimestamp, final String result)
     {
         final long endTimestamp = System.currentTimeMillis();
         this.logger.info(
-            "Document parsing finished for '{}' using generator '{}' ({} path) at {} (total {} ms, result {} chars)",
-            fileName, currentGeneratorName(path), path, endTimestamp, endTimestamp - startTimestamp,
-            result.length());
-    }
-
-    private static String currentGeneratorName(final String pathFallback)
-    {
-        final String named = ACTIVE_GENERATOR.get();
-        return StringUtils.isNotBlank(named) ? named : pathFallback;
-    }
-
-    /**
-     * Record which concrete markdown generator is about to run for this request.
-     *
-     * @param generatorName human-readable generator label (e.g. {@code Docling}, {@code Apache POI})
-     */
-    protected static void setActiveGenerator(final String generatorName)
-    {
-        ACTIVE_GENERATOR.set(generatorName);
+            "Document parsing finished for '{}' using Docling at {} (total {} ms, result {} chars)",
+            fileName, endTimestamp, endTimestamp - startTimestamp, result.length());
     }
 
     /**
@@ -178,7 +139,6 @@ public abstract class SimpleDocumentParser implements FileParser
      */
     protected DoclingParseClient.ParsedDocument runPrimaryParse(final byte[] content, final String fileName)
     {
-        setActiveGenerator("Docling");
         final Long threshold = CHUNKING_THRESHOLD.get();
         return this.doclingGenerator.parse(new ByteArrayInputStream(content), fileName,
             threshold == null ? 0L : threshold);
@@ -200,15 +160,4 @@ public abstract class SimpleDocumentParser implements FileParser
     {
         CHUNKING_THRESHOLD.remove();
     }
-
-    /**
-     * Run the fallback generator when the primary fails, returns empty output, or produces
-     * insufficient content.
-     * Must not throw — return an empty string on any generator error.
-     *
-     * @param content raw document bytes
-     * @param fileName source file name
-     * @return markdown text, or an empty string on failure
-     */
-    protected abstract String runFallbackGenerator(byte[] content, String fileName);
 }

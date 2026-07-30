@@ -36,11 +36,11 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.internal.parse.DoclingChatChunker;
-import io.uhndata.cards.forms.internal.parse.SimpleDocumentParser;
 import io.uhndata.cards.forms.internal.parse.DocumentParseException;
 import io.uhndata.cards.forms.internal.parse.FileParser;
 import io.uhndata.cards.forms.internal.parse.FileParserFactory;
 import io.uhndata.cards.forms.internal.parse.ParsedMarkdownStore;
+import io.uhndata.cards.forms.internal.parse.SimpleDocumentParser;
 import io.uhndata.cards.llm.LLMConfigurationService;
 
 /**

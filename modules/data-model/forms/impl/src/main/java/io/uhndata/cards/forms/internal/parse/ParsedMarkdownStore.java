@@ -36,6 +36,7 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonWriter;
 import jakarta.json.JsonWriterFactory;
 import jakarta.json.stream.JsonGenerator;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,13 +56,6 @@ public final class ParsedMarkdownStore
 {
     /** Name of the aggregated markdown file written into each answer's subfolder. */
     public static final String AGGREGATED_FILE_NAME = "aggregated.md";
-
-    /**
-     * {@code unchunkedReason} recorded when the chunker never ran, because the Markdown came from a pure-Java
-     * fallback generator rather than from Docling. Distinct from a document that is merely below the structure
-     * threshold, which is also unchunked but deliberately so.
-     */
-    public static final String UNCHUNKED_CHUNKER_UNAVAILABLE = "chunker_unavailable";
 
     /** Name of the subfolder, within an answer's subfolder, that holds the markdown chunks. */
     public static final String CHUNKS_SUBDIR = "chunks";
@@ -168,8 +162,7 @@ public final class ParsedMarkdownStore
      *
      * <p>Used with {@link DoclingParseClient}: because the daemon returns the tree instead of writing it, it needs
      * no access to this filesystem and can run in its own container. Writing stays here, which also keeps one
-     * definition of the output layout — the Markdown itself may have come from the pure-Java fallback generators
-     * rather than from Docling.</p>
+     * definition of the output layout.</p>
      *
      * <p>The existing tree is replaced wholesale, so a re-parse cannot leave chunk files from a previous, longer
      * document behind. A failure never throws — it is logged and swallowed, like the rest of this class.</p>
@@ -212,39 +205,6 @@ public final class ParsedMarkdownStore
     }
 
     /**
-     * Write an outline recording that a document was parsed but never chunked, in the same shape the Python
-     * chunker writes.
-     *
-     * <p>Chunking exists only in Python, so a document produced by the pure-Java fallback generators has no
-     * chunk tree. Leaving no {@value #CHUNK_TREE_SUBDIR} folder at all would be ambiguous: a document that is
-     * simply too small to chunk also ends up unchunked, but that is a legitimate "send it whole" state, whereas
-     * this one means the chunker never ran. Writing an outline with an explicit reason lets downstream tell the
-     * two apart instead of inferring it from a missing directory.</p>
-     *
-     * @param outputSubfolder subfolder to write into (typically the owning answer's UUID)
-     * @param fileName the source file name, recorded as {@code fileId}
-     * @param markdown the parsed Markdown, used for the token estimate
-     * @param reason why the document is unchunked; see {@link #UNCHUNKED_CHUNKER_UNAVAILABLE}
-     * @return {@code true} when the outline was written
-     */
-    public static boolean saveUnchunkedOutline(final String outputSubfolder, final String fileName,
-        final String markdown, final String reason)
-    {
-        // Same token heuristic as markdown_markers.count_tokens, so the figure means the same thing on both
-        // sides of the pipeline.
-        final int tokens = markdown == null ? 0 : markdown.length() / 4;
-        final JsonObject outline = Json.createObjectBuilder()
-            .add("fileId", StringUtils.defaultString(fileName))
-            .add("tokens", tokens)
-            .add("chunked", false)
-            .add("unchunkedReason", reason)
-            .add("outline_source", "none")
-            .add("toc", Json.createArrayBuilder().build())
-            .build();
-        return saveChunkTree(outputSubfolder, outline, null, List.of());
-    }
-
-    /**
      * Render JSON indented rather than on one line, matching what the Python writer produces, so the chunk tree
      * stays readable when someone opens it to check a parse.
      *
@@ -272,8 +232,10 @@ public final class ParsedMarkdownStore
      */
     private static boolean safeChunkName(final String name)
     {
-        return name.endsWith(".md") && name.indexOf('/') < 0 && name.indexOf('\\') < 0
-            && !name.contains("..") && Paths.get(name).getNameCount() == 1;
+        if (!name.endsWith(".md") || name.contains("..")) {
+            return false;
+        }
+        return name.indexOf('/') < 0 && name.indexOf('\\') < 0 && Paths.get(name).getNameCount() == 1;
     }
 
     /**

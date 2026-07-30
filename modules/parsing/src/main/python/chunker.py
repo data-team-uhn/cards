@@ -147,9 +147,8 @@ OUTLINE_NAME = "outline.json"
 CHUNKS_DIRNAME = "Chunks"
 
 # ``unchunkedReason`` recorded when a document was deliberately left whole because it is below
-# ``min_structure_tokens``. The Java side writes "chunker_unavailable" instead when its fallback
-# generators produced the Markdown and no chunker ran; both are ``chunked: false``, and only this
-# field distinguishes "send it whole on purpose" from "never reached a chunker".
+# ``min_structure_tokens``. This is the only unchunked state: a parse that never reaches the
+# chunker fails on the Java side instead of writing Markdown without a chunk tree.
 UNCHUNKED_BELOW_THRESHOLD = "below_min_structure_tokens"
 
 # A line recurring at least this many times across the document is page furniture (a running
