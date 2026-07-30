@@ -86,7 +86,6 @@ function LiveTable(props) {
   const [fetchStatus, setFetchStatus] = useState(
     {
       "currentRequestNumber": -1,
-      "currentFetch": false,
       "fetchError": false,
     }
   );
@@ -94,6 +93,18 @@ function LiveTable(props) {
   // correct value. It must keep increasing for the lifetime of the table: handleResponse identifies
   // superseded responses by their number, so reusing one would let a stale response through.
   const requestNumberRef = useRef(-1);
+  // The controller of the in-flight request, so that a new request can abort the one it supersedes.
+  // A ref for the same reason as the request number above: fetchData must see the request that is
+  // actually in flight, not whichever one its closure happened to capture.
+  const abortControllerRef = useRef(null);
+  // The page the pagination controls point at, which is the page being *requested*, not the one
+  // still displayed. Keeping the two apart is what lets a second click while a page is still
+  // loading move another page along, instead of asking for the same one again.
+  const [requestedPage, setRequestedPage] = useState(0);
+  // Whether a response has ever arrived. The pagination controls need it to stay mounted while a
+  // page loads: they used to be tied to the row data, so every page change made them vanish and
+  // reappear, which both shifted the layout and made a second click impossible.
+  const [everLoaded, setEverLoaded] = useState(false);
   // The base URL to fetch from.
   // This can either be a custom URL provided in props,
   // or an URL obtained from the current location by extracting the last path segment and appending .paginate
@@ -114,29 +125,42 @@ function LiveTable(props) {
   // Define the component's behavior
 
   let handleError = (response) => {
+    if (response?.name === "AbortError") {
+      // We aborted this request ourselves because a newer one replaced it.
+      return;
+    }
     let err = response.statusText ? response.statusText : response.toString();
     if (response.status == 404) {
       err = "Access to data is pending the approval of your account";
     }
     setFetchStatus(oldStatus => ({
       ...oldStatus,
-      "currentFetch": false,
       "fetchError": err,
     }));
     setTableData([]);
   };
 
   let fetchData = (newPage, goToStart) => {
-    if (fetchStatus.currentFetch) {
-      // TODO: abort previous request
-    }
+    // Abandon the request this one supersedes. The response guard in handleResponse is what keeps
+    // stale data off the screen; aborting is about not paying for an answer nobody will read, which
+    // matters because every keystroke in a filter, and every click on a pagination button, starts
+    // another request.
+    abortControllerRef.current?.abort();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
 
     const nextRequestNumber = requestNumberRef.current + 1;
     requestNumberRef.current = nextRequestNumber;
 
+    const offset = goToStart ? 0 : newPage.offset ?? paginationData.offset;
+    const limit = newPage.limit || paginationData.limit;
+    // Remember the page we are heading to, so that a further click computes its own target from
+    // here rather than from the page still on screen
+    setRequestedPage(Math.floor(offset / limit));
+
     let url = new URL(urlBase);
-    url.searchParams.set("offset", goToStart ? 0 : newPage.offset ?? paginationData.offset);
-    url.searchParams.set("limit", newPage.limit || paginationData.limit);
+    url.searchParams.set("offset", offset);
+    url.searchParams.set("limit", limit);
     url.searchParams.set("req", nextRequestNumber);
     url.searchParams.set("showTotalRows", showTotalRows);
     resourceSelectors && url.searchParams.set("resourceSelectors", resourceSelectors);
@@ -153,11 +177,10 @@ function LiveTable(props) {
       filters["empties"].forEach((value) => url.searchParams.append("filterempty", value));
       filters["notempties"].forEach((value) => url.searchParams.append("filternotempty", value));
     }
-    let currentFetch = fetchWithReLogin(globalLoginDisplay, url);
+    let currentFetch = fetchWithReLogin(globalLoginDisplay, url, { "signal": abortController.signal });
     setFetchStatus(oldStatus => ({
       ...oldStatus,
       "currentRequestNumber": nextRequestNumber,
-      "currentFetch": currentFetch,
       "fetchError": false,
     }));
     // Clear tableData (set it to undefined) so that Please wait... is displayed
@@ -175,13 +198,18 @@ function LiveTable(props) {
     }
     setTableData(json.rows);
     onDataReceived?.(json.rows);
+    setEverLoaded(true);
+    const page = Math.floor(json.offset / json.limit);
+    // The server decides where we actually landed, which is not always where we asked to go — a
+    // filter change or a smaller page size can move us
+    setRequestedPage(page);
     setPaginationData(
       {
         "offset": json.offset,
         "limit": json.limit,
         "displayed": json.returnedrows,
         "total": json.totalrows,
-        "page": Math.floor(json.offset / json.limit),
+        "page": page,
         "totalIsApproximate": json.totalIsApproximate,
       }
     );
@@ -195,6 +223,11 @@ function LiveTable(props) {
       "currentRequestNumber": -1,
     }));
   }
+
+  // Abandon whatever is still in flight when the table goes away: nobody is left to display it
+  useEffect(() => {
+    return () => abortControllerRef.current?.abort();
+  }, []);
 
   // When data is changed, trigger a new fetch in the table
   useEffect(() => {
@@ -316,15 +349,10 @@ function LiveTable(props) {
     return result;
   };
 
+  // The page argument is computed by the pagination control from the page it is pointing at, which
+  // is requestedPage: clicking "previous" twice in a row therefore asks for two pages back, rather
+  // than for the same page twice. The request the first click started is abandoned by fetchData.
   let handleChangePage = (event, page) => {
-    // TODO: Clicking twice on prev page makes two requests for the same "previous" page.
-    // Expected behavior is one of:
-    // - disable the buttons while waiting for the new page, so only one click is possible
-    // - or abort the first request and request the two-behind previous page
-    // The second behavior seems more intuitive, but it needs to store two states:
-    // - the currently displayed page
-    // - the expected page
-    // TODO: Change the code to behave better
     fetchData({
       "offset" : page * paginationData.limit,
     });
@@ -394,13 +422,13 @@ function LiveTable(props) {
   // The pagination is outside the table itself to support internal scrolling of the table.
   // The element used by TablePagination by default is TableCell, but since it is not in a TableRow, we have to override this to be a <div>.
   */
-  const paginationControls = tableData && (
+  const paginationControls = everLoaded && (
     <TablePagination
       component="div"
       rowsPerPageOptions={[10, 20, 50, 100, 1000]}
       count={paginationData.totalIsApproximate ? -1 : paginationData.total}
       rowsPerPage={paginationData.limit}
-      page={paginationData.page}
+      page={requestedPage}
       onPageChange={handleChangePage}
       onRowsPerPageChange={handleChangeRowsPerPage}
       labelDisplayedRows={({ from, to, count }) =>
