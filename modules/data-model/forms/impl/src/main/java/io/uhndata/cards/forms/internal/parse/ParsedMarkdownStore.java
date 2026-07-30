@@ -17,37 +17,28 @@
 package io.uhndata.cards.forms.internal.parse;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonWriter;
-import jakarta.json.JsonWriterFactory;
-import jakarta.json.stream.JsonGenerator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Stores parsed markdown on disk and aggregates the markdown produced for a single answer.
+ * Locate and manage parse output under the shared docs volume.
  * <p>
- * Each parsed document is written as an individual {@code .md} file. All files belonging to one
- * answer are grouped in a per-answer subfolder (typically named after the answer's UUID). The output
- * directory defaults to {@code <user.dir>/cards-parsed-markdown} and can be overridden with the
- * {@code cards.parse.output.dir} system property.
+ * Java stages the original upload once via {@link #stageSourceFile}; Python writes
+ * {@code {stem}.md} and {@code Chunks/}. This class keeps read / delete / clear / resolve helpers
+ * for downstream extraction. The base directory defaults to {@code /shared-docs} and can be
+ * overridden with the {@code cards.parse.output.dir} system property.
  * </p>
  *
  * @version $Id$
@@ -72,7 +63,7 @@ public final class ParsedMarkdownStore
 
     private static final String OUTPUT_DIR_PROPERTY = "cards.parse.output.dir";
 
-    private static final String DEFAULT_OUTPUT_SUBDIR = "cards-parsed-markdown";
+    private static final String DEFAULT_OUTPUT_DIR = "/shared-docs";
 
     private ParsedMarkdownStore()
     {
@@ -80,53 +71,35 @@ public final class ParsedMarkdownStore
     }
 
     /**
-     * Persist a single parsed document as a {@code .md} file. Any existing file with the same name in
-     * the same subfolder is deleted first, so re-parsing the same file always replaces stale output. A
-     * failure to save never throws — it is logged and swallowed.
+     * Stage the original upload bytes under the answer folder so the Docling daemon can parse by
+     * absolute path. Replaces any existing file with the same name. A failure returns {@code null}
+     * rather than throwing.
      *
-     * @param outputSubfolder subfolder to save into (typically the owning answer's UUID); when
-     *            {@code null} or blank, the output directory root is used
-     * @param fileName source file name; its extension is replaced with {@code .md}
-     * @param markdown the markdown content to persist
+     * @param outputSubfolder the answer's UUID subfolder; when blank, the shared root is used
+     * @param fileName the original file name (with extension)
+     * @param content the raw document bytes
+     * @return the absolute path of the staged file, or {@code null} on failure
      */
-    public static void save(final String outputSubfolder, final String fileName, final String markdown)
+    public static Path stageSourceFile(final String outputSubfolder, final String fileName, final byte[] content)
     {
-        try {
-            final Path outputDir = resolveOutputDir(outputSubfolder);
-            Files.createDirectories(outputDir);
-            final Path outputFile = outputDir.resolve(buildOutputFileName(fileName));
-            if (Files.deleteIfExists(outputFile)) {
-                LOGGER.info("Deleted previous parse result for '{}' at {}", fileName, outputFile);
-            }
-            Files.writeString(outputFile, markdown, StandardCharsets.UTF_8);
-            LOGGER.info("Saved parse result for '{}' to {}", fileName, outputFile);
-        } catch (IOException | RuntimeException e) {
-            LOGGER.warn("Could not save parse result for '{}': {}", fileName, e.getMessage());
+        if (content == null || content.length == 0 || StringUtils.isBlank(fileName)) {
+            return null;
         }
-    }
-
-    /**
-     * Persist a sibling artifact (such as a PDF rendition) next to a source file's parsed markdown, in the same
-     * answer subfolder and under the same base name with the given extension. Any existing artifact with that
-     * name is replaced. A failure never throws — it is logged and swallowed.
-     *
-     * @param outputSubfolder subfolder to save into (typically the owning answer's UUID); when {@code null} or
-     *            blank, the output directory root is used
-     * @param fileName source file name; its base name is reused for the artifact
-     * @param extension the artifact's file extension without a dot (e.g. {@code pdf})
-     * @param sourceFile the file to copy into the answer folder
-     */
-    public static void saveArtifact(final String outputSubfolder, final String fileName, final String extension,
-        final Path sourceFile)
-    {
         try {
             final Path outputDir = resolveOutputDir(outputSubfolder);
             Files.createDirectories(outputDir);
-            final Path target = outputDir.resolve(baseName(fileName) + "." + extension);
-            Files.copy(sourceFile, target, StandardCopyOption.REPLACE_EXISTING);
-            LOGGER.info("Saved {} artifact for '{}' to {}", extension, fileName, target);
+            final String safeName = sanitizeFileName(fileName);
+            if (safeName == null) {
+                LOGGER.warn("Refusing to stage document with an unusable name '{}'", fileName);
+                return null;
+            }
+            final Path target = outputDir.resolve(safeName);
+            Files.write(target, content);
+            LOGGER.info("Staged source '{}' to {}", fileName, target.toAbsolutePath());
+            return target.toAbsolutePath();
         } catch (IOException | RuntimeException e) {
-            LOGGER.warn("Could not save {} artifact for '{}': {}", extension, fileName, e.getMessage());
+            LOGGER.warn("Could not stage source '{}': {}", fileName, e.getMessage());
+            return null;
         }
     }
 
@@ -155,87 +128,6 @@ public final class ParsedMarkdownStore
     public static Path resolveBaseOutputDir()
     {
         return baseOutputDir().toAbsolutePath();
-    }
-
-    /**
-     * Persist a chunk tree the daemon built and returned, rather than wrote itself.
-     *
-     * <p>Used with {@link DoclingParseClient}: because the daemon returns the tree instead of writing it, it needs
-     * no access to this filesystem and can run in its own container. Writing stays here, which also keeps one
-     * definition of the output layout.</p>
-     *
-     * <p>The existing tree is replaced wholesale, so a re-parse cannot leave chunk files from a previous, longer
-     * document behind. A failure never throws — it is logged and swallowed, like the rest of this class.</p>
-     *
-     * @param outputSubfolder subfolder to write into (typically the owning answer's UUID)
-     * @param outline the outline JSON to write as {@code outline.json}; skipped when {@code null}
-     * @param catalog the catalog JSON to write as {@code catalog.json}; skipped when {@code null}, which is the
-     *            case for a document left unchunked
-     * @param chunks the chunk files to write, each named by {@link DoclingParseClient.ChunkFile#getFile()}
-     * @return {@code true} when the tree was written
-     */
-    public static boolean saveChunkTree(final String outputSubfolder, final JsonObject outline,
-        final JsonObject catalog, final List<DoclingParseClient.ChunkFile> chunks)
-    {
-        try {
-            final Path answerDir = resolveOutputDir(outputSubfolder);
-            final Path chunkDir = answerDir.resolve(CHUNK_TREE_SUBDIR);
-            clearChunkTree(answerDir);
-            Files.createDirectories(chunkDir);
-            if (outline != null) {
-                Files.writeString(chunkDir.resolve("outline.json"), prettyJson(outline), StandardCharsets.UTF_8);
-            }
-            if (catalog != null) {
-                Files.writeString(chunkDir.resolve("catalog.json"), prettyJson(catalog), StandardCharsets.UTF_8);
-            }
-            for (DoclingParseClient.ChunkFile chunk : chunks) {
-                final String name = chunk.getFile();
-                if (StringUtils.isBlank(name) || !safeChunkName(name)) {
-                    LOGGER.warn("Skipping chunk with an unusable name '{}'", name);
-                    continue;
-                }
-                Files.writeString(chunkDir.resolve(name), chunk.getText() + "\n", StandardCharsets.UTF_8);
-            }
-            LOGGER.info("Saved chunk tree ({} file(s)) to {}", chunks.size(), chunkDir);
-            return true;
-        } catch (IOException | RuntimeException e) {
-            LOGGER.warn("Could not save chunk tree for '{}': {}", outputSubfolder, e.getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Render JSON indented rather than on one line, matching what the Python writer produces, so the chunk tree
-     * stays readable when someone opens it to check a parse.
-     *
-     * @param json the object to render
-     * @return the indented JSON text, newline-terminated
-     */
-    private static String prettyJson(final JsonObject json)
-    {
-        final StringWriter out = new StringWriter();
-        final JsonWriterFactory factory =
-            Json.createWriterFactory(Map.of(JsonGenerator.PRETTY_PRINTING, true));
-        try (JsonWriter writer = factory.createWriter(out)) {
-            writer.writeObject(json);
-        }
-        return out.toString().strip() + "\n";
-    }
-
-    /**
-     * Whether a daemon-supplied chunk file name is safe to resolve against the chunk directory. The name comes
-     * over HTTP, so it is treated as untrusted: anything with a path separator or a parent reference is refused
-     * rather than allowed to escape the directory.
-     *
-     * @param name the candidate file name
-     * @return {@code true} when the name is a plain {@code .md} file name
-     */
-    private static boolean safeChunkName(final String name)
-    {
-        if (!name.endsWith(".md") || name.contains("..")) {
-            return false;
-        }
-        return name.indexOf('/') < 0 && name.indexOf('\\') < 0 && Paths.get(name).getNameCount() == 1;
     }
 
     /**
@@ -485,7 +377,24 @@ public final class ParsedMarkdownStore
         if (StringUtils.isNotBlank(configured)) {
             return Paths.get(configured);
         }
-        return Paths.get(System.getProperty("user.dir"), DEFAULT_OUTPUT_SUBDIR);
+        return Paths.get(DEFAULT_OUTPUT_DIR);
+    }
+
+    private static String sanitizeFileName(final String fileName)
+    {
+        if (StringUtils.isBlank(fileName)) {
+            return null;
+        }
+        String sanitized = fileName.trim();
+        final int separator = Math.max(sanitized.lastIndexOf('/'), sanitized.lastIndexOf('\\'));
+        if (separator >= 0) {
+            sanitized = sanitized.substring(separator + 1);
+        }
+        if (StringUtils.isBlank(sanitized) || ".".equals(sanitized) || "..".equals(sanitized)
+            || sanitized.contains("..")) {
+            return null;
+        }
+        return sanitized;
     }
 
     private static String sanitizeSubfolder(final String outputSubfolder)

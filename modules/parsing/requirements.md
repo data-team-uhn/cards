@@ -1,16 +1,17 @@
-# `processing` module — Python requirements & setup
+# `parsing` module — Python requirements & setup
 
-The `processing` module holds the Python pipeline that converts uploaded PDF/DOCX
-documents into cleaned, chunked Markdown plus its pytest suite. The Java side operates daemons and runs communication.
+The `parsing` module holds the Python pipeline that converts uploaded PDF/DOCX/DOC
+documents into cleaned, chunked Markdown plus its pytest suite. The Java side stages
+uploads onto a shared volume and asks the daemon to parse by path.
 
 ## Runtime dependencies
 
 | Package | Why |
 |---------|-----|
-| `docling` | Main processor: `.pdf` / `.docx` → `.md`; also drives hierarchical chunking |
-| `pypdf` | Page counting / PDF reading before batching |
+| `docling` | Main processor: `.pdf` / `.docx` → Markdown; also drives hierarchical chunking |
+| `pypdf` | Page counting / PDF reading before batching; bookmark extraction |
 | `psutil` | Lets the batch-sizing script self-optimise workers to CPU/RAM |
-| LibreOffice (`soffice`) | DOC→DOCX+PDF and DOCX→PDF before Docling (`libreoffice_convert.py`) |
+| LibreOffice (`soffice`) | DOC→DOCX, DOC→PDF, DOCX→PDF before Docling (see `libreoffice_readme.md`) |
 
 Test-only: `pytest`.
 
@@ -18,9 +19,9 @@ Test-only: `pytest`.
 
 ## Docling
 
-Main processor from `.pdf` and `.docx` to `.md`.
+Main processor from `.pdf` and `.docx` to Markdown.
 - Source : https://github.com/docling-project/docling
-- Required versin v2.115+
+- Required version v2.115+
 
 ### Installation
 
@@ -45,18 +46,13 @@ Main processor from `.pdf` and `.docx` to `.md`.
 4. Install the dependencies:
 
    ```
-   pip install docling
-   pip install pypdf
-   pip install psutil
+   pip install docling pypdf psutil
    ```
 
-   Or in one line (with the extra tooling used during development):
+5. Install LibreOffice (Writer) so `soffice` is on PATH, or set
+   `CARDS_LIBREOFFICE_SOFFICE`.
 
-   ```
-   python -m pip install docling openai pypdf httpx pyinstaller psutil
-   ```
-
-5. Set the threading environment variables (keeps per-process threads at 1 so the outer
+6. Set the threading environment variables (keeps per-process threads at 1 so the outer
    `ProcessPoolExecutor` owns the parallelism):
 
    ```
@@ -64,21 +60,26 @@ Main processor from `.pdf` and `.docx` to `.md`.
    DOCLING_NUM_THREADS=1
    ```
 
-   (The scripts also set these defaults on import via `docling_config.py`.)
+---
 
-6. Add the virtual environment folder to `.gitignore`:
+## Shared volume
 
-   ```
-   Docling_env/
-   ```
+Java and the Docling daemon share **`/shared-docs`** (env `CARDS_SHARED_DOCS`, JVM property
+`cards.parse.output.dir`). Layout:
+
+```
+/shared-docs/{answerUuid}/
+  {stem}.pdf|.docx|.doc   # staged by Java
+  {stem}.docx / {stem}.pdf  # LibreOffice conversions (Python)
+  {stem}.md                 # write_chunk_files only
+  Chunks/                   # write_chunk_files only
+```
 
 ---
 
 ## Docling daemon
 
-The first PDF request after boot is much faster because worker processes and Docling
-models stay loaded between conversions instead of being spawned per file, and converter
-creation is skipped. On start you get:
+On start you get:
 
 - **N warm PDF worker processes** (heavy models, parallel page batches)
 - **1 warm DOCX converter** in the HTTP server process (lighter, single-threaded via
@@ -87,58 +88,37 @@ creation is skipped. On start you get:
 ### Java side
 
 - The daemon is **not** started by Java. Start it with Docker, or by hand for local work.
-- **`DoclingMarkdownGenerator`** / **`DoclingParseClient`** — send the document *bytes* to
-  `POST /parse` and receive the Markdown and chunk tree in one reply. No paths are exchanged, so
-  the daemon needs no access to the JVM's filesystem. If it cannot be reached, parsing fails —
-  the daemon (or the CLI, run by hand) is the only processor.
-
-### Daemon internals
-
-- Starts a warm `ProcessPoolExecutor` at boot (models loaded via `_init_worker`), with
-  subprocess workers warmed at startup.
-- Caches a DOCX `DocumentConverter` in the main daemon process, created at startup via
-  `get_docx_converter()` in `DaemonState.__init__`. There is **no** DOCX process pool.
+- Java **stages** the upload once under `/shared-docs/{answerUuid}/{fileName}`, then
+  `DoclingParseClient` calls `POST /parse?path=...`. Python writes all derived files.
+  The reply is a small summary (`ok`, `markdown_path`, `chunked`, `chunks_dir`, `logs`).
 
 ### Manual HTTP daemon start (optional)
 
 ```
+set CARDS_SHARED_DOCS=/shared-docs
 python modules/parsing/src/main/python/docling_daemon.py --host 127.0.0.1 --port 18765
 ```
 
 ### Test endpoints
 
-- `GET  http://localhost:18765/health` — readiness probe. Reports the PDF worker count
-  only; it does not expose DOCX status. DOCX is still warmed — it is just not counted as a
-  "worker".
-- `POST http://localhost:18765/parse?filename=proto.pdf&chunk=true` — the document bytes as the
-  request body → `{"markdown", "chunked", "outline", "catalog", "chunks":[{"file","text"}], "logs"}`.
-  The only conversion endpoint.
+- `GET  http://localhost:18765/health` — readiness probe (includes `shared_docs` root).
+- `POST http://localhost:18765/parse?path=/shared-docs/.../proto.pdf&chunk=true` —
+  path under the shared root → summary JSON. LibreOffice prep + Docling + `write_chunk_files`.
 - `POST http://localhost:18765/shutdown` — graceful stop.
 
-The daemon accepts **no filesystem paths**. The earlier `POST /convert` (an `input_path`) and
-`POST /chunk` (a `file_path`) are gone: both needed the daemon to see the caller's filesystem, which
-cannot work once it runs in a container, and `/parse` supersedes both. They now return 404, and
-`--parse-output-dir` / `$PARSE_OUTPUT_DIR` no longer exist. To chunk a `.md` that is already on
-disk, use the CLI: `python chunker.py <file>`.
+Paths outside `CARDS_SHARED_DOCS` (default `/shared-docs`) are refused.
 
-Send `Accept-Encoding: gzip` — a parsed protocol's reply compresses roughly 5x.
+The daemon has **no authentication**. Keep `--host 127.0.0.1` when running by hand, and
+publish the container port as `127.0.0.1:18765:18765`.
 
-The daemon has **no authentication**. Every endpoint, `/shutdown` included, is open to whoever can
-reach the port, so it must stay on loopback: keep the `--host 127.0.0.1` default when running it by
-hand, and publish the container port as `127.0.0.1:18765:18765` rather than `18765:18765`. In a
-container the process itself still binds `0.0.0.0`, because Docker forwards published ports to the
-container's `eth0` and not to its loopback — the host-side publish address is what confines it.
+### Configuration (system properties / env)
 
-### Configuration (system properties)
+| Property / env | Default | Purpose |
+|----------------|---------|---------|
+| `cards.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
+| `cards.docling.timeout.minutes` | `30` | Per-document parse timeout |
+| `cards.parse.output.dir` / `CARDS_SHARED_DOCS` | `/shared-docs` | Shared staging + parse output root |
+| `CARDS_LIBREOFFICE_SOFFICE` | `soffice` | LibreOffice executable |
 
-| Property | Default | Purpose |
-|----------|---------|---------|
-| `iap.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
-| `iap.docling.timeout.minutes` | `30` | Per-document parse timeout |
-| `iap.parse.output.dir` | `<user.dir>/iap-parsed-markdown` | Where Java writes `<answer-uuid>/<name>.md` and `Chunks/`. Java-side only — the daemon never sees it |
-
-Java never starts the daemon. Run it yourself — in Docker for a real deployment, or by hand for
-local work (see [Manual daemon start](#manual-http-daemon-start-optional)).
-
-Java talks to the daemon over `POST /parse` and nothing else; when the
-daemon cannot be reached, parsing fails. There is no fallback processor.
+Java never starts the daemon. When the daemon cannot be reached, parsing fails. There is no
+fallback processor.

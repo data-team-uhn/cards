@@ -77,11 +77,11 @@ def convert_docx(
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> None:
     """
-    Convert a DOCX file to Markdown and write it, plus its chunk tree, beside ``output_file``.
+    Convert a DOCX file to Markdown and write it, plus its chunk tree, via
+    :func:`chunker.write_chunk_files` (the sole parse-output writer).
 
-    Always chunks, mirroring the daemon's ``POST /parse`` (which defaults ``chunk=true``), so the
-    CLI and the service produce the same artifacts for the same document — that is what makes the
-    two paths comparable when checking they have not drifted apart.
+    Prefer :func:`parse_document.parse_document` for new call sites — it also runs the
+    LibreOffice PDF rendition before Docling.
 
     @param input_path: path to the source .docx file
     @param output_file: path where Markdown output is written
@@ -103,11 +103,6 @@ def convert_docx(
 
     t2 = perf_counter()
 
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(markdown_content)
-
-    t3 = perf_counter()
-
     chunks_dir = write_chunk_files(
         markdown_content,
         output_file,
@@ -115,7 +110,7 @@ def convert_docx(
         min_structure_tokens=min_structure_tokens,
     )
 
-    t4 = perf_counter()
+    t3 = perf_counter()
     tokens = count_tokens(markdown_content)
 
     print(f"Markdown length: {len(markdown_content):,} characters")
@@ -124,8 +119,7 @@ def convert_docx(
     print("\n=== Timing ===")
     print(f"Converter init:      {t1 - t0:.2f}s")
     print(f"Convert and export:  {t2 - t1:.2f}s")
-    print(f"File write:          {t3 - t2:.2f}s")
-    print(f"Chunk split:         {t4 - t3:.2f}s")
+    print(f"Write + chunk:       {t3 - t2:.2f}s")
     if chunks_dir is not None:
         chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
         print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")
@@ -134,4 +128,4 @@ def convert_docx(
             f"Chunking skipped "
             f"({tokens} tokens < {min_structure_tokens} min_structure_tokens)"
         )
-    print(f"Total:               {t4 - t0:.2f}s")
+    print(f"Total:               {t3 - t0:.2f}s")

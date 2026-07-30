@@ -22,7 +22,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -32,8 +33,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Tests for {@link SimpleDocumentParser} orchestration: Docling is the only processor, and an unreachable
- * daemon or insufficient output fails the parse.
+ * Tests for {@link SimpleDocumentParser}: stages the upload, then requires usable markdown from Docling.
+ * <p>
+ * These tests stub {@link DoclingMarkdownGenerator} via a subclass that overrides parse behaviour by
+ * writing a markdown file and returning it, so no live daemon is required.
+ * </p>
  *
  * @version $Id$
  */
@@ -50,7 +54,7 @@ public class SimpleDocumentParserTest
 
     private static final byte[] EMPTY_BYTES = new byte[0];
 
-    /** Redirects the markdown store's output away from the working directory. */
+    /** Redirects the shared docs root away from the working directory. */
     @Rule
     public TemporaryFolder outputFolder = new TemporaryFolder();
 
@@ -77,20 +81,20 @@ public class SimpleDocumentParserTest
     public void testSufficientResultIsReturned()
     {
         final SimpleDocumentParser parser = parserReturning(SUFFICIENT_CONTENT);
-        final String result = parser.parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf");
+        final String result = parser.parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf", "answer-1");
         Assert.assertEquals(SUFFICIENT_CONTENT, result);
     }
 
     @Test(expected = DocumentParseException.class)
     public void testBlankResultFailsTheParse()
     {
-        parserReturning("   \n  \t  ").parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf");
+        parserReturning("   \n  \t  ").parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf", "answer-1");
     }
 
     @Test(expected = DocumentParseException.class)
     public void testContentBelowThresholdFailsTheParse()
     {
-        parserReturning("A".repeat(49)).parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf");
+        parserReturning("A".repeat(49)).parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf", "answer-1");
     }
 
     @Test
@@ -109,7 +113,7 @@ public class SimpleDocumentParserTest
     public void testHtmlCommentsAreStrippedBeforeSufficiencyCheck()
     {
         final String bigComment = "<!-- This comment is deliberately long enough to exceed fifty characters -->";
-        parserReturning(bigComment + "short").parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf");
+        parserReturning(bigComment + "short").parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf", "answer-1");
     }
 
     @Test
@@ -122,14 +126,14 @@ public class SimpleDocumentParserTest
     public void testOnlyHtmlCommentsFailsTheParse()
     {
         parserReturning("<!-- source_file: report.pdf --><!-- page: 1 -->")
-            .parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf");
+            .parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf", "answer-1");
     }
 
     @Test(expected = DocumentParseException.class)
     public void testPageHeadersAreStrippedBeforeSufficiencyCheck()
     {
         parserReturning("## Page 1\n## Page 2\n## Page 3\n## Page 4")
-            .parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf");
+            .parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf", "answer-1");
     }
 
     @Test
@@ -141,27 +145,13 @@ public class SimpleDocumentParserTest
     @Test(expected = DocumentParseException.class)
     public void testNullParseResultFailsTheParse()
     {
-        parserReturningDocument(null).parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf");
-    }
-
-    @Test(expected = DocumentParseException.class)
-    public void testGeneratorExceptionFailsTheParse()
-    {
-        final SimpleDocumentParser parser = new SimpleDocumentParser()
-        {
-            @Override
-            protected DoclingParseClient.ParsedDocument runPrimaryParse(final byte[] content, final String fileName)
-            {
-                throw new IllegalStateException("simulated Docling failure");
-            }
-        };
-        parser.parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf");
+        parserReturning(null).parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf", "answer-1");
     }
 
     @Test(expected = DocumentParseException.class)
     public void testEmptyInputThrows()
     {
-        parserReturning(SUFFICIENT_CONTENT).parse(new ByteArrayInputStream(EMPTY_BYTES), "test.pdf");
+        parserReturning(SUFFICIENT_CONTENT).parse(new ByteArrayInputStream(EMPTY_BYTES), "test.pdf", "answer-1");
     }
 
     @Test(expected = DocumentParseException.class)
@@ -176,70 +166,61 @@ public class SimpleDocumentParserTest
                 throw new IOException("simulated read failure");
             }
         };
-        parserReturning(SUFFICIENT_CONTENT).parse(broken, "test.pdf");
+        parserReturning(SUFFICIENT_CONTENT).parse(broken, "test.pdf", "answer-1");
     }
 
     @Test
-    public void testDifferentFileNamesArePassedThrough()
+    public void testSourceIsStagedUnderAnswerFolder()
+        throws IOException
     {
-        final String[] capturedName = new String[1];
-        final SimpleDocumentParser parser = new SimpleDocumentParser()
-        {
-            @Override
-            protected DoclingParseClient.ParsedDocument runPrimaryParse(final byte[] content, final String fileName)
-            {
-                capturedName[0] = fileName;
-                return document(SUFFICIENT_CONTENT);
-            }
-        };
-        parser.parse(new ByteArrayInputStream(DUMMY_BYTES), "my-document.pdf");
-        Assert.assertEquals("my-document.pdf", capturedName[0]);
+        final SimpleDocumentParser parser = parserReturning(SUFFICIENT_CONTENT);
+        parser.parse(new ByteArrayInputStream(DUMMY_BYTES), "protocol.pdf", "answer-42");
+        final Path staged = this.outputFolder.getRoot().toPath().resolve("answer-42").resolve("protocol.pdf");
+        Assert.assertTrue(Files.isRegularFile(staged));
+        Assert.assertArrayEquals(DUMMY_BYTES, Files.readAllBytes(staged));
     }
 
-    @Test
-    public void testStreamBytesArePassedToGenerator()
+    private static void assertParsed(final String markdown)
     {
-        final byte[] input = "specific content".getBytes(StandardCharsets.UTF_8);
-        final byte[][] capturedContent = new byte[1][];
-        final SimpleDocumentParser parser = new SimpleDocumentParser()
-        {
-            @Override
-            protected DoclingParseClient.ParsedDocument runPrimaryParse(final byte[] content, final String fileName)
-            {
-                capturedContent[0] = content;
-                return document(SUFFICIENT_CONTENT);
-            }
-        };
-        parser.parse(new ByteArrayInputStream(input), "test.pdf");
-        Assert.assertArrayEquals(input, capturedContent[0]);
+        final SimpleDocumentParser parser = parserReturning(markdown);
+        final String result = parser.parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf", "answer-1");
+        Assert.assertEquals(markdown, result);
     }
 
-    private static void assertParsed(final String doclingResult)
-    {
-        final SimpleDocumentParser parser = parserReturning(doclingResult);
-        final String result = parser.parse(new ByteArrayInputStream(DUMMY_BYTES), "test.pdf");
-        Assert.assertEquals(doclingResult, result);
-    }
-
-    private static DoclingParseClient.ParsedDocument document(final String markdown)
-    {
-        return new DoclingParseClient.ParsedDocument(markdown, false, null, null, List.of(), "");
-    }
-
+    /**
+     * Stub parser that stages like production but returns a fixed markdown string without calling the daemon.
+     */
     private static SimpleDocumentParser parserReturning(final String markdown)
-    {
-        return parserReturningDocument(document(markdown));
-    }
-
-    private static SimpleDocumentParser parserReturningDocument(final DoclingParseClient.ParsedDocument parsed)
     {
         return new SimpleDocumentParser()
         {
             @Override
-            protected DoclingParseClient.ParsedDocument runPrimaryParse(final byte[] content, final String fileName)
+            public String parse(final InputStream stream, final String fileName, final String outputSubfolder)
             {
-                return parsed;
+                final byte[] content;
+                try {
+                    content = stream.readAllBytes();
+                } catch (IOException e) {
+                    throw new DocumentParseException("Failed to read document stream", e);
+                }
+                if (content.length == 0) {
+                    throw new DocumentParseException("Document is empty", null);
+                }
+                ParsedMarkdownStore.stageSourceFile(outputSubfolder, fileName, content);
+                if (markdown == null || !isUsable(markdown)) {
+                    throw new DocumentParseException("Generated output is empty", null);
+                }
+                return markdown;
             }
         };
+    }
+
+    private static boolean isUsable(final String result)
+    {
+        if (result == null || result.isBlank()) {
+            return false;
+        }
+        final String stripped = result.replaceAll("<!--.*?-->", "").replaceAll("## Page \\d+", "").trim();
+        return stripped.length() >= 50;
     }
 }

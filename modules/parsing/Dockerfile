@@ -16,24 +16,16 @@
 
 # Docling processing daemon.
 #
-# Serves POST /parse, which takes the document bytes and returns the Markdown plus its chunk
-# tree. That endpoint touches no shared filesystem, which is what makes this container usable
-# from a JVM running elsewhere: the older /convert and /chunk endpoints pass absolute paths,
-# and a caller's paths do not exist in here (on a Windows host they cannot be made to).
+# Serves POST /parse with a path under the shared /shared-docs volume. LibreOffice prep,
+# Docling, and write_chunk_files all run in this container and write beside the staged file.
 #
 # Build, from the repo root:
-#   mvn install -Pdocker -pl modules/documents/processing
-# or, without Maven:
-#   docker build -t iap/docling:latest modules/documents/processing
+#   docker build -t cards/docling:latest modules/parsing
 #
-# Run, assuming a non-dockerized IAP install:
-#   docker run --rm -p 127.0.0.1:18765:18765 --cpus=4 --memory=8g iap/docling:latest
-#
-# The 127.0.0.1 prefix on the published port is not optional decoration: the daemon has no
-# authentication, so it is the only thing keeping the network off /parse and /shutdown. A bare
-# "-p 18765:18765" binds every host interface and exposes both to anyone who can route here.
-# docker-compose.yml publishes no port at all and lets IAP reach the daemon over the Compose
-# network instead.
+# Run (shared docs mounted; publish only to loopback):
+#   docker run --rm -p 127.0.0.1:18765:18765 \
+#     -v /path/to/shared-docs:/shared-docs \
+#     --cpus=4 --memory=8g cards/docling:latest
 
 FROM python:3.13-slim AS base
 
@@ -58,7 +50,8 @@ ENV PYTHONUNBUFFERED=1 \
     # Where the baked weights live. download_models() saves into DOCLING_ARTIFACTS_PATH,
     # and Docling reads them back from that same layout at runtime.
     DOCLING_ARTIFACTS_PATH=/opt/models/docling \
-    HF_HOME=/opt/models/hf
+    HF_HOME=/opt/models/hf \
+    CARDS_SHARED_DOCS=/shared-docs
 
 WORKDIR /app
 
@@ -80,9 +73,9 @@ ENV TRANSFORMERS_OFFLINE=1 \
 
 COPY src/main/python/ /app/
 
-# Unprivileged: the daemon only ever writes its own upload temp files.
-RUN useradd --create-home --uid 10001 docling \
-    && chown -R docling:docling /app /opt/models
+RUN mkdir -p /shared-docs \
+    && useradd --create-home --uid 10001 docling \
+    && chown -R docling:docling /app /opt/models /shared-docs
 USER docling
 
 EXPOSE 18765
@@ -91,8 +84,6 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
     CMD curl -fsS http://127.0.0.1:18765/health || exit 1
 
 # 0.0.0.0 is required here and cannot be tightened to 127.0.0.1: Docker forwards a published port
-# to the container's eth0 address, so a daemon listening only on the container's loopback would
-# refuse every forwarded connection. Confine it from the host side instead, by publishing to
-# 127.0.0.1 (see the run example above). No volume is needed: /parse takes the document in the
-# request body and returns the result, so the daemon accepts no paths.
+# to the container's eth0 address. Confine it from the host side by publishing to 127.0.0.1.
+# Mount the same /shared-docs volume the main app uses so path-based /parse can read and write.
 ENTRYPOINT ["python", "docling_daemon.py", "--host", "0.0.0.0", "--port", "18765"]

@@ -27,10 +27,8 @@ import org.slf4j.LoggerFactory;
  * Tracks which generation of an answer's {@code Chunks/} tree is current, so downstream work can notice that a
  * newer parse has superseded it.
  * <p>
- * The tree itself is no longer requested from here. It arrives with the Markdown from the daemon's
- * {@code POST /parse} call and is written by {@link SimpleDocumentParser} — see {@link DoclingParseClient} for
- * why that endpoint replaced the old path-based {@code POST /chunk} request and its local-Python CLI fallback.
- * What remains is the bookkeeping: {@link #markChunksWritten(Path)} after a tree is written,
+ * The tree is written by Python {@code write_chunk_files} during the daemon's path-based {@code POST /parse}.
+ * What remains here is bookkeeping: {@link #markChunksWritten(Path)} after a tree is written,
  * {@link #invalidateChunking(Path)} after a failed parse, and {@link #isSummarizationCurrent(Path, long)} for
  * catalog summarization to abort when it has been overtaken.
  * </p>

@@ -766,14 +766,15 @@ def write_chunk_files(
     *,
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> Path | None:
-    """Write per-chunk Markdown files, an ``outline.json`` and a ``catalog.json`` into a
-    ``Chunks/`` folder beside ``output_file``.
+    """Write the parsed ``.md`` and its ``Chunks/`` tree beside ``output_file``.
 
-    The document goes through TOC extraction and appendix detection, with the result written
-    back to ``output_file`` when anything changed.
+    This is the sole disk writer for parse outputs used by both the daemon and the CLI.
+
+    The document goes through TOC extraction and appendix detection; the (possibly cleaned)
+    markdown is always written to ``output_file``.
 
     ``markdown_content`` must already be cleaned. :func:`markdown_cleanup.clean_markdown` runs
-    exactly once per document, in the converter that produced the ``.md``, so nothing here or
+    exactly once per document, in the converter that produced the markdown, so nothing here or
     below re-runs it.
 
     The size gate is the single binary routing decision of the pipeline, recorded as the
@@ -783,22 +784,22 @@ def write_chunk_files(
     then holds only the outline (``chunked: false``, no ``catalog.json`` and no chunk files),
     carrying a bookmark-derived ``toc`` when a source PDF had bookmarks; ``None`` is returned.
 
-    When the sidecar ``outline.json`` has a ``backmatterLine``, everything from that line
+    When the outline has a ``backmatterLine``, everything from that line
     to EOF becomes one standalone backmatter chunk.
     The remaining main content is split at the shallowest heading level, then consecutive
     sections are united up to ``max_tokens`` before any over-budget piece is split further.
 
     @param markdown_content: the full Markdown document, already cleaned
-    @param output_file: the main ``.md`` file
+    @param output_file: the main ``.md`` file path to write
     @param filename: the original input file name (with extension)
     @param max_tokens: target maximum tokens per chunk file
     @param min_structure_tokens: skip chunking when the document is smaller than this
     @return: the path to the created chunks folder, or ``None`` when chunking was skipped
     """
     # A sibling <stem>.pdf is the only disk source of real bookmarks: native PDFs and the
-    # DOCX→PDF renditions Java co-locates via ParsedMarkdownStore.saveArtifact. Re-extracted
-    # every run rather than read from a sidecar, so the records always match the document
-    # actually being chunked.
+    # DOC/DOCX→PDF renditions LibreOffice writes beside the source before Docling runs.
+    # Re-extracted every run rather than read from a sidecar, so the records always match
+    # the document actually being chunked.
     records = []
     pdf_file = output_file.with_suffix(".pdf")
     if pdf_file.is_file():
@@ -812,8 +813,9 @@ def write_chunk_files(
         records=records,
     )
 
-    if tree["markdown"] != markdown_content:
-        output_file.write_text(tree["markdown"], encoding="utf-8")
+    # Sole writer of the parse ``.md`` (CLI and daemon both go through here).
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    output_file.write_text(tree["markdown"], encoding="utf-8")
 
     chunks_dir = output_file.parent / CHUNKS_DIRNAME
     if chunks_dir.exists():
@@ -845,10 +847,8 @@ def build_chunk_tree(
 ) -> dict[str, Any]:
     """Analyse and split an already-cleaned document into its chunk tree, touching no filesystem.
 
-    The pure core of :func:`write_chunk_files`. It takes any already-known outline records
-    instead of reading ``bookmarks.json``, and returns the whole tree instead of writing it,
-    so a caller that received the document over HTTP can chunk it without sharing a filesystem
-    — see ``docling_daemon``'s ``/parse``.
+    The pure core of :func:`write_chunk_files`. Callers that need the tree on disk go through
+    :func:`write_chunk_files` (daemon and CLI); this returns the tree in memory for that writer.
 
     @param markdown_content: the full Markdown document, already cleaned
     @param filename: the original input file name (with extension), recorded as ``fileId``
@@ -880,9 +880,7 @@ def build_chunk_tree(
     outline["chunked"] = to_be_chunked
 
     if not to_be_chunked:
-        # Say *why* it is unchunked. Java writes an outline with the same field when the pure-Java
-        # fallback generators produced the Markdown and no chunker ran at all, so downstream can
-        # tell a deliberate send-it-whole document from one that never reached a chunker.
+        # Say *why* it is unchunked (deliberate send-it-whole below the size gate).
         outline["unchunkedReason"] = UNCHUNKED_BELOW_THRESHOLD
         return {
             "markdown": prepared,

@@ -15,7 +15,11 @@
 # limitations under the License.
 #
 
-"""CLI entry point: convert PDF or DOCX files to Markdown using Docling."""
+"""CLI entry point: convert PDF / DOCX / DOC files to Markdown using Docling.
+
+Uses the same :func:`parse_document.parse_document` path as the daemon (LibreOffice prep,
+Docling, then :func:`chunker.write_chunk_files`).
+"""
 
 import argparse
 import sys
@@ -24,17 +28,16 @@ from pathlib import Path
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 
 from docling_batch_sizing import GB_PER_WORKER, MAX_BATCH_PAGES, positive_int
-from docling_docx_parser import convert_docx
-from docling_pdf_parser import convert_pdf
-from markdown_markers import SUPPORTED_SUFFIXES
+from markdown_markers import INPUT_SUFFIXES
+from parse_document import parse_document
 from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Convert PDF or DOCX files to Markdown using Docling."
+        description="Convert PDF, DOCX, or DOC files to Markdown using Docling."
     )
-    parser.add_argument("input_file", help="Path to a .pdf or .docx file")
+    parser.add_argument("input_file", help="Path to a .pdf, .docx, or .doc file")
     parser.add_argument(
         "--workers",
         type=positive_int,
@@ -52,7 +55,7 @@ def parse_args():
         metavar="N",
         help=(
             "pages per worker batch (default: auto from page count and workers, "
-            f"max {MAX_BATCH_PAGES})"
+            f"max {MAX_BATCH_PAGES}; ignored by the shared parse path today — kept for CLI compat)"
         ),
     )
     parser.add_argument(
@@ -77,30 +80,29 @@ def main() -> None:
         sys.exit(1)
 
     suffix = input_path.suffix.lower()
-
-    if suffix not in SUPPORTED_SUFFIXES:
+    if suffix not in INPUT_SUFFIXES:
         print(f"Unsupported file type: {suffix}", file=sys.stderr)
-        print("Only .pdf and .docx are supported.", file=sys.stderr)
+        print(f"Supported: {', '.join(INPUT_SUFFIXES)}", file=sys.stderr)
         sys.exit(1)
 
-    output_file = input_path.with_suffix(".md")
-
-    if suffix == ".pdf":
-        convert_pdf(
+    try:
+        summary = parse_document(
             input_path,
-            output_file,
-            batch_pages=args.batch_pages,
-            workers=args.workers,
             min_structure_tokens=args.min_structure_tokens,
+            pdf_workers=args.workers,
+            log=lambda message: print(message, flush=True),
         )
+    except Exception as exc:
+        print(f"Parse failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    if summary.get("logs"):
+        print(summary["logs"], flush=True)
+    print(f"\nSaved to {summary['markdown_path']}")
+    if summary.get("chunked"):
+        print(f"Chunks in {summary['chunks_dir']}")
     else:
-        convert_docx(
-            input_path,
-            output_file,
-            min_structure_tokens=args.min_structure_tokens,
-        )
-
-    print(f"\nSaved to {output_file}")
+        print("Document left unchunked (below structure threshold)")
 
 
 if __name__ == "__main__":

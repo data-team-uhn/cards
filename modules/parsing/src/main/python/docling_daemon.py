@@ -23,22 +23,15 @@ Java calls this over HTTP instead of spawning docling_parser.py per file.
 
 Endpoints:
     GET  /health   -> {"status": "ok", "workers": N, "ready": true}
-    POST /parse    -> raw document bytes in the body,
-                      ?filename=proto.pdf&chunk=true[&max_tokens=&min_structure_tokens=]
-                     -> {"markdown", "chunked", "outline", "catalog", "chunks":[{"file","text"}], "logs"}
+    POST /parse    -> ?path=/shared-docs/.../file.pdf[&chunk=true][&max_tokens=]
+                      [&min_structure_tokens=]
+                     -> {"ok", "markdown_path", "chunked", "chunks_dir", "logs", "filename"}
     POST /shutdown -> graceful stop (used when the caller owns the daemon process)
 
-The daemon exchanges **no filesystem paths at all**. A document arrives as bytes on ``/parse`` and
-the entire result — Markdown plus the chunk tree — is returned in the reply, so nothing needs to be
-shared with the caller and the daemon runs in its own container. The only file it ever writes is the
-temp spool for the upload it is currently handling.
-
-An earlier path-based pair (``POST /convert`` with an ``input_path``, ``POST /chunk`` with a
-``file_path``) has been removed. Both required the daemon to see the caller's filesystem, which
-cannot work across a container boundary, and both are superseded by ``/parse``. Their removal is
-what makes "touches no filesystem" an enforced property rather than a convention: with no path ever
-accepted, there is nothing to allowlist. The CLI (``docling_parser.py``, ``chunker.py``) calls the
-same chunker functions in-process and never needed the endpoints.
+The daemon and the main app share ``/shared-docs`` (env ``CARDS_SHARED_DOCS``). Java stages
+the upload onto that volume and POSTs its absolute path; Python runs LibreOffice prep, Docling,
+and writes ``{stem}.md`` + ``Chunks/`` through :func:`chunker.write_chunk_files`. The HTTP
+reply is a small summary — not the Markdown or chunk payloads.
 
 The daemon has no authentication: every endpoint is open to whoever can reach the port, including
 ``/shutdown``. Loopback is the access control, so keep it on the ``--host`` default. A container is
@@ -50,11 +43,10 @@ the host side (``-p 127.0.0.1:18765:18765``) rather than by changing the bind ad
 from __future__ import annotations
 
 import argparse
-import gzip
 import json
+import os
 import signal
 import sys
-import tempfile
 import threading
 from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures.process import BrokenProcessPool
@@ -62,33 +54,21 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 
-from chunker import DEFAULT_MAX_TOKENS, build_chunk_tree
+from chunker import DEFAULT_MAX_TOKENS
 from docling_batch_sizing import GB_PER_WORKER, calc_workers, positive_int
-from docling_docx_parser import convert_docx_to_markdown, get_docx_converter
-from docling_pdf_parser import convert_pdf_to_markdown, warm_pdf_workers, _init_worker
-from libreoffice_convert import prepare_office_document
-from markdown_cleanup import source_file_basename
-from markdown_markers import SUPPORTED_SUFFIXES
-from pdf_bookmarks import extract_verified_outline
+from docling_docx_parser import get_docx_converter
+from docling_pdf_parser import warm_pdf_workers, _init_worker
+from markdown_markers import INPUT_SUFFIXES
+from parse_document import parse_document
 from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 18765
-
-# Cap on an uploaded document on /parse. The body is streamed to a temp file rather than held in
-# memory, and the limit is enforced as bytes arrive rather than trusted from Content-Length.
-MAX_UPLOAD_BYTES = 256 * 1024 * 1024
-
-# Chunks of the upload stream read at a time.
-_UPLOAD_CHUNK_BYTES = 1024 * 1024
-
-# Responses at or above this size are gzipped when the client advertises support. The payload
-# is Markdown and JSON, so it compresses several-fold for the cost of a little CPU.
-MIN_GZIP_BYTES = 8 * 1024
+DEFAULT_SHARED_DOCS = "/shared-docs"
 
 
 class DaemonState:
@@ -128,44 +108,45 @@ _STATE: DaemonState | None = None
 _SERVER: ThreadingHTTPServer | None = None
 
 
-def _accepts_gzip(handler: BaseHTTPRequestHandler) -> bool:
-    """Whether the client will accept a gzipped body.
+def shared_docs_root() -> Path:
+    """Root of the shared volume; paths outside it are refused."""
+    configured = (os.environ.get("CARDS_SHARED_DOCS") or DEFAULT_SHARED_DOCS).strip()
+    return Path(configured).resolve()
 
-    Each ``Accept-Encoding`` coding is checked with its q-value, because ``gzip;q=0`` is an
-    explicit *refusal* that a substring test reads as consent.
+
+def resolve_parse_path(raw_path: str) -> Path:
+    """Resolve and allowlist a caller-supplied document path under the shared docs root.
+
+    @param raw_path: absolute path from the ``path`` query parameter
+    @return: resolved existing file path
+    @raise ValueError: when the path is empty, outside the shared root, or not a file
     """
-    header = handler.headers.get("Accept-Encoding", "") or ""
-    for coding in header.lower().split(","):
-        name, _, params = coding.strip().partition(";")
-        if name.strip() != "gzip":
-            continue
-        for param in params.split(";"):
-            key, _, value = param.partition("=")
-            if key.strip() == "q":
-                try:
-                    return float(value.strip()) > 0
-                except ValueError:
-                    return False
-        return True
-    return False
+    text = (raw_path or "").strip()
+    if not text:
+        raise ValueError("path query parameter is required")
+    candidate = Path(unquote(text)).resolve()
+    root = shared_docs_root()
+    try:
+        candidate.relative_to(root)
+    except ValueError as exc:
+        raise ValueError(
+            f"path must be under {root}; got {candidate}"
+        ) from exc
+    if not candidate.is_file():
+        raise ValueError(f"document does not exist: {candidate}")
+    suffix = candidate.suffix.lower()
+    if suffix not in INPUT_SUFFIXES:
+        raise ValueError(
+            f"path must end in one of {', '.join(INPUT_SUFFIXES)}; got {candidate.name!r}"
+        )
+    return candidate
 
 
 def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: dict[str, Any]) -> None:
-    """Send ``payload`` as JSON, gzipped when it is large and the client accepts it.
-
-    A parsed protocol's Markdown plus its chunk tree runs to megabytes of text; compressing it
-    costs little CPU and saves most of the transfer, which matters once the daemon is a network
-    hop away rather than a loopback call.
-    """
+    """Send ``payload`` as JSON."""
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-    encoding = None
-    if len(body) >= MIN_GZIP_BYTES and _accepts_gzip(handler):
-        body = gzip.compress(body)
-        encoding = "gzip"
     handler.send_response(status)
     handler.send_header("Content-Type", "application/json; charset=utf-8")
-    if encoding:
-        handler.send_header("Content-Encoding", encoding)
     if handler.close_connection:
         handler.send_header("Connection", "close")
     handler.send_header("Content-Length", str(len(body)))
@@ -173,38 +154,8 @@ def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: dict[s
     handler.wfile.write(body)
 
 
-def _safe_suffix(filename: str) -> str:
-    """The supported extension of ``filename``, lowercased.
-
-    @param filename: the client-supplied document name
-    @return: ``".pdf"``, ``".docx"``, or ``".doc"``
-    @raise ValueError: when the name has no supported extension
-    """
-    suffix = Path(filename or "").suffix.lower()
-    if suffix not in SUPPORTED_SUFFIXES:
-        raise ValueError(
-            f"filename must end in one of {', '.join(SUPPORTED_SUFFIXES)}; got {filename!r}"
-        )
-    return suffix
-
-
 def _drain_request_body(handler: BaseHTTPRequestHandler) -> None:
-    """Read and discard any unread request body.
-
-    An error response written while the client is still uploading gets the connection reset
-    before the client can read it, so the caller sees a transport failure instead of the 400
-    that says what was wrong. Whether it happens depends on how much of the body fitted in
-    socket buffers, which makes it intermittent — worse than a consistent failure. Draining
-    first keeps the exchange well-formed and leaves an ordinary connection reusable.
-
-    A body that cannot be *fully* drained closes the connection after the response instead:
-    under keep-alive, any bytes left in the socket would be read as the start of the next
-    request. That covers a chunked body (BaseHTTPRequestHandler does not decode chunked
-    transfer-encoding, so where it ends is unknowable), an unparseable or negative length,
-    a declared length over :data:`MAX_UPLOAD_BYTES` (deliberately not drained, so a lying
-    header cannot make the daemon read without bound just to save the connection), and a
-    client that hung up early (nothing left to reuse anyway).
-    """
+    """Read and discard any unread request body (path-based /parse has none)."""
     if handler.headers.get("Transfer-Encoding"):
         handler.close_connection = True
         return
@@ -216,166 +167,19 @@ def _drain_request_body(handler: BaseHTTPRequestHandler) -> None:
     except ValueError:
         handler.close_connection = True
         return
-    if remaining < 0 or remaining > MAX_UPLOAD_BYTES:
-        # The body cannot be drained within the amount of work this endpoint permits. Keeping
-        # HTTP/1.1 alive would leave its bytes to be parsed as the next request on this socket.
+    if remaining < 0 or remaining > 1024 * 1024:
         handler.close_connection = True
         return
     while remaining > 0:
-        block = handler.rfile.read(min(_UPLOAD_CHUNK_BYTES, remaining))
+        block = handler.rfile.read(min(65536, remaining))
         if not block:
             handler.close_connection = True
             return
         remaining -= len(block)
 
 
-def _spool_upload(handler: BaseHTTPRequestHandler, suffix: str) -> Path:
-    """Stream the request body to a temp file inside the daemon's own filesystem.
-
-    Streamed rather than read whole so a large document does not have to fit in memory. The cap
-    comes from ``Content-Length``, which is required and checked before a byte is read; only that
-    many bytes are ever read, so a header claiming less than the client sends cannot overrun it
-    and the surplus simply stays in the socket.
-
-    A body that stops early is rejected rather than parsed. The client disconnecting mid-upload
-    used to break the read loop and return the partial file, which Docling would then parse into
-    whatever it could make of a truncated document and the daemon would answer 200.
-
-    @param handler: the active request
-    @param suffix: the extension to give the temp file, which Docling uses to pick a backend
-    @return: the temp file's path; the caller must delete it
-    @raise ValueError: when ``Content-Length`` is missing, unparseable or over
-        :data:`MAX_UPLOAD_BYTES`, or the body is empty or ends before the declared length
-    """
-    declared = handler.headers.get("Content-Length")
-    if declared is None:
-        # Refused rather than read up to the cap: BaseHTTPRequestHandler does not decode chunked
-        # transfer-encoding, so a bodiless-looking request would otherwise block this thread on
-        # rfile.read() until the client sent MAX_UPLOAD_BYTES or hung up.
-        raise ValueError("Content-Length is required")
-    try:
-        length = int(declared)
-    except ValueError:
-        raise ValueError(f"invalid Content-Length: {declared!r}") from None
-    if length < 0:
-        raise ValueError(f"invalid Content-Length: {declared!r}")
-    if length > MAX_UPLOAD_BYTES:
-        raise ValueError(f"document too large ({length} > {MAX_UPLOAD_BYTES} bytes)")
-
-    remaining = length
-    written = 0
-    handle = tempfile.NamedTemporaryFile(prefix="docling-upload-", suffix=suffix, delete=False)
-    path = Path(handle.name)
-    try:
-        with handle:
-            while remaining > 0:
-                block = handler.rfile.read(min(_UPLOAD_CHUNK_BYTES, remaining))
-                if not block:
-                    break
-                written += len(block)
-                handle.write(block)
-                remaining -= len(block)
-        if written == 0:
-            raise ValueError("request body is empty")
-        if remaining > 0:
-            raise ValueError(
-                f"truncated upload: got {written} of {length} declared bytes"
-            )
-        return path
-    except BaseException:
-        path.unlink(missing_ok=True)
-        raise
-
-
-
-def _parse_document(
-    input_path: Path,
-    *,
-    filename: str,
-    chunk: bool,
-    max_tokens: int,
-    min_structure_tokens: int,
-) -> dict[str, Any]:
-    """Convert a document and, when asked, build its chunk tree.
-
-    LibreOffice prep for ``.doc`` / ``.docx`` runs first and writes converted siblings beside
-    the upload temp file. Docling conversion and chunking still return payloads in the HTTP
-    response (Java persists Markdown/Chunks until the shared-docs refactor).
-
-    @param input_path: the spooled upload
-    @param filename: the original document name, used for the source_file header and fileId
-    @param chunk: also split the document into its chunk tree
-    @param max_tokens: chunk budget
-    @param min_structure_tokens: leave the document unchunked below this size
-    @return: the response payload
-    """
-    docling_input = prepare_office_document(input_path)
-    markdown, logs = _convert_file(docling_input, source_file=filename)
-    if not chunk:
-        return {"markdown": markdown, "chunked": False, "logs": logs}
-
-    records = []
-    if docling_input.suffix.lower() == ".pdf":
-        records = extract_verified_outline(docling_input, markdown)
-
-    tree = build_chunk_tree(
-        markdown,
-        filename,
-        max_tokens=max_tokens,
-        min_structure_tokens=min_structure_tokens,
-        records=records,
-    )
-    return {
-        "markdown": tree["markdown"],
-        "chunked": tree["chunked"],
-        "outline": tree["outline"],
-        "catalog": tree["catalog"],
-        "chunks": tree["chunks"],
-        "logs": logs,
-    }
-
-
-def _convert_file(input_path: Path, source_file: str | None = None) -> tuple[str, str]:
-    logs: list[str] = []
-
-    def log(message: str) -> None:
-        logs.append(message)
-
-    suffix = input_path.suffix.lower()
-    if suffix == ".pdf":
-        try:
-            markdown = convert_pdf_to_markdown(
-                input_path,
-                executor=_STATE.pdf_executor,
-                workers=_STATE.worker_count,
-                log=log,
-                source_file=source_file,
-            )
-        except BrokenProcessPool as exc:
-            _STATE.pdf_executor_broken = True
-            # Stop serving and exit, rather than staying up answering 503 forever. The pool
-            # cannot be rebuilt in-process, so a fresh process is the only recovery, and only
-            # an exit triggers one: a container restart policy reacts to the process ending,
-            # never to health status. The shutdown runs on its own thread, so this request
-            # still gets its error response and the caller can fall back.
-            _request_shutdown()
-            raise RuntimeError("PDF worker pool is broken; restart the daemon") from exc
-    elif suffix == ".docx":
-        with _STATE.docx_lock:
-            markdown = convert_docx_to_markdown(input_path, source_file=source_file)
-        log(f"Converted DOCX ({len(markdown):,} chars)")
-    else:
-        raise ValueError(f"Unsupported file type: {suffix}")
-
-    return markdown, "\n".join(logs)
-
-
 def _health_status() -> str:
-    """The reason ``/health`` is refusing, for an operator reading the body.
-
-    A broken PDF pool used to report ``shutting_down``, which sends whoever is debugging it
-    looking for a shutdown that never happened.
-    """
+    """The reason ``/health`` is refusing, for an operator reading the body."""
     if _STATE is None:
         return "starting"
     if _STATE.pdf_executor_broken:
@@ -385,18 +189,35 @@ def _health_status() -> str:
     return "ok"
 
 
+def _run_parse(
+    input_path: Path,
+    *,
+    chunk: bool,
+    max_tokens: int,
+    min_structure_tokens: int,
+) -> dict[str, Any]:
+    """LibreOffice + Docling + write_chunk_files on a shared-docs path."""
+    assert _STATE is not None
+    try:
+        return parse_document(
+            input_path,
+            chunk=chunk,
+            max_tokens=max_tokens,
+            min_structure_tokens=min_structure_tokens,
+            pdf_executor=_STATE.pdf_executor,
+            pdf_workers=_STATE.worker_count,
+            docx_lock=_STATE.docx_lock,
+        )
+    except BrokenProcessPool as exc:
+        _STATE.pdf_executor_broken = True
+        _request_shutdown()
+        raise RuntimeError("PDF worker pool is broken; restart the daemon") from exc
+
+
 class DoclingDaemonHandler(BaseHTTPRequestHandler):
     """HTTP request handler for the Docling worker daemon."""
 
-    # BaseHTTPRequestHandler defaults to HTTP/1.0, under which CPython never answers
-    # ``Expect: 100-continue`` — it requires both sides to be 1.1 — so a client that sends it
-    # waits out its own continue timeout (measured: 1.14s per upload) before the body moves.
-    # Safe to raise because _json_response always sets Content-Length, so a 1.1 client always
-    # knows where each response ends.
     protocol_version = "HTTP/1.1"
-
-    # Required by the line above: 1.1 keeps the connection alive, and ThreadingHTTPServer holds
-    # one thread per connection, so without a timeout an idle client pins a thread for good.
     timeout = 120
 
     def log_message(self, format: str, *args: Any) -> None:
@@ -408,9 +229,6 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             return
 
         ready = _STATE is not None and _STATE.is_ready()
-        # 503, not 200-with-ready-false. Container probes are `curl -fsS .../health`, which
-        # reads the status line and never the body, so answering 200 here reported a daemon as
-        # healthy while every /parse returned 503.
         _json_response(
             self,
             HTTPStatus.OK if ready else HTTPStatus.SERVICE_UNAVAILABLE,
@@ -418,12 +236,11 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
                 "status": _health_status(),
                 "workers": _STATE.worker_count if _STATE is not None else 0,
                 "ready": ready,
+                "shared_docs": str(shared_docs_root()),
             },
         )
 
     def do_POST(self) -> None:
-        # No credential is checked: anyone who can reach the port can parse or shut the daemon
-        # down, so the bind address is the whole access control. See the module docstring.
         if self.path == "/shutdown":
             _request_shutdown()
             _json_response(self, HTTPStatus.OK, {"status": "shutting_down"})
@@ -433,39 +250,24 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             self._handle_parse()
             return
 
-        # No path-based endpoints remain, so an unknown route is drained before answering:
-        # the caller may already be streaming a document body.
         _drain_request_body(self)
         _json_response(self, HTTPStatus.NOT_FOUND, {"error": "not found"})
 
     def _handle_parse(self) -> None:
-        """Convert (and optionally chunk) a document uploaded in the request body.
+        """Parse a document already on the shared volume.
 
-        The document arrives as bytes and the whole result is returned, so caller and daemon
-        need not share a disk. That is what makes running the daemon in its own container
-        viable, and it avoids a disk round-trip between converting and chunking.
-
-        Options come from the query string so the body can be the raw document:
-        ``?filename=proto.pdf&chunk=true&max_tokens=2000&min_structure_tokens=20000``.
+        Query: ``?path=/shared-docs/.../file.pdf&chunk=true&max_tokens=2000&min_structure_tokens=20000``.
         """
-        temp_path: Path | None = None
-        body_consumed = False
+        _drain_request_body(self)
         try:
             if _STATE is None or not _STATE.is_ready():
-                _drain_request_body(self)
                 _json_response(
                     self, HTTPStatus.SERVICE_UNAVAILABLE, {"error": "daemon shutting down"}
                 )
                 return
 
             query = parse_qs(urlsplit(self.path).query)
-            filename = (query.get("filename", [""])[0] or "").strip()
-            if not filename:
-                raise ValueError("filename query parameter is required")
-            # Only the basename: the value names the document for the source_file header and
-            # fileId, and must not be able to steer any path.
-            filename = source_file_basename(filename)
-            suffix = _safe_suffix(filename)
+            input_path = resolve_parse_path(query.get("path", [""])[0] or "")
 
             chunk = (query.get("chunk", ["true"])[0] or "true").lower() not in ("false", "0", "no")
             options: dict[str, Any] = {}
@@ -480,16 +282,8 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
                         raise ValueError(f"{name} must be 1 or greater; got {parsed}")
                     options[name] = parsed
 
-            temp_path = _spool_upload(self, suffix)
-            # Only now is the body genuinely consumed. Setting this before the call meant the
-            # except branches below skipped the drain in exactly the cases where _spool_upload
-            # raises with body still unread — an oversized declared Content-Length (raises before
-            # reading a byte) or an over-cap stream (raises mid-body) — so the 400 was written into
-            # a connection the client was still writing to.
-            body_consumed = True
-            payload = _parse_document(
-                temp_path,
-                filename=filename,
+            payload = _run_parse(
+                input_path,
                 chunk=chunk,
                 max_tokens=options.get("max_tokens", DEFAULT_MAX_TOKENS),
                 min_structure_tokens=options.get(
@@ -498,16 +292,9 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
             )
             _json_response(self, HTTPStatus.OK, payload)
         except ValueError as exc:
-            if not body_consumed:
-                _drain_request_body(self)
             _json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})
         except Exception as exc:
-            if not body_consumed:
-                _drain_request_body(self)
             _json_response(self, HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(exc)})
-        finally:
-            if temp_path is not None:
-                temp_path.unlink(missing_ok=True)
 
 
 def _request_shutdown() -> None:
@@ -555,17 +342,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def _warn_if_exposed(host: str) -> None:
-    """Say so, loudly, when the bind address is not loopback.
-
-    Nothing here authenticates, so the bind address is the whole access control. The container
-    entrypoint has to pass ``--host 0.0.0.0`` — Docker forwards a published port to the
-    container's eth0 address, so a loopback-only daemon would be unreachable — which leaves the
-    published port's ``127.0.0.1:`` prefix as the only thing between ``/parse`` and ``/shutdown``
-    and the network. That prefix is easy to drop, and nothing else would notice.
-
-    A warning rather than a refusal: the container's own bind is legitimately non-loopback, so
-    refusing would make the normal deployment impossible.
-    """
+    """Say so, loudly, when the bind address is not loopback."""
     if host in ("127.0.0.1", "::1", "localhost"):
         return
     print(
@@ -594,7 +371,8 @@ def main() -> None:
     _SERVER = ThreadingHTTPServer((args.host, args.port), DoclingDaemonHandler)
     print(
         f"Docling daemon listening on http://{args.host}:{args.port} "
-        f"with {_STATE.worker_count} warm PDF workers",
+        f"with {_STATE.worker_count} warm PDF workers "
+        f"(shared docs root: {shared_docs_root()})",
         flush=True,
     )
 
@@ -607,8 +385,6 @@ def main() -> None:
         print("Docling daemon stopped", flush=True)
 
     if pool_broke:
-        # Non-zero so the exit is distinguishable from a requested /shutdown in the container
-        # logs. Either way the restart policy brings up a fresh daemon with a working pool.
         print(
             "PDF worker pool broke and cannot be rebuilt in-process; exiting so a fresh "
             "daemon is started",

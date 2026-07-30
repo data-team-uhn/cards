@@ -18,7 +18,6 @@
  */
 package io.uhndata.cards.forms.internal.parse;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
@@ -28,33 +27,22 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.zip.GZIPInputStream;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Client for the Docling daemon's {@code /parse} endpoint, which converts a document and builds its chunk tree in
- * one call and returns everything in the response.
- *
- * <p>Unlike {@code /convert} + {@code /chunk}, this passes the document as <em>bytes</em> rather than a path, so
- * the daemon needs no access to this JVM's filesystem. That is what allows it to run in its own container: a
- * path-based request cannot work across a container boundary, because the caller's absolute paths do not exist
- * inside the container (and on a Windows host they cannot be made to). It also removes the write-then-read-back
- * of the Markdown between converting and chunking, and with it the risk of the two sides disagreeing about the
- * document's reserved markers.</p>
- *
- * <p>Writing the result stays this side, so a single writer in Java keeps one definition of the output
- * layout.</p>
+ * Client for the Docling daemon's path-based {@code POST /parse} endpoint.
+ * <p>
+ * Java stages the upload under the shared docs volume and sends that absolute path. The daemon
+ * runs LibreOffice prep, Docling, and {@code write_chunk_files}, then returns a small summary —
+ * not the Markdown or chunk payloads.
+ * </p>
  *
  * @version $Id$
  */
@@ -78,104 +66,73 @@ public final class DoclingParseClient
     }
 
     /**
-     * Convert and chunk a document in a single daemon call.
+     * Ask the daemon to parse a document already on the shared volume.
      *
-     * @param content the document bytes
-     * @param fileName the original document name; its extension selects the Docling backend, and it is recorded
-     *            as the {@code source_file} header and the catalog's {@code fileId}
+     * @param absolutePath absolute path under the shared docs root
      * @param chunk whether to also build the chunk tree
-     * @return the parsed document, or {@code null} when the daemon could not be reached or refused the request
+     * @param minStructureTokens documents under this many estimated tokens are left unchunked;
+     *            pass {@code 0} or less to let the daemon apply its own default
+     * @return the parse summary, or {@code null} when the daemon could not be reached or refused
      */
-    public static ParsedDocument parse(final byte[] content, final String fileName, final boolean chunk)
-    {
-        return parse(content, fileName, chunk, 0L);
-    }
-
-    /**
-     * Convert and chunk a document in a single daemon call, with an explicit chunking threshold.
-     *
-     * @param content the document bytes
-     * @param fileName the original document name
-     * @param chunk whether to also build the chunk tree
-     * @param minStructureTokens documents under this many estimated tokens are left unchunked; pass {@code 0} or
-     *            less to let the daemon apply its own default
-     * @return the parsed document, or {@code null} when the daemon could not be reached or refused the request
-     */
-    public static ParsedDocument parse(final byte[] content, final String fileName, final boolean chunk,
+    public static ParseSummary parse(final String absolutePath, final boolean chunk,
         final long minStructureTokens)
     {
         final String daemonUrl = resolveDaemonUrl();
         final long timeoutMinutes = resolveTimeoutMinutes();
-        String target = daemonUrl + "/parse?filename="
-            + URLEncoder.encode(StringUtils.defaultString(fileName), StandardCharsets.UTF_8)
+        String target = daemonUrl + "/parse?path="
+            + URLEncoder.encode(StringUtils.defaultString(absolutePath), StandardCharsets.UTF_8)
             + "&chunk=" + chunk;
         if (minStructureTokens > 0L) {
             target = target + "&min_structure_tokens=" + minStructureTokens;
         }
-        LOGGER.info("Sending Docling parse request for '{}' to daemon at {} ({} bytes, timeout {} min)",
-            fileName, daemonUrl, content.length, timeoutMinutes);
+        LOGGER.info("Sending Docling parse request for '{}' to daemon at {} (timeout {} min)",
+            absolutePath, daemonUrl, timeoutMinutes);
         try {
-            final HttpRequest.Builder builder = HttpRequest.newBuilder(URI.create(target))
+            final HttpRequest request = HttpRequest.newBuilder(URI.create(target))
                 .timeout(Duration.ofMinutes(timeoutMinutes))
-                .header("Content-Type", "application/octet-stream")
-                // The response carries the Markdown and every chunk's text, so it is megabytes of
-                // highly compressible text.
-                .header("Accept-Encoding", "gzip")
-                .POST(HttpRequest.BodyPublishers.ofByteArray(content));
-            final HttpResponse<byte[]> response =
-                HTTP_CLIENT.send(builder.build(), HttpResponse.BodyHandlers.ofByteArray());
-            final String body = decodeBody(response);
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+            final HttpResponse<String> response =
+                HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            final String body = response.body();
             if (response.statusCode() != 200) {
-                LOGGER.error("Docling daemon returned HTTP {} for '{}': {}", response.statusCode(), fileName,
+                LOGGER.error("Docling daemon returned HTTP {} for '{}': {}", response.statusCode(), absolutePath,
                     StringUtils.abbreviate(body, 500));
                 return null;
             }
-            return toParsedDocument(body, fileName);
+            return toSummary(body, absolutePath);
         } catch (IOException e) {
-            LOGGER.warn("Docling daemon parse request failed for '{}': {}", fileName, e.getMessage());
+            LOGGER.warn("Docling daemon parse request failed for '{}': {}", absolutePath, e.getMessage());
             return null;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            LOGGER.warn("Interrupted while parsing '{}' via the Docling daemon", fileName);
+            LOGGER.warn("Interrupted while parsing '{}' via the Docling daemon", absolutePath);
             return null;
         }
     }
 
-    private static String decodeBody(final HttpResponse<byte[]> response) throws IOException
-    {
-        final byte[] raw = response.body();
-        final boolean gzipped = response.headers().firstValue("Content-Encoding")
-            .map(value -> value.toLowerCase(java.util.Locale.ROOT).contains("gzip"))
-            .orElse(false);
-        if (!gzipped) {
-            return IOUtils.toString(new ByteArrayInputStream(raw), StandardCharsets.UTF_8);
-        }
-        try (GZIPInputStream unzipped = new GZIPInputStream(new ByteArrayInputStream(raw))) {
-            return IOUtils.toString(unzipped, StandardCharsets.UTF_8);
-        }
-    }
-
-    private static ParsedDocument toParsedDocument(final String body, final String fileName)
+    private static ParseSummary toSummary(final String body, final String absolutePath)
     {
         try (JsonReader reader = Json.createReader(new StringReader(body))) {
             final JsonObject json = reader.readObject();
-            final String markdown = json.getString("markdown", "");
-            if (StringUtils.isBlank(markdown)) {
-                LOGGER.warn("Docling daemon returned no markdown for '{}'", fileName);
+            if (!json.getBoolean("ok", false)) {
+                LOGGER.warn("Docling daemon returned ok=false for '{}': {}", absolutePath,
+                    StringUtils.abbreviate(json.getString("error", body), 500));
                 return null;
             }
-            final boolean chunked = json.getBoolean("chunked", false);
-            final List<ChunkFile> chunks = new ArrayList<>();
-            if (chunked && json.containsKey("chunks")) {
-                json.getJsonArray("chunks").stream()
-                    .map(JsonObject.class::cast)
-                    .forEach(entry -> chunks.add(
-                        new ChunkFile(entry.getString("file", ""), entry.getString("text", ""))));
+            final String markdownPath = json.getString("markdown_path", "");
+            if (StringUtils.isBlank(markdownPath)) {
+                LOGGER.warn("Docling daemon returned no markdown_path for '{}'", absolutePath);
+                return null;
             }
-            return new ParsedDocument(markdown, chunked, json.getJsonObject("outline"),
-                json.getJsonObject("catalog"), chunks, json.getString("logs", ""));
+            return new ParseSummary(
+                markdownPath,
+                json.getBoolean("chunked", false),
+                json.getString("chunks_dir", null),
+                json.getString("logs", ""),
+                json.getString("filename", ""));
         } catch (RuntimeException e) {
-            LOGGER.error("Could not read the Docling daemon's parse response for '{}': {}", fileName,
+            LOGGER.error("Could not read the Docling daemon's parse response for '{}': {}", absolutePath,
                 e.getMessage());
             return null;
         }
@@ -201,80 +158,42 @@ public final class DoclingParseClient
         }
     }
 
-    /** One chunk file's name and content, as returned by the daemon. */
-    public static final class ChunkFile
+    /** Small summary returned by the daemon after it has written the parse artifacts. */
+    public static final class ParseSummary
     {
-        private final String file;
-
-        private final String text;
-
-        /**
-         * @param file the chunk file's name, e.g. {@code Chunk-1.2.md}
-         * @param text the chunk's Markdown, without a trailing newline
-         */
-        public ChunkFile(final String file, final String text)
-        {
-            this.file = file;
-            this.text = text;
-        }
-
-        /**
-         * @return the chunk file's name
-         */
-        public String getFile()
-        {
-            return this.file;
-        }
-
-        /**
-         * @return the chunk's Markdown
-         */
-        public String getText()
-        {
-            return this.text;
-        }
-    }
-
-    /** Everything the daemon produced for one document. */
-    public static final class ParsedDocument
-    {
-        private final String markdown;
+        private final String markdownPath;
 
         private final boolean chunked;
 
-        private final JsonObject outline;
-
-        private final JsonObject catalog;
-
-        private final List<ChunkFile> chunks;
+        private final String chunksDir;
 
         private final String logs;
 
+        private final String filename;
+
         /**
-         * @param markdown the cleaned Markdown
-         * @param chunked whether the document was large enough to chunk
-         * @param outline the outline to write as {@code Chunks/outline.json}, possibly {@code null}
-         * @param catalog the catalog to write as {@code Chunks/catalog.json}, {@code null} when unchunked
-         * @param chunks the chunk files, empty when unchunked
-         * @param logs the daemon's per-request log lines
+         * @param markdownPath absolute path to the written {@code .md}
+         * @param chunked whether the document was chunked
+         * @param chunksDir absolute path to {@code Chunks/}, possibly {@code null}
+         * @param logs daemon log lines for this request
+         * @param filename original file name recorded by the daemon
          */
-        public ParsedDocument(final String markdown, final boolean chunked, final JsonObject outline,
-            final JsonObject catalog, final List<ChunkFile> chunks, final String logs)
+        public ParseSummary(final String markdownPath, final boolean chunked, final String chunksDir,
+            final String logs, final String filename)
         {
-            this.markdown = markdown;
+            this.markdownPath = markdownPath;
             this.chunked = chunked;
-            this.outline = outline;
-            this.catalog = catalog;
-            this.chunks = chunks == null ? Collections.emptyList() : List.copyOf(chunks);
+            this.chunksDir = chunksDir;
             this.logs = logs;
+            this.filename = filename;
         }
 
         /**
-         * @return the cleaned Markdown
+         * @return absolute path to the written markdown
          */
-        public String getMarkdown()
+        public String getMarkdownPath()
         {
-            return this.markdown;
+            return this.markdownPath;
         }
 
         /**
@@ -286,35 +205,27 @@ public final class DoclingParseClient
         }
 
         /**
-         * @return the outline, or {@code null} when the daemon returned none
+         * @return absolute path to {@code Chunks/}, or {@code null}
          */
-        public JsonObject getOutline()
+        public String getChunksDir()
         {
-            return this.outline;
+            return this.chunksDir;
         }
 
         /**
-         * @return the catalog, or {@code null} when the document was left unchunked
-         */
-        public JsonObject getCatalog()
-        {
-            return this.catalog;
-        }
-
-        /**
-         * @return the chunk files, in document order
-         */
-        public List<ChunkFile> getChunks()
-        {
-            return this.chunks;
-        }
-
-        /**
-         * @return the daemon's log lines for this request
+         * @return daemon log lines
          */
         public String getLogs()
         {
             return this.logs;
+        }
+
+        /**
+         * @return original file name
+         */
+        public String getFilename()
+        {
+            return this.filename;
         }
     }
 }

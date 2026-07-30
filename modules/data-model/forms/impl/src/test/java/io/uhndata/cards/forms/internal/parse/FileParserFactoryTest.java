@@ -31,11 +31,11 @@ public class FileParserFactoryTest
     private final FileParserFactory factory = new FileParserFactory();
 
     @Test
-    public void testPdfExtensionReturnsPdfParser()
+    public void testPdfExtensionReturnsSimpleDocumentParser()
     {
         final FileParser parser = this.factory.getParser("report.pdf");
         Assert.assertNotNull(parser);
-        Assert.assertEquals("PdfParser", parser.getClass().getSimpleName());
+        Assert.assertEquals("SimpleDocumentParser", parser.getClass().getSimpleName());
     }
 
     @Test
@@ -46,11 +46,11 @@ public class FileParserFactoryTest
     }
 
     @Test
-    public void testDocxExtensionReturnsDocxParser()
+    public void testDocxExtensionReturnsSimpleDocumentParser()
     {
         final FileParser parser = this.factory.getParser("report.docx");
         Assert.assertNotNull(parser);
-        Assert.assertEquals("DocxParser", parser.getClass().getSimpleName());
+        Assert.assertEquals("SimpleDocumentParser", parser.getClass().getSimpleName());
     }
 
     @Test
@@ -61,11 +61,11 @@ public class FileParserFactoryTest
     }
 
     @Test
-    public void testDocExtensionReturnsDocParser()
+    public void testDocExtensionReturnsSimpleDocumentParser()
     {
         final FileParser parser = this.factory.getParser("report.doc");
         Assert.assertNotNull(parser);
-        Assert.assertEquals("DocParser", parser.getClass().getSimpleName());
+        Assert.assertEquals("SimpleDocumentParser", parser.getClass().getSimpleName());
     }
 
     @Test

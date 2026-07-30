@@ -24,12 +24,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Factory returning the appropriate parser for a given file extension.
  * <p>
- * Routing rules:
+ * PDF, DOCX, and DOC all use {@link SimpleDocumentParser}: Java stages the upload under the shared
+ * docs volume and the Docling daemon (LibreOffice + Docling) writes all derived files. Any other
+ * extension returns {@code null} (caller skips the file).
  * </p>
- * <ul>
- *   <li>PDF, DOCX, and DOC — parsed with Docling (DOC/DOCX LibreOffice prep runs in Python)</li>
- *   <li>any other extension — returns {@code null} (caller skips the file)</li>
- * </ul>
  *
  * @version $Id$
  */
@@ -37,11 +35,7 @@ public class FileParserFactory
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileParserFactory.class);
 
-    private final FileParser pdfParser = new PdfParser();
-
-    private final FileParser docxParser = new DocxParser();
-
-    private final FileParser docParser = new DocParser();
+    private final FileParser documentParser = new SimpleDocumentParser();
 
     /**
      * Choose parser by filename extension.
@@ -52,18 +46,12 @@ public class FileParserFactory
     public FileParser getParser(final String fileName)
     {
         final String normalizedName = fileName.toLowerCase(Locale.ROOT);
-        final FileParser parser;
-        if (normalizedName.endsWith(".pdf")) {
-            parser = this.pdfParser;
-        } else if (normalizedName.endsWith(".docx")) {
-            parser = this.docxParser;
-        } else if (normalizedName.endsWith(".doc")) {
-            parser = this.docParser;
-        } else {
-            LOGGER.info("No document parser registered for '{}'", fileName);
-            return null;
+        if (normalizedName.endsWith(".pdf") || normalizedName.endsWith(".docx")
+            || normalizedName.endsWith(".doc")) {
+            LOGGER.info("Selected parser {} for '{}'", this.documentParser.getClass().getSimpleName(), fileName);
+            return this.documentParser;
         }
-        LOGGER.info("Selected parser {} for '{}'", parser.getClass().getSimpleName(), fileName);
-        return parser;
+        LOGGER.info("No document parser registered for '{}'", fileName);
+        return null;
     }
 }

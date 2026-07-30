@@ -16,7 +16,6 @@
  */
 package io.uhndata.cards.forms.internal.parse;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,27 +24,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base class for document parsers. Docling (daemon or CLI) is the only processor: the document is sent to the
- * Docling daemon, and when the daemon cannot be reached or returns empty or insufficient output the parse fails
- * with a {@link DocumentParseException} — there is no pure-Java fallback generator.
+ * Document parser that stages the upload under the shared docs volume and lets the Docling daemon
+ * (LibreOffice + Docling + {@code write_chunk_files}) produce all derived files.
  * <p>
- * All shared orchestration logic — stream reading, error handling, and sufficiency check — lives here.
- * Subclasses override {@link #onDocumentBytes} for format-specific side work.
+ * When the daemon cannot be reached or returns empty or insufficient markdown the parse fails with
+ * a {@link DocumentParseException} — there is no other processor.
  * </p>
  *
  * @version $Id$
  */
-public abstract class SimpleDocumentParser implements FileParser
+public class SimpleDocumentParser implements FileParser
 {
     private static final int MIN_CONTENT_CHARS = 50;
 
     /**
      * The active LLM model's small-document chunking threshold, for the duration of one parse.
      * <p>
-     * Chunking now happens inside the parse call, but the threshold comes from the LLM configuration, which only
-     * the editor can resolve — these parsers are plain classes, not OSGi components, so they cannot reference the
-     * configuration service. The editor sets this before parsing on the same thread and clears it afterwards.
-     * Unset means the daemon applies its own default.
+     * The editor sets this before parsing on the same thread and clears it afterwards. Unset means
+     * the daemon applies its own default.
      * </p>
      */
     private static final ThreadLocal<Long> CHUNKING_THRESHOLD = new ThreadLocal<>();
@@ -55,7 +51,7 @@ public abstract class SimpleDocumentParser implements FileParser
     private final DoclingMarkdownGenerator doclingGenerator = new DoclingMarkdownGenerator();
 
     @Override
-    public final String parse(final InputStream stream, final String fileName, final String outputSubfolder)
+    public String parse(final InputStream stream, final String fileName, final String outputSubfolder)
     {
         final long startTimestamp = System.currentTimeMillis();
         final byte[] content;
@@ -69,28 +65,23 @@ public abstract class SimpleDocumentParser implements FileParser
             this.logger.warn("Failed to read stream for '{}', document is empty", fileName);
             throw new DocumentParseException("Document is empty", null);
         }
-        onDocumentBytes(content, fileName, outputSubfolder);
-        final DoclingParseClient.ParsedDocument parsed = runPrimaryParseSafely(content, fileName);
-        final String markdown = parsed == null ? "" : parsed.getMarkdown();
+        final String markdown = runParseSafely(content, fileName, outputSubfolder);
         if (!isSufficient(markdown)) {
             this.logger.warn("Docling produced no usable output for '{}', parsing failed", fileName);
             throw new DocumentParseException("Generated output is empty", null);
         }
-        ParsedMarkdownStore.save(outputSubfolder, fileName, markdown);
-        // The daemon returned the chunk tree with the Markdown, so it is written here rather
-        // than fetched by a second, path-based call.
-        ParsedMarkdownStore.saveChunkTree(outputSubfolder, parsed.getOutline(), parsed.getCatalog(),
-            parsed.getChunks());
         logParseFinished(fileName, startTimestamp, markdown);
         return markdown;
     }
 
-    private DoclingParseClient.ParsedDocument runPrimaryParseSafely(final byte[] content, final String fileName)
+    private String runParseSafely(final byte[] content, final String fileName, final String outputSubfolder)
     {
         try {
-            return runPrimaryParse(content, fileName);
+            final Long threshold = CHUNKING_THRESHOLD.get();
+            return this.doclingGenerator.parse(content, fileName, outputSubfolder,
+                threshold == null ? 0L : threshold);
         } catch (RuntimeException | LinkageError e) {
-            this.logger.warn("Primary generator failed for '{}': {}", fileName, e.getMessage());
+            this.logger.warn("Docling parse failed for '{}': {}", fileName, e.getMessage());
             return null;
         }
     }
@@ -110,38 +101,6 @@ public abstract class SimpleDocumentParser implements FileParser
         this.logger.info(
             "Document parsing finished for '{}' using Docling at {} (total {} ms, result {} chars)",
             fileName, endTimestamp, endTimestamp - startTimestamp, result.length());
-    }
-
-    /**
-     * Hook invoked once the document bytes have been read, before any generator runs. The default does
-     * nothing; subclasses override it to trigger format-specific side work (such as an asynchronous PDF
-     * rendition) that must run in parallel with, and must never delay or interfere with, the parse itself.
-     *
-     * @param content the raw document bytes
-     * @param fileName the source file name
-     * @param outputSubfolder the owning answer's parse subfolder
-     */
-    protected void onDocumentBytes(final byte[] content, final String fileName, final String outputSubfolder)
-    {
-        // No-op by default; format-specific parsers may override.
-    }
-
-    /**
-     * Run the primary generator against the document bytes.
-     * The default implementation delegates to {@link DoclingMarkdownGenerator}, which returns the Markdown and
-     * the chunk tree from one daemon call.
-     * Subclasses may override to supply a format-specific primary generator.
-     * Must not throw — return {@code null} on any generator error.
-     *
-     * @param content raw document bytes
-     * @param fileName source file name
-     * @return the parsed document, or {@code null} on failure
-     */
-    protected DoclingParseClient.ParsedDocument runPrimaryParse(final byte[] content, final String fileName)
-    {
-        final Long threshold = CHUNKING_THRESHOLD.get();
-        return this.doclingGenerator.parse(new ByteArrayInputStream(content), fileName,
-            threshold == null ? 0L : threshold);
     }
 
     /**

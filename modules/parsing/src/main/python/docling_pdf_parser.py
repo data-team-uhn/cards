@@ -316,11 +316,10 @@ def convert_pdf(
     min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
 ) -> None:
     """
-    Convert a PDF file to Markdown and write it, plus its chunk tree, beside ``output_file``.
+    Convert a PDF file to Markdown and write it, plus its chunk tree, via
+    :func:`chunker.write_chunk_files` (the sole parse-output writer).
 
-    Always chunks, mirroring the daemon's ``POST /parse`` (which defaults ``chunk=true``), so the
-    CLI and the service produce the same artifacts for the same document — that is what makes the
-    two paths comparable when checking they have not drifted apart.
+    Prefer :func:`parse_document.parse_document` for new call sites.
 
     @param input_path: path to the source .pdf file
     @param output_file: path where Markdown output is written
@@ -340,11 +339,6 @@ def convert_pdf(
         print(f"PDF conversion failed: {exc}", file=sys.stderr)
         sys.exit(1)
 
-    write_start = perf_counter()
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(markdown_content)
-    write_end = perf_counter()
-    print(f"File write:           {write_end - write_start:.2f}s")
     print(f"Token estimate:       {count_tokens(markdown_content):,}")
 
     split_start = perf_counter()
@@ -355,7 +349,7 @@ def convert_pdf(
         min_structure_tokens=min_structure_tokens,
     )
     split_end = perf_counter()
-    print(f"Chunk split:          {split_end - split_start:.2f}s")
+    print(f"Write + chunk:        {split_end - split_start:.2f}s")
     if chunks_dir is not None:
         chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
         print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")

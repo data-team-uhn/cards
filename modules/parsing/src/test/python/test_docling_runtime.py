@@ -21,16 +21,10 @@
 
 The ``docling_*`` conversion modules import the heavy ``docling`` package, so the whole file
 skips when it is not installed — the rest of the suite still runs anywhere. What is covered
-here is the plumbing around Docling rather than Docling itself: upload spooling and its size
-cap, truncation and body draining, health reporting, gzip negotiation, and the batch-abandon
-path that runs when a page batch fails. Nothing authenticates any more — the bind address is
-the whole access control — and there are no path allowlists left to test, since the daemon
-accepts no filesystem paths at all, which :class:`TestNoPathBasedEndpoints` guards.
+here is the plumbing around Docling rather than Docling itself: shared-docs path allowlisting,
+body draining, health reporting, and the batch-abandon path that runs when a page batch fails.
 """
 
-import gzip
-import json
-import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -86,12 +80,7 @@ class _FakeHandler:
 
 
 class TestAbandonBatches:
-    """What happens to sibling page batches when one batch fails.
-
-    ``cancel()`` cannot stop a batch that is already running, and in daemon mode the
-    executor is shared and outlives the request — so returning without waiting would leave
-    those batches consuming workers on behalf of a discarded conversion.
-    """
+    """What happens to sibling page batches when one batch fails."""
 
     def test_cancels_batches_that_have_not_started(self):
         with ThreadPoolExecutor(max_workers=1) as pool:
@@ -115,7 +104,6 @@ class TestAbandonBatches:
 
         with ThreadPoolExecutor(max_workers=1) as pool:
             failing = pool.submit(boom)
-            # Must not propagate: the conversion is already failing for another reason.
             _abandon_batches([failing], log=lambda _message: None)
 
     def test_logs_only_when_something_was_still_running(self):
@@ -128,14 +116,7 @@ class TestAbandonBatches:
 
 
 class TestDrainRequestBody:
-    """An error response written while the client is still uploading resets the connection
-    before the client can read it, so the caller sees a transport failure rather than the 400
-    explaining what was wrong. Whether it happens depends on socket buffering, which makes it
-    intermittent — it showed up as HTTP 000 on some rejects and not others.
-
-    Under HTTP/1.1 keep-alive the drain also owns the framing decision: a body it fully
-    consumed leaves the connection reusable, and one it could not must close the connection,
-    or the leftover bytes become the start of the next request."""
+    """Leftover request bodies must be drained or the connection closed."""
 
     def test_drains_the_whole_body(self):
         handler = _FakeHandler(b"x" * 5000)
@@ -151,7 +132,6 @@ class TestDrainRequestBody:
         assert handler.close_connection is False
 
     def test_bad_content_length_closes_the_connection(self):
-        # Where the body ends is unknowable, so the connection must not be reused.
         handler = _FakeHandler(b"abc", headers={"Content-Length": "not-a-number"})
         daemon._drain_request_body(handler)
         assert handler.close_connection is True
@@ -163,127 +143,71 @@ class TestDrainRequestBody:
         assert handler.close_connection is True
 
     def test_chunked_body_closes_the_connection(self):
-        # BaseHTTPRequestHandler does not decode chunked bodies, so it cannot be drained.
         handler = _FakeHandler(b"3\r\nabc\r\n0\r\n\r\n")
         handler.headers["Transfer-Encoding"] = "chunked"
         daemon._drain_request_body(handler)
         assert handler.close_connection is True
 
     def test_stops_at_a_short_body(self):
-        # Declared longer than what actually arrives: must not block forever. The client hung
-        # up mid-body, so there is no connection worth keeping either.
         handler = _FakeHandler(b"abc", content_length=10_000)
         daemon._drain_request_body(handler)
         assert handler.unread == 0
         assert handler.close_connection is True
 
-    def test_bounded_by_the_upload_cap(self):
-        # An over-cap body is not drained at all — the connection is closed instead, so a lying
-        # header cannot make the daemon read without bound just to save the connection.
-        handler = _FakeHandler(b"x" * 100, content_length=daemon.MAX_UPLOAD_BYTES * 10)
+    def test_oversized_declared_length_closes_the_connection(self):
+        handler = _FakeHandler(b"x" * 100, content_length=2 * 1024 * 1024)
         daemon._drain_request_body(handler)
         assert handler.unread == 100
         assert handler.close_connection is True
 
-    def test_a_body_drained_exactly_keeps_the_connection(self):
-        handler = _FakeHandler(b"x" * 100, content_length=100)
-        daemon._drain_request_body(handler)
-        assert handler.unread == 0
-        assert handler.close_connection is False
 
+class TestResolveParsePath:
+    """``POST /parse`` only accepts absolute paths under the shared docs root."""
 
-class TestSafeSuffix:
-    def test_accepts_supported_types(self):
-        assert daemon._safe_suffix("proto.pdf") == ".pdf"
-        assert daemon._safe_suffix("proto.DOCX") == ".docx"
+    def test_accepts_a_file_under_the_shared_root(self, monkeypatch, tmp_path):
+        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        pdf = tmp_path / "proto.pdf"
+        pdf.write_bytes(b"%PDF")
+        resolved = daemon.resolve_parse_path(str(pdf))
+        assert resolved == pdf.resolve()
 
-    def test_rejects_anything_else(self):
-        for name in ("notes.txt", "archive.zip", "noextension", ""):
-            with pytest.raises(ValueError, match="filename must end in"):
-                daemon._safe_suffix(name)
+    def test_accepts_doc_and_docx(self, monkeypatch, tmp_path):
+        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        for name in ("a.docx", "b.doc"):
+            path = tmp_path / name
+            path.write_bytes(b"x")
+            assert daemon.resolve_parse_path(str(path)).name == name
 
+    def test_rejects_paths_outside_the_root(self, monkeypatch, tmp_path):
+        root = tmp_path / "shared"
+        root.mkdir()
+        outside = tmp_path / "other" / "proto.pdf"
+        outside.parent.mkdir()
+        outside.write_bytes(b"%PDF")
+        monkeypatch.setenv("CARDS_SHARED_DOCS", str(root))
+        with pytest.raises(ValueError, match="must be under"):
+            daemon.resolve_parse_path(str(outside))
 
-class TestSpoolUpload:
-    def test_writes_the_body_to_a_temp_file(self):
-        handler = _FakeHandler(b"PK\x03\x04payload")
-        path = daemon._spool_upload(handler, ".docx")
-        try:
-            assert path.read_bytes() == b"PK\x03\x04payload"
-            assert path.suffix == ".docx"
-        finally:
-            path.unlink(missing_ok=True)
+    def test_rejects_missing_files(self, monkeypatch, tmp_path):
+        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        with pytest.raises(ValueError, match="does not exist"):
+            daemon.resolve_parse_path(str(tmp_path / "missing.pdf"))
 
-    def test_empty_body_rejected(self):
-        with pytest.raises(ValueError, match="empty"):
-            daemon._spool_upload(_FakeHandler(b""), ".pdf")
+    def test_rejects_unsupported_suffixes(self, monkeypatch, tmp_path):
+        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        bad = tmp_path / "notes.txt"
+        bad.write_text("hi", encoding="utf-8")
+        with pytest.raises(ValueError, match="must end in"):
+            daemon.resolve_parse_path(str(bad))
 
-    def test_declared_length_over_the_cap_rejected(self):
-        handler = _FakeHandler(b"x" * 10, content_length=daemon.MAX_UPLOAD_BYTES + 1)
-        with pytest.raises(ValueError, match="too large"):
-            daemon._spool_upload(handler, ".pdf")
-
-    def test_leaves_no_temp_file_behind_on_rejection(self):
-        before = set(Path(tempfile.gettempdir()).glob("docling-upload-*"))
-        with pytest.raises(ValueError):
-            daemon._spool_upload(_FakeHandler(b""), ".pdf")
-        assert set(Path(tempfile.gettempdir()).glob("docling-upload-*")) == before
-
-    def test_reads_only_the_declared_length(self, monkeypatch):
-        # Renamed from test_actual_bytes_over_the_cap_rejected, which asserted the opposite of
-        # its name: it declared 50 under a patched cap of 100 and checked the file *was* written.
-        # Nothing is rejected here, and nothing can be — the cap is checked against
-        # Content-Length before a byte is read, and only that many bytes are ever read, so a
-        # header claiming less than the client sends just leaves the surplus in the socket.
-        monkeypatch.setattr(daemon, "MAX_UPLOAD_BYTES", 100)
-        handler = _FakeHandler(b"x" * 500, content_length=50)
-        path = daemon._spool_upload(handler, ".pdf")
-        try:
-            assert path.stat().st_size == 50
-            assert handler.unread == 450
-        finally:
-            path.unlink(missing_ok=True)
-
-
-class TestTruncatedUpload:
-    """A body that stops short of ``Content-Length`` must be rejected, not parsed.
-
-    Regression: the read loop broke on the first empty read and returned the partial file, so a
-    client disconnecting mid-upload had its half-document handed to Docling, which parsed
-    whatever it could and the daemon answered 200 with the result.
-    """
-
-    def test_short_body_rejected(self):
-        handler = _FakeHandler(b"x" * 40, content_length=200)
-        with pytest.raises(ValueError, match="truncated upload: got 40 of 200"):
-            daemon._spool_upload(handler, ".pdf")
-
-    def test_no_temp_file_left_behind(self):
-        before = set(Path(tempfile.gettempdir()).glob("docling-upload-*"))
-        with pytest.raises(ValueError, match="truncated"):
-            daemon._spool_upload(_FakeHandler(b"x" * 40, content_length=200), ".pdf")
-        assert set(Path(tempfile.gettempdir()).glob("docling-upload-*")) == before
-
-    def test_empty_body_still_reports_empty(self):
-        # The more specific message wins when nothing at all arrived.
-        with pytest.raises(ValueError, match="request body is empty"):
-            daemon._spool_upload(_FakeHandler(b"", content_length=200), ".pdf")
-
-    def test_exact_length_accepted(self):
-        handler = _FakeHandler(b"x" * 200, content_length=200)
-        path = daemon._spool_upload(handler, ".pdf")
-        try:
-            assert path.stat().st_size == 200
-        finally:
-            path.unlink(missing_ok=True)
+    def test_rejects_empty_path(self, monkeypatch, tmp_path):
+        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        with pytest.raises(ValueError, match="required"):
+            daemon.resolve_parse_path("   ")
 
 
 class TestHealthReporting:
-    """``/health`` must fail its status line, not just its body, when the daemon is unusable.
-
-    Regression: it answered 200 with ``ready: false``. Both container probes are
-    ``curl -fsS .../health``, which reads the status line and never the body, so a daemon that
-    returned 503 from every /parse was reported healthy forever and nothing restarted it.
-    """
+    """``/health`` must fail its status line when the daemon is unusable."""
 
     def _state(self, **flags):
         state = SimpleNamespace(
@@ -299,8 +223,6 @@ class TestHealthReporting:
         assert daemon._health_status() == "ok"
 
     def test_broken_pool_says_so_rather_than_shutting_down(self, monkeypatch):
-        # It used to report "shutting_down" for a broken pool, sending whoever was debugging it
-        # looking for a shutdown that never happened.
         monkeypatch.setattr(daemon, "_STATE", self._state(pdf_executor_broken=True))
         assert daemon._health_status() == "pdf_pool_broken"
 
@@ -309,8 +231,6 @@ class TestHealthReporting:
         assert daemon._health_status() == "shutting_down"
 
     def test_broken_pool_wins_over_shutdown(self, monkeypatch):
-        # _request_shutdown sets shutdown_requested, so both flags are on once the pool breaks;
-        # the pool is the cause and the more useful thing to report.
         monkeypatch.setattr(
             daemon, "_STATE", self._state(pdf_executor_broken=True, shutdown_requested=True)
         )
@@ -322,19 +242,14 @@ class TestHealthReporting:
 
 
 class TestBrokenPoolShutsDown:
-    """A broken PDF pool has to end the process, not just flip a flag.
-
-    The pool cannot be rebuilt in-process, so a fresh process is the only recovery — and only an
-    exit triggers one, because a container restart policy reacts to the process ending and never
-    to health status. Staying up answering 503 forever was the failure mode.
-    """
+    """A broken PDF pool has to end the process, not just flip a flag."""
 
     def test_broken_pool_requests_shutdown(self, monkeypatch, tmp_path):
         from concurrent.futures.process import BrokenProcessPool
 
         state = SimpleNamespace(
             shutdown_requested=False, pdf_executor_broken=False,
-            pdf_executor=None, worker_count=1,
+            pdf_executor=None, worker_count=1, docx_lock=None,
         )
         monkeypatch.setattr(daemon, "_STATE", state)
         monkeypatch.setattr(daemon, "_SERVER", None)
@@ -342,107 +257,30 @@ class TestBrokenPoolShutsDown:
         def explode(*args, **kwargs):
             raise BrokenProcessPool("forced")
 
-        monkeypatch.setattr(daemon, "convert_pdf_to_markdown", explode)
+        monkeypatch.setattr(daemon, "parse_document", explode)
         pdf = tmp_path / "doc.pdf"
         pdf.write_bytes(b"%PDF-1.4")
 
         with pytest.raises(RuntimeError, match="PDF worker pool is broken"):
-            daemon._convert_file(pdf, source_file="doc.pdf")
+            daemon._run_parse(pdf, chunk=True, max_tokens=2000, min_structure_tokens=20000)
 
         assert state.pdf_executor_broken is True
-        # _request_shutdown was reached, so serve_forever stops and main() exits non-zero.
         assert state.shutdown_requested is True
 
 
-class TestSpoolUploadRejections:
-    """The Content-Length checks, which are also the drain-sensitive paths.
+class TestPathBasedParseContract:
+    """The daemon accepts shared-docs paths; legacy byte-upload helpers stay gone."""
 
-    _spool_upload raises before or partway through reading the body, so its caller must drain the
-    remainder before answering — otherwise the 400 goes into a connection the client is still
-    writing to and the client sees a transport failure instead. That is why body_consumed is only
-    set after this function returns.
-    """
+    def test_resolve_parse_path_exists(self):
+        assert hasattr(daemon, "resolve_parse_path")
+        assert hasattr(daemon, "shared_docs_root")
 
-    def test_missing_content_length_rejected(self):
-        handler = _FakeHandler(b"data")
-        del handler.headers["Content-Length"]
-        with pytest.raises(ValueError, match="Content-Length is required"):
-            daemon._spool_upload(handler, ".pdf")
-
-    def test_unparseable_content_length_rejected(self):
-        handler = _FakeHandler(b"data", headers={"Content-Length": "abc"})
-        with pytest.raises(ValueError, match="invalid Content-Length"):
-            daemon._spool_upload(handler, ".pdf")
-
-    def test_negative_content_length_rejected(self):
-        handler = _FakeHandler(b"data", headers={"Content-Length": "-1"})
-        with pytest.raises(ValueError, match="invalid Content-Length"):
-            daemon._spool_upload(handler, ".pdf")
-
-    def test_oversized_declared_length_reports_the_number_not_the_string(self):
-        # The message used to be matched by substring to tell these errors apart; it now carries
-        # the parsed int, and nothing depends on the wording.
-        handler = _FakeHandler(b"x", content_length=daemon.MAX_UPLOAD_BYTES + 5)
-        with pytest.raises(ValueError, match=str(daemon.MAX_UPLOAD_BYTES + 5)):
-            daemon._spool_upload(handler, ".pdf")
-
-    def test_body_is_left_unread_when_the_declared_length_is_rejected(self):
-        # Precisely why the caller must drain: nothing has been consumed at this point.
-        handler = _FakeHandler(b"y" * 4096, content_length=daemon.MAX_UPLOAD_BYTES + 1)
-        with pytest.raises(ValueError):
-            daemon._spool_upload(handler, ".pdf")
-        assert handler.unread == 4096
-
-
-class TestJsonResponseGzip:
-    def _payload(self, size):
-        return {"markdown": "a" * size}
-
-    def test_large_payload_gzipped_when_accepted(self):
-        handler = _FakeHandler(b"", headers={"Accept-Encoding": "gzip, deflate"})
-        daemon._json_response(handler, 200, self._payload(daemon.MIN_GZIP_BYTES * 4))
-        assert handler.header_value("Content-Encoding") == "gzip"
-        assert json.loads(gzip.decompress(handler.written))["markdown"].startswith("aaa")
-
-    def test_not_gzipped_when_client_does_not_accept(self):
-        handler = _FakeHandler(b"")
-        daemon._json_response(handler, 200, self._payload(daemon.MIN_GZIP_BYTES * 4))
-        assert handler.header_value("Content-Encoding") is None
-        assert json.loads(handler.written)["markdown"].startswith("aaa")
-
-    def test_small_payload_not_gzipped(self):
-        handler = _FakeHandler(b"", headers={"Accept-Encoding": "gzip"})
-        daemon._json_response(handler, 200, {"ok": True})
-        assert handler.header_value("Content-Encoding") is None
-
-    def test_content_length_matches_the_bytes_sent(self):
-        handler = _FakeHandler(b"", headers={"Accept-Encoding": "gzip"})
-        daemon._json_response(handler, 200, self._payload(daemon.MIN_GZIP_BYTES * 4))
-        assert int(handler.header_value("Content-Length")) == len(handler.written)
-
-
-
-class TestNoPathBasedEndpoints:
-    """The daemon must not accept filesystem paths again.
-
-    ``POST /convert`` (an ``input_path``) and ``POST /chunk`` (a ``file_path``) were removed: both
-    required the daemon to see the caller's filesystem, which cannot work once it runs in its own
-    container. With no path ever accepted there is nothing to allowlist, which is why the helpers
-    below are gone too. This test exists so re-adding one is a deliberate act rather than an
-    accident — if it fails, the filesystem-free property has been given up.
-    """
-
-    def test_path_accepting_helpers_are_gone(self):
-        for name in ("_is_allowed_path", "_is_allowed_chunk_file", "_is_under_root",
-                     "_is_chunking_configured", "_resolve_parse_output_root",
-                     "_read_json_body", "_positive_option"):
+    def test_legacy_byte_upload_helpers_are_gone(self):
+        for name in ("_spool_upload", "_safe_suffix", "MAX_UPLOAD_BYTES", "MIN_GZIP_BYTES"):
             assert not hasattr(daemon, name), name
 
     def test_chunk_handler_is_gone(self):
         assert not hasattr(daemon.DoclingDaemonHandler, "_handle_chunk")
-
-    def test_no_chunk_root_on_the_daemon_state(self):
-        assert "parse_output_root" not in daemon.DaemonState.__init__.__code__.co_varnames
 
     def test_no_parse_output_dir_argument(self):
         parser_source = daemon.parse_args.__code__.co_consts
