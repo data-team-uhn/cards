@@ -249,7 +249,7 @@ class TestBrokenPoolShutsDown:
 
         state = SimpleNamespace(
             shutdown_requested=False, pdf_executor_broken=False,
-            pdf_executor=None, worker_count=1, docx_lock=None,
+            pdf_executor=None, worker_count=1, docx_lock=None, docx_converter=None,
         )
         monkeypatch.setattr(daemon, "_STATE", state)
         monkeypatch.setattr(daemon, "_SERVER", None)

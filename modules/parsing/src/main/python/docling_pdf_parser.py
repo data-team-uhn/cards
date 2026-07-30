@@ -24,10 +24,10 @@ Each worker process loads the converter once via _init_worker(); page batches ar
 
 import gc
 import logging
-import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from time import perf_counter
+from typing import Callable
 
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 from docling_config import PDF_PIPELINE_OPTIONS
@@ -37,9 +37,6 @@ from pypdf import PdfReader
 from docling.datamodel.base_models import InputFormat
 from docling.document_converter import DocumentConverter, PdfFormatOption
 
-from typing import Callable
-
-from chunker import write_chunk_files
 from docling_batch_sizing import (
     calc_active_workers,
     calc_batch_pages,
@@ -52,9 +49,8 @@ from docling_error_detection import (
     DoclingLogCollector,
     ensure_conversion_ok,
 )
-from markdown_cleanup import clean_markdown, resolve_source_file_name, source_file_header
-from markdown_markers import count_tokens, page_marker
-from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
+from markdown_cleanup import finalize_markdown
+from markdown_markers import page_marker
 
 
 def build_pdf_converter() -> DocumentConverter:
@@ -228,9 +224,11 @@ def convert_pdf_to_markdown(
         all_markdown.append(md)
 
     parallel_end = perf_counter()
-    cleaned = clean_markdown("".join(all_markdown))
-    display_name = resolve_source_file_name(input_path, source_file)
-    markdown_content = f"{source_file_header(display_name)}\n{cleaned}"
+    markdown_content = finalize_markdown(
+        "".join(all_markdown),
+        input_path,
+        source_file=source_file,
+    )
     total_end = perf_counter()
 
     log_fn("\n=== Timing ===")
@@ -305,57 +303,3 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
         # batch, which is exactly where per-batch churn is highest, so the old
         # ``end_page > start_page`` gate skipped the collection whenever it mattered most.
         gc.collect()
-
-
-def convert_pdf(
-    input_path: Path,
-    output_file: Path,
-    *,
-    batch_pages: int | None = None,
-    workers: int | None = None,
-    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
-) -> None:
-    """
-    Convert a PDF file to Markdown and write it, plus its chunk tree, via
-    :func:`chunker.write_chunk_files` (the sole parse-output writer).
-
-    Prefer :func:`parse_document.parse_document` for new call sites.
-
-    @param input_path: path to the source .pdf file
-    @param output_file: path where Markdown output is written
-    @param batch_pages: optional override for pages per worker batch
-    @param workers: optional override for parallel worker process count
-    @param min_structure_tokens: leave the document unchunked below this size, as the daemon does
-    """
-    try:
-        markdown_content = convert_pdf_to_markdown(
-            input_path,
-            batch_pages=batch_pages,
-            workers=workers,
-        )
-    except Exception as exc:
-        # Includes RuntimeError from failed page batches as well as reader errors from an
-        # unreadable/encrypted/corrupt PDF; surface a clean message instead of a traceback.
-        print(f"PDF conversion failed: {exc}", file=sys.stderr)
-        sys.exit(1)
-
-    print(f"Token estimate:       {count_tokens(markdown_content):,}")
-
-    split_start = perf_counter()
-    chunks_dir = write_chunk_files(
-        markdown_content,
-        output_file,
-        resolve_source_file_name(input_path),
-        min_structure_tokens=min_structure_tokens,
-    )
-    split_end = perf_counter()
-    print(f"Write + chunk:        {split_end - split_start:.2f}s")
-    if chunks_dir is not None:
-        chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
-        print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")
-    else:
-        print(
-            f"Chunking skipped "
-            f"({count_tokens(markdown_content)} tokens < "
-            f"{min_structure_tokens} min_structure_tokens)"
-        )

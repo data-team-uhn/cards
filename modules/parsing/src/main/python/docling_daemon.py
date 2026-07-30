@@ -68,17 +68,19 @@ class DaemonState:
     """Shared daemon resources."""
 
     def __init__(self, workers: int | None) -> None:
+        # Refresh free-RAM budget at daemon start (not only at module import).
         self.worker_count = calc_workers(workers)
         self.pdf_executor = ProcessPoolExecutor(
             max_workers=self.worker_count,
             initializer=_init_worker,
         )
         self.docx_lock = threading.Lock()
+        self.docx_converter = None
         self.shutdown_requested = False
         self.pdf_executor_broken = False
         try:
             warm_pdf_workers(self.pdf_executor, self.worker_count)
-            get_docx_converter()
+            self.docx_converter = get_docx_converter()
         except Exception:
             self.pdf_executor.shutdown(wait=False, cancel_futures=True)
             raise
@@ -189,7 +191,7 @@ def _run_parse(
     max_tokens: int,
     min_structure_tokens: int,
 ) -> dict[str, Any]:
-    """LibreOffice + Docling + write_chunk_files on a shared-docs path."""
+    """LibreOffice + Docling + chunk_file on a shared-docs path."""
     assert _STATE is not None
     try:
         return parse_document(
@@ -200,6 +202,7 @@ def _run_parse(
             pdf_executor=_STATE.pdf_executor,
             pdf_workers=_STATE.worker_count,
             docx_lock=_STATE.docx_lock,
+            docx_converter=_STATE.docx_converter,
         )
     except BrokenProcessPool as exc:
         _STATE.pdf_executor_broken = True

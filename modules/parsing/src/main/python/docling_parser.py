@@ -18,7 +18,7 @@
 """CLI entry point: convert PDF / DOCX / DOC files to Markdown using Docling.
 
 Uses the same :func:`parse_document.parse_document` path as the daemon (LibreOffice prep,
-Docling, then :func:`chunker.write_chunk_files`).
+Docling, then :func:`chunker.chunk_file`).
 """
 
 import argparse

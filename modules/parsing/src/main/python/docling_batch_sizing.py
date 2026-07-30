@@ -20,19 +20,19 @@ Derive Docling PDF outer-parallelism settings from CPU and RAM.
 
 Two lifetimes:
 
-Startup snapshot (module import)
+Startup snapshot (module import — CPU topology and total RAM)
     read_logical_core_count, read_physical_core_count,
-    read_total_ram_gb, read_available_ram_gb,
-    calc_ram_budget_gb, calc_max_workers_by_cpu, calc_max_workers_by_ram
+    read_total_ram_gb, calc_max_workers_by_ram
 
-Per PDF parse (call from convert_pdf before processing)
+At daemon start / each ``calc_workers()`` with no override
+    read_available_ram_gb, calc_ram_budget_gb, refresh_default_max_workers
+
+Per PDF parse (call from convert_pdf_to_markdown before processing)
     calc_workers, calc_batch_pages, calc_chunk_count, calc_active_workers,
     print_parallelism_summary
 
 CLI mapping
-    --workers      → calc_workers(workers_override=...)
-    --batch-pages  → calc_batch_pages(..., batch_pages_override=...)
-    Everything else is auto-derived; no CLI flags.
+    --workers → calc_workers(workers_override=...)
 """
 
 import argparse
@@ -166,7 +166,7 @@ def read_total_ram_gb() -> float:
 
 def read_available_ram_gb() -> float:
     """
-    Read free RAM in gigabytes at import time, capped by the container's memory ceiling.
+    Read free RAM in gigabytes now, capped by the container's memory ceiling.
     """
     available = psutil.virtual_memory().available / (1024 ** 3)
     limit = read_cgroup_memory_limit_gb()
@@ -202,7 +202,7 @@ def calc_max_workers_by_ram(ram_budget_gb: float) -> int:
 LOGICAL_CORE_COUNT = read_logical_core_count()
 PHYSICAL_CORE_COUNT = read_physical_core_count()
 
-# RAM at startup.
+# RAM: total is stable; available / budget are refreshed by refresh_default_max_workers().
 TOTAL_RAM_GB = read_total_ram_gb()
 AVAILABLE_RAM_GB = read_available_ram_gb()
 
@@ -214,6 +214,20 @@ MAX_WORKERS_BY_RAM = calc_max_workers_by_ram(RAM_BUDGET_GB)
 # MAX_WORKERS_BY_CPU  — worker cap from CPU topology.
 MAX_WORKERS_BY_CPU = LOGICAL_CORE_COUNT
 DEFAULT_MAX_WORKERS = max(1, min(MAX_WORKERS_BY_CPU, MAX_WORKERS_BY_RAM))
+
+
+def refresh_default_max_workers() -> int:
+    """Re-read free RAM and update :data:`DEFAULT_MAX_WORKERS`.
+
+    Call at daemon start (and whenever auto worker count is resolved) so a long-lived
+    process does not keep budgeting from import-time free memory.
+    """
+    global AVAILABLE_RAM_GB, RAM_BUDGET_GB, MAX_WORKERS_BY_RAM, DEFAULT_MAX_WORKERS
+    AVAILABLE_RAM_GB = read_available_ram_gb()
+    RAM_BUDGET_GB = calc_ram_budget_gb(TOTAL_RAM_GB, AVAILABLE_RAM_GB)
+    MAX_WORKERS_BY_RAM = calc_max_workers_by_ram(RAM_BUDGET_GB)
+    DEFAULT_MAX_WORKERS = max(1, min(MAX_WORKERS_BY_CPU, MAX_WORKERS_BY_RAM))
+    return DEFAULT_MAX_WORKERS
 
 
 # =============================================================================
@@ -244,10 +258,11 @@ def calc_workers(workers_override: int | None = None) -> int:
 
     Clamped to at least 1: ``ProcessPoolExecutor(max_workers=0)`` raises, so a bad
     override must not reach it even if it bypassed :func:`positive_int`.
+    When ``workers_override`` is omitted, free RAM is refreshed first.
     """
     if workers_override is not None:
         return max(1, workers_override)
-    return DEFAULT_MAX_WORKERS
+    return refresh_default_max_workers()
 
 
 def calc_batch_pages(

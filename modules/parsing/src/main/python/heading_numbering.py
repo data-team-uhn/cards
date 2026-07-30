@@ -30,14 +30,14 @@ emitted as bold body text instead of an ATX ``#`` heading.
     "1.2 Methods"         -> [1, 2]        (depth 2)
     "2.3.1.1 Measures"    -> [2, 3, 1, 1]  (depth 4)
     "3. 1. 1 Aim 1"       -> [3, 1, 1]     (depth 3 -- space-mangled numbering still parses)
-    "A. Consent"          -> [1]           (letter, depth 1 -- opt-in)
-    "II. Results"         -> [2]           (roman, depth 1 -- opt-in)
+    "A. Consent"          -> []            (letter: use :func:`letter_numbering`)
+    "II. Results"         -> []            (roman: use :func:`roman_numbering`)
 
-Only Arabic-decimal numbering is enabled by default in :func:`numbering_vector`; letter and
-Roman numbering have their own functions but are opt-in there. In the protocol corpus,
-letter/Roman markers appear almost only as sub-levels nested under a numeric outline, and a
-bare leading "I"/"V"/"A" of an ordinary heading word is an easy false positive. Arabic
-decimal numbering has no such ambiguity.
+:func:`numbering_vector` / :func:`numbering_depth` accept Arabic-decimal only. Letter and
+Roman have their own helpers (:func:`letter_numbering`, :func:`roman_numbering`) for callers
+that need them (e.g. TOC page tokens). In the protocol corpus, letter/Roman markers appear
+almost only as sub-levels nested under a numeric outline, and a bare leading "I"/"V"/"A" of
+an ordinary heading word is an easy false positive.
 """
 
 from __future__ import annotations
@@ -138,40 +138,26 @@ def _strip_trailing_zeros(vector: list[int]) -> list[int]:
     return vector[:end]
 
 
-def numbering_vector(
-    text: str, *, allow_letter: bool = False, allow_roman: bool = False
-) -> list[int]:
-    """The heading-numbering vector for ``text`` (``[]`` when it has none), normalized for
-    hierarchy depth: Arabic-decimal first (trailing ``.0`` collapsed), then -- only when
-    enabled -- letter, then Roman.
+def numbering_vector(text: str) -> list[int]:
+    """The Arabic-decimal heading-numbering vector for ``text`` (``[]`` when it has none),
+    normalized for hierarchy depth (trailing ``.0`` collapsed).
 
-    Letter and Roman are opt-in: in the protocol corpus they appear almost only as
-    sub-markers under a numeric outline, and a leading "I"/"A" of an ordinary word is an
-    easy false positive. Arabic decimal has no such ambiguity.
+    Letter and Roman prefixes are ignored here; use :func:`letter_numbering` /
+    :func:`roman_numbering` when those styles are needed.
 
     @param text: the heading text (``#``/``**`` markers already stripped)
-    @param allow_letter: also accept a single-letter prefix ("A.", "b)")
-    @param allow_roman: also accept a Roman-numeral prefix ("II.", "XIII")
     @return: the numbering vector, or ``[]``
     """
     numeric = numerical_numbering(text)
     if numeric:
         return _strip_trailing_zeros(numeric)
-    if allow_letter and (letter := letter_numbering(text)):
-        return letter
-    if allow_roman:
-        return roman_numbering(text)
     return []
 
 
-def numbering_depth(
-    text: str, *, allow_letter: bool = False, allow_roman: bool = False
-) -> int:
-    """How many levels deep ``text``'s numbering prefix is (``0`` when it has none).
+def numbering_depth(text: str) -> int:
+    """How many levels deep ``text``'s Arabic-decimal numbering prefix is (``0`` when none).
 
     @param text: the heading text (``#``/``**`` markers already stripped)
-    @param allow_letter: also accept a single-letter prefix
-    @param allow_roman: also accept a Roman-numeral prefix
     @return: the numbering depth, or ``0``
     """
-    return len(numbering_vector(text, allow_letter=allow_letter, allow_roman=allow_roman))
+    return len(numbering_vector(text))

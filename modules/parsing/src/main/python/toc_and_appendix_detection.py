@@ -34,6 +34,7 @@ import re
 from pathlib import Path
 
 from bookmarks import (
+    LineIndex,
     build_line_index,
     line_pages,
     resolve_record_line,
@@ -638,6 +639,7 @@ def backmatter_from_records(
     *,
     toc_range: tuple[int, int] | None = None,
     lines: list[str] | None = None,
+    index: LineIndex | None = None,
 ) -> int | None:
     """The body line of the first Reference/Appendix record that resolves to a unique line,
     or ``None`` -- the outline-based replacement for the heuristic body scan.
@@ -652,17 +654,18 @@ def backmatter_from_records(
     @param records: the document's outline records, in order
     @param toc_range: inclusive ``(start, end)`` line range of the printed TOC, when known
     @param lines: ``markdown`` already split on newlines, when available
+    @param index: precomputed :func:`bookmarks.build_line_index`, when available
     @return: the backmatter body line index, or ``None``
     """
     candidates = [record for record in records if _is_backmatter_title(record.get("title") or "")]
     if not candidates:
         return None
-    index = build_line_index(line_pages(markdown, lines))
+    line_index = index if index is not None else build_line_index(line_pages(markdown, lines))
     exclude = (
         frozenset(range(toc_range[0], toc_range[1] + 1)) if toc_range is not None else frozenset()
     )
     for record in candidates:
-        line = resolve_record_line(index, record, exclude=exclude)
+        line = resolve_record_line(line_index, record, exclude=exclude)
         if line is not None:
             return line
     return None
@@ -671,46 +674,54 @@ def backmatter_from_records(
 def derive_outline(
     md: str,
     *,
-    records: list[dict] | None = None,
-) -> tuple[str, dict, list[dict]]:
-    """Derive a document's outline without touching the filesystem.
+    toc_pdf_outline_records: list[dict] | None = None,
+) -> tuple[str, dict, list[dict], LineIndex]:
+    """Derive a document's outline .
 
     @param md: the full assembled Markdown document
-    @param records: outline records already known for the document (e.g. extracted from a PDF's
-        embedded bookmarks); when non-empty these are authoritative and the printed TOC's own
-        entries are discarded in their favour
-    @return: ``(document, outline_fields, records)`` — the document with its printed TOC cleaned
-        in place, the outline fields, and the records the outline was built from
+    @param toc_pdf_outline_records: outline records already known for the document (e.g.
+        extracted from a PDF's embedded bookmarks); when non-empty these are authoritative
+        and the printed TOC's own entries are discarded in their favour
+    @return: ``(document, outline_fields, records, line_index)`` — the document with its printed
+        TOC cleaned in place, the outline fields, the records the outline was built from, and a
+        line index shared with later chunk cut-key resolution
     """
-    result, updates = _detect_toc(md)
+    md_file, toc_summary = _detect_toc(md)
     toc_range = (
-        (updates["tocStartLine"], updates["tocEndLine"]) if "tocStartLine" in updates else None
+        (toc_summary["tocStartLine"], toc_summary["tocEndLine"])
+        if "tocStartLine" in toc_summary
+        else None
     )
 
-    # Split once and share it: verification and the backmatter lookup both scan the whole
-    # document line by line, and each would otherwise re-split it.
-    result_lines = result.split("\n")
+    # Split and index once: verification, backmatter lookup, and later cut-key resolution
+    # all need the same line walk.
+    md_lines = md_file.split("\n")
+    positions = line_pages(md_file, md_lines)
+    line_index = build_line_index(positions)
 
-    known = list(records) if records else []
-    if known:
+    toc_records = list(toc_pdf_outline_records) if toc_pdf_outline_records else []
+    if toc_records:
         outline_source = "pdf-bookmarks"
     else:
         # Only this path harvests a printed TOC, so only it needs verification; the source it
         # ends up reporting depends on whether any harvested entry could be found in the body.
-        known = verify_bookmarks(
-            _records_from_toc_strings(updates.get("toc", [])), result, lines=result_lines
+        toc_records = verify_bookmarks(
+            _records_from_toc_strings(toc_summary.get("toc", [])),
+            md_file,
+            lines=md_lines,
+            positions=positions,
         )
-        outline_source = "md-toc" if known else "none"
+        outline_source = "md-toc" if toc_records else "none"
 
     # One dict for the whole outline: these fields used to be spread over three
     # read-modify-write cycles of the same file, which wrote ``tokens`` twice with two
     # different values before the final one won.
-    updates["tokens"] = count_tokens(result)
-    updates["outline_source"] = outline_source
-    updates["toc"] = [record["title"] for record in known if record.get("title")]
+    toc_summary["tokens"] = count_tokens(md_file)
+    toc_summary["outline_source"] = outline_source
+    toc_summary["toc"] = [record["title"] for record in toc_records if record.get("title")]
     backmatter_line = backmatter_from_records(
-        result, known, toc_range=toc_range, lines=result_lines
+        md_file, toc_records, toc_range=toc_range, lines=md_lines, index=line_index
     )
     if backmatter_line is not None:
-        updates["backmatterLine"] = backmatter_line
-    return result, updates, known
+        toc_summary["backmatterLine"] = backmatter_line
+    return md_file, toc_summary, toc_records, line_index

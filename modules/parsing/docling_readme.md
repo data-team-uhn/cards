@@ -73,7 +73,7 @@ On start you get:
 ### Manual HTTP daemon start (optional)
 
 ```
-set IAP_SHARED_DOCS=/shared-docs
+set CARDS_SHARED_DOCS=/shared-docs
 python modules/parsing/src/main/python/docling_daemon.py --host 127.0.0.1 --port 18765
 ```
 
@@ -84,7 +84,7 @@ python modules/parsing/src/main/python/docling_daemon.py --host 127.0.0.1 --port
   path under the shared root → summary JSON. LibreOffice prep + Docling + `write_chunk_files`.
 - `POST http://localhost:18765/shutdown` — graceful stop.
 
-Paths outside `IAP_SHARED_DOCS` (default `/shared-docs`) are refused.
+Paths outside `CARDS_SHARED_DOCS` (default `/shared-docs`) are refused.
 
 The daemon has **no authentication**. Keep `--host 127.0.0.1` when running by hand, and
 publish the container port as `127.0.0.1:18765:18765`.

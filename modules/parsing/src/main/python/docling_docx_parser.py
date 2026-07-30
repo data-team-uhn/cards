@@ -17,20 +17,15 @@
 
 """Convert DOCX files to Markdown using Docling."""
 
-import sys
 from pathlib import Path
-from time import perf_counter
 
 import docling_config  # noqa: F401 — apply shared Docling settings on import
 
 from docling.datamodel.base_models import InputFormat
 from docling.document_converter import DocumentConverter, WordFormatOption
 
-from chunker import write_chunk_files
 from docling_error_detection import ensure_conversion_ok
-from markdown_cleanup import clean_markdown, resolve_source_file_name, source_file_header
-from markdown_markers import count_tokens
-from toc_and_appendix_detection import DEFAULT_MIN_STRUCTURE_TOKENS
+from markdown_cleanup import finalize_markdown
 
 _docx_converter: DocumentConverter | None = None
 
@@ -65,67 +60,8 @@ def convert_docx_to_markdown(
     active_converter = converter if converter is not None else get_docx_converter()
     result = active_converter.convert(str(input_path))
     ensure_conversion_ok(result)
-    cleaned = clean_markdown(result.document.export_to_markdown())
-    display_name = resolve_source_file_name(input_path, source_file)
-    return f"{source_file_header(display_name)}\n{cleaned}"
-
-
-def convert_docx(
-    input_path: Path,
-    output_file: Path,
-    *,
-    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
-) -> None:
-    """
-    Convert a DOCX file to Markdown and write it, plus its chunk tree, via
-    :func:`chunker.write_chunk_files` (the sole parse-output writer).
-
-    Prefer :func:`parse_document.parse_document` for new call sites — it also runs the
-    LibreOffice PDF rendition before Docling.
-
-    @param input_path: path to the source .docx file
-    @param output_file: path where Markdown output is written
-    @param min_structure_tokens: leave the document unchunked below this size, as the daemon does
-    """
-    t0 = perf_counter()
-
-    converter = get_docx_converter()
-
-    t1 = perf_counter()
-
-    try:
-        markdown_content = convert_docx_to_markdown(input_path, converter=converter)
-    except Exception as exc:
-        # Includes RuntimeError from a failed conversion as well as reader errors from an
-        # unreadable/corrupt DOCX; surface a clean message instead of a traceback.
-        print(f"DOCX conversion failed: {exc}", file=sys.stderr)
-        sys.exit(1)
-
-    t2 = perf_counter()
-
-    chunks_dir = write_chunk_files(
-        markdown_content,
-        output_file,
-        resolve_source_file_name(input_path),
-        min_structure_tokens=min_structure_tokens,
+    return finalize_markdown(
+        result.document.export_to_markdown(),
+        input_path,
+        source_file=source_file,
     )
-
-    t3 = perf_counter()
-    tokens = count_tokens(markdown_content)
-
-    print(f"Markdown length: {len(markdown_content):,} characters")
-    print(f"Token estimate:  {tokens:,}")
-
-    print("\n=== Timing ===")
-    print(f"Converter init:      {t1 - t0:.2f}s")
-    print(f"Convert and export:  {t2 - t1:.2f}s")
-    print(f"Write + chunk:       {t3 - t2:.2f}s")
-    if chunks_dir is not None:
-        chunk_count = sum(1 for _ in chunks_dir.glob("Chunk-*.md"))
-        print(f"Chunks written to {chunks_dir} ({chunk_count} chunk file(s))")
-    else:
-        print(
-            f"Chunking skipped "
-            f"({tokens} tokens < {min_structure_tokens} min_structure_tokens)"
-        )
-    print(f"Total:               {t3 - t0:.2f}s")

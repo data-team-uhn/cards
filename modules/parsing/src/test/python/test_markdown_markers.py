@@ -200,5 +200,8 @@ class TestWithinWordLimits:
 
 
 class TestSupportedSuffixes:
-    def test_pdf_and_docx(self):
-        assert mm.SUPPORTED_SUFFIXES == (".pdf", ".docx", ".doc")
+    def test_docling_suffixes(self):
+        assert mm.SUPPORTED_SUFFIXES == (".pdf", ".docx")
+
+    def test_input_suffixes_include_doc(self):
+        assert mm.INPUT_SUFFIXES == (".pdf", ".docx", ".doc")

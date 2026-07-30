@@ -79,6 +79,16 @@ def line_pages(markdown: str, lines: list[str] | None = None) -> list[tuple[int,
     return positions
 
 
+def pages_from_positions(
+    positions: list[tuple[int, int, str]],
+) -> dict[int, set[str]]:
+    """Map each page number to normalized line keys from :func:`line_pages` output."""
+    pages: dict[int, set[str]] = {}
+    for _index, page, key in positions:
+        pages.setdefault(page, set()).add(key)
+    return pages
+
+
 def page_line_texts(markdown: str, lines: list[str] | None = None) -> dict[int, set[str]]:
     """Map each 1-based page number to the set of normalized full-line keys on that page,
     per the ``<!-- page: N -->`` markers. Lines before the first marker (the source header)
@@ -88,10 +98,7 @@ def page_line_texts(markdown: str, lines: list[str] | None = None) -> dict[int, 
     @param lines: ``markdown`` already split on newlines, when available
     @return: page number -> set of normalized line keys
     """
-    pages: dict[int, set[str]] = {}
-    for _index, page, key in line_pages(markdown, lines):
-        pages.setdefault(page, set()).add(key)
-    return pages
+    return pages_from_positions(line_pages(markdown, lines))
 
 
 class LineIndex(NamedTuple):
@@ -134,7 +141,11 @@ def _locate_page(pages: dict[int, set[str]], key: str, claimed: int) -> int | No
 
 
 def verify_bookmarks(
-    records: list[dict], markdown: str, *, lines: list[str] | None = None
+    records: list[dict],
+    markdown: str,
+    *,
+    lines: list[str] | None = None,
+    positions: list[tuple[int, int, str]] | None = None,
 ) -> list[dict]:
     """Verify each record's page against ``markdown`` and correct off-by-one pointers.
 
@@ -152,6 +163,7 @@ def verify_bookmarks(
     @param records: outline records (each ``{"title", "level"|None, "page"|None}``)
     @param markdown: the assembled Markdown, carrying ``<!-- page: N -->`` markers
     @param lines: ``markdown`` already split on newlines, when available
+    @param positions: precomputed :func:`line_pages` output, when the caller already has it
     @return: a new list of records with pages corrected and non-locatable ones flagged
     """
     # Checked before page_line_texts, which walks and normalizes every line of the document to
@@ -161,7 +173,9 @@ def verify_bookmarks(
     if not PAGE_MARKER.search(markdown):
         return [dict(record) for record in records]
 
-    pages = page_line_texts(markdown, lines)
+    if positions is None:
+        positions = line_pages(markdown, lines)
+    pages = pages_from_positions(positions)
     if not any(page_no > 0 for page_no in pages):
         # Markers exist, but none on a line of its own, so no real page was ever opened.
         return [dict(record) for record in records]

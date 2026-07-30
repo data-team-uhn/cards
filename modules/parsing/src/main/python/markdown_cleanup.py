@@ -150,6 +150,26 @@ def source_file_header(source_file: str) -> str:
     return f"<!-- source_file: {_escape_comment(source_file)} -->"
 
 
+def finalize_markdown(
+    raw_markdown: str,
+    input_path: Path,
+    *,
+    source_file: str | None = None,
+) -> str:
+    """Clean Docling export and prepend the ``source_file`` header.
+
+    Shared by the PDF and DOCX converters so header assembly stays in one place.
+
+    @param raw_markdown: Markdown as exported by Docling (may be empty)
+    @param input_path: on-disk path used when ``source_file`` is omitted
+    @param source_file: optional original upload name for the header
+    @return: cleaned Markdown with a leading ``<!-- source_file: ... -->`` line
+    """
+    cleaned = clean_markdown(raw_markdown)
+    display_name = resolve_source_file_name(input_path, source_file)
+    return f"{source_file_header(display_name)}\n{cleaned}"
+
+
 def clean_markdown(md: str) -> str:
     """
     Collapse blank lines, remove empty headings / image placeholders, and strip

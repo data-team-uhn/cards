@@ -18,8 +18,9 @@
 """Shared convert + chunk + write path used by the daemon and the CLI.
 
 LibreOffice prep (when needed) runs first and saves converted files beside the source.
-Docling then converts to Markdown in memory. :func:`chunker.write_chunk_files` is the only
-writer of ``{stem}.md`` and ``Chunks/``.
+Docling then converts to Markdown in memory. :func:`chunker.write_chunk_files` is the sole
+writer of ``{stem}.md`` and ``Chunks/`` (also used by the re-chunk CLI via
+:func:`chunker.chunk_file`).
 """
 
 from __future__ import annotations
@@ -29,7 +30,9 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from typing import Any, Callable
 
-from chunker import DEFAULT_MAX_TOKENS, CHUNKS_DIRNAME, write_chunk_files
+from docling.document_converter import DocumentConverter
+
+from chunker import DEFAULT_MAX_TOKENS, CHUNKS_DIRNAME, clear_prior_outputs, write_chunk_files
 from docling_docx_parser import convert_docx_to_markdown
 from docling_pdf_parser import convert_pdf_to_markdown
 from libreoffice_convert import prepare_office_document
@@ -49,18 +52,19 @@ def parse_document(
     pdf_executor: ProcessPoolExecutor | None = None,
     pdf_workers: int | None = None,
     docx_lock: threading.Lock | None = None,
+    docx_converter: DocumentConverter | None = None,
     log: LogFn | None = None,
 ) -> dict[str, Any]:
     """LibreOffice prep, Docling convert, then write ``{stem}.md`` + ``Chunks/`` beside the source.
 
     @param input_path: absolute path to the staged ``.pdf`` / ``.docx`` / ``.doc``
-    @param chunk: when False, still write the ``.md`` but skip building the chunk tree
-        (``write_chunk_files`` is not called; only the markdown file is written)
+    @param chunk: when False, write the ``.md`` only and clear any stale ``Chunks/``
     @param max_tokens: chunk budget
     @param min_structure_tokens: leave the document unchunked below this size
     @param pdf_executor: warm PDF pool (daemon); ``None`` lets Docling size its own pool
     @param pdf_workers: worker count hint for the PDF pool
     @param docx_lock: optional lock serialising DOCX Docling conversion (daemon)
+    @param docx_converter: optional warm DOCX converter (daemon)
     @param log: optional line logger
     @return: summary ``{ok, markdown_path, chunked, chunks_dir, logs, filename}``
     """
@@ -101,15 +105,21 @@ def parse_document(
     else:
         if docx_lock is not None:
             with docx_lock:
-                markdown = convert_docx_to_markdown(docling_input, source_file=filename)
+                markdown = convert_docx_to_markdown(
+                    docling_input, converter=docx_converter, source_file=filename
+                )
         else:
-            markdown = convert_docx_to_markdown(docling_input, source_file=filename)
+            markdown = convert_docx_to_markdown(
+                docling_input, converter=docx_converter, source_file=filename
+            )
         _log(f"Converted DOCX ({len(markdown):,} chars)")
 
-    # Markdown lives beside the staged source (same stem), not beside a LibreOffice temp.
+    # Markdown + Chunks live beside the staged source (same stem), not a LibreOffice temp.
     output_md = source.with_suffix(".md")
 
     if not chunk:
+        clear_prior_outputs(output_md)
+        output_md.parent.mkdir(parents=True, exist_ok=True)
         output_md.write_text(markdown, encoding="utf-8")
         return {
             "ok": True,
@@ -120,20 +130,21 @@ def parse_document(
             "filename": filename,
         }
 
-    chunks_dir = write_chunk_files(
+    summary = write_chunk_files(
         markdown,
         output_md,
         filename,
         max_tokens=max_tokens,
         min_structure_tokens=min_structure_tokens,
     )
-    chunked = chunks_dir is not None
-    chunks_dir_path = chunks_dir if chunked else (output_md.parent / CHUNKS_DIRNAME)
+    if summary.logs:
+        _log(summary.logs)
 
+    chunks_dir_path = summary.chunks_dir or (output_md.parent / CHUNKS_DIRNAME)
     return {
         "ok": True,
         "markdown_path": str(output_md.resolve()),
-        "chunked": True,
+        "chunked": summary.chunked,
         "chunks_dir": str(chunks_dir_path.resolve()),
         "logs": "\n".join(logs),
         "filename": filename,

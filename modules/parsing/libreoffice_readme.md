@@ -79,10 +79,10 @@ LibreOffice runs inside the **Python parsing service** (daemon or CLI), not the 
 
 | Property / env | Default | Purpose |
 |----------------|---------|---------|
-| `iap.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
-| `iap.docling.timeout.minutes` | `30` | Per-document parse timeout |
-| `iap.parse.output.dir` / `IAP_SHARED_DOCS` | `/shared-docs` | Shared staging + parse output root |
-| `IAP_LIBREOFFICE_SOFFICE` | `soffice` | LibreOffice executable |
+| `cards.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
+| `cards.docling.timeout.minutes` | `30` | Per-document parse timeout |
+| `cards.parse.output.dir` / `CARDS_SHARED_DOCS` | `/shared-docs` | Shared staging + parse output root |
+| `CARDS_LIBREOFFICE_SOFFICE` | `soffice` | LibreOffice executable |
 
 Java never starts the daemon. When the daemon cannot be reached, parsing fails. There is no
 fallback processor.
@@ -91,8 +91,8 @@ fallback processor.
 
 ## Shared volume
 
-Java and the Docling daemon share **`/shared-docs`** (env `IAP_SHARED_DOCS`, JVM property
-`iap.parse.output.dir`). Layout:
+Java and the Docling daemon share **`/shared-docs`** (env `CARDS_SHARED_DOCS`, JVM property
+`cards.parse.output.dir`). Layout:
 
 ```
 /shared-docs/{answerUuid}/

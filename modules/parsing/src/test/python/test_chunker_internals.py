@@ -143,7 +143,10 @@ class TestOutlineSizeGate:
 
     def _tree(self, records=None):
         return chunker.build_chunk_tree(
-            self.SMALL, "doc.md", min_structure_tokens=10 ** 9, records=records
+            self.SMALL,
+            "doc.md",
+            min_structure_tokens=10 ** 9,
+            toc_pdf_outline_records=records,
         )
 
     def test_small_document_without_records_is_left_alone(self):
@@ -501,23 +504,37 @@ class TestBookmarksStorage:
 
 
 class TestRecordCutKeys:
+    def _index(self, md: str):
+        lines = md.split("\n")
+        return lines, chunker.build_line_index(chunker.line_pages(md, lines))
+
     def test_resolves_unique_non_atx(self):
         md = "<!-- page: 1 -->\n## 5 Analysis\n\nData Sharing\n\nbody"
-        keys = chunker._record_cut_keys(md, md.split("\n"), [{"title": "Data Sharing", "page": 1}], None)
+        lines, index = self._index(md)
+        keys = chunker._record_cut_keys(
+            [{"title": "Data Sharing", "page": 1}], lines, None, index
+        )
         assert keys == frozenset({chunker.normalize_title("Data Sharing")})
 
     def test_excludes_atx_match(self):
         md = "<!-- page: 1 -->\n## Data Sharing\n\nbody"
-        keys = chunker._record_cut_keys(md, md.split("\n"), [{"title": "Data Sharing", "page": 1}], None)
+        lines, index = self._index(md)
+        keys = chunker._record_cut_keys(
+            [{"title": "Data Sharing", "page": 1}], lines, None, index
+        )
         assert keys == frozenset()
 
     def test_excludes_toc_range(self):
         md = "<!-- page: 1 -->\nData Sharing\n\nbody"  # "Data Sharing" is line index 1
-        keys = chunker._record_cut_keys(md, md.split("\n"), [{"title": "Data Sharing", "page": 1}], (1, 1))
+        lines, index = self._index(md)
+        keys = chunker._record_cut_keys(
+            [{"title": "Data Sharing", "page": 1}], lines, (1, 1), index
+        )
         assert keys == frozenset()
 
     def test_no_records_is_empty(self):
-        assert chunker._record_cut_keys("x", ["x"], [], None) == frozenset()
+        lines, index = self._index("x")
+        assert chunker._record_cut_keys([], lines, None, index) == frozenset()
 
 
 class TestSubchunkBlocksRecordTier:

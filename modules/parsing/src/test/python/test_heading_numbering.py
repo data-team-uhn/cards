@@ -117,23 +117,14 @@ class TestRomanNumbering:
 
 
 class TestNumberingVector:
-    def test_numeric_by_default(self):
+    def test_numeric(self):
         assert hn.numbering_vector("1.2 Methods") == [1, 2]
 
-    def test_letter_off_by_default(self):
+    def test_letter_ignored(self):
         assert hn.numbering_vector("A. Consent") == []
 
-    def test_letter_opt_in(self):
-        assert hn.numbering_vector("A. Consent", allow_letter=True) == [1]
-
-    def test_roman_off_by_default(self):
+    def test_roman_ignored(self):
         assert hn.numbering_vector("II. Results") == []
-
-    def test_roman_opt_in(self):
-        assert hn.numbering_vector("II. Results", allow_roman=True) == [2]
-
-    def test_numeric_wins_over_opt_ins(self):
-        assert hn.numbering_vector("1.1 X", allow_letter=True, allow_roman=True) == [1, 1]
 
 
 class TestNumberingDepth:
@@ -143,8 +134,5 @@ class TestNumberingDepth:
     def test_zero_when_unnumbered(self):
         assert hn.numbering_depth("Introduction") == 0
 
-    def test_letter_depth_zero_by_default(self):
+    def test_letter_depth_zero(self):
         assert hn.numbering_depth("A. Consent") == 0
-
-    def test_letter_depth_one_opt_in(self):
-        assert hn.numbering_depth("A. Consent", allow_letter=True) == 1

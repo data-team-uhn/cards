@@ -165,16 +165,12 @@ chunk_file(<stem>.md)                                        # md is already cle
                           bookmarks.json (the resolved records, when there are any)
 ```
 
-`build_chunk_tree` is also the daemon's entry point: `POST /parse` calls it directly and
-returns the tree as JSON, writing nothing. That is why the split above is where it is — the
-disk writing all lives in `write_chunk_files`, the analysis in `build_chunk_tree`.
+Disk writing lives in `write_chunk_files` (analysis in `build_chunk_tree`). The only caller
+of `write_chunk_files` is `chunk_file`:
 
-Entry points (both land in `write_chunk_files`):
-
-- `chunk_file(file_path)` — one already-parsed `.md`; used by
-  the `python chunker.py <file>` CLI.
-- `convert_pdf(...)` — the inline CLI path (`docling_parser.py <file>`): parse,
-  write `.md`, then chunk in the same process.
+- `parse_document(...)` — daemon / `docling_parser.py` CLI: LibreOffice → Docling → write `.md`
+  → `chunk_file`.
+- `python chunker.py <file>` — re-chunk an already-parsed `.md` via `chunk_file` alone.
 
 See `PROPOSAL_PIPELINE_DESIGN.md` § *Stage 0 — Chunking* for the full splitting rules and the
 `catalog.json` / `outline.json` shapes.
@@ -248,9 +244,10 @@ PDFs via `PdfParser.onDocumentBytes`.
         llm_call_tracker.jsonl  # appended later by the Java LLM stages
 ```
 
-`clear_prior_outputs(output_file)` (CLI reconvert) deletes the sibling `outline.json`,
-`bookmarks.json`, and the whole `Chunks/` tree first, so a re-parse can never reuse stale
-output — staleness is handled by **wipe-and-redo**, not versioning.
+`clear_prior_outputs(output_file)` deletes sibling `outline.json` / `bookmarks.json` and the
+whole `Chunks/` tree. `write_chunk_files` always replaces `Chunks/`; `parse_document` with
+`chunk=false` writes the `.md` and then calls `clear_prior_outputs` so a prior run's chunks
+cannot linger. Staleness is handled by **wipe-and-redo**, not versioning.
 
 ---
 
@@ -258,12 +255,11 @@ output — staleness is handled by **wipe-and-redo**, not versioning.
 
 | | Daemon (production) | CLI / inline |
 |---|---|---|
-| Convert + chunk | Java `POST /parse` (bytes) → `convert_*_to_markdown` + `build_chunk_tree`, returned together; nothing written | `docling_parser.py <file>` writes `<stem>.md` + `Chunks/`, or `python chunker.py <file>` chunks an existing `.md` |
-| Files owned by | Java (`ParsedMarkdownStore`) | Python (writes `.md` + `Chunks/` itself) |
-| Source PDF for outline | Java co-locates `<stem>.pdf` | present only if a sibling `<stem>.pdf` exists beside the `.md` |
+| Convert + chunk | Java stages path under `/shared-docs`, `POST /parse?path=…` → `parse_document` → `write_chunk_files` | `docling_parser.py <file>` same path, or `python chunker.py <file>` re-chunks an existing `.md` |
+| Files owned by | Python on the shared volume (Java stages the upload only) | Python (writes `.md` + `Chunks/` itself) |
+| Source PDF for outline | Sibling `<stem>.pdf` beside the staged file (native or LibreOffice) | same, when a sibling `<stem>.pdf` exists |
 
-Both modes share `chunker.py`, so the outline + chunk logic is identical; only who writes the
-files and where the source PDF comes from differs.
+Both modes share `chunker.py`, so the outline + chunk logic is identical.
 
 ---
 
