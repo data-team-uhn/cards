@@ -21,21 +21,16 @@
 # caller. That is the whole point of the endpoint.
 #
 # On the JVM side, point IAP at it:
-#   -Diap.docling.daemon.url=http://localhost:18765
-#   -Diap.docling.timeout.minutes=30
-#   -Diap.parse.output.dir=<user.dir>/iap-parsed-markdown
+#   -Diap.docling.daemon.url=http://docling:18765
+#   -Diap.docling.daemon.autostart=true   # also launch a local daemon
+#   -Diap.docling.parse.combined=true
 
 services:
   docling:
     build:
       context: .
       dockerfile: Dockerfile
-    image: iap-docling:latest
-    ports:
-      # The 127.0.0.1 prefix is the access control. The daemon authenticates nothing, so dropping
-      # it back to "18765:18765" publishes /parse and /shutdown on every host interface. Keep the
-      # prefix, and reach the daemon from IAP on the same host as http://localhost:18765.
-      - "127.0.0.1:18765:18765"
+    image: iap/docling:latest
     # Worker sizing reads the container's cgroup quota, not the host's CPU and RAM, so these
     # limits are what the daemon budgets against. Allow roughly 2 GB per PDF worker.
     deploy:
