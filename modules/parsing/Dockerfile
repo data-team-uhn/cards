@@ -21,14 +21,19 @@
 # from a JVM running elsewhere: the older /convert and /chunk endpoints pass absolute paths,
 # and a caller's paths do not exist in here (on a Windows host they cannot be made to).
 #
-# Build:
-#   docker build -t iap-docling -f modules/documents/processing/Dockerfile modules/documents/processing
-# Run:
-#   docker run --rm -p 127.0.0.1:18765:18765 --cpus=4 --memory=8g iap-docling
+# Build, from the repo root:
+#   mvn install -Pdocker -pl modules/documents/processing
+# or, without Maven:
+#   docker build -t iap/docling:latest modules/documents/processing
+#
+# Run, assuming a non-dockerized IAP install:
+#   docker run --rm -p 127.0.0.1:18765:18765 --cpus=4 --memory=8g iap/docling:latest
 #
 # The 127.0.0.1 prefix on the published port is not optional decoration: the daemon has no
 # authentication, so it is the only thing keeping the network off /parse and /shutdown. A bare
 # "-p 18765:18765" binds every host interface and exposes both to anyone who can route here.
+# docker-compose.yml publishes no port at all and lets IAP reach the daemon over the Compose
+# network instead.
 
 FROM python:3.13-slim AS base
 
@@ -47,18 +52,13 @@ ENV PYTHONUNBUFFERED=1 \
     # letting each worker also thread out oversubscribes the container's CPU quota.
     OMP_NUM_THREADS=1 \
     DOCLING_NUM_THREADS=1 \
-    # Keep the model cache on a path that exists at build time so the weights baked in below
-    # are the ones found at runtime.
-    HF_HOME=/opt/models \
-    TRANSFORMERS_OFFLINE=1 \
-    HF_HUB_OFFLINE=1
+    # Where the baked weights live. download_models() saves into DOCLING_ARTIFACTS_PATH,
+    # and Docling reads them back from that same layout at runtime.
+    DOCLING_ARTIFACTS_PATH=/opt/models/docling \
+    HF_HOME=/opt/models/hf
 
 WORKDIR /app
 
-# No tokenizer package: token counts are len(text) // 4 (markdown_markers.count_tokens).
-# tiktoken used to be installed here for a chunker that no longer exists; nothing imports it,
-# and it is not pulled in transitively either — docling-core wants it only under the optional
-# "chunking-openai" extra — so it was 2.2 MB of image for nothing.
 RUN pip install --no-cache-dir \
         "docling>=2.115" \
         pypdf \
@@ -67,9 +67,13 @@ RUN pip install --no-cache-dir \
 # Bake the model weights into the image. Without this the first conversion tries to reach
 # huggingface.co and fails on any host with no egress or with TLS interception — the container
 # would start healthy and then fail every real request. Downloading at build time also makes
-# startup deterministic and lets the runtime stay fully offline (HF_HUB_OFFLINE above).
-RUN python -c "from docling.utils.model_downloader import download_models; download_models()" \
+# startup deterministic and lets the runtime stay fully offline (see the ENV below).
+RUN python -c "import os; from pathlib import Path; from docling.utils.model_downloader import download_models; download_models(output_dir=Path(os.environ['DOCLING_ARTIFACTS_PATH']))" \
     && find /opt/models -type d -name '.locks' -prune -exec rm -rf {} +
+
+# Now that we have the models downloaded, we can turn HF offline
+ENV TRANSFORMERS_OFFLINE=1 \
+    HF_HUB_OFFLINE=1
 
 COPY src/main/python/ /app/
 
