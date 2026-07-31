@@ -147,24 +147,18 @@ def verify_bookmarks(
     lines: list[str] | None = None,
     positions: list[tuple[int, int, str]] | None = None,
 ) -> list[dict]:
-    """Verify each record's page against ``markdown`` and correct off-by-one pointers.
+    """Check each record's page against ``markdown`` and fix off-by-one pages.
 
-    For a record with an integer ``page``: if its title is found on that page, it is left
-    unchanged; if found on page-1 or page+1, its ``page`` is rewritten to where it was
-    found; if found on none of the three, ``"verified": False`` is set (page left as-is).
-    Records without a page, or with an empty title key, are returned unchanged. Never sets
-    ``"verified": True``.
+    Looks for the title on ``page``, ``page-1``, or ``page+1``. Rewrites ``page`` number when
+    found nearby; sets ``"verified": False`` when not found (never sets ``True``).
+    Skips records with no page/title. Unpaged docs (no ``<!-- page: N -->``) are unchanged.
+    Always returns new dicts.
 
-    An unpaged document verifies nothing: without ``<!-- page: N -->`` markers a record's
-    claimed page cannot be confirmed or contradicted, so every record passes through untouched
-    rather than being flagged. Both exits still return fresh dicts, so a caller mutating the
-    result cannot reach into ``records``.
-
-    @param records: outline records (each ``{"title", "level"|None, "page"|None}``)
-    @param markdown: the assembled Markdown, carrying ``<!-- page: N -->`` markers
-    @param lines: ``markdown`` already split on newlines, when available
-    @param positions: precomputed :func:`line_pages` output, when the caller already has it
-    @return: a new list of records with pages corrected and non-locatable ones flagged
+    @param records: outline records (``title``, ``level``, ``page``)
+    @param markdown: Markdown with page markers
+    @param lines: pre-split lines, when available
+    @param positions: precomputed :func:`line_pages` output, when available
+    @return: corrected records
     """
     # Checked before page_line_texts, which walks and normalizes every line of the document to
     # build a map that an unpaged document then discards unused. A necessary condition only:
@@ -198,16 +192,16 @@ def verify_bookmarks(
 def resolve_record_line(
     index: LineIndex, record: dict, *, exclude=frozenset()
 ) -> int | None:
-    """The body line index a record's title maps to, or ``None`` when it is absent or
-    ambiguous. When the document is paged and the record's ``page`` is trusted (an integer,
-    not explicitly ``verified: False``), only lines on exactly that page match; otherwise any
-    page. The match must be unique among non-``exclude`` lines -- zero or several yield
-    ``None`` (fail-open, never resolve to the wrong line).
+    """Body line for a record's title, or ``None`` if missing or ambiguous.
 
-    @param index: output of :func:`build_line_index` for the document
-    @param record: an outline record (``{"title", "page"|None, "verified"?}``)
-    @param exclude: line indices that are not eligible (e.g. ATX headings, the TOC range)
-    @return: the unique matching line index, or ``None``
+    With a trusted page (paged doc, integer ``page``, not ``verified: False``), only that
+    page is considered; otherwise any page. Zero or multiple matches among non-``exclude``
+    lines return ``None`` (fail-open).
+
+    @param index: :func:`build_line_index` for the document
+    @param record: outline record (``title``, ``page``, optional ``verified``)
+    @param exclude: ineligible line indices (e.g. ATX headings, TOC range)
+    @return: unique matching line index, or ``None``
     """
     key = normalize_title(record.get("title") or "")
     if not key:

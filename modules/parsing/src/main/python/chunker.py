@@ -74,14 +74,11 @@ backmatter (Reference/Appendix) chunk; that chunk is never sent to the summarize
 Token counts come from :func:`markdown_markers.count_tokens`, a cheap character-based
 heuristic (``len(text) // 4``); no ML tokenizer is loaded.
 
-Shared writer and two entry points:
+Entry points:
 
-* :func:`build_chunk_tree` — **pure**: Markdown and any known outline records in, the whole tree
-  out, nothing written.
+* :func:`build_chunk_tree` — **pure**: Markdown and outline records in, tree out, nothing written.
 * :func:`write_chunk_files` — sole disk writer of ``{stem}.md`` + ``Chunks/``. Called by
-  :func:`parse_document.parse_document` (daemon / Docling CLI) with markdown in memory, and by
-  :func:`chunk_file` when re-chunking an already-parsed ``.md``
-  (``python chunker.py <file_path>``).
+  :func:`parse_document.parse_document` and :func:`chunk_file`.
 """
 
 from __future__ import annotations
@@ -757,7 +754,7 @@ def _record_cut_keys(
 
 
 class ChunkingSummary(NamedTuple):
-    """Summary from :func:`write_chunk_files`"""
+    """Summary from :func:`write_chunk_files`."""
 
     chunks_dir: Path | None
     chunked: bool
@@ -806,7 +803,7 @@ def write_chunk_files(
         min_structure_tokens=min_structure_tokens,
         toc_pdf_outline_records=toc_pdf_outline_records,
     )
-
+    # write markdown file
     output_file.parent.mkdir(parents=True, exist_ok=True)
     output_file.write_text(tree["markdown"], encoding="utf-8")
 
@@ -814,10 +811,11 @@ def write_chunk_files(
     if chunks_dir.exists():
         shutil.rmtree(chunks_dir)
     chunks_dir.mkdir(parents=True, exist_ok=True)
-
+    # write outline.json file
     _write_json(chunks_dir / OUTLINE_NAME, tree["outline"])
 
     if tree["records"]:
+        # write bookmarks.json file
         _write_json(chunks_dir / BOOKMARKS_NAME, tree["records"])
     _remove_sidecars(output_file)
 
@@ -843,6 +841,7 @@ def write_chunk_files(
 
     for chunk in tree["chunks"]:
         (chunks_dir / chunk["file"]).write_text(chunk["text"] + "\n", encoding="utf-8")
+    # write catalog.json file
     _write_json(chunks_dir / CATALOG_NAME, tree["catalog"])
     return ChunkingSummary(
         chunks_dir=chunks_dir,

@@ -276,6 +276,10 @@ public class ProposalAnswerEditor extends DefaultEditor
             final String result = parseFileNode(fileNode, fileName, answerFolder);
             if (DocumentParseException.isParseErrorNote(result)) {
                 parseErrors.add(result.trim());
+            } else if (result == null) {
+                // Null means the parse produced neither markdown nor a typed error note. Treat it as
+                // failure so applyParseResults does not mark chunks written or clear a prior note.
+                parseErrors.add(DocumentParseException.toNote(fileName, "Parse produced no output"));
             }
         }
         return parseErrors;
@@ -286,11 +290,11 @@ public class ProposalAnswerEditor extends DefaultEditor
         final FileParser parser = PARSER_FACTORY.getParser(fileName);
         if (parser == null) {
             LOGGER.error("Unsupported file format, skipping: '{}'", fileName);
-            return null;
+            return DocumentParseException.toNote(fileName, "Unsupported file format");
         }
         final Blob dataBlob = getFileDataBlob(fileNode);
         if (dataBlob == null) {
-            return null;
+            return DocumentParseException.toNote(fileName, "File data is missing");
         }
         try {
             return parseBlob(dataBlob, parser, fileName, answerFolder);
@@ -309,12 +313,15 @@ public class ProposalAnswerEditor extends DefaultEditor
         try {
             final long blobLength = dataBlob.length();
             if (blobLength > MAX_DOCUMENT_SIZE_BYTES) {
-                LOGGER.warn("Skipping parse of '{}': size {} bytes exceeds limit", fileName, blobLength);
-                return null;
+                throw new DocumentParseException(
+                    "Document size " + blobLength + " bytes exceeds limit", null);
             }
             try (InputStream stream = dataBlob.getNewStream()) {
                 final byte[] content = stream.readNBytes((int) blobLength);
                 result = parser.parse(new ByteArrayInputStream(content), fileName, answerFolder);
+                if (result == null) {
+                    throw new DocumentParseException("Parse produced no output", null);
+                }
                 return result;
             }
         } catch (DocumentParseException e) {
@@ -322,8 +329,7 @@ public class ProposalAnswerEditor extends DefaultEditor
         } catch (IOException e) {
             throw new DocumentParseException("Failed to read document stream", e);
         } catch (Exception e) {
-            LOGGER.warn("Failed to parse file '{}': {}", fileName, e.getMessage());
-            return null;
+            throw new DocumentParseException("Failed to parse document", e);
         } finally {
             final long endTimestamp = System.currentTimeMillis();
             final int resultLength = result == null ? 0 : result.length();

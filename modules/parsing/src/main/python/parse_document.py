@@ -18,9 +18,8 @@
 """Shared convert + chunk + write path used by the daemon and the CLI.
 
 LibreOffice prep (when needed) runs first and saves converted files beside the source.
-Docling then converts to Markdown in memory. :func:`chunker.write_chunk_files` is the sole
-writer of ``{stem}.md`` and ``Chunks/`` (also used by the re-chunk CLI via
-:func:`chunker.chunk_file`).
+Docling then converts to Markdown in memory. :func:`chunker.write_chunk_files` writes
+``{stem}.md`` and ``Chunks/``.
 """
 
 from __future__ import annotations
