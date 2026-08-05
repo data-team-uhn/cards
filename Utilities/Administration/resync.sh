@@ -35,13 +35,22 @@
 #   resolves those paths back into references on the destination. Questionnaire and question
 #   references resolve because questionnaires have the same paths on both instances; subject
 #   references resolve because subjects are imported first, keeping their original node names.
-# - Subjects are merged (:replaceProperties only) so that their child subjects are preserved;
-#   forms use :replace so that their answer nodes exactly match the source, including removed
-#   answers. In both cases existing nodes are updated in place, keeping their jcr:uuid.
+# - Subjects are only ever created, never updated. Everything that can change about a subject lives
+#   in its forms; the one way an existing subject changes is by gaining a child subject (a new
+#   visit), and that child arrives as a row of its own. So a subject is imported by name into its
+#   parent, and one that is already on the destination is left completely untouched — no property
+#   rewrite, no checkout, no new version, and no risk to the jcr:uuid that its forms and access
+#   tokens reference.
+# - Forms are posted to their own path with :replace, which replaces same-named answers in place.
+#   The node a request is posted to is never removed, so an existing form keeps its jcr:uuid.
 # - Nodes that are new to the destination get their own new jcr:uuid values; this is unavoidable.
 #
 # Limitations: the destination must already have the same /Questionnaires and /SubjectTypes
-# content as the source; deletions are not propagated; if computed answers are configured,
+# content as the source. Deletions do not propagate, at any level: a subject or form deleted on the
+# source is not deleted on the destination, and neither is an answer removed from a form nor a
+# property removed from a node — the import only ever writes what it is given, and the pass that
+# would drop content missing from it is reachable only in a merge mode that no request parameter
+# selects. If computed answers are configured,
 # consider setting COMPUTED_ANSWERS_DISABLED=true on the destination during the import to avoid
 # duplicated computed answers.
 
@@ -60,6 +69,13 @@ if [[ -z "$SOURCE" || -z "$DESTINATION" || -z "$TIMESTAMP" ]]; then
     exit 1
 fi
 
+# A form's answers and answer sections are its payload, so forms are serialized `deep`. A subject's
+# are not: its child subjects are modified nodes in their own right and come back as their own rows,
+# so serializing a subject deep would send every visit twice — once inside its parent and once by
+# itself — and the second copy would be refused as already present.
+SUBJECT_SELECTORS=".importable.-answerCopy.-labels"
+FORM_SELECTORS=".importable.deep.-answerCopy.-labels"
+
 # Fetch one page of modified nodes from the source, as importable JSON.
 # The `identify` processor is kept enabled (unlike a plain export) because the import needs each
 # node's original name and location, provided by the @path property; all @-prefixed annotations
@@ -67,9 +83,9 @@ fi
 # because they decorate the output with computed values (copies of answers on subjects, display
 # labels on answers) which must not be imported as actual properties.
 fetch_page() {
-    local homepage="$1" offset="$2"
+    local homepage="$1" selectors="$2" offset="$3"
     curl -sf -u "$SOURCE_AUTH" --get "$SOURCE/$homepage.paginate.json" \
-        --data-urlencode "resourceSelectors=.importable.deep.-answerCopy.-labels" \
+        --data-urlencode "resourceSelectors=$selectors" \
         --data-urlencode "includeallstatus=true" \
         --data-urlencode "offset=$offset" \
         --data-urlencode "limit=$PAGE_SIZE" \
@@ -82,10 +98,10 @@ fetch_page() {
 # Export all pages of modified nodes under the given homepage into one JSON array,
 # sorted by path depth so that parent nodes are imported before their descendants.
 export_modified() {
-    local homepage="$1" offset=0 rows page
+    local homepage="$1" selectors="$2" offset=0 rows page
     local all="[]"
     while : ; do
-        page=$(fetch_page "$homepage" "$offset") || { echo "Export from $SOURCE/$homepage failed" >&2; return 1; }
+        page=$(fetch_page "$homepage" "$selectors" "$offset") || { echo "Export from $SOURCE/$homepage failed" >&2; return 1; }
         rows=$(jq '.rows | length' <<< "$page")
         [[ "$rows" -eq 0 ]] && break
         all=$(jq --argjson new "$(jq '.rows' <<< "$page")" '. + $new' <<< "$all")
@@ -94,56 +110,82 @@ export_modified() {
     jq 'sort_by(."@path" | split("/") | length)' <<< "$all"
 }
 
-# Import one exported node into the destination, in two steps:
-# 1. The node is created (or updated) with its primary type and its single-valued top-level
-#    properties, through the regular Sling modify operation. This is needed because the import
-#    operation alone deep-creates missing nodes with a default node type (losing referenceability
-#    and validity), and applies properties too late for the commit-time validators, which expect
-#    a new node to carry its mandatory properties (a form's questionnaire and subject, a
-#    subject's identifier and type) from the very beginning.
-#    The multi-valued relatedSubjects reference is skipped, the destination recomputes it.
-# 2. The full content is imported into the now-valid node with the import operation. The
-#    @-prefixed serialization annotations are stripped, as is the denormalized `form` property of
-#    answers and answer sections, which holds the jcr:uuid of the form on the source instance —
-#    the destination recomputes it with the destination form's own uuid when the answers are
-#    saved. The import is posted directly to the node's own path; posting to the parent with
-#    :name would be shadowed by the CSV-oriented DataImportServlet bound to POST on /Forms.
-# :autoCheckout allows updating forms that are checked in by the versioning mechanism.
-import_node() {
-    local json="$1" replace="$2"
-    local nodepath content response primarytype
-    local -a prepare
-    nodepath=$(jq -r '."@path"' <<< "$json")
-    primarytype=$(jq -r '."jcr:primaryType"' <<< "$json")
-    prepare=(-F "jcr:primaryType=$primarytype")
-    while IFS=$'\t' read -r prop value; do
-        [[ -z "$prop" ]] && continue
-        if [[ "$prop" == jcr:reference:* ]]; then
-            prepare+=(-F "${prop#jcr:reference:}=$value" -F "${prop#jcr:reference:}@TypeHint=Reference")
-        else
-            prepare+=(-F "$prop=$value")
-        fi
-    done < <(jq -r 'to_entries[]
-        | select((.value | type) as $t | $t == "string" or $t == "number" or $t == "boolean")
-        | select((.key | startswith("@") or . == "jcr:primaryType") | not)
-        | [.key, (.value | tostring)] | @tsv' <<< "$json")
-    response=$(curl -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$nodepath" \
-        "${prepare[@]}" -F ":autoCheckout=true")
-    if [[ "$response" -lt 200 || "$response" -ge 300 ]]; then
-        echo "  FAILED ($response) to prepare: $nodepath" >&2
-        return 1
-    fi
-    content=$(jq 'walk(if type == "object" then
+# Each node is imported in a single request that builds it, its properties and its whole subtree in
+# one commit. That is not merely fewer requests: preparing the node in an earlier request is what
+# made answers duplicate. A form committed with a questionnaire but no answers is exactly what makes
+# CreateMissingAnswersEditor generate a complete blank answer tree of its own, under randomly
+# generated node names that never collide with the imported ones, leaving the form holding two sets
+# of answers — one blank, one real. Sending everything in one commit leaves that editor nothing to
+# fill in.
+#
+# How the request is addressed differs between subjects and forms; see each function below.
+# :autoCheckout allows writing to nodes the versioning mechanism has checked in. --form-string
+# rather than -F throughout: -F reads a leading @ or < in a value as a file reference, and
+# repository data is not under our control.
+
+# Strip the @-prefixed serialization annotations, and the denormalized `form` property of answers
+# and answer sections, which holds the jcr:uuid of the form on the SOURCE instance — the destination
+# recomputes it from its own form.
+import_content() {
+    jq 'walk(if type == "object" then
             with_entries(select(.key | startswith("@") | not))
             | (if has("jcr:reference:question") or has("jcr:reference:section") then del(.form) else . end)
-        else . end)' <<< "$json")
+        else . end)' <<< "$1"
+}
+
+# A subject is imported into its parent under an explicit :name, which is what makes the import
+# create the node itself, taking its primary type from the content. :replace=false then means the
+# import refuses a node that is already there, answering 412 — and since subjects are never
+# updated, that refusal is exactly the outcome we want, not an error.
+#
+# Do NOT send a jcr:primaryType parameter here: request parameters apply to the resource the
+# request was posted to, so it would try to retype the parent — /Subjects itself.
+import_subject() {
+    local json="$1" nodepath parent name response
+    nodepath=$(jq -r '."@path"' <<< "$json")
+    parent="${nodepath%/*}"
+    name="${nodepath##*/}"
+    response=$(curl -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$parent/" \
+        --form-string ":name=$name" \
+        --form-string ":operation=import" \
+        --form-string ":contentType=json" \
+        --form-string ":replace=false" \
+        --form-string ":autoCheckout=true" \
+        --form-string ":content=$(import_content "$json")")
+    if [[ "$response" -eq 412 ]]; then
+        echo "  already present, left alone: $nodepath"
+        return 0
+    fi
+    if [[ "$response" -lt 200 || "$response" -ge 300 ]]; then
+        echo "  FAILED ($response): $nodepath" >&2
+        return 1
+    fi
+    echo "  created: $nodepath"
+}
+
+# A form is posted to its own path, for two reasons. POST on /Forms is shadowed by the CSV-oriented
+# DataImportServlet, so the parent is not available; and posting to the node itself keeps the
+# import in parent-node mode, where the node is never removed and so keeps its jcr:uuid — which
+# posting by :name would not, since :replace deletes and recreates an existing node.
+#
+# That mode does mean the import never applies the content's primary type to the form node itself,
+# so jcr:primaryType is sent as a request parameter: a missing node is created by Sling's
+# deep-create before the content is read, and that step takes the type from the request. A new form
+# would come out right even without it, because cards:FormsHomepage declares
+# `+ * (cards:Form) = cards:Form`, but that is a property of the parent's node type rather than of
+# the import, and is not worth depending on.
+import_form() {
+    local json="$1" nodepath primarytype response
+    nodepath=$(jq -r '."@path"' <<< "$json")
+    primarytype=$(jq -r '."jcr:primaryType"' <<< "$json")
     response=$(curl -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$nodepath" \
-        -F ":operation=import" \
-        -F ":contentType=json" \
-        -F ":replace=$replace" \
-        -F ":replaceProperties=true" \
-        -F ":autoCheckout=true" \
-        -F ":content=$content")
+        --form-string "jcr:primaryType=$primarytype" \
+        --form-string ":operation=import" \
+        --form-string ":contentType=json" \
+        --form-string ":replace=true" \
+        --form-string ":replaceProperties=true" \
+        --form-string ":autoCheckout=true" \
+        --form-string ":content=$(import_content "$json")")
     if [[ "$response" -lt 200 || "$response" -ge 300 ]]; then
         echo "  FAILED ($response): $nodepath" >&2
         return 1
@@ -154,21 +196,20 @@ import_node() {
 failures=0
 
 echo "Exporting subjects modified since $TIMESTAMP from $SOURCE..."
-subjects=$(export_modified "Subjects") || exit 1
+subjects=$(export_modified "Subjects" "$SUBJECT_SELECTORS") || exit 1
 count=$(jq 'length' <<< "$subjects")
 echo "Importing $count subject(s) into $DESTINATION..."
 for i in $(seq 0 $((count - 1))); do
-    # Subjects are merged, not replaced, to preserve their jcr:uuid, which existing forms and
-    # access tokens on the destination reference
-    import_node "$(jq ".[$i]" <<< "$subjects")" "false" || failures=$((failures + 1))
+    # Sorted parents-first by the export, so a new visit's parent subject is always there already
+    import_subject "$(jq ".[$i]" <<< "$subjects")" || failures=$((failures + 1))
 done
 
 echo "Exporting forms modified since $TIMESTAMP from $SOURCE..."
-forms=$(export_modified "Forms") || exit 1
+forms=$(export_modified "Forms" "$FORM_SELECTORS") || exit 1
 count=$(jq 'length' <<< "$forms")
 echo "Importing $count form(s) into $DESTINATION..."
 for i in $(seq 0 $((count - 1))); do
-    import_node "$(jq ".[$i]" <<< "$forms")" "true" || failures=$((failures + 1))
+    import_form "$(jq ".[$i]" <<< "$forms")" || failures=$((failures + 1))
 done
 
 if [[ "$failures" -gt 0 ]]; then
