@@ -82,6 +82,9 @@ public class ImportableProcessor implements ResourceJsonProcessor
             } else if (propertyName.startsWith("sling:")) {
                 // Remove all sling properties
                 result = null;
+            } else if (isHostSpecificFormReference(node, propertyName)) {
+                // Remove the denormalized pointer back to the containing form
+                result = null;
             } else if (isReference(property)) {
                 // Convert all reference properties to the path being referenced
                 if (property.isMultiple()) {
@@ -138,5 +141,27 @@ public class ImportableProcessor implements ResourceJsonProcessor
         throws RepositoryException
     {
         return PropertyType.REFERENCE == property.getType() || PropertyType.WEAKREFERENCE == property.getType();
+    }
+
+    /**
+     * Check whether a property is the {@code form} pointer that every answer and answer section carries.
+     * <p>
+     * It holds the jcr:uuid of the form the node belongs to, denormalized so that queries can join on it instead of
+     * using {@code ISDESCENDANTNODE}. It is a plain string rather than a reference, so nothing else in this processor
+     * turns it into a path, and it would be exported as a uuid that means nothing on the instance importing it, or
+     * worse, means something else. Nothing is lost by dropping it: it is recomputed from the destination's own form
+     * when the answers are saved.
+     * </p>
+     *
+     * @param node the node the property belongs to
+     * @param propertyName the name of the property
+     * @return {@code true} if this is the {@code form} property of an answer or answer section
+     * @throws RepositoryException if the node type cannot be checked
+     */
+    private boolean isHostSpecificFormReference(final Node node, final String propertyName)
+        throws RepositoryException
+    {
+        return "form".equals(propertyName)
+            && (node.isNodeType("cards:Answer") || node.isNodeType("cards:AnswerSection"));
     }
 }
