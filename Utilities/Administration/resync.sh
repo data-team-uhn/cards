@@ -95,19 +95,33 @@ fetch_page() {
         --data-urlencode "filtertypes=datetime"
 }
 
-# Export all pages of modified nodes under the given homepage into one JSON array,
-# sorted by path depth so that parent nodes are imported before their descendants.
+# Export all pages of modified nodes under the given homepage into the file named by $3, one compact
+# JSON row per line, sorted by path depth. That ordering is load-bearing: a child subject is only
+# ever created by its own row, so its parent has to be imported first.
+#
+# Rows go through a file rather than a shell variable because this data has no useful upper bound —
+# a page of a hundred deep forms is megabytes of JSON. Passing that to jq as an argument overruns
+# the kernel's limit on the size of a command line ("Argument list too long"), and accumulating it
+# in a variable would additionally re-parse and re-print everything gathered so far on every page.
+# Every jq here is checked. When this step failed it used to leave an empty result behind and still
+# report success, so the run announced "0 form(s)" and "Re-sync complete" having copied nothing —
+# the one failure mode a sync tool must never have.
 export_modified() {
-    local homepage="$1" selectors="$2" offset=0 rows page
-    local all="[]"
+    local homepage="$1" selectors="$2" outfile="$3" offset=0 rows page unsorted
+    unsorted=$(mktemp) || return 1
     while : ; do
-        page=$(fetch_page "$homepage" "$selectors" "$offset") || { echo "Export from $SOURCE/$homepage failed" >&2; return 1; }
-        rows=$(jq '.rows | length' <<< "$page")
+        page=$(fetch_page "$homepage" "$selectors" "$offset") \
+            || { echo "Export from $SOURCE/$homepage failed" >&2; rm -f "$unsorted"; return 1; }
+        rows=$(jq '.rows | length' <<< "$page") \
+            || { echo "Unreadable response from $SOURCE/$homepage at offset $offset" >&2; rm -f "$unsorted"; return 1; }
         [[ "$rows" -eq 0 ]] && break
-        all=$(jq --argjson new "$(jq '.rows' <<< "$page")" '. + $new' <<< "$all")
+        jq -c '.rows[]' <<< "$page" >> "$unsorted" \
+            || { echo "Failed to collect rows from $SOURCE/$homepage at offset $offset" >&2; rm -f "$unsorted"; return 1; }
         offset=$((offset + rows))
     done
-    jq 'sort_by(."@path" | split("/") | length)' <<< "$all"
+    jq -sc 'sort_by(."@path" | split("/") | length) | .[]' "$unsorted" > "$outfile" \
+        || { echo "Failed to sort the exported $homepage" >&2; rm -f "$unsorted"; return 1; }
+    rm -f "$unsorted"
 }
 
 # Each node is imported in a single request that builds it, its properties and its whole subtree in
@@ -119,9 +133,13 @@ export_modified() {
 # fill in.
 #
 # How the request is addressed differs between subjects and forms; see each function below.
-# :autoCheckout allows writing to nodes the versioning mechanism has checked in. --form-string
-# rather than -F throughout: -F reads a leading @ or < in a value as a file reference, and
-# repository data is not under our control.
+# :autoCheckout allows writing to nodes the versioning mechanism has checked in.
+#
+# --form-string rather than -F for every value that carries repository data: -F reads a leading @
+# or < in a value as a file reference, and that data is not under our control. The one exception is
+# :content, which is deliberately passed as `-F ":content=<file"`. That is our own redirection, not
+# something a value could smuggle in, and it keeps a form's serialized subtree off the command line,
+# where a big enough one would run into the same argument-size limit as the export used to.
 
 # Strip the @-prefixed serialization annotations, and the denormalized `form` property of answers
 # and answer sections, which holds the jcr:uuid of the form on the SOURCE instance — the destination
@@ -141,17 +159,20 @@ import_content() {
 # Do NOT send a jcr:primaryType parameter here: request parameters apply to the resource the
 # request was posted to, so it would try to retype the parent — /Subjects itself.
 import_subject() {
-    local json="$1" nodepath parent name response
+    local json="$1" nodepath parent name response contentfile
     nodepath=$(jq -r '."@path"' <<< "$json")
     parent="${nodepath%/*}"
     name="${nodepath##*/}"
+    contentfile=$(mktemp) || return 1
+    import_content "$json" > "$contentfile"
     response=$(curl -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$parent/" \
         --form-string ":name=$name" \
         --form-string ":operation=import" \
         --form-string ":contentType=json" \
         --form-string ":replace=false" \
         --form-string ":autoCheckout=true" \
-        --form-string ":content=$(import_content "$json")")
+        -F ":content=<$contentfile")
+    rm -f "$contentfile"
     if [[ "$response" -eq 412 ]]; then
         echo "  already present, left alone: $nodepath"
         return 0
@@ -175,9 +196,11 @@ import_subject() {
 # `+ * (cards:Form) = cards:Form`, but that is a property of the parent's node type rather than of
 # the import, and is not worth depending on.
 import_form() {
-    local json="$1" nodepath primarytype response
+    local json="$1" nodepath primarytype response contentfile
     nodepath=$(jq -r '."@path"' <<< "$json")
     primarytype=$(jq -r '."jcr:primaryType"' <<< "$json")
+    contentfile=$(mktemp) || return 1
+    import_content "$json" > "$contentfile"
     response=$(curl -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$nodepath" \
         --form-string "jcr:primaryType=$primarytype" \
         --form-string ":operation=import" \
@@ -185,7 +208,8 @@ import_form() {
         --form-string ":replace=true" \
         --form-string ":replaceProperties=true" \
         --form-string ":autoCheckout=true" \
-        --form-string ":content=$(import_content "$json")")
+        -F ":content=<$contentfile")
+    rm -f "$contentfile"
     if [[ "$response" -lt 200 || "$response" -ge 300 ]]; then
         echo "  FAILED ($response): $nodepath" >&2
         return 1
@@ -194,23 +218,29 @@ import_form() {
 }
 
 failures=0
+subjects=$(mktemp) || exit 1
+forms=$(mktemp) || exit 1
+trap 'rm -f "$subjects" "$forms"' EXIT
+
+# The import loops read their rows from a file rather than iterating an array held in a variable:
+# one row per line means each node is handled without re-reading the ones before it, and nothing
+# ever has to fit on a command line. Redirecting the file into `while` rather than piping it also
+# keeps the loop in this shell, so `failures` survives it.
 
 echo "Exporting subjects modified since $TIMESTAMP from $SOURCE..."
-subjects=$(export_modified "Subjects" "$SUBJECT_SELECTORS") || exit 1
-count=$(jq 'length' <<< "$subjects")
-echo "Importing $count subject(s) into $DESTINATION..."
-for i in $(seq 0 $((count - 1))); do
-    # Sorted parents-first by the export, so a new visit's parent subject is always there already
-    import_subject "$(jq ".[$i]" <<< "$subjects")" || failures=$((failures + 1))
-done
+export_modified "Subjects" "$SUBJECT_SELECTORS" "$subjects" || exit 1
+echo "Importing $(wc -l < "$subjects") subject(s) into $DESTINATION..."
+while IFS= read -r row; do
+    # Parents come first, so a new visit's parent subject is always in place already
+    import_subject "$row" || failures=$((failures + 1))
+done < "$subjects"
 
 echo "Exporting forms modified since $TIMESTAMP from $SOURCE..."
-forms=$(export_modified "Forms" "$FORM_SELECTORS") || exit 1
-count=$(jq 'length' <<< "$forms")
-echo "Importing $count form(s) into $DESTINATION..."
-for i in $(seq 0 $((count - 1))); do
-    import_form "$(jq ".[$i]" <<< "$forms")" || failures=$((failures + 1))
-done
+export_modified "Forms" "$FORM_SELECTORS" "$forms" || exit 1
+echo "Importing $(wc -l < "$forms") form(s) into $DESTINATION..."
+while IFS= read -r row; do
+    import_form "$row" || failures=$((failures + 1))
+done < "$forms"
 
 if [[ "$failures" -gt 0 ]]; then
     echo "Re-sync finished with $failures failure(s)" >&2
