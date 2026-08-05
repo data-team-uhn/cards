@@ -54,5 +54,6 @@ The following environment variables are read by the CARDS Docker container _entr
 | `RDB_USER` | The user to authenticate to the relational database as | `cards` |
 | `RDB_PASSWORD` | The password to authenticate to the relational database with | `password` |
 | `RDB_DRIVER` | The JDBC driver class to use. Only the PostgreSQL driver ships in the image; another vendor's driver must be added via `ADDITIONAL_SLING_FEATURES`. | `org.postgresql.Driver` |
+| `OAK_MACHINE_ID` | The hardware address identifying this instance's cluster node, for the `mongo` and `rdb` back-ends. Unset by default, in which case the container's own (per-run) address is used. Set it, to any stable value, so that a restarted container reclaims its own cluster node instead of taking a new cluster id and orphaning the old one — but only for a single-instance deployment, or with a distinct value per instance, since instances sharing a value collapse onto one cluster node. | `ca2d50000001` |
 | `SMTPS_ENABLED` | If set to `true`, enables the sending of _SMTPS_ email notifications from CARDS. | `true` |
 | `ADDITIONAL_SLING_FEATURES` | If set, enables the listed Sling features. | `mvn:io.uhndata.cards/some-other-sling-feature/VERSION/slingosgifeature` |

@@ -50,6 +50,38 @@ docker run --rm -e OAK_STORAGE=rdb -e EXTERNAL_RDB_URI=jdbc:postgresql://db:5432
   -e RDB_USER=cards -e RDB_PASSWORD=secret -p 8080:8080 -it cards/cards
 ```
 
+**PostgreSQL collation — required**: the database **must** be created with `C` (or `POSIX`)
+collation. Oak's `RDBDocumentStore` orders the node `id` column by Unicode code point (its queries
+use `ORDER BY` on `id`, and the primary-key index ordering must match); a locale collation such as
+`en_US.utf8` — the default the official `postgres` image initializes — orders those ids differently,
+so Oak mis-resolves already-persisted data. The symptom is insidious: the *first* start succeeds
+(the database is empty, nothing to read back), but *every restart* then fails during activation with
+`ClusterRepositoryInfo getOrCreateId: both setting and then reading of /:clusterConfig/:clusterId
+failed` and the instance hangs. Create the database accordingly:
+
+```
+CREATE DATABASE cards OWNER cards TEMPLATE template0 ENCODING 'UTF8' LC_COLLATE 'C' LC_CTYPE 'C';
+```
+
+For the official `postgres` image, set `POSTGRES_INITDB_ARGS=--encoding=UTF8 --lc-collate=C --lc-ctype=C`
+on a **fresh** data volume (collation is fixed when the database is created and cannot be changed
+afterwards). The entrypoint verifies this on start and refuses to launch against a non-`C` database.
+See the [Oak RDB DocumentStore documentation](https://jackrabbit.apache.org/oak/docs/nodestore/document/rdb-document-store.html).
+
+**Cluster node identity**: both document-store back-ends, `mongo` and `rdb`, record a *cluster
+node* in the database, identified by the hardware address and the working directory, and reclaim
+it on the next start. A container is given a fresh MAC address every run, so without help a
+restart that happens before the previous lease expires — two minutes — cannot reclaim or wait for
+the old cluster node. It takes a new cluster id instead and leaves the old entry behind, marked
+active forever and therefore never recovered. Setting `OAK_MACHINE_ID` to any stable value pins the
+address, so that a restarted container reclaims its own cluster node.
+
+It is **opt-in, with no default, on purpose**. Several CARDS containers routinely share one
+database, and they distinguish themselves precisely by having different hardware addresses; a
+shared default would collapse them all onto a single cluster node, which corrupts the repository
+rather than merely failing. Set it only for a single-instance deployment, or give every instance
+its own distinct value.
+
 **Production flavor**: the build harvests every feature file built by the reactor and
 materializes all their referenced artifacts (via the `slingfeature-maven-plugin` `repository`
 goal) into `/opt/cards/artifacts`, one deduplicated Maven-layout repository. The image needs

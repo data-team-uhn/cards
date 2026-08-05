@@ -580,6 +580,14 @@ def main(argv):
     java_opts = '-Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=%d' % bind_port
     if options['debug']:
         java_opts = JAVA_DEBUGGING_FLAGS + ' ' + java_opts
+    # The document stores identify a cluster node by hardware address plus working directory, and
+    # only reclaim a previous entry when both still match. OAK_MACHINE_ID pins the first half, which
+    # is needed wherever the hardware address is not stable across restarts, such as a container.
+    # See distribution/README.md.
+    machine_id = os.environ.get('OAK_MACHINE_ID')
+    if machine_id:
+        java_opts += (' -Dorg.apache.jackrabbit.oak.plugins.document.ClusterNodeInfo.HWADDRESS=%s'
+                      % machine_id)
     env = dict(os.environ, JAVA_OPTS=java_opts)
 
     # Path.as_uri() produces the platform-correct form (file:///home/... or file:///C:/...)
