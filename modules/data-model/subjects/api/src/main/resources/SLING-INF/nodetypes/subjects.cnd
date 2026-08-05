@@ -60,6 +60,11 @@
   // A potentially empty list of status flags for the subject
   - statusFlags (STRING) autocreated multiple IGNORE
 
+  // Children
+
+  // Subjects nest: a visit belongs to a patient, for example.
+  + * (cards:Subject) = cards:Subject
+
 //-----------------------------------------------------------------------------
 // The homepage for the Subjects space.
 [cards:SubjectsHomepage] > cards:ResourceHomepage
@@ -77,6 +82,11 @@
   - title (String) = "Subjects" mandatory autocreated
 
   - childNodeType (String) = "cards:Subject" mandatory autocreated
+
+  // Children
+
+  // The list of subjects.
+  + * (cards:Subject) = cards:Subject
 
 //-----------------------------------------------------------------------------
 // A type of subject
