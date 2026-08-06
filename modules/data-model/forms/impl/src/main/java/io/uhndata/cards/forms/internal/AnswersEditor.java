@@ -46,6 +46,10 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
+ * Base class for {@link Editor}s that automatically fill in a specific kind of answer in a form, based on the
+ * questionnaire that the form is answering. Subclasses decide which questions they handle, and how the answers for
+ * them are computed.
+ *
  * @version $Id$
  */
 public abstract class AnswersEditor extends DefaultEditor

@@ -89,7 +89,8 @@ public interface ExpressionUtils
     ExpressionResult evaluate(Node question, Map<String, Object> values, Type<?> type, Set<String> changedQuestions);
 
     /**
-     *
+     * The outcome of evaluating a computed question's expression: the computed value itself, along with details about
+     * how it was obtained.
      */
     final class ExpressionResult
     {

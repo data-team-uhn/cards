@@ -41,6 +41,8 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 public class QuestionnaireRestrictionFactory implements RestrictionFactory
 {
     /**
+     * The name of this restriction, which is also the name of the property storing it in the repository.
+     *
      * @see #getName
      */
     public static final String NAME = "cards:questionnaire";
