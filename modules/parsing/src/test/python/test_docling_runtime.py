@@ -165,14 +165,14 @@ class TestResolveParsePath:
     """``POST /parse`` only accepts absolute paths under the shared docs root."""
 
     def test_accepts_a_file_under_the_shared_root(self, monkeypatch, tmp_path):
-        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        monkeypatch.setenv("IAP_SHARED_DOCS", str(tmp_path))
         pdf = tmp_path / "proto.pdf"
         pdf.write_bytes(b"%PDF")
         resolved = daemon.resolve_parse_path(str(pdf))
         assert resolved == pdf.resolve()
 
     def test_accepts_doc_and_docx(self, monkeypatch, tmp_path):
-        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        monkeypatch.setenv("IAP_SHARED_DOCS", str(tmp_path))
         for name in ("a.docx", "b.doc"):
             path = tmp_path / name
             path.write_bytes(b"x")
@@ -184,24 +184,24 @@ class TestResolveParsePath:
         outside = tmp_path / "other" / "proto.pdf"
         outside.parent.mkdir()
         outside.write_bytes(b"%PDF")
-        monkeypatch.setenv("CARDS_SHARED_DOCS", str(root))
+        monkeypatch.setenv("IAP_SHARED_DOCS", str(root))
         with pytest.raises(ValueError, match="must be under"):
             daemon.resolve_parse_path(str(outside))
 
     def test_rejects_missing_files(self, monkeypatch, tmp_path):
-        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        monkeypatch.setenv("IAP_SHARED_DOCS", str(tmp_path))
         with pytest.raises(ValueError, match="does not exist"):
             daemon.resolve_parse_path(str(tmp_path / "missing.pdf"))
 
     def test_rejects_unsupported_suffixes(self, monkeypatch, tmp_path):
-        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        monkeypatch.setenv("IAP_SHARED_DOCS", str(tmp_path))
         bad = tmp_path / "notes.txt"
         bad.write_text("hi", encoding="utf-8")
         with pytest.raises(ValueError, match="must end in"):
             daemon.resolve_parse_path(str(bad))
 
     def test_rejects_empty_path(self, monkeypatch, tmp_path):
-        monkeypatch.setenv("CARDS_SHARED_DOCS", str(tmp_path))
+        monkeypatch.setenv("IAP_SHARED_DOCS", str(tmp_path))
         with pytest.raises(ValueError, match="required"):
             daemon.resolve_parse_path("   ")
 

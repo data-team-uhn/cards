@@ -76,7 +76,8 @@ heuristic (``len(text) // 4``); no ML tokenizer is loaded.
 
 Entry points:
 
-* :func:`build_chunk_tree` — **pure**: Markdown and outline records in, tree out, nothing written.
+* :func:`build_chunk_tree` — analyse Markdown into a chunk tree (may read a sibling ``.pdf``
+  for bookmarks); writes nothing.
 * :func:`write_chunk_files` — sole disk writer of ``{stem}.md`` + ``Chunks/``. Called by
   :func:`parse_document.parse_document` and :func:`chunk_file`.
 """
@@ -94,8 +95,6 @@ from typing import Any, Callable, NamedTuple
 from bookmarks import (
     BOOKMARKS_NAME,
     LineIndex,
-    build_line_index,
-    line_pages,
     normalize_title,
     resolve_record_line,
 )
@@ -109,7 +108,6 @@ from markdown_markers import (
     count_tokens,
     within_word_limits,
 )
-from pdf_bookmarks import extract_verified_outline
 from toc_and_appendix_detection import (
     DEFAULT_MIN_STRUCTURE_TOKENS,
     derive_outline,
@@ -759,7 +757,7 @@ class ChunkingSummary(NamedTuple):
     chunks_dir: Path | None
     chunked: bool
     chunk_count: int
-    outline_source: str
+    toc_source: str
     logs: str
 
 
@@ -787,21 +785,12 @@ def write_chunk_files(
     @param min_structure_tokens: below this, leave the document unchunked
     @return: :class:`ChunkingSummary`
     """
-    # A sibling <stem>.pdf is the only disk source of real bookmarks: native PDFs and the
-    # DOC/DOCX→PDF renditions LibreOffice writes beside the source before Docling runs.
-    # Re-extracted every run rather than read from a sidecar, so the records always match
-    # the document actually being chunked.
-    toc_pdf_outline_records = []
-    pdf_file = output_file.with_suffix(".pdf")
-    if pdf_file.is_file():
-        toc_pdf_outline_records = extract_verified_outline(pdf_file, markdown_content)
-
     tree = build_chunk_tree(
         markdown_content,
         filename,
-        max_tokens=max_tokens,
-        min_structure_tokens=min_structure_tokens,
-        toc_pdf_outline_records=toc_pdf_outline_records,
+        output_file,
+        max_tokens,
+        min_structure_tokens,
     )
     # write markdown file
     output_file.parent.mkdir(parents=True, exist_ok=True)
@@ -813,15 +802,9 @@ def write_chunk_files(
     chunks_dir.mkdir(parents=True, exist_ok=True)
     # write outline.json file
     _write_json(chunks_dir / OUTLINE_NAME, tree["outline"])
-
-    if tree["records"]:
-        # write bookmarks.json file
-        _write_json(chunks_dir / BOOKMARKS_NAME, tree["records"])
     _remove_sidecars(output_file)
 
-    outline_source = tree["outline"].get("outline_source")
-    if not isinstance(outline_source, str):
-        outline_source = "none"
+    toc_source = tree["outline"].get("toc_source")
     chunk_count = len(tree["chunks"])
 
     if not tree["chunked"]:
@@ -830,11 +813,11 @@ def write_chunk_files(
             chunks_dir=None,
             chunked=False,
             chunk_count=0,
-            outline_source=outline_source,
+            toc_source=toc_source,
             logs=(
                 f"Skipped chunking '{output_file.name}' "
                 f"({tokens} tokens < {min_structure_tokens} min_structure_tokens); "
-                f"recorded chunked=false, outline_source={outline_source} in "
+                f"recorded chunked=false, toc_source={toc_source} in "
                 f"{CHUNKS_DIRNAME}/{OUTLINE_NAME}"
             ),
         )
@@ -847,10 +830,10 @@ def write_chunk_files(
         chunks_dir=chunks_dir,
         chunked=True,
         chunk_count=chunk_count,
-        outline_source=outline_source,
+        toc_source=toc_source,
         logs=(
             f"Split '{output_file.name}' into {chunk_count} chunk file(s) in "
-            f"'{CHUNKS_DIRNAME}/' (outline_source={outline_source})"
+            f"'{CHUNKS_DIRNAME}/' (toc_source={toc_source})"
         ),
     )
 
@@ -858,35 +841,31 @@ def write_chunk_files(
 def build_chunk_tree(
     markdown_content: str,
     filename: str,
-    *,
-    max_tokens: int = DEFAULT_MAX_TOKENS,
-    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
-    toc_pdf_outline_records: list[dict] | None = None,
+    markdown_path: Path,
+    max_tokens: int,
+    min_structure_tokens: int,
 ) -> dict[str, Any]:
-    """Analyse and split an already-cleaned document into its chunk tree, touching no filesystem.
+    """Analyse and split an already-cleaned document into its chunk tree.
 
-    The pure core of :func:`write_chunk_files`. Callers that need the tree on disk go through
-    :func:`write_chunk_files` (daemon and CLI); this returns the tree in memory for that writer.
+    Writes nothing. Callers that need the tree on disk go through :func:`write_chunk_files`.
 
     @param markdown_content: the full Markdown document, already cleaned
     @param filename: the original input file name (with extension), recorded as ``fileId``
+    @param markdown_path: path of the ``.md`` (sibling ``.pdf`` supplies bookmarks in
+        :func:`derive_outline`)
     @param max_tokens: target maximum tokens per chunk
     @param min_structure_tokens: leave the document unchunked below this size
-    @param toc_pdf_outline_records: outline records already known (real PDF bookmarks)
     @return: ``{"markdown", "chunked", "outline", "catalog", "chunks", "records"}``, where
         ``chunks`` is a list of ``{"file", "text"}`` in document order, ``catalog`` is ``None``
         when the document was left unchunked, and ``records`` is the outline the document was
-        actually analysed against — ``toc_pdf_outline_records`` when supplied, otherwise
-        whatever was harvested from the printed TOC (empty when the size gate skipped detection)
+        actually analysed against — PDF bookmarks when available, otherwise whatever was
+        harvested from the printed TOC (empty when the size gate skipped detection)
     """
-    # The outline pass is skipped outright for a small document with no records
-    line_index: LineIndex | None = None
-    if toc_pdf_outline_records or count_tokens(markdown_content) >= min_structure_tokens:
-        md_file, outline, toc_records, line_index = derive_outline(
-            markdown_content, toc_pdf_outline_records=toc_pdf_outline_records
-        )
-    else:
-        md_file, outline, toc_records = markdown_content, {}, []
+    md_file, outline, toc_records, line_index = derive_outline(
+        markdown_content,
+        markdown_path,
+        min_structure_tokens,
+    )
 
     # The size gate is the pipeline's single binary routing decision, recorded as ``chunked``
     # in the outline — which is always produced, even when chunking is skipped, so downstream
@@ -894,11 +873,11 @@ def build_chunk_tree(
     # stamp the identity/defaults here to keep both paths' outlines the same shape.
     tokens = count_tokens(md_file)
     to_be_chunked = tokens >= min_structure_tokens
-    outline.setdefault("outline_source", "none")
+    outline.setdefault("toc_source", "none")
     outline.setdefault("toc", [])
-    outline["fileId"] = filename
     outline.setdefault("tokens", tokens)
     outline["chunked"] = to_be_chunked
+    outline["fileId"] = filename
 
     if not to_be_chunked:
         # Say *why* it is unchunked (deliberate send-it-whole below the size gate).
@@ -945,8 +924,8 @@ def build_chunk_tree(
     # Prefer Chunk-0 when the document has a leading preamble; otherwise start at 1.
     first_number = 0 if (top_chunks and top_chunks[0]["number"] == 0) else 1
     split_level = boundary_level if boundary_level is not None else 0
-    if line_index is None:
-        line_index = build_line_index(line_pages(md_file, md_lines))
+    # Size gate already returned above when derive_outline skipped the index.
+    assert line_index is not None
     cut_keys = _record_cut_keys(toc_records, md_lines, toc_range, line_index)
 
     def add(name: str, text: str, heading: list[str], is_appendix: bool) -> None:

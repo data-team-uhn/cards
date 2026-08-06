@@ -20,12 +20,14 @@
 # Docling, and write_chunk_files all run in this container and write beside the staged file.
 #
 # Build, from the repo root:
-#   docker build -t cards/docling:latest modules/parsing
+#   mvn install -Pdocker -pl modules/documents/processing
+# or, without Maven:
+#   docker build -t iap/docling:latest modules/documents/processing
 #
 # Run (shared docs mounted; publish only to loopback):
 #   docker run --rm -p 127.0.0.1:18765:18765 \
 #     -v /path/to/shared-docs:/shared-docs \
-#     --cpus=4 --memory=8g cards/docling:latest
+#     --cpus=4 --memory=8g iap/docling:latest
 
 FROM python:3.13-slim AS base
 
@@ -38,6 +40,7 @@ RUN apt-get update \
         curl \
         libreoffice-writer \
         libreoffice-java-common \
+        default-jre-headless \
         fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
@@ -47,11 +50,15 @@ ENV PYTHONUNBUFFERED=1 \
     # letting each worker also thread out oversubscribes the container's CPU quota.
     OMP_NUM_THREADS=1 \
     DOCLING_NUM_THREADS=1 \
+    # The layout model triggers torch.compile, whose TorchInductor backend needs a C++
+    # compiler at runtime; this slim image has none, so every conversion would fail with
+    # InvalidCxxCompiler. Eager mode loses little on CPU with single-threaded workers.
+    TORCHDYNAMO_DISABLE=1 \
     # Where the baked weights live. download_models() saves into DOCLING_ARTIFACTS_PATH,
     # and Docling reads them back from that same layout at runtime.
     DOCLING_ARTIFACTS_PATH=/opt/models/docling \
     HF_HOME=/opt/models/hf \
-    CARDS_SHARED_DOCS=/shared-docs
+    IAP_SHARED_DOCS=/shared-docs
 
 WORKDIR /app
 

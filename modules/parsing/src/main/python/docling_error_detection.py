@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-"""Detect Docling conversion failures from results and pipeline logs."""
+"""Utility: Detect Docling conversion failures from results and pipeline logs."""
 
 import logging
 

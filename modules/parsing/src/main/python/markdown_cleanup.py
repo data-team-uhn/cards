@@ -158,8 +158,6 @@ def finalize_markdown(
 ) -> str:
     """Clean Docling export and prepend the ``source_file`` header.
 
-    Shared by the PDF and DOCX converters so header assembly stays in one place.
-
     @param raw_markdown: Markdown as exported by Docling (may be empty)
     @param input_path: on-disk path used when ``source_file`` is omitted
     @param source_file: optional original upload name for the header
@@ -174,10 +172,6 @@ def clean_markdown(md: str) -> str:
     """
     Collapse blank lines, remove empty headings / image placeholders, and strip
     decorative garbage lines.
-
-    Called exactly once per document, by the converter that produced it — nothing downstream
-    re-cleans, and no sentinel is written into the output to enforce that. Every step here is a
-    removal or a collapse, so a second call would be harmless anyway.
 
     @param md: Markdown as exported by Docling, or an empty value
     @return: the cleaned text; ``""`` for empty input

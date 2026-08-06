@@ -16,7 +16,7 @@ sides cooperate: **CARDS (Java)** stages the upload onto a shared `/shared-docs`
 flowchart TB
     U(["Upload: PDF / DOCX / DOC"])
 
-    subgraph Java["CARDS - Java (internal/parse)"]
+    subgraph Java["IAP - Java (internal/parse)"]
         FPF["FileParserFactory.getParser"]
         SDP["SimpleDocumentParser.parse"]
         DMG["DoclingMarkdownGenerator"]
@@ -60,7 +60,7 @@ summary only.
 ```mermaid
 sequenceDiagram
     autonumber
-    participant J as CARDS_Java
+    participant J as IAP_Java
     participant FS as shared_docs
     participant D as docling_daemon.py
     participant LO as libreoffice_convert
@@ -94,7 +94,7 @@ fails, `SimpleDocumentParser` fails the parse with a `DocumentParseException`.
 | `FileParserFactory` | Route PDF/DOCX/DOC → `SimpleDocumentParser` |
 | `SimpleDocumentParser` | Stage upload under `/shared-docs/{answerUuid}/`, call Docling, read `{stem}.md` back; failure fails the parse |
 | `DoclingMarkdownGenerator` / `DoclingParseClient` | `POST /parse?path=...`; summary only |
-| `ParsedMarkdownStore` | `stageSourceFile`, read/delete/clear/resolve under `cards.parse.output.dir` (default `/shared-docs`) |
+| `ParsedMarkdownStore` | `stageSourceFile`, read/delete/clear/resolve under `iap.parse.output.dir` (default `/shared-docs`) |
 | `DoclingChatChunker` | Chunk-tree generation bookkeeping for summarization |
 | `ProposalParseFolder` / `ParseOutline` | Locate `<answerDir>/<stem>.md` + `Chunks/`; read `Chunks/outline.json` |
 
@@ -102,7 +102,7 @@ fails, `SimpleDocumentParser` fails the parse with a `DocumentParseException`.
 
 | Module | Role |
 |---|---|
-| `docling_daemon.py` | **`POST /parse?path=...`** under `CARDS_SHARED_DOCS`, `GET /health`, `POST /shutdown` |
+| `docling_daemon.py` | **`POST /parse?path=...`** under `IAP_SHARED_DOCS`, `GET /health`, `POST /shutdown` |
 | `parse_document.py` | Shared orchestrator: LibreOffice prep → Docling → `write_chunk_files` |
 | `libreoffice_convert.py` | DOC→DOCX+PDF, DOCX→PDF; saves beside source immediately |
 | `docling_parser.py` | CLI entry via `parse_document` |

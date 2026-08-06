@@ -16,24 +16,17 @@
 #
 
 """
-Shared helpers for a document's outline records. A record is
-``{"title", "level"|None, "page"|None, "verified"?}``, produced either from a PDF's embedded
-bookmarks (see :mod:`pdf_bookmarks`) or, when there are none, from the printed table of
-contents. Records live in memory for the whole run; the copy in ``Chunks/bookmarks.json`` is
-written for inspection only. This module carries the dependency-free pieces (title
-normalization, page-region lookup, verification) so both the pypdf-backed extractor and the
-chunker can use them.
+Outline-record helpers shared by the PDF bookmark extractor and the chunker.
 
-Verification (:func:`verify_bookmarks`) matches a record's title against the page it claims,
-using the ``<!-- page: N -->`` markers the PDF parser emits, and corrects an off-by-one page
-pointer (bookmarks often point one page early, to the bottom of the previous page). A record
-is only ever marked ``"verified": False`` -- when its title cannot be located on its page or
-either neighbour; a located/corrected record carries no ``verified`` key.
+A record is ``{"title", "level"|None, "page"|None, "verified"?}``
+Sources: embedded PDF bookmarks (:mod:`pdf_bookmarks`) or, if none, the printed TOC.
+Kept in memory for the run only — nothing persists the records to disk.
 
-Resolving records to body lines goes through a :class:`LineIndex` built once per document by
-:func:`build_line_index`: :func:`resolve_record_line` then costs only as much as the number
-of lines sharing the record's title, instead of re-scanning every line of the document for
-every record.
+:func:`verify_bookmarks` checks each title against ``<!-- page: N -->`` regions and fixes common
+off-by-one page pointers. Failure sets ``"verified": False``; success omits the key.
+
+:func:`build_line_index` / :func:`resolve_record_line` map records to body lines
+without re-scanning the whole document per record.
 """
 
 from __future__ import annotations
@@ -43,8 +36,6 @@ from typing import NamedTuple
 
 from markdown_markers import PAGE_MARKER, PAGE_MARKER_LINE
 
-# Name of the file the resolved outline records are written to, inside ``Chunks/``. Written for
-# inspecting a CLI run and read back by nothing; see ``chunker.write_chunk_files``.
 BOOKMARKS_NAME = "bookmarks.json"
 
 _NON_ALNUM = re.compile(r"[^a-z0-9]+")
@@ -56,19 +47,22 @@ def normalize_title(text: str) -> str:
     return _NON_ALNUM.sub("", text.casefold())
 
 
-def line_pages(markdown: str, lines: list[str] | None = None) -> list[tuple[int, int, str]]:
-    """``(line_index, page, key)`` for every non-marker line with a non-empty normalized
-    key, where ``page`` is the 1-based page from the preceding ``<!-- page: N -->`` marker
-    (0 before the first). The single scan every other lookup in this module is built on.
+def build_lines_catalog(lines: list[str]) -> list[tuple[int, int, str]]:
+    """Scan the document once: each content line → ``(line_index, page, normalized_heading_key)``.
 
-    @param markdown: the assembled Markdown document
-    @param lines: ``markdown`` already split on newlines, when the caller has it split
-        already (avoids re-splitting a large document)
+    ``page`` is the 1-based page from the preceding ``<!-- page: N -->`` marker
+    (0 before the first). Marker lines and empty/keyless lines are skipped. Every other
+    lookup in this module is built on this scan.
+
+    Answers the question for each real content line, which PDF page it belongs to (from those page markers).
+    positions list is later used to verify bookmarks and find headings without re-scanning the whole file.
+
+    @param lines: document already split on newlines
     @return: one tuple per keyed line, in document order
     """
     positions: list[tuple[int, int, str]] = []
     current = 0
-    for index, line in enumerate(lines if lines is not None else markdown.split("\n")):
+    for index, line in enumerate(lines):
         marker = PAGE_MARKER_LINE.match(line)
         if marker:
             current = int(marker.group(1))
@@ -82,23 +76,22 @@ def line_pages(markdown: str, lines: list[str] | None = None) -> list[tuple[int,
 def pages_from_positions(
     positions: list[tuple[int, int, str]],
 ) -> dict[int, set[str]]:
-    """Map each page number to normalized line keys from :func:`line_pages` output."""
+    """Map each page number to normalized line keys from :func:`build_lines_catalog` output."""
     pages: dict[int, set[str]] = {}
     for _index, page, key in positions:
         pages.setdefault(page, set()).add(key)
     return pages
 
 
-def page_line_texts(markdown: str, lines: list[str] | None = None) -> dict[int, set[str]]:
+def page_line_texts(markdown: str) -> dict[int, set[str]]:
     """Map each 1-based page number to the set of normalized full-line keys on that page,
     per the ``<!-- page: N -->`` markers. Lines before the first marker (the source header)
     are page 0; an unpaged document (DOCX) yields only page 0.
 
     @param markdown: the assembled Markdown document
-    @param lines: ``markdown`` already split on newlines, when available
     @return: page number -> set of normalized line keys
     """
-    return pages_from_positions(line_pages(markdown, lines))
+    return pages_from_positions(build_lines_catalog(markdown.split("\n")))
 
 
 class LineIndex(NamedTuple):
@@ -114,12 +107,12 @@ class LineIndex(NamedTuple):
 
 
 def build_line_index(positions: list[tuple[int, int, str]]) -> LineIndex:
-    """Group :func:`line_pages` output by normalized title.
+    """Group :func:`build_lines_catalog` output by normalized title.
 
     Build this once per document and hand it to :func:`resolve_record_line` for every
     record; resolving then touches only the lines that share the record's title.
 
-    @param positions: output of :func:`line_pages`
+    @param positions: output of :func:`build_lines_catalog`
     @return: the index
     """
     by_key: dict[str, list[tuple[int, int]]] = {}
@@ -143,9 +136,7 @@ def _locate_page(pages: dict[int, set[str]], key: str, claimed: int) -> int | No
 def verify_bookmarks(
     records: list[dict],
     markdown: str,
-    *,
-    lines: list[str] | None = None,
-    positions: list[tuple[int, int, str]] | None = None,
+    positions: list[tuple[int, int, str]],
 ) -> list[dict]:
     """Check each record's page against ``markdown`` and fix off-by-one pages.
 
@@ -156,19 +147,15 @@ def verify_bookmarks(
 
     @param records: outline records (``title``, ``level``, ``page``)
     @param markdown: Markdown with page markers
-    @param lines: pre-split lines, when available
-    @param positions: precomputed :func:`line_pages` output, when available
+    @param positions: precomputed :func:`build_lines_catalog` for ``markdown``
     @return: corrected records
     """
-    # Checked before page_line_texts, which walks and normalizes every line of the document to
-    # build a map that an unpaged document then discards unused. A necessary condition only:
-    # line_pages matches the marker anchored to its own line, so a hit here still has to be
-    # confirmed below — but a miss is conclusive, and it is the DOCX case every time.
+    # Cheap necessary condition: an unpaged document (DOCX) never needs the page map.
+    # build_lines_catalog matches the marker anchored to its own line, so a hit here still has
+    # to be confirmed below — but a miss is conclusive.
     if not PAGE_MARKER.search(markdown):
         return [dict(record) for record in records]
 
-    if positions is None:
-        positions = line_pages(markdown, lines)
     pages = pages_from_positions(positions)
     if not any(page_no > 0 for page_no in pages):
         # Markers exist, but none on a line of its own, so no real page was ever opened.

@@ -28,7 +28,7 @@ Endpoints:
                      -> {"ok", "markdown_path", "chunked", "chunks_dir", "logs", "filename"}
     POST /shutdown -> graceful stop (used when the caller owns the daemon process)
 
-The daemon and the main app share ``/shared-docs`` (env ``CARDS_SHARED_DOCS``).
+The daemon and the main app share ``/shared-docs`` (env ``IAP_SHARED_DOCS``).
 
 The daemon has no authentication: every endpoint is open including ``/shutdown``.
 """
@@ -68,7 +68,7 @@ class DaemonState:
     """Shared daemon resources."""
 
     def __init__(self, workers: int | None) -> None:
-        # Refresh free-RAM budget at daemon start (not only at module import).
+        # Refresh free-RAM budget at daemon start
         self.worker_count = calc_workers(workers)
         self.pdf_executor = ProcessPoolExecutor(
             max_workers=self.worker_count,
@@ -105,7 +105,7 @@ _SERVER: ThreadingHTTPServer | None = None
 
 def shared_docs_root() -> Path:
     """Root of the shared volume; paths outside it are refused."""
-    configured = (os.environ.get("CARDS_SHARED_DOCS") or DEFAULT_SHARED_DOCS).strip()
+    configured = (os.environ.get("IAP_SHARED_DOCS") or DEFAULT_SHARED_DOCS).strip()
     return Path(configured).resolve()
 
 
@@ -203,6 +203,10 @@ def _run_parse(
             pdf_workers=_STATE.worker_count,
             docx_lock=_STATE.docx_lock,
             docx_converter=_STATE.docx_converter,
+            # Echo progress to stderr as well: on failure the HTTP reply carries only the
+            # summary message, so the container log is the only place the per-batch
+            # diagnostics (e.g. "FAILED pages 4-6: ...") survive.
+            log=lambda message: print(message, file=sys.stderr, flush=True),
         )
     except BrokenProcessPool as exc:
         _STATE.pdf_executor_broken = True
@@ -217,6 +221,9 @@ class DoclingDaemonHandler(BaseHTTPRequestHandler):
     timeout = 120
 
     def log_message(self, format: str, *args: Any) -> None:
+        # Docker's HEALTHCHECK probes /health every 30s; logging each one only adds noise.
+        if self.path == "/health":
+            return
         sys.stderr.write("%s - %s\n" % (self.address_string(), format % args))
 
     def do_GET(self) -> None:

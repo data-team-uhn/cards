@@ -36,7 +36,7 @@ from pathlib import Path
 from bookmarks import (
     LineIndex,
     build_line_index,
-    line_pages,
+    build_lines_catalog,
     resolve_record_line,
     verify_bookmarks,
 )
@@ -48,6 +48,7 @@ from markdown_markers import (
     count_tokens,
     within_word_limits,
 )
+from pdf_bookmarks import extract_bookmarks
 
 # Density check for the no-table (plain-line) path: at least this many of the next
 # DENSITY_WINDOW non-empty lines after the label must look like TOC entries.
@@ -68,10 +69,9 @@ MAX_LEADING_WORDS_FOR_CONTINUATION = 12
 # cannot absorb it and the page-break probe must skip it outright.
 MAX_HEADER_LINES_AFTER_PAGE_BREAK = 3
 
-# Documents shorter than this (``len(md) // 4``) skip TOC/appendix marking — Stage 0.5
-# can send them whole. The gate itself lives in ``chunker.build_chunk_tree``, which also takes
-# the override; a document with known outline records bypasses it, since those are already in
-# hand and even a small document needs its ``toc`` downstream.
+# Documents shorter than this (``len(md) // 4``) skip TOC harvesting in :func:`derive_outline`
+# — Stage 0.5 can send them whole. Known PDF bookmarks bypass the gate, since those are
+# already in hand and even a small document needs its ``toc`` downstream.
 DEFAULT_MIN_STRUCTURE_TOKENS = 20000
 
 # Reference-section heading words/phrases recognised in outline record titles.
@@ -634,38 +634,28 @@ def _is_backmatter_title(title: str) -> bool:
 
 
 def backmatter_from_records(
-    markdown: str,
     records: list[dict],
-    *,
+    index: LineIndex,
     toc_range: tuple[int, int] | None = None,
-    lines: list[str] | None = None,
-    index: LineIndex | None = None,
 ) -> int | None:
-    """The body line of the first Reference/Appendix record that resolves to a unique line,
+    """Get the body line index of the first Reference/Appendix record that resolves to a unique line,
     or ``None`` -- the outline-based replacement for the heuristic body scan.
 
-    ``toc_range`` must be passed whenever it is known, because the printed TOC is still in
-    the document after cleanup: a page-less TOC entry ("8.0 References") is textually
-    identical to the body heading it points at, so both lines match the record and
-    :func:`bookmarks.resolve_record_line` fails open, losing the backmatter split entirely.
-    Excluding the TOC span leaves exactly one candidate.
+    ``toc_range`` must be passed whenever it is known to avoid, because it can be styled as headings.
 
-    @param markdown: the document to resolve against
     @param records: the document's outline records, in order
+    @param index: precomputed :func:`bookmarks.build_line_index` for the document
     @param toc_range: inclusive ``(start, end)`` line range of the printed TOC, when known
-    @param lines: ``markdown`` already split on newlines, when available
-    @param index: precomputed :func:`bookmarks.build_line_index`, when available
     @return: the backmatter body line index, or ``None``
     """
     candidates = [record for record in records if _is_backmatter_title(record.get("title") or "")]
     if not candidates:
         return None
-    line_index = index if index is not None else build_line_index(line_pages(markdown, lines))
     exclude = (
         frozenset(range(toc_range[0], toc_range[1] + 1)) if toc_range is not None else frozenset()
     )
     for record in candidates:
-        line = resolve_record_line(line_index, record, exclude=exclude)
+        line = resolve_record_line(index, record, exclude=exclude)
         if line is not None:
             return line
     return None
@@ -673,19 +663,35 @@ def backmatter_from_records(
 
 def derive_outline(
     md: str,
-    *,
-    toc_pdf_outline_records: list[dict] | None = None,
-) -> tuple[str, dict, list[dict], LineIndex]:
+    markdown_path: Path | None = None,
+    min_structure_tokens: int = DEFAULT_MIN_STRUCTURE_TOKENS,
+) -> tuple[str, dict, list[dict], LineIndex | None]:
     """Derive a document's outline .
 
     @param md: the full assembled Markdown document
-    @param toc_pdf_outline_records: outline records already known for the document (e.g.
-        extracted from a PDF's embedded bookmarks); when non-empty these are authoritative
-        and the printed TOC's own entries are discarded in their favour
+    @param markdown_path: path of the ``.md``; a sibling ``.pdf`` supplies embedded bookmarks
+    @param min_structure_tokens: skip printed-TOC harvesting below this size when there are
+        no PDF bookmarks (small docs are sent whole downstream)
     @return: ``(document, outline_fields, records, line_index)`` — the document with its printed
         TOC cleaned in place, the outline fields, the records the outline was built from, and a
-        line index shared with later chunk cut-key resolution
+        line index shared with later chunk cut-key resolution. When the size gate skips the
+        pass, returns ``(md, {}, [], None)``.
     """
+    # A sibling <stem>.pdf is the only disk source of real bookmarks: native PDFs and the
+    # DOC/DOCX→PDF renditions LibreOffice writes beside the source before Docling runs.
+    # Re-extracted every run rather than read from a sidecar. Page verification waits until
+    # the shared catalog is built below, so the PDF and printed-TOC paths share one scan.
+    bookmarks: list[dict] = []
+    if markdown_path is not None:
+        pdf_file = markdown_path.with_suffix(".pdf")
+        if pdf_file.is_file():
+            bookmarks = extract_bookmarks(pdf_file)
+
+    # skip TOC harvesting for small documents with no bookmarks
+    if not bookmarks and count_tokens(md) < min_structure_tokens:
+        return md, {}, [], None
+
+    # detect TOC regardsless if we have bookmarks from pdf
     md_file, toc_summary = _detect_toc(md)
     toc_range = (
         (toc_summary["tocStartLine"], toc_summary["tocEndLine"])
@@ -696,32 +702,29 @@ def derive_outline(
     # Split and index once: verification, backmatter lookup, and later cut-key resolution
     # all need the same line walk.
     md_lines = md_file.split("\n")
-    positions = line_pages(md_file, md_lines)
+    positions = build_lines_catalog(md_lines)
     line_index = build_line_index(positions)
 
-    toc_records = list(toc_pdf_outline_records) if toc_pdf_outline_records else []
-    if toc_records:
-        outline_source = "pdf-bookmarks"
+    if bookmarks:
+        toc_records = verify_bookmarks(bookmarks, md_file, positions)
+        toc_source = "pdf-bookmarks"
     else:
-        # Only this path harvests a printed TOC, so only it needs verification; the source it
-        # ends up reporting depends on whether any harvested entry could be found in the body.
+        # Only this path harvests a printed TOC; the source it ends up reporting depends on
+        # whether any harvested entry could be found in the body.
         toc_records = verify_bookmarks(
             _records_from_toc_strings(toc_summary.get("toc", [])),
             md_file,
-            lines=md_lines,
-            positions=positions,
+            positions,
         )
-        outline_source = "md-toc" if toc_records else "none"
+        toc_source = "md-toc" if toc_records else "none"
 
     # One dict for the whole outline: these fields used to be spread over three
     # read-modify-write cycles of the same file, which wrote ``tokens`` twice with two
     # different values before the final one won.
     toc_summary["tokens"] = count_tokens(md_file)
-    toc_summary["outline_source"] = outline_source
+    toc_summary["toc_source"] = toc_source
     toc_summary["toc"] = [record["title"] for record in toc_records if record.get("title")]
-    backmatter_line = backmatter_from_records(
-        md_file, toc_records, toc_range=toc_range, lines=md_lines, index=line_index
-    )
+    backmatter_line = backmatter_from_records(toc_records, line_index, toc_range)
     if backmatter_line is not None:
         toc_summary["backmatterLine"] = backmatter_line
     return md_file, toc_summary, toc_records, line_index

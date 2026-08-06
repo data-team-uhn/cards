@@ -88,7 +88,6 @@ def _read_first_line(path: str) -> str | None:
     except OSError:
         return None
 
-
 def read_cgroup_cpu_limit() -> float | None:
     """The container's CPU quota in cores, or ``None`` when unlimited or not containerised."""
     v2 = _read_first_line(_CGROUP_V2_CPU_MAX)
@@ -113,7 +112,6 @@ def read_cgroup_cpu_limit() -> float | None:
             return quota / period
     return None
 
-
 def read_cgroup_memory_limit_gb() -> float | None:
     """The container's memory ceiling in GB, or ``None`` when unlimited or not containerised."""
     for path in (_CGROUP_V2_MEMORY_MAX, _CGROUP_V1_MEMORY_LIMIT):
@@ -127,7 +125,6 @@ def read_cgroup_memory_limit_gb() -> float | None:
         if 0 < limit < _CGROUP_UNLIMITED_BYTES:
             return limit / (1024 ** 3)
     return None
-
 
 def read_logical_core_count() -> int:
     """
@@ -149,7 +146,7 @@ def read_logical_core_count() -> int:
 
 def read_physical_core_count() -> int:
     """
-    Read physical CPU core count, never reporting more than the usable logical count.
+    For logs only: Read physical CPU core count, never reporting more than the usable logical count.
     """
     logical = read_logical_core_count()
     physical = psutil.cpu_count(logical=False) or max(1, logical // 2)
@@ -235,9 +232,7 @@ def refresh_default_max_workers() -> int:
 # =============================================================================
 
 def positive_int(value: str) -> int:
-    """An ``argparse`` type for options that must be 1 or greater (``--workers``,
-    ``--batch-pages``), so a bad value is rejected with a clear message up front instead
-    of failing deep inside ``ProcessPoolExecutor`` or ``range``.
+    """Utility f-n to validate command-line options that must be int 1 or greater.
 
     @param value: the raw command-line string
     @return: the parsed integer

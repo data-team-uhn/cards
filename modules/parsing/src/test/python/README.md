@@ -30,7 +30,7 @@ in-memory only.
 `(document, outline_fields, records, line_index)` — and `chunker.write_chunk_files` is
 what puts the outline (and markdown / chunks) on disk. Outline tests assert on that
 return value rather than on a file. The size gate (`min_structure_tokens`) lives in
-`build_chunk_tree`, not in `derive_outline`.
+`derive_outline` (PDF bookmarks bypass it).
 
 ## Running
 

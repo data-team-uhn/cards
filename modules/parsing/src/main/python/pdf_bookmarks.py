@@ -29,10 +29,8 @@ from __future__ import annotations
 
 from pathlib import Path, PurePath
 
-from bookmarks import verify_bookmarks
 
-
-def extract_outline(source) -> list[dict]:
+def extract_bookmarks(source) -> list[dict]:
     """Flatten a PDF's bookmark outline into ordered ``{title, level, page}`` records.
 
     ``source`` is a path (opened with pypdf) or an already-constructed reader (duck-typed:
@@ -78,8 +76,3 @@ def _page_of(reader, item) -> int | None:
     except Exception:  # noqa: BLE001
         return None
     return index + 1 if isinstance(index, int) and index >= 0 else None
-
-
-def extract_verified_outline(source, markdown: str) -> list[dict]:
-    """Extract the outline and verify/correct each record's page against ``markdown``."""
-    return verify_bookmarks(extract_outline(source), markdown)

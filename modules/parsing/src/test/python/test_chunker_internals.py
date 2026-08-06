@@ -23,9 +23,15 @@ indirectly through chunk_file(). Tokens are len(text) // 4 (see markdown_markers
 a block of N tokens is a string of length 4*N."""
 
 import json
+from pathlib import Path
 
+from bookmarks import build_line_index, build_lines_catalog
 import chunker
-from chunker import DEFAULT_HEADING
+from chunker import DEFAULT_HEADING, DEFAULT_MAX_TOKENS
+
+
+def _md_path(tmp_path: Path) -> Path:
+    return tmp_path / "doc.md"
 
 
 class TestPagesIn:
@@ -133,44 +139,60 @@ class TestPackBlocks:
 class TestOutlineSizeGate:
     """The gate that decides whether the outline pass runs at all.
 
-    It moved here from inside ``derive_outline``, which only needed ``min_structure_tokens`` to
-    answer a question ``build_chunk_tree`` was already asking two lines later. The behaviour it
-    has to preserve is the asymmetry: records beat the gate, because a bookmarked document's
-    outline is already in hand and even a small one needs its ``toc`` downstream.
+    It lives in ``derive_outline``: when there are no PDF bookmarks and the document is below
+    ``min_structure_tokens``, derivation is skipped. Records beat the gate, because a
+    bookmarked document's outline is already in hand and even a small one needs its ``toc``
+    downstream.
     """
 
     SMALL = "# Tiny\n\n## Table of Contents\n\nAlpha\t1\nBeta\t2\nGamma\t3\n\n## Alpha\n\nbody\n"
 
-    def _tree(self, records=None):
+    def _tree(self, tmp_path, monkeypatch=None, records=None):
+        md_path = _md_path(tmp_path)
+        if records is not None:
+            (tmp_path / "doc.pdf").write_bytes(b"%PDF-1.4")
+            monkeypatch.setattr(
+                "toc_and_appendix_detection.extract_bookmarks",
+                lambda *a, **k: records,
+            )
+            monkeypatch.setattr(
+                "toc_and_appendix_detection.verify_bookmarks",
+                lambda *a, **k: records,
+            )
         return chunker.build_chunk_tree(
             self.SMALL,
             "doc.md",
-            min_structure_tokens=10 ** 9,
-            toc_pdf_outline_records=records,
+            md_path,
+            DEFAULT_MAX_TOKENS,
+            10 ** 9,
         )
 
-    def test_small_document_without_records_is_left_alone(self):
-        tree = self._tree()
+    def test_small_document_without_records_is_left_alone(self, tmp_path):
+        tree = self._tree(tmp_path)
         # Not even the TOC is rewritten: the document is sent whole, so there is nothing to route.
         assert tree["markdown"] == self.SMALL
-        assert tree["outline"]["outline_source"] == "none"
+        assert tree["outline"]["toc_source"] == "none"
         assert tree["outline"]["toc"] == []
         assert tree["records"] == []
 
-    def test_small_document_with_records_still_gets_its_outline(self):
-        tree = self._tree(records=[{"title": "Alpha", "level": 1, "page": 1}])
-        assert tree["outline"]["outline_source"] == "pdf-bookmarks"
+    def test_small_document_with_records_still_gets_its_outline(self, tmp_path, monkeypatch):
+        tree = self._tree(tmp_path, monkeypatch, [{"title": "Alpha", "level": 1, "page": 1}])
+        assert tree["outline"]["toc_source"] == "pdf-bookmarks"
         assert tree["outline"]["toc"] == ["Alpha"]
 
-    def test_both_are_still_unchunked(self):
+    def test_both_are_still_unchunked(self, tmp_path, monkeypatch):
         # The gate above is about the outline; the chunking decision is separate and unaffected.
-        assert self._tree()["chunked"] is False
-        assert self._tree(records=[{"title": "Alpha", "level": 1, "page": 1}])["chunked"] is False
+        assert self._tree(tmp_path)["chunked"] is False
+        assert self._tree(
+            tmp_path, monkeypatch, [{"title": "Alpha", "level": 1, "page": 1}]
+        )["chunked"] is False
 
-    def test_a_large_document_runs_the_outline_pass_without_records(self):
+    def test_a_large_document_runs_the_outline_pass_without_records(self, tmp_path):
         big = self.SMALL + ("Body sentence that carries it along. " * 200)
-        tree = chunker.build_chunk_tree(big, "doc.md", min_structure_tokens=1)
-        assert tree["outline"]["outline_source"] == "md-toc"
+        tree = chunker.build_chunk_tree(
+            big, "doc.md", _md_path(tmp_path), DEFAULT_MAX_TOKENS, 1
+        )
+        assert tree["outline"]["toc_source"] == "md-toc"
 
 
 class TestIsHeadingOnly:
@@ -240,24 +262,27 @@ class TestMergeHeadingOnlyParts:
 class TestNoHeadingOnlyChunkFiles:
     """The same two cases end to end, at default max_tokens."""
 
-    def _files(self, md):
-        tree = chunker.build_chunk_tree(md, "doc.md", min_structure_tokens=1)
+    def _files(self, md, tmp_path):
+        tree = chunker.build_chunk_tree(
+            md, "doc.md", _md_path(tmp_path), DEFAULT_MAX_TOKENS, 1
+        )
         return [(entry["file"], len(chunk["text"]))
                 for entry, chunk in zip(tree["catalog"]["chunks"], tree["chunks"])]
 
-    def test_heading_stays_with_an_over_budget_table(self):
+    def test_heading_stays_with_an_over_budget_table(self, tmp_path):
         # One row of ten cells is ~20 tokens, so 130 rows clears the 2000-token budget.
         row = "| " + " | ".join(["Procedure with a realistic label"] + ["X"] * 9) + " |"
         table = "\n".join(["| A | B | C | D | E | F | G | H | I | J |"] + [row] * 130)
-        files = self._files(f"# 6.0 Schedule of Assessments\n\n{table}")
+        files = self._files(f"# 6.0 Schedule of Assessments\n\n{table}", tmp_path)
         assert len(files) == 1, files
         assert files[0][1] > 1000, files
 
-    def test_trailing_bare_heading_is_not_its_own_file(self):
+    def test_trailing_bare_heading_is_not_its_own_file(self, tmp_path):
         md = ("# 5.0 Methods\n\n## 5.1 First Subsection\n\n"
               + ("Body sentence that carries it along. " * 220)
               + "\n\n## 5.2 Deferred Subsection\n")
-        assert all(size > 100 for _, size in self._files(md)), self._files(md)
+        files = self._files(md, tmp_path)
+        assert all(size > 100 for _, size in files), files
 
 
 class TestMergeSmallTextTails:
@@ -338,57 +363,55 @@ class TestFirstChunkHeading:
 
     PARAGRAPH = "Body sentence that carries the section text along. " * 40
 
-    def _tree(self, markdown):
-        return chunker.build_chunk_tree(markdown, "doc.md", min_structure_tokens=1)
+    def _tree(self, markdown, tmp_path, max_tokens=DEFAULT_MAX_TOKENS):
+        return chunker.build_chunk_tree(
+            markdown, "doc.md", _md_path(tmp_path), max_tokens, 1
+        )
 
-    def test_no_preamble_uses_the_real_heading(self):
+    def test_no_preamble_uses_the_real_heading(self, tmp_path):
         md = f"# 1.0 Introduction{chr(10)}{chr(10)}{self.PARAGRAPH}"
-        first = self._tree(md)["catalog"]["chunks"][0]
+        first = self._tree(md, tmp_path)["catalog"]["chunks"][0]
         assert first["heading"] == ["1.0 Introduction"]
         assert first["file"] == "Chunk-1.md"
 
-    def test_preamble_with_no_headings_uses_the_default(self):
+    def test_preamble_with_no_headings_uses_the_default(self, tmp_path):
         # The preamble has to be over budget to stand alone: a short one is packed together with
         # the following section, and that combined chunk really does contain "1.0 Introduction",
         # so labelling it with the heading is right.
         preamble = "Loose front matter carrying no heading whatsoever. " * 40
         md = (f"{preamble}{chr(10)}{chr(10)}"
               f"# 1.0 Introduction{chr(10)}{chr(10)}{self.PARAGRAPH}")
-        chunks = chunker.build_chunk_tree(
-            md, "doc.md", max_tokens=300, min_structure_tokens=1
-        )["catalog"]["chunks"]
+        chunks = self._tree(md, tmp_path, max_tokens=300)["catalog"]["chunks"]
         assert chunks[0]["file"] == "Chunk-0.md"
         assert chunks[0]["heading"] == [DEFAULT_HEADING]
         # And the section that follows keeps its own heading.
         assert any(c["heading"] == ["1.0 Introduction"] for c in chunks[1:]), \
             [c["heading"] for c in chunks]
 
-    def test_preamble_chunk_keeps_the_default_even_when_packed(self):
+    def test_preamble_chunk_keeps_the_default_even_when_packed(self, tmp_path):
         # A short preamble is packed together with the following section, so the chunk does
         # contain "1.0 Introduction" — but Chunk-0 is front matter and is labelled as such
         # regardless of what got packed into it.
         md = (f"One short front-matter line.{chr(10)}{chr(10)}"
               f"# 1.0 Introduction{chr(10)}{chr(10)}{self.PARAGRAPH}")
-        first = self._tree(md)["catalog"]["chunks"][0]
+        first = self._tree(md, tmp_path)["catalog"]["chunks"][0]
         assert first["file"] == "Chunk-0.md"
         assert first["heading"] == [DEFAULT_HEADING]
 
-    def test_preamble_stand_out_lines_do_not_become_the_label(self):
+    def test_preamble_stand_out_lines_do_not_become_the_label(self, tmp_path):
         # A title block's bold/ALL-CAPS lines are field labels, not section titles.
         preamble = (f"**PRINCIPAL INVESTIGATOR:**{chr(10)}{chr(10)}Dr Somebody{chr(10)}{chr(10)}"
                     + "Front matter prose that runs on for a while. " * 40)
         md = (f"{preamble}{chr(10)}{chr(10)}# 1.0 Introduction{chr(10)}{chr(10)}{self.PARAGRAPH}")
-        chunks = chunker.build_chunk_tree(
-            md, "doc.md", max_tokens=300, min_structure_tokens=1
-        )["catalog"]["chunks"]
+        chunks = self._tree(md, tmp_path, max_tokens=300)["catalog"]["chunks"]
         assert chunks[0]["heading"] == [DEFAULT_HEADING]
 
-    def test_later_chunks_unaffected(self):
+    def test_later_chunks_unaffected(self, tmp_path):
         md = "".join(
             f"# {i}.0 Section Heading{chr(10)}{chr(10)}{self.PARAGRAPH}{chr(10)}{chr(10)}"
             for i in range(1, 6)
         )
-        headings = [c["heading"] for c in self._tree(md)["catalog"]["chunks"]]
+        headings = [c["heading"] for c in self._tree(md, tmp_path)["catalog"]["chunks"]]
         assert all(h != [DEFAULT_HEADING] for h in headings), headings
 
 
@@ -489,7 +512,7 @@ class TestBookmarksStorage:
         (tmp_path / "bookmarks.json").write_text(json.dumps(records) + "\n", encoding="utf-8")
         chunker.chunk_file(str(md), min_structure_tokens=10 ** 9)
         outline = self._outline(tmp_path)
-        assert outline["outline_source"] == "none"
+        assert outline["toc_source"] == "none"
         assert outline["toc"] == []
         assert "bookmarks" not in outline
 
@@ -499,14 +522,14 @@ class TestBookmarksStorage:
         chunker.chunk_file(str(md), min_structure_tokens=10 ** 9)
         outline = self._outline(tmp_path)
         assert outline["toc"] == []
-        assert outline["outline_source"] == "none"
+        assert outline["toc_source"] == "none"
         assert "bookmarks" not in outline
 
 
 class TestRecordCutKeys:
     def _index(self, md: str):
         lines = md.split("\n")
-        return lines, chunker.build_line_index(chunker.line_pages(md, lines))
+        return lines, build_line_index(build_lines_catalog(lines))
 
     def test_resolves_unique_non_atx(self):
         md = "<!-- page: 1 -->\n## 5 Analysis\n\nData Sharing\n\nbody"

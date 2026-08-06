@@ -18,6 +18,11 @@
 """Unit tests for the pypdf outline flattening (via a fake reader; no real PDF needed)."""
 
 import pdf_bookmarks
+from bookmarks import build_lines_catalog, verify_bookmarks
+
+
+def _verify(records, md: str):
+    return verify_bookmarks(records, md, build_lines_catalog(md.split("\n")))
 
 
 class FakeDest:
@@ -36,10 +41,10 @@ class FakeReader:
         return dest._page
 
 
-class TestExtractOutline:
+class TestExtractBookmarks:
     def test_levels_and_pages(self):
         a, a1, a2, b = FakeDest("A", 0), FakeDest("A.1", 0), FakeDest("A.2", 1), FakeDest("B", 2)
-        out = pdf_bookmarks.extract_outline(FakeReader([a, [a1, a2], b]))
+        out = pdf_bookmarks.extract_bookmarks(FakeReader([a, [a1, a2], b]))
         assert out == [
             {"title": "A", "level": 1, "page": 1},
             {"title": "A.1", "level": 2, "page": 1},
@@ -48,24 +53,28 @@ class TestExtractOutline:
         ]
 
     def test_empty_title_skipped(self):
-        out = pdf_bookmarks.extract_outline(FakeReader([FakeDest("", 0), FakeDest("Real", 1)]))
+        out = pdf_bookmarks.extract_bookmarks(FakeReader([FakeDest("", 0), FakeDest("Real", 1)]))
         assert out == [{"title": "Real", "level": 1, "page": 2}]
 
     def test_whitespace_collapsed_in_title(self):
-        out = pdf_bookmarks.extract_outline(FakeReader([FakeDest("  Study   Design ", 0)]))
+        out = pdf_bookmarks.extract_bookmarks(FakeReader([FakeDest("  Study   Design ", 0)]))
         assert out == [{"title": "Study Design", "level": 1, "page": 1}]
 
     def test_bad_source_returns_empty(self):
-        assert pdf_bookmarks.extract_outline("/no/such/file.pdf") == []
+        assert pdf_bookmarks.extract_bookmarks("/no/such/file.pdf") == []
 
 
 class TestExtractVerified:
     def test_corrects_page(self):
-        out = pdf_bookmarks.extract_verified_outline(FakeReader([FakeDest("Methods", 0)]),
-                                                     "<!-- page: 2 -->\n## Methods")
+        out = _verify(
+            pdf_bookmarks.extract_bookmarks(FakeReader([FakeDest("Methods", 0)])),
+            "<!-- page: 2 -->\n## Methods",
+        )
         assert out[0]["page"] == 2 and "verified" not in out[0]
 
     def test_flags_missing(self):
-        out = pdf_bookmarks.extract_verified_outline(FakeReader([FakeDest("Ghost", 4)]),
-                                                     "<!-- page: 1 -->\n## Real")
+        out = _verify(
+            pdf_bookmarks.extract_bookmarks(FakeReader([FakeDest("Ghost", 4)])),
+            "<!-- page: 1 -->\n## Real",
+        )
         assert out[0]["verified"] is False

@@ -201,6 +201,7 @@ def convert_pdf_to_markdown(
         log=log_fn,
     )
 
+    # Split the document into page-range batches for processing
     chunks: list[tuple[str, int, int]] = []
     for start_page in range(1, total_pages + 1, batch_page_count):
         end_page = min(start_page + batch_page_count - 1, total_pages)
@@ -286,6 +287,7 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
 
         chunk_parts: list[str] = []
         for page_no in range(start_page, end_page + 1):
+            # Add page marker and page markdown to the chunk parts
             chunk_parts.append(f"\n{page_marker(page_no)}\n")
             page_md = result.document.export_to_markdown(page_no=page_no)
             chunk_parts.append(page_md)
@@ -299,7 +301,4 @@ def parse_pdf_chunk(args: tuple[str, int, int]) -> tuple[int, int, str, str, int
         return start_page, end_page, "failed", "", 0, elapsed, str(e)
 
     finally:
-        # Every batch, not just multi-page ones: auto-sizing routinely lands on 1 page per
-        # batch, which is exactly where per-batch churn is highest, so the old
-        # ``end_page > start_page`` gate skipped the collection whenever it mattered most.
         gc.collect()

@@ -85,7 +85,7 @@ def parse_document(
             log(message)
 
     filename = source_file_basename(source.name)
-    docling_input = prepare_office_document(source)
+    docling_input = prepare_office_document(source, log=_log)
     if docling_input != source:
         _log(f"LibreOffice prepared '{docling_input.name}' from '{source.name}'")
 

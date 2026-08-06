@@ -17,6 +17,7 @@
 
 """Shared Docling runtime settings and PDF pipeline configuration."""
 
+import logging
 import os
 
 from docling.datamodel.accelerator_options import AcceleratorOptions
@@ -30,6 +31,16 @@ from docling.datamodel.settings import settings
 # Limit per-process threading; outer PDF parallelism uses ProcessPoolExecutor.
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("DOCLING_NUM_THREADS", "1")
+
+
+class _SuppressTorchDtypeDeprecation(logging.Filter):
+    """Drop transformers' torch_dtype→dtype rename chatter (Docling still passes the old name)."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        return "`torch_dtype` is deprecated" not in record.getMessage()
+
+
+logging.getLogger("transformers").addFilter(_SuppressTorchDtypeDeprecation())
 
 # Docling internal batching/concurrency.
 # Keep conservative when also using ProcessPoolExecutor, otherwise memory can spike.

@@ -22,7 +22,7 @@ Runs before Docling. Converted files are written beside the source immediately:
 * ``.doc``  -> ``{stem}.docx`` then ``{stem}.pdf``
 * ``.docx`` -> ``{stem}.pdf``
 
-``soffice`` is resolved from ``CARDS_LIBREOFFICE_SOFFICE`` or ``LIBREOFFICE_PATH``, else
+``soffice`` is resolved from ``IAP_LIBREOFFICE_SOFFICE`` or ``LIBREOFFICE_PATH``, else
 ``soffice`` on PATH.
 """
 
@@ -33,16 +33,19 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
+from typing import Callable
 
 # Explicit Writer PDF export filter (matches the former Java LibreOfficeConverter).
 _PDF_CONVERT_TO = "pdf:writer_pdf_Export"
 
 _CONVERSION_TIMEOUT_SECONDS = 120
 
+LogFn = Callable[[str], None]
+
 
 def resolve_soffice_path() -> str:
     """Absolute or PATH-relative path to the LibreOffice executable."""
-    for key in ("CARDS_LIBREOFFICE_SOFFICE", "LIBREOFFICE_PATH"):
+    for key in ("IAP_LIBREOFFICE_SOFFICE", "LIBREOFFICE_PATH"):
         configured = (os.environ.get(key) or "").strip()
         if configured:
             return configured
@@ -69,7 +72,7 @@ def convert(input_path: Path, target_format: str, output_dir: Path | None = None
     extension = target_format.split(":", 1)[0]
     expected = out_dir / f"{source.stem}.{extension}"
 
-    profile_dir = Path(tempfile.mkdtemp(prefix="cards-lo-profile-"))
+    profile_dir = Path(tempfile.mkdtemp(prefix="iap-lo-profile-"))
     try:
         command = [
             resolve_soffice_path(),
@@ -113,25 +116,46 @@ def convert(input_path: Path, target_format: str, output_dir: Path | None = None
         shutil.rmtree(profile_dir, ignore_errors=True)
 
 
-def prepare_office_document(input_path: Path) -> Path:
+def _convert_sibling_pdf(source: Path, log: LogFn | None = None) -> None:
+    """Best-effort sibling PDF for later bookmark extraction.
+
+    Docling parses the ``.docx`` either way; a missing PDF only means
+    ``toc_source`` falls back to the printed TOC (or none).
+    """
+    try:
+        convert(source, _PDF_CONVERT_TO, source.parent)
+    except (RuntimeError, FileNotFoundError, OSError) as exc:
+        message = (
+            f"LibreOffice PDF conversion failed for '{source.name}'; "
+            f"continuing without sibling PDF (bookmarks unavailable): {exc}"
+        )
+        if log is not None:
+            log(message)
+
+
+def prepare_office_document(input_path: Path, *, log: LogFn | None = None) -> Path:
     """Run the LibreOffice prep step for a ``.doc`` / ``.docx`` and return the Docling input.
 
     Converted files are saved beside ``input_path`` immediately:
 
-    * ``.doc``  -> ``{stem}.docx`` then ``{stem}.pdf``; Docling receives the ``.docx``
-    * ``.docx`` -> ``{stem}.pdf``; Docling receives the original ``.docx``
+    * ``.doc``  -> ``{stem}.docx`` then best-effort ``{stem}.pdf``; Docling receives the ``.docx``
+    * ``.docx`` -> best-effort ``{stem}.pdf``; Docling receives the original ``.docx``
     * anything else is returned unchanged (no LibreOffice)
 
+    Sibling PDF conversion is best-effort: failure is logged and ignored so Docling can still
+    parse the Word document. ``.doc`` → ``.docx`` remains required.
+
     @param input_path: staged source file under the shared docs tree
+    @param log: optional line logger for soft PDF failures
     @return: path Docling should convert (``.pdf`` or ``.docx``)
     """
     source = Path(input_path)
     suffix = source.suffix.lower()
     if suffix == ".doc":
         docx_path = convert(source, "docx", source.parent)
-        convert(source, _PDF_CONVERT_TO, source.parent)
+        _convert_sibling_pdf(source, log)
         return docx_path
     if suffix == ".docx":
-        convert(source, _PDF_CONVERT_TO, source.parent)
+        _convert_sibling_pdf(source, log)
         return source
     return source

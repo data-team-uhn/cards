@@ -1,6 +1,6 @@
 # LibreOffice document conversion in IAP
 
-LibreOffice runs inside the **Python parsing service** (daemon or CLI), not the Java JVM.
+LibreOffice runs inside the **Python parsing service** (daemon or CLI).
 `libreoffice_convert.py` shells out to headless `soffice` before Docling starts.
 
 ## Conversions (saved beside the source immediately)
@@ -13,7 +13,7 @@ LibreOffice runs inside the **Python parsing service** (daemon or CLI), not the 
 
 ### Installation
 
-1. Install LibreOffice from https://www.libreoffice.org/download/ or:
+1. If interested in using CLI install LibreOffice from https://www.libreoffice.org/download/ or:
 
    ```
    # Debian / Ubuntu
@@ -25,8 +25,12 @@ LibreOffice runs inside the **Python parsing service** (daemon or CLI), not the 
 
    ```
    apt-get update && \
-     apt-get install -y libreoffice && \
+     apt-get install -y libreoffice libreoffice-java-common default-jre-headless && \
      rm -rf /var/lib/apt/lists/*
+
+   The Docling image already installs ``libreoffice-writer``, ``libreoffice-java-common``,
+   and ``default-jre-headless`` — Writer PDF export needs a JVM even for headless
+   ``docx`` → ``pdf``.
    ```
 
 2. Ensure `soffice` is on the system PATH (or set `IAP_LIBREOFFICE_SOFFICE`). Common locations:
@@ -79,10 +83,10 @@ LibreOffice runs inside the **Python parsing service** (daemon or CLI), not the 
 
 | Property / env | Default | Purpose |
 |----------------|---------|---------|
-| `cards.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
-| `cards.docling.timeout.minutes` | `30` | Per-document parse timeout |
-| `cards.parse.output.dir` / `CARDS_SHARED_DOCS` | `/shared-docs` | Shared staging + parse output root |
-| `CARDS_LIBREOFFICE_SOFFICE` | `soffice` | LibreOffice executable |
+| `iap.docling.daemon.url` | `http://127.0.0.1:18765` | Daemon base URL |
+| `iap.docling.timeout.minutes` | `30` | Per-document parse timeout |
+| `iap.docling.parse.output.dir` / `IAP_SHARED_DOCS` | `/shared-docs` | Shared staging + parse output root |
+| `IAP_LIBREOFFICE_SOFFICE` | `soffice` | LibreOffice executable |
 
 Java never starts the daemon. When the daemon cannot be reached, parsing fails. There is no
 fallback processor.
@@ -91,8 +95,8 @@ fallback processor.
 
 ## Shared volume
 
-Java and the Docling daemon share **`/shared-docs`** (env `CARDS_SHARED_DOCS`, JVM property
-`cards.parse.output.dir`). Layout:
+Java and the Docling daemon share **`/shared-docs`** (env `IAP_SHARED_DOCS`, JVM property
+`iap.docling.parse.output.dir`). Layout:
 
 ```
 /shared-docs/{answerUuid}/

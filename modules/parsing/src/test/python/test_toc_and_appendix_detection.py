@@ -25,6 +25,7 @@ outline.json and read back is simply the second return value."""
 from pathlib import Path
 
 import toc_and_appendix_detection as tad
+from bookmarks import build_line_index, build_lines_catalog
 from toc_and_appendix_detection import (
     DEFAULT_MIN_STRUCTURE_TOKENS,
     derive_outline,
@@ -32,6 +33,20 @@ from toc_and_appendix_detection import (
     read_outline,
     toc_label_line,
 )
+
+
+def _derive(md, markdown_path=None, min_structure_tokens=1):
+    return derive_outline(md, markdown_path, min_structure_tokens)
+
+
+def _derive_with_bookmarks(monkeypatch, tmp_path, md, records, min_structure_tokens=1):
+    md_path = tmp_path / "doc.md"
+    (tmp_path / "doc.pdf").write_bytes(b"%PDF-1.4")
+    # Stub PDF is not readable; feed records via extract, and keep verify as identity so
+    # tests control the exact outline without page-correction side effects.
+    monkeypatch.setattr(tad, "extract_bookmarks", lambda *a, **k: records)
+    monkeypatch.setattr(tad, "verify_bookmarks", lambda *a, **k: records)
+    return derive_outline(md, md_path, min_structure_tokens)
 
 
 class TestIsTocEntryLine:
@@ -121,31 +136,30 @@ class TestMarkAndCleanupToc:
 
 
 class TestMarkTocAndAppendix:
-    def test_no_size_gate_of_its_own(self):
-        # The gate moved to chunker.build_chunk_tree, which skips the call entirely for a small
-        # document with no records. Reached directly, derive_outline always derives — it took
-        # min_structure_tokens purely to answer a question its only caller already asked.
+    def test_size_gate_skips_small_docs_without_bookmarks(self):
+        # No bookmarks and tokens below the default threshold → empty updates, no line index.
         md = "# Small\n\nToo short for structure detection.\n"
-        _, updates, _, _ = derive_outline(md)
-        assert updates["outline_source"] == "none"
-        assert updates["tokens"] == len(md) // 4
+        result, updates, records, line_index = derive_outline(md)
+        assert result == md
+        assert updates == {}
+        assert records == []
+        assert line_index is None
 
     def test_default_threshold_constant(self):
         assert DEFAULT_MIN_STRUCTURE_TOKENS == 20000
 
     def test_records_tokens_when_not_gated(self):
         md = "# Title\n\n" + ("Some content paragraph. " * 40)
-        _, updates, _, _ = derive_outline(md)
+        _, updates, _, _ = _derive(md)
         assert updates["tokens"] == len(md) // 4
 
-    def test_bookmark_path_records_outline_even_when_small(self):
-        # Records supplied -> outline derived regardless of the size gate, so a small
-        # document still carries a toc (for the Stage 0.5 toc-only path).
+    def test_bookmark_path_records_outline_even_when_small(self, monkeypatch, tmp_path):
+        # Bookmarks beat the size gate, so a small document still carries a toc.
         known = [{"title": "Alpha", "level": 1, "page": 1}]
-        _, updates, _, _ = derive_outline(
-            "# Tiny\n\nbody\n", toc_pdf_outline_records=known
+        _, updates, _, _ = _derive_with_bookmarks(
+            monkeypatch, tmp_path, "# Tiny\n\nbody\n", known
         )
-        assert updates["outline_source"] == "pdf-bookmarks"
+        assert updates["toc_source"] == "pdf-bookmarks"
         assert updates["toc"] == ["Alpha"]
 
 
@@ -185,22 +199,23 @@ class TestMarkTocAndAppendixFork:
         )
 
     def test_manual_path_records_toc_and_backmatter(self):
-        _, updates, records, _ = derive_outline(self._doc_with_toc())
-        assert updates["outline_source"] == "md-toc"
+        _, updates, records, _ = _derive(self._doc_with_toc())
+        assert updates["toc_source"] == "md-toc"
         assert updates["toc"] == ["1.0 Introduction", "2.0 Methods", "References"]
         assert "backmatterLine" in updates
-        # The harvested records come back as the third return value instead of being written
-        # to a sidecar; write_chunk_files puts them in Chunks/bookmarks.json for inspection.
+        # The harvested records come back as the third return value; they are not written to disk.
         assert {"title": "1.0 Introduction", "level": 1, "page": 1} in records
 
-    def test_bookmark_path_discards_the_printed_toc_entries(self):
+    def test_bookmark_path_discards_the_printed_toc_entries(self, monkeypatch, tmp_path):
         # Renamed from test_bookmark_path_skips_printed_toc: the printed TOC is no longer skipped.
         # It is cleaned like anywhere else, so the document has one version and one line
         # numbering, and its *entries* are what the records displace — ``toc`` comes from the
         # records, not from the page.
         known = [{"title": "Alpha", "level": 1, "page": 1}]
-        result, updates, _, _ = derive_outline(self._doc_with_toc(), toc_pdf_outline_records=known)
-        assert updates["outline_source"] == "pdf-bookmarks"
+        result, updates, _, _ = _derive_with_bookmarks(
+            monkeypatch, tmp_path, self._doc_with_toc(), known
+        )
+        assert updates["toc_source"] == "pdf-bookmarks"
         assert updates["toc"] == ["Alpha"]
         # The label survives cleanup, so the block is still identifiable in the output.
         assert "## Table of Contents" in result
@@ -209,20 +224,24 @@ class TestMarkTocAndAppendixFork:
         assert isinstance(updates["tocStartLine"], int)
         assert updates["tocEndLine"] >= updates["tocStartLine"]
 
-    def test_bookmark_path_reports_a_toc_range_where_it_used_to_report_none(self):
+    def test_bookmark_path_reports_a_toc_range_where_it_used_to_report_none(
+        self, monkeypatch, tmp_path
+    ):
         # The regression this refactor closes: without a range, a page-less "References" entry
         # collides with the body heading it points at, and both backmatter_from_records and
         # chunker._record_cut_keys silently fail open.
         pageless = [{"title": "References", "level": None, "page": None}]
-        _, updates, _, _ = derive_outline(self._doc_with_toc(), toc_pdf_outline_records=pageless)
+        _, updates, _, _ = _derive_with_bookmarks(
+            monkeypatch, tmp_path, self._doc_with_toc(), pageless
+        )
         assert "tocStartLine" in updates
         assert "backmatterLine" in updates
 
-    def test_outline_source_none_when_nothing_found(self):
-        _, updates, _, _ = derive_outline(
+    def test_toc_source_none_when_nothing_found(self):
+        _, updates, _, _ = _derive(
             "# Title\n\n" + ("body paragraph. " * 40)
         )
-        assert updates["outline_source"] == "none"
+        assert updates["toc_source"] == "none"
 
 
 # A running header of the kind Docling leaves at the top of every protocol page. Well over
@@ -381,15 +400,18 @@ class TestBackmatterTocExclusion:
     ])
     RECORDS = [{"title": "8.0 References", "level": 1, "page": None}]
 
+    def _index(self):
+        return build_line_index(build_lines_catalog(self.MD.split("\n")))
+
     def test_ambiguous_without_the_toc_range(self):
-        assert tad.backmatter_from_records(self.MD, self.RECORDS) is None
+        assert tad.backmatter_from_records(self.RECORDS, self._index()) is None
 
     def test_resolves_to_the_body_heading_with_the_toc_range(self):
-        assert tad.backmatter_from_records(self.MD, self.RECORDS, toc_range=(0, 3)) == 7
+        assert tad.backmatter_from_records(self.RECORDS, self._index(), (0, 3)) == 7
 
     def test_no_backmatter_record_short_circuits(self):
         records = [{"title": "1.0 Background", "page": None}]
-        assert tad.backmatter_from_records(self.MD, records, toc_range=(0, 3)) is None
+        assert tad.backmatter_from_records(records, self._index(), (0, 3)) is None
 
     def test_end_to_end_records_backmatter_for_a_pageless_toc(self, tmp_path):
         outline_path = tmp_path / "outline.json"
@@ -406,8 +428,8 @@ class TestBackmatterTocExclusion:
             "## 8.0 References",
             "Smith J et al. Lancet. 2020.",
         ])
-        _, updates, _, _ = derive_outline(doc)
-        assert updates["outline_source"] == "md-toc"
+        _, updates, _, _ = _derive(doc)
+        assert updates["toc_source"] == "md-toc"
         assert isinstance(updates["backmatterLine"], int)
         # It must point at the body heading, not the TOC entry.
         assert updates["backmatterLine"] > updates["tocEndLine"]
@@ -436,29 +458,35 @@ class TestBackmatterOnTheBookmarksPath:
                {"title": "2.0 Methods", "level": 1, "page": 5},
                {"title": "19.0 References", "level": 1, "page": 20}]
 
-    def _backmatter(self, records):
+    def _backmatter(self, monkeypatch, tmp_path, records):
         doc = self._doc()
-        _, updates, _, _ = derive_outline(doc, toc_pdf_outline_records=records)
+        if records is None:
+            _, updates, _, _ = _derive(doc)
+        else:
+            _, updates, _, _ = _derive_with_bookmarks(
+                monkeypatch, tmp_path, doc, records
+            )
         line = updates.get("backmatterLine")
         return line, (doc.split("\n")[line] if isinstance(line, int) else None)
 
-    def test_resolves_with_paged_bookmarks(self):
-        line, text = self._backmatter(self.RECORDS)
+    def test_resolves_with_paged_bookmarks(self, monkeypatch, tmp_path):
+        line, text = self._backmatter(monkeypatch, tmp_path, self.RECORDS)
         assert text == "## 19.0 References", (line, text)
 
-    def test_resolves_with_page_less_bookmarks(self):
+    def test_resolves_with_page_less_bookmarks(self, monkeypatch, tmp_path):
         # The case that failed: no page to disambiguate with, so the TOC line had to be excluded.
         pageless = [dict(record, page=None) for record in self.RECORDS]
-        line, text = self._backmatter(pageless)
+        line, text = self._backmatter(monkeypatch, tmp_path, pageless)
         assert text == "## 19.0 References", (line, text)
 
-    def test_points_at_the_body_not_the_toc_entry(self):
-        line, _ = self._backmatter(self.RECORDS)
+    def test_points_at_the_body_not_the_toc_entry(self, monkeypatch, tmp_path):
+        line, _ = self._backmatter(monkeypatch, tmp_path, self.RECORDS)
         assert line > self._doc().split("\n").index("19.0 References")
 
-    def test_matches_the_printed_toc_path(self):
-        with_bookmarks, _ = self._backmatter(self.RECORDS)
-        without, _ = self._backmatter(None)
+    def test_matches_the_printed_toc_path(self, monkeypatch, tmp_path):
+        # Printed path first so an extract/verify monkeypatch cannot leak into it.
+        without, _ = self._backmatter(monkeypatch, tmp_path, None)
+        with_bookmarks, _ = self._backmatter(monkeypatch, tmp_path, self.RECORDS)
         assert with_bookmarks == without
 
 
@@ -476,10 +504,10 @@ class TestOutlineIsOneObject:
             "## 1.0 Background",
             "body paragraph. " * 60,
         ])
-        _, updates, _, _ = derive_outline(doc)
-        assert {"tocStartLine", "tocEndLine", "toc", "tokens", "outline_source"} <= set(updates)
+        _, updates, _, _ = _derive(doc)
+        assert {"tocStartLine", "tocEndLine", "toc", "tokens", "toc_source"} <= set(updates)
 
     def test_tokens_reflect_the_returned_document(self):
         doc = "# Title\n\n" + ("Some content paragraph. " * 40)
-        result, updates, _, _ = derive_outline(doc)
+        result, updates, _, _ = _derive(doc)
         assert updates["tokens"] == len(result) // 4
