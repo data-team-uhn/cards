@@ -90,6 +90,8 @@ public class SelectorDetails
     }
 
     /**
+     * The name under which this selector is invoked in a request.
+     *
      * @return The name of this selector.
      */
     public String getName()
@@ -98,6 +100,8 @@ public class SelectorDetails
     }
 
     /**
+     * A human-readable explanation of this selector, intended to be displayed to users.
+     *
      * @return A description of what this selector does.
      */
     public String getDescription()
@@ -106,6 +110,8 @@ public class SelectorDetails
     }
 
     /**
+     * The extra options that can be used to further configure this selector.
+     *
      * @return A list of any extra options that may apply to this selector. May be {@code null}.
      */
     public SelectorOption[] getOptions()

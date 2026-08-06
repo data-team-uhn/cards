@@ -66,6 +66,8 @@ public class UnsubmittedFormsCleanupTask implements Runnable
     private final PatientAccessConfiguration patientAccessConfiguration;
 
     /**
+     * Simple constructor.
+     *
      * @param resolverFactory a valid ResourceResolverFactory providing access to resources
      * @param patientAccessConfiguration details on patient authentication for token lifetime purposes
      */

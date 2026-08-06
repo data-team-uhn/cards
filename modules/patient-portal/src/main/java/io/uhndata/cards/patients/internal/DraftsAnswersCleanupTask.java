@@ -63,6 +63,8 @@ public class DraftsAnswersCleanupTask implements Runnable
     private final PatientAccessConfiguration patientAccessConfiguration;
 
     /**
+     * Simple constructor.
+     *
      * @param resolverFactory a valid ResourceResolverFactory providing access to resources
      * @param rrp sharing the resource resolver with other services
      * @param patientAccessConfiguration details on the number of days draft responses from patients are kept

@@ -56,6 +56,8 @@ public class StaleFormsCheckinTask implements Runnable
     private final ThreadResourceResolverProvider rrp;
 
     /**
+     * Simple constructor.
+     *
      * @param resolverFactory a valid ResourceResolverFactory providing access to resources
      * @param rrp sharing the resource resolver with other services
      */

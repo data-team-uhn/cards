@@ -96,6 +96,8 @@ public class ImportTask implements Runnable
     private final ThreadResourceResolverProvider rrp;
 
     /**
+     * Simple constructor.
+     *
      * @param resolverFactory A reference to a ResourceResolverFactory to use
      * @param authURL The URL for the Vault JWT authentication endpoint
      * @param endpointURL The URL for the Torch server endpoint

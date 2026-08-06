@@ -44,6 +44,9 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
+ * Creates the answers and answer sections that are missing from a form, following the structure of the questionnaire
+ * that the form is answering.
+ *
  * @version $Id$
  */
 public class FormGenerator

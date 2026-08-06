@@ -120,6 +120,8 @@ public class PatientLocalStorage
     private final List<Calendar> datesToQuery;
 
     /**
+     * Simple constructor.
+     *
      * @param resolver A reference to a ResourceResolver
      * @param startDate The start of the range of dates for appointments to find from within the patient
      * @param endDate The end of the range of dates for appointments to find from within the patient

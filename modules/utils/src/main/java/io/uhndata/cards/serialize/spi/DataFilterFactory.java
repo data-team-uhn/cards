@@ -31,6 +31,9 @@ import org.apache.commons.lang3.tuple.Pair;
 public interface DataFilterFactory
 {
     /**
+     * Turn the filters that this factory knows how to handle into actual {@link DataFilter} instances, ignoring the
+     * ones handled by other factories.
+     *
      * @param filters the filter strings parsed from the selectors, as pairs of {@code filter name -> filter value},
      *            with an empty string value if the selector didn't specify one
      * @param allSelectors all the selectors, in case a filter may have other settings configurable through selectors
