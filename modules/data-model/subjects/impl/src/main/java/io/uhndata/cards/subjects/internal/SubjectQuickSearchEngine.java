@@ -63,7 +63,8 @@ public class SubjectQuickSearchEngine implements QuickSearchEngine
         try {
             final StringBuilder sqlQuery = new StringBuilder()
                 .append("select [jcr:path] from [cards:Subject] as a where lower([identifier]) like '%")
-                .append(SearchUtils.escapeLikeText(query.getQuery().toLowerCase()))
+                .append(SearchUtils.escapeQueryArgument(
+                    SearchUtils.escapeLikeText(query.getQuery().toLowerCase())))
                 .append("%' order by [identifier] option(index tag cards)");
 
             return new SubjectsResults(query.getQuery(),

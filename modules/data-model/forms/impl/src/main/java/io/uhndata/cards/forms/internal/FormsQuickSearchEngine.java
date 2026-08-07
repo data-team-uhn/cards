@@ -82,7 +82,8 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
 
     private String getQuery(final String textQuery)
     {
-        final String escapedQuery = SearchUtils.escapeLikeText(textQuery.toLowerCase());
+        final String escapedQuery =
+            SearchUtils.escapeQueryArgument(SearchUtils.escapeLikeText(textQuery.toLowerCase()));
         final StringBuilder sqlQuery = new StringBuilder()
             .append("select [jcr:path] from [cards:TextAnswer] as a ")
             .append("where lower([value]) like '%")
