@@ -23,7 +23,7 @@
 #   referenced by any feature in the repository (artifacts/), needing no network access
 
 # Start from a small Alpine Linux base image
-FROM alpine:3.23
+FROM alpine:3.24
 
 # Install dependency Alpine Linux packages and apply any available package upgrades
 RUN apk update
