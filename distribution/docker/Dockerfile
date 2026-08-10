@@ -33,7 +33,8 @@ RUN apk add \
   openjdk21-jre \
   python3 \
   tzdata \
-  bash
+  bash \
+  postgresql18-client
 
 # Optional: enable remote debugging at port 5005
 ENV DEBUG=

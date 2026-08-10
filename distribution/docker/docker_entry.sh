@@ -20,10 +20,18 @@
 #If we are simply restarting...
 [ -z $CARDS_RELOAD ] || WAIT_FOR_CARDSINIT=''
 
-# If we have not explicitly specified the file system as the Oak Repo
-# back-end for data storage, use MongoDB
-STORAGE=tar
-[ -z $OAK_FILESYSTEM ] && STORAGE=mongo
+# The Oak repository back-end for data storage. `OAK_STORAGE` names it explicitly; without it,
+# the file system is used when `OAK_FILESYSTEM` is set, and MongoDB otherwise.
+STORAGE="$OAK_STORAGE"
+if [ -z "$STORAGE" ]
+then
+  STORAGE=tar
+  [ -z $OAK_FILESYSTEM ] && STORAGE=mongo
+fi
+case "$STORAGE" in
+  tar|mongo|rdb) ;;
+  *) echo "Unsupported OAK_STORAGE '$STORAGE', expected one of: tar, mongo, rdb" >&2; exit 1 ;;
+esac
 
 #If inside a docker-compose environment, wait for a signal...
 [ -z $INSIDE_DOCKER_COMPOSE ] || (while true; do (echo "CARDS" | nc router 9999) && break; sleep 5; done)
@@ -128,6 +136,63 @@ then
   EXT_MONGO_VARIABLES="$EXT_MONGO_VARIABLES -V mongo.uri=$AUTH_EXTERNAL_MONGO_URI"
 fi
 
+#Are we using an external relational database service for data storage?
+EXT_RDB_VARIABLES=""
+if [ ! -z $EXTERNAL_RDB_URI ]
+then
+  EXT_RDB_VARIABLES="$EXT_RDB_VARIABLES -V rdb.jdbc.uri=$EXTERNAL_RDB_URI"
+fi
+if [ ! -z $RDB_DRIVER ]
+then
+  EXT_RDB_VARIABLES="$EXT_RDB_VARIABLES -V rdb.jdbc.driver=$RDB_DRIVER"
+fi
+if [ ! -z $RDB_USER ]
+then
+  EXT_RDB_VARIABLES="$EXT_RDB_VARIABLES -V rdb.jdbc.user=$RDB_USER"
+fi
+if [ ! -z $RDB_PASSWORD ]
+then
+  EXT_RDB_VARIABLES="$EXT_RDB_VARIABLES -V rdb.jdbc.password=$RDB_PASSWORD"
+fi
+
+#Verify the PostgreSQL database uses `C` collation. Oak's RDBDocumentStore orders the node `id`
+#column by Unicode code point (ORDER BY on `id`, and the primary-key index ordering must match); a
+#locale collation (e.g. en_US.utf8, the postgres image default) orders those ids differently, so
+#resolving already-persisted data breaks and every RESTART wedges at
+#`ClusterRepositoryInfo.getOrCreateId` ("Both setting and then reading of /:clusterConfig/:clusterId
+#failed") - a fresh start looks fine, which makes it very hard to diagnose. Fail fast instead. The
+#check is best-effort: it is skipped for non-PostgreSQL drivers and degrades to a warning if `psql`
+#is missing or the database cannot be read yet.
+if [ "$STORAGE" = rdb ] && [ "${RDB_DRIVER:-org.postgresql.Driver}" = "org.postgresql.Driver" ]
+then
+  if command -v psql > /dev/null 2>&1
+  then
+    #Fall back to the feature's baked-in default target when EXTERNAL_RDB_URI is not set.
+    RDB_URI="${EXTERNAL_RDB_URI:-jdbc:postgresql://postgres:5432/cards}"
+    RDB_HOSTPORT=$(echo "$RDB_URI" | sed -E 's#^jdbc:postgresql://([^/?]+).*#\1#')
+    RDB_DBNAME=$(echo "$RDB_URI" | sed -E 's#^jdbc:postgresql://[^/]+/([^?]+).*#\1#')
+    RDB_HOST="${RDB_HOSTPORT%%:*}"
+    RDB_PORT="${RDB_HOSTPORT##*:}"
+    [ "$RDB_PORT" = "$RDB_HOST" ] && RDB_PORT=5432
+    RDB_COLLATE=$(PGPASSWORD="${RDB_PASSWORD:-cards}" psql -h "$RDB_HOST" -p "$RDB_PORT" -U "${RDB_USER:-cards}" -d "$RDB_DBNAME" -tAc "SELECT datcollate FROM pg_database WHERE datname = current_database();" 2>/dev/null | tr -d '[:space:]')
+    case "$RDB_COLLATE" in
+      C|POSIX)
+        echo "OK: PostgreSQL database '$RDB_DBNAME' uses '$RDB_COLLATE' collation." ;;
+      "")
+        echo "WARNING: could not read the collation of PostgreSQL database '$RDB_DBNAME' at $RDB_HOST:$RDB_PORT; Oak requires it to be created with LC_COLLATE=C." >&2 ;;
+      *)
+        echo "FATAL: PostgreSQL database '$RDB_DBNAME' uses collation '$RDB_COLLATE', but Oak's RDBDocumentStore requires 'C' (or 'POSIX')." >&2
+        echo "       A locale collation orders the node 'id' column differently from Oak's code-point ordering, which corrupts" >&2
+        echo "       resolution of existing data and wedges every restart. Recreate the database with C collation, e.g.:" >&2
+        echo "         CREATE DATABASE $RDB_DBNAME OWNER $RDB_USER TEMPLATE template0 ENCODING 'UTF8' LC_COLLATE 'C' LC_CTYPE 'C';" >&2
+        echo "       For the official postgres image: POSTGRES_INITDB_ARGS='--encoding=UTF8 --lc-collate=C --lc-ctype=C' (needs a fresh volume)." >&2
+        exit 1 ;;
+    esac
+  else
+    echo "WARNING: psql not available to verify PostgreSQL collation; ensure the database was created with LC_COLLATE=C (Oak requirement)." >&2
+  fi
+fi
+
 SMTPS_VARIABLES=""
 if [ ! -z $SMTPS_HOST ]
 then
@@ -190,10 +255,26 @@ done
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-export JAVA_OPTS="${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -Djdk.xml.entityExpansionLimit=0"
+#The document stores identify a cluster node by hardware address plus working directory, and only
+#reclaim a previous entry when both still match. A container is given a fresh MAC address on every
+#run, so a restart that happens before the old lease expires can neither reclaim nor wait for the
+#previous cluster node: it takes a new cluster id and abandons the old entry, which stays marked
+#active and is therefore never recovered. OAK_MACHINE_ID pins the address so that a restarted
+#container reclaims its own cluster node instead.
+#This is deliberately opt-in and has NO default: several CARDS containers routinely share one
+#database (see the cardsinitial wait above), and they tell themselves apart precisely by having
+#different hardware addresses. A shared default would collapse them onto a single cluster node.
+#Set it only for a single-instance deployment, or give every instance a distinct value.
+OAK_MACHINE_ID_FLAG=""
+if [ "$STORAGE" != tar ] && [ ! -z "$OAK_MACHINE_ID" ]
+then
+  OAK_MACHINE_ID_FLAG=" -Dorg.apache.jackrabbit.oak.plugins.document.ClusterNodeInfo.HWADDRESS=${OAK_MACHINE_ID}"
+fi
+
+export JAVA_OPTS="${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -Djdk.xml.entityExpansionLimit=0${OAK_MACHINE_ID_FLAG}"
 # Resolve artifacts from the repositories baked into the image first: the project artifacts
 # (including all the feature files) in mvnrepo/, and, in the self-contained production
 # flavor, the complete third-party repository in artifacts/. A volume-mounted ~/.m2, the
 # tooling-injected ~/.cards-generic-m2, and the remote repositories are fallbacks.
 chmod +x ./org.apache.sling.feature.launcher/bin/launcher
-./org.apache.sling.feature.launcher/bin/launcher -u "file:///opt/cards/mvnrepo,file:///opt/cards/artifacts,file://$(realpath ${HOME}/.m2/repository),file://$(realpath ${HOME}/.cards-generic-m2/repository),https://repo.maven.apache.org/maven2" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/${CARDS_ARTIFACTID}/${CARDS_VERSION}/slingosgifeature/core_${STORAGE}${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}
+./org.apache.sling.feature.launcher/bin/launcher -u "file:///opt/cards/mvnrepo,file:///opt/cards/artifacts,file://$(realpath ${HOME}/.m2/repository),file://$(realpath ${HOME}/.cards-generic-m2/repository),https://repo.maven.apache.org/maven2" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/${CARDS_ARTIFACTID}/${CARDS_VERSION}/slingosgifeature/core_${STORAGE}${EXT_MONGO_VARIABLES}${EXT_RDB_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}

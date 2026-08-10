@@ -53,11 +53,20 @@
               <filesInclude>core/*.json</filesInclude>
               <title>CARDS With Oak Document NS Mongo Persistence</title>
             </aggregate>
+            <aggregate>
+              <classifier>core_rdb</classifier>
+              <filesInclude>*.json</filesInclude>
+              <filesInclude>oak/*.json</filesInclude>
+              <filesInclude>oak/persistence/oak_persistence_rdb.json</filesInclude>
+              <filesInclude>core/*.json</filesInclude>
+              <title>CARDS With Oak Document NS Relational Persistence</title>
+            </aggregate>
           </aggregates>
           <scans>
             <scan>
               <includeClassifier>core_tar</includeClassifier>
               <includeClassifier>core_mongo</includeClassifier>
+              <includeClassifier>core_rdb</includeClassifier>
             </scan>
           </scans>
         </configuration>
