@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM debian:12-slim
+FROM debian:13-slim
 
 RUN apt-get update
 RUN apt-get -y install \
