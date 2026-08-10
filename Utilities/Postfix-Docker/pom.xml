@@ -52,9 +52,11 @@
               </execution>
             </executions>
             <configuration>
-              <image>
-                <name>cards/postfix-docker:%l</name>
-              </image>
+              <images>
+                <image>
+                  <name>cards/postfix-docker:%l</name>
+                </image>
+              </images>
             </configuration>
           </plugin>
         </plugins>
