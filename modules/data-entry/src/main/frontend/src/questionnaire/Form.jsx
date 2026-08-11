@@ -643,7 +643,9 @@ function Form (props) {
     return time.hasSame(DateTime.local(),"day") ? "at " + time.toFormat("hh:mma") : time.toRelativeCalendar();
   }
 
-  let validLinks = data?.["cards:links"]?.filter(link => link["to"]?.startsWith("/"));
+  // A link definition can be marked as not displayed, to keep one direction of a backlink pair out of the UI
+  let validLinks = data?.["cards:links"]
+    ?.filter(link => link["to"]?.startsWith("/") && link["displayed"] !== false);
   let links = validLinks?.length > 0 ?
     (
       <Typography variant="overline">
