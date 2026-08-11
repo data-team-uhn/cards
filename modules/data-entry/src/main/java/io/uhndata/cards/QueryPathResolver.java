@@ -56,14 +56,14 @@ public final class QueryPathResolver
 {
     /** Matches a selector declared by the query, capturing its node type and, if present, its alias. */
     private static final Pattern QUERY_SELECTOR = Pattern.compile(
-        "\\b(?:from|join)\\s+\\[([^\\]]+)\\]\\s*(?:\\bas\\s+(\\[[^\\]]+\\]|[\\w:]+))?", Pattern.CASE_INSENSITIVE);
+        "\\b(?:from|join)\\s++\\[([^\\]]++)\\]\\s*+(?:\\bas\\s++(\\[[^\\]]++\\]|[\\w:]++))?", Pattern.CASE_INSENSITIVE);
 
     /**
      * Matches a property compared to a string literal, capturing the selector, the property, and the literal. Only
      * comparisons are matched, which is what keeps a path passed to a function from being translated.
      */
     private static final Pattern PROPERTY_COMPARISON = Pattern.compile(
-        "(?:(\\[[^\\]]+\\]|[\\w:]+)\\.)?(\\[[^\\]]+\\]|[\\w:]+)\\s*(?:=|<>|!=)\\s*'((?:[^']|'')*)'");
+        "(?<!\\[)(?:(\\[[^\\]]++\\]|[\\w:]++)\\.)?(\\[[^\\]]++\\]|[\\w:]++)\\s*(?:=|<>|!=)\\s*+'(/(?:[^']|'')*+)'");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryPathResolver.class);
 
@@ -96,8 +96,7 @@ public final class QueryPathResolver
         do {
             // A literal escapes a quote by doubling it, undo that before treating the value as a path
             final String path = comparisons.group(3).replace("''", "'");
-            if (!path.startsWith("/")
-                || !isReferenceProperty(nodeTypes, selectorTypes, comparisons.group(1), comparisons.group(2))) {
+            if (!isReferenceProperty(nodeTypes, selectorTypes, comparisons.group(1), comparisons.group(2))) {
                 continue;
             }
             final String uuid = getUuid(session, path);
