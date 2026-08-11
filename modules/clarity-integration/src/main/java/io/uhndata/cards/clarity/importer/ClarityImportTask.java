@@ -519,7 +519,7 @@ public class ClarityImportTask implements Runnable
             // Get or create the subject
             Resource newSubjectParent = childSubjectMapping.shouldCreateSubjectIfAbsent()
                 ? getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent)
-                : getSubject(resolver, row, childSubjectMapping);
+                : getSubject(resolver, row, childSubjectMapping, subjectParent);
             if (newSubjectParent == null) {
                 continue;
             }
@@ -567,10 +567,11 @@ public class ClarityImportTask implements Runnable
      * @param resolver ResourceResolver to use for reading the JCR
      * @param row {@code Map<String, String>} object that maps column names to values for a SQL query result row
      * @param subjectMapping ClaritySubjectMapping object describing how a CARDS Subject is to be found from a SQL row
+     * @param parent the subject that this one must belong to, may be {@code null} at the root of the hierarchy
      * @return A Subject resource, or {@code null} if no existing subject was found
      */
     private Resource getSubject(ResourceResolver resolver, Map<String, String> row,
-        ClaritySubjectMapping subjectMapping) throws RepositoryException
+        ClaritySubjectMapping subjectMapping, Resource parent) throws RepositoryException
     {
         if ("".equals(subjectMapping.subjectIdColumn)) {
             // No ID column to try to match an existing subject to
@@ -582,9 +583,8 @@ public class ClarityImportTask implements Runnable
             return null;
         }
 
-        String subjectMatchQuery = String.format(
-            "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
-            identifier);
+        final String subjectMatchQuery =
+            createSubjectMatchQuery(identifier, parent == null ? null : parent.getPath());
         resolver.refresh();
         final Iterator<Resource> subjectResourceIter = resolver.findResources(subjectMatchQuery, "JCR-SQL2");
         if (subjectResourceIter.hasNext()) {
@@ -595,6 +595,38 @@ public class ClarityImportTask implements Runnable
         } else {
             return null;
         }
+    }
+
+    /**
+     * Build the query looking for an already imported subject. Identifiers are only unique among the children of one
+     * parent: two patients coming from different sources may well use the same visit identifier, so matching on the
+     * identifier alone can return a visit belonging to another patient, and the row would then be imported into it.
+     * Restricting the query to the children of the parent subject pins the whole hierarchy above this subject, since
+     * that parent was itself looked up the same way.
+     *
+     * @param identifier the identifier of the wanted subject
+     * @param parentPath the path of the subject it must belong to, or {@code null} to search anywhere
+     * @return a JCR-SQL2 query
+     */
+    static String createSubjectMatchQuery(final String identifier, final String parentPath)
+    {
+        final StringBuilder query = new StringBuilder("SELECT * FROM [cards:Subject] as subject WHERE ");
+        query.append(String.format("subject.'identifier'='%s'", escapeQueryValue(identifier)));
+        if (parentPath != null) {
+            query.append(String.format(" AND ISCHILDNODE(subject, '%s')", escapeQueryValue(parentPath)));
+        }
+        return query.append(" option (index tag property)").toString();
+    }
+
+    /**
+     * Escape a value that is inlined in a JCR-SQL2 query, where a quote is written twice.
+     *
+     * @param value the value to escape
+     * @return the escaped value
+     */
+    private static String escapeQueryValue(final String value)
+    {
+        return value.replace("'", "''");
     }
 
     /**
@@ -609,7 +641,7 @@ public class ClarityImportTask implements Runnable
     private Resource getOrCreateSubject(ResourceResolver resolver, Map<String, String> row,
         ClaritySubjectMapping subjectMapping, Resource parent) throws RepositoryException, PersistenceException
     {
-        final Resource subject = getSubject(resolver, row, subjectMapping);
+        final Resource subject = getSubject(resolver, row, subjectMapping, parent);
 
         if (subject != null) {
             return subject;

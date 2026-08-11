@@ -28,6 +28,12 @@
 
   <artifactId>cards-clarity-integration</artifactId>
   <packaging>bundle</packaging>
+
+  <properties>
+    <!-- The suite covers 42%. What is left is mostly ClarityImportTask's import loop, which needs a live
+         Clarity database, and the repository work in DiscardExistingVisitsFilter. Raise this as that grows. -->
+    <coverage.instructionRatio>0.40</coverage.instructionRatio>
+  </properties>
   <name>CARDS - Clarity import module</name>
 
   <build>
@@ -138,6 +144,25 @@
       <artifactId>mssql-jdbc</artifactId>
       <version>13.4.0.jre11</version>
       <scope>runtime</scope>
+    </dependency>
+
+    <!-- TEST -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- jakarta.json is an API only; the endpoint builds real JSON, so the tests need an implementation -->
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.json</artifactId>
+      <version>2.0.1</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
