@@ -20,7 +20,6 @@
 package io.uhndata.cards.patients.internal;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -39,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Periodically remove patient's answer values with a frequency specified by @{code PatientAccess.draftLifetime}
@@ -121,8 +121,7 @@ public class DraftsAnswersCleanupTask implements Runnable
                     + "  and dataForm.questionnaire <> '%1$s'"
                     // use the fast index for the query
                     + " OPTION (index tag cards)",
-                visitInformationQuestionnaire, ZonedDateTime.now().minusDays(draftLifetime)
-                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx")),
+                visitInformationQuestionnaire, DateUtils.toString(ZonedDateTime.now().minusDays(draftLifetime)),
                 submitted),
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {

@@ -36,6 +36,7 @@ import jakarta.json.JsonValue;
 import org.osgi.service.component.annotations.Component;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Gets the formatted question answer for date questions.
@@ -115,6 +116,6 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
      */
     private static String format(final DateTimeFormatter format, final Calendar value)
     {
-        return format.format(value.toInstant().atZone(value.getTimeZone().toZoneId()));
+        return format.format(DateUtils.toZonedDateTime(value));
     }
 }

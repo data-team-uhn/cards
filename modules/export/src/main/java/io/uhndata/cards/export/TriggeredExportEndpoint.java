@@ -20,8 +20,7 @@ package io.uhndata.cards.export;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,6 +42,7 @@ import io.uhndata.cards.export.spi.DataFormatter;
 import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.export.spi.DataStore;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * URL endpoint for triggering an export. This only works for the admin user, and the export to trigger must be a known
@@ -163,14 +163,8 @@ public class TriggeredExportEndpoint extends SlingJakartaSafeMethodsServlet
 
     private LocalDate strToDate(final String date)
     {
-        if (date == null) {
-            return null;
-        }
-        try {
-            return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        } catch (DateTimeParseException e) {
-            return null;
-        }
+        final ZonedDateTime parsed = DateUtils.parseDateTime(date);
+        return parsed == null ? null : parsed.toLocalDate();
     }
 
     private void writeError(final int status, final String message, final SlingJakartaHttpServletResponse response)

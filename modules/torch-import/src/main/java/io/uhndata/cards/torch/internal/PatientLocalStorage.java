@@ -20,15 +20,8 @@
 package io.uhndata.cards.torch.internal;
 
 import java.io.IOException;
-import java.text.ParsePosition;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -59,6 +52,8 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Utility class to store a patient JSON object as returned by our Torch server into JCR. This is mostly a utility class
@@ -227,7 +222,7 @@ public class PatientLocalStorage
     Boolean isAppointmentInTimeframe(final JsonObject appointment)
     {
         // Only the date part of the appointment time is relevant here, so the time of day is dropped
-        final Calendar thisCalendar = toCalendar(appointment.getString("time"), "yyyy-MM-dd");
+        final Calendar thisCalendar = toDate(appointment.getString("time"));
         if (thisCalendar == null) {
             LOGGER.error("Could not parse date for appointment {}",
                 appointment.getString(PatientLocalStorage.FHIR_FIELD));
@@ -526,7 +521,7 @@ public class PatientLocalStorage
             "sex", obj -> obj.getString("sex"),
             "first_name", obj -> obj.getJsonObject("name").getJsonArray("given").getString(0),
             "last_name", obj -> obj.getJsonObject("name").getString("family"),
-            "date_of_birth@cards:DateAnswer", obj -> toCalendar(obj.getString("dob"), "yyyy-MM-dd"),
+            "date_of_birth@cards:DateAnswer", obj -> toDate(obj.getString("dob")),
             "email", obj -> obj.getJsonObject("com").getJsonObject("email").values().stream()
                 .filter(e -> e != null && e != JsonValue.NULL && (e.getValueType() == JsonValue.ValueType.STRING))
                 .map(e -> ((JsonString) e).getString())
@@ -551,7 +546,7 @@ public class PatientLocalStorage
     {
         final Map<String, JsonGetter> formMapping = Map.of(
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD),
-            "time@cards:DateAnswer", obj -> toCalendar(obj.getString("time"), "yyyy-MM-dd'T'HH:mm:ss"),
+            "time@cards:DateAnswer", obj -> DateUtils.parseCalendar(obj.getString("time")),
             "status", obj -> obj.getString("status"),
             "provider", obj -> {
                 final JsonArray participants = obj.getJsonArray("participants");
@@ -588,33 +583,15 @@ public class PatientLocalStorage
     }
 
     /**
-     * Parse a date/time string into a Calendar object, or {@code null} if the value is missing or not according to the
-     * format.
+     * Parse a date/time string, discarding the time of day, so that only the calendar day is kept.
      *
      * @param dateStr a date or datetime representation, may be {@code null} or an empty string
-     * @param format the expected date or datetime format of {@code dateStr}
-     * @return the parsed date as a Calendar, or {@code null}
+     * @return the parsed date as a Calendar at midnight, or {@code null} if the value is missing or unparsable
      */
-    private Calendar toCalendar(final String dateStr, final String format)
+    private static Calendar toDate(final String dateStr)
     {
-        if (StringUtils.isBlank(dateStr)) {
-            return null;
-        }
-        final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-            .appendPattern(format)
-            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-            .toFormatter();
-        try {
-            // Parsing from a position, instead of the whole string, tolerates trailing text that the format
-            // doesn't cover, e.g. reading just the date out of a full datetime
-            final LocalDateTime parsed =
-                LocalDateTime.from(formatter.parse(dateStr, new ParsePosition(0)));
-            return GregorianCalendar.from(parsed.atZone(ZoneId.systemDefault()));
-        } catch (RuntimeException e) {
-            return null;
-        }
+        final Calendar parsed = DateUtils.parseCalendar(dateStr);
+        return parsed == null ? null : DateUtils.atMidnight(parsed);
     }
 
     /**

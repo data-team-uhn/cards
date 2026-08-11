@@ -19,12 +19,7 @@
 
 package io.uhndata.cards.clarity.importer.internal;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +47,7 @@ import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Clarity import processor that discards existing visits when another visit takes priority and should be imported
@@ -64,12 +60,6 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscardExistingVisitsFilter.class);
-
-    private static final DateTimeFormatter SQL_DATE_FORMAT =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd' 'HH:mm:ss");
-
-    private static final DateTimeFormatter JCR_DATE_FORMAT =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -124,17 +114,19 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
             deleteEvents(input);
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to process entry: {}", e.getMessage(), e);
-        } catch (DateTimeParseException e) {
-            LOGGER.warn("Invalid date: {}", input.getOrDefault(this.dateColumn, ""), e);
         }
         return this.discardNewEvent ? null : input;
     }
 
     private void deleteEvents(final Map<String, String> input) throws RepositoryException
     {
-        final ZonedDateTime startTime =
-            LocalDateTime.parse(input.getOrDefault(this.dateColumn, ""), SQL_DATE_FORMAT)
-                .atZone(ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS);
+        final String rawDate = input.getOrDefault(this.dateColumn, "");
+        final ZonedDateTime date = DateUtils.parseDateTime(rawDate);
+        if (date == null) {
+            LOGGER.warn("Invalid date: {}", rawDate);
+            return;
+        }
+        final ZonedDateTime startTime = DateUtils.atMidnight(date);
         final ZonedDateTime endTime = startTime.plusDays(1);
         final Session session = this.rrp.getThreadResourceResolver().adaptTo(Session.class);
         final String patientUuid = findSubject(input, session);
@@ -148,8 +140,8 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
             session.getNode("/Questionnaires/Visit information").getIdentifier(),
             patientUuid,
             session.getNode("/Questionnaires/Visit information/time").getIdentifier(),
-            JCR_DATE_FORMAT.format(startTime),
-            JCR_DATE_FORMAT.format(endTime));
+            DateUtils.toString(startTime),
+            DateUtils.toString(endTime));
         final NodeIterator visits =
             session.getWorkspace().getQueryManager().createQuery(formQuery, "JCR-SQL2").execute().getNodes();
         while (visits.hasNext()) {

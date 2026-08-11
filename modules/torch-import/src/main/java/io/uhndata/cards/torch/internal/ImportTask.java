@@ -28,11 +28,8 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URLConnection;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -52,6 +49,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Query the Torch server provided for patients with appointments in the coming few days (default: 3), and stores them
@@ -66,6 +64,7 @@ public class ImportTask implements Runnable
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportTask.class);
 
+    /** The date format that the Torch server expects in its query, unrelated to how CARDS stores dates. */
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /** Number of days to query. */
@@ -128,11 +127,12 @@ public class ImportTask implements Runnable
         // Parse the query dates
         this.queryDates = new LinkedList<>();
         for (String queryDate : queryDates) {
-            try {
-                this.queryDates.add(GregorianCalendar.from(
-                    LocalDate.parse(queryDate, DATE_FORMAT).atStartOfDay(ZoneId.systemDefault())));
-            } catch (DateTimeParseException e) {
-                LOGGER.error("Query date invalid: {}", e.getMessage(), e);
+            // Appointments are matched by calendar day, so any time of day in the configured date is discarded
+            final Calendar date = DateUtils.parseCalendar(queryDate);
+            if (date == null) {
+                LOGGER.error("Query date invalid: {}", queryDate);
+            } else {
+                this.queryDates.add(DateUtils.atMidnight(date));
             }
         }
         // If we have no provider IDs/roles, we want an empty list instead of a list of length 1 with an empty string

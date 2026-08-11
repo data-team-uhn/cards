@@ -21,7 +21,6 @@ package io.uhndata.cards;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -715,10 +714,12 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
      *
      * @param queryProperty a query property to compare in the format {@code n.'jcr:created'} or {@code child1_2.value}
      * @param operator the operator to use, one of {@code = <> < > <= or >=}
-     * @param valueToCompare a date string to compare against, including a timezone offset, in the format
-     *            {@code 2020-12-31T00:00-04:00}
+     * @param valueToCompare a date string to compare against, in any of the formats supported by
+     *            {@link DateUtils#parseDateTime(String)}, for example {@code 2020-12-31T00:00-04:00}
      * @return a query fragment that imposes the correct conditions on the property, for example
-     *         {@code (n.'jcr:created'>='2020-12-31T00:00:00-04:00' and n.'jcr:created'<'2021-01-01T00:00-04:00')}
+     *         {@code (n.'jcr:created'>='2020-12-31T00:00:00.000-04:00'} {@code and}
+     *         {@code n.'jcr:created'<'2021-01-01T00:00:00.000-04:00')}
+     * @throws IllegalArgumentException if the date cannot be parsed
      */
     private String generateDateCompareQuery(final String queryProperty, final String operator,
         final String valueToCompare)
@@ -733,29 +734,35 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
         // IF (<=) THEN CHECK (< nextDay)
         // IF (>=) THEN CHECK (>= thisDay)
         //
-        final ZonedDateTime thisDay = ZonedDateTime.parse(valueToCompare);
-        final ZonedDateTime nextDay = thisDay.plusDays(1);
-        final String nextDayStr = nextDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        final ZonedDateTime thisDay = DateUtils.parseDateTime(valueToCompare);
+        if (thisDay == null) {
+            // The query fragment is appended to the query by the caller, so there is no way to skip just this filter
+            throw new IllegalArgumentException("Unsupported date filter value: " + valueToCompare);
+        }
+        // Both bounds are serialized from the parsed date, so that the query compares against two dates in the same
+        // format, regardless of which of the supported formats the client sent
+        final String thisDayStr = DateUtils.toString(thisDay);
+        final String nextDayStr = DateUtils.toString(thisDay.plusDays(1));
         String compareQuery;
         switch (operator) {
             case "=":
                 compareQuery = String.format("(%s>='%s' and %s<'%s')",
                     queryProperty,
-                    valueToCompare,
+                    thisDayStr,
                     queryProperty,
                     nextDayStr);
                 break;
             case "<>":
                 compareQuery = String.format("(%s<'%s' or %s>='%s')",
                     queryProperty,
-                    valueToCompare,
+                    thisDayStr,
                     queryProperty,
                     nextDayStr);
                 break;
             case "<":
                 compareQuery = String.format("(%s<'%s')",
                     queryProperty,
-                    valueToCompare);
+                    thisDayStr);
                 break;
             case ">":
                 compareQuery = String.format("(%s>='%s')",
@@ -770,7 +777,7 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
             case ">=":
                 compareQuery = String.format("(%s>='%s')",
                     queryProperty,
-                    valueToCompare);
+                    thisDayStr);
                 break;
             case null, default:
                 compareQuery = null;

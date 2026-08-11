@@ -56,6 +56,7 @@ import io.uhndata.cards.locking.api.LockManager;
 import io.uhndata.cards.locking.api.LockWarning;
 import io.uhndata.cards.locking.spi.LockPrecondition;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
 @Component(service = LockManager.class)
@@ -225,7 +226,7 @@ public class LockManagerImpl implements LockManager
                 Node existingLock = serviceNode.getProperty(LOCK_PROPERTY).getNode();
                 String author = existingLock.getProperty("author").getString();
                 Calendar lockTime = existingLock.getProperty("time").getDate();
-                String time = DATE_FORMAT.format(lockTime.toInstant().atZone(lockTime.getTimeZone().toZoneId()));
+                String time = DATE_FORMAT.format(DateUtils.toZonedDateTime(lockTime));
                 return String.format("Node has already been locked by %s on %s", author, time);
             }
 

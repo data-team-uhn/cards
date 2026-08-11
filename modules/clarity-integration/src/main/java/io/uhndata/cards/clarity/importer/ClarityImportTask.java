@@ -24,13 +24,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -59,6 +55,7 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.errortracking.ErrorLogger;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Query the Clarity server every so often to obtain all of the visits and patients that have appeared throughout the
@@ -82,10 +79,6 @@ public class ClarityImportTask implements Runnable
     private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
 
     private static final String VALUE_PROP = "value";
-
-    /** The date+time format used by the Clarity database. */
-    private static final DateTimeFormatter CLARITY_DATE_FORMAT =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd' 'HH:mm:ss");
 
     private final ClarityImportConfigDefinition config;
 
@@ -761,8 +754,12 @@ public class ClarityImportTask implements Runnable
             props.put(ClarityImportTask.VALUE_PROP, answerValue == null ? "" : answerValue);
         } else if (qType == QuestionType.DATE) {
             props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:DateAnswer");
-            final LocalDateTime date = LocalDateTime.parse(answerValue, CLARITY_DATE_FORMAT);
-            props.put(ClarityImportTask.VALUE_PROP, GregorianCalendar.from(date.atZone(ZoneId.systemDefault())));
+            final Calendar date = DateUtils.parseCalendar(answerValue);
+            if (date == null) {
+                // The whole row is abandoned upstream, rather than silently importing a visit with no date
+                throw new DateTimeParseException("Unsupported date format", String.valueOf(answerValue), 0);
+            }
+            props.put(ClarityImportTask.VALUE_PROP, date);
         } else if (qType == QuestionType.BOOLEAN) {
             // Note that the MS-SQL database doesn't save booleans as true/false
             // So instead we have to check if it is Yes or No

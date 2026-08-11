@@ -18,7 +18,6 @@ package io.uhndata.cards.forms.internal;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -42,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.ExpressionUtils;
+import io.uhndata.cards.utils.DateUtils;
 
 @Component(service = ExpressionUtils.class)
 public final class ExpressionUtilsImpl implements ExpressionUtils
@@ -400,12 +400,9 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
                     formattedResult = String.valueOf(result.doubleValue());
                 }
             } else if (rawResult instanceof Date) {
-                formattedResult = DateTimeFormatter.ISO_OFFSET_DATE_TIME
-                    .format(((Date) rawResult).toInstant().atZone(ZoneId.systemDefault()));
+                formattedResult = DateUtils.toString(((Date) rawResult).toInstant().atZone(ZoneId.systemDefault()));
             } else if (rawResult instanceof Calendar) {
-                Calendar result = (Calendar) rawResult;
-                formattedResult = DateTimeFormatter.ISO_OFFSET_DATE_TIME
-                    .format(result.toInstant().atZone(result.getTimeZone().toZoneId()));
+                formattedResult = DateUtils.toString((Calendar) rawResult);
             }
             return formattedResult;
         }

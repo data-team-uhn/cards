@@ -20,7 +20,6 @@ package io.uhndata.cards.patients;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,6 +65,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
+import io.uhndata.cards.utils.DateUtils;
 
 @Component(service = { Servlet.class }, property = { "sling.auth.requirements=-/Survey" })
 @SlingServletResourceTypes(resourceTypes = { "cards/PatientHomepage" }, extensions = {
@@ -420,11 +420,11 @@ public class ValidateCredentialsServlet extends SlingJakartaAllMethodsServlet
             // Verify visit is within the allowed survey completion timeframe
             "time", p -> {
                 try {
-                    Calendar limit = (Calendar) p.getDate().clone();
                     final int tokenLifetime =
                         this.patientAccessConfiguration.getDaysRelativeToEventWhileSurveyIsValid(visitInformationForm);
-                    limit.add(Calendar.DATE, tokenLifetime);
-                    atMidnight(limit);
+                    // The survey stays valid for the whole of its last day, so the limit is the midnight that ends it
+                    final Calendar limit = DateUtils.atMidnight(p.getDate());
+                    limit.add(Calendar.DATE, tokenLifetime + 1);
                     return Calendar.getInstance().before(limit);
                 } catch (RepositoryException e) {
                     return false;
@@ -573,17 +573,7 @@ public class ValidateCredentialsServlet extends SlingJakartaAllMethodsServlet
 
     private String formatDate(final Calendar date)
     {
-        return DateTimeFormatter.ISO_LOCAL_DATE
-            .format(OffsetDateTime.ofInstant(date.toInstant(), date.getTimeZone().toZoneId()));
-    }
-
-    private void atMidnight(final Calendar c)
-    {
-        c.add(Calendar.DATE, 1);
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
+        return DateTimeFormatter.ISO_LOCAL_DATE.format(DateUtils.toZonedDateTime(date));
     }
 
     private static final class Credential

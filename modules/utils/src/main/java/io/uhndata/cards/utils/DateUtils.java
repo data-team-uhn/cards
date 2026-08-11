@@ -154,6 +154,23 @@ public final class DateUtils
     }
 
     /**
+     * Convert a {@link Calendar} into a {@link ZonedDateTime}, preserving the timezone that the date was stored with.
+     * This is needed because a date must be displayed the way it was recorded, in the timezone of whoever recorded it,
+     * not in the timezone that the server happens to run in.
+     *
+     * @param date a date object, may be {@code null}
+     * @return the equivalent {@code ZonedDateTime} in the date's own timezone, or {@code null} if the input date was
+     *         {@code null}
+     */
+    public static ZonedDateTime toZonedDateTime(final Calendar date)
+    {
+        if (date == null) {
+            return null;
+        }
+        return date.toInstant().atZone(date.getTimeZone().toZoneId());
+    }
+
+    /**
      * Serialize a date to the canonical format expected by JCR.
      *
      * @param date a date object, may be null
@@ -166,7 +183,7 @@ public final class DateUtils
             return null;
         }
         try {
-            return PREFERRED_DATETIME_FORMAT.format(date.toInstant().atZone(date.getTimeZone().toZoneId()));
+            return PREFERRED_DATETIME_FORMAT.format(toZonedDateTime(date));
         } catch (Exception e) {
             return null;
         }
