@@ -96,6 +96,10 @@ import io.uhndata.cards.spi.SearchParametersFactory;
  * performance</li>
  * </ul>
  * <p>
+ * A {@code query} may name a referenced node by its path where the stored UUID is expected, for example
+ * {@code form.questionnaire = '/Questionnaires/Visit information'}. See {@link QueryPathResolver}.
+ * </p>
+ * <p>
  * Quick search results are returned in a special format, including match highlighting.
  * </p>
  * <p>
@@ -208,7 +212,8 @@ public class QueryBuilder implements Use
 
         QueryResult results;
         if (StringUtils.isNotBlank(jcrQuery)) {
-            results = queryJCR(this.urlDecode(jcrQuery));
+            results = queryJCR(QueryPathResolver.resolveReferencePaths(
+                this.resourceResolver.adaptTo(Session.class), this.urlDecode(jcrQuery)));
         } else if (StringUtils.isNotBlank(luceneQuery)) {
             results = queryLucene(this.urlDecode(luceneQuery));
         } else if (StringUtils.isNotBlank(fullTextQuery)) {
