@@ -22,7 +22,6 @@ package io.uhndata.cards.webhookbackup;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -43,11 +42,10 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.httprequests.HttpRequests;
 import io.uhndata.cards.httprequests.HttpResponse;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 public class WebhookBackupTask implements Runnable
 {
-    private static final String DATE_TIME_JCR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSxxx";
-
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(WebhookBackupTask.class);
 
@@ -95,11 +93,10 @@ public class WebhookBackupTask implements Runnable
 
     public void doManualExport(LocalDateTime lower, LocalDateTime upper)
     {
-        String requestDateStringLower = lower.atZone(ZoneId.systemDefault())
-            .format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
+        String requestDateStringLower = DateUtils.toString(lower.atZone(ZoneId.systemDefault()));
 
         String requestDateStringUpper = (upper != null)
-            ? upper.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT))
+            ? DateUtils.toString(upper.atZone(ZoneId.systemDefault()))
             : null;
 
         // Notify that we are now beginning the backup
@@ -151,10 +148,8 @@ public class WebhookBackupTask implements Runnable
         LOGGER.info("Executing NightlyExport");
         LocalDateTime startOfToday = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime startOfYesterday = startOfToday.minusDays(1);
-        String requestStartString = startOfYesterday.atZone(ZoneId.systemDefault())
-            .format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
-        String requestEndString = startOfToday.atZone(ZoneId.systemDefault())
-            .format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
+        String requestStartString = DateUtils.toString(startOfYesterday.atZone(ZoneId.systemDefault()));
+        String requestEndString = DateUtils.toString(startOfToday.atZone(ZoneId.systemDefault()));
         LOGGER.warn("Exporting data modified between [{}, {})", requestStartString, requestEndString);
         doManualExport(startOfYesterday, startOfToday);
     }
@@ -314,15 +309,12 @@ public class WebhookBackupTask implements Runnable
     {
         String taskUpdateMessage = emojii + " Backup " + status + " for data modified ";
         if (upper == null) {
-            taskUpdateMessage += "after " + lower.atZone(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
+            taskUpdateMessage += "after " + DateUtils.toString(lower.atZone(ZoneId.systemDefault()));
         } else {
             taskUpdateMessage += "between ";
-            taskUpdateMessage += lower.atZone(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
+            taskUpdateMessage += DateUtils.toString(lower.atZone(ZoneId.systemDefault()));
             taskUpdateMessage += " and ";
-            taskUpdateMessage += upper.atZone(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
+            taskUpdateMessage += DateUtils.toString(upper.atZone(ZoneId.systemDefault()));
         }
         taskUpdateMessage += ". " + emojii;
         return taskUpdateMessage;

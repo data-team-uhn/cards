@@ -19,7 +19,6 @@
 
 package io.uhndata.cards.patients.emailnotifications;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -290,7 +289,6 @@ public final class AppointmentUtils
         int surveyDeadline, boolean isInitial, boolean isReminder)
     {
         try {
-            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
             final Node visitTimeResult = session.getNode("/Questionnaires/Visit information/time");
             final String visitTimeUUID = visitTimeResult.getIdentifier();
             final String statusUUID =
@@ -299,15 +297,15 @@ public final class AppointmentUtils
                 session.getNode("/Questionnaires/Visit information/has_surveys").getIdentifier();
             final String clinicUUID = session.getNode(CLINIC_PATH).getIdentifier();
             final Calendar lowerBoundDate = DateUtils.atMidnight((Calendar) dateToQuery.clone());
-            final String lowerBoundDateTime = formatter.format(lowerBoundDate.getTime());
+            final String lowerBoundDateTime = DateUtils.toString(lowerBoundDate);
             final Calendar midnightToday = DateUtils.atMidnight(Calendar.getInstance());
-            final String midnightTodayTime = formatter.format(midnightToday.getTime());
+            final String midnightTodayTime = DateUtils.toString(midnightToday);
             final Calendar upperBoundDate = (Calendar) lowerBoundDate.clone();
             upperBoundDate.add(Calendar.DAY_OF_YEAR, 1);
-            final String upperBoundDateTime = formatter.format(upperBoundDate.getTime());
+            final String upperBoundDateTime = DateUtils.toString(upperBoundDate);
             final Calendar lowerBoundDeadlineDate = DateUtils.atMidnight(Calendar.getInstance());
             lowerBoundDeadlineDate.add(Calendar.DAY_OF_YEAR, -1 * surveyDeadline);
-            final String lowerBoundDeadlineDateTime = formatter.format(lowerBoundDeadlineDate.getTime());
+            final String lowerBoundDeadlineDateTime = DateUtils.toString(lowerBoundDeadlineDate);
             LOGGER.info("Querying for appointments for clinic {} between {} and {}.",
                 clinicId,
                 lowerBoundDateTime,

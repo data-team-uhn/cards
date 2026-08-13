@@ -18,8 +18,6 @@
  */
 package io.uhndata.cards.utils;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -30,7 +28,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,28 +35,13 @@ import org.apache.commons.lang3.StringUtils;
 
 public final class DateUtils
 {
-    /** The preferred date format, as a formatter object that can format Date/Calendar instances. */
-    public static final DateFormat PREFERRED_CALENDAR_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-
-    /** The preferred date format, as a formatter object that can format {@code ZonedDateTime} instances. */
+    /**
+     * The preferred date format, as a formatter object that can format {@code ZonedDateTime} instances. The
+     * {@code xxx} offset pattern always writes a numeric offset, so a zero UTC offset is serialized as
+     * {@code +00:00} rather than {@code Z}.
+     */
     public static final DateTimeFormatter PREFERRED_DATETIME_FORMAT =
         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-
-    /** Supported date formats. */
-    public static final List<DateFormat> CALENDAR_FORMATS = Arrays.asList(
-        PREFERRED_CALENDAR_FORMAT,
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSz"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSSz"),
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ssz"),
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS"),
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"),
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"),
-        new SimpleDateFormat("yyyy-MM-dd' 'HH:mm"),
-        new SimpleDateFormat("yyyy-MM-dd"),
-        new SimpleDateFormat("M/d/y"));
 
     /** Supported date formats. */
     public static final List<DateTimeFormatter> DATETIME_FORMATS = Arrays.asList(
@@ -104,21 +86,12 @@ public final class DateUtils
      */
     public static Calendar parseCalendar(final String str)
     {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-        final Date date = CALENDAR_FORMATS.stream().map(format -> {
-            try {
-                return format.parse(str);
-            } catch (Exception ex) {
-                return null;
-            }
-        }).filter(Objects::nonNull).findFirst().orElse(null);
+        final ZonedDateTime date = parseDateTime(str);
         if (date == null) {
             return null;
         }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date.toInstant().toEpochMilli());
         return calendar;
     }
 
@@ -181,11 +154,28 @@ public final class DateUtils
     }
 
     /**
+     * Convert a {@link Calendar} into a {@link ZonedDateTime}, preserving the timezone that the date was stored with.
+     * This is needed because a date must be displayed the way it was recorded, in the timezone of whoever recorded it,
+     * not in the timezone that the server happens to run in.
+     *
+     * @param date a date object, may be {@code null}
+     * @return the equivalent {@code ZonedDateTime} in the date's own timezone, or {@code null} if the input date was
+     *         {@code null}
+     */
+    public static ZonedDateTime toZonedDateTime(final Calendar date)
+    {
+        if (date == null) {
+            return null;
+        }
+        return date.toInstant().atZone(date.getTimeZone().toZoneId());
+    }
+
+    /**
      * Serialize a date to the canonical format expected by JCR.
      *
      * @param date a date object, may be null
-     * @return a date serialization in the {@code 1999-12-31T20:30:00.000+05:00} format, or {@code null} if the input
-     *         date was {@code null}
+     * @return a date serialization in the {@code 1999-12-31T20:30:00.000+05:00} format, using the date's own timezone,
+     *         or {@code null} if the input date was {@code null}
      */
     public static String toString(final Calendar date)
     {
@@ -193,7 +183,7 @@ public final class DateUtils
             return null;
         }
         try {
-            return PREFERRED_CALENDAR_FORMAT.format(date.getTime());
+            return PREFERRED_DATETIME_FORMAT.format(toZonedDateTime(date));
         } catch (Exception e) {
             return null;
         }

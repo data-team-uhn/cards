@@ -19,9 +19,7 @@
 
 package io.uhndata.cards.clarity.importer.internal;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +47,7 @@ import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Clarity import processor that discards existing visits when another visit takes priority and should be imported
@@ -61,10 +60,6 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscardExistingVisitsFilter.class);
-
-    private static final SimpleDateFormat SQL_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-
-    private static final SimpleDateFormat JCR_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -119,19 +114,20 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
             deleteEvents(input);
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to process entry: {}", e.getMessage(), e);
-        } catch (ParseException e) {
-            LOGGER.warn("Invalid date: {}", input.getOrDefault(this.dateColumn, ""), e);
         }
         return this.discardNewEvent ? null : input;
     }
 
-    private void deleteEvents(final Map<String, String> input) throws RepositoryException, ParseException
+    private void deleteEvents(final Map<String, String> input) throws RepositoryException
     {
-        final Calendar startTime = Calendar.getInstance();
-        startTime.setTime(SQL_DATE_FORMAT.parse(input.getOrDefault(this.dateColumn, "")));
-        atMidnight(startTime);
-        final Calendar endTime = (Calendar) startTime.clone();
-        endTime.add(Calendar.DATE, 1);
+        final String rawDate = input.getOrDefault(this.dateColumn, "");
+        final ZonedDateTime date = DateUtils.parseDateTime(rawDate);
+        if (date == null) {
+            LOGGER.warn("Invalid date: {}", rawDate);
+            return;
+        }
+        final ZonedDateTime startTime = DateUtils.atMidnight(date);
+        final ZonedDateTime endTime = startTime.plusDays(1);
         final Session session = this.rrp.getThreadResourceResolver().adaptTo(Session.class);
         final String patientUuid = findSubject(input, session);
         final String formQuery = String.format(
@@ -144,8 +140,8 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
             session.getNode("/Questionnaires/Visit information").getIdentifier(),
             patientUuid,
             session.getNode("/Questionnaires/Visit information/time").getIdentifier(),
-            JCR_DATE_FORMAT.format(startTime.getTime()),
-            JCR_DATE_FORMAT.format(endTime.getTime()));
+            DateUtils.toString(startTime),
+            DateUtils.toString(endTime));
         final NodeIterator visits =
             session.getWorkspace().getQueryManager().createQuery(formQuery, "JCR-SQL2").execute().getNodes();
         while (visits.hasNext()) {
@@ -207,14 +203,6 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to delete visit form: {}", e.getMessage(), e);
         }
-    }
-
-    private void atMidnight(final Calendar c)
-    {
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
     }
 
     private Node findVersionableAncestor(final Node n) throws RepositoryException

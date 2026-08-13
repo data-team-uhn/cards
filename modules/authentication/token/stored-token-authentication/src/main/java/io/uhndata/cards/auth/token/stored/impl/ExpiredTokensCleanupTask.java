@@ -20,7 +20,6 @@
 package io.uhndata.cards.auth.token.stored.impl;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 
 import javax.jcr.query.Query;
@@ -32,6 +31,8 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.utils.DateUtils;
 
 public class ExpiredTokensCleanupTask implements Runnable
 {
@@ -50,7 +51,7 @@ public class ExpiredTokensCleanupTask implements Runnable
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
             final Iterator<Resource> resources = resolver.findResources("SELECT * FROM [cards:Token] WHERE ["
                 + NodeTokenConstants.TOKEN_ATTRIBUTE_EXPIRY + "] < '"
-                + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx")) + "'",
+                + DateUtils.toString(ZonedDateTime.now()) + "'",
                 Query.JCR_SQL2);
             resources.forEachRemaining(token -> {
                 try {

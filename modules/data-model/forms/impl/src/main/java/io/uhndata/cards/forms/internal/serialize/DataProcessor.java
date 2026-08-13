@@ -18,7 +18,6 @@
  */
 package io.uhndata.cards.forms.internal.serialize;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +45,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.serialize.DataFilters;
 import io.uhndata.cards.serialize.DataFiltersParser;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
+import io.uhndata.cards.utils.DateUtils;
 import io.uhndata.cards.utils.SelectorUtils;
 
 /**
@@ -151,8 +151,7 @@ public class DataProcessor implements ResourceJsonProcessor
             this.options.get().forEach(optionsJson::add);
             json.add("dataFilters", filtersJson);
             json.add("dataOptions", optionsJson);
-            json.add("exportDate",
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(Calendar.getInstance().getTime()));
+            json.add("exportDate", DateUtils.toString(Calendar.getInstance()));
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }

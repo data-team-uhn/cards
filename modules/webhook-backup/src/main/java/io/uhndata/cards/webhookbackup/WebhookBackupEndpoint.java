@@ -21,6 +21,7 @@ package io.uhndata.cards.webhookbackup;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
 import jakarta.servlet.Servlet;
@@ -36,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
@@ -98,6 +100,12 @@ public class WebhookBackupEndpoint extends SlingJakartaSafeMethodsServlet
         if (date == null) {
             return null;
         }
-        return LocalDateTime.parse(date);
+        final ZonedDateTime parsed = DateUtils.parseDateTime(date);
+        if (parsed == null) {
+            // DateUtils reports an unparsable date as null, but the caller distinguishes "no bound given" from
+            // "bad bound given", and must answer 400 for the latter
+            throw new DateTimeParseException("Unsupported date format", date, 0);
+        }
+        return parsed.toLocalDateTime();
     }
 }

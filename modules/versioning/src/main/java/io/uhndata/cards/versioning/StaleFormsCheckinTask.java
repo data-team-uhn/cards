@@ -20,7 +20,6 @@
 package io.uhndata.cards.versioning;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -37,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Periodically check in forms that haven't been modified in more than 30 minutes.
@@ -86,8 +86,7 @@ public class StaleFormsCheckinTask implements Runnable
                     + " dataForm.[jcr:isCheckedOut] = true"
                     // form is stale for the last 30 minutes
                     + " and dataForm.[jcr:lastCheckedOut] < '%1$s' and dataForm.[jcr:lastModified] < '%1$s'",
-                ZonedDateTime.now().minusMinutes(30)
-                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))),
+                DateUtils.toString(ZonedDateTime.now().minusMinutes(30))),
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {
