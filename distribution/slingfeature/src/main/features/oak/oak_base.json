@@ -110,6 +110,10 @@
             "start-order":"15"
         },
         {
+            "id":"com.github.ben-manes.caffeine:caffeine:3.2.4",
+            "start-order":"15"
+        },
+        {
             "id":"org.apache.sling:org.apache.sling.jcr.oak.server:1.4.4",
             "start-order":"16"
         },
