@@ -142,8 +142,10 @@ public class NCITOWLIndexer extends AbstractNCITIndexer
             String message = "Could not read the temporary OWL file for parsing: " + e.getMessage();
             throw new VocabularyIndexException(message, e);
         } finally {
-            // Delete the temporary data store
-            FileUtils.deleteQuietly(temporaryDatasetPath.toFile());
+            // Delete the temporary data store, if it was created before the failure
+            if (temporaryDatasetPath != null) {
+                FileUtils.deleteQuietly(temporaryDatasetPath.toFile());
+            }
             // Clean up threadlocal variables so that memory can be reclaimed
             this.descriptionProperty.remove();
             this.synonymProperty.remove();

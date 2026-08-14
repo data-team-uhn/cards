@@ -53,8 +53,11 @@ public class FilesystemDataStore implements DataStore
     {
         final File targetFile =
             new File(getNamedParameter(config.storageParameters(), "savePath") + File.separatorChar + filename);
-        targetFile.getCanonicalFile().getParentFile().mkdirs();
-        targetFile.createNewFile();
+        final File targetDirectory = targetFile.getCanonicalFile().getParentFile();
+        if (!targetDirectory.isDirectory() && !targetDirectory.mkdirs()) {
+            throw new IOException("Failed to create the target directory " + targetDirectory);
+        }
+        // No need to create the file explicitly, FileOutputStream does that
         try (OutputStream outputStream = new FileOutputStream(targetFile)) {
             IOUtils.copy(contents, outputStream);
         }

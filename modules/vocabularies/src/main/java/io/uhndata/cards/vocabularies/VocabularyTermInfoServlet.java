@@ -21,7 +21,7 @@ package io.uhndata.cards.vocabularies;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.Map;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
@@ -83,9 +83,9 @@ public class VocabularyTermInfoServlet extends SlingJakartaSafeMethodsServlet
             jsonGen.writeStartObject();
 
             // Loop through our properties
-            Set<String> keys = json.keySet();
-            for (String key : keys) {
-                JsonValue value = json.get(key);
+            for (Map.Entry<String, JsonValue> entry : json.entrySet()) {
+                final String key = entry.getKey();
+                final JsonValue value = entry.getValue();
                 if (value instanceof JsonArray) {
                     // Any arrays should be iterated through and written
                     jsonGen.write(

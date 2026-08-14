@@ -22,13 +22,13 @@ package io.uhndata.cards.forms.internal.export;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.LoggerFactory;
@@ -76,12 +76,9 @@ public class ModifiedFileAnswersRetriever implements DataRetriever
 
         final List<String> questionnaires = getNamedParameters(config.retrieverParameters(), "questionnaire");
         if (!questionnaires.isEmpty()) {
-            query += " AND (";
-            for (String s : questionnaires) {
-                query += "form.questionnaire = '" + resolver.getResource(s).getValueMap().get("jcr:uuid") + "' OR ";
-            }
-            query = Strings.CS.removeEnd(query, " OR ");
-            query += ")";
+            query += questionnaires.stream()
+                .map(s -> "form.questionnaire = '" + resolver.getResource(s).getValueMap().get("jcr:uuid") + "'")
+                .collect(Collectors.joining(" OR ", " AND (", ")"));
         }
         query += " OPTION (index tag cards)";
         LoggerFactory.getLogger(ModifiedFileAnswersRetriever.class).error("Query: {}", query);

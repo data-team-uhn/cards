@@ -681,8 +681,9 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
     {
         StringBuilder joins = new StringBuilder();
 
-        for (String questionnaire : questionnairesToFormSource.keySet()) {
-            final String formSource = questionnairesToFormSource.get(questionnaire);
+        for (Map.Entry<String, String> entry : questionnairesToFormSource.entrySet()) {
+            final String questionnaire = entry.getKey();
+            final String formSource = entry.getValue();
             joins.append(
                 String.format(
                     " inner join [cards:Form] as %s on n.[jcr:uuid] = %s.relatedSubjects",

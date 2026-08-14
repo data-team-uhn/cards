@@ -38,6 +38,8 @@ import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
@@ -51,6 +53,8 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class BareFormProcessor implements ResourceJsonProcessor
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BareFormProcessor.class);
+
     private ThreadLocal<Map<String, JsonObject>> childrenJsons = ThreadLocal.withInitial(HashMap::new);
 
     private ThreadLocal<Map<String, String>> questionNames = ThreadLocal.withInitial(HashMap::new);
@@ -242,6 +246,7 @@ public class BareFormProcessor implements ResourceJsonProcessor
                     builder.add(processSubject(relatedSubject));
                 } catch (Exception e) {
                     // The current user may not have access to all the referenced related nodes
+                    LOGGER.debug("Skipping inaccessible related subject: {}", e.getMessage());
                 }
             }
             return builder.build();

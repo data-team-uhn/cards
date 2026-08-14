@@ -82,7 +82,8 @@ public interface AnswerValidator extends Comparable<AnswerValidator>
      */
     default void removeIfNotExplicitlySet(final String flag, final Map<String, Boolean> flags)
     {
-        if (flags.getOrDefault(flag, Boolean.TRUE) == Boolean.FALSE) {
+        // equals, not ==, since a Boolean outside the cached range of valueOf would fail an identity comparison
+        if (Boolean.FALSE.equals(flags.get(flag))) {
             flags.remove(flag);
         }
     }

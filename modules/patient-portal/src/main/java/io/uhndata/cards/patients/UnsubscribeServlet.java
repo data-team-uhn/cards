@@ -123,7 +123,7 @@ public class UnsubscribeServlet extends SlingJakartaAllMethodsServlet
                 unsubscribeAnswer = patientInformationForm.addNode(UUID.randomUUID().toString(), "cards:BooleanAnswer");
                 unsubscribeAnswer.setProperty("question", unsubscribeQuestion);
             }
-            final long value = Long.valueOf(Objects.toString(request.getParameter("unsubscribe"), "1"));
+            final long value = Long.parseLong(Objects.toString(request.getParameter("unsubscribe"), "1"));
             unsubscribeAnswer.setProperty(FormUtils.VALUE_PROPERTY, value);
             session.save();
             if (checkin) {

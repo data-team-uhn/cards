@@ -74,8 +74,9 @@ public class VocabularyTermSource
     {
         this.id = id;
         this.label = Objects.toString(label, id);
-        this.parents = parents;
-        this.ancestors = ancestors;
+        // Copies, since arrays are mutable and the caller must not be able to alter this object's own state
+        this.parents = parents == null ? null : parents.clone();
+        this.ancestors = ancestors == null ? null : ancestors.clone();
         this.allProperties = allProperties;
         this.uri = uri;
     }
@@ -118,21 +119,25 @@ public class VocabularyTermSource
     /**
      * Gets the parents (direct ancestors) of this term.
      *
-     * @return a set of identifiers, or an empty set if the term doesn't have any ancestors in the vocabulary
+     * @return a copy of the set of identifiers, or an empty set if the term doesn't have any ancestors in the
+     *         vocabulary
      */
     public String[] getParents()
     {
-        return this.parents;
+        // A copy, since arrays are mutable and callers must not be able to alter this object's own state
+        return this.parents == null ? null : this.parents.clone();
     }
 
     /**
      * Gets the ancestors (both direct and indirect ancestors) of this term.
      *
-     * @return a set of identifiers, or an empty set if the term doesn't have any ancestors in the vocabulary
+     * @return a copy of the set of identifiers, or an empty set if the term doesn't have any ancestors in the
+     *         vocabulary
      */
     public String[] getAncestors()
     {
-        return this.ancestors;
+        // A copy, since arrays are mutable and callers must not be able to alter this object's own state
+        return this.ancestors == null ? null : this.ancestors.clone();
     }
 
     /**

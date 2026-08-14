@@ -131,8 +131,8 @@ public class MinMaxValueValidator implements AnswerValidator
                 // This only works on numerical types, nothing to do if this is not one of them
                 return false;
             }
-            final Boolean limitsNotEnforced = question.hasProperty(DISABLE_MIN_MAX_ENFORCEMENT_PROP)
-                ? question.getProperty(DISABLE_MIN_MAX_ENFORCEMENT_PROP).getBoolean() : Boolean.FALSE;
+            final boolean limitsNotEnforced = question.hasProperty(DISABLE_MIN_MAX_ENFORCEMENT_PROP)
+                && question.getProperty(DISABLE_MIN_MAX_ENFORCEMENT_PROP).getBoolean();
             if (limitsNotEnforced) {
                 // Value limits are not enforced, only suggested. Do not add the INVALID flag
                 return false;

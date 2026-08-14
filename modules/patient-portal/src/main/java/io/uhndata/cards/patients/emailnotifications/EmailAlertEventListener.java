@@ -208,9 +208,9 @@ public final class EmailAlertEventListener implements EventListener
                 case "<=":
                     return ((Number) value).doubleValue() <= Double.parseDouble(this.triggerOperand);
                 case "is not empty":
-                    return value != null && !String.valueOf(value).isEmpty();
+                    return !String.valueOf(value).isEmpty();
                 case "is empty":
-                    return value == null || String.valueOf(value).isEmpty();
+                    return String.valueOf(value).isEmpty();
                 case null, default:
                     return false;
             }

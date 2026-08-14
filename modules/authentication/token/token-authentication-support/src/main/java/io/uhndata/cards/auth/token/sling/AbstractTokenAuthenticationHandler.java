@@ -151,12 +151,11 @@ public abstract class AbstractTokenAuthenticationHandler extends DefaultJakartaA
      */
     private Calendar getTokenExpirationDate(final String loginToken)
     {
-        TokenInfo token = getTokenManager().parse(loginToken);
-        if (token == null || !(token instanceof CardsToken)) {
+        final CardsToken token = getTokenManager().parse(loginToken);
+        if (token == null) {
             return null;
         }
-        final CardsToken cardsToken = (CardsToken) token;
-        return cardsToken.getExpirationTime();
+        return token.getExpirationTime();
     }
 
     @Override

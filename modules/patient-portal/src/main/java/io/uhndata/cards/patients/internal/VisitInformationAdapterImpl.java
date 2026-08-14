@@ -252,7 +252,8 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
         @Override
         public Calendar getVisitDate()
         {
-            return this.visitDate;
+            // A copy, since Calendar is mutable and callers must not be able to alter this object's own state
+            return this.visitDate == null ? null : (Calendar) this.visitDate.clone();
         }
 
         @Override

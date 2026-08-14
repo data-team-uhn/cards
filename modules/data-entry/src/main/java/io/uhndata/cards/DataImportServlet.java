@@ -488,10 +488,10 @@ public class DataImportServlet extends SlingJakartaAllMethodsServlet
 
             switch (dataType) {
                 case "long":
-                    result = valueFactory.createValue(Long.valueOf(rawValue));
+                    result = valueFactory.createValue(Long.parseLong(rawValue));
                     break;
                 case "double":
-                    result = valueFactory.createValue(Double.valueOf(rawValue));
+                    result = valueFactory.createValue(Double.parseDouble(rawValue));
                     break;
                 case "decimal":
                     result = valueFactory.createValue(new BigDecimal(rawValue));

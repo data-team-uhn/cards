@@ -101,10 +101,8 @@ public final class SearchUtils
                 valueStr[i] = String.valueOf(valueArray[i]);
             }
             return getMatchFromArray(valueStr, str);
-        } else if (value != null) {
-            if (Strings.CI.contains(value.toString(), str)) {
-                return value.toString();
-            }
+        } else if (Strings.CI.contains(value.toString(), str)) {
+            return value.toString();
         }
 
         return null;
@@ -150,9 +148,7 @@ public final class SearchUtils
 
         // Construct a JsonObject that matches the parent, but with custom match metadata appended
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        for (String key : parent.keySet()) {
-            builder.add(key, parent.get(key));
-        }
+        parent.forEach(builder::add);
         builder.add(CARDS_QUERY_MATCH_KEY, metadata);
         return builder.build();
     }

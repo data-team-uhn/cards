@@ -1732,6 +1732,12 @@
               <version>4.10.3</version>
             </dependency>
           </dependencies>
+          <configuration>
+            <!-- Patterns that don't apply to this codebase, each with its rationale. The path is
+                 absolute because every module needs the same file, and .mvn/ at the top of the
+                 repository is what pins this property to the reactor root. -->
+            <excludeFilterFile>${maven.multiModuleProjectDirectory}/spotbugs-exclude.xml</excludeFilterFile>
+          </configuration>
           <executions>
             <execution>
               <id>spotbugs</id>

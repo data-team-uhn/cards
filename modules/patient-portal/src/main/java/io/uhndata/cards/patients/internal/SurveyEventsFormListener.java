@@ -189,14 +189,14 @@ public class SurveyEventsFormListener implements ResourceChangeListener
                 // Found a survey events form for the current visit: check if this form is a part of that
                 // survey event form's clinic
                 Node clinic = this.formUtils.getAnswer(referencedForm, surveyClinicQuestion);
-                // Only keep track of the most recently created Survey Events form in case
-                // there are multiple that contain this form
+                // The clinic match below identifies the right Survey Events form exactly. Forms created before
+                // that mechanism existed may still have several matching Survey Events forms on the same visit,
+                // so keep scanning and prefer the most recently created one over an arbitrary first match.
                 if (getClinicQuestionnaires(session, clinic).contains(questionnaire.getIdentifier())
                     && (surveyEventsForm == null
                         || getCreatedDate(referencedForm).after(getCreatedDate(surveyEventsForm)))
                 ) {
                     surveyEventsForm = referencedForm;
-                    break;
                 }
             }
         }

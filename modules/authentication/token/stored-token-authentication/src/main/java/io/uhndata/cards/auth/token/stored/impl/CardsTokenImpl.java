@@ -286,7 +286,8 @@ public class CardsTokenImpl implements CardsToken
     @Override
     public Calendar getExpirationTime()
     {
-        return this.expirationTime;
+        // A copy, since Calendar is mutable and callers must not be able to alter the token's own state
+        return this.expirationTime == null ? null : (Calendar) this.expirationTime.clone();
     }
 
     /**

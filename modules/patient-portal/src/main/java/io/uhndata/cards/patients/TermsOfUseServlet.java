@@ -136,7 +136,7 @@ public class TermsOfUseServlet extends SlingJakartaAllMethodsServlet
 
             final Node touQuestion = this.questionnaireUtils.getQuestion(patientInformationQuestionnaire, TOU);
             Node touAnswer = this.formUtils.getAnswer(patientInformationForm, touQuestion);
-            if (touAnswer == null && patientInformationForm != null) {
+            if (touAnswer == null) {
                 touAnswer = patientInformationForm.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
                 touAnswer.setProperty("question", touQuestion);
             }
