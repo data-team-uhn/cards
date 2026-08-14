@@ -116,7 +116,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
-        <version>4.5.0</version>
+        <version>4.6.0</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -550,7 +550,7 @@
             <dependency>
               <groupId>com.puppycrawl.tools</groupId>
               <artifactId>checkstyle</artifactId>
-              <version>13.9.0</version>
+              <version>13.10.0</version>
             </dependency>
           </dependencies>
           <configuration>
@@ -2024,7 +2024,7 @@
         <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>
-          <version>0.48.1</version>
+          <version>0.49.0</version>
           <configuration>
             <imagePullPolicy>Always</imagePullPolicy>
           </configuration>
