@@ -16,7 +16,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # The integration tests boot a full Sling instance and drive it through a browser, which is minutes
+    # of wall clock on top of the ordinary build
+    timeout-minutes: 90
 
     steps:
       - name: Checkout
@@ -36,10 +38,28 @@ jobs:
           key: yarn-${{ hashFiles('aggregated-frontend/src/main/frontend/yarn.lock') }}
           restore-keys: yarn-
 
+      # Chromium is ~150MB and the version is pinned by the e2e package.json, so it only has to be
+      # fetched again when that file changes. The system libraries it needs are installed by the build
+      # itself (see -Dplaywright.install.deps below) and are not part of this cache.
+      - name: Cache Playwright browsers
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('tests/src/test/e2e/package.json') }}
+          restore-keys: playwright-
+
+      # The integration tests run in the same job, and the same reactor, as the rest of the build: they
+      # launch the feature the distribution module has just installed into the local repository, so a
+      # separate job would have to rebuild it or carry it across.
+      #
       # Production mode for the frontend, so that minification/tree-shaking
       # breakages surface here instead of at deployment time
       - name: Full build
-        run: mvn -B -ntp clean install javadoc:javadoc -Ptests -DwebpackArguments=--mode=production
+        run: >
+          mvn -B -ntp clean install javadoc:javadoc
+          -Ptests -PintegrationTests
+          -DwebpackArguments=--mode=production
+          -Dplaywright.install.deps=--with-deps
 
       - name: Upload test reports on failure
         if: failure()
@@ -47,4 +67,17 @@ jobs:
         with:
           name: test-reports
           path: '**/target/surefire-reports/'
+          if-no-files-found: ignore
+
+      # A browser test that fails only on CI is close to undiagnosable from the log alone. Playwright
+      # keeps a trace, a screenshot and a video for exactly those runs; without this step they are
+      # discarded with the runner.
+      - name: Upload end-to-end test artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-report
+          path: |
+            tests/target/e2e-report/
+            tests/target/e2e-results/
           if-no-files-found: ignore

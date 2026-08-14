@@ -26,128 +26,280 @@
   </parent>
 
   <artifactId>cards-integration-tests</artifactId>
-  <packaging>slingstart</packaging>
-  <name>CARDS integration tests</name>
-  <description>Tests on the full CARDS distribution.</description>
+  <packaging>pom</packaging>
+  <name>CARDS - Integration tests</name>
+  <description>End-to-end tests driving a real CARDS instance through a browser.</description>
 
+  <!--
+    One instance per test suite, each launched from its own aggregated feature, each on its own port:
+
+      core   core_tar   the distribution `./start_cards.sh` launches, with no content beyond what the
+                        modules ship
+
+    A suite can be turned off with its skip property, e.g. `-Dit.core.skip=true`, which is how a CI
+    matrix runs one instance per job instead of all of them at once.
+
+    Adding a suite is three edits: a `<launch>` below, its URL and skip flag in the environment of the
+    "run e2e tests" execution, and an entry in src/test/e2e/support/instances.ts. The specs then go in
+    the directory named after it. Note that the launcher takes exactly one feature per instance, so any
+    suite that needs more than the core distribution needs an aggregate of its own in
+    distribution/slingfeature first — composing several features at launch time, the way start_cards.py
+    does for its optional feature sets, is not something this plugin can do. (Those flags are spelled
+    without their leading dashes in this file, because an XML comment may not contain a double dash.)
+
+    Only reachable through the `integrationTests` profile in the root POM, since a browser download plus
+    an instance boot has no place in an ordinary build:
+
+      mvn clean install -PintegrationTests
+  -->
   <properties>
-    <test.host>localhost</test.host>
-    <!-- If set to "true" this will start the launchpad with standard debug options, or set to a string to provide custom debug settings -->
-    <launchpad.debug/>
+    <it.core.skip>false</it.core.skip>
+    <!-- The engines to download *and* run on, space-separated: chromium, firefox, webkit. Only Chromium
+         by default, because the others multiply the download and the CI system packages they need, for
+         very little extra signal on an internal application. Each one produces a Playwright project of
+         its own per suite, named `suite-browser`:
+
+           mvn install -PintegrationTests -Dplaywright.browsers="chromium firefox"
+    -->
+    <playwright.browsers>chromium</playwright.browsers>
+    <!-- Extra arguments for the test run, passed straight through to the Playwright CLI. This is what
+         keeps the flags a standalone runner would offer reachable from the build: running headed, the
+         Inspector, UI mode, selecting a project, filtering by tag. The headed ones want a display and
+         someone to drive, so they are for iterating locally rather than for CI, where a build sitting on
+         the Inspector is sitting on you. tests/README.md has the invocations, spelled out there rather
+         than here because an XML comment may not contain a double dash. -->
+    <playwright.args></playwright.args>
+    <!-- Extra arguments for the browser download. CI passes the "with deps" flag here, which makes
+         Playwright apt-get the shared libraries Chromium links against; a developer machine already has
+         them, and installing them needs root, which is not something an ordinary build should ask for.
+         Empty by default, so only the environment that wants that behaviour opts into it.
+         (Spelled without the leading dashes above because an XML comment may not contain a double dash;
+         the value CI passes is in .github/workflows/pull-request-build.yml.) -->
+    <playwright.install.deps></playwright.install.deps>
+    <e2e.directory>src/test/e2e</e2e.directory>
+    <!-- Nothing here is a Java artifact, so the inherited coverage gate has nothing to measure -->
+    <jacoco.skip>true</jacoco.skip>
+    <!-- The build disables tests by default, and frontend-maven-plugin honours that for any execution
+         bound to a testing phase - which silently turns the whole suite into a no-op that still reports
+         BUILD SUCCESS. This module exists only to run tests, and is already gated behind the
+         integrationTests profile, so it opts back in rather than requiring -Ptests as well. -->
+    <skipTests>false</skipTests>
+    <maven.test.skip>false</maven.test.skip>
   </properties>
 
   <build>
     <plugins>
-      <!-- Reserve the port numbers used by the webapp during the build -->
+      <!-- Reserve a free port per instance, so that concurrent builds on one machine, and anything
+           already listening on 8080, do not collide. -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>reserve-network-port</id>
+            <id>reserve-instance-ports</id>
+            <phase>process-resources</phase>
             <goals>
               <goal>reserve-network-port</goal>
             </goals>
-            <phase>process-resources</phase>
             <configuration>
-              <minPortNumber>9000</minPortNumber>
+              <minPortNumber>8080</minPortNumber>
               <portNames>
-                <portName>http.port</portName>
-                <portName>sling.control.port</portName>
+                <portName>core.http.port</portName>
               </portNames>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
+      <!-- Discard each instance's repository before launching it.
+           Two reasons, both learned the hard way. An instance killed rather than stopped - which is what
+           happens whenever a test fails, since the failure skips post-integration-test and the plugin's
+           shutdown hook takes over - leaves a repository behind that the next run may fail to recover,
+           and did. And a suite that runs against whatever the last run left behind is not reproducible:
+           a test can pass on content it created itself an hour ago. Declared before the launcher plugin
+           so that it runs first within the phase. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>discard-previous-instances</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.directory}/launchers</directory>
+                  <includes>
+                    <include>core/**</include>
+                  </includes>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Launch the instances under test. This is the same Apache Sling feature launcher that
+           start_cards.py runs, pointed at the same published artifacts, so what the tests drive is the
+           real runtime rather than something assembled for testing. -->
       <plugin>
         <groupId>org.apache.sling</groupId>
-        <artifactId>slingstart-maven-plugin</artifactId>
+        <artifactId>feature-launcher-maven-plugin</artifactId>
+        <version>1.0.4</version>
+        <configuration>
+          <launches>
+            <launch>
+              <id>core</id>
+              <skip>${it.core.skip}</skip>
+              <feature>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cards</artifactId>
+                <version>${project.version}</version>
+                <classifier>core_tar</classifier>
+                <type>slingosgifeature</type>
+              </feature>
+              <launcherArguments>
+                <frameworkProperties>
+                  <org.osgi.service.http.port>${core.http.port}</org.osgi.service.http.port>
+                  <!-- The same buffer the old integration tests raised: several of the JSON endpoints
+                       the frontend reads answer with more than Jetty's default in one response. -->
+                  <org.apache.felix.http.jetty.responseBufferSize>5000000</org.apache.felix.http.jetty.responseBufferSize>
+                </frameworkProperties>
+              </launcherArguments>
+              <startTimeoutSeconds>300</startTimeoutSeconds>
+            </launch>
+          </launches>
+        </configuration>
         <executions>
-          <!-- This is responsible for starting the server before the tests run, and stopping it afterwards -->
           <execution>
-            <id>start-container</id>
             <goals>
-              <!-- Without specifying a phase for this execution, these goals bind by default to the pre-integration-test and post-integration-test phases -->
               <goal>start</goal>
               <goal>stop</goal>
             </goals>
           </execution>
         </executions>
-        <!-- As a slingstart module, the server will be built by default, so no specific execution needs to be declared for that. Here we just customize the package. -->
-        <configuration>
-          <!--
-              We're adding the CARDS distribution here as a model fragment instead of in a provisioning file because of the way the version is handled.
-              If we just specify io.uhndata.cards/cards//slingstart in a provisioning file, which means "use the version defined in the pom",
-              due to a bug in the slingstart-maven-plugin the dependency itself will be included as well in the final jar, which will be invalid.
-              If, instead, we specify a specific version, then that is duplication and will cause issues during the release.
-              The ideal solution is to specify ${project.version}, which is the recommended Maven way of referencing modules sharing the same version,
-              but that is not allowed in provisioning files.
-              The inline model fragment in the pom file will be interpolated with Maven variables, so we can use ${project.version} as the dependency version.
-          -->
-          <model>
-            [feature name="cards-distribution"]
-            [artifacts]
-            io.uhndata.cards/cards/${project.version}/slingstart
-          </model>
-          <setFeatureVersions>false</setFeatureVersions>
-          <usePomDependencies>true</usePomDependencies>
-          <!-- This configures the server started by the start-container execution above -->
-          <servers>
-            <server>
-              <port>${http.port}</port>
-              <controlPort>${sling.control.port}</controlPort>
-              <contextPath>/</contextPath>
-              <debug>${launchpad.debug}</debug>
-            </server>
-          </servers>
-        </configuration>
       </plugin>
 
-      <!-- This is a plugin designed to run integration tests (Surefire is more for unit tests) -->
       <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.5.6</version>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
         <executions>
+          <!-- The inherited execution compiles the application frontend, which does not apply here. Note
+               that the plugin-wide workingDirectory below redirects every inherited execution at the
+               end-to-end package, so what is left runs this package's own scripts. -->
           <execution>
+            <id>webpack</id>
+            <phase>none</phase>
+          </execution>
+
+          <execution>
+            <id>install node and yarn</id>
             <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
+              <goal>install-node-and-yarn</goal>
             </goals>
+            <phase>initialize</phase>
+          </execution>
+          <!-- Bound to initialize, not to one of the test phases where this module's dependencies would
+               otherwise belong, because the typecheck and lint executions below both run at
+               generate-resources and need node_modules to already be there: tsc and eslint are
+               dependencies of this package, so without it the script dies with "tsc: not found" long
+               before any test phase is reached. The order that leaves - install, then typecheck and lint,
+               then the browser download at generate-test-resources - also means a type or lint error is
+               reported without first fetching 150MB of Chromium. -->
+          <execution>
+            <id>yarn install</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <arguments>install --ignore-scripts</arguments>
+            </configuration>
+          </execution>
+          <!-- Webpack compiles the application frontend through babel, which strips types one file at a
+               time and never checks them; nothing compiles these sources at all, since Playwright
+               transpiles them the same way. So tsc and eslint are the only things holding the end-to-end
+               code to the standard the rest of the frontend is held to, and the build runs both. -->
+          <execution>
+            <id>typecheck e2e sources</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>typecheck</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>lint e2e sources</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>lint</arguments>
+            </configuration>
+          </execution>
+          <!-- Downloaded before the instances start rather than alongside them, so that a missing system
+               dependency fails fast instead of after a two-minute boot. -->
+          <execution>
+            <id>install browsers</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <phase>generate-test-resources</phase>
+            <configuration>
+              <arguments>playwright install ${playwright.install.deps} ${playwright.browsers}</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>run e2e tests</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <phase>integration-test</phase>
+            <configuration>
+              <arguments>test ${playwright.args}</arguments>
+              <!-- The failure must not stop the build here, or post-integration-test never runs and the
+                   instances are left behind: the launcher plugin's shutdown hook kills the launcher script
+                   but not the JVM under it, so a failed run orphans a full Sling instance and keeps its
+                   port. The verdict is enforced at verify instead, once the instances are stopped. This is
+                   the same deferral maven-failsafe-plugin performs for Java integration tests. -->
+              <testFailureIgnore>true</testFailureIgnore>
+              <environmentVariables>
+                <!-- Which instances exist, and where. A suite whose URL is absent is skipped by the
+                     Playwright config, so switching a launch off needs no second edit here. -->
+                <CARDS_CORE_URL>http://localhost:${core.http.port}</CARDS_CORE_URL>
+                <CARDS_CORE_SKIP>${it.core.skip}</CARDS_CORE_SKIP>
+                <!-- The same list the browsers were installed from, so what runs and what was downloaded
+                     cannot drift apart -->
+                <PLAYWRIGHT_BROWSERS>${playwright.browsers}</PLAYWRIGHT_BROWSERS>
+              </environmentVariables>
+            </configuration>
+          </execution>
+          <!-- Fails the build for the run deferred above, now that the instances are down -->
+          <execution>
+            <id>check e2e results</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <arguments>check-results</arguments>
+            </configuration>
           </execution>
         </executions>
         <configuration>
-          <systemPropertyVariables>
-            <launchpad.http.server.url>http://${test.host}:${http.port}/</launchpad.http.server.url>
-          </systemPropertyVariables>
+          <workingDirectory>${e2e.directory}</workingDirectory>
+          <!-- Keep the downloaded Node out of the source tree, where it would land in every diff and
+               have to be excluded from the license check -->
+          <installDirectory>${project.build.directory}</installDirectory>
         </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-    <!-- Dependencies needed to compile the test classes -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.testing.rules</artifactId>
-      <version>2.0.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.testing.clients</artifactId>
-      <version>3.1.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <version>4.4.16</version>
-    </dependency>
-  </dependencies>
 </project>

@@ -26,7 +26,9 @@ To specify a different password, use `-Dsling.password=newPassword`
 
 To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/console` (the URL must end with `/system/console` to work properly)
 
-`mvn install -PintegrationTests` to run integration tests
+`mvn install -PintegrationTests` to run the end-to-end integration tests: this launches a real CARDS
+instance and drives it through a browser, so it downloads a browser and takes several minutes on top of
+the ordinary build. See [tests/README.md](tests/README.md).
 
 A docker image can optionally be built with `mvn clean install -Pdocker`, if docker is installed, running, and the current user has access to the docker agent.
 
