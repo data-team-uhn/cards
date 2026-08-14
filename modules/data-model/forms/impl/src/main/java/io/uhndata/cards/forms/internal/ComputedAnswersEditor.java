@@ -17,6 +17,7 @@
 package io.uhndata.cards.forms.internal;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.forms.api.ExpressionUtils;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * An {@link Editor} that calculates any computed answers that were not submitted by the client.
@@ -193,7 +195,7 @@ public class ComputedAnswersEditor extends AnswersEditor
             if (
                 expressionResult.numberOfArguments() > 0
                     && existingAnswer != null
-                    && String.valueOf(formUtils.getValue(existingAnswer))
+                    && String.valueOf(serializeValue(formUtils.getValue(existingAnswer)))
                         .equals(String.valueOf(expressionResult.getResult()))
             ) {
                 return;
@@ -227,6 +229,19 @@ public class ComputedAnswersEditor extends AnswersEditor
             // Should not happen
             LOGGER.warn("Error calculating computing answer", e);
         }
+    }
+
+    /**
+     * Serialize a value the same way that an expression result is serialized, so that the two can be compared.
+     * {@code FormUtils#getValue} returns dates as {@code Calendar} objects, while the result of an expression for a
+     * date question is its ISO 8601 serialization.
+     *
+     * @param rawValue a value read from an answer, may be {@code null}
+     * @return the ISO 8601 serialization for dates, or the value unchanged for every other type
+     */
+    private static Object serializeValue(final Object rawValue)
+    {
+        return rawValue instanceof Calendar ? DateUtils.toString((Calendar) rawValue) : rawValue;
     }
 
     private List<String> sortDependencies(final Map<String, Set<String>> computedAnswerDependencies)

@@ -18,6 +18,7 @@ package io.uhndata.cards.forms.internal;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -71,6 +72,13 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
     private Object toJavaScriptObject(ScriptEngine javascriptEngine, Object javaObject)
     {
+        // FormUtils returns dates as Calendar objects, but expressions have always been given the ISO 8601 string
+        // that Oak stores, so keep passing that instead of a Java host object
+        if (javaObject instanceof Calendar) {
+            return DateUtils.toString((Calendar) javaObject);
+        } else if (javaObject instanceof Object[]) {
+            return Arrays.stream((Object[]) javaObject).map(v -> toJavaScriptObject(javascriptEngine, v)).toArray();
+        }
         return javaObject;
     }
 

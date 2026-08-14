@@ -49,6 +49,7 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.ChildNodeEntry;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.jackrabbit.util.ISO8601;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -377,15 +378,35 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
             final Type<?> valueType = valuePropertyState.getType();
 
             if (valuePropertyState.isArray()) {
+                final Type<?> baseType = valueType.getBaseType();
                 result = new Object[valuePropertyState.count()];
                 for (int i = 0; i < valuePropertyState.count(); i++) {
-                    ((Object[]) result)[i] = valuePropertyState.getValue(valueType.getBaseType(), i);
+                    ((Object[]) result)[i] = convertValue(valuePropertyState.getValue(baseType, i), baseType);
                 }
             } else {
-                result = valuePropertyState.getValue(valueType);
+                result = convertValue(valuePropertyState.getValue(valueType), valueType);
             }
         }
         return result;
+    }
+
+    /**
+     * Convert a value extracted from an Oak property into the type promised by the {@code getValue} contract. Oak
+     * declares {@code Type.DATE} as a {@code Type<String>}, so dates come out of a {@code PropertyState} as ISO 8601
+     * strings, unlike the JCR path which returns a {@code Calendar}; this restores the equivalence between the two.
+     *
+     * @param rawValue the value as extracted from Oak, may be {@code null}
+     * @param type the Oak type of the property that the value was extracted from
+     * @return a {@code Calendar} for date values, or the value unchanged for every other type, as well as for date
+     *         values that cannot be parsed
+     */
+    private static Object convertValue(final Object rawValue, final Type<?> type)
+    {
+        if (Type.DATE.equals(type) && rawValue instanceof String) {
+            final Calendar date = ISO8601.parse((String) rawValue);
+            return date == null ? rawValue : date;
+        }
+        return rawValue;
     }
 
     @Override
