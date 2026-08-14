@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -44,6 +45,7 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.plugins.memory.EmptyNodeState;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.value.BinaryValue;
 import org.apache.jackrabbit.value.BooleanValue;
 import org.apache.jackrabbit.value.DateValue;
@@ -87,6 +89,8 @@ public class FormUtilsImplTest
     private static final String ANSWER_TYPE = "cards:TextAnswer";
 
     private static final String ANSWER_BOOLEAN_TYPE = "cards:BooleanAnswer";
+
+    private static final String VALUE_PROPERTY = "value";
 
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
@@ -813,6 +817,68 @@ public class FormUtilsImplTest
     public void getValueForNullNodeStateReturnsNull()
     {
         Assert.assertNull(this.formUtils.getValue((NodeState) null));
+    }
+
+    @Test
+    public void getValueForDateAnswerNodeStateReturnsCalendar()
+    {
+        // Oak declares Type.DATE as a Type<String>, so a real date property hands back the ISO 8601 string it
+        // stores; getValue must turn that into the Calendar its contract promises, like the JCR overloads do
+        final Calendar date = Calendar.getInstance(TimeZone.getTimeZone("GMT+05:30"));
+        date.setTimeInMillis(1786000000000L);
+        final NodeBuilder answer = EmptyNodeState.EMPTY_NODE.builder();
+        answer.setProperty(VALUE_PROPERTY, ISO8601.format(date), Type.DATE);
+
+        final Object result = this.formUtils.getValue(answer.getNodeState());
+
+        Assert.assertTrue("Expected a Calendar, got " + result.getClass().getName(), result instanceof Calendar);
+        Assert.assertEquals(date.getTimeInMillis(), ((Calendar) result).getTimeInMillis());
+        // The timezone the date was recorded in must survive, rather than being normalized to the server's
+        Assert.assertEquals(date.get(Calendar.HOUR_OF_DAY), ((Calendar) result).get(Calendar.HOUR_OF_DAY));
+        // The NodeBuilder overload delegates to the NodeState one, so it must agree
+        Assert.assertEquals(result, this.formUtils.getValue(answer));
+    }
+
+    @Test
+    public void getValueForMultiValuedDateAnswerNodeStateReturnsCalendars()
+    {
+        // Type.DATES.getBaseType() is Type.DATE, so the array branch has the same problem
+        final Calendar first = Calendar.getInstance(TimeZone.getTimeZone("GMT+05:30"));
+        first.setTimeInMillis(1786000000000L);
+        final Calendar second = Calendar.getInstance(TimeZone.getTimeZone("GMT+05:30"));
+        second.setTimeInMillis(1786086400000L);
+        final NodeBuilder answer = EmptyNodeState.EMPTY_NODE.builder();
+        answer.setProperty(VALUE_PROPERTY, List.of(ISO8601.format(first), ISO8601.format(second)), Type.DATES);
+
+        final Object[] result = (Object[]) this.formUtils.getValue(answer.getNodeState());
+
+        Assert.assertEquals(2, result.length);
+        Assert.assertTrue(result[0] instanceof Calendar);
+        Assert.assertTrue(result[1] instanceof Calendar);
+        Assert.assertEquals(first.getTimeInMillis(), ((Calendar) result[0]).getTimeInMillis());
+        Assert.assertEquals(second.getTimeInMillis(), ((Calendar) result[1]).getTimeInMillis());
+    }
+
+    @Test
+    public void getValueForUnparsableDateAnswerNodeStateReturnsRawString()
+    {
+        // ISO8601.parse requires milliseconds, so a date stored in a non-canonical form cannot be converted.
+        // Passing it through unchanged keeps the previous behaviour rather than losing the value.
+        final String notCanonical = "2026-08-06T12:00:00-04:00";
+        final NodeBuilder answer = EmptyNodeState.EMPTY_NODE.builder();
+        answer.setProperty(VALUE_PROPERTY, notCanonical, Type.DATE);
+
+        Assert.assertEquals(notCanonical, this.formUtils.getValue(answer.getNodeState()));
+    }
+
+    @Test
+    public void getValueForNonDateAnswerNodeStateIsUnaffected()
+    {
+        // Every other Oak type already came back correctly typed, and must keep doing so
+        final NodeBuilder answer = EmptyNodeState.EMPTY_NODE.builder();
+        answer.setProperty(VALUE_PROPERTY, "2026-08-06T12:00:00.000-04:00", Type.STRING);
+
+        Assert.assertEquals("2026-08-06T12:00:00.000-04:00", this.formUtils.getValue(answer.getNodeState()));
     }
 
     // getAnswer checks

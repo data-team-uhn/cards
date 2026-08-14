@@ -165,7 +165,7 @@ public class FileLabelProcessorTest
     }
 
     @Test
-    public void leaveForFileAnswerNodeWithValuePropertyThrowsException() throws RepositoryException
+    public void leaveForFileAnswerNodeWithUncomputableLabelSkipsTheLabel() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = mock(Node.class);
@@ -173,8 +173,10 @@ public class FileLabelProcessorTest
         when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
         when(node.getPath()).thenThrow(new RepositoryException());
 
-        Assert.assertThrows(NullPointerException.class,
-            () -> this.fileLabelProcessor.leave(node, json, mock(Function.class)));
+        this.fileLabelProcessor.leave(node, json, mock(Function.class));
+
+        // A label that cannot be computed must not break the serialization of the rest of the resource
+        Assert.assertFalse(json.build().containsKey(DISPLAYED_VALUE_PROPERTY));
     }
 
     @Test
