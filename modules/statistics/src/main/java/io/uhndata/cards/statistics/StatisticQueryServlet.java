@@ -541,11 +541,7 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
 
         // Convert our HashMap into a JsonObject
         JsonObjectBuilder dataBuilder = Json.createObjectBuilder();
-        Iterator<String> keysMap = counts.keySet().iterator();
-        while (keysMap.hasNext()) {
-            String key = keysMap.next();
-            dataBuilder.add(key, counts.get(key));
-        }
+        counts.forEach(dataBuilder::add);
         builder.add("data", dataBuilder.build());
 
         // Add value->label maps for nice display on the frontend)
@@ -562,11 +558,7 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
     {
         // Convert the Map into a JsonObject
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        Iterator<String> keysMap = map.keySet().iterator();
-        while (keysMap.hasNext()) {
-            String key = keysMap.next();
-            builder.add(key, map.get(key));
-        }
+        map.forEach(builder::add);
         return builder.build();
     }
 
@@ -588,7 +580,7 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
             }
 
             // If we never find a form by going upwards, this cards:Answer is malformed
-            if (answerParent.getDepth() == 0) {
+            if (answerParent == null || answerParent.getDepth() == 0) {
                 LOGGER.warn("Tried to obtain the parent Form for node {} but failed to find one", answer.getPath());
                 return null;
             }

@@ -28,6 +28,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,8 +44,11 @@ public final class DateUtils
     public static final DateTimeFormatter PREFERRED_DATETIME_FORMAT =
         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
-    /** Supported date formats. */
-    public static final List<DateTimeFormatter> DATETIME_FORMATS = Arrays.asList(
+    /**
+     * Supported date formats. Unmodifiable, since this is public: {@code Arrays.asList} is only fixed-size, so
+     * callers could still replace individual formats and change how every date in the application is parsed.
+     */
+    public static final List<DateTimeFormatter> DATETIME_FORMATS = Collections.unmodifiableList(Arrays.asList(
         PREFERRED_DATETIME_FORMAT,
         getFormat("yyyy-MM-dd'T'HH:mm:ss.SSSz"),
         getFormat("yyyy-MM-dd' 'HH:mm:ss.SSSz"),
@@ -57,7 +61,7 @@ public final class DateUtils
         getFormat("yyyy-MM-dd'T'HH:mm"),
         getFormat("yyyy-MM-dd' 'HH:mm"),
         getFormat("yyyy-MM-dd"),
-        getFormat("M/d/y"));
+        getFormat("M/d/y")));
 
     /**
      * Hide the utility class constructor.

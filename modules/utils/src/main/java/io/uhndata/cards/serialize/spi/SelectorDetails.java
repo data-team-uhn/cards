@@ -67,7 +67,8 @@ public class SelectorDetails
         this.name = name;
         this.description = description;
         this.enabledByDefault = enabledByDefault;
-        this.options = options;
+        // A copy, since arrays are mutable and the caller must not be able to alter this object's own state
+        this.options = options == null ? null : options.clone();
     }
 
     public SelectorDetails(String name, String description, String... options)
@@ -112,11 +113,12 @@ public class SelectorDetails
     /**
      * The extra options that can be used to further configure this selector.
      *
-     * @return A list of any extra options that may apply to this selector. May be {@code null}.
+     * @return A copy of the list of any extra options that may apply to this selector. May be {@code null}.
      */
     public SelectorOption[] getOptions()
     {
-        return this.options;
+        // A copy, since arrays are mutable and callers must not be able to alter this object's own state
+        return this.options == null ? null : this.options.clone();
     }
 
     public Boolean isEnabledByDefault()

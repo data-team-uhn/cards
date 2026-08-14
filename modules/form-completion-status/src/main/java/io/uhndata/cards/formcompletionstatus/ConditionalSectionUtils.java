@@ -117,13 +117,13 @@ public final class ConditionalSectionUtils
     private static String sanitizeNodeName(final String inStr)
     {
         final String inStrLower = inStr.toLowerCase();
-        String outStr = "";
+        final StringBuilder outStr = new StringBuilder();
         for (int i = 0; i < inStr.length(); i++) {
             if ("abcdefghijklmnopqrstuvwxyz 0123456789_-".indexOf(inStrLower.charAt(i)) > -1) {
-                outStr += inStr.charAt(i);
+                outStr.append(inStr.charAt(i));
             }
         }
-        return outStr;
+        return outStr.toString();
     }
 
     private static PropertyState getPropertyStateFromRef(final Node operand,

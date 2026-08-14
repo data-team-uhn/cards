@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.forms.internal.serialize;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -379,8 +380,10 @@ public abstract class AbstractFormToStringSerializer
         // By default we don't include Information blocks in text mode
     }
 
-    class DefinitionComparator implements Comparator<JsonObject>
+    static class DefinitionComparator implements Comparator<JsonObject>, Serializable
     {
+        private static final long serialVersionUID = 1L;
+
         private final List<String> definitionUuids;
 
         DefinitionComparator(final JsonObject definition)

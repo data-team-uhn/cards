@@ -20,6 +20,7 @@
 package io.uhndata.cards;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -636,8 +637,10 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
      * reference the same node, we need an explicit comparator that compares the two node paths. This comparator may
      * throw {@code NullPointerException} if any of the nodes to compare are null.
      */
-    private static final class NodeComparator implements Comparator<Node>
+    private static final class NodeComparator implements Comparator<Node>, Serializable
     {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public int compare(Node o1, Node o2)
         {

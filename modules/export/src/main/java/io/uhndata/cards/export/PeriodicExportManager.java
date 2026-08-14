@@ -150,10 +150,8 @@ public class PeriodicExportManager
         try {
             this.scheduler.unschedule(SCHEDULER_JOB_PREFIX + removedConfig.getConfig().name());
         } catch (Exception e) {
-            LOGGER.error("Failed to unschedule: {}, {}, {}, {}", this.scheduler, removedConfig,
-                removedConfig != null ? removedConfig.getConfig() : "null",
-                (removedConfig != null && removedConfig.getConfig() != null) ? removedConfig.getConfig().name()
-                    : "null");
+            LOGGER.error("Failed to unschedule the exporter job for {}: {}", removedConfig.getConfig().name(),
+                e.getMessage(), e);
         }
     }
 

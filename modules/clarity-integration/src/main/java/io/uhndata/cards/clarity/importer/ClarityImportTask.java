@@ -84,9 +84,9 @@ public class ClarityImportTask implements Runnable
 
     private final int dayToQuery;
 
-    private int discardedVisits;
+    private final ThreadLocal<Integer> discardedVisits = ThreadLocal.withInitial(() -> 0);
 
-    private int importedVisits;
+    private final ThreadLocal<Integer> importedVisits = ThreadLocal.withInitial(() -> 0);
 
     private final ThreadLocal<Map<String, String>> sqlColumnToDataType = ThreadLocal.withInitial(HashMap::new);
 
@@ -274,8 +274,6 @@ public class ClarityImportTask implements Runnable
     public void run()
     {
         LOGGER.info("Running ClarityImportTask: " + this.config.name());
-        this.discardedVisits = 0;
-        this.importedVisits = 0;
 
         String connectionUrl =
             String.format("jdbc:sqlserver://%s;user=%s;password=%s;encrypt=%s;", env(this.config.server()),
@@ -295,34 +293,13 @@ public class ClarityImportTask implements Runnable
                 this.clarityImportConfiguration.get());
 
             // Generate and perform the query
-            PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
-            ResultSet results = statement.executeQuery();
-
-            // Sort and filter the data processors
-            List<ClarityDataProcessor> sortedProcessors = new ArrayList<>(this.processors).stream()
-                .filter(p -> p.supportsImportType(this.config.type())).sorted().collect(Collectors.toList());
-
-            while (results.next()) {
-                // Create the Subjects and Forms as is needed
-                try {
-                    createFormsAndSubjects(resolver, results, sortedProcessors);
-                    session.save();
-                } catch (DateTimeParseException | PersistenceException e) {
-                    LOGGER.error("Exception while importing data to JCR", e);
-                } catch (Exception e) {
-                    LOGGER.error("Unhandled exception while importing data: {}", e.getMessage(), e);
-                } finally {
-                    // If everything was saved successfully, this shouldn't discard anything; but if there was an error,
-                    // without discarding the bad data all the subsequent saves would fail too
-                    session.refresh(false);
-                }
-            }
+            importVisits(connection, resolver, session);
 
             checkinNodes();
             updatePerformanceCounters();
 
-            LOGGER.info("Number of importeded visits: " + this.importedVisits);
-            LOGGER.info("Number of discarded visits: " + this.discardedVisits);
+            LOGGER.info("Number of importeded visits: " + this.importedVisits.get());
+            LOGGER.info("Number of discarded visits: " + this.discardedVisits.get());
 
         } catch (SQLException e) {
             LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
@@ -338,6 +315,43 @@ public class ClarityImportTask implements Runnable
             this.metricsAdjustments.remove();
             if (mustPopResolver) {
                 this.rrp.pop();
+            }
+        }
+    }
+
+    /**
+     * Run the Clarity query and import every row it returns. A row that fails to import is logged and skipped, so
+     * that one bad record doesn't abort the whole import.
+     *
+     * @param connection the open connection to the Clarity server
+     * @param resolver the resolver to write the imported data with
+     * @param session the session to save after each imported row
+     * @throws SQLException if the query itself fails
+     * @throws RepositoryException if discarding the changes of a failed row fails
+     */
+    private void importVisits(final Connection connection, final ResourceResolver resolver, final Session session)
+        throws SQLException, RepositoryException
+    {
+        try (PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
+            ResultSet results = statement.executeQuery()) {
+            // Sort and filter the data processors
+            List<ClarityDataProcessor> sortedProcessors = new ArrayList<>(this.processors).stream()
+                .filter(p -> p.supportsImportType(this.config.type())).sorted().collect(Collectors.toList());
+
+            while (results.next()) {
+                // Create the Subjects and Forms as is needed
+                try {
+                    createFormsAndSubjects(resolver, results, sortedProcessors);
+                    session.save();
+                } catch (DateTimeParseException | PersistenceException e) {
+                    LOGGER.error("Exception while importing data to JCR", e);
+                } catch (Exception e) {
+                    LOGGER.error("Unhandled exception while importing data: {}", e.getMessage(), e);
+                } finally {
+                    // If everything was saved successfully, this shouldn't discard anything; but if there was an
+                    // error, without discarding the bad data all the subsequent saves would fail too
+                    session.refresh(false);
+                }
             }
         }
     }
@@ -486,7 +500,7 @@ public class ClarityImportTask implements Runnable
             try {
                 row = processor.processEntry(row);
                 if (row == null) {
-                    this.discardedVisits++;
+                    this.discardedVisits.set(this.discardedVisits.get() + 1);
                     return;
                 }
             } catch (Exception e) {
@@ -497,9 +511,9 @@ public class ClarityImportTask implements Runnable
         final boolean imported = walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
             resolver.resolve("/Subjects"));
         if (imported) {
-            this.importedVisits++;
+            this.importedVisits.set(this.importedVisits.get() + 1);
         } else {
-            this.discardedVisits++;
+            this.discardedVisits.set(this.discardedVisits.get() + 1);
         }
     }
 
@@ -809,5 +823,7 @@ public class ClarityImportTask implements Runnable
         this.versionManager.remove();
         this.clarityImportConfiguration.remove();
         this.sqlColumnToDataType.remove();
+        this.discardedVisits.remove();
+        this.importedVisits.remove();
     }
 }

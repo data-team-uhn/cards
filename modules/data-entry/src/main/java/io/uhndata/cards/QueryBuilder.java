@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -611,19 +612,19 @@ public class QueryBuilder implements Use
         @Override
         public Object next()
         {
-            return null;
+            throw new NoSuchElementException();
         }
 
         @Override
         public Row nextRow()
         {
-            return null;
+            throw new NoSuchElementException();
         }
 
         @Override
         public Node nextNode()
         {
-            return null;
+            throw new NoSuchElementException();
         }
 
         @Override

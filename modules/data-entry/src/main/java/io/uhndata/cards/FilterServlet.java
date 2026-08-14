@@ -238,12 +238,9 @@ public class FilterServlet extends SlingJakartaSafeMethodsServlet
         List<String> ancestorSectionLabels = new ArrayList<>();
         JsonArrayBuilder questionsBuilder = Json.createArrayBuilder();
 
-        for (String key : resourceJson.keySet()) {
-            if (resourceJson.get(key).getValueType() != ValueType.OBJECT) {
-                // Copy over the non-object keys
-                builder.add(key, resourceJson.get(key));
-            }
-        }
+        // Copy over the non-object keys
+        resourceJson.entrySet().stream().filter(entry -> entry.getValue().getValueType() != ValueType.OBJECT)
+            .forEach(entry -> builder.add(entry.getKey(), entry.getValue()));
 
         copyQuestions(resourceJson, questionsBuilder, ancestorSectionLabels);
         builder.add("questions", questionsBuilder);
@@ -259,9 +256,8 @@ public class FilterServlet extends SlingJakartaSafeMethodsServlet
      */
     private void copyQuestions(JsonObject datum, JsonArrayBuilder builder, List<String> ancestorSectionLabels)
     {
-        for (String key : datum.keySet()) {
-            if (datum.get(key).getValueType() == ValueType.OBJECT) {
-                JsonObject object = datum.getJsonObject(key);
+        datum.entrySet().stream().filter(entry -> entry.getValue().getValueType() == ValueType.OBJECT)
+            .map(entry -> entry.getValue().asJsonObject()).forEach(object -> {
                 // Copy over information from children of sections
                 if ("cards:Section".equals(object.getString("jcr:primaryType"))) {
                     List<String> newAncestorSectionLabels = new ArrayList<>(ancestorSectionLabels);
@@ -275,8 +271,7 @@ public class FilterServlet extends SlingJakartaSafeMethodsServlet
                 if ("cards:Question".equals(object.getString("jcr:primaryType"))) {
                     builder.add(amendWithSectionBreadcrumbs(object, ancestorSectionLabels));
                 }
-            }
-        }
+            });
     }
 
     /**
@@ -292,9 +287,7 @@ public class FilterServlet extends SlingJakartaSafeMethodsServlet
     {
         JsonObjectBuilder amended = Json.createObjectBuilder();
         // Copy over all the fields
-        for (String key : question.keySet()) {
-            amended.add(key, question.get(key));
-        }
+        question.forEach(amended::add);
         // Add the labels of any ancestor sections
         JsonArrayBuilder ancestorsBuilder = Json.createArrayBuilder();
         for (String label : ancestorSectionLabels) {

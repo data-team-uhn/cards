@@ -110,22 +110,21 @@ public class FileUploadIndexer implements VocabularyIndexer
                 throw new VocabularyIndexException("Could not access resource of your request.");
             }
 
+            if (uploadedOntology == null) {
+                throw new VocabularyIndexException("Mandatory [filename] file not provided.");
+            }
+
             // Delete the Vocabulary node already representing this vocabulary instance if it exists
             this.utils.clearVocabularyNode(homepage, identifier, overwrite);
 
             // Load the description
-            VocabularyDescription description;
-            if (uploadedOntology == null) {
-                description = null;
-            } else {
-                description = new VocabularyDescriptionBuilder()
-                    .withSource("fileupload")
-                    .withSourceFormat(OntologyFormatDetection.getSourceFormat(uploadedOntology.getFileName()))
-                    .withIdentifier(identifier)
-                    .withName(vocabName)
-                    .withVersion(version)
-                    .build();
-            }
+            final VocabularyDescription description = new VocabularyDescriptionBuilder()
+                .withSource("fileupload")
+                .withSourceFormat(OntologyFormatDetection.getSourceFormat(uploadedOntology.getFileName()))
+                .withIdentifier(identifier)
+                .withName(vocabName)
+                .withVersion(version)
+                .build();
 
             // Check that we have a known parser for this vocabulary
             SourceParser parser =
@@ -134,12 +133,8 @@ public class FileUploadIndexer implements VocabularyIndexer
                         + "] in format [" + description.getSourceFormat() + "]"));
 
             // Download the source
-            if (uploadedOntology == null) {
-                temporaryFile = null;
-            } else {
-                temporaryFile = File.createTempFile("LocalUpload-" + identifier, "");
-                FileUtils.copyInputStreamToFile(uploadedOntology.getInputStream(), temporaryFile);
-            }
+            temporaryFile = File.createTempFile("LocalUpload-" + identifier, "");
+            FileUtils.copyInputStreamToFile(uploadedOntology.getInputStream(), temporaryFile);
 
             // Create a new Vocabulary node representing this vocabulary
             this.vocabularyNode.set(OntologyIndexerUtils.createVocabularyNode(homepage, description));

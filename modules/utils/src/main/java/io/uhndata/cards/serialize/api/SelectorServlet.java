@@ -275,10 +275,12 @@ public class SelectorServlet extends SlingJakartaSafeMethodsServlet
                 // e.g. " - **exclude**: description of how to use the exclude option"
                 // Replace any newlines as detailed earlier with descriptions but with one level of extra indentation
                 // due to the options list
-                out.write(String.format("%s - **%s**: %s  \n",
+                // The newline is appended outside the format string, since markdown sent over HTTP always ends
+                // lines with \n, not with the platform-specific separator that %n would produce
+                out.write(String.format("%s - **%s**: %s  ",
                     indent,
                     option.getName().replaceAll("\\\n", "  \n    " + indent),
-                    option.getDescription().replaceAll("\\\n", "  \n    " + indent)));
+                    option.getDescription().replaceAll("\\\n", "  \n    " + indent)) + "\n");
             }
         }
     }

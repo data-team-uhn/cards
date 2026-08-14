@@ -144,7 +144,8 @@ public class S3DataStore implements DataStore
             try {
                 final int size = Integer.parseInt(sizeStr);
                 if (size > 0) {
-                    return size * 1024 * 1024;
+                    // Long multiplication, since a chunk size of 2048 MB or more overflows an int
+                    return size * 1024L * 1024L;
                 }
             } catch (NumberFormatException e) {
                 LOGGER.warn("Invalid chink size configured for the S3 storage: {}", sizeStr);

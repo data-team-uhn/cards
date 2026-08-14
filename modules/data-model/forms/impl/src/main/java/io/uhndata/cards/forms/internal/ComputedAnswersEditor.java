@@ -154,6 +154,7 @@ public class ComputedAnswersEditor extends AnswersEditor
                 } catch (Exception e) {
                     // Could not find the answer: not an answer the user has permissions to edit so can't be modified
                     // by the user
+                    LOGGER.debug("Skipping inaccessible modified answer {}: {}", modifiedAnswer, e.getMessage());
                 }
             }
 

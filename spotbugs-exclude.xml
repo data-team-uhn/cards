@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<!--
+  Bug patterns that SpotBugs reports but that do not apply to this codebase.
+
+  Every entry here is a deliberate, permanent decision about a whole pattern. Findings that are merely
+  unfixed-for-now do NOT belong here: they belong in an issue, so that the checker keeps reporting them.
+  The one exception is NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE, which is called out at the end.
+-->
+<FindBugsFilter>
+
+  <!--
+    Sling servlets and endpoints extend GenericServlet, which implements Serializable, so every OSGi
+    @Reference and every ThreadLocal they hold is reported as a non-transient non-serializable field.
+    These components are container-managed singletons; nothing ever serializes them, and marking the
+    service references transient would break injection. The same reasoning covers the rest of the
+    Serializable idiom family, since no CARDS type is ever serialized.
+  -->
+  <Match>
+    <Bug pattern="SE_BAD_FIELD" />
+  </Match>
+
+  <!--
+    Returning or storing a reference to a mutable object. The flagged fields are overwhelmingly live
+    repository handles - javax.jcr.Node, javax.jcr.Session, oak Tree and NodeBuilder,
+    ResourceResolver - which are shared by reference by design and cannot be meaningfully copied; the
+    remainder is internal state of commit-time Editors, where copying on every repository write would
+    cost far more than it protects in a single-trust-domain application.
+
+    Value objects in exported api/spi packages are NOT covered by this reasoning and have been fixed
+    with real defensive copies instead: see VocabularyTermSource, SelectorDetails, CardsTokenImpl,
+    CardsJwtTokenImpl, QuestionnaireSetUtilsImpl and VisitInformationAdapterImpl.
+  -->
+  <Match>
+    <Or>
+      <Bug pattern="EI_EXPOSE_REP" />
+      <Bug pattern="EI_EXPOSE_REP2" />
+    </Or>
+  </Match>
+
+  <!--
+    "Constructor throws, so the partially constructed object is open to a finalizer attack." None of
+    the flagged classes override finalize(), and finalization has been deprecated for removal since
+    Java 18, so there is no attack to defend against. Validating arguments in a constructor is the
+    behaviour we want.
+  -->
+  <Match>
+    <Bug pattern="CT_CONSTRUCTOR_THROW" />
+  </Match>
+
+  <!--
+    Catching NullPointerException. Used deliberately in the JSON and JCR traversal helpers as a
+    terse alternative to null-checking every step of a long navigation chain. Worth revisiting when
+    those helpers are next touched, but restructuring them purely to satisfy the checker would be a
+    large, behaviour-preserving churn with no benefit.
+  -->
+  <Match>
+    <Bug pattern="DCN_NULLPOINTER_EXCEPTION" />
+  </Match>
+
+  <!--
+    "Exception is caught when Exception is not thrown." SpotBugs is simply wrong here: the guarded
+    block calls methods declaring LoginException and RepositoryException, and narrowing the catch
+    does not compile. A JCR observation listener must not let anything escape into the observation
+    thread anyway.
+  -->
+  <Match>
+    <Class name="io.uhndata.cards.patients.emailnotifications.EmailAlertEventListener" />
+    <Method name="onEvent" />
+    <Bug pattern="REC_CATCH_EXCEPTION" />
+  </Match>
+
+  <!--
+    THIS ONE IS A BACKLOG, NOT A DECISION.
+
+    198 findings, all of the same shape: a Sling or Oak API that is annotated @Nullable
+    (ResourceResolver.getResource, Resource.adaptTo, Tree/NodeBuilder/NodeState.getProperty, ...) is
+    dereferenced without a null check. Most are safe in context - the resource was just created, or a
+    caller already validated it - but some are genuine unguarded dereferences, and deciding which is
+    which needs a judgement call per call site across 98 files.
+
+    It is suppressed here so that the rest of SpotBugs can be enforced today rather than not at all.
+    SpotBugs still reports the higher-confidence members of the same family (NP_NULL_ON_SOME_PATH,
+    NP_NULL_PARAM_DEREF, NP_NULL_ON_SOME_PATH_EXCEPTION), which are NOT suppressed.
+
+    See doc/spotbugs-findings.md for the full per-file inventory and the suggested burn-down order.
+  -->
+  <Match>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" />
+  </Match>
+
+</FindBugsFilter>

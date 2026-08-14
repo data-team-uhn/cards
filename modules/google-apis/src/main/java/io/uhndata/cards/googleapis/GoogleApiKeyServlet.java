@@ -19,7 +19,6 @@
 package io.uhndata.cards.googleapis;
 
 import java.io.IOException;
-import java.io.Writer;
 
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
@@ -61,13 +60,12 @@ public class GoogleApiKeyServlet extends SlingJakartaSafeMethodsServlet
         throws IOException
     {
         response.setContentType("application/json");
-        try (Writer out = response.getWriter(); JsonGenerator jsonGen = Json.createGenerator(out)) {
+        // Only the generator is managed here; closing it also closes the underlying writer, and closing both
+        // would fail
+        try (JsonGenerator jsonGen = Json.createGenerator(response.getWriter())) {
             jsonGen.writeStartObject();
-            String key = this.apiKeyManager.getAPIKey();
-            jsonGen.write(RESPONSE_JSON_KEY, key);
+            jsonGen.write(RESPONSE_JSON_KEY, this.apiKeyManager.getAPIKey());
             jsonGen.writeEnd().flush();
-        } catch (Exception e) {
-            // This usually happens because we're closing the writer twice, through the generator and as itself
         }
     }
 }

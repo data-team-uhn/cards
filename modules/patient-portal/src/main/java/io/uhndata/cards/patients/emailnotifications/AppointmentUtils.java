@@ -22,6 +22,7 @@ package io.uhndata.cards.patients.emailnotifications;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.NoSuchElementException;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -351,7 +352,7 @@ public final class AppointmentUtils
         @Override
         public Object next()
         {
-            return null;
+            throw new NoSuchElementException();
         }
 
         @Override
@@ -380,7 +381,7 @@ public final class AppointmentUtils
         @Override
         public Node nextNode()
         {
-            return null;
+            throw new NoSuchElementException();
         }
     }
 }

@@ -246,7 +246,8 @@ public class QuestionnaireSetUtilsImpl implements QuestionnaireSetUtils
         @Override
         public Calendar getAssociatedDate()
         {
-            return this.associatedDate;
+            // A copy, since Calendar is mutable and callers must not be able to alter this object's own state
+            return this.associatedDate == null ? null : (Calendar) this.associatedDate.clone();
         }
 
         /**

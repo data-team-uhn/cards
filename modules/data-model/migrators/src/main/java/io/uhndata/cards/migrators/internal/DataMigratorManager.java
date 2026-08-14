@@ -47,7 +47,8 @@ public class DataMigratorManager
 
     private Version version;
 
-    private boolean activated;
+    // Volatile, since it is set while activating and read from the threads that bind late migrators
+    private volatile boolean activated;
 
     @Reference
     private ResourceResolverFactory resolverFactory;

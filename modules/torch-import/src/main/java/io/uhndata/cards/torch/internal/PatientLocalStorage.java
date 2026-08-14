@@ -556,10 +556,13 @@ public class PatientLocalStorage
                 final List<String> providerNames = new LinkedList<>();
                 for (int i = 0; i < participants.size(); ++i) {
                     JsonObject participantObj = participants.getJsonObject(i).getJsonObject("physician");
-                    JsonObject nameObj = participantObj.getJsonObject("name");
-                    if (nameObj == null || nameObj == JsonValue.NULL) {
+                    // Read the raw value first: a JSON null is a JsonValue.NULL, not a JsonObject, so asking for it
+                    // with getJsonObject would throw a ClassCastException instead of returning something we can test
+                    final JsonValue nameValue = participantObj.get("name");
+                    if (nameValue == null || nameValue.getValueType() != JsonValue.ValueType.OBJECT) {
                         continue;
                     }
+                    final JsonObject nameObj = nameValue.asJsonObject();
 
                     final List<String> fullName = new LinkedList<>(
                         PatientLocalStorage.mapJsonString(nameObj.getJsonArray("prefix")));
