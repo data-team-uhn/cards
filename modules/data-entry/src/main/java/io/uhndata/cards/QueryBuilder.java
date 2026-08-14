@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -192,7 +193,7 @@ public class QueryBuilder implements Use
             this.limit = getLongValueOrDefault(request.getParameter("limit"), 10);
             this.resourceTypes = request.getParameterValues("allowedResourceTypes");
             final String doNotEscape = request.getParameter("doNotEscapeQuery");
-            this.resourceSelectors = StringUtils.defaultString(request.getParameter("resourceSelectors"));
+            this.resourceSelectors = sanitizeSelectors(request.getParameter("resourceSelectors"));
             this.disableEscaping = "true".equals(doNotEscape);
             final String showTotalRowsParam = request.getParameter("showTotalRows");
             this.showTotalRows = "true".equals(showTotalRowsParam);
@@ -213,7 +214,9 @@ public class QueryBuilder implements Use
             this.content = builder.build().toString();
         } catch (Exception e) {
             this.logger.error("Failed to query resources: {}", e.getMessage(), e);
-            this.content = "Unknown error: " + e.fillInStackTrace();
+            this.content = Json.createObjectBuilder()
+                .add("error", Objects.requireNonNullElse(e.getMessage(), "Failed to run the query"))
+                .build().toString();
         }
     }
 
@@ -314,9 +317,13 @@ public class QueryBuilder implements Use
             .filter(e -> allowedResourceTypes.stream().anyMatch(type -> e.isTypeSupported(type)))
             .collect(Collectors.toList());
         for (final QuickSearchEngine engine : supportedEngines) {
+            // Nothing more can end up in the response, so there is no point running this engine's query at all
+            if (isDone(outputRows)) {
+                break;
+            }
             final QuickSearchEngine.Results results = engine.quickSearch(searchParameters, this.resourceResolver);
             while (results.hasNext()) {
-                if (outputRows >= this.limit && !this.showTotalRows) {
+                if (isDone(outputRows)) {
                     break;
                 }
                 if (totalRows < this.offset || outputRows >= this.limit) {
@@ -332,6 +339,18 @@ public class QueryBuilder implements Use
         final JsonObjectBuilder output = Json.createObjectBuilder();
         buildResults(output, builder.build(), outputRows, totalRows, 0);
         this.content = output.build().toString();
+    }
+
+    /**
+     * Whether a quick search can stop: the page is full, and nobody asked for the total number of matches, so
+     * further results cannot change the response.
+     *
+     * @param outputRows how many results have been placed in the response so far
+     * @return {@code true} if no further results are needed
+     */
+    private boolean isDone(final long outputRows)
+    {
+        return outputRows >= this.limit && !this.showTotalRows;
     }
 
     /**
@@ -385,9 +404,13 @@ public class QueryBuilder implements Use
                     --offsetCounter;
                     // Count up to our limit
                 } else if (limitCounter > 0) {
-                    builder.add(serializeNode(path));
-                    --limitCounter;
-                    ++returnedRows;
+                    final JsonObject serialized = serializeNode(path);
+                    // A result that couldn't be serialized is left out, but still counts as one of the matches
+                    if (serialized != null) {
+                        builder.add(serialized);
+                        --limitCounter;
+                        ++returnedRows;
+                    }
                 }
                 if (seenPaths.size() >= totalLimit) {
                     break;
@@ -483,19 +506,44 @@ public class QueryBuilder implements Use
     private JsonObject serializeNode(final String path)
     {
         final Resource resource = this.resourceResolver.resolve(path + this.resourceSelectors);
+        final JsonObject serialized = resource.adaptTo(JsonObject.class);
+        if (serialized == null) {
+            // A result that can't be serialized, e.g. because it no longer exists, is left out of the response
+            this.logger.warn("Failed to serialize search result {}", path);
+            return null;
+        }
         // If there are children we can add, we'll add them as child properties of the JsonObject
         if (this.serializeChildren && resource.hasChildren()) {
             Iterator<Resource> children = resource.listChildren();
-            JsonObjectBuilder builder = Json.createObjectBuilder(resource.adaptTo(JsonObject.class));
+            JsonObjectBuilder builder = Json.createObjectBuilder(serialized);
             while (children.hasNext()) {
                 Resource child = children.next();
-                builder.add(child.getName(), child.adaptTo(JsonObject.class));
+                final JsonObject serializedChild = child.adaptTo(JsonObject.class);
+                if (serializedChild != null) {
+                    builder.add(child.getName(), serializedChild);
+                }
             }
 
             return builder.build();
         } else {
-            return resource.adaptTo(JsonObject.class);
+            return serialized;
         }
+    }
+
+    /**
+     * Cleans up the serialization selectors sent by the client, so that they can only ever select a serialization of
+     * the result, and not reach a different resource.
+     *
+     * @param selectors the selectors sent in the request, may be {@code null}
+     * @return a string safe to append to a repository path, either empty or in the form {@code .sel1.sel2}
+     */
+    private String sanitizeSelectors(final String selectors)
+    {
+        if (StringUtils.isBlank(selectors)) {
+            return "";
+        }
+        return (selectors.startsWith(".") ? selectors : "." + selectors)
+            .replaceAll("[/\\s]", "").replaceAll("\\.+", ".");
     }
 
     private void buildResults(final JsonObjectBuilder output, final JsonArray data, final long returnedRows,
@@ -548,8 +596,10 @@ public class QueryBuilder implements Use
      */
     private String fullTextEscape(String input)
     {
+        // The quotes are escaped even when the client asked for its full-text operators to be left alone: they
+        // delimit the string in the statement, so skipping them let the client write the rest of the query
         if (this.disableEscaping) {
-            return input;
+            return input.replace("'", "''");
         }
 
         // Escape sequence taken from https://jackrabbit.apache.org/archive/wiki/JCR/EncodingAndEscaping_115513396.html

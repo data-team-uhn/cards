@@ -62,7 +62,9 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
 
     private String getXPathQuery(final String textQuery)
     {
-        final String escapedQuery = SearchUtils.escapeLikeText(textQuery.toLowerCase());
+        // The pattern goes into an XPath string literal, where a quote is also escaped by doubling it
+        final String escapedQuery =
+            SearchUtils.escapeQueryArgument(SearchUtils.escapeLikeText(textQuery.toLowerCase()));
         final StringBuilder xpathQuery = new StringBuilder();
         xpathQuery.append("/jcr:root/Questionnaires//*[")
             .append("(@jcr:primaryType = 'cards:Questionnaire' or @jcr:primaryType = 'cards:Question') and ")

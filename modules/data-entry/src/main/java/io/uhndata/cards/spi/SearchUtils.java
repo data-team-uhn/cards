@@ -57,14 +57,18 @@ public final class SearchUtils
     }
 
     /**
-     * Escapes the input string to be free of characters with special meaning in a {@code jcr:like} query.
+     * Escapes the input string to be free of characters with special meaning in a {@code jcr:like} query. This does
+     * not make the result safe to place in a query: it is a pattern, not a string literal, so it still has to go
+     * through {@link #escapeQueryArgument} as well.
      *
      * @param input text to escape
      * @return an escaped version of the input
      */
     public static String escapeLikeText(final String input)
     {
-        return input.replaceAll("([\\\\%_'])", "\\\\$1");
+        // A quote is not a pattern character, and a backslash isn't how it is escaped in a query either: doing it
+        // here left every search for a value with an apostrophe in it running a query that doesn't parse
+        return input.replaceAll("([\\\\%_])", "\\\\$1");
     }
 
     /**
@@ -145,6 +149,9 @@ public final class SearchUtils
         boolean isNoteMatch, String path)
     {
         JsonObject metadata = getMatchMetadata(resourceValue, query, question, isNoteMatch, path);
+        if (metadata == null) {
+            return parent;
+        }
 
         // Construct a JsonObject that matches the parent, but with custom match metadata appended
         JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -161,18 +168,23 @@ public final class SearchUtils
      * @param question The text of the question itself
      * @param isNoteMatch Whether or not the match is on the notes of the answer, rather than the answer
      * @param path the matching answer question node path
-     * @return the metadata as a JsonObject
+     * @return the metadata as a JsonObject, or {@code null} if the value does not actually contain the query
      */
     private static JsonObject getMatchMetadata(String resourceValue, String query, String question, boolean isNoteMatch,
         String path)
     {
+        // Add metadata about the text before the match
+        int matchIndex = resourceValue.toLowerCase().indexOf(query.toLowerCase());
+        if (matchIndex < 0) {
+            // Describing a match that isn't there would be nonsense, and the substrings below would be out of bounds
+            return null;
+        }
+
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add(CARDS_QUERY_QUESTION_KEY, question);
         builder.add(CARDS_QUERY_MATCH_NOTES_KEY, isNoteMatch);
         builder.add(CARDS_QUERY_MATCH_PATH_KEY, path);
 
-        // Add metadata about the text before the match
-        int matchIndex = resourceValue.toLowerCase().indexOf(query.toLowerCase());
         String matchBefore = resourceValue.substring(0, matchIndex);
         if (matchBefore.length() > MAX_CONTEXT_MATCH) {
             matchBefore = "..." + matchBefore.substring(
