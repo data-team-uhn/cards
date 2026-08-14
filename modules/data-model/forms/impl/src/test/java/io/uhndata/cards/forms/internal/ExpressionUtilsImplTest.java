@@ -25,7 +25,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -48,6 +50,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mozilla.javascript.engine.RhinoScriptEngineFactory;
+
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Unit tests for {@link ExpressionUtilsImpl}.
@@ -297,6 +302,52 @@ public class ExpressionUtilsImplTest
         Mockito.when(engine.eval(Mockito.contains("(function(){return arg0})()"), Mockito.any(Bindings.class)))
             .thenThrow(new ScriptException("Evaluating the expression for question failed"));
         Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING,
+            Collections.emptySet()).getResult());
+    }
+
+    @Test
+    public void evaluateForDateAnswerPassesItToTheEngineAsAnIsoString() throws RepositoryException, ScriptException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        ScriptEngine engine = Mockito.mock(ScriptEngine.class);
+        Mockito.when(this.manager.getEngineByName("JavaScript")).thenReturn(engine);
+        Mockito.when(engine.createBindings()).thenReturn(new SimpleBindings());
+
+        // FormUtils hands date answers over as Calendar objects, but the script engine has always been given the
+        // ISO 8601 string, and expressions such as "new Date(@{date_question})" depend on that
+        final Calendar date = Calendar.getInstance(TimeZone.getTimeZone("GMT-04:00"));
+        date.setTimeInMillis(1786000000000L);
+        final String expectedArgument = DateUtils.toString(date);
+
+        Node question = session.getNode(
+            "/Questionnaires/TestComputedQuestionnaire/from_date_to_computed_section/month_computed_question");
+        Mockito.when(engine.eval(Mockito.anyString(),
+            Mockito.argThat((Bindings bindings) -> expectedArgument.equals(bindings.get("arg0")))))
+            .thenReturn(7.0);
+
+        Assert.assertEquals(7L, this.expressionUtils.evaluate(question, Map.of("date_question", date), Type.LONG,
+            Collections.emptySet()).getResult());
+    }
+
+    @Test
+    public void evaluateForDateAnswerWithTheRealEngineComputesTheAnswer() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        // The real engine, since the point of this test is that Rhino rejects a bare Calendar binding outright with
+        // "Invalid JavaScript value of type java.util.GregorianCalendar". That is reported as a failed evaluation,
+        // which ComputedAnswersEditor turns into removeProperty, wiping the stored answer on every save.
+        Mockito.when(this.manager.getEngineByName("JavaScript"))
+            .thenReturn(new RhinoScriptEngineFactory().getScriptEngine());
+
+        // 2026-08-06, i.e. month 7, counting from 0 as JavaScript does
+        final Calendar date = Calendar.getInstance(TimeZone.getTimeZone("GMT-04:00"));
+        date.set(2026, Calendar.AUGUST, 6, 12, 0, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        Node question = session.getNode(
+            "/Questionnaires/TestComputedQuestionnaire/from_date_to_computed_section/month_computed_question");
+
+        Assert.assertEquals(7L, this.expressionUtils.evaluate(question, Map.of("date_question", date), Type.LONG,
             Collections.emptySet()).getResult());
     }
 

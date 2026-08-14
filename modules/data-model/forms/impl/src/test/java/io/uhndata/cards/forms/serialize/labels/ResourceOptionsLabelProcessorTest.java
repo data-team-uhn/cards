@@ -195,7 +195,7 @@ public class ResourceOptionsLabelProcessorTest
     }
 
     @Test
-    public void leaveForAnswerOptionNodeWithValuePropertyThrowsException() throws RepositoryException
+    public void leaveForAnswerOptionNodeWithUncomputableLabelSkipsTheLabel() throws RepositoryException
     {
         JsonObjectBuilder json = Json.createObjectBuilder();
         Session session = this.context.resourceResolver().adaptTo(Session.class);
@@ -205,8 +205,10 @@ public class ResourceOptionsLabelProcessorTest
         when(node.hasProperty(LABEL_PROPERTY)).thenReturn(false);
         when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
 
-        Assert.assertThrows(NullPointerException.class,
-            () -> this.resourceOptionsLabelProcessor.leave(node, json, mock(Function.class)));
+        this.resourceOptionsLabelProcessor.leave(node, json, mock(Function.class));
+
+        // A label that cannot be computed must not break the serialization of the rest of the resource
+        Assert.assertFalse(json.build().containsKey(LABEL_PROPERTY));
     }
 
     @Before

@@ -97,6 +97,22 @@
       "dataType": "computed",
       "expression": "return @{text_question:-2023-01-01}"
     }
+  },
+  "from_date_to_computed_section": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section From Date",
+    "date_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Date Question",
+      "dataType": "date"
+    },
+    "month_computed_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Month Computed Question",
+      "dataType": "long",
+      "expression": "return (new Date(@{date_question}).getMonth())",
+      "entryMode": "computed"
+    }
   }
 }
 
