@@ -30,11 +30,6 @@
   <packaging>bundle</packaging>
   <name>CARDS - The aggregated frontend files</name>
 
-  <properties>
-    <node.executable>${project.basedir}/src/main/frontend/node/node</node.executable>
-    <yarn.script>${project.basedir}/src/main/frontend/node/yarn/dist/bin/yarn.js</yarn.script>
-  </properties>
-
   <build>
     <plugins>
       <!-- Run Python script to consolidate webpack.js and package.json files of all modules -->
@@ -57,41 +52,6 @@
             <goals>
                <goal>exec</goal>
             </goals>
-          </execution>
-          <!-- Install Playwright browser binaries before running e2e tests -->
-          <execution>
-            <id>playwright-install-browsers</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>${node.executable}</executable>
-              <workingDirectory>src/main/frontend/</workingDirectory>
-              <arguments>
-                <argument>${yarn.script}</argument>
-                <argument>playwright</argument>
-                <argument>install</argument>
-              </arguments>
-              <skip>${skipTests}</skip>
-            </configuration>
-          </execution>
-          <!-- Run Playwright e2e tests -->
-          <execution>
-            <id>playwright-e2e-tests</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>${node.executable}</executable>
-              <workingDirectory>src/main/frontend/</workingDirectory>
-              <arguments>
-                <argument>${yarn.script}</argument>
-                <argument>test:e2e</argument>
-              </arguments>
-              <skip>${skipTests}</skip>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -142,9 +102,6 @@
                 <exclude>**/yarn.lock</exclude>
                 <exclude>**/package.json</exclude>
                 <exclude>**/tsconfig.json</exclude>
-                <!-- Playwright -->
-                <exclude>**/playwright.config.*</exclude>
-                <exclude>**/e2e/**</exclude>
               </excludes>
             </fileset>
           </filesets>

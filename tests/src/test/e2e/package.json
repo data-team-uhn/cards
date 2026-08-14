@@ -1,0 +1,30 @@
+{
+  "name": "cards-integration-tests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "End-to-end tests driving a real CARDS instance through a browser.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "playwright test",
+    "check-results": "node support/check-results.mjs",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report ../../../target/e2e-report",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "9.24.0",
+    "@playwright/test": "1.56.1",
+    "@stylistic/eslint-plugin": "5.10.0",
+    "@types/node": "24.9.2",
+    "@typescript-eslint/eslint-plugin": "8.66.0",
+    "@typescript-eslint/parser": "8.66.0",
+    "eslint": "9.24.0",
+    "eslint-plugin-import": "2.32.0",
+    "eslint-plugin-unused-imports": "4.4.1",
+    "globals": "16.5.0",
+    "typescript": "6.0.3"
+  }
+}

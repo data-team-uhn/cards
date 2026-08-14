@@ -20,7 +20,7 @@
 import { Page } from '@playwright/test';
 
 import type { User } from '../../config/users';
-import { LoginPage } from '../../pages/login-page';
+import { LoginPage } from '../../pages/login.page';
 
 export async function loginAs(page: Page, credentials: User) {
   const loginPage = new LoginPage(page);

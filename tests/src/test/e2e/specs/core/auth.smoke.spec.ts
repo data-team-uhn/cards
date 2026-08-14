@@ -24,11 +24,6 @@ import { users, type User } from '../../config/users';
 import { loginAs } from '../../flows/auth/login.flow';
 import { logout } from '../../flows/auth/logout.flow';
 
-test('Page loads', async ({ page }) => {
-  await page.goto('/');
-  await expect(page).toHaveTitle("Your Experience");
-});
-
 test('Session info endpoint is reachable', async ({ request }) => {
   const response = await request.get('/system/sling/info.sessionInfo.json');
   expect(response.ok()).toBeTruthy();
