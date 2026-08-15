@@ -117,6 +117,18 @@
         "io.uhndata.cards.patient-portal:SurveyFirstOpenedListener=[survey-tracker]",
         "io.uhndata.cards.patient-portal:MetricLogger=[cards-metrics]"
       ]
+    },
+    // The survey tracker, filling in the Submitted, Invitation and other dates in SurveyEvents.
+    "io.uhndata.cards.patients.surveytracker.SurveyTracker":{
+      "trackSubmissions": true,
+      "trackEmails": true
+    },
+    // Submission event listener, incrementing the submission metrics.
+    "io.uhndata.cards.patients.submissioncounter.SubmissionCounter~SurveysSubmitted":{
+      "name": "Patient Survey Completion Listener",
+      "submittedFlagPath": "/Questionnaires/Visit information/surveys_submitted",
+      "linkingSubjectType": "/SubjectTypes/Patient/Visit",
+      "excludedQuestionnaires": ["/Questionnaires/Survey events"]
     }
   }
 }
