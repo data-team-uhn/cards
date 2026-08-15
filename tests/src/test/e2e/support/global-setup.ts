@@ -34,6 +34,25 @@ const AUTHORIZATION = `Basic ${Buffer.from("admin:admin").toString("base64")}`;
 const BLOCKING_STATUSES = ["CRITICAL", "HEALTH_CHECK_ERROR", "TEMPORARILY_UNAVAILABLE"];
 
 /**
+ * Which health checks have to be satisfied.
+ *
+ * `cards` is the platform's own set. `bundles` adds "Bundles Started" and, more importantly, "Bundle
+ * Content Loaded" — the platform's own answer to whether every bundle's initial content has finished
+ * installing, which is precisely the race a suite hits when it asserts on content a module ships. Asking
+ * the platform beats naming paths by hand: it covers every bundle rather than the one somebody thought to
+ * list.
+ */
+const HEALTH_TAGS = "cards,bundles";
+
+/**
+ * The number of checks is itself a readiness signal. The health servlet answers as soon as it is up,
+ * while the checks are still registering, so an early call returns a short all-OK list that means nothing
+ * — one observed run saw a single check pass while the one that later reported CRITICAL had not
+ * registered yet. Waiting for the full set closes that window.
+ */
+const EXPECTED_CHECK_COUNT = 6;
+
+/**
  * Whether an instance is ready to be tested.
  *
  * The launcher plugin only waits for the OSGi framework to come up, which happens well before the
@@ -47,14 +66,18 @@ const BLOCKING_STATUSES = ["CRITICAL", "HEALTH_CHECK_ERROR", "TEMPORARILY_UNAVAI
  */
 const isReady = async (instance: ActiveInstance): Promise<boolean> => {
   try {
-    const health = await fetch(`${instance.baseURL}/system/health.json?tags=cards`, {
+    const health = await fetch(`${instance.baseURL}/system/health.json?tags=${HEALTH_TAGS}`, {
       headers: { Authorization: AUTHORIZATION },
     });
     if (!health.ok) {
       return false;
     }
     const body = (await health.json()) as { results?: { status?: string }[] };
-    if ((body.results ?? []).some(result => BLOCKING_STATUSES.includes(result.status ?? ""))) {
+    const results = body.results ?? [];
+    if (results.length < EXPECTED_CHECK_COUNT) {
+      return false;
+    }
+    if (results.some(result => BLOCKING_STATUSES.includes(result.status ?? ""))) {
       return false;
     }
     const loginPage = await fetch(`${instance.baseURL}/login`);
@@ -73,6 +96,53 @@ const isReady = async (instance: ActiveInstance): Promise<boolean> => {
   }
 };
 
+/**
+ * Why an instance is still not ready, in the words of whatever is unhappy.
+ *
+ * Only ever called once, on the way to throwing. Worth the extra request: "health checks not passing"
+ * sends whoever reads it off to launch an instance by hand to find out which one, and the answer is
+ * sitting in a response the setup already knows how to fetch.
+ */
+const describeNotReady = async (instance: ActiveInstance): Promise<string> => {
+  try {
+    const health = await fetch(`${instance.baseURL}/system/health.json?tags=${HEALTH_TAGS}`, {
+      headers: { Authorization: AUTHORIZATION },
+    });
+    if (!health.ok) {
+      return `the health endpoint answered ${health.status}`;
+    }
+    const body = (await health.json()) as {
+      results?: { name?: string; status?: string; messages?: { message?: string }[] }[];
+    };
+    const results = body.results ?? [];
+    const blocking = results.filter(result => BLOCKING_STATUSES.includes(result.status ?? ""));
+    if (blocking.length > 0) {
+      return blocking
+        .map(result => {
+          const detail = (result.messages ?? []).map(message => message.message).filter(Boolean).join("; ");
+          return `${result.name}: ${result.status}${detail ? ` (${detail})` : ""}`;
+        })
+        .join(", ");
+    }
+    if (results.length < EXPECTED_CHECK_COUNT) {
+      return `only ${results.length} of ${EXPECTED_CHECK_COUNT} health checks have registered`;
+    }
+    const unreadable = await Promise.all(
+      (instance.readyPaths ?? []).map(async path => {
+        const response = await fetch(`${instance.baseURL}${path}`);
+        return response.ok ? null : `${path} answered ${response.status} anonymously`;
+      }),
+    );
+    const paths = unreadable.filter(Boolean);
+    if (paths.length > 0) {
+      return paths.join(", ");
+    }
+    return "the sign-in page is not being served";
+  } catch (error) {
+    return `no response (${String(error)})`;
+  }
+};
+
 const waitFor = async (instance: ActiveInstance): Promise<void> => {
   const deadline = Date.now() + READY_TIMEOUT_MS;
   let lastError = "no response";
@@ -80,7 +150,7 @@ const waitFor = async (instance: ActiveInstance): Promise<void> => {
     if (await isReady(instance)) {
       return;
     }
-    lastError = "health checks not passing";
+    lastError = await describeNotReady(instance);
     await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL_MS));
   }
   throw new Error(

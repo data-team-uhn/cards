@@ -18,8 +18,13 @@
 {
   "bundles":[
     {
+      // 26, not 15: this bundle imports io.uhndata.cards.{subjects.api,forms.api,utils}, all of which are
+      // exported at 25, so starting it at 15 asked for it to come up before the packages it needs were
+      // available. Every comparable module sits at 25 or 26. Found by analyse-features once this feature
+      // was aggregated into test_tar; it went unnoticed for as long as it did because the start script
+      // composes this feature at launch time, where nothing validates the combination.
       "id":"${project.groupId}:${project.artifactId}:${project.version}",
-      "start-order":"15"
+      "start-order":"26"
     }
   ],
   "configurations":{

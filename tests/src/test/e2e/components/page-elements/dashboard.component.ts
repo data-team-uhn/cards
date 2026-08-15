@@ -36,6 +36,9 @@ export class Dashboard {
 
   async goto() {
     await this.page.goto('/content.html/Questionnaires/User');
+    // Navigating is not the same as being usable. Callers go straight on to click something, and a click
+    // that lands before this React application is interactive is silently swallowed.
+    await this.expectLoaded();
   }
 
   async expectLoaded() {
@@ -47,15 +50,36 @@ export class Dashboard {
     }
   }
 
+  /**
+   * Clicks something that reveals something else, and does not believe the first click until the second
+   * thing appears.
+   *
+   * Playwright's actionability checks say a button is visible, stable and hit-testable; none of that means
+   * React has bound its handler yet, so an early click is accepted by the DOM and then does nothing. That
+   * is what made the narrow-viewport logout intermittently hang for the full test timeout: the drawer
+   * button was clicked, the drawer never opened, and the wait for the sign-out item inside it could never
+   * be satisfied. Retrying the click is the fix Playwright documents for exactly this; the assertion in
+   * between is what makes a swallowed click observable at all.
+   */
+  private async clickUntilRevealed(trigger: Locator, revealed: Locator) {
+    await expect(async () => {
+      await trigger.click();
+      await expect(revealed).toBeVisible({ timeout: 2_000 });
+    }).toPass({ timeout: 30_000 });
+  }
+
   async logout() {
     const size = await this.page.viewportSize();
     if (size && size.width < 900) {
-      await this.openDrawerButton.click();
+      await this.clickUntilRevealed(this.openDrawerButton, this.navbarLogoutButton);
       await this.navbarLogoutButton.click();
     } else {
-      await this.adminAvatarButton.click();
+      await this.clickUntilRevealed(this.adminAvatarButton, this.logoutButton);
       await this.logoutButton.click();
     }
-    await this.page.waitForLoadState('networkidle');
+    // Waiting for the page logging out leads to, rather than for the network to fall quiet: `networkidle`
+    // is discouraged precisely because an application that polls never reaches it, and it says nothing
+    // about whether the logout took effect.
+    await this.page.waitForURL(/\/login/);
   }
 }

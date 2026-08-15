@@ -19,6 +19,8 @@
 
 import { test, expect } from '@playwright/test';
 
+import { TEST_DATA_ONLY_PATHS, adminHeaders } from '../../config/test-data';
+
 /**
  * The application name a stock instance carries, which is what every page title is built from. It is the
  * `app.name` property in the root POM, and a project distribution is expected to override it -- so this
@@ -50,4 +52,22 @@ test('the browser is shown the homepage at the context root', async ({ page }) =
   await page.goto('/');
 
   await expect(page).toHaveTitle(APP_NAME);
+});
+
+/**
+ * The mirror image of the test-data suite's assertions: none of the test content is here.
+ *
+ * This is what actually tells the two instances apart, and so what would catch both suites being pointed
+ * at the same one — the failure that would otherwise turn the whole test-data suite green for the wrong
+ * reason. Asserted as 404 rather than "not ok", so that a 500 from a broken instance cannot pass for an
+ * absent node.
+ */
+test.describe('the bare distribution', () => {
+  for (const { path, description } of TEST_DATA_ONLY_PATHS) {
+    test(`does not carry ${description}`, async ({ request }) => {
+      const response = await request.get(path, { headers: adminHeaders() });
+
+      expect(response.status()).toBe(404);
+    });
+  }
 });

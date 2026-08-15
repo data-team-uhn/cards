@@ -15,9 +15,10 @@ mvn clean install -PintegrationTests     # builds everything, then runs these
 
 Each suite gets **its own instance, launched from its own aggregated feature**, on its own reserved port:
 
-| Suite  | Feature    | Instance                                                                 |
-|--------|------------|--------------------------------------------------------------------------|
-| `core` | `core_tar` | The distribution `./start_cards.sh` launches, with no content beyond what the modules ship |
+| Suite       | Feature    | Instance                                                            |
+|-------------|------------|---------------------------------------------------------------------|
+| `core`      | `core_tar` | The distribution `./start_cards.sh` launches, with no content beyond what the modules ship |
+| `test-data` | `test_tar` | That distribution plus the test questionnaires and the features they exercise, so every feature has something to show |
 
 The instance is started by the [Sling feature launcher Maven plugin][launcher] — the same launcher
 `start_cards.py` uses, pointed at the same published artifacts, so what the tests drive is the real
@@ -34,24 +35,33 @@ execution, and an entry in `src/test/e2e/support/instances.ts`. The specs then g
 after it.
 
 The catch is the feature. The launcher plugin can only be pointed at **one** feature, so a suite that
-needs more than the core distribution — the questionnaires and modules that `start_cards.py --test`
-composes at launch time, say — needs those combined into an aggregate of its own in
-`distribution/slingfeature` first. That turns out to be the better answer anyway: what a test run
-exercised is then one versioned coordinate, and `analyse-features` validates the combination at build time
-instead of it failing at startup.
+needs more than the core distribution needs those features combined into an aggregate of its own in
+`distribution/slingfeature` first — `test_tar` is exactly that, holding the same set `start_cards.py`
+composes at launch time for `--test`, and deliberately the same set, so that what CI runs and what a
+developer runs by hand cannot drift apart.
+
+That is a better answer than launch-time composition anyway: what a test run exercised is one versioned
+coordinate, and `analyse-features` validates the combination at build time instead of it failing at
+startup. It earned its keep immediately — building `test_tar` for the first time failed on a real
+start-order defect in `cards-locking` that had been shipping unnoticed, because nothing validates the set
+the start script assembles.
+
+**Each suite must assert what makes its instance different.** `config/test-data.ts` lists the content that
+exists on `test_tar` and not on `core_tar`; the test-data suite asserts each path present, and the core
+suite asserts each one 404. Without that second half, pointing both suites at the same instance would turn
+the whole test-data suite green for the wrong reason, and nothing else would notice.
 
 ## Running one suite
 
 Each suite has a skip property that turns off both its launch and its Playwright project:
 
 ```
-mvn clean install -PintegrationTests -Dit.core.skip=true
+mvn clean install -PintegrationTests -Dit.testdata.skip=true
 ```
 
-That is how a CI matrix should run them once there is more than one: an instance per job keeps peak memory
-to a single instance rather than all of them at once. With `core` the only suite, skipping it leaves
-nothing to run, and the build says so rather than reporting a vacuous success — to not run these at all,
-leave the `integrationTests` profile off.
+That is how a CI matrix should run them: an instance per job keeps peak memory to one instance rather than
+all of them at once. Skipping *every* suite leaves nothing to run, and the build says so rather than
+reporting a vacuous success — to not run these at all, leave the `integrationTests` profile off.
 
 ## Watching it, debugging it, picking browsers
 
@@ -87,6 +97,7 @@ cd src/test/e2e
 yarn install
 yarn playwright install chromium
 CARDS_CORE_URL=http://localhost:8080 yarn test --project=core-chromium
+CARDS_TESTDATA_URL=http://localhost:8081 yarn test --project=test-data-chromium
 CARDS_CORE_URL=http://localhost:8080 yarn test:ui           # watch mode, time-travel debugging
 CARDS_CORE_URL=http://localhost:8080 yarn test:headed       # a real browser window
 CARDS_CORE_URL=http://localhost:8080 yarn test:debug        # the Playwright Inspector
