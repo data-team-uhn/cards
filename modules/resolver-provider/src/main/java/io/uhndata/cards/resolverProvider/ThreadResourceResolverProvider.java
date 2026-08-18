@@ -17,6 +17,8 @@
 package io.uhndata.cards.resolverProvider;
 
 import org.apache.sling.api.resource.ResourceResolver;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Wrapper around {@code ResourceResolverFactory.getThreadResourceResolver()} that allows explicitly setting a new
@@ -41,6 +43,7 @@ public interface ThreadResourceResolverProvider
      *
      * @return a resource resolver or {@code null}
      */
+    @Nullable
     ResourceResolver getThreadResourceResolver();
 
     /**
@@ -49,7 +52,7 @@ public interface ThreadResourceResolverProvider
      *
      * @param resolver a new resource resolver to be used in this thread until
      */
-    void push(ResourceResolver resolver);
+    void push(@NotNull ResourceResolver resolver);
 
     /**
      * Remove the latest resource resolver set for this thread.
