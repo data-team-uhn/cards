@@ -17,12 +17,11 @@
 //  under the License.
 //
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { TextField } from "@mui/material";
 import GlobalStyles from '@mui/material/GlobalStyles';
 import PropTypes from "prop-types";
-import { usePlacesWidget } from "react-google-autocomplete";
 
 import { checkPropTypes } from "../propTypes";
 import questionEditorHints from './AddressQuestion-editor-hints.json';
@@ -48,6 +47,32 @@ fetch(APIKEY_SERVLET_URL)
   .catch((error) => {
     console.error("Error fetching GoogleApiKey node: " + error);
   });
+
+
+// Loads the Google Maps API, at most once per page, and reports when it is actually usable.
+// Google expects `loading=async`, and warns about suboptimal loading without it. Since the script then only
+// bootstraps the API and fetches the requested libraries afterwards, its load event comes too early to be of
+// any use; the only reliable signal that the API is ready is the callback that it invokes itself.
+const MAPS_API_URL = "https://maps.googleapis.com/maps/api/js";
+const MAPS_API_CALLBACK = "cardsGoogleMapsApiLoaded";
+let mapsApiPromise;
+
+const loadMapsApi = () => {
+  mapsApiPromise ||= new Promise((resolve, reject) => {
+    window[MAPS_API_CALLBACK] = resolve;
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `${MAPS_API_URL}?${new URLSearchParams({
+      key: googleApiKey,
+      libraries: "places",
+      loading: "async",
+      callback: MAPS_API_CALLBACK,
+    })}`;
+    script.onerror = () => reject(new Error("the Google Maps API script could not be loaded"));
+    document.head.appendChild(script);
+  });
+  return mapsApiPromise;
+};
 
 
 // Easy way to overwrite global CSS styles using theme
@@ -123,11 +148,38 @@ function AddressQuestion(props) {
   if (searchPlacesAround) {
     options.bounds = searchPlacesAround;
   }
-  const { ref: materialRef } = usePlacesWidget({
-    apiKey: googleApiKey,
-    onPlaceSelected: (place) => setAddress(place.formatted_address),
-    options: options,
-  });
+  // The suggestions are served by a Google widget bound to the text field below. The widget can only drive a
+  // real <input>, which is why that field must not be multiline.
+  const inputRef = useRef(null);
+  useEffect(() => {
+    let discarded = false;
+    let listener;
+    loadMapsApi()
+      .then(() => {
+        if (discarded || !inputRef.current) {
+          return;
+        }
+        const autocomplete = new google.maps.places.Autocomplete(inputRef.current, options);
+        // Attaching the widget resets the input to autocomplete="off", which Chrome ignores for address
+        // fields, so its own autofill dropdown would cover the suggestions. It does honour "new-password".
+        inputRef.current.autocomplete = "new-password";
+        listener = autocomplete.addListener("place_changed", () => {
+          // Accepting the typed text instead of picking a suggestion yields a place without an address
+          const selectedAddress = autocomplete.getPlace()?.formatted_address;
+          if (selectedAddress) {
+            setAddress(selectedAddress);
+          }
+        });
+      })
+      .catch((error) => {
+        console.error("Address autocompletion is disabled: " + error);
+        setIsValidApi(false);
+      });
+    return () => {
+      discarded = true;
+      listener?.remove();
+    };
+  }, []);
 
   // If google API authentication problem emerges due to to the invalid key or key with disabled Places service
   useEffect(() => {
@@ -135,7 +187,6 @@ function AddressQuestion(props) {
       console.error("Error in Google API authentication");
       setIsValidApi(false);
     };
-    // Cleanup: restore original handler if it existed, or remove ours
     return () => {
       delete window.gm_authFailure;
     };
@@ -152,13 +203,15 @@ function AddressQuestion(props) {
     >
       {inputGlobalStyles}
       <TextField
-        className="cards-answerTextField"
-        multiline
-        maxRows={4}
+        fullWidth
         variant="standard"
         onChange={event => setAddress(event.target.value)}
         value={address}
-        inputRef={materialRef}
+        inputRef={inputRef}
+        slotProps={{
+          // Also set declaratively, to cover the window before the widget attaches
+          htmlInput: { autoComplete: "new-password" },
+        }}
       />
       <Answer
         answers={[["value", address]]}
