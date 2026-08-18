@@ -24,19 +24,21 @@ setlocal
 
 cd /d "%~dp0"
 
+@REM -u keeps the start messages unbuffered, so that they still appear as startup progresses
+@REM when the output is redirected to a file instead of a terminal
 where /q py
 if errorlevel 1 goto TryPython
 @REM The launcher may be present without any Python 3 behind it; probe before delegating,
 @REM so that we can still fall through to a standalone `python`
 py -3 --version >nul 2>&1
 if errorlevel 1 goto TryPython
-py -3 start_cards.py %*
+py -3 -u start_cards.py %*
 exit /b %errorlevel%
 
 :TryPython
 where /q python
 if errorlevel 1 goto NoPython
-python start_cards.py %*
+python -u start_cards.py %*
 exit /b %errorlevel%
 
 :NoPython
