@@ -3,12 +3,20 @@ name: Run only the SMTPS CI test
 on:
   workflow_dispatch:
 
+# Nothing here writes back to GitHub.
+permissions:
+  contents: read
+
 jobs:
   smtpstest:
     runs-on: ubuntu-latest
     steps:
       - name: Code Checkout
         uses: actions/checkout@v7
+        with:
+          # Nothing after this step talks to git, so the credential has no reason to stay in
+          # .git/config, where the Maven and yarn downloads that follow could read it.
+          persist-credentials: false
       - name: Install Dependencies
         uses: ./.github/actions/install-ci-dependencies
       - name: Build CARDS

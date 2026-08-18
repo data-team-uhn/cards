@@ -5,6 +5,11 @@ on:
   release:
     types: [published]
 
+# The demo server is marked over its own API, with its own credentials; nothing here writes back
+# to GitHub.
+permissions:
+  contents: read
+
 jobs:
   markupgrade:
     runs-on: ubuntu-latest

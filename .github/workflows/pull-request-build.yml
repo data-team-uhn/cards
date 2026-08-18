@@ -8,6 +8,12 @@ on:
   push:
     branches: [main]
 
+# The build only reads the repository; nothing here writes back to GitHub. Stating that keeps the
+# token read-only whatever the organization-wide default is, including on the push builds, which
+# unlike pull requests from forks are not restricted automatically.
+permissions:
+  contents: read
+
 # Newer commits on the same PR supersede the running build; main builds are never cancelled
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -23,6 +29,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          # Nothing after this step talks to git, so the credential has no reason to stay in
+          # .git/config, where the Maven and yarn downloads that follow could read it.
+          persist-credentials: false
 
       - name: Set up Java
         uses: actions/setup-java@v5
