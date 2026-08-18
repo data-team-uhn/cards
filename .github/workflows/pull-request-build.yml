@@ -6,7 +6,7 @@ on:
   # Also verify the actual merge results: two individually green PRs can still
   # conflict semantically once combined on the main branch
   push:
-    branches: [main]
+    branches: [dev, main, master]
 
 # The build only reads the repository; nothing here writes back to GitHub. Stating that keeps the
 # token read-only whatever the organization-wide default is, including on the push builds, which
