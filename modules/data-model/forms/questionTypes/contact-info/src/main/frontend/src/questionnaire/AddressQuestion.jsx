@@ -19,8 +19,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { TextField } from "@mui/material";
-import GlobalStyles from '@mui/material/GlobalStyles';
+import { Autocomplete, TextField } from "@mui/material";
 import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
@@ -49,16 +48,16 @@ fetch(APIKEY_SERVLET_URL)
   });
 
 
-// Loads the Google Maps API, at most once per page, and reports when it is actually usable.
-// Google expects `loading=async`, and warns about suboptimal loading without it. Since the script then only
-// bootstraps the API and fetches the requested libraries afterwards, its load event comes too early to be of
-// any use; the only reliable signal that the API is ready is the callback that it invokes itself.
+// Loads the Google Maps API, at most once per page, and resolves with its Places library.
+// Google expects the `loading=async` bootstrap parameter, and warns about suboptimal loading without it.
+// Since the script then only bootstraps the API and fetches the requested libraries afterwards, its load
+// event comes too early to be of any use; the only signal that the API is ready is the callback it invokes.
 const MAPS_API_URL = "https://maps.googleapis.com/maps/api/js";
 const MAPS_API_CALLBACK = "cardsGoogleMapsApiLoaded";
-let mapsApiPromise;
+let placesLibraryPromise;
 
-const loadMapsApi = () => {
-  mapsApiPromise ||= new Promise((resolve, reject) => {
+const loadPlacesLibrary = () => {
+  placesLibraryPromise ||= new Promise((resolve, reject) => {
     window[MAPS_API_CALLBACK] = resolve;
     const script = document.createElement("script");
     script.async = true;
@@ -70,46 +69,19 @@ const loadMapsApi = () => {
     })}`;
     script.onerror = () => reject(new Error("the Google Maps API script could not be loaded"));
     document.head.appendChild(script);
-  });
-  return mapsApiPromise;
+  }).then(() => google.maps.places);
+  return placesLibraryPromise;
 };
 
+// Every request for suggestions is billed, so wait for a pause in the typing before asking Google.
+// The same delay as the other search inputs in CARDS.
+const SUGGESTION_DELAY = 500;
 
-// Easy way to overwrite global CSS styles using theme
-// Styling Google Map Autocomplete dropdown list
-// see details https://developers.google.com/maps/documentation/javascript/place-autocomplete#style-autocomplete
-const inputGlobalStyles = <GlobalStyles
-  styles={(theme) => ({
-    body: {
-      // to remove the "Powered by Google" logo from the bottom of the Google Map Autocomplete dropdown list
-      "& .pac-container:after": {
-        backgroundImage: "none !important",
-        height: 0,
-        padding: 0,
-        margin: 0,
-      },
-      "& .pac-item-query": {
-        // see https://mui.com/material-ui/customization/default-theme/?expand-path=$.typography
-        fontFamily: `${theme.typography.fontFamily}  !important`,
-        fontSize: theme.typography.htmlFontSize
-      },
-      "& .pac-matched": {
-        fontWeight: theme.typography.fontWeightRegular,
-      },
-      "& .pac-item": {
-        fontFamily: `${theme.typography.fontFamily} !important`,
-        fontSize: theme.typography.htmlFontSize,
-        lineHeight: `${theme.spacing(5)} !important`,
-      },
-      // remove the place pin icon from the dropdown list items
-      "& .pac-icon": {
-        display : "none",
-      }
-    }
-  })}
-/>
+// The legacy API had an "address" type collection; the new one only has `(regions)` and `(cities)`, so the
+// individual place types that together make up a precise postal address have to be listed. At most 5 fit.
+const ADDRESS_TYPES = ["street_address", "subpremise", "premise", "route"];
 
-// Component that renders a postal address question with suggestions powered by the Goole API.
+// Component that renders a postal address question with suggestions powered by the Google Places API.
 //
 // Sample usage:
 //
@@ -126,8 +98,19 @@ function AddressQuestion(props) {
 
   const defaultValue = questionDefinition.defaultValue;
   let currentStartValue = existingAnswer && existingAnswer[1].value || defaultValue || "";
+  // The answer, which is whatever is in the field: either free text or the address of a picked suggestion
   const [address, setAddress] = useState(currentStartValue);
+  // Only what the user typed, so that filling the field in from a suggestion doesn't ask for more suggestions
+  const [typedAddress, setTypedAddress] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const [isValidApi, setIsValidApi] = useState(true);
+  // A session token groups the keystrokes of one search and the selection they lead to into a single billable
+  // autocomplete session. Fetching the selected place's details closes the session, so the token is dropped
+  // then and the next search starts a new one.
+  const sessionToken = useRef(null);
+  // Set when Google refuses a request, for example because the Places API isn't enabled for this key, so that
+  // the failure is reported once instead of on every keystroke. The field remains usable as free text.
+  const suggestionsFailed = useRef(false);
 
   const countries = questionDefinition.countries?.split(/\s*,\s*/) || undefined;
   let searchPlacesAround = undefined;
@@ -138,48 +121,72 @@ function AddressQuestion(props) {
   } catch (e) {
     // No bounds
   }
-  let options = {
-    types: ["address"],
-    fields: ["formatted_address"]
-  };
-  if (countries) {
-    options.componentRestrictions = { country: countries };
-  }
-  if (searchPlacesAround) {
-    options.bounds = searchPlacesAround;
-  }
-  // The suggestions are served by a Google widget bound to the text field below. The widget can only drive a
-  // real <input>, which is why that field must not be multiline.
-  const inputRef = useRef(null);
+
+  // Load the API up front, so that a key that doesn't work falls back to a plain text question before the
+  // user starts typing rather than in the middle of it
   useEffect(() => {
+    loadPlacesLibrary().catch((error) => {
+      console.error("Address autocompletion is disabled: " + error);
+      setIsValidApi(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!typedAddress || suggestionsFailed.current) {
+      setSuggestions([]);
+      return;
+    }
     let discarded = false;
-    let listener;
-    loadMapsApi()
-      .then(() => {
-        if (discarded || !inputRef.current) {
-          return;
-        }
-        const autocomplete = new google.maps.places.Autocomplete(inputRef.current, options);
-        // Attaching the widget resets the input to autocomplete="off", which Chrome ignores for address
-        // fields, so its own autofill dropdown would cover the suggestions. It does honour "new-password".
-        inputRef.current.autocomplete = "new-password";
-        listener = autocomplete.addListener("place_changed", () => {
-          // Accepting the typed text instead of picking a suggestion yields a place without an address
-          const selectedAddress = autocomplete.getPlace()?.formatted_address;
-          if (selectedAddress) {
-            setAddress(selectedAddress);
+    const timer = setTimeout(() => {
+      loadPlacesLibrary()
+        .then(({ AutocompleteSessionToken, AutocompleteSuggestion }) => {
+          sessionToken.current ||= new AutocompleteSessionToken();
+          return AutocompleteSuggestion.fetchAutocompleteSuggestions({
+            input: typedAddress,
+            sessionToken: sessionToken.current,
+            includedPrimaryTypes: ADDRESS_TYPES,
+            ...(countries && { includedRegionCodes: countries }),
+            ...(searchPlacesAround && { locationBias: searchPlacesAround }),
+          });
+        })
+        .then((response) => {
+          if (!discarded) {
+            setSuggestions(response.suggestions);
+          }
+        })
+        .catch((error) => {
+          suggestionsFailed.current = true;
+          console.error("Cannot fetch address suggestions: " + error);
+          if (!discarded) {
+            setSuggestions([]);
           }
         });
-      })
-      .catch((error) => {
-        console.error("Address autocompletion is disabled: " + error);
-        setIsValidApi(false);
-      });
+    }, SUGGESTION_DELAY);
     return () => {
       discarded = true;
-      listener?.remove();
+      clearTimeout(timer);
     };
-  }, []);
+  }, [typedAddress]);
+
+  // Suggestions carry only the text that Google displays in the dropdown, so the address itself has to be
+  // fetched separately once one is picked
+  const selectSuggestion = (suggestion) => {
+    const prediction = suggestion.placePrediction;
+    setAddress(prediction.text.toString());
+    setSuggestions([]);
+    prediction.toPlace().fetchFields({ fields: ["formattedAddress"] })
+      .then((response) => {
+        if (response.place.formattedAddress) {
+          setAddress(response.place.formattedAddress);
+        }
+      })
+      .catch((error) => {
+        console.error("Cannot fetch the address of the selected place: " + error);
+      })
+      .finally(() => {
+        sessionToken.current = null;
+      });
+  };
 
   // If google API authentication problem emerges due to to the invalid key or key with disabled Places service
   useEffect(() => {
@@ -201,17 +208,42 @@ function AddressQuestion(props) {
       disableInstructions
       {...props}
     >
-      {inputGlobalStyles}
-      <TextField
+      <Autocomplete
+        freeSolo
         fullWidth
-        variant="standard"
-        onChange={event => setAddress(event.target.value)}
-        value={address}
-        inputRef={inputRef}
-        slotProps={{
-          // Also set declaratively, to cover the window before the widget attaches
-          htmlInput: { autoComplete: "new-password" },
+        options={suggestions}
+        // Google has already matched the input, so every suggestion it returned is worth showing
+        filterOptions={(options) => options}
+        getOptionLabel={(option) => typeof option === "string" ? option : option.placePrediction.text.toString()}
+        inputValue={address}
+        onInputChange={(event, value, reason) => {
+          setAddress(value);
+          // A "reset" is the field being filled in from a picked suggestion, not the user searching
+          if (reason !== "reset") {
+            setTypedAddress(value);
+          }
         }}
+        onChange={(event, value) => {
+          if (value && typeof value !== "string") {
+            selectSuggestion(value);
+          }
+        }}
+        renderOption={({ key, ...optionProps }, option) =>
+          // Two suggestions can share the same text, so the place identifier is the only reliable key
+          <li {...optionProps} key={option.placePrediction.placeId}>
+            { option.placePrediction.text.toString() }
+          </li>
+        }
+        renderInput={(params) =>
+          <TextField
+            {...params}
+            variant="standard"
+            slotProps={{
+              // Keep the browser's own autofill dropdown from covering the suggestions
+              htmlInput: { ...params.inputProps, autoComplete: "new-password" },
+            }}
+          />
+        }
       />
       <Answer
         answers={[["value", address]]}
