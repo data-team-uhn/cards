@@ -24,8 +24,10 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -94,9 +96,11 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
 
     private static final int QUERY_SIZE_MULTIPLIER = 10;
 
+    private static final String EQUALS = "=";
+
     // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
     private static final List<String> COMPARATORS =
-        Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain", "contains", " IS NULL",
+        Arrays.asList(EQUALS, "<>", "<", "<=", ">", ">=", "LIKE", "notes contain", "contains", " IS NULL",
             " IS NOT NULL");
 
     private static final String SUBJECT_IDENTIFIER = "cards:Subject";
@@ -359,19 +363,31 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
         final StringBuilder query =
             new StringBuilder("select distinct n.[jcr:uuid] from [").append(nodeType).append("] as n");
 
-        // The map that stores questionnaires uuids with prefixes in array and maps it to the
-        // corresponding group of questions uuids with their prefixes (stored in a map)
-        // To be used later on the filter query construction
+        // Resolve every filtered question to the questionnaire it belongs to, mapping each questionnaire to the query
+        // source holding its forms and to the list of its questions being filtered on. These drive both the sources
+        // and the conditions below, so they are computed once here.
+        final Map<String, String> questionnairesToFormSource = new LinkedHashMap<>();
+        final Map<String, List<Filter>> questionnairesToQuestions = new LinkedHashMap<>();
+        filters.forEach((type, values) -> mapFiltersToSources(nodeType, type, values, questionnairesToFormSource,
+            questionnairesToQuestions, session));
 
         // Add sources
         query.append(
             getQuerySources(
                 nodeType,
-                filters,
-                session));
+                questionnairesToFormSource,
+                questionnairesToQuestions));
 
         // Check only for the descendants of the requested homepage
         query.append(" where isdescendantnode(n, '" + request.getResource().getPath() + "')");
+
+        // Only forms of the questionnaires that the filtered questions belong to can possibly match
+        query.append(
+            getQuestionnaireConditions(
+                nodeType,
+                filters,
+                questionnairesToFormSource,
+                questionnairesToQuestions));
 
         // Full text search; \ and ' must be escaped
         final String fullTextFilter = request.getParameter("filter");
@@ -483,7 +499,7 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
     protected Map<FilterType, List<Filter>> parseFiltersFromRequest(final SlingJakartaHttpServletRequest request)
         throws IllegalArgumentException
     {
-        final Map<FilterType, List<Filter>> result = new HashMap<>();
+        final Map<FilterType, List<Filter>> result = new EnumMap<>(FilterType.class);
         for (FilterType filterType : FilterType.values()) {
             final String[] filters = request.getParameterValues(filterType.parameterName);
             if (filters == null) {
@@ -517,24 +533,18 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
     }
 
     /**
-     * Processes all the filters and creates the query's source.
+     * Creates the query's sources from the already resolved filters.
      *
      * @param nodeType the type of results to return, a node type like {@code cards:Form} or {@code cards:Subject}
-     * @param filters a list of filters
-     * @param session the current JCR session
+     * @param questionnairesToFormSource maps from a questionnaire's UUID to a form source identifier
+     * @param questionnairesToQuestions maps from a questionnaire's UUID to a list of answer filters that belong to it
      * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
      *         if there are no filters for descendant nodes
      */
     private String getQuerySources(final String nodeType,
-        final Map<FilterType, List<Filter>> filters, final Session session)
+        final Map<String, String> questionnairesToFormSource,
+        final Map<String, List<Filter>> questionnairesToQuestions)
     {
-        final Map<String, String> questionnairesToFormSource = new HashMap<>();
-        final Map<String, List<Filter>> questionnairesToQuestions = new HashMap<>();
-
-        // Resolve all questions to questionnaires and group them by questionnaires
-        filters.forEach((type, values) -> mapFiltersToSources(nodeType, type, values, questionnairesToFormSource,
-            questionnairesToQuestions, session));
-
         if (nodeType.equals(SUBJECT_IDENTIFIER)) {
             // Make joins per questionnaire/form, and per each question/answer in a form
             return createSubjectJoins(questionnairesToFormSource, questionnairesToQuestions);
@@ -746,7 +756,7 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
         final String nextDayStr = DateUtils.toString(thisDay.plusDays(1));
         String compareQuery;
         switch (operator) {
-            case "=":
+            case EQUALS:
                 compareQuery = String.format("(%s>='%s' and %s<'%s')",
                     queryProperty,
                     thisDayStr,
@@ -785,6 +795,41 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
                 break;
         }
         return compareQuery;
+    }
+
+    /**
+     * Restricts each form source to the questionnaire that the questions filtered on belong to. Answers only ever
+     * belong to forms of their own questionnaire, so this condition doesn't change which nodes match, but it lets the
+     * index discard all the forms of the other questionnaires before any join is evaluated, instead of scanning every
+     * form that has an answer to the filtered question.
+     *
+     * @param nodeType the targeted node type, e.g. {@code cards:Form} or {@code cards:Subject}
+     * @param filters the list of filters, used to detect the questionnaires that the request already restricts itself
+     * @param questionnairesToFormSource maps from a questionnaire's UUID to a form source identifier
+     * @param questionnairesToQuestions maps from a questionnaire's UUID to a list of answer filters that belong to it
+     * @return a query fragment, each condition including the starting " and ", for example
+     *         {@code  and n.'questionnaire'='e6b97318-f464-4bb2-82e8-b13df62d33f3'}; empty if there are no answer
+     *         filters, or if the questionnaires are already explicitly filtered for
+     */
+    private String getQuestionnaireConditions(final String nodeType, final Map<FilterType, List<Filter>> filters,
+        final Map<String, String> questionnairesToFormSource,
+        final Map<String, List<Filter>> questionnairesToQuestions)
+    {
+        // A questionnaire that the request already pins down doesn't need the same condition a second time
+        final Set<String> explicitlyFiltered = filters.values().stream()
+            .flatMap(List::stream)
+            .filter(filter -> QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
+                && EQUALS.equals(this.sanitizeComparator(filter.comparator)))
+            .map(filter -> filter.value)
+            .collect(Collectors.toSet());
+
+        return questionnairesToQuestions.keySet().stream()
+            .filter(questionnaire -> !explicitlyFiltered.contains(questionnaire))
+            .map(questionnaire -> String.format(" and %s.'questionnaire'='%s'",
+                // When listing subjects, the forms are a joined source; when listing forms, they are the target itself
+                SUBJECT_IDENTIFIER.equals(nodeType) ? questionnairesToFormSource.get(questionnaire) : "n",
+                this.sanitizeValue(questionnaire)))
+            .collect(Collectors.joining());
     }
 
     /**
@@ -928,7 +973,7 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
                 : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
             notEqual ? "not " : "",
             filter.source,
-            this.sanitizeComparator(notEqual ? "=" : filter.comparator),
+            this.sanitizeComparator(notEqual ? EQUALS : filter.comparator),
             this.sanitizeValue(filter.value));
     }
 
@@ -954,7 +999,7 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
     {
         if (!COMPARATORS.contains(comparator)) {
             // Invalid comparator: return '='
-            return "=";
+            return EQUALS;
         }
         return comparator;
     }

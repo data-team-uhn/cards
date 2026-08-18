@@ -30,6 +30,11 @@
   <packaging>bundle</packaging>
   <name>CARDS - Data entry module</name>
 
+  <properties>
+    <!-- Only the pagination servlet is covered by unit tests so far -->
+    <coverage.instructionRatio>0.16</coverage.instructionRatio>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -156,6 +161,15 @@
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
     </dependency>
   </dependencies>
 </project>
