@@ -78,7 +78,7 @@ export default function GoogleApiKeyAdminPage() {
     <AdminScreen title="Google API key configuration">
       <Grid container direction="column" spacing={5} justifyContent="space-around">
         <Grid>
-          <FormattedText>A Google API key enables access to Google services such as address autocomplete. You can obtain an API key at https://developers.google.com/maps/documentation/javascript/get-api-key.</FormattedText>
+          <FormattedText>A Google API key enables access to Google services such as address autocomplete. You can obtain an API key at https://developers.google.com/maps/documentation/javascript/get-api-key. Address autocomplete needs the **Places API (New)** enabled for the key; the legacy Places API is not used.</FormattedText>
         </Grid>
         { error && <Grid><Alert severity="error">{error}</Alert></Grid> }
         <Grid>
