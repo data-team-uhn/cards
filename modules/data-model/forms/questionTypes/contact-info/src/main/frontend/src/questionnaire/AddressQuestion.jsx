@@ -19,9 +19,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { Autocomplete, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import PropTypes from "prop-types";
 
+import Autocomplete from "../components/Autocomplete";
 import { checkPropTypes } from "../propTypes";
 import questionEditorHints from './AddressQuestion-editor-hints.json';
 import questionEditorConfig from './AddressQuestion-editor.json';
