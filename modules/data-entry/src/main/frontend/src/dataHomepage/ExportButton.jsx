@@ -37,13 +37,14 @@ import {
   IconButton,
   Tooltip
 } from "@mui/material";
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { createFilterOptions } from "@mui/material/Autocomplete";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
+import Autocomplete from "../components/Autocomplete";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { checkPropTypes } from "../propTypes";

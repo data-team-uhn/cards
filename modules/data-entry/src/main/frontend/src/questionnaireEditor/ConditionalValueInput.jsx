@@ -20,7 +20,6 @@
 import { useState } from "react";
 
 import {
-  Autocomplete,
   ListItemText,
   TextField,
   ToggleButton,
@@ -29,6 +28,7 @@ import {
 import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
+import Autocomplete from "../components/Autocomplete";
 import { checkPropTypes } from "../propTypes";
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";

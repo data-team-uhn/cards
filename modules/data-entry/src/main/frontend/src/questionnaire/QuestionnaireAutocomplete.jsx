@@ -34,11 +34,12 @@ import {
   TextField,
   Tooltip
 } from "@mui/material";
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { createFilterOptions } from "@mui/material/Autocomplete";
 import { deepPurple, orange } from '@mui/material/colors';
 import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
+import Autocomplete from "../components/Autocomplete";
 import FormattedText from "../components/FormattedText";
 import { checkPropTypes } from "../propTypes";
 
