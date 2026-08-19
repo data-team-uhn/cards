@@ -20,12 +20,13 @@
 import { useState, useEffect, useContext } from "react";
 
 import { TextField } from "@mui/material";
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { createFilterOptions } from "@mui/material/Autocomplete";
 import PropTypes from "prop-types";
 
 
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
+import Autocomplete from "../../components/Autocomplete";
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 import { checkPropTypes } from "../../propTypes";
 
