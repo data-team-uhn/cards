@@ -97,7 +97,16 @@
     "@babel/runtime" "^7.0.0"
     "@compiled/react" "^0.20.0"
 
-"@atlaskit/pragmatic-drag-and-drop@2.0.2", "@atlaskit/pragmatic-drag-and-drop@^2.0.0":
+"@atlaskit/pragmatic-drag-and-drop@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-3.0.0.tgz#90c3d701b500c16c043eca845fb228101ab06a50"
+  integrity sha512-EEKBELv757wrvhMHBAoFcXjfzGZ4Y2FJ2xnSsWovsOKywkN1Q4IWRH52hQpPmJnATLcmO9viVhoXWSXFBLKSLQ==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    bind-event-listener "^3.0.0"
+    raf-schd "^4.0.3"
+
+"@atlaskit/pragmatic-drag-and-drop@^2.0.0":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-2.0.2.tgz#3ab79e5b9f9f6b0c77754912f6173ecb8f5cfa3d"
   integrity sha512-ou1j+lBqutK7p2S80lMresJeKu9qAL1zr1K+N0OyCTzbMpD6pXRHray8VkRoHgJICI7Wp1fk5ScJh6EctyAuPw==
