@@ -74,5 +74,6 @@
     <module>variants</module>
     <module>locking</module>
     <module>healthcheck</module>
+    <module>epic-integration</module>
   </modules>
 </project>
