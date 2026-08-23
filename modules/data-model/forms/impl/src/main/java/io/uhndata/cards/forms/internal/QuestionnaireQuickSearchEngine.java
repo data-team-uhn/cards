@@ -67,7 +67,8 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
             SearchUtils.escapeQueryArgument(SearchUtils.escapeLikeText(textQuery.toLowerCase()));
         final StringBuilder xpathQuery = new StringBuilder();
         xpathQuery.append("/jcr:root/Questionnaires//*[")
-            .append("(@jcr:primaryType = 'cards:Questionnaire' or @jcr:primaryType = 'cards:Question') and ")
+            .append("(@jcr:primaryType = 'cards:Questionnaire' or @jcr:primaryType = 'cards:Question' ")
+            .append("or @jcr:primaryType = 'cards:AnswerOption') and ")
             .append("(jcr:like(fn:lower-case(@value),'%")
             .append(escapedQuery)
             .append("%') or jcr:like(fn:lower-case(@text),'%")
