@@ -223,29 +223,34 @@ function ExportButton(props) {
     if (hasAnswerLabels) {
       path += ".labels";
     }
+    // These six go in the query string rather than the path, because their values contain dots
+    const querySelectors = [];
     if (createdBy) {
-      path += ".dataFilter:createdBy=" + createdBy.replace('.', '%5C.');
+      querySelectors.push("dataFilter:createdBy=" + createdBy);
     }
     if (modifiedBy) {
-      path += ".dataFilter:modifiedBy=" + modifiedBy.replace('.', '%5C.');
+      querySelectors.push("dataFilter:modifiedBy=" + modifiedBy);
     }
     if (createdAfter) {
-      path += ".dataFilter:createdAfter=" + createdAfter.startOf('minute').toISO().replace('.', '%5C.');
+      querySelectors.push("dataFilter:createdAfter=" + createdAfter.startOf('minute').toISO());
     }
     if (createdBefore) {
-      path += ".dataFilter:createdBefore=" + createdBefore.startOf('minute').toISO().replace('.', '%5C.');
+      querySelectors.push("dataFilter:createdBefore=" + createdBefore.startOf('minute').toISO());
     }
     if (modifiedAfter) {
-      path += ".dataFilter:modifiedAfter=" + modifiedAfter.startOf('minute').toISO().replace('.', '%5C.');
+      querySelectors.push("dataFilter:modifiedAfter=" + modifiedAfter.startOf('minute').toISO());
     }
     if (modifiedBefore) {
-      path += ".dataFilter:modifiedBefore=" + modifiedBefore.startOf('minute').toISO().replace('.', '%5C.');
+      querySelectors.push("dataFilter:modifiedBefore=" + modifiedBefore.startOf('minute').toISO());
     }
     if (status) {
       let pref = `.dataFilter:${statusSelectionMode}=`;
       path += pref + encodeURIComponent(encodeURIComponent(status));
     }
     path += fileFormat;
+    if (querySelectors.length > 0) {
+      path += "?" + querySelectors.map(selector => "selector=" + encodeURIComponent(selector)).join("&");
+    }
     window.open(path, '_blank');
   }
 

@@ -38,11 +38,11 @@ Multiple different export formats are supported. These include:
 - `/Forms/<Form ID>.md` exports a Markdown-formatted view of a Form. Use `.txt` to export plain text instead.
 
 #### Example: Weekly OAIP Form Export
-`/Questionnaires/OAIP.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.csvReplaceColumnIds:%2540%253D%2523.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv`
+`/Questionnaires/OAIP.data.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.csvReplaceColumnIds:%2540%253D%2523.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv?selector=dataFilter:modifiedAfter%3D2025-07-19T02%3A00%3A00.000-05%3A00&selector=dataFilter:modifiedBefore%3D2025-07-26T02%3A00%3A00.000-05%3A00`
 - `/Questionnaires/OAIP`: Export the OAIP questionnaire
 - `.data`: Include the forms that answer this questionnaire
-- `.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00`: Files modified on or after 2 AM on July 19th, UTC-5. Since periods are used to seperate selectors, the period in the timestamp must be escaped with a `\`. This slash needs to be URL-encoded to `%5C`. The shorter format `2025-07-19` is also supported, and interpreted as Midnight (time `T00:00:00.000`) in the server's timezone.
-- `.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00`: Files modified before 2 AM on July 26th, UTC-5
+- `?selector=dataFilter:modifiedAfter=...`: Files modified on or after 2 AM on July 19th, UTC-5. **A timestamp contains a period, and periods separate selectors, so this one cannot go in the path**: escaping it would need a `\`, and Jetty refuses a path containing a backslash. It goes in a `selector` query parameter instead, where nothing splits on periods and so nothing needs escaping — see [Selectors in the query string](#selectors-in-the-query-string). The shorter format `2025-07-19` is also supported, and interpreted as Midnight (time `T00:00:00.000`) in the server's timezone.
+- `?selector=dataFilter:modifiedBefore=...`: Files modified before 2 AM on July 26th, UTC-5
 - `.dataFilter:status=SUBMITTED`: Only include forms with the `SUBMITTED` status flag
 - `.labels`: Use the human readable version of answers, instead of the raw data (eg. `Never` instead of `0`)
 - `.formToSurveyLinks`: Include the path to the relevant Survey Events form in the form data. This adds an `@survey` property, which is included in the export later
@@ -53,25 +53,25 @@ Multiple different export formats are supported. These include:
 - `.csv`: Export the data as a csv file.
 
 #### Example: Weekly Survey Event Form Export
-`/Questionnaires/Survey events.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.dataFilter:statusNot=INCOMPLETE.labels.csv`
+`/Questionnaires/Survey events.data.dataFilter:statusNot=INCOMPLETE.labels.csv?selector=dataFilter:modifiedAfter%3D2025-07-19T02%3A00%3A00.000-05%3A00&selector=dataFilter:modifiedBefore%3D2025-07-26T02%3A00%3A00.000-05%3A00`
 
 #### Example: Exporting all the data for a Visit as JSON
 `/Subjects/<MRN>/<Encounter ID>.data.deep.json`
 
 #### Example: Exporting a Patient and all the forms, from all their visits, that have been modified since the specified date, in a more compact JSON (`.bare`)
-`/Subjects/<MRN>.deep.data.dataFilter:modifiedAfter=2025-07-19.dataOption:descendantData=true.dataOption:formSelectors=deep%5C.bare.json`
+`/Subjects/<MRN>.deep.data.dataFilter:modifiedAfter=2025-07-19.dataOption:descendantData=true.json?selector=dataOption:formSelectors%3Ddeep.bare`
 - `.deep`: Include the Patient subject descendants, i.e. the visits
 - `.data`: Include the forms for these subjects
 - `dataFilter:modifiedAfter=2025-07-19`: Only include forms modified after the given date
 - `.dataOption:descendantData=true`: Also include forms for the descendant subjects
-- `dataOption:formSelectors=deep%5C.bare`: Apply a different set of selectors for serializing the forms. The separator dots must be escaped in order to not be considered as separators between the outer list of selectors.
+- `?selector=dataOption:formSelectors=deep.bare`: Apply a different set of selectors for serializing the forms. Its own separator periods would be read as separators of the outer list if this were written in the path, and escaping them needs a backslash the path cannot carry, so it goes in a `selector` query parameter.
 
 #### Example: Exports a Form with all its answers in a simplified form, with almost no metadata
 `/Forms/<Form ID>.deep.bare.-identify.-dereference.nolinks.-answerCopy.json`
 
 #### Notes on processors and filters
 - Processors and filters that expect a date to be provided can accept that date in a variety of formats. For example:
-    - `2025-01-01T02:00:00%5C.000-05:00`: A fully specified date, including date (Jan. 1), time (02:00:00), millisecond (.000), and timezone (-05:00)
+    - `2025-01-01T02:00:00.000-05:00`: A fully specified date, including date (Jan. 1), time (02:00:00), millisecond (.000), and timezone (-05:00). Because of the period, this form has to be given as a `selector` query parameter rather than in the path
     - `2025-01-01T02:00`: A simplified datetime, interpreted using the server's timezone
     - `2025-01-01`: A date, interpreted as midnight on that day in the server's timezone
 - Some processors are enabled by default. These processors can be disabled by including their name prefixed with a `-`. For example, `.-identify` would disable the `identify` processor. These default processors are labeled below with `Enabled by default`.
@@ -79,6 +79,29 @@ Multiple different export formats are supported. These include:
 - Some processors have multiple implementations under the same name. These instances are generally designed to accomplish the same goal, each working on specific data types or in specific situations, and enabling one of them will enable all of them.
 
 For the full list of available processors and filters, please refer to the next two sections of this document.
+
+### Selectors in the query string
+
+A selector can be given as a `selector` query parameter instead of being written into the path, and
+the parameter can be repeated, one whole selector per occurrence:
+
+```
+/Questionnaires/OAIP.data.csv?selector=dataFilter:modifiedAfter%3D2025-07-19T02%3A00%3A00.000-05%3A00
+```
+
+**This exists for the selectors that cannot be used in the path.** Periods separate selectors, so a selector whose
+own value contains one — an ISO timestamp, a user name, a nested list of selectors — would need to be escaped,
+conventionally with a backslash (`\.`). But modern servlets forbid a path containing a backslash,
+encoded or not, so those selectors have to travel in the query string. As an individual query parameter, it is not split on periods,
+which means **nothing needs escaping**: write the selector exactly as intended and percent-encode it
+once for the query string, the way any parameter value is encoded.
+
+Note the difference from the path form, which is encoded **twice**: a selector in the path is decoded
+by the container and again by the selector parser, so its value has to survive two passes. A selector
+in a query parameter is decoded only once, by the container.
+
+Query selectors are applied after the ones in the path, so where a selector can only be given once —
+a serialization depth, or an option like `dataOption:descendantData` — the one in the query wins.
 
 ## Processors
 ### answerCopy
@@ -197,15 +220,15 @@ Only show forms that belong to a user that has a 'Visit information' form for th
 ### clinicNot
 Exclude forms that belong to a user that has a 'Visit information' form for the specified clinic. If included multiple times, this excludes forms belonging to any of the specified clinics. e.g. `.dataFilter:clinicNot=PMH-YVM`.  
 ### createdAfter
-Only show results that were created on or after the requested datetime. e.g. `.dataFilter:createdAfter=2025-01-01T06:00:00%5C.000-05:00` for forms created after January 1, 2025 at 6 AM in the time zone UTC-5.  
+Only show results that were created on or after the requested datetime. e.g. `?selector=dataFilter:createdAfter=2025-01-01T06:00:00.000-05:00` for forms created after January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### createdBefore
-Only show results that were created before the requested datetime. e.g. `.dataFilter:createdBefore=2025-01-01T06:00:00%5C.000-05:00` for forms created before January 1, 2025 at 6 AM in the time zone UTC-5.  
+Only show results that were created before the requested datetime. e.g. `?selector=dataFilter:createdBefore=2025-01-01T06:00:00.000-05:00` for forms created before January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### createdBy
 Only show results that were created by the specified user. e.g. `.dataFilter:createdBy=admin`.  
 ### modifiedAfter
-Only show results that were modified on or after the requested datetime. e.g. `.dataFilter:modifiedAfter=2025-01-01T06:00:00%5C.000-05:00` for forms modified after January 1, 2025 at 6 AM in the time zone UTC-5.  
+Only show results that were modified on or after the requested datetime. e.g. `?selector=dataFilter:modifiedAfter=2025-01-01T06:00:00.000-05:00` for forms modified after January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### modifiedBefore
-Only show results that were modified before the requested datetime. e.g. `.dataFilter:modifiedBefore=2025-01-01T06:00:00%5C.000-05:00` for forms modified before January 1, 2025 at 6 AM in the time zone UTC-5.  
+Only show results that were modified before the requested datetime. e.g. `?selector=dataFilter:modifiedBefore=2025-01-01T06:00:00.000-05:00` for forms modified before January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### modifiedBy
 Only show results that were last modified by the specified user. e.g. `.dataFilter:modifiedBy=admin`.  
 ### notCreatedBy
