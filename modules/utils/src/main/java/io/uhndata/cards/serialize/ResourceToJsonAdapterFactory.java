@@ -58,6 +58,13 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  * {@code identify}, and {@code dereference} processors; to disable them, use their name prefixed by {@code -} in the
  * selectors, e.g. {@code /path/to/resource.-dereference.json}.
  *
+ * <p>
+ * A selector may also be passed as a {@code selector} <b>query parameter</b>, repeated once per selector:
+ * <code>https://server.example/path/to/resource.json?selector=deep&amp;selector=simple</code> means the same as
+ * {@code .deep.simple.json}. That exists for the selectors that cannot be used in a path, because they contain a dot
+ * or a slash/backslash. As a query parameter each selector is taken whole, so nothing needs escaping at all.
+ * </p>
+ *
  * @version $Id$
  */
 @Component(

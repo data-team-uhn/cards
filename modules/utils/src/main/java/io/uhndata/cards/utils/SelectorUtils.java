@@ -20,6 +20,7 @@ package io.uhndata.cards.utils;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,6 +40,12 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class SelectorUtils
 {
+    /**
+     * Selectors supplied by the request outside its path, set for the duration of one request by
+     * {@code SelectorParameterFilter}.
+     */
+    private static final ThreadLocal<List<String>> REQUEST_SELECTORS = new ThreadLocal<>();
+
     private SelectorUtils()
     {
         // Prevent instantiation of a utility class
@@ -54,7 +61,7 @@ public final class SelectorUtils
     public static List<String> parseSelectors(final String resolutionPathInfo)
     {
         if (StringUtils.isBlank(resolutionPathInfo)) {
-            return Collections.emptyList();
+            return requestSelectors();
         }
         // Parse the selectors string into individual selectors.
         // Split by unescaped dots. A backslash escapes a dot, but two backslashes are just one escaped backslash.
@@ -68,7 +75,7 @@ public final class SelectorUtils
         // Each backslash, except the \., is escaped twice, once as a special escape char inside a Java string, and
         // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
         // char inside a Java string, since it must retain its escaping meaning in the RegExp.
-        return Arrays
+        final List<String> fromPath = Arrays
             .asList(URLDecoder.decode(resolutionPathInfo, StandardCharsets.UTF_8)
                 .split("(?<=([^\\\\]|^)(\\\\\\\\){0,10})\\."))
             .stream()
@@ -85,7 +92,9 @@ public final class SelectorUtils
                 // Finally, unescape escaped backslashes
                 .replace("\\\\", "\\"))
             .filter(StringUtils::isNotBlank)
-            .collect(Collectors.toList());
+            .collect(Collectors.toCollection(ArrayList::new));
+        fromPath.addAll(requestSelectors());
+        return fromPath;
     }
 
     /**
@@ -99,7 +108,7 @@ public final class SelectorUtils
      */
     public static List<Pair<String, String>> parseOptions(final String optionPrefix, final String resolutionPathInfo)
     {
-        if (StringUtils.isAnyBlank(optionPrefix, resolutionPathInfo)) {
+        if (StringUtils.isBlank(optionPrefix)) {
             return Collections.emptyList();
         }
         final String prefix = Strings.CS.appendIfMissing(optionPrefix, ":");
@@ -133,5 +142,34 @@ public final class SelectorUtils
         Map<String, String> result = new HashMap<>();
         allOptions.stream().forEach(pair -> result.put(pair.getKey(), pair.getValue()));
         return result;
+    }
+
+    /**
+     * Record selectors that the current request supplied outside its path, so that every parse during this request
+     * includes them. The caller must {@link #clearRequestSelectors() clear} them when the request ends.
+     *
+     * @param selectors the selectors, each one whole and unescaped; blank ones are ignored
+     */
+    public static void setRequestSelectors(final List<String> selectors)
+    {
+        REQUEST_SELECTORS.set(selectors == null ? List.of()
+            : selectors.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList()));
+    }
+
+    /** Forget the selectors recorded for this thread. Must be called when the request ends, or they leak. */
+    public static void clearRequestSelectors()
+    {
+        REQUEST_SELECTORS.remove();
+    }
+
+    /**
+     * The selectors the current request supplied outside its path, empty outside a request that supplied any.
+     *
+     * @return the recorded selectors, never {@code null}
+     */
+    private static List<String> requestSelectors()
+    {
+        final List<String> recorded = REQUEST_SELECTORS.get();
+        return recorded == null ? List.of() : recorded;
     }
 }
