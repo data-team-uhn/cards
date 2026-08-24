@@ -38,7 +38,7 @@ Multiple different export formats are supported. These include:
 - `/Forms/<Form ID>.md` exports a Markdown-formatted view of a Form. Use `.txt` to export plain text instead.
 
 #### Example: Weekly OAIP Form Export
-`/Questionnaires/OAIP.data.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.csvReplaceColumnIds:%2540%253D%2523.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv?selector=dataFilter:modifiedAfter%3D2025-07-19T02%3A00%3A00.000-05%3A00&selector=dataFilter:modifiedBefore%3D2025-07-26T02%3A00%3A00.000-05%3A00`
+`/Questionnaires/OAIP.data.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.csvReplaceColumnIds:%2540%253D%2523.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv?selector=dataFilter:modifiedAfter=2025-07-19T02:00:00.000-05:00&selector=dataFilter:modifiedBefore=2025-07-26T02:00:00.000-05:00`
 - `/Questionnaires/OAIP`: Export the OAIP questionnaire
 - `.data`: Include the forms that answer this questionnaire
 - `?selector=dataFilter:modifiedAfter=...`: Files modified on or after 2 AM on July 19th, UTC-5. **A timestamp contains a period, and periods separate selectors, so this one cannot go in the path**: escaping it would need a `\`, and Jetty refuses a path containing a backslash. It goes in a `selector` query parameter instead, where nothing splits on periods and so nothing needs escaping — see [Selectors in the query string](#selectors-in-the-query-string). The shorter format `2025-07-19` is also supported, and interpreted as Midnight (time `T00:00:00.000`) in the server's timezone.
@@ -53,13 +53,13 @@ Multiple different export formats are supported. These include:
 - `.csv`: Export the data as a csv file.
 
 #### Example: Weekly Survey Event Form Export
-`/Questionnaires/Survey events.data.dataFilter:statusNot=INCOMPLETE.labels.csv?selector=dataFilter:modifiedAfter%3D2025-07-19T02%3A00%3A00.000-05%3A00&selector=dataFilter:modifiedBefore%3D2025-07-26T02%3A00%3A00.000-05%3A00`
+`/Questionnaires/Survey events.data.dataFilter:statusNot=INCOMPLETE.labels.csv?selector=dataFilter:modifiedAfter=2025-07-19T02:00:00.000-05:00&selector=dataFilter:modifiedBefore=2025-07-26T02:00:00.000-05:00`
 
 #### Example: Exporting all the data for a Visit as JSON
 `/Subjects/<MRN>/<Encounter ID>.data.deep.json`
 
 #### Example: Exporting a Patient and all the forms, from all their visits, that have been modified since the specified date, in a more compact JSON (`.bare`)
-`/Subjects/<MRN>.deep.data.dataFilter:modifiedAfter=2025-07-19.dataOption:descendantData=true.json?selector=dataOption:formSelectors%3Ddeep.bare`
+`/Subjects/<MRN>.deep.data.dataFilter:modifiedAfter=2025-07-19.dataOption:descendantData=true.json?selector=dataOption:formSelectors=deep.bare`
 - `.deep`: Include the Patient subject descendants, i.e. the visits
 - `.data`: Include the forms for these subjects
 - `dataFilter:modifiedAfter=2025-07-19`: Only include forms modified after the given date
@@ -86,7 +86,7 @@ A selector can be given as a `selector` query parameter instead of being written
 the parameter can be repeated, one whole selector per occurrence:
 
 ```
-/Questionnaires/OAIP.data.csv?selector=dataFilter:modifiedAfter%3D2025-07-19T02%3A00%3A00.000-05%3A00
+/Questionnaires/OAIP.data.csv?selector=dataFilter:modifiedAfter=2025-07-19T02:00:00.000-05:00
 ```
 
 **This exists for the selectors that cannot be used in the path.** Periods separate selectors, so a selector whose
@@ -99,6 +99,22 @@ once for the query string, the way any parameter value is encoded.
 Note the difference from the path form, which is encoded **twice**: a selector in the path is decoded
 by the container and again by the selector parser, so its value has to survive two passes. A selector
 in a query parameter is decoded only once, by the container.
+
+#### Encoding a query selector
+
+The examples above are written unencoded so they can be read, but a `selector` value is an ordinary
+query parameter value and has to be percent-encoded like one — `encodeURIComponent` in a browser, or
+the equivalent in whatever builds the URL. Two characters matter in practice:
+
+- **`+` must be encoded as `%2B`.** A query string is decoded as form data, where a bare `+` means a
+  *space*. A positive UTC offset is the case that bites: `…T02:00:00.000+05:00` sent literally arrives
+  as `…T02:00:00.000 05:00`, and the date fails to parse. A negative offset has no such problem, which
+  is exactly why it is easy to miss.
+- **`&` must be encoded as `%26`**, or it ends the parameter and the rest of the selector is read as
+  another one.
+
+`:` and `=` are legal in a query value and survive unencoded, so `?selector=dataFilter:createdBy=user`
+works as written — but encoding the whole value is the habit that does not need exceptions.
 
 Query selectors are applied after the ones in the path, so where a selector can only be given once —
 a serialization depth, or an option like `dataOption:descendantData` — the one in the query wins.
