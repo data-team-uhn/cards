@@ -326,4 +326,52 @@ public class SelectorUtilsTest
             SelectorUtils.clearRequestSelectors();
         }
     }
+
+    @Test
+    public void testATimestampKeepsItsUnescapedPeriod()
+    {
+        // A datetime's period is not escaped in the query form, and does not need to be: request selectors are
+        // appended to the parsed list, so they never go through the period-splitting at all. The same value written
+        // into a path needs `%5C.`; here it needs nothing.
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataFilter:modifiedAfter=2025-07-19T02:00:00.000-05:00"));
+
+            Assert.assertEquals(Map.of("modifiedAfter", "2025-07-19T02:00:00.000-05:00"),
+                SelectorUtils.parseOptionsToMap("dataFilter:", ".data.csv"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testATimestampWithAPositiveOffsetIsAlsoKeptWhole()
+    {
+        // The `+` survives here because nothing in this class touches it. It does NOT survive an un-encoded query
+        // string, where the container reads `+` as a space -- a caller's problem, not this parser's.
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataFilter:modifiedAfter=2025-07-19T02:00:00.000+05:00"));
+
+            Assert.assertEquals(Map.of("modifiedAfter", "2025-07-19T02:00:00.000+05:00"),
+                SelectorUtils.parseOptionsToMap("dataFilter:", ".data.csv"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testAnInnerSelectorListStillSplitsWhereItIsMeantTo()
+    {
+        // formSelectors is the opposite case: its periods ARE separators, of an inner list that DataProcessor
+        // splices back into a path. The query form carries them unescaped and they still mean what they meant.
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataOption:formSelectors=deep.bare"));
+
+            Assert.assertEquals(Map.of("formSelectors", "deep.bare"),
+                SelectorUtils.parseOptionsToMap("dataOption:", ".data.json"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+        // And that value, spliced back into a path info the way DataProcessor splices it, is two selectors again
+        Assert.assertEquals(List.of("deep", "bare", "json"), SelectorUtils.parseSelectors(".deep.bare.json"));
+    }
 }
