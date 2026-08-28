@@ -592,7 +592,7 @@ function QuestionnaireSet(props) {
     <>
       <Header
         key="header"
-        greeting={username}
+        greeting={!!(config?.PIIAuthRequired) && username}
         withSignout={!!(config?.PIIAuthRequired)}
         progress={0}
       />

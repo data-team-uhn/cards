@@ -20,10 +20,9 @@ import { useState, useEffect } from "react";
 
 import {
   Link,
+  Stack,
   Toolbar,
 } from "@mui/material";
-import useMediaQuery from '@mui/material/useMediaQuery';
-import classNames from "classnames";
 import { makeStyles } from 'tss-react/mui';
 
 import { loadExtensions } from "../uiextension/extensionManager";
@@ -38,21 +37,16 @@ async function getFooterExtensions() {
 const useStyles = makeStyles()((theme, { align }) => ({
   footer : {
     color: theme.palette.text.secondary,
-    justifyContent: { left: "flex-start", center: "center", right: "flex-end" }[align],
     minHeight: theme.spacing(2),
   },
-  horizontal: {
-    "& > * + *:before" : {
-      content: '"·"',
-      display: "inline-block",
-      margin: theme.spacing(0, 1),
-      opacity: 0.5,
-    },
+  items : {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: { left: "flex-start", center: "center", right: "flex-end" }[align],
   },
-  vertical: {
-    display: "grid",
-    padding: theme.spacing(0, 3),
-    textAlign: align,
+  separator : {
+    opacity: 0.5,
+    userSelect: "none",
   },
 }));
 
@@ -62,8 +56,6 @@ export default function Footer (props) {
 
   const { classes } = useStyles({ align });
 
-  const isSmallScreen = useMediaQuery('(max-width:600px)');
-
   useEffect(() => {
     getFooterExtensions()
       .then(extensions => setFooterExtensions(extensions))
@@ -71,15 +63,20 @@ export default function Footer (props) {
   }, []);
 
   return (
-    <Toolbar
-      className={classNames(classes.footer, isSmallScreen ? classes.vertical : classes.horizontal)}
-    >
-      {
-        footerExtensions.map((extension, index) => {
-          let Extension = extension["cards:extensionRender"];
-          return <Extension key={index} extension={extension} />
-        })
-      }
+    <Toolbar className={classes.footer}>
+      <Stack
+        direction="row"
+        spacing={1}
+        className={classes.items}
+        divider={<span aria-hidden="true" className={classes.separator}>·</span>}
+      >
+        {
+          footerExtensions.map((extension, index) => {
+            let Extension = extension["cards:extensionRender"];
+            return <Extension key={index} extension={extension} />
+          })
+        }
+      </Stack>
     </Toolbar>
   );
 }

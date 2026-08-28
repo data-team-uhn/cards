@@ -22,9 +22,7 @@ import AppointmentIcon from '@mui/icons-material/Event';
 import {
   Button,
   CircularProgress,
-  DialogContent,
   FormControl,
-  FormHelperText,
   Grid,
   Input,
   InputLabel,
@@ -44,7 +42,6 @@ import DateTimeUtilities from "../components/DateTimeUtilities";
 import ErrorPage from "../components/ErrorPage.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import Logo from "../components/Logo.jsx";
-import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 
 const useStyles = makeStyles()(theme => ({
   form : {
@@ -80,21 +77,12 @@ const useStyles = makeStyles()(theme => ({
   dateLabel : {
     paddingTop: theme.spacing(1),
   },
-  mrnHelperImage: {
-    maxWidth: '100%',
-  },
-  mrnHelperLink: {
-    cursor: 'pointer',
-  },
   appointmentEntry: {
     "& .MuiButton-root" : {
       justifyContent: "flex-start",
       textTransform: "none",
     },
   },
-  submit : {
-    float: 'right',
-  }
 }));
 
 // The patient is already authenticated via the token.
@@ -130,8 +118,6 @@ function PatientIdentification(props) {
   const [ touCleared, setTouCleared ] = useState();
   // Whether the Terms of Use dialog can be displayed after patient identification
   const [ showTou, setShowTou ] = useState(false);
-
-  const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
   const dateFormat = DateTimeUtilities.defaultDateFormat;
   const views = DateTimeUtilities.getPickerViews(dateFormat);
@@ -280,26 +266,6 @@ function PatientIdentification(props) {
       }}
     />
 
-    {/* MRN hint dialog*/}
-
-    <ResponsiveDialog
-      title="Where can I find my MRN?"
-      withCloseButton
-      open={mrnHelperOpen}
-      onClose={() => setMrnHelperOpen(false)}
-    >
-      <DialogContent>
-        <Typography component="p">
-          1. Check the top right-hand corner of your Patient Itinerary.
-        </Typography>
-        <img src="/libs/cards/resources/media/patient-portal/mrn_helper_1.png" alt="MRN location within the Appointment Itinerary" className={classes.mrnHelperImage} />
-        <Typography component="p">
-          2. Check your account page on the myUHN PatientPortal.
-        </Typography>
-        <img src="/libs/cards/resources/media/patient-portal/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
-      </DialogContent>
-    </ResponsiveDialog>
-
     {/* Patient identification form */}
 
     <form className={classes.form} onSubmit={onSubmit} >
@@ -349,14 +315,7 @@ function PatientIdentification(props) {
                       variant: 'standard',
                       autoFocus: true,
                       fullWidth: true,
-                      className: classes.textField,
                       helperText: null,
-                      onBlur: (event) => {
-                        if (dob?.invalid) {
-                          setError(true);
-                          setErrorMessage("Invalid date" + (dob.invalid.explanation ? ": " + dob.invalid.explanation : ""));
-                        }
-                      },
                       inputProps: {
                         placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`
                       },
@@ -373,16 +332,6 @@ function PatientIdentification(props) {
                     <FormControl variant="standard" margin="normal" fullWidth>
                       <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
                       <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
-                      <FormHelperText id="mrn_helper">
-                        <Link
-                          variant="caption"
-                          underline="hover"
-                          onClick={() => setMrnHelperOpen(true)}
-                          className={classes.mrnHelperLink}
-                        >
-                          Where can I find my MRN?
-                        </Link>
-                      </FormHelperText>
                     </FormControl>
                   </Grid>
                   <Grid alignSelf="center">or</Grid>
@@ -398,7 +347,6 @@ function PatientIdentification(props) {
                 <Button
                   type="submit"
                   variant="contained"
-                  className={classes.submit}
                 >
                   Continue
                 </Button>
@@ -448,7 +396,6 @@ function PatientIdentification(props) {
                   <Grid>
                     <Button
                       variant="contained"
-                      className={classes.submit}
                       onClick={() => window.location = "/system/sling/logout"}
                     >
                       Close
