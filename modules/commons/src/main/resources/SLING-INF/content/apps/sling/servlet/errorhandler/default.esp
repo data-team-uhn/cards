@@ -55,12 +55,23 @@ if (statusMessage == null) {
 if ("application/json".equals(request.getHeader("Accept"))) {
   out.print('{"status":"error","status.message":"' + Packages.org.apache.commons.text.StringEscapeUtils.escapeJson(statusMessage) + '","status.code":' + statusCode + '}');
 } else {
-  let version = currentSession.getNode("/libs/cards/conf/Version").getProperty("Version").getString();
-  let appName = currentSession.getNode("/libs/cards/conf/AppName").getProperty("AppName").getString();
-  let platformName = currentSession.getNode("/libs/cards/conf/PlatformName").getProperty("PlatformName").getString();
-  let appVersion = currentSession.propertyExists("/libs/cards/conf/AppVersion/AppVersion") ? currentSession.getProperty("/libs/cards/conf/AppVersion/AppVersion").getString() : "";
-  let colors = currentSession.getNode("/libs/cards/conf/ThemeColor");
-  let media = currentSession.getNode("/libs/cards/conf/Media");
+  // Every node under conf/meta contributes all of its properties as metadata, the same way the
+  // io.uhndata.cards.scripting.ConfigMetadata model does for the HTL templates
+  let metaNodes = ["Version", "AppName", "PlatformName", "AppVersion", "ThemeColor", "Media"];
+  let metadata = {};
+  for (let n = 0; n < metaNodes.length; n++) {
+    let path = "/libs/cards/conf/meta/" + metaNodes[n];
+    if (!currentSession.nodeExists(path)) {
+      continue;
+    }
+    let props = currentSession.getNode(path).getProperties();
+    for (let i in props) {
+      if (!i.startsWith("jcr:")) {
+        metadata[i] = props[i].getString();
+      }
+    }
+  }
+  let appName = metadata["title"] || "";
   let assets = currentSession.getNode("/libs/cards/resources/assets");
 %>
 <!DOCTYPE html>
@@ -69,24 +80,13 @@ if ("application/json".equals(request.getHeader("Accept"))) {
     <meta charset="UTF-8">
     <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="version" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(version)}">
-    <meta name="platformName" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(platformName)}">
-    <meta name="appVersion" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appVersion)}">
-    <meta name="title" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appName)}">
     <title>${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appName)}</title>
     <meta name="statusCode" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(statusCode)}">
     <meta name="statusMessage" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(statusMessage)}">
 <%
-      let colorProps = colors.getProperties();
-      for (let i in colorProps) {
-        if (!i.startsWith("jcr:")) {
-          out.println('    <meta name="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(i) + '" content="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(colorProps[i].getString()) + '"/>');
-        }
-      }
-      let mediaProps = media.getProperties();
-      for (let i in mediaProps) {
-        if (!i.startsWith("jcr:")) {
-          out.println('    <meta name="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(i) + '" content="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(mediaProps[i].getString()) + '"/>');
+      for (let name in metadata) {
+        if (metadata[name].length > 0) {
+          out.println('    <meta name="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(name) + '" content="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(metadata[name]) + '"/>');
         }
       }
 %>
