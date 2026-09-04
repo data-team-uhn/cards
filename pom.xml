@@ -71,7 +71,7 @@
     <platform.name>CARDS</platform.name>
     <slf4j.version>2.0.18</slf4j.version>
     <jackrabbit.version>2.22.4</jackrabbit.version>
-    <oak.version>2.4.0</oak.version>
+    <oak.version>2.6.0</oak.version>
     <sling.saml.version>0.2.6.cards.2</sling.saml.version>
 
     <!-- Versions to be replaced in the feature files -->
@@ -1723,13 +1723,13 @@
         <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>4.10.3.0</version>
+          <version>4.10.4.0</version>
           <dependencies>
             <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
             <dependency>
               <groupId>com.github.spotbugs</groupId>
               <artifactId>spotbugs</artifactId>
-              <version>4.10.3</version>
+              <version>4.10.4</version>
             </dependency>
           </dependencies>
           <configuration>
@@ -1863,7 +1863,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.15.0</version>
+          <version>3.16.0</version>
           <!-- Java 21 is required -->
           <configuration>
             <source>21</source>
@@ -1915,7 +1915,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.5.6</version>
+          <version>3.6.0</version>
           <!-- Rule is to put tests in *Test classes -->
           <configuration>
             <includes>
@@ -2019,7 +2019,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>6.1.0</version>
+          <version>6.1.2</version>
         </plugin>
         <plugin>
           <groupId>io.fabric8</groupId>
