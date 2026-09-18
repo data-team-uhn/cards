@@ -37,7 +37,7 @@ import Page from "./Page";
 import Sidebar from "./Sidebar/Sidebar.jsx"
 
 // The chrome this layout puts around every page, exposed to components such as LoadingOverlay
-const ADMIN_LAYOUT = { drawerWidth };
+const MAIN_LAYOUT = { drawerWidth };
 
 
 function Main(props) {
@@ -102,7 +102,7 @@ function Main(props) {
   };
 
   return (
-    <LayoutContext.Provider value={ADMIN_LAYOUT}>
+    <LayoutContext.Provider value={MAIN_LAYOUT}>
       <GlobalLoginContext.Provider
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {

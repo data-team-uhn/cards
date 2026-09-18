@@ -25,8 +25,8 @@ import { createContext } from "react";
 // drawerWidth: width in px of the permanent left navigation drawer shown on md+ screens,
 //   or 0 when the layout has no such drawer (patient portal, login and error pages).
 //
-// The default value is "no chrome"; the layout that owns the drawer (the admin/clinician
-// page in homepage/themePage/index.jsx) provides the actual value.
+// The default value is "no chrome"; the layout that owns the drawer (the main CARDS layout
+// in homepage/themePage/index.jsx, used by all staff-facing pages) provides the actual value.
 const LayoutContext = createContext({ drawerWidth: 0 });
 
 export default LayoutContext;
