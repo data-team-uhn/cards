@@ -53,6 +53,7 @@ import { getTextHierarchy, getHierarchyAsList } from "./SubjectIdentifier";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import ErrorDialog from "../components/ErrorDialog";
 import FormattedText from "../components/FormattedText.jsx";
+import LayoutContext from "../components/LayoutContext.jsx";
 import LoadingOverlay from "../components/LoadingOverlay";
 import MainActionButton from "../components/MainActionButton.jsx";
 import ResourceErrorMessage from "../components/ResourceErrorMessage.jsx";
@@ -75,7 +76,6 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 function Form (props) {
   let {
     classes,
-    contentOffset,
     mode,
     className,
     disableHeader,
@@ -122,6 +122,7 @@ function Form (props) {
   let [ paginationNavMode, setPaginationNavMode ] = useState(paginationProps?.navMode);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
+  const { contentOffset } = useContext(LayoutContext);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
   let [ classNames, setClassNames ] = useState(className ? [className] : []);
@@ -181,7 +182,7 @@ function Form (props) {
 
   useLayoutEffect(() => {
     setFormContentOffsetTop(contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
-  }, [data]);
+  }, [data, contentOffset]);
   useLayoutEffect(() => {
     paginationEnabled && setFormContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
   }, [pages]);
@@ -692,7 +693,6 @@ function Form (props) {
           ))}
           separator=":"
           action={formMenu}
-          contentOffset={contentOffset}
         >
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}

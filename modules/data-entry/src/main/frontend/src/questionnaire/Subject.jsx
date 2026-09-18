@@ -171,7 +171,6 @@ function Subject(props) {
           getSubject={handleSubject}
           onError={setError}
           onFetchSubjectDataReady={handleSetFetchSubjectData}
-          contentOffset={props.contentOffset}
           extensionURL={activeExtensionURL}
         />
         <Grid>
@@ -383,7 +382,6 @@ function SubjectHeader(props) {
         title={title}
         breadcrumbs={parentDetails}
         action={subjectMenu}
-        contentOffset={props.contentOffset}
         tags={ statusFlags?.map( (item, index) => (
           <Chip
             key={index}

@@ -19,14 +19,20 @@
 
 import { createContext } from "react";
 
-// Describes the page chrome around the current React tree, so that fixed-position elements
-// (e.g. LoadingOverlay) can avoid covering it.
+// Describes the page chrome around the current React tree, so that fixed and sticky elements
+// (e.g. LoadingOverlay, sticky resource headers, the navigation drawer) can avoid covering it
+// or being covered by it.
 //
 // drawerWidth: width in px of the permanent left navigation drawer shown on md+ screens,
 //   or 0 when the layout has no such drawer (patient portal, login and error pages).
+// contentOffset: height in px of the banners rendered by PageStart at the top of the page
+//   (downtime warning, demo banner, ...), i.e. how far from the top sticky elements must stay.
+//   Layouts that add their own sticky chrome (e.g. the patient portal header) can nest a
+//   second provider adding their height to this value.
 //
-// The default value is "no chrome"; the layout that owns the drawer (the main CARDS layout
-// in homepage/themePage/index.jsx, used by all staff-facing pages) provides the actual value.
-const LayoutContext = createContext({ drawerWidth: 0 });
+// The default value is "no chrome". PageStartWrapper provides the actual value: it measures
+// the banners and the layout using it (the main CARDS layout, the patient portal) tells it
+// whether a drawer is present.
+const LayoutContext = createContext({ drawerWidth: 0, contentOffset: 0 });
 
 export default LayoutContext;

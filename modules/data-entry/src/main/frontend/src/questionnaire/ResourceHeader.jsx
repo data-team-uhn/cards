@@ -17,6 +17,8 @@
 //  under the License.
 //
 
+import { useContext } from "react";
+
 import {
   Breadcrumbs,
   Collapse,
@@ -30,6 +32,7 @@ import { useTheme } from '@mui/material/styles';
 import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
+import LayoutContext from "../components/LayoutContext.jsx";
 import { checkPropTypes } from "../propTypes";
 import { GRID_SPACE_UNIT } from "./questionnaireConstants.jsx";
 
@@ -104,10 +107,10 @@ function ResourceHeader (props) {
     tags,
     action,
     children,
-    contentOffset = 0,
     hideBreadcrumbTitle = false
   } = props;
 
+  const { contentOffset } = useContext(LayoutContext);
   const { classes } = useStyles();
   const theme = useTheme();
   const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
@@ -170,7 +173,6 @@ ResourceHeader.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  contentOffset: PropTypes.number,
   hideBreadcrumbTitle: PropTypes.bool,
 }
 
