@@ -253,7 +253,7 @@ let QuestionMatrix = (props) => {
 
   let renderTableHead = () => {
     return ((!isEdit || enableVerticalLayout) ? null :
-      <TableHead sx={{ top: contentOffset }}>
+      <TableHead sx={{ top: contentOffset?.top }}>
         <TableRow>
           { [["",""]].concat(defaults).map( (option, index) => (
             <TableCell key={index} align="center" component="th">
