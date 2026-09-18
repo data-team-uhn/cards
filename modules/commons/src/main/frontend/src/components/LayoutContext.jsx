@@ -31,7 +31,7 @@ import { createContext } from "react";
 //   second provider adding their height to this value.
 //
 // The default value is "no chrome". PageStartWrapper provides the actual value: it measures
-// the banners and the layout using it (the main CARDS layout, the patient portal) tells it
+// the banners, and the layout using it (the main CARDS layout, the patient portal) tells it
 // whether a drawer is present.
 const LayoutContext = createContext({ drawerWidth: 0, contentOffset: 0 });
 

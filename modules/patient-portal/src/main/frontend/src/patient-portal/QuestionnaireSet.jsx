@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { useState, useEffect, useContext, useMemo } from 'react';
+import { useState, useEffect, useContext, useLayoutEffect, useMemo } from 'react';
 
 
 import SurveyIcon from '@mui/icons-material/Assignment';
@@ -47,6 +47,7 @@ import Footer from "./Footer.jsx";
 import Header from "./Header.jsx";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 import FormattedText from "../components/FormattedText.jsx";
+import LayoutContext from "../components/LayoutContext.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import Form from "../questionnaire/Form.jsx";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
@@ -117,7 +118,7 @@ function QuestionnaireSet(props) {
   // Props and state //
   /////////////////////
 
-  const { subject, username, displayText, contentOffset, config } = props;
+  const { subject, username, displayText, config } = props;
 
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
@@ -272,18 +273,6 @@ function QuestionnaireSet(props) {
     const questionnaireIdsLength = questionnaireIds?.length || 0;
     return crtStep >= 0 && crtStep < questionnaireIdsLength ? "survey" : "screen";
   }, [crtStep, questionnaireIds]);
-
-  // Screen layout props
-
-  // Form content offset, used for sticky elements
-  // Should be the contentOffset passed as a prop + the Header height
-  // Once we start rendering forms, update the formContentOffset
-  const formContentOffset = useMemo(() => {
-    if (crtStep == 1) {
-      return (contentOffset || 0) + (document?.getElementById('patient-portal-header')?.clientHeight || 0);
-    }
-    return contentOffset || 0;
-  }, [crtStep, contentOffset]);
 
   // Find the next step : Skip questionnaires that have already been filled out
   const findNextStep = (step) => {
@@ -778,7 +767,6 @@ function QuestionnaireSet(props) {
       doneLabel={nextQuestionnaire ? "Next survey" : enableReviewScreen ? "Review" : "Submit my answers"}
       onDone={nextQuestionnaire ? launchNextForm : goToNextStep}
       doneButtonStyle={{ position: "relative", right: 0, bottom: "unset", textAlign: "center" }}
-      contentOffset={formContentOffset}
     />
   ];
 
@@ -857,7 +845,6 @@ function QuestionnaireSet(props) {
               questionnaireAddons={questionnaires?.[q]?.questionnaireAddons}
               disableHeader
               disableButton
-              contentOffset={formContentOffset}
             />
               :<></>
           }
@@ -951,30 +938,51 @@ function QuestionnaireSet(props) {
   )
 }
 
+// The content area rendered below the sticky portal Header. Sticky elements inside it (e.g. form
+// section headers) must stay clear of both the PageStart banners and the Header, so this nests a
+// LayoutContext whose contentOffset adds the Header height to the one provided by PageStartWrapper.
 function QuestionnaireSetScreen (props) {
   let { children, ...rest } = props;
 
   const { classes } = useStyles();
+  const layout = useContext(LayoutContext);
+  const [ headerHeight, setHeaderHeight ] = useState(0);
+
+  // Re-measure the header after every render; the state only changes when the height does, so
+  // this settles right away and follows the header when it collapses on scroll or on step change.
+  useLayoutEffect(() => {
+    const height = document.getElementById('patient-portal-header')?.clientHeight || 0;
+    if (height !== headerHeight) {
+      setHeaderHeight(height);
+    }
+  });
+
+  const screenLayout = useMemo(
+    () => ({ ...layout, contentOffset: layout.contentOffset + headerHeight }),
+    [layout, headerHeight]
+  );
 
   const isElementCentered = key => (
     ["welcome-action", "expiry-message", "exit-loading"].includes(key) || key?.startsWith("review-")
   );
 
   return (
-    <Paper elevation={0} className={classes.mainContainer}>
-      <Grid container direction="column" spacing={4} {...rest}>
-        {Array.from(children || []).filter(c => c).map((c, i) =>
-          <Grid
-            key={i+"MainItem"}
-            size={!isElementCentered(c.key) && 12}
-            alignSelf={isElementCentered(c.key) && "center"}
-            className={classes.mainItem}
-          >
-            {c}
-          </Grid>)
-        }
-      </Grid>
-    </Paper>
+    <LayoutContext.Provider value={screenLayout}>
+      <Paper elevation={0} className={classes.mainContainer}>
+        <Grid container direction="column" spacing={4} {...rest}>
+          {Array.from(children || []).filter(c => c).map((c, i) =>
+            <Grid
+              key={i+"MainItem"}
+              size={!isElementCentered(c.key) && 12}
+              alignSelf={isElementCentered(c.key) && "center"}
+              className={classes.mainItem}
+            >
+              {c}
+            </Grid>)
+          }
+        </Grid>
+      </Paper>
+    </LayoutContext.Provider>
   );
 }
 
