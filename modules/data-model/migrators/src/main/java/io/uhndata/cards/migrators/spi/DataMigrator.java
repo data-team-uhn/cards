@@ -18,6 +18,8 @@ package io.uhndata.cards.migrators.spi;
 
 import javax.jcr.Session;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.Version;
 
 /**
@@ -35,6 +37,7 @@ public interface DataMigrator extends Comparable<DataMigrator>
      *
      * @return the user readable name of this migrator
      */
+    @NotNull
     String getName();
 
     /**
@@ -57,7 +60,8 @@ public interface DataMigrator extends Comparable<DataMigrator>
      * @param session The session that should be used to pull any other data if required
      * @return {@code true} if the migrator should be run
      */
-    boolean shouldRun(Version previousVersion, Version currentVersion, Session session);
+    boolean shouldRun(@Nullable Version previousVersion, @NotNull Version currentVersion,
+        @NotNull Session session);
 
     /**
      * Change anything that needs to be changed to upgrade from the previous version of CARDS.
@@ -66,10 +70,10 @@ public interface DataMigrator extends Comparable<DataMigrator>
      * @param currentVersion The version of CARDs that is currently running
      * @param session The session that should be used to enact any required changes
      */
-    void run(Version previousVersion, Version currentVersion, Session session);
+    void run(@Nullable Version previousVersion, @NotNull Version currentVersion, @NotNull Session session);
 
     @Override
-    default int compareTo(DataMigrator other)
+    default int compareTo(@NotNull DataMigrator other)
     {
         return this.getPriority() == other.getPriority() ? this.getName().compareTo(other.getName())
             : this.getPriority() - other.getPriority();

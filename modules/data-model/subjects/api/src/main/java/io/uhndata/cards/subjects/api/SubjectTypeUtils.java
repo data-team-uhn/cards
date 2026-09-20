@@ -20,6 +20,8 @@ import javax.jcr.Node;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Basic utilities for working with Subject Types.
@@ -44,7 +46,7 @@ public interface SubjectTypeUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:SubjectType}, {@code false}
      *         otherwise
      */
-    boolean isSubjectType(Node node);
+    boolean isSubjectType(@Nullable Node node);
 
     /**
      * Check if the given node is a SubjectType node.
@@ -53,7 +55,7 @@ public interface SubjectTypeUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:SubjectType}, {@code false}
      *         otherwise
      */
-    boolean isSubjectType(NodeBuilder node);
+    boolean isSubjectType(@Nullable NodeBuilder node);
 
     /**
      * Check if the given node is a SubjectType node.
@@ -62,7 +64,7 @@ public interface SubjectTypeUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:SubjectType}, {@code false}
      *         otherwise
      */
-    boolean isSubjectType(NodeState node);
+    boolean isSubjectType(@Nullable NodeState node);
 
     /**
      * Retrieve the SubjectType with the given UUID.
@@ -70,7 +72,8 @@ public interface SubjectTypeUtils
      * @param identifier a UUID that references a SubjectType.
      * @return a Node, or {@code null} if the identifier does not point to a SubjectType
      */
-    Node getSubjectType(String identifier);
+    @Nullable
+    Node getSubjectType(@NotNull String identifier);
 
     /**
      * Retrieve the label (human readable identifier) of the given SubjectType.
@@ -78,5 +81,6 @@ public interface SubjectTypeUtils
      * @param subjectType a SubjectType node, may be {@code null}
      * @return a label, or {@code null} if the provided node is not a SubjectType
      */
-    String getLabel(Node subjectType);
+    @Nullable
+    String getLabel(@Nullable Node subjectType);
 }

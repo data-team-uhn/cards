@@ -21,6 +21,8 @@ import java.util.Collection;
 import javax.jcr.Node;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Basic utilities for working with Links between resources.
@@ -46,7 +48,8 @@ public interface LinkUtils
      * @return a link object, or {@code null} if reading the node fails
      * @throws IllegalArgumentException if the provided node is not a link
      */
-    Link getLink(Node linkNode) throws IllegalArgumentException;
+    @Nullable
+    Link getLink(@NotNull Node linkNode) throws IllegalArgumentException;
 
     /**
      * Retrieve all the links from a resource or link node.
@@ -54,7 +57,8 @@ public interface LinkUtils
      * @param source the node to get links from
      * @return a collection of links, may be empty
      */
-    Collection<Link> getLinks(Node source);
+    @NotNull
+    Collection<Link> getLinks(@NotNull Node source);
 
     /**
      * Retrieve all the links from a resource of a desired link type.
@@ -63,7 +67,8 @@ public interface LinkUtils
      * @param type the type of link to filter by, the name of the node holding the link definition, or a JCR path to it
      * @return a collection of links, may be empty
      */
-    Collection<Link> getLinksOfType(Node source, String type);
+    @NotNull
+    Collection<Link> getLinksOfType(@NotNull Node source, @NotNull String type);
 
     /**
      * Retrieve all the links from a resource of a desired link type.
@@ -72,7 +77,8 @@ public interface LinkUtils
      * @param type the node holding the link definition to filter by
      * @return a collection of links, may be empty
      */
-    Collection<Link> getLinksOfType(Node source, Node type);
+    @NotNull
+    Collection<Link> getLinksOfType(@NotNull Node source, @NotNull Node type);
 
     /**
      * Retrieve all the links to a resource.
@@ -80,7 +86,8 @@ public interface LinkUtils
      * @param source the node to get links pointing to
      * @return a collection of links, may be empty
      */
-    Collection<Link> getBacklinks(Node source);
+    @NotNull
+    Collection<Link> getBacklinks(@NotNull Node source);
 
     /**
      * Create a new link between two resources.
@@ -91,7 +98,9 @@ public interface LinkUtils
      * @param label an optional label for the new link
      * @return the newly created link, or an existing link if there is one with the exact same parameters
      */
-    Link addLink(Node source, Node destination, String type, String label);
+    @NotNull
+    Link addLink(@NotNull Node source, @NotNull Node destination, @NotNull String type,
+        @Nullable String label);
 
     /**
      * Create a new link between two resources.
@@ -102,7 +111,9 @@ public interface LinkUtils
      * @param label an optional label for the new link
      * @return the newly created link, or an existing link if there is one with the exact same parameters
      */
-    Link addLink(Node source, Node destination, Node type, String label);
+    @NotNull
+    Link addLink(@NotNull Node source, @NotNull Node destination, @NotNull Node type,
+        @Nullable String label);
 
     /**
      * Create a new link between two resources.
@@ -112,7 +123,8 @@ public interface LinkUtils
      * @param type the type of link to create
      * @param label an optional label for the new link
      */
-    void addLink(NodeBuilder source, Node destination, Node type, String label);
+    void addLink(@NotNull NodeBuilder source, @NotNull Node destination, @NotNull Node type,
+        @Nullable String label);
 
     /**
      * Add a backlink for the original link, if it is missing.
@@ -120,7 +132,7 @@ public interface LinkUtils
      * @param original an existing link
      * @return {@code true} if a backlink was created or already existed, {@code false} otherwise
      */
-    boolean addBacklink(Link original);
+    boolean addBacklink(@NotNull Link original);
 
     /**
      * Delete a link.
@@ -128,7 +140,7 @@ public interface LinkUtils
      * @param link the JCR node holding the link to delete, must be of type {@code cards:Link} or {@code cards:WeakLink}
      * @return {@code true} if the link was deleted, {@code false} if the operation failed
      */
-    boolean removeLink(Node link);
+    boolean removeLink(@NotNull Node link);
 
     /**
      * Delete a link.
@@ -137,19 +149,19 @@ public interface LinkUtils
      * @param removeBacklinks if {@code true}, delete any backlinks from the desination to source based on the node type
      * @return {@code true} if the link was deleted, {@code false} if the operation failed
      */
-    boolean removeLink(Node link, boolean removeBacklinks);
+    boolean removeLink(@NotNull Node link, boolean removeBacklinks);
 
     /**
      * Delete all the links matching the parameters. This will remove all links from the source to the destination of
      * the requested type, regardless of labels.
      *
      * @param source the node to delete links from
-     * @param destination the linked node
+     * @param destination the linked node, or {@code null} to match links to any destination
      * @param type the type of link to delete, the name of the node holding the link definition, or a JCR path to it
      * @return {@code true} if all matching links were deleted, {@code false} if no links were found or deleting any of
      *         the links failed
      */
-    boolean removeLinks(Node source, Node destination, String type);
+    boolean removeLinks(@NotNull Node source, @Nullable Node destination, @NotNull String type);
 
     /**
      * Delete all the links matching the parameters. If {@code null} is passed as the label, remove all links from the
@@ -157,14 +169,15 @@ public interface LinkUtils
      * that have no label.
      *
      * @param source the node to delete links from
-     * @param destination the linked node
+     * @param destination the linked node, or {@code null} to match links to any destination
      * @param type the type of link to delete, the name of the node holding the link definition, or a JCR path to it
      * @param label the label of the link to delete, {@code null} to delete all links, an empty string to only delete
      *            links with no label, or a specific label to match
      * @return {@code true} if all matching links were deleted, {@code false} if no links were found or deleting any of
      *         the links failed
      */
-    boolean removeLinks(Node source, Node destination, String type, String label);
+    boolean removeLinks(@NotNull Node source, @Nullable Node destination, @NotNull String type,
+        @Nullable String label);
 
     /**
      * Delete all the links matching the parameters. If {@code null} is passed as the label, remove all links from the
@@ -172,7 +185,7 @@ public interface LinkUtils
      * that have no label.
      *
      * @param source the node to delete links from
-     * @param destination the linked node
+     * @param destination the linked node, or {@code null} to match links to any destination
      * @param type the type of link to delete, the name of the node holding the link definition, or a JCR path to it
      * @param label the label of the link to delete, {@code null} to delete all links, an empty string to only delete
      *            links with no label, or a specific label to match
@@ -180,19 +193,20 @@ public interface LinkUtils
      * @return {@code true} if all matching links were deleted, {@code false} if no links were found or deleting any of
      *         the links failed
      */
-    boolean removeLinks(Node source, Node destination, String type, String label, boolean removeBacklinks);
+    boolean removeLinks(@NotNull Node source, @Nullable Node destination, @NotNull String type,
+        @Nullable String label, boolean removeBacklinks);
 
     /**
      * Delete all the links matching the parameters. This will remove all links from the source to the destination of
      * the requested type, regardless of labels.
      *
      * @param source the node to delete links from
-     * @param destination the linked node
+     * @param destination the linked node, or {@code null} to match links to any destination
      * @param type the type of link to delete
      * @return {@code true} if all matching links were deleted, {@code false} if no links were found or deleting any of
      *         the links failed
      */
-    boolean removeLinks(Node source, Node destination, Node type);
+    boolean removeLinks(@NotNull Node source, @Nullable Node destination, @NotNull Node type);
 
     /**
      * Delete all the links matching the parameters. If {@code null} is passed as the label, remove all links from the
@@ -200,14 +214,15 @@ public interface LinkUtils
      * that have no label.
      *
      * @param source the node to delete links from
-     * @param destination the linked node
+     * @param destination the linked node, or {@code null} to match links to any destination
      * @param type the type of link to delete
      * @param label the label of the link to delete, {@code null} to delete all links, an empty string to only delete
      *            links with no label, or a specific label to match
      * @return {@code true} if all matching links were deleted, {@code false} if no links were found or deleting any of
      *         the links failed
      */
-    boolean removeLinks(Node source, Node destination, Node type, String label);
+    boolean removeLinks(@NotNull Node source, @Nullable Node destination, @NotNull Node type,
+        @Nullable String label);
 
     /**
      * Delete all the links matching the parameters. If {@code null} is passed as the label, remove all links from the
@@ -215,7 +230,7 @@ public interface LinkUtils
      * that have no label.
      *
      * @param source the node to delete links from
-     * @param destination the linked node
+     * @param destination the linked node, or {@code null} to match links to any destination
      * @param type the type of link to delete
      * @param label the label of the link to delete, {@code null} to delete all links, an empty string to only delete
      *            links with no label, or a specific label to match
@@ -223,5 +238,6 @@ public interface LinkUtils
      * @return {@code true} if all matching links were deleted, {@code false} if no links were found or deleting any of
      *         the links failed
      */
-    boolean removeLinks(Node source, Node destination, Node type, String label, boolean removeBacklinks);
+    boolean removeLinks(@NotNull Node source, @Nullable Node destination, @NotNull Node type,
+        @Nullable String label, boolean removeBacklinks);
 }

@@ -22,6 +22,9 @@ import java.util.Calendar;
 
 import javax.jcr.Node;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import io.uhndata.cards.qsets.api.QuestionnaireRef.TargetUserType;
 
 /**
@@ -39,7 +42,8 @@ public interface QuestionnaireSetUtils
      * @param definition a JCR node of type {@code cards:QuestionnaireConflict}
      * @return the parsed object, or {@code null} if the node is not of the right type or accessing it fails
      */
-    QuestionnaireConflict toQuestionnaireConflict(Node definition);
+    @Nullable
+    QuestionnaireConflict toQuestionnaireConflict(@NotNull Node definition);
 
     /**
      * Return a {@link QuestionnaireRef} object reflecting the provided {@code cards:QuestionnaireRef} JCR node.
@@ -47,7 +51,8 @@ public interface QuestionnaireSetUtils
      * @param definition a JCR node of type {@code cards:QuestionnaireRef}
      * @return the parsed object, or {@code null} if the node is not of the right type or accessing it fails
      */
-    QuestionnaireRef toQuestionnaireRef(Node definition);
+    @Nullable
+    QuestionnaireRef toQuestionnaireRef(@NotNull Node definition);
 
     /**
      * Return a {@link QuestionnaireRef} object explicitly referencing a target {@code cards:Questionnaire} node.
@@ -60,7 +65,9 @@ public interface QuestionnaireSetUtils
      * @param frequency the frequency to use
      * @return the requested object
      */
-    QuestionnaireRef toQuestionnaireRef(Node questionnaire, TargetUserType targetUserType, long frequency);
+    @NotNull
+    QuestionnaireRef toQuestionnaireRef(@NotNull Node questionnaire,
+        @NotNull TargetUserType targetUserType, long frequency);
 
     /**
      * Return a {@link QuestionnaireSet} object reflecting the provided {@code cards:QuestionnaireSet} JCR node and the
@@ -70,7 +77,8 @@ public interface QuestionnaireSetUtils
      * @param associatedDate the date to associate with the set
      * @return the parsed object, or {@code null} if the node is not of the right type or accessing it fails
      */
-    QuestionnaireSet toQuestionnaireSet(Node definition, Calendar associatedDate);
+    @Nullable
+    QuestionnaireSet toQuestionnaireSet(@Nullable Node definition, @Nullable Calendar associatedDate);
 
     /**
      * Return a {@link QuestionnaireSet} without a template, just the provided date. Member Questionnaires (or
@@ -79,7 +87,8 @@ public interface QuestionnaireSetUtils
      * @param associatedDate the date to associate with the set
      * @return an empty QuestionnaireSet with just an associated date
      */
-    QuestionnaireSet toQuestionnaireSet(Calendar associatedDate);
+    @Nullable
+    QuestionnaireSet toQuestionnaireSet(@Nullable Calendar associatedDate);
 
     /**
      * Return a modifiable copy of the given {@link QuestionnaireSet} object.
@@ -87,5 +96,6 @@ public interface QuestionnaireSetUtils
      * @param toCopy the {@link QuestionnaireSet} object to copy
      * @return a copy
      */
-    QuestionnaireSet copy(QuestionnaireSet toCopy);
+    @NotNull
+    QuestionnaireSet copy(@NotNull QuestionnaireSet toCopy);
 }

@@ -20,6 +20,9 @@ import java.util.Set;
 
 import javax.jcr.Node;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * A Link Definition, settings for connections from one resource to another.
  *
@@ -100,6 +103,7 @@ public interface LinkDefinition
      *
      * @return a JCR node
      */
+    @NotNull
     Node getNode();
 
     /**
@@ -114,6 +118,7 @@ public interface LinkDefinition
      *
      * @return a short string
      */
+    @NotNull
     String getLabel();
 
     /**
@@ -122,6 +127,7 @@ public interface LinkDefinition
      *
      * @return a set of node types, e.g. {@code {cards:Form, cards:Subject}}, may be empty
      */
+    @NotNull
     Set<String> getRequiredSourceTypes();
 
     /**
@@ -130,6 +136,7 @@ public interface LinkDefinition
      *
      * @return a set of node types, e.g. {@code {cards:Form, cards:Subject}}, may be empty
      */
+    @NotNull
     Set<String> getRequiredDestinationTypes();
 
     /**
@@ -148,6 +155,7 @@ public interface LinkDefinition
      *
      * @return a string, or {@code null}
      */
+    @Nullable
     String getResourceLabelFormat();
 
     /**
@@ -164,6 +172,7 @@ public interface LinkDefinition
      *
      * @return a link definition, or {@code null}
      */
+    @Nullable
     LinkDefinition getBacklink();
 
     /**
@@ -198,5 +207,6 @@ public interface LinkDefinition
      * @return a deletion policy
      * @see OnDelete
      */
+    @NotNull
     OnDelete getOnDeletePolicy();
 }

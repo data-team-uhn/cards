@@ -22,6 +22,8 @@ import java.util.Set;
 import javax.jcr.Node;
 
 import org.apache.jackrabbit.oak.api.Type;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class for parsing and evaluating an expression.
@@ -53,7 +55,8 @@ public interface ExpressionUtils
      * @param question the question node
      * @return a list of dependencies, may be empty
      */
-    Set<String> getDependencies(Node question);
+    @NotNull
+    Set<String> getDependencies(@NotNull Node question);
 
     /**
      * Fetch the expression of a computed question.
@@ -61,7 +64,8 @@ public interface ExpressionUtils
      * @param question the question node
      * @return the expression, or an empty string if the passed node is not a computed question with an expression.
      */
-    String getExpressionFromQuestion(Node question);
+    @NotNull
+    String getExpressionFromQuestion(@NotNull Node question);
 
     /**
      * Evaluate a computed answer based on the other values present in the context.
@@ -71,9 +75,12 @@ public interface ExpressionUtils
      * @param changedQuestions a list of question identifiers that have changed leading up to this evaluation
      * @return a string representation of the result, may be {@code null} if the expression has unmet dependencies
      */
-    default String evaluate(Node question, Map<String, Object> values, Set<String> changedQuestions)
+    @Nullable
+    default String evaluate(@NotNull Node question, @NotNull Map<String, Object> values,
+        @NotNull Set<String> changedQuestions)
     {
-        return String.valueOf(evaluate(question, values, Type.STRING, changedQuestions).getResult());
+        final Object result = evaluate(question, values, Type.STRING, changedQuestions).getResult();
+        return result == null ? null : String.valueOf(result);
     }
 
     /**
@@ -83,10 +90,13 @@ public interface ExpressionUtils
      * @param values the other values in the form
      * @param type the expected type of the result
      * @param changedQuestions a list of question identifiers that have changed leading up to this evaluation
-     * @return a representation of the evaluation result, forced into the desired data type; may be {@code null} if the
-     *         expression has unmet dependencies or the actual evaluation result cannot be converted to the desired type
+     * @return a representation of the evaluation result, forced into the desired data type; its
+     *         {@link ExpressionResult#getResult() result} is {@code null} if the expression has unmet dependencies
+     *         or the actual evaluation result cannot be converted to the desired type
      */
-    ExpressionResult evaluate(Node question, Map<String, Object> values, Type<?> type, Set<String> changedQuestions);
+    @NotNull
+    ExpressionResult evaluate(@NotNull Node question, @NotNull Map<String, Object> values, @NotNull Type<?> type,
+        @NotNull Set<String> changedQuestions);
 
     /**
      * The outcome of evaluating a computed question's expression: the computed value itself, along with details about
@@ -99,7 +109,8 @@ public interface ExpressionUtils
         private final Object result;
         private final int arguments;
 
-        public ExpressionResult(boolean missingValue, boolean usedChangedValue, Object result, int arguments)
+        public ExpressionResult(boolean missingValue, boolean usedChangedValue, @Nullable Object result,
+            int arguments)
         {
             this.missingValue = missingValue;
             this.usedChangedValue = usedChangedValue;
@@ -117,6 +128,7 @@ public interface ExpressionUtils
             return this.usedChangedValue;
         }
 
+        @Nullable
         public Object getResult()
         {
             return this.result;
