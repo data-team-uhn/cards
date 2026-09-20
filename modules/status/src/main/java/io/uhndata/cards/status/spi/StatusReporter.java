@@ -21,6 +21,9 @@ package io.uhndata.cards.status.spi;
 
 import java.util.Set;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Service interface for producing status reports. When it's time to produce a status report, each implementation's
  * {@link #report} will be invoked.
@@ -35,6 +38,7 @@ public interface StatusReporter
      *
      * @return a simple string
      */
+    @NotNull
     String getName();
 
     /**
@@ -42,6 +46,7 @@ public interface StatusReporter
      *
      * @return a set of simple strings
      */
+    @NotNull
     Set<String> getTags();
 
     /**
@@ -52,5 +57,6 @@ public interface StatusReporter
      *            confidential information, {@code true} means it should not.
      * @return a status report, or {@code null} if there is nothing to report
      */
+    @Nullable
     StatusReport report(boolean unprivileged);
 }

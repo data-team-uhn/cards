@@ -22,6 +22,9 @@ package io.uhndata.cards.status.api;
 import java.util.List;
 import java.util.Set;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import io.uhndata.cards.status.spi.StatusReport;
 
 /**
@@ -40,6 +43,7 @@ public interface StatusReportManager
      *            confidential information, {@code true} means it should not.
      * @return a list of status reports
      */
+    @NotNull
     default List<StatusReport> getReports(boolean unprivileged)
     {
         return getReports(unprivileged, StatusReport.Status.INFO, null);
@@ -56,5 +60,7 @@ public interface StatusReportManager
      *            {@code activity}; {@code null} or an empty set includes all reporters
      * @return a list of status reports
      */
-    List<StatusReport> getReports(boolean unprivileged, StatusReport.Status level, Set<String> tags);
+    @NotNull
+    List<StatusReport> getReports(boolean unprivileged, @NotNull StatusReport.Status level,
+        @Nullable Set<String> tags);
 }

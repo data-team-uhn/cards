@@ -18,6 +18,8 @@
  */
 package io.uhndata.cards.serialize.spi;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * A service that can help filter data when exporting multiple resources, e.g. when applying the {@code .data} processor
  * to subjects or questionnaires.
@@ -35,6 +37,7 @@ public interface DataFilter
      *
      * @return a short string
      */
+    @NotNull
     String getName();
 
     /**
@@ -60,6 +63,7 @@ public interface DataFilter
      * @return extra selectors in the JCR-SQL2 syntax, must be an empty string if no extra selectors are needed, and
      *         must start with a leading space as separator
      */
+    @NotNull
     default String getExtraQuerySelectors()
     {
         return getExtraQuerySelectors(DEFAULT_SELECTOR_NAME);
@@ -76,7 +80,8 @@ public interface DataFilter
      * @return extra selectors in the JCR-SQL2 syntax, must be an empty string if no extra selectors are needed, and
      *         must start with a leading space as separator
      */
-    default String getExtraQuerySelectors(String defaultSelectorName)
+    @NotNull
+    default String getExtraQuerySelectors(@NotNull String defaultSelectorName)
     {
         return "";
     }
@@ -88,6 +93,7 @@ public interface DataFilter
      * @return query fragment in the JCR-SQL2 syntax, must start with a leading space and {@code and } to connect to the
      *         rest of the query
      */
+    @NotNull
     default String getExtraQueryConditions()
     {
         return getExtraQueryConditions(DEFAULT_SELECTOR_NAME);
@@ -101,5 +107,6 @@ public interface DataFilter
      * @return query fragment in the JCR-SQL2 syntax, must start with a leading space and {@code and } to connect to the
      *         rest of the query
      */
-    String getExtraQueryConditions(String defaultSelectorName);
+    @NotNull
+    String getExtraQueryConditions(@NotNull String defaultSelectorName);
 }

@@ -27,6 +27,8 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import io.uhndata.cards.serialize.ResourceToJsonAdapterFactory;
 
@@ -66,6 +68,7 @@ public interface ResourceJsonProcessor
      *
      * @return the name of this processors, a simple string
      */
+    @NotNull
     String getName();
 
     /**
@@ -84,6 +87,7 @@ public interface ResourceJsonProcessor
      *
      * @return A description about this processor
      */
+    @NotNull
     String getDescription();
 
     /**
@@ -92,6 +96,7 @@ public interface ResourceJsonProcessor
      *
      * @return The full set of details about how to use this processor and it's effects.
      */
+    @NotNull
     default SelectorDetails getDetails()
     {
         return new SelectorDetails(getName(), getDescription(), isEnabledByDefault(null));
@@ -107,7 +112,7 @@ public interface ResourceJsonProcessor
      * @param resource the resource being serialized
      * @return {@code true} if this processor can be invoked when serializing this resource, {@code false} otherwise
      */
-    default boolean canProcess(final Resource resource)
+    default boolean canProcess(@NotNull final Resource resource)
     {
         return true;
     }
@@ -120,7 +125,7 @@ public interface ResourceJsonProcessor
      * @return {@code true} if this processor should be invoked when serializing the resource, even if not requested,
      *         {@code false} otherwise
      */
-    default boolean isEnabledByDefault(final Resource resource)
+    default boolean isEnabledByDefault(@Nullable final Resource resource)
     {
         return false;
     }
@@ -131,7 +136,7 @@ public interface ResourceJsonProcessor
      *
      * @param resource the resource being serialized
      */
-    default void start(final Resource resource)
+    default void start(@NotNull final Resource resource)
     {
         return;
     }
@@ -147,7 +152,8 @@ public interface ResourceJsonProcessor
      * @param serializeNode a function that can be invoked to serialize a new node, receiving a Node as input, and
      *            returning a JSON representation
      */
-    default void enter(final Node node, final JsonObjectBuilder input, final Function<Node, JsonValue> serializeNode)
+    default void enter(@NotNull final Node node, @NotNull final JsonObjectBuilder input,
+        @NotNull final Function<Node, JsonValue> serializeNode)
     {
         return;
     }
@@ -168,8 +174,10 @@ public interface ResourceJsonProcessor
      * @return a JSON representation for the property value, may be {@code null} if the property should be skipped, or
      *         any simple or complex JSON value, including arrays or objects
      */
-    default JsonValue processProperty(final Node node, final Property property, final JsonValue input,
-        final Function<Node, JsonValue> serializeNode)
+    @Nullable
+    default JsonValue processProperty(@NotNull final Node node, @NotNull final Property property,
+        @Nullable final JsonValue input,
+        @NotNull final Function<Node, JsonValue> serializeNode)
     {
         return input;
     }
@@ -188,7 +196,9 @@ public interface ResourceJsonProcessor
      * @return the desired name for the property to be saved under in the JSON serialization, may be {@code} null if
      *         the property should be skipped
      */
-    default String processPropertyName(final Node node, final Property property, final String input)
+    @Nullable
+    default String processPropertyName(@NotNull final Node node, @NotNull final Property property,
+        @Nullable final String input)
     {
         return input;
     }
@@ -209,8 +219,10 @@ public interface ResourceJsonProcessor
      * @return a JSON representation for the child node, may be {@code null} if the child should be skipped, or any
      *         simple or complex JSON value, including arrays or objects
      */
-    default JsonValue processChild(final Node node, final Node child, final JsonValue input,
-        final Function<Node, JsonValue> serializeNode)
+    @Nullable
+    default JsonValue processChild(@NotNull final Node node, @NotNull final Node child,
+        @Nullable final JsonValue input,
+        @NotNull final Function<Node, JsonValue> serializeNode)
     {
         return input;
     }
@@ -227,7 +239,8 @@ public interface ResourceJsonProcessor
      * @param serializeNode a function that can be invoked to serialize a new node, receiving a Node as input, and
      *            returning a JSON representation
      */
-    default void leave(final Node node, final JsonObjectBuilder json, final Function<Node, JsonValue> serializeNode)
+    default void leave(@NotNull final Node node, @NotNull final JsonObjectBuilder json,
+        @NotNull final Function<Node, JsonValue> serializeNode)
     {
         return;
     }
@@ -238,7 +251,7 @@ public interface ResourceJsonProcessor
      *
      * @param resource the resource being serialized
      */
-    default void end(final Resource resource)
+    default void end(@NotNull final Resource resource)
     {
         return;
     }

@@ -48,6 +48,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.uhndata.cards</groupId>
       <artifactId>cards-status</artifactId>
       <version>${project.version}</version>

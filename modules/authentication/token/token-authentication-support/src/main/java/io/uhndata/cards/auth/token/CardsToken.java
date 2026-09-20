@@ -19,6 +19,7 @@ package io.uhndata.cards.auth.token;
 import java.util.Calendar;
 
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Custom extension of {@link TokenInfo} with support for retrieving the token expiration time.
@@ -32,5 +33,6 @@ public interface CardsToken extends TokenInfo
      *
      * @return the expiration date, or {@code null} if there's no expiration date set
      */
+    @Nullable
     Calendar getExpirationTime();
 }

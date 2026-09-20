@@ -18,6 +18,9 @@
  */
 package io.uhndata.cards.serialize;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Service for parsing data filters from a selectors string.
  *
@@ -32,5 +35,6 @@ public interface DataFiltersParser
      * @param selectorString a list of selectors, as a dot-separated string
      * @return the parsed data filters
      */
-    DataFilters parseFilters(String selectorString);
+    @NotNull
+    DataFilters parseFilters(@Nullable String selectorString);
 }
