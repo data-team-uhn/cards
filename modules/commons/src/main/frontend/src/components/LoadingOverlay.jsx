@@ -17,6 +17,8 @@
 //  under the License.
 //
 
+import { useContext } from "react";
+
 import {
   Backdrop,
   CircularProgress,
@@ -26,10 +28,13 @@ import { alpha } from '@mui/material/styles';
 import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
+import LayoutContext from "./LayoutContext.jsx";
 
 // A full-screen loading overlay: a dimmed backdrop with a centered spinner, shown while a page
-// or a long-running action is working and the UI should not be interacted with. The backdrop is
-// offset past the left navigation drawer on md+ screens so the navigation stays reachable.
+// or a long-running action is working and the UI should not be interacted with. When the
+// enclosing layout has a permanent left navigation drawer (see LayoutContext), the backdrop is
+// offset past it on md+ screens so the navigation stays reachable; otherwise it covers the
+// whole viewport.
 //
 // Props:
 // open: Boolean controlling whether the overlay is shown
@@ -43,6 +48,7 @@ import { checkPropTypes } from "../propTypes";
 const LoadingOverlay = (props) => {
   checkPropTypes(LoadingOverlay, props);
   const { open, message, progress } = props;
+  const { drawerWidth } = useContext(LayoutContext);
   const isDeterminate = typeof progress === "number";
 
   return (
@@ -53,7 +59,8 @@ const LoadingOverlay = (props) => {
         rowGap: 2,
         color: theme.palette.text.primary,
         backgroundColor: alpha(theme.palette.background.paper, .7),
-        marginLeft: { md: "260px" },
+        // Leave the permanent navigation drawer uncovered when the layout has one
+        ...(drawerWidth > 0 && { [theme.breakpoints.up("md")]: { marginLeft: `${drawerWidth}px` } }),
         zIndex: theme.zIndex.drawer + 1
       })}
     >

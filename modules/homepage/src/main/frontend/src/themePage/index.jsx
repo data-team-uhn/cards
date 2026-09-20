@@ -25,14 +25,19 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Routes, Route, Navigate } from "react-router";
 import { withStyles } from 'tss-react/mui';
 
+import LayoutContext from "../components/LayoutContext.jsx";
+import ReLoginDialog, { GlobalLoginContext } from "../login/ReLoginDialog.js";
 import PageStart from "../PageStart";
 import { getRoutes } from '../routes';
 import { appTheme } from "../themePalette.jsx";
+import { drawerWidth } from "../themeStyles.jsx";
 import appStyles from "./indexStyles.jsx";
 import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
 import Sidebar from "./Sidebar/Sidebar.jsx"
-import ReLoginDialog, { GlobalLoginContext } from "../login/ReLoginDialog.js";
+
+// The chrome this layout puts around every page, exposed to components such as LoadingOverlay
+const MAIN_LAYOUT = { drawerWidth };
 
 
 function Main(props) {
@@ -97,7 +102,7 @@ function Main(props) {
   };
 
   return (
-    <>
+    <LayoutContext.Provider value={MAIN_LAYOUT}>
       <GlobalLoginContext.Provider
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {
@@ -156,7 +161,7 @@ function Main(props) {
           </Suspense>
         </div>
       </GlobalLoginContext.Provider>
-    </>
+    </LayoutContext.Provider>
   );
 }
 
