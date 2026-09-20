@@ -23,6 +23,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Base class for implementing Clarity import processors. Handles the {@link #getPriority()} and
  * {@link #supportsImportType(String)} methods.
@@ -46,7 +49,8 @@ public abstract class AbstractClarityDataProcessor implements ClarityDataProcess
      *            considered to support all import types
      * @param priority the priority of this processor, used as the return value of {@link #getPriority()}
      */
-    protected AbstractClarityDataProcessor(final boolean enabled, final String[] types, final int priority)
+    protected AbstractClarityDataProcessor(final boolean enabled, @Nullable final String[] types,
+        final int priority)
     {
         this.enabled = enabled;
         this.supportedTypes = types == null ? Collections.emptyList() : Arrays.asList(types);
@@ -60,7 +64,7 @@ public abstract class AbstractClarityDataProcessor implements ClarityDataProcess
     }
 
     @Override
-    public boolean supportsImportType(String type)
+    public boolean supportsImportType(@NotNull final String type)
     {
         return this.enabled && (this.supportedTypes.contains(type) || this.supportedTypes.isEmpty());
     }

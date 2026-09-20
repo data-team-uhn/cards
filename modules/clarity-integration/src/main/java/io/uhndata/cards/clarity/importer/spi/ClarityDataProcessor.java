@@ -20,6 +20,9 @@ package io.uhndata.cards.clarity.importer.spi;
 
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import io.uhndata.cards.clarity.importer.ClarityImportTask;
 
 /**
@@ -50,7 +53,8 @@ public interface ClarityDataProcessor extends Comparable<ClarityDataProcessor>
      * @param input the row of data that is to be imported
      * @return the same row, a modified row, or {@code null} to cause this row to be ignored
      */
-    Map<String, String> processEntry(Map<String, String> input);
+    @Nullable
+    Map<String, String> processEntry(@NotNull Map<String, String> input);
 
     /**
      * Called at the end of an import job to allow a processor to cleanup any temporary state.
@@ -76,13 +80,13 @@ public interface ClarityDataProcessor extends Comparable<ClarityDataProcessor>
      * @param type a short label identifying the import process
      * @return {@code true} if this processor should be used for the specified import type, {@code false} otherwise
      */
-    default boolean supportsImportType(String type)
+    default boolean supportsImportType(@NotNull String type)
     {
         return true;
     }
 
     @Override
-    default int compareTo(ClarityDataProcessor other)
+    default int compareTo(@NotNull ClarityDataProcessor other)
     {
         return this.getPriority() != other.getPriority()
             ? this.getPriority() - other.getPriority()
