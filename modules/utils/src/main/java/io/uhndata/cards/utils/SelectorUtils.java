@@ -76,7 +76,7 @@ public final class SelectorUtils
         // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
         // char inside a Java string, since it must retain its escaping meaning in the RegExp.
         final List<String> fromPath = Arrays
-            .asList(URLDecoder.decode(resolutionPathInfo, StandardCharsets.UTF_8)
+            .asList(decode(resolutionPathInfo)
                 .split("(?<=([^\\\\]|^)(\\\\\\\\){0,10})\\."))
             .stream()
             // Also unescape escaped dots, if present
@@ -95,6 +95,22 @@ public final class SelectorUtils
             .collect(Collectors.toCollection(ArrayList::new));
         fromPath.addAll(requestSelectors());
         return fromPath;
+    }
+
+    /**
+     * URL-decode a selectors string, leaving it as it is if it is not valid URL encoding. The container has already
+     * decoded the path once, so a literal {@code %} in a selector reaches this point bare.
+     *
+     * @param resolutionPathInfo the resolution path info, not blank
+     * @return the decoded string, or the input unchanged if it contains a malformed escape
+     */
+    private static String decode(final String resolutionPathInfo)
+    {
+        try {
+            return URLDecoder.decode(resolutionPathInfo, StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            return resolutionPathInfo;
+        }
     }
 
     /**

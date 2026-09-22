@@ -19,7 +19,6 @@
 package io.uhndata.cards.serialize;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -45,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
+import io.uhndata.cards.utils.SelectorUtils;
 
 /**
  * AdapterFactory that converts Apache Sling resources to JsonObjects. This is just a shell, the actual implementation
@@ -253,20 +253,9 @@ public class ResourceToJsonAdapterFactory
         // These are enabled by default
         final List<String> defaults = this.allProcessors.stream().filter(p -> p.isEnabledByDefault(resource))
             .map(ResourceJsonProcessor::getName).collect(Collectors.toList());
-        // These have been requested
+        // These have been requested, in the path or as query parameters
         final List<String> requestedProcessors =
-            // Split by unescaped dots. A backslash escapes a dot, but two backslashes are just one escaped backslash.
-            // Match by:
-            // - no preceding backslash, i.e. start counting at the first backslash (?<!\)
-            // - an even number of backslashes, i.e. any number of groups of two backslashes (?:\\)*
-            // - a literal dot \.
-            // Each backslash, except the \., is escaped twice, once as a special escape char inside a Java string, and
-            // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
-            // char inside a Java string, since it must retain its escaping meaning in the RegExp.
-            new ArrayList<>(resource.getResourceMetadata().getResolutionPathInfo() != null
-                ? Arrays
-                    .asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))
-                : defaults);
+            new ArrayList<>(SelectorUtils.parseSelectors(resource.getResourceMetadata().getResolutionPathInfo()));
         // Add the defaults, if not already selected and not explicitly excluded
         for (String def : defaults) {
             if (!requestedProcessors.contains(def) && !requestedProcessors.contains("-" + def)) {

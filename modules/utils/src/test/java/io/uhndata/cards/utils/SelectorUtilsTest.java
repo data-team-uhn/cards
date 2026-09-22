@@ -95,6 +95,14 @@ public class SelectorUtilsTest
     }
 
     @Test
+    public void testMalformedURLEncodingIsKeptAsIs()
+        throws Exception
+    {
+        Assert.assertEquals(List.of("csvReplaceColumnLabels:50%=half", "csv"),
+            SelectorUtils.parseSelectors(".csvReplaceColumnLabels:50%=half.csv"));
+    }
+
+    @Test
     public void testFullEscaping()
         throws Exception
     {

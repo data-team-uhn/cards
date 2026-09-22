@@ -18,9 +18,6 @@
  */
 package io.uhndata.cards.forms.internal.serialize;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -30,8 +27,7 @@ import javax.jcr.RepositoryException;
 
 import jakarta.json.JsonValue;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Strings;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -39,6 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 import io.uhndata.cards.serialize.spi.SelectorDetails;
+import io.uhndata.cards.utils.SelectorUtils;
 
 /**
  * A processor that excludes or includes question and section nodes based on a list of allowed or excluded
@@ -110,29 +107,17 @@ public class QuestionnaireFilterProcessor implements ResourceJsonProcessor
     {
         final Set<String> excluded = new HashSet<>();
         final Set<String> included = new HashSet<>();
-        // Split by unescaped dots. A backslash escapes a dot, but two backslashes are just one escaped backslash.
-        // Match by:
-        // - no preceding backslash, i.e. start counting at the first backslash (?<!\)
-        // - an even number of backslashes, i.e. any number of groups of two backslashes (?:\\)*
-        // - a literal dot \.
-        // Each backslash, except the \., is escaped twice, once as a special escape char inside a Java string, and
-        // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
-        // char inside a Java string, since it must retain its escaping meaning in the RegExp.
-        // As a URL path segment, the value may also contain URL-escaped characters, which need to be unescaped.
-        Arrays.asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))
-            .stream()
-            .filter(s -> Strings.CS.startsWith(s, "questionnaireFilter:exclude="))
-            .map(s -> StringUtils.substringAfter(s, "questionnaireFilter:exclude="))
-            .map(s -> URLDecoder.decode(s, StandardCharsets.UTF_8))
-            .forEach(s -> excluded.add(s.replaceAll("\\\\\\.", ".")));
+        final String pathInfo = resource.getResourceMetadata().getResolutionPathInfo();
+        SelectorUtils.parseOptions("questionnaireFilter", pathInfo).stream()
+            .filter(option -> "exclude".equals(option.getKey()))
+            .map(Pair::getValue)
+            .forEach(excluded::add);
         this.exclude.set(excluded);
 
-        Arrays.asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))
-            .stream()
-            .filter(s -> Strings.CS.startsWith(s, "questionnaireFilter:include="))
-            .map(s -> StringUtils.substringAfter(s, "questionnaireFilter:include="))
-            .map(s -> URLDecoder.decode(s, StandardCharsets.UTF_8))
-            .forEach(s -> included.add(s.replaceAll("\\\\\\.", ".")));
+        SelectorUtils.parseOptions("questionnaireFilter", pathInfo).stream()
+            .filter(option -> "include".equals(option.getKey()))
+            .map(Pair::getValue)
+            .forEach(included::add);
         this.include.set(included);
     }
 
