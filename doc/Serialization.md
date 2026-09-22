@@ -38,7 +38,7 @@ Multiple different export formats are supported. These include:
 - `/Forms/<Form ID>.md` exports a Markdown-formatted view of a Form. Use `.txt` to export plain text instead.
 
 #### Example: Weekly OAIP Form Export
-`/Questionnaires/OAIP.data.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.csvReplaceColumnIds:%2540%253D%2523.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv?selector=dataFilter:modifiedAfter=2025-07-19T02:00:00.000-05:00&selector=dataFilter:modifiedBefore=2025-07-26T02:00:00.000-05:00`
+`/Questionnaires/OAIP.data.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.questionnaireFilter.csv?selector=csvReplaceColumnIds:@=#&selector=questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month&selector=dataFilter:modifiedAfter=2025-07-19T02:00:00.000-05:00&selector=dataFilter:modifiedBefore=2025-07-26T02:00:00.000-05:00`
 - `/Questionnaires/OAIP`: Export the OAIP questionnaire
 - `.data`: Include the forms that answer this questionnaire
 - `?selector=dataFilter:modifiedAfter=...`: Files modified on or after 2 AM on July 19th, UTC-5. **A timestamp contains a period, and periods separate selectors, so this one cannot go in the path**: escaping it would need a `\`, and Jetty refuses a path containing a backslash. It goes in a `selector` query parameter instead, where nothing splits on periods and so nothing needs escaping — see [Selectors in the query string](#selectors-in-the-query-string). The shorter format `2025-07-19` is also supported, and interpreted as Midnight (time `T00:00:00.000`) in the server's timezone.
@@ -48,8 +48,9 @@ Multiple different export formats are supported. These include:
 - `.formToSurveyLinks`: Include the path to the relevant Survey Events form in the form data. This adds an `@survey` property, which is included in the export later
 - `.csvIncludeFields:@survey=Survey`: Special instruction for the csv output format. Include the `@survey` property in a column with the label `Survey`
 - `.csvHeader:raw`: Special instruction for the csv output format. Include the raw property names as a header in addition to the (default) labels
-- `.csvReplaceColumnIds:%2540%253D%2523` (decoded as `.csvReplaceColumnIds:@=#`): Replace any instances of `@` in the raw column headers with `#`. Notably, replace `@name` and `@survey` with `#name` and `#survey`. As special URL characters, `@`, `=` and `#` need to be URL-encoded
-- `.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month`: Do not include the question `oaip_visit_month` or it's answers. The path to this question has been URL  encoded twice from `/Questionnaires/OAIP/oaip_module1/oaip_visit_month`, first to replace the `/` with `%2F` and second to replace `%` with `%25`
+- `.questionnaireFilter`: Enable filtering the questions and sections of the questionnaire, as configured by the `questionnaireFilter:` selectors below
+- `?selector=csvReplaceColumnIds:@=#`: Replace any instances of `@` in the raw column headers with `#`. Notably, replace `@name` and `@survey` with `#name` and `#survey`. Written unencoded here; `#` must be encoded as `%23` in a real URL, see [Encoding a query selector](#encoding-a-query-selector)
+- `?selector=questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month`: Do not include the question `oaip_visit_month` or its answers. A path contains slashes, and a question name may contain periods, so this goes in the query string too
 - `.csv`: Export the data as a csv file.
 
 #### Example: Weekly Survey Event Form Export
@@ -90,7 +91,7 @@ the parameter can be repeated, one whole selector per occurrence:
 ```
 
 **This exists for the selectors that cannot be used in the path.** Periods separate selectors, so a selector whose
-own value contains one — an ISO timestamp, a user name, a nested list of selectors — would need to be escaped,
+own value contains one — an ISO timestamp, a user name, a question path, a nested list of selectors — would need to be escaped,
 conventionally with a backslash (`\.`). But modern servlets forbid a path containing a backslash,
 encoded or not, so those selectors have to travel in the query string. As an individual query parameter, it is not split on periods,
 which means **nothing needs escaping**: write the selector exactly as intended and percent-encode it
@@ -104,7 +105,7 @@ in a query parameter is decoded only once, by the container.
 
 The examples above are written unencoded so they can be read, but a `selector` value is an ordinary
 query parameter value and has to be percent-encoded like one — `encodeURIComponent` in a browser, or
-the equivalent in whatever builds the URL. Two characters matter in practice:
+the equivalent in whatever builds the URL. Three characters matter in practice:
 
 - **`+` must be encoded as `%2B`.** A query string is decoded as form data, where a bare `+` means a
   *space*. A positive UTC offset is the case that bites: `…T02:00:00.000+05:00` sent literally arrives
@@ -112,6 +113,8 @@ the equivalent in whatever builds the URL. Two characters matter in practice:
   is exactly why it is easy to miss.
 - **`&` must be encoded as `%26`**, or it ends the parameter and the rest of the selector is read as
   another one.
+- **`#` must be encoded as `%23`**, or the browser treats the rest of the URL as a fragment and never
+  sends it.
 
 `:` and `=` are legal in a query value and survive unencoded, so `?selector=dataFilter:createdBy=user`
 works as written — but encoding the whole value is the habit that does not need exceptions.

@@ -194,8 +194,10 @@ function ExportButton(props) {
   }
 
   let handleExport = () => {
-    // Construct the export URL
+    // Construct the export URL. Selectors carrying a user-supplied value go in the query string, where dots, slashes
+    // and backslashes need no escaping.
     let path = entryPath;
+    const querySelectors = [];
     if (!hasHeaderLabels) {
       path += ".-csvHeader:labels";
     }
@@ -205,26 +207,21 @@ function ExportButton(props) {
     if (csvReplaceColumnLabels) {
       // Split at commas or newlines, trimming whitespace before or after these delimiters
       csvReplaceColumnLabels.split(/\s*[,\n]\s*/).forEach(replacement => {
-        path += ".csvReplaceColumnLabels:" + encodeURIComponent(encodeURIComponent(replacement));
+        querySelectors.push("csvReplaceColumnLabels:" + replacement);
       });
     }
     if (csvReplaceColumnIds) {
       csvReplaceColumnIds.split(/\s*[,\n]\s*/).forEach(replacement => {
-        path += ".csvReplaceColumnIds:" + encodeURIComponent(encodeURIComponent(replacement));
+        querySelectors.push("csvReplaceColumnIds:" + replacement);
       });
     }
     if (selectedEntityIds.length > 0) {
-      path +=  ".questionnaireFilter";
-      let pref = `.questionnaireFilter:${columnSelectionMode}=`;
-      for (let id in selectedEntityIds) {
-        path += pref + encodeURIComponent(encodeURIComponent(selectedEntityIds[id]));
-      }
+      path += ".questionnaireFilter";
+      selectedEntityIds.forEach(id => querySelectors.push(`questionnaireFilter:${columnSelectionMode}=${id}`));
     }
     if (hasAnswerLabels) {
       path += ".labels";
     }
-    // These six go in the query string rather than the path, because their values contain dots
-    const querySelectors = [];
     if (createdBy) {
       querySelectors.push("dataFilter:createdBy=" + createdBy);
     }
@@ -244,8 +241,7 @@ function ExportButton(props) {
       querySelectors.push("dataFilter:modifiedBefore=" + modifiedBefore.startOf('minute').toISO());
     }
     if (status) {
-      let pref = `.dataFilter:${statusSelectionMode}=`;
-      path += pref + encodeURIComponent(encodeURIComponent(status));
+      querySelectors.push(`dataFilter:${statusSelectionMode}=${status}`);
     }
     path += fileFormat;
     if (querySelectors.length > 0) {
