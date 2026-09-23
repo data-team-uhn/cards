@@ -28,6 +28,8 @@ import jakarta.json.JsonValue;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Basic utilities for working with Form data.
@@ -113,7 +115,7 @@ public interface FormUtils
      * @param node the node to check, a JCR Node, may be {@code null}
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Form}, {@code false} otherwise
      */
-    boolean isForm(Node node);
+    boolean isForm(@Nullable Node node);
 
     /**
      * Check if the given node is a Form node.
@@ -121,7 +123,7 @@ public interface FormUtils
      * @param node the node to check, a node builder, may be {@code null}
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Form}, {@code false} otherwise
      */
-    boolean isForm(NodeBuilder node);
+    boolean isForm(@Nullable NodeBuilder node);
 
     /**
      * Check if the given node is a Form node.
@@ -129,7 +131,7 @@ public interface FormUtils
      * @param node the node to check, a node state, may be {@code null}
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Form}, {@code false} otherwise
      */
-    boolean isForm(NodeState node);
+    boolean isForm(@Nullable NodeState node);
 
     /**
      * Check if the given node is the FormsHomepage node.
@@ -138,7 +140,7 @@ public interface FormUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:FormsHomepage},
      *         {@code false} otherwise
      */
-    boolean isFormsHomepage(Node node);
+    boolean isFormsHomepage(@Nullable Node node);
 
     /**
      * Check if the given node is the FormsHomepage node.
@@ -147,7 +149,7 @@ public interface FormUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:FormsHomepage},
      *         {@code false} otherwise
      */
-    boolean isFormsHomepage(NodeBuilder node);
+    boolean isFormsHomepage(@Nullable NodeBuilder node);
 
     /**
      * Check if the given node is the FormsHomepage node.
@@ -156,7 +158,7 @@ public interface FormUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:FormsHomepage},
      *         {@code false} otherwise
      */
-    boolean isFormsHomepage(NodeState node);
+    boolean isFormsHomepage(@Nullable NodeState node);
 
     /**
      * Look up the form that a node belongs to. The given node must be a descendant of a form node, i.e. an answer or
@@ -166,7 +168,8 @@ public interface FormUtils
      * @return the form node, an ancestor-or-self of the given node, or {@code null} if the given node doesn't have a
      *         form ancestor or if the form node is inaccessible to the current user
      */
-    Node getForm(Node node);
+    @Nullable
+    Node getForm(@Nullable Node node);
 
     /**
      * Retrieve the JCR node of the Questionnaire that a Form node answers.
@@ -174,7 +177,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return a Questionnaire node, or {@code null} if the provided node is not a Form
      */
-    Node getQuestionnaire(Node form);
+    @Nullable
+    Node getQuestionnaire(@Nullable Node form);
 
     /**
      * Retrieve the JCR node of the Questionnaire that a Form node answers.
@@ -182,7 +186,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return a Questionnaire node, or {@code null} if the provided node is not a Form
      */
-    Node getQuestionnaire(NodeBuilder form);
+    @Nullable
+    Node getQuestionnaire(@Nullable NodeBuilder form);
 
     /**
      * Retrieve the JCR node of the Questionnaire that a Form node answers.
@@ -190,7 +195,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return a Questionnaire node, or {@code null} if the provided node is not a Form
      */
-    Node getQuestionnaire(NodeState form);
+    @Nullable
+    Node getQuestionnaire(@Nullable NodeState form);
 
     /**
      * Retrieve the UUID of the Questionnaire that a Form node answers.
@@ -198,7 +204,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not a Form
      */
-    String getQuestionnaireIdentifier(Node form);
+    @Nullable
+    String getQuestionnaireIdentifier(@Nullable Node form);
 
     /**
      * Retrieve the UUID of the Questionnaire that a Form node answers.
@@ -206,7 +213,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not a Form
      */
-    String getQuestionnaireIdentifier(NodeBuilder form);
+    @Nullable
+    String getQuestionnaireIdentifier(@Nullable NodeBuilder form);
 
     /**
      * Retrieve the UUID of the Questionnaire that a Form node answers.
@@ -214,7 +222,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not a Form
      */
-    String getQuestionnaireIdentifier(NodeState form);
+    @Nullable
+    String getQuestionnaireIdentifier(@Nullable NodeState form);
 
     /**
      * Retrieve the JCR node of the Subject that a Form belongs to.
@@ -222,7 +231,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return a Subject node, or {@code null} if the provided node is not a Form
      */
-    Node getSubject(Node form);
+    @Nullable
+    Node getSubject(@Nullable Node form);
 
     /**
      * Retrieve the JCR node of the Subject that a Form relates to.
@@ -232,7 +242,8 @@ public interface FormUtils
      * @return a Subject node, or {@code null} if the provided node is not a Form or no subject of the given type is
      *         related to the form
      */
-    Node getSubject(Node form, String subjectTypePath);
+    @Nullable
+    Node getSubject(@Nullable Node form, @NotNull String subjectTypePath);
 
     /**
      * Retrieve the JCR node of the Subject that a Form belongs to.
@@ -240,7 +251,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return a Subject node, or {@code null} if the provided node is not a Form
      */
-    Node getSubject(NodeBuilder form);
+    @Nullable
+    Node getSubject(@Nullable NodeBuilder form);
 
     /**
      * Retrieve the JCR node of the Subject that a Form belongs to.
@@ -248,7 +260,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return a Subject node, or {@code null} if the provided node is not a Form
      */
-    Node getSubject(NodeState form);
+    @Nullable
+    Node getSubject(@Nullable NodeState form);
 
     /**
      * Retrieve the UUID of the Subject that a Form belongs to.
@@ -256,7 +269,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not a Form
      */
-    String getSubjectIdentifier(Node form);
+    @Nullable
+    String getSubjectIdentifier(@Nullable Node form);
 
     /**
      * Retrieve the UUID of the Subject that a Form belongs to.
@@ -264,7 +278,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not a Form
      */
-    String getSubjectIdentifier(NodeBuilder form);
+    @Nullable
+    String getSubjectIdentifier(@Nullable NodeBuilder form);
 
     /**
      * Retrieve the UUID of the Subject that a Form belongs to.
@@ -272,7 +287,8 @@ public interface FormUtils
      * @param form a Form node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not a Form
      */
-    String getSubjectIdentifier(NodeState form);
+    @Nullable
+    String getSubjectIdentifier(@Nullable NodeState form);
 
     // AnswerSection methods
 
@@ -283,7 +299,7 @@ public interface FormUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:AnswerSection}, {@code false}
      *         otherwise
      */
-    boolean isAnswerSection(Node node);
+    boolean isAnswerSection(@Nullable Node node);
 
     /**
      * Check if the given node is an Answer Section node.
@@ -292,7 +308,7 @@ public interface FormUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:AnswerSection}, {@code false}
      *         otherwise
      */
-    boolean isAnswerSection(NodeBuilder node);
+    boolean isAnswerSection(@Nullable NodeBuilder node);
 
     /**
      * Check if the given node is an Answer Section node.
@@ -301,7 +317,7 @@ public interface FormUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:AnswerSection}, {@code false}
      *         otherwise
      */
-    boolean isAnswerSection(NodeState node);
+    boolean isAnswerSection(@Nullable NodeState node);
 
     /**
      * Retrieve the JCR node of the Section that an Answer Section node answers.
@@ -309,7 +325,8 @@ public interface FormUtils
      * @param answerSection an Answer Section node, may be {@code null}
      * @return a Section node, or {@code null} if the provided node is not an Answer Section
      */
-    Node getSection(Node answerSection);
+    @Nullable
+    Node getSection(@Nullable Node answerSection);
 
     /**
      * Retrieve the JCR node of the Section that an Answer Section node answers.
@@ -317,7 +334,8 @@ public interface FormUtils
      * @param answerSection an Answer Section node, may be {@code null}
      * @return a Section node, or {@code null} if the provided node is not an Answer Section
      */
-    Node getSection(NodeBuilder answerSection);
+    @Nullable
+    Node getSection(@Nullable NodeBuilder answerSection);
 
     /**
      * Retrieve the JCR node of the Section that an Answer Section node answers.
@@ -325,7 +343,8 @@ public interface FormUtils
      * @param answerSection an Answer Section node, may be {@code null}
      * @return a Section node, or {@code null} if the provided node is not an Answer Section
      */
-    Node getSection(NodeState answerSection);
+    @Nullable
+    Node getSection(@Nullable NodeState answerSection);
 
     /**
      * Retrieve the UUID of the Section that an Answer Section node answers.
@@ -333,7 +352,8 @@ public interface FormUtils
      * @param answerSection an Answer Section node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not an Answer Section
      */
-    String getSectionIdentifier(Node answerSection);
+    @Nullable
+    String getSectionIdentifier(@Nullable Node answerSection);
 
     /**
      * Retrieve the UUID of the Section that an Answer Section node answers.
@@ -341,7 +361,8 @@ public interface FormUtils
      * @param answerSection an Answer Section node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not an Answer Section
      */
-    String getSectionIdentifier(NodeBuilder answerSection);
+    @Nullable
+    String getSectionIdentifier(@Nullable NodeBuilder answerSection);
 
     /**
      * Retrieve the UUID of the Section that an Answer Section node answers.
@@ -349,7 +370,8 @@ public interface FormUtils
      * @param answerSection an Answer Section node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not an Answer Section
      */
-    String getSectionIdentifier(NodeState answerSection);
+    @Nullable
+    String getSectionIdentifier(@Nullable NodeState answerSection);
 
     // Answer methods
 
@@ -360,7 +382,8 @@ public interface FormUtils
      * @param question a question node, part of the questionnaire that the form is answering
      * @return an Answer node, may be {@code null}
      */
-    Node getAnswer(Node form, Node question);
+    @Nullable
+    Node getAnswer(@Nullable Node form, @Nullable Node question);
 
     /**
      * Get the first answer for a specific question, if any.
@@ -369,7 +392,8 @@ public interface FormUtils
      * @param question a question node, part of the questionnaire that the form is answering
      * @return an Answer node, may be {@code null}
      */
-    NodeState getAnswer(NodeState form, Node question);
+    @Nullable
+    NodeState getAnswer(@Nullable NodeState form, @Nullable Node question);
 
     /**
      * Get all the answers for a specific question, if any.
@@ -378,7 +402,8 @@ public interface FormUtils
      * @param question a question node, part of the questionnaire that the form is answering
      * @return a series of Answer nodes, may be empty list
      */
-    Collection<Node> getAllAnswers(Node form, Node question);
+    @NotNull
+    Collection<Node> getAllAnswers(@NotNull Node form, @NotNull Node question);
 
     /**
      * Get all the answers for a specific question related to a form. This may be answers in the form itself, or answers
@@ -392,7 +417,9 @@ public interface FormUtils
      *         the target form they are: first answers from the form, then from its subject's other forms, then
      *         descendant subjects, then ancestor subjects
      */
-    Collection<Node> findAllFormRelatedAnswers(Node startingForm, Node question, EnumSet<SearchType> scope);
+    @NotNull
+    Collection<Node> findAllFormRelatedAnswers(@NotNull Node startingForm, @NotNull Node question,
+        @NotNull EnumSet<SearchType> scope);
 
     /**
      * Get all the answers for a specific question related to a subject. This may be answers for the subject itself, or
@@ -405,7 +432,9 @@ public interface FormUtils
      *         the target subject they are: first answers from the subject's own forms, then descendant subjects, then
      *         ancestor subjects
      */
-    Collection<Node> findAllSubjectRelatedAnswers(Node startingSubject, Node question, EnumSet<SearchType> scope);
+    @NotNull
+    Collection<Node> findAllSubjectRelatedAnswers(@NotNull Node startingSubject, @NotNull Node question,
+        @NotNull EnumSet<SearchType> scope);
 
     /**
      * Check if the given node is an Answer node.
@@ -413,7 +442,7 @@ public interface FormUtils
      * @param node the node to check, a JCR node, may be {@code null}
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Answer}, {@code false} otherwise
      */
-    boolean isAnswer(Node node);
+    boolean isAnswer(@Nullable Node node);
 
     /**
      * Check if the given node is an Answer node.
@@ -421,7 +450,7 @@ public interface FormUtils
      * @param node the node to check, a node builder, may be {@code null}
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Answer}, {@code false} otherwise
      */
-    boolean isAnswer(NodeBuilder node);
+    boolean isAnswer(@Nullable NodeBuilder node);
 
     /**
      * Check if the given node is an Answer node.
@@ -429,7 +458,7 @@ public interface FormUtils
      * @param node the node to check, a node state, may be {@code null}
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Answer}, {@code false} otherwise
      */
-    boolean isAnswer(NodeState node);
+    boolean isAnswer(@Nullable NodeState node);
 
     /**
      * Retrieve the JCR node of the Question that an Answer node answers.
@@ -437,7 +466,8 @@ public interface FormUtils
      * @param answer an Answer node, may be {@code null}
      * @return a Question node, or {@code null} if the provided node is not an answer
      */
-    Node getQuestion(Node answer);
+    @Nullable
+    Node getQuestion(@Nullable Node answer);
 
     /**
      * Retrieve the JCR node of the Question that an Answer node answers.
@@ -445,7 +475,8 @@ public interface FormUtils
      * @param answer an Answer node, may be {@code null}
      * @return a Question node, or {@code null} if the provided node is not an answer
      */
-    Node getQuestion(NodeBuilder answer);
+    @Nullable
+    Node getQuestion(@Nullable NodeBuilder answer);
 
     /**
      * Retrieve the JCR node of the Question that an Answer node answers.
@@ -453,7 +484,8 @@ public interface FormUtils
      * @param answer an Answer node, may be {@code null}
      * @return a Question node, or {@code null} if the provided node is not an answer
      */
-    Node getQuestion(NodeState answer);
+    @Nullable
+    Node getQuestion(@Nullable NodeState answer);
 
     /**
      * Retrieve the UUID of the Question that an Answer node answers.
@@ -461,7 +493,8 @@ public interface FormUtils
      * @param answer an Answer node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not an answer
      */
-    String getQuestionIdentifier(Node answer);
+    @Nullable
+    String getQuestionIdentifier(@Nullable Node answer);
 
     /**
      * Retrieve the UUID of the Question that an Answer node answers.
@@ -469,7 +502,8 @@ public interface FormUtils
      * @param answer an Answer node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not an answer
      */
-    String getQuestionIdentifier(NodeBuilder answer);
+    @Nullable
+    String getQuestionIdentifier(@Nullable NodeBuilder answer);
 
     /**
      * Retrieve the UUID of the Question that an Answer node answers.
@@ -477,7 +511,8 @@ public interface FormUtils
      * @param answer an Answer node, may be {@code null}
      * @return an identifier, or {@code null} if the provided node is not an answer
      */
-    String getQuestionIdentifier(NodeState answer);
+    @Nullable
+    String getQuestionIdentifier(@Nullable NodeState answer);
 
     /**
      * Retrieve the value(s) stored in an Answer.
@@ -488,7 +523,8 @@ public interface FormUtils
      *         as strings (UUID or path), and not as the referenced nodes themselves; {@code null} may be returned if no
      *         value is stored in the answer
      */
-    Object getValue(Node answer);
+    @Nullable
+    Object getValue(@Nullable Node answer);
 
     /**
      * Retrieve the value(s) stored in an Answer.
@@ -499,7 +535,8 @@ public interface FormUtils
      *         as strings (UUID or path), and not as the referenced nodes themselves; {@code null} may be returned if no
      *         value is stored in the answer
      */
-    Object getValue(NodeBuilder answer);
+    @Nullable
+    Object getValue(@Nullable NodeBuilder answer);
 
     /**
      * Retrieve the value(s) stored in an Answer.
@@ -510,7 +547,8 @@ public interface FormUtils
      *         as strings (UUID or path), and not as the referenced nodes themselves; {@code null} may be returned if no
      *         value is stored in the answer
      */
-    Object getValue(NodeState answer);
+    @Nullable
+    Object getValue(@Nullable NodeState answer);
 
     /**
      * Retrieve the value(s) stored in a Property.
@@ -521,7 +559,8 @@ public interface FormUtils
      *         as strings (UUID or path), and not as the referenced nodes themselves; {@code null} may be returned if no
      *         value is stored in the answer
      */
-    Object getValue(Property value);
+    @Nullable
+    Object getValue(@Nullable Property value);
 
     /**
      * Extract the actual value from a Value object.
@@ -530,7 +569,8 @@ public interface FormUtils
      * @return the actual value stored in the object as a simple value of the corresponding type (e.g.
      *         Boolean, Calendar, Decimal, String); {@code null} may be returned if no value is stored in the answer
      */
-    Object getValue(Value value);
+    @Nullable
+    Object getValue(@Nullable Value value);
 
     /**
      * Extract the set of status flags from a form, answer section or answer node.
@@ -540,7 +580,8 @@ public interface FormUtils
      *         If no status flags are present, an empty set will be returned.
      *         {@code null} may be returned if the node is not a supported type
      */
-    Set<String> getStatusFlags(Node node);
+    @Nullable
+    Set<String> getStatusFlags(@Nullable Node node);
 
     /**
      * Serialize the value(s) stored in an Answer.
@@ -550,5 +591,6 @@ public interface FormUtils
      *         array of values, or {@code JsonValue.NULL} if no value is stored in the answer or in case of exception
      *         caught in the serialization process
      */
-    JsonValue serializeProperty(Property property);
+    @NotNull
+    JsonValue serializeProperty(@Nullable Property property);
 }

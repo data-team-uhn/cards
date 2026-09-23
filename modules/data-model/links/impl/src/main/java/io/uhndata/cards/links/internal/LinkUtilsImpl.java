@@ -308,7 +308,7 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     @Override
     public boolean removeLinks(Node source, Node destination, String type, String label)
     {
-        return removeLinks(source, destination, type, null, false);
+        return removeLinks(source, destination, type, label, false);
     }
 
     @Override

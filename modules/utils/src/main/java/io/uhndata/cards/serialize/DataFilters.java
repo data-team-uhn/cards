@@ -20,6 +20,8 @@ package io.uhndata.cards.serialize;
 
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 import io.uhndata.cards.serialize.spi.DataFilter;
 
 /**
@@ -35,6 +37,7 @@ public interface DataFilters
      *
      * @return a list of filters, may be empty
      */
+    @NotNull
     List<DataFilter> getFilters();
 
     /**
@@ -44,6 +47,7 @@ public interface DataFilters
      *
      * @return extra selectors in the JCR-SQL2 syntax, must be an empty string if no extra selectors are needed
      */
+    @NotNull
     String getExtraQuerySelectors();
 
     /**
@@ -55,5 +59,6 @@ public interface DataFilters
      * @return query fragment in the JCR-SQL2 syntax, starting with {@code and}, must be an empty string if no filters
      *         are present
      */
+    @NotNull
     String getExtraQueryConditions();
 }

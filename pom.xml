@@ -620,6 +620,15 @@
         <artifactId>org.apache.sling.xss</artifactId>
         <version>${sling.xss.version}</version>
       </dependency>
+
+      <!-- Nullability annotations for the exported API and SPI packages. -->
+      <dependency>
+        <groupId>org.jetbrains</groupId>
+        <artifactId>annotations</artifactId>
+        <version>26.1.0</version>
+        <scope>provided</scope>
+      </dependency>
+
       <!-- Common dependencies -->
       <dependency>
         <groupId>jakarta.json</groupId>
@@ -1220,7 +1229,7 @@
                       <module name="ClassDataAbstractionCoupling" />
 
                       <module name="ClassFanOutComplexity">
-                        <property name="excludedPackages" value="java.io, java.math, java.text, java.util, java.util.concurrent, java.util.concurrent.atomic, java.util.function, java.util.stream, javax.annotation, javax.inject, javax.servlet, org.apache.commons.collections4, org.apache.commons.lang3, org.json, org.slf4j, org.xwiki.component.annotation, org.apache.sling.servlets.annotations, org.osgi.service.component.annotations" />
+                        <property name="excludedPackages" value="java.io, java.math, java.text, java.util, java.util.concurrent, java.util.concurrent.atomic, java.util.function, java.util.stream, javax.annotation, javax.inject, javax.servlet, org.apache.commons.collections4, org.apache.commons.lang3, org.json, org.slf4j, org.xwiki.component.annotation, org.apache.sling.servlets.annotations, org.osgi.service.component.annotations, org.jetbrains.annotations" />
                       </module>
 
                       <!-- We use the opposite, RedundantModifier. -->
@@ -1799,7 +1808,7 @@
                       <!--module name="ClassDataAbstractionCoupling" /-->
 
                       <!--module name="ClassFanOutComplexity">
-                        <property name="excludedPackages" value="java.io, java.math, java.text, java.util, java.util.concurrent, java.util.concurrent.atomic, java.util.function, java.util.stream, javax.annotation, javax.inject, javax.servlet, org.apache.commons.collections4, org.apache.commons.lang3, org.json, org.slf4j, org.xwiki.component.annotation, org.apache.sling.servlets.annotations, org.osgi.service.component.annotations" />
+                        <property name="excludedPackages" value="java.io, java.math, java.text, java.util, java.util.concurrent, java.util.concurrent.atomic, java.util.function, java.util.stream, javax.annotation, javax.inject, javax.servlet, org.apache.commons.collections4, org.apache.commons.lang3, org.json, org.slf4j, org.xwiki.component.annotation, org.apache.sling.servlets.annotations, org.osgi.service.component.annotations, org.jetbrains.annotations" />
                       </module-->
 
                       <!-- We use the opposite, RedundantModifier. -->

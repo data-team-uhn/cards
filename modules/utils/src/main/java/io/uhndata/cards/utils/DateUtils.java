@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class DateUtils
 {
@@ -88,7 +90,8 @@ public final class DateUtils
      * @param str the serialized date to parse
      * @return the parsed date, or {@code null} if the date cannot be parsed
      */
-    public static Calendar parseCalendar(final String str)
+    @Nullable
+    public static Calendar parseCalendar(@Nullable final String str)
     {
         final ZonedDateTime date = parseDateTime(str);
         if (date == null) {
@@ -105,7 +108,8 @@ public final class DateUtils
      * @param str the serialized date to parse
      * @return the parsed date, or {@code null} if the date cannot be parsed
      */
-    public static ZonedDateTime parseDateTime(final String str)
+    @Nullable
+    public static ZonedDateTime parseDateTime(@Nullable final String str)
     {
         if (StringUtils.isBlank(str)) {
             return null;
@@ -136,7 +140,8 @@ public final class DateUtils
      * @param date the source date+time, will not be modified.
      * @return a date instance at the same date, but at midnight
      */
-    public static ZonedDateTime atMidnight(final ZonedDateTime date)
+    @NotNull
+    public static ZonedDateTime atMidnight(@NotNull final ZonedDateTime date)
     {
         return date.truncatedTo(ChronoUnit.DAYS);
     }
@@ -147,7 +152,8 @@ public final class DateUtils
      * @param date the source date+time, will not be modified.
      * @return a date instance at the same date, but at midnight
      */
-    public static Calendar atMidnight(final Calendar date)
+    @NotNull
+    public static Calendar atMidnight(@NotNull final Calendar date)
     {
         final Calendar result = (Calendar) date.clone();
         result.set(Calendar.HOUR_OF_DAY, 0);
@@ -166,7 +172,8 @@ public final class DateUtils
      * @return the equivalent {@code ZonedDateTime} in the date's own timezone, or {@code null} if the input date was
      *         {@code null}
      */
-    public static ZonedDateTime toZonedDateTime(final Calendar date)
+    @Nullable
+    public static ZonedDateTime toZonedDateTime(@Nullable final Calendar date)
     {
         if (date == null) {
             return null;
@@ -181,7 +188,8 @@ public final class DateUtils
      * @return a date serialization in the {@code 1999-12-31T20:30:00.000+05:00} format, using the date's own timezone,
      *         or {@code null} if the input date was {@code null}
      */
-    public static String toString(final Calendar date)
+    @Nullable
+    public static String toString(@Nullable final Calendar date)
     {
         if (date == null) {
             return null;
@@ -200,7 +208,8 @@ public final class DateUtils
      * @return a date serialization in the {@code 1999-12-31T20:30:00.000+05:00} format, or {@code null} if the input
      *         date was {@code null}
      */
-    public static String toString(final TemporalAccessor date)
+    @Nullable
+    public static String toString(@Nullable final TemporalAccessor date)
     {
         if (date == null) {
             return null;
@@ -220,7 +229,8 @@ public final class DateUtils
      * @return a date serialization in the {@code 1999-12-31T20:30:00.000+05:00} format, or {@code null} if the input
      *         date was {@code null} or in an unsupported format
      */
-    public static String normalize(final String date)
+    @Nullable
+    public static String normalize(@Nullable final String date)
     {
         return toString(parseDateTime(date));
     }

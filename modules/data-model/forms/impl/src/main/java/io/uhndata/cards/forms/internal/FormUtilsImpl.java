@@ -139,7 +139,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public Node getQuestionnaire(final NodeBuilder form)
     {
-        return getQuestionnaire(form.getNodeState());
+        return form == null ? null : getQuestionnaire(form.getNodeState());
     }
 
     @Override
@@ -157,7 +157,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public String getQuestionnaireIdentifier(final NodeBuilder form)
     {
-        return getQuestionnaireIdentifier(form.getNodeState());
+        return form == null ? null : getQuestionnaireIdentifier(form.getNodeState());
     }
 
     @Override
@@ -175,7 +175,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public Node getSubject(final NodeBuilder form)
     {
-        return getSubject(form.getNodeState());
+        return form == null ? null : getSubject(form.getNodeState());
     }
 
     @Override
@@ -201,7 +201,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public String getSubjectIdentifier(final NodeBuilder form)
     {
-        return getSubjectIdentifier(form.getNodeState());
+        return form == null ? null : getSubjectIdentifier(form.getNodeState());
     }
 
     @Override
@@ -239,7 +239,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public Node getSection(final NodeBuilder answerSection)
     {
-        return getSection(answerSection.getNodeState());
+        return answerSection == null ? null : getSection(answerSection.getNodeState());
     }
 
     @Override
@@ -257,7 +257,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public String getSectionIdentifier(final NodeBuilder answerSection)
     {
-        return getSectionIdentifier(answerSection.getNodeState());
+        return answerSection == null ? null : getSectionIdentifier(answerSection.getNodeState());
     }
 
     @Override
@@ -295,7 +295,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public Node getQuestion(final NodeBuilder answer)
     {
-        return getQuestion(answer.getNodeState());
+        return answer == null ? null : getQuestion(answer.getNodeState());
     }
 
     @Override
@@ -313,7 +313,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public String getQuestionIdentifier(final NodeBuilder answer)
     {
-        return getQuestionIdentifier(answer.getNodeState());
+        return answer == null ? null : getQuestionIdentifier(answer.getNodeState());
     }
 
     @Override

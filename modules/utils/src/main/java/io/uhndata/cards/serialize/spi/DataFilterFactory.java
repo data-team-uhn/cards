@@ -21,6 +21,7 @@ package io.uhndata.cards.serialize.spi;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A factory for parsing data filters.
@@ -39,7 +40,9 @@ public interface DataFilterFactory
      * @param allSelectors all the selectors, in case a filter may have other settings configurable through selectors
      * @return a list of filters that could be parsed by this factory, an empty list if nothing matched
      */
-    List<DataFilter> parseFilters(List<Pair<String, String>> filters, List<String> allSelectors);
+    @NotNull
+    List<DataFilter> parseFilters(@NotNull List<Pair<String, String>> filters,
+        @NotNull List<String> allSelectors);
 
     /**
      * The details about any filters that may be created by this factory.
@@ -49,5 +52,6 @@ public interface DataFilterFactory
      *         May have just 1 entry if only one selector is handled by this factory
      *         or multiple entries if multiple different selectors are handled.
      */
+    @NotNull
     List<SelectorDetails> getFilterDetails();
 }

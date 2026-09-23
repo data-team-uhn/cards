@@ -20,6 +20,8 @@ package io.uhndata.cards.qsets.api;
 
 import javax.jcr.Node;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * A reference to a questionnaire that can be a source of conflict for a {@link QuestionnaireSet}. Other than the link
  * to an actual {@code cards:Questionnaire} node, it also specifies how often this questionnaire should be completed.
@@ -45,6 +47,7 @@ public interface QuestionnaireConflict
      *
      * @return a path to a JCR questionnaire node
      */
+    @NotNull
     String getQuestionnairePath();
 
     /**
@@ -52,6 +55,7 @@ public interface QuestionnaireConflict
      *
      * @return a JCR Node
      */
+    @NotNull
     Node getQuestionnaire();
 
     /**

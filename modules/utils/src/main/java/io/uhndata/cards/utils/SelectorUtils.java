@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class for parsing the selectors suffix from a resource into a list of selectors or a map of selector options.
@@ -58,7 +60,8 @@ public final class SelectorUtils
      * @param resolutionPathInfo the resolution path info, as received from Sling, may be URL-encoded
      * @return a list of selectors, dots not included
      */
-    public static List<String> parseSelectors(final String resolutionPathInfo)
+    @NotNull
+    public static List<String> parseSelectors(@Nullable final String resolutionPathInfo)
     {
         if (StringUtils.isBlank(resolutionPathInfo)) {
             return requestSelectors();
@@ -122,7 +125,9 @@ public final class SelectorUtils
      * @param resolutionPathInfo the resolution path info, as received from Sling, may be URL-encoded
      * @return a list of extracted pairs of key=value
      */
-    public static List<Pair<String, String>> parseOptions(final String optionPrefix, final String resolutionPathInfo)
+    @NotNull
+    public static List<Pair<String, String>> parseOptions(@Nullable final String optionPrefix,
+        @Nullable final String resolutionPathInfo)
     {
         if (StringUtils.isBlank(optionPrefix)) {
             return Collections.emptyList();
@@ -152,7 +157,9 @@ public final class SelectorUtils
      * @param resolutionPathInfo the resolution path info, as received from Sling, may be URL-encoded
      * @return a map of the extracted key=value
      */
-    public static Map<String, String> parseOptionsToMap(final String optionPrefix, final String resolutionPathInfo)
+    @NotNull
+    public static Map<String, String> parseOptionsToMap(@Nullable final String optionPrefix,
+        @Nullable final String resolutionPathInfo)
     {
         List<Pair<String, String>> allOptions = parseOptions(optionPrefix, resolutionPathInfo);
         Map<String, String> result = new HashMap<>();

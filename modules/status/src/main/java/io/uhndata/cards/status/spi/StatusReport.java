@@ -22,6 +22,9 @@ package io.uhndata.cards.status.spi;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * A bit of information about the status of the system.
  *
@@ -51,7 +54,8 @@ public class StatusReport
 
     private final String text;
 
-    public StatusReport(final String name, final Status status, final String text)
+    public StatusReport(@NotNull final String name, @NotNull final Status status,
+        @Nullable final String text)
     {
         this.name = name;
         this.status = status;
@@ -63,6 +67,7 @@ public class StatusReport
      *
      * @return a simple string
      */
+    @NotNull
     public String getName()
     {
         return this.name;
@@ -73,6 +78,7 @@ public class StatusReport
      *
      * @return one of the {@link Status} values
      */
+    @NotNull
     public Status getStatus()
     {
         return this.status;
@@ -83,6 +89,7 @@ public class StatusReport
      *
      * @return a piece of text
      */
+    @Nullable
     public String getText()
     {
         return this.text;
@@ -94,6 +101,7 @@ public class StatusReport
      * @return a short summary about this report, containing just the name of the report and the status level
      */
     @Override
+    @NotNull
     public String toString()
     {
         return getName() + ": " + getStatus();
@@ -104,6 +112,7 @@ public class StatusReport
      *
      * @return a JSON object with the following keys: {@code name}, {@code status}, {@code text}
      */
+    @NotNull
     public JsonObject toJson()
     {
         return Json.createObjectBuilder()

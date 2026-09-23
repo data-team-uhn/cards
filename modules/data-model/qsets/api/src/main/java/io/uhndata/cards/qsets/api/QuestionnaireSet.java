@@ -28,6 +28,8 @@ import java.util.stream.Stream;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +95,8 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
          * @param label a string, one of the labels of the supported conflict modes
          * @return a conflict mode, {@code CONFLICT_ANY_LISTED} by default
          */
-        public static ConflictMode parse(String label)
+        @NotNull
+        public static ConflictMode parse(@Nullable String label)
         {
             return Stream.of(values()).filter(mode -> mode.label.equals(label)).findFirst().orElse(CONFLICT_ANY_LISTED);
         }
@@ -104,7 +107,8 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
          * @param definition a JCR node of type {@code cards:QuestionnaireSet}
          * @return a conflict mode, {@code CONFLICT_ANY_LISTED} if not specified in the node
          */
-        public static ConflictMode valueOf(Node definition)
+        @NotNull
+        public static ConflictMode valueOf(@Nullable Node definition)
         {
             try {
                 if (definition != null && definition.hasProperty(CONFLICT_MODE_PROPERTY)) {
@@ -123,6 +127,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @return a JCR node of type {@code cards:QuestionnaireSet}, may be {@code null} if no definition is associated
      *         with this particular set
      */
+    @Nullable
     Node getDefinition();
 
     /**
@@ -130,6 +135,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      *
      * @return a set of conflict definitions, may be empty
      */
+    @NotNull
     Set<QuestionnaireConflict> getConflicts();
 
     /**
@@ -137,13 +143,14 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      *
      * @param conflict the conflict definition
      */
-    void addConflict(QuestionnaireConflict conflict);
+    void addConflict(@NotNull QuestionnaireConflict conflict);
 
     /**
      * Retrieve the conflict mode for this questionnaire set.
      *
      * @return a conflict mode
      */
+    @NotNull
     ConflictMode getConflictMode();
 
     /**
@@ -160,6 +167,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      *
      * @return an ordered list of questionnaire references, may be empty
      */
+    @NotNull
     List<QuestionnaireRef> getQuestionnaires();
 
     /**
@@ -169,6 +177,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @see java.util.Collection#iterator()
      */
     @Override
+    @NotNull
     default Iterator<QuestionnaireRef> iterator()
     {
         return getQuestionnaires().iterator();
@@ -180,6 +189,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @see java.util.Collection#toArray()
      */
     @Override
+    @NotNull
     default Object[] toArray()
     {
         return getQuestionnaires().toArray();
@@ -191,7 +201,8 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @see java.util.Collection#toArray(java.lang.Object[])
      */
     @Override
-    default <T> T[] toArray(T[] a)
+    @NotNull
+    default <T> T[] toArray(@NotNull T[] a)
     {
         return getQuestionnaires().toArray(a);
     }
@@ -224,7 +235,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @param questionnairePath a path to a JCR questionnaire node
      * @return {@code true} if the questionnaire belongs to this set, {@code false} otherwise
      */
-    boolean containsQuestionnaire(String questionnairePath);
+    boolean containsQuestionnaire(@Nullable String questionnairePath);
 
     /**
      * Check if a questionnaire is part of this questionnaire set. This method accepts a {@link QuestionnaireRef}, a JCR
@@ -234,7 +245,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @return {@code true} if the questionnaire belongs to this set, {@code false} otherwise
      */
     @Override
-    default boolean contains(Object o)
+    default boolean contains(@Nullable Object o)
     {
         if (o instanceof QuestionnaireRef) {
             return containsQuestionnaire(((QuestionnaireRef) o).getQuestionnairePath());
@@ -258,7 +269,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @return {@code true} if all of the questionnaires belongs to this set, {@code false} otherwise
      */
     @Override
-    default boolean containsAll(Collection<?> c)
+    default boolean containsAll(@NotNull Collection<?> c)
     {
         return c.stream().allMatch(this::contains);
     }
@@ -270,14 +281,15 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @return the definition for this questionnaire reference, {@code null} if the specified questionnaire isn't part
      *         of this set
      */
-    QuestionnaireRef getQuestionnaire(String questionnairePath);
+    @Nullable
+    QuestionnaireRef getQuestionnaire(@Nullable String questionnairePath);
 
     /**
      * Add a new questionnaire to this questionnaire set.
      *
      * @param reference the definition for the new questionnaire reference
      */
-    void addQuestionnaire(QuestionnaireRef reference);
+    void addQuestionnaire(@NotNull QuestionnaireRef reference);
 
     /**
      * Add a questionnaire to this questionnaire set.
@@ -286,7 +298,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @return {@code true} if the questionnaire was added to the set, {@code false} otherwise
      */
     @Override
-    default boolean add(QuestionnaireRef reference)
+    default boolean add(@NotNull QuestionnaireRef reference)
     {
         addQuestionnaire(reference);
         return true;
@@ -299,7 +311,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @return {@code true} if at least one of the questionnaires was added to the set, {@code false} otherwise
      */
     @Override
-    default boolean addAll(Collection<? extends QuestionnaireRef> questionnaires)
+    default boolean addAll(@NotNull Collection<? extends QuestionnaireRef> questionnaires)
     {
         questionnaires.forEach(this::addQuestionnaire);
         return true;
@@ -311,7 +323,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @param questionnairePath a path to a JCR questionnaire node
      * @return {@code true} if the questionnaire was part of the set and was removed, {@code false} otherwise
      */
-    boolean removeQuestionnaire(String questionnairePath);
+    boolean removeQuestionnaire(@Nullable String questionnairePath);
 
     /**
      * Remove a questionnaire from this questionnaire set. This method accepts a {@link QuestionnaireRef}, a JCR
@@ -321,7 +333,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      * @return {@code true} if the questionnaire was part of the set and was removed, {@code false} otherwise
      */
     @Override
-    default boolean remove(Object o)
+    default boolean remove(@Nullable Object o)
     {
         if (o instanceof QuestionnaireRef) {
             return removeQuestionnaire(((QuestionnaireRef) o).getQuestionnairePath());
@@ -346,13 +358,13 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      *         otherwise
      */
     @Override
-    default boolean removeAll(Collection<?> c)
+    default boolean removeAll(@NotNull Collection<?> c)
     {
         return c.stream().anyMatch(this::remove);
     }
 
     @Override
-    default boolean retainAll(Collection<?> c)
+    default boolean retainAll(@NotNull Collection<?> c)
     {
         final Iterator<QuestionnaireRef> it = iterator();
         while (it.hasNext()) {
@@ -393,6 +405,7 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      *
      * @return a date, or {@code null}
      */
+    @Nullable
     Calendar getAssociatedDate();
 
     /**
@@ -401,5 +414,5 @@ public interface QuestionnaireSet extends Collection<QuestionnaireRef>
      *
      * @param other another questionnaire set already existing in the system, with its own associated date
      */
-    void pruneConflicts(QuestionnaireSet other);
+    void pruneConflicts(@NotNull QuestionnaireSet other);
 }

@@ -23,6 +23,8 @@ import java.util.Locale;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +75,8 @@ public interface QuestionnaireRef
          * @param definition a JCR node of type {@code cards:QuestionnaireRef}
          * @return a target user type, {@link ANY} if not specified in the node
          */
-        public static TargetUserType valueOf(Node definition)
+        @NotNull
+        public static TargetUserType valueOf(@Nullable Node definition)
         {
             try {
                 if (definition != null && definition.hasProperty(TARGET_USER_TYPE_PROPERTY)) {
@@ -92,6 +95,7 @@ public interface QuestionnaireRef
      *
      * @return a path to a JCR questionnaire node
      */
+    @NotNull
     String getQuestionnairePath();
 
     /**
@@ -99,6 +103,7 @@ public interface QuestionnaireRef
      *
      * @return a JCR Node
      */
+    @NotNull
     Node getQuestionnaire();
 
     /**
@@ -106,6 +111,7 @@ public interface QuestionnaireRef
      *
      * @return a target type
      */
+    @NotNull
     TargetUserType getTargetUserType();
 
     /**

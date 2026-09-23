@@ -65,7 +65,7 @@ public abstract class AbstractNodeUtils
      */
     protected boolean isNodeType(final NodeState node, final String targetNodeType, final Session session)
     {
-        if (session == null) {
+        if (node == null || session == null) {
             return false;
         }
         final PropertyState primaryType = node.getProperty("jcr:primaryType");

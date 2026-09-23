@@ -466,7 +466,8 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
         List<String> values = new LinkedList<>();
         // Call label processors to populate displayedValue
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        this.labelProcessors.get().forEach(p -> p.leave(answer, builder, null));
+        // Statistics are computed from the labels alone, so there is nothing to serialize further.
+        this.labelProcessors.get().forEach(p -> p.leave(answer, builder, n -> null));
         // Now the json has the displayedValue if a value exists
         JsonObject answerJson = builder.build();
         JsonValue jsonValue = answerJson.get(LABEL_PROP);

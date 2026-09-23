@@ -19,6 +19,9 @@
 
 package io.uhndata.cards.serialize.spi;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * The details about a selector that can be used to filter or modify what data is returned.
  * This is intended to be displayed to users looking to use selectors to help format data,
@@ -44,12 +47,13 @@ public class SelectorDetails
 
     private SelectorOption[] options;
 
-    public SelectorDetails(String name, String description)
+    public SelectorDetails(@NotNull String name, @NotNull String description)
     {
         this(name, description, false);
     }
 
-    public SelectorDetails(String name, String description, Boolean enabledByDefault)
+    public SelectorDetails(@NotNull String name, @NotNull String description,
+        @Nullable Boolean enabledByDefault)
     {
         this.name = name;
         this.description = description;
@@ -57,36 +61,37 @@ public class SelectorDetails
         this.options = new SelectorOption[0];
     }
 
-    public SelectorDetails(String name, String description, SelectorOption[] options)
+    public SelectorDetails(@NotNull String name, @NotNull String description,
+        @Nullable SelectorOption[] options)
     {
         this(name, description, false, options);
     }
 
-    public SelectorDetails(String name, String description, Boolean enabledByDefault, SelectorOption[] options)
+    public SelectorDetails(@NotNull String name, @NotNull String description,
+        @Nullable Boolean enabledByDefault, @Nullable SelectorOption[] options)
     {
         this.name = name;
         this.description = description;
         this.enabledByDefault = enabledByDefault;
         // A copy, since arrays are mutable and the caller must not be able to alter this object's own state
-        this.options = options == null ? null : options.clone();
+        this.options = options == null ? new SelectorOption[0] : options.clone();
     }
 
-    public SelectorDetails(String name, String description, String... options)
+    public SelectorDetails(@NotNull String name, @NotNull String description, @NotNull String... options)
     {
         this(name, description, false, options);
     }
 
-    public SelectorDetails(String name, String description, Boolean enabledByDefault, String... options)
+    public SelectorDetails(@NotNull String name, @NotNull String description,
+        @Nullable Boolean enabledByDefault, @NotNull String... options)
     {
         this.name = name;
         this.description = description;
         this.enabledByDefault = enabledByDefault;
-        if (options.length >= 2) {
-            int numOptions = Math.floorDiv(options.length, 2);
-            this.options = new SelectorOption[numOptions];
-            for (int i = 0; i < numOptions; i++) {
-                this.options[i] = new SelectorOption(options[2 * i], options[2 * i + 1]);
-            }
+        int numOptions = Math.floorDiv(options.length, 2);
+        this.options = new SelectorOption[numOptions];
+        for (int i = 0; i < numOptions; i++) {
+            this.options[i] = new SelectorOption(options[2 * i], options[2 * i + 1]);
         }
     }
 
@@ -95,6 +100,7 @@ public class SelectorDetails
      *
      * @return The name of this selector.
      */
+    @NotNull
     public String getName()
     {
         return this.name;
@@ -105,6 +111,7 @@ public class SelectorDetails
      *
      * @return A description of what this selector does.
      */
+    @NotNull
     public String getDescription()
     {
         return this.description;
@@ -113,14 +120,17 @@ public class SelectorDetails
     /**
      * The extra options that can be used to further configure this selector.
      *
-     * @return A copy of the list of any extra options that may apply to this selector. May be {@code null}.
+     * @return A copy of the list of any extra options that may apply to this selector, empty if there are
+     *         none.
      */
+    @NotNull
     public SelectorOption[] getOptions()
     {
         // A copy, since arrays are mutable and callers must not be able to alter this object's own state
-        return this.options == null ? null : this.options.clone();
+        return this.options.clone();
     }
 
+    @Nullable
     public Boolean isEnabledByDefault()
     {
         return this.enabledByDefault;
@@ -144,11 +154,13 @@ public class SelectorDetails
             this.description = "";
         }
 
+        @NotNull
         public String getName()
         {
             return this.name;
         }
 
+        @NotNull
         public String getDescription()
         {
             return this.description;

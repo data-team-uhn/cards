@@ -51,6 +51,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
     </dependency>

@@ -29,6 +29,8 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +59,9 @@ public final class Metrics
      * @param statName the name of the performance statistic to query
      * @return the map of 'today' and 'total' values for the performance statistic or null
      */
-    public static Map<String, Long> get(ResourceResolver resolver, String statName)
+    @Nullable
+    public static Map<String, Long> get(@NotNull ResourceResolver resolver,
+        @NotNull String statName)
     {
         Map<String, Long> perfStat = new HashMap<String, Long>();
         Resource statResourcePrevTotal = resolver.getResource(METRICS_PATH + statName + "/prevTotal");
@@ -86,8 +90,8 @@ public final class Metrics
      * @param statName the name of the performance statistic to increment
      * @param incrementValue the value to increment the performance statistic by
      */
-    public static void increment(final ResourceResolverFactory resolverFactory,
-        final String statName, final long incrementValue)
+    public static void increment(@NotNull final ResourceResolverFactory resolverFactory,
+        @NotNull final String statName, final long incrementValue)
     {
         Map<String, Object> params = new HashMap<>();
         params.put(ResourceResolverFactory.SUBSERVICE, "MetricLogger");
@@ -107,8 +111,8 @@ public final class Metrics
      * @param statHumanName the human readable description of this metric to be stored as the "value" property
      *     for /Metrics/{statName}/name
      */
-    public static void createStatistic(final ResourceResolverFactory resolverFactory,
-        final String statName, final String statHumanName)
+    public static void createStatistic(@NotNull final ResourceResolverFactory resolverFactory,
+        @NotNull final String statName, @NotNull final String statHumanName)
     {
         Map<String, Object> params = new HashMap<>();
         params.put(ResourceResolverFactory.SUBSERVICE, "MetricLogger");
@@ -174,7 +178,9 @@ public final class Metrics
      * @param statName the name of the performance statistic to obtain its "today" and "total" values
      * @return the map of 'today' and 'total' values for the performance statistic or null
      */
-    public static Map<String, Long> getAndReset(ResourceResolver resolver, String statName)
+    @Nullable
+    public static Map<String, Long> getAndReset(@NotNull ResourceResolver resolver,
+        @NotNull String statName)
     {
         Map<String, Long> statsMap = get(resolver, statName);
         if (statsMap == null) {
@@ -200,7 +206,9 @@ public final class Metrics
      * @param statName the name of the performance statistic to obtain its human-readable name
      * @return the human-readable name associated with the performance metric or null
      */
-    public static String getHumanName(ResourceResolver resolver, String statName)
+    @Nullable
+    public static String getHumanName(@NotNull ResourceResolver resolver,
+        @NotNull String statName)
     {
         Resource statResourceName = resolver.getResource(METRICS_PATH + statName + "/name");
         if (statResourceName == null) {

@@ -20,6 +20,8 @@ import javax.jcr.Node;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Basic utilities for working with Subjects.
@@ -47,7 +49,7 @@ public interface SubjectUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Subject}, {@code false}
      *         otherwise
      */
-    boolean isSubject(Node node);
+    boolean isSubject(@Nullable Node node);
 
     /**
      * Check if the given node is a Subject node.
@@ -56,7 +58,7 @@ public interface SubjectUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Subject}, {@code false}
      *         otherwise
      */
-    boolean isSubject(NodeBuilder node);
+    boolean isSubject(@Nullable NodeBuilder node);
 
     /**
      * Check if the given node is a Subject node.
@@ -65,7 +67,7 @@ public interface SubjectUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Subject}, {@code false}
      *         otherwise
      */
-    boolean isSubject(NodeState node);
+    boolean isSubject(@Nullable NodeState node);
 
     /**
      * Retrieve the Subject with the given UUID.
@@ -73,7 +75,8 @@ public interface SubjectUtils
      * @param identifier a UUID that references a Subject.
      * @return a Node, or {@code null} if the identifier does not point to a Subject
      */
-    Node getSubject(String identifier);
+    @Nullable
+    Node getSubject(@NotNull String identifier);
 
     /**
      * Retrieve the Subject Type of the given subject.
@@ -81,7 +84,8 @@ public interface SubjectUtils
      * @param subject a Subject node, may be {@code null}
      * @return a SubjectType node, or {@code null} if the provided node is not a Subject
      */
-    Node getType(Node subject);
+    @Nullable
+    Node getType(@Nullable Node subject);
 
     /**
      * Retrieve the label (human readable identifier) of the given Subject.
@@ -89,5 +93,6 @@ public interface SubjectUtils
      * @param subject a Subject node, may be {@code null}
      * @return a label, or {@code null} if the provided node is not a Subject
      */
-    String getLabel(Node subject);
+    @Nullable
+    String getLabel(@Nullable Node subject);
 }

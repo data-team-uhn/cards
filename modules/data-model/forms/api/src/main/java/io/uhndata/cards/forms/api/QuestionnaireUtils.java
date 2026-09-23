@@ -18,6 +18,9 @@ package io.uhndata.cards.forms.api;
 
 import javax.jcr.Node;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Basic utilities for working with Questionnaires.
  *
@@ -68,7 +71,7 @@ public interface QuestionnaireUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Questionnaire}, {@code false}
      *         otherwise
      */
-    boolean isQuestionnaire(Node node);
+    boolean isQuestionnaire(@Nullable Node node);
 
     /**
      * Retrieve the Questionnaire with the given UUID.
@@ -76,7 +79,8 @@ public interface QuestionnaireUtils
      * @param identifier an UUID that references a questionnaire.
      * @return a Node
      */
-    Node getQuestionnaire(String identifier);
+    @Nullable
+    Node getQuestionnaire(@NotNull String identifier);
 
     /**
      * Check if the given node is a Section node.
@@ -85,7 +89,7 @@ public interface QuestionnaireUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Section}, {@code false}
      *         otherwise
      */
-    boolean isSection(Node node);
+    boolean isSection(@Nullable Node node);
 
     /**
      * Check if the given node is a conditional Section node.
@@ -94,7 +98,7 @@ public interface QuestionnaireUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Section} and has a condition,
      *         {@code false} otherwise
      */
-    boolean isConditionalSection(Node node);
+    boolean isConditionalSection(@Nullable Node node);
 
     /**
      * Retrieve the Section with the given UUID.
@@ -102,7 +106,8 @@ public interface QuestionnaireUtils
      * @param identifier an UUID that references a section.
      * @return a Node
      */
-    Node getSection(String identifier);
+    @Nullable
+    Node getSection(@NotNull String identifier);
 
     /**
      * Get a Question from a Questionnaire.
@@ -111,7 +116,8 @@ public interface QuestionnaireUtils
      * @param relativePath relative path from the Questionnaire node to a Question
      * @return a Question node, may be {@code null}
      */
-    Node getQuestion(Node questionnaire, String relativePath);
+    @Nullable
+    Node getQuestion(@Nullable Node questionnaire, @NotNull String relativePath);
 
     /**
      * Check if the given node is a Question node.
@@ -120,7 +126,7 @@ public interface QuestionnaireUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Question}, {@code false}
      *         otherwise
      */
-    boolean isQuestion(Node node);
+    boolean isQuestion(@Nullable Node node);
 
     /**
      * Check if the given node is a Question node for a computed question.
@@ -129,7 +135,7 @@ public interface QuestionnaireUtils
      * @return {@code true} if the node is not {@code null}, is computed and is of type {@code cards:Question},
      *         {@code false} otherwise
      */
-    boolean isComputedQuestion(Node node);
+    boolean isComputedQuestion(@Nullable Node node);
 
     /**
      * Check if the given node is a Question node for a reference question.
@@ -138,7 +144,7 @@ public interface QuestionnaireUtils
      * @return {@code true} if the node is not {@code null}, is of type {@code cards:Question} and is a reference,
      *         {@code false} otherwise
      */
-    boolean isReferenceQuestion(Node node);
+    boolean isReferenceQuestion(@Nullable Node node);
 
     /**
      * Retrieve the Question with the given UUID.
@@ -146,7 +152,8 @@ public interface QuestionnaireUtils
      * @param identifier an UUID that references a question.
      * @return a Node, or {@code null} if the question could not be found
      */
-    Node getQuestion(String identifier);
+    @Nullable
+    Node getQuestion(@NotNull String identifier);
 
     /**
      * Check if a node is an element of the given questionnaire, i.e. a question or section that is part of the
@@ -157,7 +164,7 @@ public interface QuestionnaireUtils
      * @return {@code true} if the element does belong to the questionnaire, {@code false} if either element is
      *         {@code null}, or not an expected node type
      */
-    boolean belongs(Node element, Node questionnaire);
+    boolean belongs(@Nullable Node element, @Nullable Node questionnaire);
 
     /**
      * Return the questionnaire that owns the provided element, if any.
@@ -165,7 +172,8 @@ public interface QuestionnaireUtils
      * @param element a node that belongs to a questionnaire, e.g. a Question or Section node
      * @return a questionnaire node, or {@code null}
      */
-    Node getOwnerQuestionnaire(Node element);
+    @Nullable
+    Node getOwnerQuestionnaire(@Nullable Node element);
 
     /**
      * Retrieve the name of a question, a short internal name.
@@ -173,7 +181,8 @@ public interface QuestionnaireUtils
      * @param question a {@code cards:Question} node
      * @return the question's name, or {@code null} if the node is not a Question
      */
-    String getQuestionName(Node question);
+    @Nullable
+    String getQuestionName(@Nullable Node question);
 
     /**
      * Retrieve the text of a question, the main text displayed to the user.
@@ -181,7 +190,8 @@ public interface QuestionnaireUtils
      * @param question a {@code cards:Question} node
      * @return the question's text, or an empty string if no text is present
      */
-    String getQuestionText(Node question);
+    @NotNull
+    String getQuestionText(@Nullable Node question);
 
     /**
      * Retrieve the description of a question, an optional longer explanation/description for the question.
@@ -189,5 +199,6 @@ public interface QuestionnaireUtils
      * @param question a {@code cards:Question} node
      * @return the question's description, or an empty string if no description is present
      */
-    String getQuestionDescription(Node question);
+    @NotNull
+    String getQuestionDescription(@Nullable Node question);
 }

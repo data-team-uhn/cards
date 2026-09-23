@@ -20,6 +20,8 @@ package io.uhndata.cards.auth.token;
 import java.util.Calendar;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -36,9 +38,11 @@ public interface TokenManager
      * @param user local username to associate with the token
      * @param expiration date after which the token becomes invalid
      * @param extraData optional data to store in the token
-     * @return a new token
+     * @return a new token, or {@code null} if the token could not be created
      */
-    CardsToken create(String user, Calendar expiration, Map<String, String> extraData);
+    @Nullable
+    CardsToken create(@NotNull String user, @NotNull Calendar expiration,
+        @NotNull Map<String, String> extraData);
 
     /**
      * Parse a token's data from its identifier.
@@ -46,5 +50,6 @@ public interface TokenManager
      * @param token a token string
      * @return the parsed token data, or {@code null} if the input is invalid
      */
-    CardsToken parse(String token);
+    @Nullable
+    CardsToken parse(@Nullable String token);
 }
