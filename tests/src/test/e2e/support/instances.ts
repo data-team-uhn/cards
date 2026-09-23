@@ -56,6 +56,14 @@ export const INSTANCES: readonly Instance[] = [
     baseURL: enabled(process.env.CARDS_CORE_SKIP, process.env.CARDS_CORE_URL),
     description: "the core distribution (core_tar)",
   },
+  {
+    name: "test-data",
+    baseURL: enabled(process.env.CARDS_TESTDATA_SKIP, process.env.CARDS_TESTDATA_URL),
+    description: "the distribution with test questionnaires (test_tar)",
+    // No readyPaths: this suite's content is behind authentication, and these are probed anonymously by
+    // design. What this suite actually needs -- every bundle's initial content installed -- is covered
+    // for both instances by the "Bundle Content Loaded" health check the setup waits on.
+  },
 ];
 
 /**

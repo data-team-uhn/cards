@@ -61,12 +61,24 @@
               <filesInclude>core/*.json</filesInclude>
               <title>CARDS With Oak Document NS Relational Persistence</title>
             </aggregate>
+            <!-- The core distribution plus the test questionnaires and the features they exercise: the
+                 same set start_cards.py composes at launch time for its test option. -->
+            <aggregate>
+              <classifier>test_tar</classifier>
+              <filesInclude>*.json</filesInclude>
+              <filesInclude>oak/*.json</filesInclude>
+              <filesInclude>oak/persistence/oak_persistence_sns.json</filesInclude>
+              <filesInclude>core/*.json</filesInclude>
+              <filesInclude>test/*.json</filesInclude>
+              <title>CARDS With Test Data</title>
+            </aggregate>
           </aggregates>
           <scans>
             <scan>
               <includeClassifier>core_tar</includeClassifier>
               <includeClassifier>core_mongo</includeClassifier>
               <includeClassifier>core_rdb</includeClassifier>
+              <includeClassifier>test_tar</includeClassifier>
             </scan>
           </scans>
         </configuration>

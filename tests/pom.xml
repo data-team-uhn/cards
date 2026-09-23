@@ -33,8 +33,10 @@
   <!--
     One instance per test suite, each launched from its own aggregated feature, each on its own port:
 
-      core   core_tar   the distribution `./start_cards.sh` launches, with no content beyond what the
-                        modules ship
+      core       core_tar   the distribution `./start_cards.sh` launches, with no content beyond what
+                            the modules ship
+      test-data  test_tar   that distribution plus the test questionnaires and the features they
+                            exercise, so every feature has something to show
 
     A suite can be turned off with its skip property, e.g. `-Dit.core.skip=true`, which is how a CI
     matrix runs one instance per job instead of all of them at once.
@@ -54,6 +56,7 @@
   -->
   <properties>
     <it.core.skip>false</it.core.skip>
+    <it.testdata.skip>false</it.testdata.skip>
     <!-- The engines to download *and* run on, space-separated: chromium, firefox, webkit. Only Chromium
          by default, because the others multiply the download and the CI system packages they need, for
          very little extra signal on an internal application. Each one produces a Playwright project of
@@ -105,6 +108,7 @@
               <minPortNumber>8080</minPortNumber>
               <portNames>
                 <portName>core.http.port</portName>
+                <portName>testdata.http.port</portName>
               </portNames>
             </configuration>
           </execution>
@@ -135,6 +139,7 @@
                   <directory>${project.build.directory}/launchers</directory>
                   <includes>
                     <include>core/**</include>
+                    <include>test-data/**</include>
                   </includes>
                 </fileset>
               </filesets>
@@ -167,6 +172,24 @@
                   <org.osgi.service.http.port>${core.http.port}</org.osgi.service.http.port>
                   <!-- The same buffer the old integration tests raised: several of the JSON endpoints
                        the frontend reads answer with more than Jetty's default in one response. -->
+                  <org.apache.felix.http.jetty.responseBufferSize>5000000</org.apache.felix.http.jetty.responseBufferSize>
+                </frameworkProperties>
+              </launcherArguments>
+              <startTimeoutSeconds>300</startTimeoutSeconds>
+            </launch>
+            <launch>
+              <id>test-data</id>
+              <skip>${it.testdata.skip}</skip>
+              <feature>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cards</artifactId>
+                <version>${project.version}</version>
+                <classifier>test_tar</classifier>
+                <type>slingosgifeature</type>
+              </feature>
+              <launcherArguments>
+                <frameworkProperties>
+                  <org.osgi.service.http.port>${testdata.http.port}</org.osgi.service.http.port>
                   <org.apache.felix.http.jetty.responseBufferSize>5000000</org.apache.felix.http.jetty.responseBufferSize>
                 </frameworkProperties>
               </launcherArguments>
@@ -275,6 +298,8 @@
                      Playwright config, so switching a launch off needs no second edit here. -->
                 <CARDS_CORE_URL>http://localhost:${core.http.port}</CARDS_CORE_URL>
                 <CARDS_CORE_SKIP>${it.core.skip}</CARDS_CORE_SKIP>
+                <CARDS_TESTDATA_URL>http://localhost:${testdata.http.port}</CARDS_TESTDATA_URL>
+                <CARDS_TESTDATA_SKIP>${it.testdata.skip}</CARDS_TESTDATA_SKIP>
                 <!-- The same list the browsers were installed from, so what runs and what was downloaded
                      cannot drift apart -->
                 <PLAYWRIGHT_BROWSERS>${playwright.browsers}</PLAYWRIGHT_BROWSERS>
