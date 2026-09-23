@@ -18,7 +18,7 @@
 
 import { Class, $ } from '../shims/prototypeShim';
 import AbstractNodeVisuals from './abstractNodeVisuals';
-import GraphicHelpers from './graphicHelpers';
+import * as GraphicHelpers from './graphicHelpers';
 import PedigreeEditorParameters from '../pedigreeEditorParameters';
 
 /**

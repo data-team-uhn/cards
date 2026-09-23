@@ -33,8 +33,8 @@ import ConditionalComponentManager from "./ConditionalComponentManager";
 // moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using
 // self-declaration in a node, like the assets, or even by filtering through assets.
 /* eslint-disable unused-imports/no-unused-imports, no-unused-vars */
-import ConditionalGroup from "./ConditionalGroup";
-import ConditionalSingle from "./ConditionalSingle";
+import "./ConditionalGroup";
+import "./ConditionalSingle";
 /* eslint-enable unused-imports/no-unused-imports, no-unused-vars */
 import { useFormReaderContext, useFormWriterContext } from "./FormContext";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";

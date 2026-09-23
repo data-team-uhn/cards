@@ -22,7 +22,7 @@ import Controller from './controller';
 import SaveLoadEngine from './saveLoadEngine';
 import View from './view';
 import DynamicPositionedGraph from './model/dynamicGraph';
-import Helpers from './model/helpers';
+import * as Helpers from './model/helpers';
 import Workspace from './view/workspace';
 import DisorderLegend from './view/disorderLegend';
 import HPOLegend from './view/hpoLegend';

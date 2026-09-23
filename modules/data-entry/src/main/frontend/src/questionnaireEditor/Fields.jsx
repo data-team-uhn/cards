@@ -28,7 +28,7 @@ import LabeledField from "./LabeledField";
 /* eslint-disable unused-imports/no-unused-imports, no-unused-vars */
 import AnswerOptions from "./AnswerOptions";
 import BooleanInput from "./BooleanInput";
-import CodeInput from "./CodeInput";
+import "./CodeInput";
 import ConditionalValueInput from "./ConditionalValueInput";
 import ListInput from "./ListInput";
 import MarkdownTextField from "./MarkdownTextField";

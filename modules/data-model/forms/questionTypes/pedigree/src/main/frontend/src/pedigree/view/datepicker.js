@@ -17,7 +17,7 @@
  */
 
 import { Class, $, PElement } from '../shims/prototypeShim';
-import Helpers from '../model/helpers';
+import * as Helpers from '../model/helpers';
 
 
   var PedigreeFuzzyDatePickerDropdown = Class.create({
