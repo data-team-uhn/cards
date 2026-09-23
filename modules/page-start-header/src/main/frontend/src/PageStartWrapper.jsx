@@ -17,20 +17,29 @@
 //  under the License.
 //
 
-import { createContext, useState } from "react";
+import { useMemo, useState } from "react";
 
 import PropTypes from 'prop-types';
 
+import LayoutContext from './components/LayoutContext.jsx';
 import PageStart from './PageStart';
 
-export const PageStartContext = createContext(0);
+// Renders the PageStart banners, pushes its children down by their total height, and publishes
+// that height (plus the width of the navigation drawer, if the layout has one) through
+// LayoutContext so that sticky and fixed elements further down the tree can stay clear of them.
+//
+// Props:
+// extensionsName: the PageStart extension point to load the banners from (default "PageStart")
+// drawerWidth: width in px of the permanent navigation drawer of the enclosing layout, 0 if none
 
 const PageStartWrapper = (props) => {
-  const { children, extensionsName } = props;
+  const { children, extensionsName, drawerWidth = 0 } = props;
   const [contentOffset, setContentOffset] = useState(0);
 
+  const layout = useMemo(() => ({ drawerWidth, contentOffset }), [drawerWidth, contentOffset]);
+
   return (
-    <PageStartContext.Provider value={contentOffset}>
+    <LayoutContext.Provider value={layout}>
       <PageStart
         extensionsName={extensionsName}
         setTotalHeight={(th) => {
@@ -42,12 +51,13 @@ const PageStartWrapper = (props) => {
       <div style={{ position: 'relative', top: contentOffset + 'px' }}>
         {children}
       </div>
-    </PageStartContext.Provider>
+    </LayoutContext.Provider>
   );
 };
 
 PageStartWrapper.propTypes = {
   extensionsName: PropTypes.string,
+  drawerWidth: PropTypes.number,
   children: PropTypes.node,
 };
 

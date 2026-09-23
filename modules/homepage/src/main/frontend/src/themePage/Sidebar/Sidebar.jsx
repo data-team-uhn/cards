@@ -9,7 +9,7 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { Drawer, List, ListItemButton, ListItemText } from "@mui/material";
 import classNames from "classnames";
@@ -18,6 +18,7 @@ import { withStyles } from 'tss-react/mui';
 
 import AppInfo from "./AppInfo.jsx";
 import sidebarStyles from "./sidebarStyles.jsx";
+import LayoutContext from "../../components/LayoutContext.jsx";
 import { loadExtensions } from "../../uiextension/extensionManager";
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 
@@ -33,7 +34,8 @@ const Sidebar = ({ ...props }) => {
   let _isAdministrativeButton = function(order) {
     return Math.floor(order % 100 / 90);
   }
-  const { classes, color, contentOffset, logoImage, image } = props;
+  const { classes, color, logoImage, image } = props;
+  const { contentOffset } = useContext(LayoutContext);
   let [entries, setEntries] = useState();
   let [loading, setLoading] = useState(true);
 

@@ -99,7 +99,7 @@ let Questionnaire = (props) => {
 // component so that scroll-driven activeItem changes re-render only the header, not the
 // questionnaire content.
 let QuestionnaireResourceHeader = (props) => {
-  let { title, action, baseUrl, contentOffset, data, showLocation } = props;
+  let { title, action, baseUrl, data, showLocation } = props;
   const { state: { nodes } } = useQuestionnaireTreeContext();
   const inView = useQuestionnaireInViewContext();
   // Only show the location path once the header has collapsed (the big title has scrolled
@@ -140,7 +140,6 @@ let QuestionnaireResourceHeader = (props) => {
         ...locationCrumbs
       ]}
       action={action}
-      contentOffset={contentOffset}
       hideBreadcrumbTitle={showLocation}
     >
       { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
@@ -197,9 +196,8 @@ let QuestionnaireComponent = (props) => {
     <QuestionnairePreview
       data={data}
       title={questionnaireTitle}
-      contentOffset={props.contentOffset}
     />
-  ), [data, questionnaireTitle, props.contentOffset]);
+  ), [data, questionnaireTitle]);
   const editContent = useMemo(() => (
     <QuestionnaireContents
       key={treeContext.state.revision}
@@ -328,7 +326,6 @@ let QuestionnaireComponent = (props) => {
               title={questionnaireTitle}
               action={questionnaireMenu}
               baseUrl={baseUrl}
-              contentOffset={props.contentOffset}
               data={data}
               showLocation={isEdit}
             />

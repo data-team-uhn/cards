@@ -25,9 +25,8 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Routes, Route, Navigate } from "react-router";
 import { withStyles } from 'tss-react/mui';
 
-import LayoutContext from "../components/LayoutContext.jsx";
 import ReLoginDialog, { GlobalLoginContext } from "../login/ReLoginDialog.js";
-import PageStart from "../PageStart";
+import PageStartWrapper from "../PageStartWrapper";
 import { getRoutes } from '../routes';
 import { appTheme } from "../themePalette.jsx";
 import { drawerWidth } from "../themeStyles.jsx";
@@ -36,14 +35,10 @@ import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
 import Sidebar from "./Sidebar/Sidebar.jsx"
 
-// The chrome this layout puts around every page, exposed to components such as LoadingOverlay
-const MAIN_LAYOUT = { drawerWidth };
-
 
 function Main(props) {
   const { classes, ...rest } = props;
 
-  let [ contentOffset, setContentOffset ] = useState(0);
   let [ mobileOpen, setMobileOpen ] = useState(false);
   let [ routes, setRoutes ] = useState([]);
   let [ reLoginDialogOpen, setReLoginDialogOpen ] = useState(false);
@@ -78,7 +73,7 @@ function Main(props) {
     let title = " | " + docTitle;
     return (
       <Page title={title} pageDefaultName={route["cards:extensionName"]}>
-        <ThisComponent contentOffset={contentOffset} extension={route} />
+        <ThisComponent extension={route} />
       </Page>
     );
   };
@@ -102,7 +97,7 @@ function Main(props) {
   };
 
   return (
-    <LayoutContext.Provider value={MAIN_LAYOUT}>
+    <>
       <GlobalLoginContext.Provider
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {
@@ -117,27 +112,18 @@ function Main(props) {
           getDialogOpenStatus: () => reLoginDialogOpen
         }}
       >
-        <PageStart
-          setTotalHeight={(th) => {
-            if (contentOffset != th) {
-              setContentOffset(th);
-            }
-          }
-          }
-        />
-        <ReLoginDialog
-          isOpen={reLoginDialogOpen}
-          handleLogin={(success) => {
-            if (success) {
-              loginHandlers.forEach(handler => handler(success));
-              setLoginHandlers([]);
-            }
-          }}
-        />
-        <div className={classes.wrapper} style={ { position: 'relative', top: contentOffset + 'px' } }>
+        <PageStartWrapper drawerWidth={drawerWidth}>
+          <ReLoginDialog
+            isOpen={reLoginDialogOpen}
+            handleLogin={(success) => {
+              if (success) {
+                loginHandlers.forEach(handler => handler(success));
+                setLoginHandlers([]);
+              }
+            }}
+          />
           <Suspense fallback={<div>Loading...</div>}>
             <Sidebar
-              contentOffset={contentOffset}
               logoImage={document.querySelector('meta[name="logoDark"]').content}
               image={image}
               handleDrawerToggle={handleDrawerToggle}
@@ -159,9 +145,9 @@ function Main(props) {
               />
             </div>
           </Suspense>
-        </div>
+        </PageStartWrapper>
       </GlobalLoginContext.Provider>
-    </LayoutContext.Provider>
+    </>
   );
 }
 

@@ -31,8 +31,8 @@ import {
 } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
 
+import LayoutContext from "../components/LayoutContext.jsx";
 import Logo from "../components/Logo";
-import { PageStartContext } from "../PageStartWrapper";
 
 const useStyles = makeStyles()(theme => ({
   appbar : {
@@ -122,7 +122,7 @@ function Header (props) {
     threshold: 200,
   });
 
-  const contentOffset = useContext(PageStartContext);
+  const { contentOffset } = useContext(LayoutContext);
 
   let subtitleBar = subtitle ?
     <Toolbar variant="dense" className={classes.toolbar}>

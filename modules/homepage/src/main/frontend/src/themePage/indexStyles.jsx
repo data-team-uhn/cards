@@ -15,10 +15,6 @@ import {
 } from "../themeStyles.jsx";
 
 const appStyles = theme => ({
-  wrapper: {
-    position: "relative",
-    top: "0"
-  },
   mainPanel: {
     [theme.breakpoints.up("md")]: {
       width: `calc(100% - ${drawerWidth}px)`

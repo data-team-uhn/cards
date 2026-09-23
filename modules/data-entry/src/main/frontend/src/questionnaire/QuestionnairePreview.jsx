@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { useEffect, useState, useLayoutEffect } from "react";
+import { useContext, useEffect, useState, useLayoutEffect } from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { Grid } from "@mui/material";
@@ -30,6 +30,7 @@ import FormPagination from "./FormPagination";
 import formStyles from "./formStyles.jsx";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import { FORM_ENTRY_CONTAINER_PROPS } from "./questionnaireConstants.jsx";
+import LayoutContext from "../components/LayoutContext.jsx";
 import LoadingOverlay from "../components/LoadingOverlay";
 import MainActionButton from "../components/MainActionButton.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
@@ -42,8 +43,9 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 function QuestionnairePreview (props) {
   let { classes, data, title } = props;
 
+  const { contentOffset } = useContext(LayoutContext);
   let [ pages, setPages ] = useState(null);
-  let [ contentOffsetTop, setContentOffsetTop ] = useState(props.contentOffset);
+  let [ contentOffsetTop, setContentOffsetTop ] = useState(contentOffset);
   let [ contentOffsetBottom, setContentOffsetBottom ] = useState(0);
   let paginationEnabled = !!data?.paginate;
 
@@ -53,9 +55,9 @@ function QuestionnairePreview (props) {
   }, [title]);
 
   useLayoutEffect(() => {
-    setContentOffsetTop(props.contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
+    setContentOffsetTop(contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
     paginationEnabled && setContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
-  }, [pages]);
+  }, [pages, contentOffset]);
 
   let navigate = useNavigate();
   let location = useLocation();
