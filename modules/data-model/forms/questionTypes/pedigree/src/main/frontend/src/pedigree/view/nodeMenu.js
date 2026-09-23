@@ -20,8 +20,8 @@ import { Class, $, PElement, getDocumentHeight, PObserveEvent, PStopObserving, P
 import { PSuggestWidget, PSuggestPicker } from '../shims/suggestShim';
 import Disorder from '../disorder';
 import HPOTerm from '../hpoTerm';
-import Helpers from '../model/helpers';
-import GraphicHelpers from './graphicHelpers';
+import * as Helpers from '../model/helpers';
+import * as GraphicHelpers from './graphicHelpers';
 import PedigreeFuzzyDatePicker from './datepicker';
 import PedigreeDate from '../PedigreeDate';
 

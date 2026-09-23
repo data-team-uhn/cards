@@ -17,7 +17,7 @@
  */
 
 import { Class, $ } from '../shims/prototypeShim';
-import Helpers from '../model/helpers';
+import * as Helpers from '../model/helpers';
 
 /**
  * LineSet is used to track existing lines in the graph and simplify line-crossing-line tracking

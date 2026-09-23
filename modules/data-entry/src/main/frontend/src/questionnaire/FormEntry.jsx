@@ -30,7 +30,7 @@ import DateQuestion from "./DateQuestion";
 import DateQuestionYear from "./DateQuestionYear";
 import FileQuestion from "./FileQuestion";
 import NumberQuestion from "./NumberQuestion";
-import ReferenceQuestion from "./ReferenceQuestion";
+import "./ReferenceQuestion";
 import ResourceQuestion from "./ResourceQuestion";
 import TextQuestion from "./TextQuestion";
 import TimeQuestion from "./TimeQuestion";

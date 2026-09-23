@@ -18,7 +18,7 @@
 
 import { Class, $ } from '../shims/prototypeShim';
 import Raphael from '../raphael';
-import Helpers from '../model/helpers';
+import * as Helpers from '../model/helpers';
 import AbstractNodeVisuals, { ChildlessBehaviorVisuals} from './abstractNodeVisuals';
 import { drawCornerCurve, findXInterceptGivenLineAndY } from './graphicHelpers';
 import PartnershipHoverbox from './partnershipHoverbox';
