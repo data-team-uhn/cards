@@ -49,19 +49,19 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.api:3.0.2",
+      "id":"org.apache.sling:org.apache.sling.api:${sling.api.version}",
       "start-order":"25"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.commons.messaging.mail:2.0.0",
+      "id":"org.apache.sling:org.apache.sling.commons.messaging.mail:${sling.commons.messaging.mail.version}",
       "start-order":"25"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.commons.messaging:1.0.2",
+      "id":"org.apache.sling:org.apache.sling.commons.messaging:${sling.commons.messaging.version}",
       "start-order":"25"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.commons.crypto:1.1.0",
+      "id":"org.apache.sling:org.apache.sling.commons.crypto:${sling.commons.crypto.version}",
       "start-order":"25"
     },
     {
