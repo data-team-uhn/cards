@@ -272,7 +272,7 @@ then
 fi
 
 #Arbitrary JVM arguments, for the settings that have no environment variable of their own -- an Oak
-#tuning property such as `-Doak.queryLimitReads=500000`, a garbage collector, an agent. Appended
+#tuning property such as `-Doak.queryLimitReads=1000000`, a garbage collector, an agent. Appended
 #last, so a value given here overrides the same property set above. The arguments are split on
 #whitespace by the launcher, so none of them may contain a space.
 export JAVA_OPTS="${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -Djdk.xml.entityExpansionLimit=0 -Doak.mongo.maxQueryTimeMS=600000 -Doak.queryLimitReads=500000${OAK_MACHINE_ID_FLAG}${ADDITIONAL_JAVA_OPTIONS:+ ${ADDITIONAL_JAVA_OPTIONS}}"
