@@ -89,6 +89,8 @@ public class ClarityImportTask implements Runnable
 
     private final ThreadLocal<Integer> discardedVisits = ThreadLocal.withInitial(() -> 0);
 
+    private final ThreadLocal<Integer> unchangedVisits = ThreadLocal.withInitial(() -> 0);
+
     private final ThreadLocal<Integer> importedVisits = ThreadLocal.withInitial(() -> 0);
 
     private final ThreadLocal<Map<String, String>> sqlColumnToDataType = ThreadLocal.withInitial(HashMap::new);
@@ -301,7 +303,8 @@ public class ClarityImportTask implements Runnable
             checkinNodes();
             updatePerformanceCounters();
 
-            LOGGER.info("Number of importeded visits: " + this.importedVisits.get());
+            LOGGER.info("Number of imported visits: " + this.importedVisits.get());
+            LOGGER.info("Number of unchanged visits: " + this.unchangedVisits.get());
             LOGGER.info("Number of discarded visits: " + this.discardedVisits.get());
 
         } catch (SQLException e) {
@@ -516,7 +519,8 @@ public class ClarityImportTask implements Runnable
         if (imported) {
             this.importedVisits.set(this.importedVisits.get() + 1);
         } else {
-            this.discardedVisits.set(this.discardedVisits.get() + 1);
+            // The row was processed, but everything it holds was already in the repository
+            this.unchangedVisits.set(this.unchangedVisits.get() + 1);
         }
     }
 
@@ -547,9 +551,8 @@ public class ClarityImportTask implements Runnable
 
                 if (formNode != null) {
                     if (updatePolicy == UpdatePolicy.updateExisting || updatePolicy == UpdatePolicy.onlyExisting) {
-                        // Update the answers to an existing Form
-                        updateExistingForm(resolver, formNode, questionnaireMapping, row);
-                        imported = true;
+                        // Update the answers to an existing Form, which may turn out to be a no-op
+                        imported |= updateExistingForm(resolver, formNode, questionnaireMapping, row);
                     }
                 } else {
                     if (updatePolicy != UpdatePolicy.onlyExisting) {
@@ -685,7 +688,19 @@ public class ClarityImportTask implements Runnable
 
     // Methods for updating an existing form
 
-    private void updateExistingForm(ResourceResolver resolver, Resource formNode,
+    /**
+     * Bring an existing form in line with the values of a Clarity row.
+     *
+     * @param resolver ResourceResolver to use for reading and writing to the JCR
+     * @param formNode the form to update
+     * @param questionnaireMapping the mapping describing which columns feed which questions
+     * @param row the Clarity row being imported
+     * @return {@code true} if at least one answer was actually modified
+     * @throws ParseException if a date column cannot be parsed
+     * @throws RepositoryException if accessing the repository fails
+     * @throws SQLException if reading the Clarity row fails
+     */
+    private boolean updateExistingForm(ResourceResolver resolver, Resource formNode,
         ClarityQuestionnaireMapping questionnaireMapping, Map<String, String> row)
         throws RepositoryException, SQLException
     {
@@ -704,6 +719,7 @@ public class ClarityImportTask implements Runnable
             // Perform a JCR check-in to this cards:Form node once the import is completed
             this.nodesToCheckin.get().add(formNode.getPath());
         }
+        return changed;
     }
 
     /**
@@ -887,6 +903,7 @@ public class ClarityImportTask implements Runnable
         this.clarityImportConfiguration.remove();
         this.sqlColumnToDataType.remove();
         this.discardedVisits.remove();
+        this.unchangedVisits.remove();
         this.importedVisits.remove();
     }
 }
