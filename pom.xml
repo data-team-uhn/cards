@@ -1919,7 +1919,7 @@
           <!-- Rule is to put tests in *Test classes -->
           <configuration>
             <includes>
-              <include>**/*Test.class</include>
+              <include>**/*Test.java</include>
             </includes>
             <parallel>classesAndMethods</parallel>
             <threadCount>4</threadCount>
