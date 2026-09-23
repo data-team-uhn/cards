@@ -1,0 +1,12 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Calendar Reference Questionnaire",
+  "description": "A test reference questionnaire",
+  "reference_question": {
+    "jcr:primaryType": "cards:Question",
+    "question": "/Questionnaires/TestSourceQuestionnaire/source_question",
+    "text": "Reference text Question",
+    "dataType": "text",
+    "entryMode": "reference"
+  }
+}

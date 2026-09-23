@@ -1,0 +1,91 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Questionnaire",
+  "description": "A test questionnaire",
+  "section_1": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section 1",
+    "question_1": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Date Question",
+      "dataType": "date",
+      "dateFormat": "yyyy-MM-dd"
+    },
+    "question_2": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Options Question",
+      "dataType": "text",
+      "displayMode": "list",
+      "o1": {
+        "jcr:primaryType": "cards:AnswerOption",
+        "label": "Option 1",
+        "value": "O1"
+      },
+      "o2": {
+        "jcr:primaryType": "cards:AnswerOption",
+        "label": "Option 2",
+        "value": "O2"
+      }
+    },
+    "question_3": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Boolean Question",
+      "dataType": "boolean",
+      "entryMode": "reference"
+    },
+    "question_4": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Long Question",
+      "dataType": "long",
+      "entryMode": "computed"
+    }
+  },
+  "question_5": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Boolean Question",
+    "description": "A computed boolean question",
+    "dataType": "computed"
+  },
+  "question_6": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Pedigree Question",
+    "description": "A pedigree question"
+  },
+  "question_7": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Options Vocabulary Question",
+    "dataType": "vocabulary",
+    "displayMode": "list",
+    "o1": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": "/Vocabularies/Option1"
+    },
+    "o2": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": ["/Vocabularies/Option1", "/Vocabularies/Option2"]
+    }
+  },
+  "question_8": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Resource Question",
+    "description": "A resource question",
+    "labelProperty": "level",
+    "dataType": "resource"
+  },
+  "question_9": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Options Resource Question",
+    "dataType": "resource",
+    "labelProperty": "level",
+    "displayMode": "list",
+    "o1": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": "/Subjects/TestRoot"
+    },
+    "o2": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": ["/Subjects/TestRoot", "/Subjects/TestBranch"]
+    }
+  }
+}
+
