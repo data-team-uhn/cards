@@ -86,7 +86,7 @@ its own distinct value.
 have no environment variable of their own — an Oak tuning property, a garbage collector, an agent:
 
 ```
-docker run --rm -e ADDITIONAL_JAVA_OPTIONS=-Doak.queryLimitReads=500000 -p 8080:8080 -it cards/cards
+docker run --rm -e ADDITIONAL_JAVA_OPTIONS=-Doak.queryLimitReads=1000000 -p 8080:8080 -it cards/cards
 ```
 
 It is appended last, so a property given here overrides the same one set by the entrypoint. Several

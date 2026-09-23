@@ -146,7 +146,7 @@ Options:
 
 Notes:
   - `ADDITIONAL_JAVA_OPTIONS` in the environment is passed to the JVM, for
-    settings that have no option here: `ADDITIONAL_JAVA_OPTIONS=-Doak.queryLimitReads=500000`.
+    settings that have no option here: `ADDITIONAL_JAVA_OPTIONS=-Doak.queryLimitReads=1000000`.
     Whitespace separates the arguments, so none of them may contain a space.
   - Any argument not listed above is passed through to the Sling feature
     launcher. For the arguments it accepts, see the Apache Sling Feature
@@ -580,7 +580,8 @@ def main(argv):
     if not launcher.is_file():
         sys.exit('The Sling feature launcher is missing at %s - run `mvn install` first' % launcher)
 
-    java_opts = '-Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=%d' % bind_port
+    java_opts = ('-Djdk.xml.entityExpansionLimit=0 -Doak.mongo.maxQueryTimeMS=600000'
+                 ' -Doak.queryLimitReads=500000 -Dorg.osgi.service.http.port=%d' % bind_port)
     if options['debug']:
         java_opts = JAVA_DEBUGGING_FLAGS + ' ' + java_opts
     # The document stores identify a cluster node by hardware address plus working directory, and
@@ -592,7 +593,7 @@ def main(argv):
         java_opts += (' -Dorg.apache.jackrabbit.oak.plugins.document.ClusterNodeInfo.HWADDRESS=%s'
                       % machine_id)
     # Arbitrary JVM arguments, for the settings that have no option of their own - an Oak tuning
-    # property such as `-Doak.queryLimitReads=500000`, a garbage collector, an agent. Appended last,
+    # property such as `-Doak.queryLimitReads=1000000`, a garbage collector, an agent. Appended last,
     # so a value given here overrides the same property set above. The launcher splits them on
     # whitespace, so none of them may contain a space.
     additional_java_options = os.environ.get('ADDITIONAL_JAVA_OPTIONS')
