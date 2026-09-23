@@ -5,7 +5,7 @@
     },
     "bundles":[
         {
-            "id": "org.apache.sling:org.apache.sling.jaxp-configurator:1.0.0",
+            "id": "org.apache.sling:org.apache.sling.jaxp-configurator:${sling.jaxp-configurator.version}",
             "start-order":"1"
         },
         {
@@ -69,11 +69,11 @@
             "start-order":"1"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.log:jar:all:6.0.4",
+            "id":"org.apache.sling:org.apache.sling.commons.log:jar:all:${sling.commons.log.version}",
             "start-order":"1"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.logservice:1.1.2",
+            "id":"org.apache.sling:org.apache.sling.commons.logservice:${sling.commons.logservice.version}",
             "start-order":"1"
         },
         {
@@ -81,15 +81,15 @@
             "start-order":"1"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.johnzon:2.0.0",
+            "id":"org.apache.sling:org.apache.sling.commons.johnzon:${sling.commons.johnzon.version}",
             "start-order":"1"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.osgi:2.4.2",
+            "id":"org.apache.sling:org.apache.sling.commons.osgi:${sling.commons.osgi.version}",
             "start-order":"1"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.installer.core:3.14.4",
+            "id":"org.apache.sling:org.apache.sling.installer.core:${sling.installer.core.version}",
             "start-order":"1"
         },
         {
@@ -97,19 +97,19 @@
             "start-order":"1"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.installer.factory.configuration:1.4.10",
+            "id":"org.apache.sling:org.apache.sling.installer.factory.configuration:${sling.installer.factory.configuration.version}",
             "start-order":"1"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.installer.provider.file:1.3.4",
+            "id":"org.apache.sling:org.apache.sling.installer.provider.file:${sling.installer.provider.file.version}",
             "start-order":"1"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.javax.activation:0.3.0",
+            "id":"org.apache.sling:org.apache.sling.javax.activation:${sling.javax.activation.version}",
             "start-order":"1"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.settings:1.5.0",
+            "id":"org.apache.sling:org.apache.sling.settings:${sling.settings.version}",
             "start-order":"1"
         },
         {

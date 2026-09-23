@@ -15,7 +15,7 @@
             "start-order":"14"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.datasource:1.0.4",
+            "id":"org.apache.sling:org.apache.sling.datasource:${sling.datasource.version}",
             "start-order":"14"
         }
     ],

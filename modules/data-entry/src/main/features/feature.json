@@ -18,11 +18,11 @@
 {
   "bundles":[
     {
-      "id":"org.apache.sling:org.apache.sling.scripting.sightly:2.0.0-1.4.0",
+      "id":"org.apache.sling:org.apache.sling.scripting.sightly:${sling.scripting.sightly.version}",
       "start-order":"25"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.scripting.sightly.runtime:1.2.6-1.4.0",
+      "id":"org.apache.sling:org.apache.sling.scripting.sightly.runtime:${sling.scripting.sightly.runtime.version}",
       "start-order":"25"
     },
     {
@@ -34,7 +34,7 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.api:3.0.2",
+      "id":"org.apache.sling:org.apache.sling.api:${sling.api.version}",
       "start-order":"25"
     },
     {

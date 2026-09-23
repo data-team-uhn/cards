@@ -2,19 +2,19 @@
 {
     "bundles":[
         {
-            "id":"org.apache.sling:org.apache.sling.caconfig.api:1.3.0",
+            "id":"org.apache.sling:org.apache.sling.caconfig.api:${sling.caconfig.api.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.caconfig.impl:1.7.2",
+            "id":"org.apache.sling:org.apache.sling.caconfig.impl:${sling.caconfig.impl.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.caconfig.spi:1.4.0",
+            "id":"org.apache.sling:org.apache.sling.caconfig.spi:${sling.caconfig.spi.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.models.caconfig:1.0.2",
+            "id":"org.apache.sling:org.apache.sling.models.caconfig:${sling.models.caconfig.version}",
             "start-order":"20"
         }
     ],

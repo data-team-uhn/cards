@@ -62,91 +62,91 @@
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.adapter:2.3.0",
+            "id":"org.apache.sling:org.apache.sling.adapter:${sling.adapter.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.auth.form:2.0.0",
+            "id":"org.apache.sling:org.apache.sling.auth.form:${sling.auth.form.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.bundleresource.impl:2.4.0",
+            "id":"org.apache.sling:org.apache.sling.bundleresource.impl:${sling.bundleresource.impl.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.classloader:1.4.4",
+            "id":"org.apache.sling:org.apache.sling.commons.classloader:${sling.commons.classloader.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.compiler:2.4.0",
+            "id":"org.apache.sling:org.apache.sling.commons.compiler:${sling.commons.compiler.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.fsclassloader:1.0.16",
+            "id":"org.apache.sling:org.apache.sling.commons.fsclassloader:${sling.commons.fsclassloader.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.mime:2.3.0",
+            "id":"org.apache.sling:org.apache.sling.commons.mime:${sling.commons.mime.version}",
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.scheduler:2.7.14",
+            "id":"org.apache.sling:org.apache.sling.commons.scheduler:${sling.commons.scheduler.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.threads:3.3.0",
+            "id":"org.apache.sling:org.apache.sling.commons.threads:${sling.commons.threads.version}",
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.engine:3.0.2",
+            "id":"org.apache.sling:org.apache.sling.engine:${sling.engine.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.fsresource:2.3.0",
+            "id":"org.apache.sling:org.apache.sling.fsresource:${sling.fsresource.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.i18n:3.0.0",
+            "id":"org.apache.sling:org.apache.sling.i18n:${sling.i18n.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.installer.factory.packages:1.0.4",
+            "id":"org.apache.sling:org.apache.sling.installer.factory.packages:${sling.installer.factory.packages.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.installer.hc:2.1.0",
+            "id":"org.apache.sling:org.apache.sling.installer.hc:${sling.installer.hc.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.models.api:2.0.0",
+            "id":"org.apache.sling:org.apache.sling.models.api:${sling.models.api.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.models.impl:2.0.2",
+            "id":"org.apache.sling:org.apache.sling.models.impl:${sling.models.impl.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.resourceresolver:2.0.2",
+            "id":"org.apache.sling:org.apache.sling.resourceresolver:${sling.resourceresolver.version}",
             "start-order":"20"
         },  
         {
-            "id":"org.apache.sling:org.apache.sling.serviceusermapper:1.5.8",
+            "id":"org.apache.sling:org.apache.sling.serviceusermapper:${sling.serviceusermapper.version}",
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.servlets.get:3.0.0",
+            "id":"org.apache.sling:org.apache.sling.servlets.get:${sling.servlets.get.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.servlets.post:3.0.2",
+            "id":"org.apache.sling:org.apache.sling.servlets.post:${sling.servlets.post.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.servlets.resolver:3.0.6",
+            "id":"org.apache.sling:org.apache.sling.servlets.resolver:${sling.servlets.resolver.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.xss:2.4.8",
+            "id":"org.apache.sling:org.apache.sling.xss:${sling.xss.version}",
             "start-order":"20"
         },
         {
@@ -198,15 +198,15 @@
             "start-order":"5"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.api:3.0.2",
+            "id":"org.apache.sling:org.apache.sling.api:${sling.api.version}",
             "start-order":"5"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.auth.core:2.0.2",
+            "id":"org.apache.sling:org.apache.sling.auth.core:${sling.auth.core.version}",
             "start-order":"5"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.extensions.threaddump:0.2.2",
+            "id":"org.apache.sling:org.apache.sling.extensions.threaddump:${sling.extensions.threaddump.version}",
             "start-order":"5"
         },
         {
@@ -214,7 +214,7 @@
             "start-order":"5"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.commons.metrics:1.2.14",
+            "id":"org.apache.sling:org.apache.sling.commons.metrics:${sling.commons.metrics.version}",
             "start-order":"5"
         },
         {
@@ -242,19 +242,19 @@
             "start-order":"10"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.resource.filter:1.0.2",
+            "id":"org.apache.sling:org.apache.sling.resource.filter:${sling.resource.filter.version}",
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.provisioning.model:1.8.6",
+            "id":"org.apache.sling:org.apache.sling.provisioning.model:${sling.provisioning.model.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.repoinit.parser:1.9.2",
+            "id":"org.apache.sling:org.apache.sling.repoinit.parser:${sling.repoinit.parser.version}",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.repoinit:1.1.54",
+            "id":"org.apache.sling:org.apache.sling.jcr.repoinit:${sling.jcr.repoinit.version}",
             "start-order":"20"
         }
     ],

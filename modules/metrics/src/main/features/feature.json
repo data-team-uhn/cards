@@ -20,7 +20,7 @@
   "description": "Feature enabling support for performance metrics recording",
   "bundles":[
     {
-      "id":"org.apache.sling:org.apache.sling.api:3.0.2",
+      "id":"org.apache.sling:org.apache.sling.api:${sling.api.version}",
       "start-order":"25"
     },
     {
