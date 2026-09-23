@@ -79,9 +79,6 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
     /** The node that was requested to be deleted. */
     private final ThreadLocal<Node> nodeToDelete = new ThreadLocal<>();
 
-    /** The Resource Resolver for the current request. */
-    private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
-
     /** A list of all nodes traversed by {@code traverseNode}. */
     private final ThreadLocal<Set<Node>> nodesTraversed =
         ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
@@ -93,6 +90,12 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
     /** A set of all nodes that are children of nodes in {@code nodesToDelete}. */
     private final ThreadLocal<Set<Node>> childNodesDeleted =
         ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
+
+    /**
+     * The paths whose referrers were already chased in the current phase, so that reference cycles, e.g. two
+     * resources holding mutual RECURSIVE_DELETE links to each other, terminate instead of overflowing the stack.
+     */
+    private final ThreadLocal<Set<String>> referrersChased = ThreadLocal.withInitial(TreeSet::new);
 
     /**
      * A function that operates on a {@link Node}. As opposed to a simple {@code Consumer}, it can forward a
@@ -174,36 +177,25 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
         try {
             final ResourceResolver resourceResolver = request.getResourceResolver();
             final Node node = request.getResource().adaptTo(Node.class);
+            if (node == null) {
+                sendJsonError(response, SlingJakartaHttpServletResponse.SC_NOT_FOUND, "Not a repository item");
+                return;
+            }
             this.nodeToDelete.set(node);
-            this.resolver.set(resourceResolver);
             final Session session = resourceResolver.adaptTo(Session.class);
-            final VersionManager versionManager = session.getWorkspace().getVersionManager();
-            final Set<Node> nodesToCheckin = new TreeSet<>(new NodeComparator());
 
-            final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
+            final boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
 
+            boolean proceed = true;
             if (recursive) {
                 handleRecursiveDeleteChildren(node);
             } else {
-                handleDelete(response, node);
+                proceed = handleDelete(response, node);
             }
-
-            // Delete all of our pending nodes, checking out the parent to avoid version conflict issues
-            for (final Node n : this.nodesToDelete.get()) {
-                final Node versionableAncestor = findVersionableAncestor(n);
-                if (versionableAncestor != null && !versionableAncestor.isCheckedOut()) {
-                    nodesToCheckin.add(versionableAncestor);
-                    versionManager.checkout(versionableAncestor.getPath());
-                }
-                n.remove();
+            if (proceed) {
+                removeMarkedNodes(session);
             }
-
-            session.save();
-
-            // Check each parent back in
-            for (final Node versionableNode : nodesToCheckin) {
-                versionManager.checkin(versionableNode.getPath());
-            }
+            // Otherwise the deletion was refused and the explanation already sent; nothing may be saved
         } catch (AccessDeniedException e) {
             LOGGER.error("AccessDeniedException trying to delete node: {}", e.getMessage(), e);
             sendJsonError(response, request.getRemoteUser() == null ? SlingJakartaHttpServletResponse.SC_UNAUTHORIZED
@@ -213,11 +205,42 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
             sendJsonError(response, SlingJakartaHttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
         } finally {
             // Cleanup state to free memory
-            this.resolver.remove();
             this.nodeToDelete.remove();
             this.nodesTraversed.remove();
             this.nodesToDelete.remove();
             this.childNodesDeleted.remove();
+            this.referrersChased.remove();
+        }
+    }
+
+    /**
+     * Remove all the nodes marked for deletion, checking out their versionable ancestors to avoid version
+     * conflict issues, and checking them back in after saving.
+     *
+     * @param session the current session
+     * @throws RepositoryException if the removal fails due to a repository error
+     */
+    private void removeMarkedNodes(final Session session) throws RepositoryException
+    {
+        final VersionManager versionManager = session.getWorkspace().getVersionManager();
+        final Set<String> nodesToCheckin = new TreeSet<>();
+        // Delete all of our pending nodes, checking out the parent to avoid version conflict issues
+        for (final Node n : this.nodesToDelete.get()) {
+            final Node versionableAncestor = findVersionableAncestor(n);
+            if (versionableAncestor != null && !versionableAncestor.isCheckedOut()) {
+                nodesToCheckin.add(versionableAncestor.getPath());
+                versionManager.checkout(versionableAncestor.getPath());
+            }
+            n.remove();
+        }
+
+        session.save();
+
+        // Check each parent back in, unless it was itself deleted by this same operation
+        for (final String versionablePath : nodesToCheckin) {
+            if (session.nodeExists(versionablePath)) {
+                versionManager.checkin(versionablePath);
+            }
         }
     }
 
@@ -226,11 +249,13 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
      *
      * @param response the HTTP response to be used to convey failure to the user
      * @param node the node to attempt deletion
+     * @return {@code true} if the deletion may proceed, {@code false} if it was refused and the explanation was
+     *         already sent
      * @throws IOException if sending an error to the response fails
      * @throws AccessDeniedException if the requesting user does not have permission to delete the node
      * @throws RepositoryException if deletion fails due to a repository error
      */
-    private void handleDelete(final SlingJakartaHttpServletResponse response, final Node node)
+    private boolean handleDelete(final SlingJakartaHttpServletResponse response, final Node node)
         throws IOException, AccessDeniedException, RepositoryException
     {
         // Check if this node or its children are referenced by other nodes
@@ -238,20 +263,21 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
 
         if (this.nodesTraversed.get().size() == 0) {
             this.deleteNode.accept(node);
-            this.resolver.get().adaptTo(Session.class).save();
         } else {
             String referencedNodes = listReferrersFromTraversal();
-            if (referencedNodes == null || referencedNodes.length() > 0) {
+            if (referencedNodes.length() > 0) {
                 // Will not be able to delete node due to references. Inform user.
                 sendJsonError(response, SlingJakartaHttpServletResponse.SC_CONFLICT,
-                    String.format("This item is referenced %s.",
-                        StringUtils.isEmpty(referencedNodes) ? "by unknown item(s)" : "in " + referencedNodes));
-            } else {
-                // References were found but they are not references that need user prompting to delete.
-                // Do not inform user, just delete.
-                handleRecursiveDeleteChildren(node);
+                    String.format("This item is referenced in %s.", referencedNodes));
+                return false;
             }
+            // References were found but they are not references that need user prompting to delete.
+            // Do not inform user, just delete.
+            // The traversal above already chased everybody's referrers; the deletion phase must chase them again
+            this.referrersChased.get().clear();
+            handleRecursiveDeleteChildren(node);
         }
+        return true;
     }
 
     /**
@@ -286,7 +312,9 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
     }
 
     /**
-     * Recursively call a function on all nodes which reference a node, and on the node itself.
+     * Recursively call a function on all nodes which reference a node, and on the node itself. Each node's
+     * referrers are only chased once per phase, so reference cycles between resources dragging each other into
+     * the deletion terminate.
      *
      * @param node the node to have its referrers and self operated on
      * @param consumer the function to be called on each node
@@ -299,19 +327,23 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
         boolean includeRoot
     ) throws RepositoryException
     {
+        if (!this.referrersChased.get().add(node.getPath())) {
+            return;
+        }
         @SuppressWarnings("unchecked")
         final Iterator<Property> references =
             IteratorUtils.chainedIterator(node.getReferences(), node.getWeakReferences());
         final String rootPath = this.nodeToDelete.get().getPath();
         while (references.hasNext()) {
-            final Node referrer = references.next().getParent();
+            final Property reference = references.next();
+            final Node referrer = reference.getParent();
             final String path = referrer.getPath();
             if (path.equals(rootPath) || path.startsWith(rootPath + "/")) {
                 // This a reference within the subtree to delete, ignore it
                 continue;
             }
 
-            if (handleLinks(referrer, consumer)) {
+            if (handleLinks(reference, referrer, consumer)) {
                 iterateReferrers(referrer, consumer, true);
             }
         }
@@ -363,52 +395,77 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
     /**
      * Process a link node and any relevant parent nodes based on the link deletion setting.
      *
+     * @param reference the property through which the link references the node being deleted
      * @param node a JCR node, may be a {@code cards:Link} node
      * @param consumer the function to be called on any nodes that should also be processed
      * @return {@code true} if processing the node should continue as expected, since this is not a link node, or
      *         {@code false} if this was a link and was already processed by this method
      * @throws RepositoryException if any function call fails due to repository errors
      */
-    private boolean handleLinks(Node node, NodeConsumer consumer) throws RepositoryException
+    private boolean handleLinks(Property reference, Node node, NodeConsumer consumer) throws RepositoryException
     {
         if (!node.isNodeType("cards:Link")) {
             return true;
         }
+        if ("type".equals(reference.getName())) {
+            // The deleted node is the link's own definition, and a link cannot outlive its definition; the
+            // definition's deletion policy describes what to do when the link's target is deleted, so it must
+            // not be consulted here, or a RECURSIVE_DELETE definition would take all its linking resources down
+            // with it
+            consumer.accept(node);
+            return false;
+        }
         // When processing a link for deletion or checking if deletion is possible,
         // some link nodes specify that their parent resource should be deleted or checked as well.
-        String onDelete = node.getProperty("type").getNode().getProperty("onDelete").getString();
+        String onDelete;
+        try {
+            onDelete = node.getProperty("type").getNode().getProperty("onDelete").getString();
+        } catch (RepositoryException e) {
+            LOGGER.warn("Cannot resolve the deletion policy of link {}, defaulting to only removing the link",
+                node.getPath(), e);
+            onDelete = "REMOVE_LINK";
+        }
         if ("RECURSIVE_DELETE".equals(onDelete)) {
             // This setting requires that the linking resource also be deleted
             // Go two levels above to find the actual resource, since link are stored under
             // {@code <resource>/cards:links/<link>}
             iterateChildren(node.getParent().getParent(), consumer, false);
             iterateReferrers(node.getParent().getParent(), consumer, true);
-        } else if ("REMOVE_LINK".equals(onDelete)) {
-            // Just delete the link itself, keeping the linking resource intact
+        } else if ("IGNORE".equals(onDelete) && node.isNodeType("cards:WeakLink")) {
+            // Keep the link as a broken reference; only a weak link may outlive its target
+        } else {
+            if ("IGNORE".equals(onDelete)) {
+                LOGGER.warn("Hard link {} cannot ignore the deletion of its target, removing the link instead",
+                    node.getPath());
+            }
+            // Just delete the link itself, keeping the linking resource intact; this is also the fallback for
+            // unrecognized policy values
             consumer.accept(node);
         }
         return false;
     }
 
     /**
-     * Get a string explaining which nodes refer to the node traversed by parent node.
+     * Get a string explaining which nodes refer to the node traversed by parent node. A node that cannot be
+     * described, e.g. because an expected property is missing, is only counted among the "other" items, so one
+     * odd node does not degrade the whole explanation.
      *
-     * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes,
-     *         an empty string if there are no nodes needing confirmation or {@code null} in case of error.
+     * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes, or an empty
+     *         string if there are no nodes needing confirmation
      */
     @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:JavaNCSS"})
     private String listReferrersFromTraversal()
     {
-        try {
-            int formCount = 0;
-            int answerSectionCount = 0;
-            int answerCount = 0;
-            int otherCount = 0;
-            List<String> subjects = new ArrayList<>();
-            List<String> subjectTypes = new ArrayList<>();
-            List<String> questionnaires = new ArrayList<>();
+        int formCount = 0;
+        int answerSectionCount = 0;
+        int answerCount = 0;
+        int otherCount = 0;
+        List<String> subjects = new ArrayList<>();
+        List<String> subjectTypes = new ArrayList<>();
+        List<String> questionnaires = new ArrayList<>();
 
-            for (Node n : this.nodesTraversed.get()) {
+        for (Node n : this.nodesTraversed.get()) {
+            try {
                 switch (n.getPrimaryNodeType().getName()) {
                     case "cards:Form":
                         formCount++;
@@ -439,25 +496,26 @@ public class DeleteServlet extends SlingJakartaAllMethodsServlet
                             otherCount++;
                         }
                 }
+            } catch (RepositoryException e) {
+                LOGGER.warn("Failed to describe a node blocking a deletion: {}", e.getMessage(), e);
+                otherCount++;
             }
-
-            List<String> results = new ArrayList<>();
-            if (formCount > 0) {
-                addNodesToResult(results, "form", formCount);
-            } else if (answerSectionCount > 0) {
-                addNodesToResult(results, "answer section", answerSectionCount);
-            } else if (answerCount > 0) {
-                addNodesToResult(results, "answer", answerCount);
-            }
-            addNodesToResult(results, "subject", subjects);
-            addNodesToResult(results, "subject type", subjectTypes);
-            addNodesToResult(results, "questionnaire", questionnaires);
-            addNodesToResult(results, "other", otherCount);
-
-            return stringArrayToList(results);
-        } catch (RepositoryException e) {
-            return null;
         }
+
+        List<String> results = new ArrayList<>();
+        if (formCount > 0) {
+            addNodesToResult(results, "form", formCount);
+        } else if (answerSectionCount > 0) {
+            addNodesToResult(results, "answer section", answerSectionCount);
+        } else if (answerCount > 0) {
+            addNodesToResult(results, "answer", answerCount);
+        }
+        addNodesToResult(results, "subject", subjects);
+        addNodesToResult(results, "subject type", subjectTypes);
+        addNodesToResult(results, "questionnaire", questionnaires);
+        addNodesToResult(results, "other", otherCount);
+
+        return stringArrayToList(results);
     }
 
     /**
