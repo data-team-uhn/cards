@@ -155,12 +155,13 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             processHeaders(questionnaire, resolver, csvData, columns, rawColumns, extraColumns, resolutionPathInfo);
 
             // Print header
-            if (!resolutionPathInfo.contains("-csvHeader:labels")) {
+            final List<String> selectors = SelectorUtils.parseSelectors(resolutionPathInfo);
+            if (!selectors.contains("-csvHeader:labels")) {
                 List<Pair<Pattern, String>> replacements =
                     extractArgumentPairs("csvReplaceColumnLabels:", resolutionPathInfo);
                 printRecordWithReplacements(columns, replacements, csvPrinter);
             }
-            if (resolutionPathInfo.contains("csvHeader:raw")) {
+            if (selectors.contains("csvHeader:raw")) {
                 List<Pair<Pattern, String>> replacements =
                     extractArgumentPairs("csvReplaceColumnIds:", resolutionPathInfo);
                 printRecordWithReplacements(rawColumns, replacements, csvPrinter);

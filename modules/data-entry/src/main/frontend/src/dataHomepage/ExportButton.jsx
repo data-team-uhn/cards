@@ -194,8 +194,10 @@ function ExportButton(props) {
   }
 
   let handleExport = () => {
-    // Construct the export URL
+    // Construct the export URL. Selectors carrying a user-supplied value go in the query string, where dots, slashes
+    // and backslashes need no escaping.
     let path = entryPath;
+    const querySelectors = [];
     if (!hasHeaderLabels) {
       path += ".-csvHeader:labels";
     }
@@ -205,47 +207,46 @@ function ExportButton(props) {
     if (csvReplaceColumnLabels) {
       // Split at commas or newlines, trimming whitespace before or after these delimiters
       csvReplaceColumnLabels.split(/\s*[,\n]\s*/).forEach(replacement => {
-        path += ".csvReplaceColumnLabels:" + encodeURIComponent(encodeURIComponent(replacement));
+        querySelectors.push("csvReplaceColumnLabels:" + replacement);
       });
     }
     if (csvReplaceColumnIds) {
       csvReplaceColumnIds.split(/\s*[,\n]\s*/).forEach(replacement => {
-        path += ".csvReplaceColumnIds:" + encodeURIComponent(encodeURIComponent(replacement));
+        querySelectors.push("csvReplaceColumnIds:" + replacement);
       });
     }
     if (selectedEntityIds.length > 0) {
-      path +=  ".questionnaireFilter";
-      let pref = `.questionnaireFilter:${columnSelectionMode}=`;
-      for (let id in selectedEntityIds) {
-        path += pref + encodeURIComponent(encodeURIComponent(selectedEntityIds[id]));
-      }
+      path += ".questionnaireFilter";
+      selectedEntityIds.forEach(id => querySelectors.push(`questionnaireFilter:${columnSelectionMode}=${id}`));
     }
     if (hasAnswerLabels) {
       path += ".labels";
     }
     if (createdBy) {
-      path += ".dataFilter:createdBy=" + createdBy.replace('.', '%5C.');
+      querySelectors.push("dataFilter:createdBy=" + createdBy);
     }
     if (modifiedBy) {
-      path += ".dataFilter:modifiedBy=" + modifiedBy.replace('.', '%5C.');
+      querySelectors.push("dataFilter:modifiedBy=" + modifiedBy);
     }
     if (createdAfter) {
-      path += ".dataFilter:createdAfter=" + createdAfter.startOf('minute').toISO().replace('.', '%5C.');
+      querySelectors.push("dataFilter:createdAfter=" + createdAfter.startOf('minute').toISO());
     }
     if (createdBefore) {
-      path += ".dataFilter:createdBefore=" + createdBefore.startOf('minute').toISO().replace('.', '%5C.');
+      querySelectors.push("dataFilter:createdBefore=" + createdBefore.startOf('minute').toISO());
     }
     if (modifiedAfter) {
-      path += ".dataFilter:modifiedAfter=" + modifiedAfter.startOf('minute').toISO().replace('.', '%5C.');
+      querySelectors.push("dataFilter:modifiedAfter=" + modifiedAfter.startOf('minute').toISO());
     }
     if (modifiedBefore) {
-      path += ".dataFilter:modifiedBefore=" + modifiedBefore.startOf('minute').toISO().replace('.', '%5C.');
+      querySelectors.push("dataFilter:modifiedBefore=" + modifiedBefore.startOf('minute').toISO());
     }
     if (status) {
-      let pref = `.dataFilter:${statusSelectionMode}=`;
-      path += pref + encodeURIComponent(encodeURIComponent(status));
+      querySelectors.push(`dataFilter:${statusSelectionMode}=${status}`);
     }
     path += fileFormat;
+    if (querySelectors.length > 0) {
+      path += "?" + querySelectors.map(selector => "selector=" + encodeURIComponent(selector)).join("&");
+    }
     window.open(path, '_blank');
   }
 

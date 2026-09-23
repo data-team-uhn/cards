@@ -18,9 +18,6 @@
  */
 package io.uhndata.cards.forms.internal.serialize;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -30,8 +27,7 @@ import javax.jcr.RepositoryException;
 
 import jakarta.json.JsonValue;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Strings;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -39,6 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 import io.uhndata.cards.serialize.spi.SelectorDetails;
+import io.uhndata.cards.utils.SelectorUtils;
 
 /**
  * A processor that excludes the files content from the export. By default it excludes all files, but it can be tailored
@@ -94,23 +91,11 @@ public class ExcludeFilesProcessor implements ResourceJsonProcessor
     public void start(Resource resource)
     {
         final Set<String> excluded = new HashSet<>();
-        // Split by unescaped dots. A backslash escapes a dot, but two backslashes are just one escaped backslash.
-        // Match by:
-        // - no preceding backslash, i.e. start counting at the first backslash (?<!\)
-        // - an even number of backslashes, i.e. any number of groups of two backslashes (?:\\)*
-        // - a literal dot \.
-        // Each backslash, except the \., is escaped twice, once as a special escape char inside a Java string, and
-        // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
-        // char inside a Java string, since it must retain its escaping meaning in the RegExp.
-        // As a URL path segment, the value may also contain URL-escaped characters, which need to be unescaped.
-        if (resource.getResourceMetadata().getResolutionPathInfo() != null) {
-            Arrays.asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))
-                .stream()
-                .filter(s -> Strings.CS.startsWith(s, "excludeFiles:exclude="))
-                .map(s -> StringUtils.substringAfter(s, "excludeFiles:exclude="))
-                .map(s -> URLDecoder.decode(s, StandardCharsets.UTF_8))
-                .forEach(s -> excluded.add(s.replaceAll("\\\\\\.", ".")));
-        }
+        final String pathInfo = resource.getResourceMetadata().getResolutionPathInfo();
+        SelectorUtils.parseOptions("excludeFiles", pathInfo).stream()
+            .filter(option -> "exclude".equals(option.getKey()))
+            .map(Pair::getValue)
+            .forEach(excluded::add);
         this.exclude.set(excluded);
     }
 

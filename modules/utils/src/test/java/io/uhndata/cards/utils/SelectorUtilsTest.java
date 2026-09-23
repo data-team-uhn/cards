@@ -95,6 +95,14 @@ public class SelectorUtilsTest
     }
 
     @Test
+    public void testMalformedURLEncodingIsKeptAsIs()
+        throws Exception
+    {
+        Assert.assertEquals(List.of("csvReplaceColumnLabels:50%=half", "csv"),
+            SelectorUtils.parseSelectors(".csvReplaceColumnLabels:50%=half.csv"));
+    }
+
+    @Test
     public void testFullEscaping()
         throws Exception
     {
@@ -217,5 +225,161 @@ public class SelectorUtilsTest
                     + ".dataOption:descendantData=true"
                     + ".dataOption:descendantData=5"
                     + ".dataOption:descendantData=2"));
+    }
+
+    @Test
+    public void testRequestSelectorsAreIncludedAndComeLast()
+    {
+        try {
+            SelectorUtils.setRequestSelectors(List.of("deep", "-labels"));
+
+            Assert.assertEquals(List.of("data", "csv", "deep", "-labels"),
+                SelectorUtils.parseSelectors(".data.csv"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testRequestSelectorsApplyWithNoPathInfoAtAll()
+    {
+        try {
+            SelectorUtils.setRequestSelectors(List.of("deep"));
+
+            Assert.assertEquals(List.of("deep"), SelectorUtils.parseSelectors(""));
+            Assert.assertEquals(List.of("deep"), SelectorUtils.parseSelectors(null));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testBlankRequestSelectorsAreIgnored()
+    {
+        try {
+            SelectorUtils.setRequestSelectors(List.of("", "  ", "deep"));
+
+            Assert.assertEquals(List.of("deep"), SelectorUtils.parseSelectors(null));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testNoRequestSelectorsChangesNothing()
+    {
+        SelectorUtils.setRequestSelectors(null);
+        try {
+            Assert.assertEquals(List.of("data", "csv"), SelectorUtils.parseSelectors(".data.csv"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+        // And with nothing ever recorded on this thread
+        Assert.assertEquals(List.of("data", "csv"), SelectorUtils.parseSelectors(".data.csv"));
+    }
+
+    @Test
+    public void testARequestSelectorNeedsNoEscaping()
+    {
+        // The whole point of CARDS-2898: the dots belong to the value, and in a query parameter nothing splits on
+        // them, so the backslashes the path form needs are gone
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataOption:formSelectors=deep.-identify.simple"));
+
+            Assert.assertEquals(Map.of("formSelectors", "deep.-identify.simple"),
+                SelectorUtils.parseOptionsToMap("dataOption:", ".data.csv"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testARequestOptionAppliesWithNoOptionsInThePath()
+    {
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataFilter:status=SUBMITTED"));
+
+            Assert.assertEquals(List.of(Pair.of("status", "SUBMITTED")),
+                SelectorUtils.parseOptions("dataFilter:", ".json"));
+            // Even when there is no path info to parse at all
+            Assert.assertEquals(List.of(Pair.of("status", "SUBMITTED")),
+                SelectorUtils.parseOptions("dataFilter:", null));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testARequestOptionOverridesThePathOption()
+    {
+        // Request selectors come last, and parseOptionsToMap keeps the last value for a key
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataOption:descendantData=9"));
+
+            Assert.assertEquals(Map.of("descendantData", "9"),
+                SelectorUtils.parseOptionsToMap("dataOption:", ".data.dataOption:descendantData=2"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testAnEmptyOptionPrefixIsStillRefused()
+    {
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataFilter:status=SUBMITTED"));
+
+            Assert.assertEquals(List.of(), SelectorUtils.parseOptions("", ".json"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testATimestampKeepsItsUnescapedPeriod()
+    {
+        // A datetime's period is not escaped in the query form, and does not need to be: request selectors are
+        // appended to the parsed list, so they never go through the period-splitting at all. The same value written
+        // into a path needs `%5C.`; here it needs nothing.
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataFilter:modifiedAfter=2025-07-19T02:00:00.000-05:00"));
+
+            Assert.assertEquals(Map.of("modifiedAfter", "2025-07-19T02:00:00.000-05:00"),
+                SelectorUtils.parseOptionsToMap("dataFilter:", ".data.csv"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testATimestampWithAPositiveOffsetIsAlsoKeptWhole()
+    {
+        // The `+` survives here because nothing in this class touches it. It does NOT survive an un-encoded query
+        // string, where the container reads `+` as a space -- a caller's problem, not this parser's.
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataFilter:modifiedAfter=2025-07-19T02:00:00.000+05:00"));
+
+            Assert.assertEquals(Map.of("modifiedAfter", "2025-07-19T02:00:00.000+05:00"),
+                SelectorUtils.parseOptionsToMap("dataFilter:", ".data.csv"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+    }
+
+    @Test
+    public void testAnInnerSelectorListStillSplitsWhereItIsMeantTo()
+    {
+        // formSelectors is the opposite case: its periods ARE separators, of an inner list that DataProcessor
+        // splices back into a path. The query form carries them unescaped and they still mean what they meant.
+        try {
+            SelectorUtils.setRequestSelectors(List.of("dataOption:formSelectors=deep.bare"));
+
+            Assert.assertEquals(Map.of("formSelectors", "deep.bare"),
+                SelectorUtils.parseOptionsToMap("dataOption:", ".data.json"));
+        } finally {
+            SelectorUtils.clearRequestSelectors();
+        }
+        // And that value, spliced back into a path info the way DataProcessor splices it, is two selectors again
+        Assert.assertEquals(List.of("deep", "bare", "json"), SelectorUtils.parseSelectors(".deep.bare.json"));
     }
 }
