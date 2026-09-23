@@ -33,7 +33,7 @@ The following environment variables are read by CARDS and thus can be used in bo
 | `CLARITY_SQL_ENCRYPT` | If true, [TLS encryption will be used for all data sent to and from](https://learn.microsoft.com/en-us/sql/connect/jdbc/setting-the-connection-properties?view=sql-server-ver16) the Clarity MS-SQL server | `false` |
 
 ### Environment variables read by the CARDS docker container entrypoint
-The following environment variables are read by the CARDS Docker container _entrypoint_ script and thus are _only_ usable in Docker-based deployments.
+The following environment variables are read by the CARDS Docker container _entrypoint_ script, and configure a Docker-based deployment. Three of them — `PERMISSIONS`, `OAK_MACHINE_ID` and `ADDITIONAL_JAVA_OPTIONS` — are read by `start_cards` as well, so they work outside a container too; for many of the rest `start_cards` has a command-line option doing the same thing.
 
 | Environment Variable | Description | Sample |
 | ------------- | ----------- | -----: |
@@ -57,3 +57,4 @@ The following environment variables are read by the CARDS Docker container _entr
 | `OAK_MACHINE_ID` | The hardware address identifying this instance's cluster node, for the `mongo` and `rdb` back-ends. Unset by default, in which case the container's own (per-run) address is used. Set it, to any stable value, so that a restarted container reclaims its own cluster node instead of taking a new cluster id and orphaning the old one — but only for a single-instance deployment, or with a distinct value per instance, since instances sharing a value collapse onto one cluster node. | `ca2d50000001` |
 | `SMTPS_ENABLED` | If set to `true`, enables the sending of _SMTPS_ email notifications from CARDS. | `true` |
 | `ADDITIONAL_SLING_FEATURES` | If set, enables the listed Sling features. | `mvn:io.uhndata.cards/some-other-sling-feature/VERSION/slingosgifeature` |
+| `ADDITIONAL_JAVA_OPTIONS` | If set, passed to the JVM as it is, for the settings that have no environment variable of their own. Appended after the options the entrypoint builds, so a property given here overrides the same one set there. Whitespace separates the arguments, so none of them may contain a space. | `-Doak.queryLimitReads=500000` |

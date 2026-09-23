@@ -145,6 +145,9 @@ Options:
   -h, --help                     Show this help message and exit.
 
 Notes:
+  - `ADDITIONAL_JAVA_OPTIONS` in the environment is passed to the JVM, for
+    settings that have no option here: `ADDITIONAL_JAVA_OPTIONS=-Doak.queryLimitReads=500000`.
+    Whitespace separates the arguments, so none of them may contain a space.
   - Any argument not listed above is passed through to the Sling feature
     launcher. For the arguments it accepts, see the Apache Sling Feature
     Launcher documentation:
@@ -588,6 +591,13 @@ def main(argv):
     if machine_id:
         java_opts += (' -Dorg.apache.jackrabbit.oak.plugins.document.ClusterNodeInfo.HWADDRESS=%s'
                       % machine_id)
+    # Arbitrary JVM arguments, for the settings that have no option of their own - an Oak tuning
+    # property such as `-Doak.queryLimitReads=500000`, a garbage collector, an agent. Appended last,
+    # so a value given here overrides the same property set above. The launcher splits them on
+    # whitespace, so none of them may contain a space.
+    additional_java_options = os.environ.get('ADDITIONAL_JAVA_OPTIONS')
+    if additional_java_options:
+        java_opts += ' ' + additional_java_options
     env = dict(os.environ, JAVA_OPTS=java_opts)
 
     # Path.as_uri() produces the platform-correct form (file:///home/... or file:///C:/...)

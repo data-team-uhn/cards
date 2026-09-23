@@ -82,6 +82,18 @@ shared default would collapse them all onto a single cluster node, which corrupt
 rather than merely failing. Set it only for a single-instance deployment, or give every instance
 its own distinct value.
 
+**JVM arguments**: `ADDITIONAL_JAVA_OPTIONS` is passed to the JVM as it is, for the settings that
+have no environment variable of their own — an Oak tuning property, a garbage collector, an agent:
+
+```
+docker run --rm -e ADDITIONAL_JAVA_OPTIONS=-Doak.queryLimitReads=500000 -p 8080:8080 -it cards/cards
+```
+
+It is appended last, so a property given here overrides the same one set by the entrypoint. Several
+arguments are separated by whitespace, which is also the limitation: the launcher splits them the
+same way, so no single argument may contain a space. `start_cards.sh` reads the same variable, so a
+setting can be tried outside a container before it is deployed.
+
 **Production flavor**: the build harvests every feature file built by the reactor and
 materializes all their referenced artifacts (via the `slingfeature-maven-plugin` `repository`
 goal) into `/opt/cards/artifacts`, one deduplicated Maven-layout repository. The image needs
