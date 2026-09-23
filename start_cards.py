@@ -580,7 +580,8 @@ def main(argv):
     if not launcher.is_file():
         sys.exit('The Sling feature launcher is missing at %s - run `mvn install` first' % launcher)
 
-    java_opts = '-Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=%d' % bind_port
+    java_opts = ('-Djdk.xml.entityExpansionLimit=0 -Doak.mongo.maxQueryTimeMS=600000'
+                 ' -Doak.queryLimitReads=500000 -Dorg.osgi.service.http.port=%d' % bind_port)
     if options['debug']:
         java_opts = JAVA_DEBUGGING_FLAGS + ' ' + java_opts
     # The document stores identify a cluster node by hardware address plus working directory, and

@@ -275,7 +275,7 @@ fi
 #tuning property such as `-Doak.queryLimitReads=500000`, a garbage collector, an agent. Appended
 #last, so a value given here overrides the same property set above. The arguments are split on
 #whitespace by the launcher, so none of them may contain a space.
-export JAVA_OPTS="${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -Djdk.xml.entityExpansionLimit=0${OAK_MACHINE_ID_FLAG}${ADDITIONAL_JAVA_OPTIONS:+ ${ADDITIONAL_JAVA_OPTIONS}}"
+export JAVA_OPTS="${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -Djdk.xml.entityExpansionLimit=0 -Doak.mongo.maxQueryTimeMS=600000 -Doak.queryLimitReads=500000${OAK_MACHINE_ID_FLAG}${ADDITIONAL_JAVA_OPTIONS:+ ${ADDITIONAL_JAVA_OPTIONS}}"
 # Resolve artifacts from the repositories baked into the image first: the project artifacts
 # (including all the feature files) in mvnrepo/, and, in the self-contained production
 # flavor, the complete third-party repository in artifacts/. A volume-mounted ~/.m2, the
