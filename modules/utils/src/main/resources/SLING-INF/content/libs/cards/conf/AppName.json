@@ -1,0 +1,4 @@
+{
+  "jcr:primaryType": "cards:Configuration",
+  "title": "${app.name}"
+}

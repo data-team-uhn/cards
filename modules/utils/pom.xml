@@ -51,6 +51,7 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <!-- Registers ConfigMetadata with the Sling Models framework; without this the model is not found -->
             <Sling-Model-Packages>io.uhndata.cards.scripting</Sling-Model-Packages>
+            <Sling-Nodetypes>SLING-INF/nodetypes/configuration.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
               SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwriteProperties:=true,
               SLING-INF/content/libs/cards/healthcheck/;path:=/libs/cards/healthcheck/;overwriteProperties:=true,

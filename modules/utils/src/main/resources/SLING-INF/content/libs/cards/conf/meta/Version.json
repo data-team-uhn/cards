@@ -1,4 +1,0 @@
-{
-  "jcr:primaryType": "nt:unstructured",
-  "version": "${cards.version}"
-}

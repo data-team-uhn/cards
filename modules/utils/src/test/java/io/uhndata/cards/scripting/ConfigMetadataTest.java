@@ -54,11 +54,24 @@ public class ConfigMetadataTest
         field.set(this.metadata, this.resolver);
     }
 
-    /** Build a resource whose value map holds the given properties, and which has the given children. */
-    private static Resource resource(final Map<String, Object> properties, final Resource... children)
+    /** A {@code cards:Configuration} node, whose properties are collected. */
+    private static Resource config(final Map<String, Object> properties, final Resource... children)
+    {
+        return resource(true, properties, children);
+    }
+
+    /** A node of any other type, such as the one holding an API key, whose properties are not collected. */
+    private static Resource other(final Map<String, Object> properties, final Resource... children)
+    {
+        return resource(false, properties, children);
+    }
+
+    private static Resource resource(final boolean isConfiguration, final Map<String, Object> properties,
+        final Resource... children)
     {
         final Resource resource = Mockito.mock(Resource.class);
         final ValueMap values = new ValueMapDecorator(new LinkedHashMap<>(properties));
+        Mockito.when(resource.isResourceType(ConfigMetadata.CONF_RESOURCE_TYPE)).thenReturn(isConfiguration);
         Mockito.when(resource.getValueMap()).thenReturn(values);
         Mockito.when(resource.getChildren()).thenReturn(Arrays.asList(children));
         return resource;
@@ -80,18 +93,17 @@ public class ConfigMetadataTest
     }
 
     @Test
-    public void theRootIsTheMetaSubtreeAndNotTheWholeConfigTree()
+    public void theRootIsTheWholeConfigurationTree()
     {
-        // Collecting all of /libs/cards/conf would publish the API keys kept there
-        Assert.assertEquals("/libs/cards/conf/meta", ConfigMetadata.CONF_ROOT);
+        Assert.assertEquals("/libs/cards/conf", ConfigMetadata.CONF_ROOT);
     }
 
     @Test
-    public void propertiesOfEveryChildAreFlattenedIntoOneMap()
+    public void propertiesOfEveryConfigurationNodeAreFlattenedIntoOneMap()
     {
-        givenRoot(resource(props(),
-            resource(props("title", "My App")),
-            resource(props("themeColor", "blue", "primaryColor", "#003366"))));
+        givenRoot(other(props(),
+            config(props("title", "My App")),
+            config(props("themeColor", "blue", "primaryColor", "#003366"))));
 
         final Map<String, String> collected = this.metadata.getProperties();
         Assert.assertEquals(3, collected.size());
@@ -100,28 +112,45 @@ public class ConfigMetadataTest
         Assert.assertEquals("#003366", collected.get("primaryColor"));
     }
 
+    /** The API keys live next to the configuration, so the type is all that keeps them off every page. */
     @Test
-    public void propertiesOnTheRootItselfAreCollectedToo()
+    public void nodesOfOtherTypesAreSkipped()
     {
-        givenRoot(resource(props("title", "My App")));
-        Assert.assertEquals("My App", this.metadata.getProperties().get("title"));
+        givenRoot(other(props(),
+            config(props("title", "My App")),
+            other(props("key", "secret-google-key")),
+            other(props("key", "secret-bioportal-key"))));
+
+        Assert.assertEquals(Collections.singletonMap("title", "My App"), this.metadata.getProperties());
     }
 
     @Test
-    public void nestedChildrenAreCollectedRecursively()
+    public void theUntypedRootIsNotCollected()
     {
-        givenRoot(resource(props(),
-            resource(props("logoDark", "/dark.png"), resource(props("logoLight", "/light.png")))));
+        givenRoot(other(props("stray", "value"), config(props("title", "My App"))));
+        Assert.assertEquals(Collections.singletonMap("title", "My App"), this.metadata.getProperties());
+    }
+
+    @Test
+    public void configurationNodesAreFoundAtAnyDepth()
+    {
+        givenRoot(other(props(),
+            config(props("logoDark", "/dark.png"), config(props("logoLight", "/light.png"))),
+            other(props(), config(props("themeColor", "blue")))));
 
         Assert.assertEquals("/dark.png", this.metadata.getProperties().get("logoDark"));
         Assert.assertEquals("/light.png", this.metadata.getProperties().get("logoLight"));
+        Assert.assertEquals("blue", this.metadata.getProperties().get("themeColor"));
     }
 
+    /** The node type autocreates sling:resourceType and sling:resourceSuperType, which are not configuration. */
     @Test
-    public void jcrPropertiesAreSkipped()
+    public void namespacedPropertiesAreSkipped()
     {
-        givenRoot(resource(props(),
-            resource(props("jcr:primaryType", "nt:unstructured", "jcr:createdBy", "admin", "title", "My App"))));
+        givenRoot(other(props(),
+            config(props("jcr:primaryType", "cards:Configuration", "jcr:createdBy", "admin",
+                "sling:resourceType", "cards/Configuration", "sling:resourceSuperType", "cards/Resource",
+                "title", "My App"))));
 
         Assert.assertEquals(Collections.singletonMap("title", "My App"), this.metadata.getProperties());
     }
@@ -130,8 +159,8 @@ public class ConfigMetadataTest
     @Test
     public void blankPropertiesAreSkipped()
     {
-        givenRoot(resource(props(),
-            resource(props("loginTitle", "", "loginDescription", "   ", "title", "My App"))));
+        givenRoot(other(props(),
+            config(props("loginTitle", "", "loginDescription", "   ", "title", "My App"))));
 
         Assert.assertEquals(Collections.singletonMap("title", "My App"), this.metadata.getProperties());
     }
@@ -139,7 +168,7 @@ public class ConfigMetadataTest
     @Test
     public void anEmptyTreeGivesAnEmptyMap()
     {
-        givenRoot(resource(props()));
+        givenRoot(other(props()));
         Assert.assertTrue(this.metadata.getProperties().isEmpty());
     }
 
@@ -156,8 +185,8 @@ public class ConfigMetadataTest
     @Test
     public void theCollectionOrderIsStable()
     {
-        givenRoot(resource(props(),
-            resource(props("first", "1")), resource(props("second", "2")), resource(props("third", "3"))));
+        givenRoot(other(props(),
+            config(props("first", "1")), config(props("second", "2")), config(props("third", "3"))));
 
         Assert.assertEquals(Arrays.asList("first", "second", "third"),
             Arrays.asList(this.metadata.getProperties().keySet().toArray()));

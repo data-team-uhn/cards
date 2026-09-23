@@ -35,14 +35,14 @@ import org.apache.sling.models.annotations.injectorspecific.SlingObject;
  * A Sling Model that gathers all the metadata to be exposed as {@code <meta>} tags in the HTML source.
  *
  * <p>
- * This collects every property, from every node in the {@code /libs/cards/conf/meta} tree, into a single flat map,
- * where each property name becomes the name of a {@code <meta>} tag and its value the tag's content. Properties in
- * the {@code jcr:} namespace, and blank properties, are skipped.
+ * This collects every property, from every {@code cards:Configuration} node in the {@code /libs/cards/conf} tree, into
+ * a single flat map, where each property name becomes the name of a {@code <meta>} tag and its value the tag's content.
+ * Namespaced properties, such as {@code jcr:primaryType} or the {@code sling:resourceType} the node type autocreates,
+ * and blank properties, are skipped.
  * </p>
  * <p>
- * Only that subtree is collected, and deliberately not the whole of {@code /libs/cards/conf}: the configuration tree
- * also holds settings that must not reach the browser, such as the BioPortal and Google API keys. Placing a node under
- * {@code meta} is what declares its properties to be public metadata.
+ * The node type is what declares a node's properties to be public. The configuration tree also holds settings that must
+ * not reach the browser, such as the BioPortal and Google API keys, and those nodes have other types.
  * </p>
  * <p>
  * As a Sling Model, it can be adapted from any {@code Resource}, in HTL as well as in Java or ESP code. For example, to
@@ -66,7 +66,10 @@ import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 public class ConfigMetadata
 {
     /** The JCR node under which all the config nodes to be collected live. */
-    public static final String CONF_ROOT = "/libs/cards/conf/meta";
+    public static final String CONF_ROOT = "/libs/cards/conf";
+
+    /** The resource type of the nodes whose properties are collected, set by the {@code cards:Configuration} type. */
+    public static final String CONF_RESOURCE_TYPE = "cards/Configuration";
 
     @SlingObject
     private ResourceResolver resourceResolver;
@@ -85,15 +88,17 @@ public class ConfigMetadata
 
     private void collect(final Resource resource, final Map<String, String> out)
     {
-        final ValueMap values = resource.getValueMap();
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
-            final String name = entry.getKey();
-            if (name.startsWith("jcr:")) {
-                continue;
-            }
-            final String value = values.get(name, String.class);
-            if (StringUtils.isNotBlank(value)) {
-                out.put(name, value);
+        if (resource.isResourceType(CONF_RESOURCE_TYPE)) {
+            final ValueMap values = resource.getValueMap();
+            for (Map.Entry<String, Object> entry : values.entrySet()) {
+                final String name = entry.getKey();
+                if (name.indexOf(':') >= 0) {
+                    continue;
+                }
+                final String value = values.get(name, String.class);
+                if (StringUtils.isNotBlank(value)) {
+                    out.put(name, value);
+                }
             }
         }
         for (Resource child : resource.getChildren()) {
@@ -102,7 +107,7 @@ public class ConfigMetadata
     }
 
     /**
-     * The collected properties, flattened from every node under {@link #CONF_ROOT}.
+     * The collected properties, flattened from every {@code cards:Configuration} node under {@link #CONF_ROOT}.
      *
      * @return a map of property name to property value
      */

@@ -55,20 +55,15 @@ if (statusMessage == null) {
 if ("application/json".equals(request.getHeader("Accept"))) {
   out.print('{"status":"error","status.message":"' + Packages.org.apache.commons.text.StringEscapeUtils.escapeJson(statusMessage) + '","status.code":' + statusCode + '}');
 } else {
-  // Every node under conf/meta contributes all of its properties as metadata, the same way the
-  // io.uhndata.cards.scripting.ConfigMetadata model does for the HTL templates
-  let metaNodes = ["Version", "AppName", "PlatformName", "AppVersion", "ThemeColor", "Media"];
+  // The same metadata the HTL templates place, from the io.uhndata.cards.scripting.ConfigMetadata model
   let metadata = {};
-  for (let n = 0; n < metaNodes.length; n++) {
-    let path = "/libs/cards/conf/meta/" + metaNodes[n];
-    if (!currentSession.nodeExists(path)) {
-      continue;
-    }
-    let props = currentSession.getNode(path).getProperties();
-    for (let i in props) {
-      if (!i.startsWith("jcr:")) {
-        metadata[i] = props[i].getString();
-      }
+  let conf = request.getResourceResolver().getResource("/libs/cards/conf");
+  let config = conf == null ? null : conf.adaptTo(Packages.io.uhndata.cards.scripting.ConfigMetadata);
+  if (config != null) {
+    let entries = config.getProperties().entrySet().iterator();
+    while (entries.hasNext()) {
+      let entry = entries.next();
+      metadata[String(entry.getKey())] = String(entry.getValue());
     }
   }
   let appName = metadata["title"] || "";
