@@ -85,6 +85,10 @@ public class PermissionsManagerServlet extends SlingJakartaAllMethodsServlet
             String[] privileges = parsePrivileges(privilegesText);
             Map<String, Value> restrictions = parseRestriction(restrictionText, session.getValueFactory());
             Principal principal = session.getPrincipalManager().getPrincipal(principalName);
+            if (principal == null) {
+                LOGGER.warn("Failed to change permissions: no principal named {}", principalName);
+                return;
+            }
             if (remove == null) {
                 this.permissionsChangeServiceHandler.addAccessControlEntry(
                     target, isAllow, principal, privileges, restrictions, session);

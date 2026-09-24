@@ -21,6 +21,7 @@ package io.uhndata.cards.permissions.spi;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Service interface used by {@link io.uhndata.cards.permissions.internal.FormsRestrictionProvider} to create
@@ -37,6 +38,7 @@ public interface RestrictionFactory
      *
      * @return a name
      */
+    @NotNull
     String getName();
 
     /**
@@ -44,6 +46,7 @@ public interface RestrictionFactory
      *
      * @return a type
      */
+    @NotNull
     Type<?> getType();
 
     /**
@@ -52,5 +55,6 @@ public interface RestrictionFactory
      * @param value the restriction value
      * @return a new restriction pattern
      */
-    RestrictionPattern forValue(PropertyState value);
+    @NotNull
+    RestrictionPattern forValue(@NotNull PropertyState value);
 }

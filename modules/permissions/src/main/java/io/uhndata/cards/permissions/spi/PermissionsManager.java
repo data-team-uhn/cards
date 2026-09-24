@@ -26,6 +26,9 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.security.Privilege;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Service interface used by {@link io.uhndata.cards.permissions.internal.PermissionsManagerService} to alter
  * permissions on JCR nodes.
@@ -41,12 +44,13 @@ public interface PermissionsManager
      * @param isAllow whether the request is to allow (true) or deny (false) access
      * @param principal the Principal for the rule (i.e. target users to affect)
      * @param privileges a list of privilege names
-     * @param restrictions the restrictions to apply
+     * @param restrictions the restrictions to apply, or {@code null} for none
      * @param session the {@code javax.jcr.Session} to commit changes to.
      * @throws RepositoryException if an error occurs while obtaining repository entries, or illegal arguments occur
      */
-    void addAccessControlEntry(String target, boolean isAllow, Principal principal, String[] privileges,
-        Map<String, Value> restrictions, Session session) throws RepositoryException;
+    void addAccessControlEntry(@NotNull String target, boolean isAllow, @NotNull Principal principal,
+        @NotNull String[] privileges, @Nullable Map<String, Value> restrictions, @NotNull Session session)
+        throws RepositoryException;
 
     /**
      * Adds a new ACE (Access Control Entry) to the policy on the {@code target} node with the given specifications.
@@ -55,12 +59,13 @@ public interface PermissionsManager
      * @param isAllow whether the request is to allow (true) or deny (false) access
      * @param principal the Principal for the rule (i.e. target user or group to affect)
      * @param privileges a list of privileges
-     * @param restrictions the restrictions to apply
+     * @param restrictions the restrictions to apply, or {@code null} for none
      * @param session the {@code javax.jcr.Session} to commit changes to.
      * @throws RepositoryException if an error occurs while obtaining repository entries, or illegal arguments occur
      */
-    void addAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,
-        Map<String, Value> restrictions, Session session) throws RepositoryException;
+    void addAccessControlEntry(@NotNull String target, boolean isAllow, @NotNull Principal principal,
+        @NotNull Privilege[] privileges, @Nullable Map<String, Value> restrictions, @NotNull Session session)
+        throws RepositoryException;
 
     /**
      * Removes the ACE matching the parameters from the {@code target} node, if any such ACE exists.
@@ -69,12 +74,13 @@ public interface PermissionsManager
      * @param isAllow whether the request is to allow (true) or deny (false) access
      * @param principal the Principal for the rule (i.e. target users to affect)
      * @param privileges a list of privilege names
-     * @param restrictions the restrictions to apply
+     * @param restrictions the restrictions the entry to remove has, exactly; empty for none
      * @param session the {@code javax.jcr.Session} to commit changes to.
      * @throws RepositoryException if an error occurs while obtaining repository entries, or illegal arguments occur
      */
-    void removeAccessControlEntry(String target, boolean isAllow, Principal principal, String[] privileges,
-        Map<String, Value> restrictions, Session session) throws RepositoryException;
+    void removeAccessControlEntry(@NotNull String target, boolean isAllow, @NotNull Principal principal,
+        @NotNull String[] privileges, @NotNull Map<String, Value> restrictions, @NotNull Session session)
+        throws RepositoryException;
 
     /**
      * Removes the ACE matching the parameters from the {@code target} node, if any such ACE exists.
@@ -83,10 +89,11 @@ public interface PermissionsManager
      * @param isAllow whether the request is to allow (true) or deny (false) access
      * @param principal the Principal for the rule (i.e. target users to affect)
      * @param privileges a list of privileges
-     * @param restrictions the restrictions to apply
+     * @param restrictions the restrictions the entry to remove has, exactly; empty for none
      * @param session the {@code javax.jcr.Session} to commit changes to.
      * @throws RepositoryException if an error occurs while obtaining repository entries, or illegal arguments occur
      */
-    void removeAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,
-        Map<String, Value> restrictions, Session session) throws RepositoryException;
+    void removeAccessControlEntry(@NotNull String target, boolean isAllow, @NotNull Principal principal,
+        @NotNull Privilege[] privileges, @NotNull Map<String, Value> restrictions, @NotNull Session session)
+        throws RepositoryException;
 }
