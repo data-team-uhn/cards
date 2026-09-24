@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 import org.apache.commons.collections4.MultiValuedMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Describes a term parsed from a vocabulary source. A few common properties are available as explicit individual
@@ -53,8 +55,9 @@ public class VocabularyTermSource
      * @param ancestors the ancestors, see {@link #getAncestors()}
      * @param allProperties all the term properties, see {@link #getAllProperties()}
      */
-    public VocabularyTermSource(final String id, final String label, final String[] parents, final String[] ancestors,
-        final MultiValuedMap<String, String> allProperties)
+    public VocabularyTermSource(@NotNull final String id, @Nullable final String label,
+        @Nullable final String[] parents, @Nullable final String[] ancestors,
+        @NotNull final MultiValuedMap<String, String> allProperties)
     {
         this(id, label, parents, ancestors, allProperties, null);
     }
@@ -69,14 +72,15 @@ public class VocabularyTermSource
      * @param allProperties all the term properties, see {@link #getAllProperties()}
      * @param uri the URI of the term from the OWL file
      */
-    public VocabularyTermSource(final String id, final String label, final String[] parents, final String[] ancestors,
-        final MultiValuedMap<String, String> allProperties, final String uri)
+    public VocabularyTermSource(@NotNull final String id, @Nullable final String label,
+        @Nullable final String[] parents, @Nullable final String[] ancestors,
+        @NotNull final MultiValuedMap<String, String> allProperties, @Nullable final String uri)
     {
         this.id = id;
         this.label = Objects.toString(label, id);
         // Copies, since arrays are mutable and the caller must not be able to alter this object's own state
-        this.parents = parents == null ? null : parents.clone();
-        this.ancestors = ancestors == null ? null : ancestors.clone();
+        this.parents = parents == null ? new String[0] : parents.clone();
+        this.ancestors = ancestors == null ? new String[0] : ancestors.clone();
         this.allProperties = allProperties;
         this.uri = uri;
     }
@@ -87,6 +91,7 @@ public class VocabularyTermSource
      *
      * @return the term identifier, a short string
      */
+    @NotNull
     public String getId()
     {
         return this.id;
@@ -95,8 +100,9 @@ public class VocabularyTermSource
     /**
      * Gets the preferred human-readable term label, for example {@code Gait ataxia}.
      *
-     * @return the term name, or {@code null} if the term doesn't have a preferred label
+     * @return the term name, or the term identifier if the term doesn't have a preferred label
      */
+    @NotNull
     public String getLabel()
     {
         return this.label;
@@ -107,6 +113,7 @@ public class VocabularyTermSource
      *
      * @return the term description, or {@code null} if the term doesn't have a description
      */
+    @Nullable
     public String getDescription()
     {
         final Collection<String> allDefs = this.allProperties.get("def");
@@ -122,10 +129,11 @@ public class VocabularyTermSource
      * @return a copy of the set of identifiers, or an empty set if the term doesn't have any ancestors in the
      *         vocabulary
      */
+    @NotNull
     public String[] getParents()
     {
         // A copy, since arrays are mutable and callers must not be able to alter this object's own state
-        return this.parents == null ? null : this.parents.clone();
+        return this.parents.clone();
     }
 
     /**
@@ -134,10 +142,11 @@ public class VocabularyTermSource
      * @return a copy of the set of identifiers, or an empty set if the term doesn't have any ancestors in the
      *         vocabulary
      */
+    @NotNull
     public String[] getAncestors()
     {
         // A copy, since arrays are mutable and callers must not be able to alter this object's own state
-        return this.ancestors == null ? null : this.ancestors.clone();
+        return this.ancestors.clone();
     }
 
     /**
@@ -146,6 +155,7 @@ public class VocabularyTermSource
      *
      * @return a multi-valued map, where the key is the property name, with one or more values associated with each key
      */
+    @NotNull
     public MultiValuedMap<String, String> getAllProperties()
     {
         return this.allProperties;
@@ -154,8 +164,9 @@ public class VocabularyTermSource
     /**
      * Gets the URI of this term.
      *
-     * @return the URI for this VocabularyTerm if it is available
+     * @return the URI of this term, or an empty string if it is not known
      */
+    @NotNull
     public String getURI()
     {
         if (this.uri == null) {
