@@ -21,6 +21,8 @@ package io.uhndata.cards.export.spi;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.jetbrains.annotations.NotNull;
+
 import io.uhndata.cards.export.ExportConfigDefinition;
 
 /**
@@ -44,6 +46,7 @@ public interface DataStore extends DataPipelineStep
      *            the {@link ExportConfigDefinition#storageParameters()} settings
      * @throws IOException if storing the data fails
      */
-    void store(InputStream contents, long size, String filename, String mimetype, ExportConfigDefinition config)
+    void store(@NotNull InputStream contents, long size, @NotNull String filename, @NotNull String mimetype,
+        @NotNull ExportConfigDefinition config)
         throws IOException;
 }

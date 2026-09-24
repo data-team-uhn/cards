@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * An export job involves 3 main steps: finding data to export, serializing the data, and storing the generate files.
  * Each of these steps is a {@code DataPipelineStep}. This is just a utility interface that makes it easier to pass
@@ -50,7 +53,7 @@ public interface DataPipelineStep
 
         private String exportPath;
 
-        public ResourceIdentifier(String path, String identifier, String exportPath)
+        public ResourceIdentifier(@NotNull String path, @NotNull String identifier, @NotNull String exportPath)
         {
             this.path = path;
             this.id = identifier;
@@ -62,6 +65,7 @@ public interface DataPipelineStep
          *
          * @return a simple JCR path, for example {@code /Subjects/123} or {@code /Questionnaires/OAIP}
          */
+        @NotNull
         public String getPath()
         {
             return this.path;
@@ -72,6 +76,7 @@ public interface DataPipelineStep
          *
          * @return a short name
          */
+        @NotNull
         public String getIdentifier()
         {
             return this.id;
@@ -84,6 +89,7 @@ public interface DataPipelineStep
          * @return a JCR path with optional selectors, for example
          *         {@code /Subjects/123.data.deep.dataFilter:modifiedAfter=2025-01-01.dataFilter:status=SUBMITTED}
          */
+        @NotNull
         public String getExportPath()
         {
             return this.exportPath;
@@ -96,7 +102,7 @@ public interface DataPipelineStep
         }
 
         @Override
-        public boolean equals(Object obj)
+        public boolean equals(@Nullable Object obj)
         {
             if (this == obj) {
                 return true;
@@ -111,6 +117,7 @@ public interface DataPipelineStep
         }
 
         @Override
+        @NotNull
         public String toString()
         {
             return String.format("{path:\"%s\",id:\"%s\",exportPath:\"%s\"}", this.path, this.id, this.exportPath);
@@ -142,11 +149,11 @@ public interface DataPipelineStep
          * @param dataContents a listing of the actual data contained within the representation, if known, for example a
          *            list of Forms within a Questionnaire's CSV export or a Subject's JSON
          */
-        public ResourceRepresentation(final ResourceIdentifier identifier,
-            final InputStream data,
+        public ResourceRepresentation(@NotNull final ResourceIdentifier identifier,
+            @NotNull final InputStream data,
             final long size,
-            final String mimeType,
-            final List<String> dataContents)
+            @NotNull final String mimeType,
+            @NotNull final List<String> dataContents)
         {
             this.identifier = identifier;
             this.data = data;
@@ -160,6 +167,7 @@ public interface DataPipelineStep
          *
          * @return the identifier of the exported data
          */
+        @NotNull
         public ResourceIdentifier getIdentifier()
         {
             return this.identifier;
@@ -171,6 +179,7 @@ public interface DataPipelineStep
          *
          * @return an input stream for the data representation, same for all calls of the method
          */
+        @NotNull
         public InputStream getRepresentation()
         {
             return this.data;
@@ -192,6 +201,7 @@ public interface DataPipelineStep
          *
          * @return a list of JCR paths to secondary resources contained within the representation
          */
+        @NotNull
         public List<String> getDataContents()
         {
             return this.dataContents;
@@ -202,6 +212,7 @@ public interface DataPipelineStep
          *
          * @return a valid MIME type, for example {@code text/csv} or {@code application/json}
          */
+        @NotNull
         public String getMimeType()
         {
             return this.mimeType;
@@ -214,7 +225,8 @@ public interface DataPipelineStep
      * @param input a string, may be {@code null}
      * @return an escaped string safe to use as a resource selector, {@code null} if the input string is {@code null}
      */
-    default String escapeForDataUrl(String input)
+    @Nullable
+    default String escapeForDataUrl(@Nullable String input)
     {
         return input == null ? null : input.replaceAll(DOT, Matcher.quoteReplacement(DOT));
     }
@@ -229,7 +241,8 @@ public interface DataPipelineStep
      * @param parameterName the name of the parameter to retrieve
      * @return a string, empty if no configuration for the given name exists
      */
-    default String getNamedParameter(final String[] parameters, final String parameterName)
+    @NotNull
+    default String getNamedParameter(@Nullable final String[] parameters, @NotNull final String parameterName)
     {
         if (parameters != null && parameters.length > 0) {
             for (String parameter : parameters) {
@@ -251,9 +264,11 @@ public interface DataPipelineStep
      * @param parameters the array of configurations to look into
      * @param parameterName the name of the parameter to retrieve
      * @param defaultValue the value to use if nothing is configured for the given parameter name
-     * @return a string, empty if no configuration for the given name exists
+     * @return the configured value, or {@code defaultValue} if nothing is configured for the given name
      */
-    default String getNamedParameter(final String[] parameters, final String parameterName, final String defaultValue)
+    @NotNull
+    default String getNamedParameter(@Nullable final String[] parameters, @NotNull final String parameterName,
+        @NotNull final String defaultValue)
     {
         if (parameters != null && parameters.length > 0) {
             for (String parameter : parameters) {
@@ -276,7 +291,8 @@ public interface DataPipelineStep
      * @param parameterName the name of the parameter to retrieve
      * @return a list of strings, empty if no configuration for the given name exists
      */
-    default List<String> getNamedParameters(final String[] parameters, final String parameterName)
+    @NotNull
+    default List<String> getNamedParameters(@Nullable final String[] parameters, @NotNull final String parameterName)
     {
         final List<String> result = new LinkedList<>();
         if (parameters != null && parameters.length > 0) {
@@ -294,5 +310,6 @@ public interface DataPipelineStep
      *
      * @return a short name
      */
+    @NotNull
     String getName();
 }

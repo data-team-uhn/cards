@@ -31,6 +31,8 @@ import jakarta.json.JsonValue.ValueType;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import io.uhndata.cards.export.ExportConfigDefinition;
 
@@ -48,16 +50,18 @@ public interface DataFormatter extends DataPipelineStep
      * Serialize a resource into the desired representation.
      *
      * @param what the resource to serialize
-     * @param startDate the requested start date for the export time frame
-     * @param endDate the requested end date for the export time frame
+     * @param startDate the requested start date for the export time frame, or {@code null} for no lower bound
+     * @param endDate the requested end date for the export time frame, or {@code null} for no upper bound
      * @param config the export process configuration, which may hold further customization for the serialization
      *            process in the {@link ExportConfigDefinition#formatterParameters()} settings
      * @param resolver a valid resource resolver with access to the data
-     * @return a resource representation with a valid input stream holding the data
+     * @return a resource representation with a valid input stream holding the data, or {@code null} if the resource
+     *         has no representation in this format
      * @throws RepositoryException if accessing the data fails
      */
-    ResourceRepresentation format(ResourceIdentifier what, ZonedDateTime startDate,
-        ZonedDateTime endDate, ExportConfigDefinition config, ResourceResolver resolver)
+    @Nullable
+    ResourceRepresentation format(@NotNull ResourceIdentifier what, @Nullable ZonedDateTime startDate,
+        @Nullable ZonedDateTime endDate, @NotNull ExportConfigDefinition config, @NotNull ResourceResolver resolver)
         throws RepositoryException;
 
     /**
@@ -70,8 +74,9 @@ public interface DataFormatter extends DataPipelineStep
      * @return a list of JCR paths to secondary resources contained within the representation
      * @see ResourceRepresentation#getDataContents()
      */
-    default List<String> getContentsSummary(ResourceIdentifier what, ExportConfigDefinition config,
-        ResourceResolver resolver)
+    @NotNull
+    default List<String> getContentsSummary(@NotNull ResourceIdentifier what, @NotNull ExportConfigDefinition config,
+        @NotNull ResourceResolver resolver)
     {
         return resolver.resolve(what.getExportPath() + ".identify.-properties.-dereference.json")
             .adaptTo(JsonObject.class)

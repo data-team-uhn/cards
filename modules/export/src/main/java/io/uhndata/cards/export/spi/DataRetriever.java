@@ -24,6 +24,8 @@ import java.util.List;
 import javax.jcr.RepositoryException;
 
 import org.apache.sling.api.resource.ResourceResolver;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import io.uhndata.cards.export.ExportConfigDefinition;
 
@@ -43,12 +45,14 @@ public interface DataRetriever extends DataPipelineStep
      *
      * @param config the export process configuration, which may hold further customization for the resources to find in
      *            the {@link ExportConfigDefinition#retrieverParameters()} settings
-     * @param startDate the start date to consider for relevant changes, inclusive
-     * @param endDate the end date to consider for relevant changes, exclusive
+     * @param startDate the start date to consider for relevant changes, inclusive, or {@code null} for no lower bound
+     * @param endDate the end date to consider for relevant changes, exclusive, or {@code null} for no upper bound
      * @param resolver a valid resource resolver with access to the data
      * @return a list of matching resources to export
      * @throws RepositoryException if accessing the data fails
      */
-    List<ResourceIdentifier> getResourcesToExport(ExportConfigDefinition config, ZonedDateTime startDate,
-        ZonedDateTime endDate, ResourceResolver resolver) throws RepositoryException;
+    @NotNull
+    List<ResourceIdentifier> getResourcesToExport(@NotNull ExportConfigDefinition config,
+        @Nullable ZonedDateTime startDate, @Nullable ZonedDateTime endDate, @NotNull ResourceResolver resolver)
+        throws RepositoryException;
 }
