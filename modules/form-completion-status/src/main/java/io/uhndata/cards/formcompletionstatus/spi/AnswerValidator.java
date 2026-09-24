@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.jcr.Node;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import io.uhndata.cards.formcompletionstatus.AnswerCompletionStatusEditor;
 import io.uhndata.cards.forms.api.FormUtils;
@@ -72,7 +73,8 @@ public interface AnswerValidator extends Comparable<AnswerValidator>
      * @param flags maps flag names to whether they were explicitly set or just copied from the previous form state, and
      *            is initially populated with the previously set flags mapped to false
      */
-    void validate(NodeBuilder answer, Node question, boolean initialAnswer, Map<String, Boolean> flags);
+    void validate(@NotNull NodeBuilder answer, @NotNull Node question, boolean initialAnswer,
+        @NotNull Map<String, Boolean> flags);
 
     /**
      * Helper method which removes a flag only if it wasn't explicitly added.
@@ -80,7 +82,7 @@ public interface AnswerValidator extends Comparable<AnswerValidator>
      * @param flag the flag to conditionally remove
      * @param flags the map of flags being managed during the {@link #validate} process
      */
-    default void removeIfNotExplicitlySet(final String flag, final Map<String, Boolean> flags)
+    default void removeIfNotExplicitlySet(@NotNull final String flag, @NotNull final Map<String, Boolean> flags)
     {
         // equals, not ==, since a Boolean outside the cached range of valueOf would fail an identity comparison
         if (Boolean.FALSE.equals(flags.get(flag))) {
@@ -89,7 +91,7 @@ public interface AnswerValidator extends Comparable<AnswerValidator>
     }
 
     @Override
-    default int compareTo(AnswerValidator o)
+    default int compareTo(@NotNull AnswerValidator o)
     {
         return this.getPriority() - o.getPriority();
     }
