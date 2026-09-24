@@ -1,0 +1,75 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Questionnaire",
+  "description": "A test questionnaire",
+  "question_1": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Boolean Question",
+    "description": "A boolean question",
+    "dataType": "boolean"
+  },
+  "section_1": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section 1",
+    "question_2": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Long Question",
+      "dataType": "long",
+      "minAnswers": 1,
+      "maxAnswers": 2,
+      "minValue": 50,
+      "maxValue": 250
+    }
+  },
+  "question_4": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Text Question",
+    "description": "A text question with a validation pattern",
+    "dataType": "text",
+    "validationRegexp": "^[A-Z]{2}[0-9]+$"
+  },
+  "question_5": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Range Question",
+    "description": "A numeric range question",
+    "dataType": "long",
+    "isRange": true,
+    "minAnswers": 1,
+    "maxAnswers": 1
+  },
+  "question_6": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Long Question With Options",
+    "description": "A long question with a lower limit and predefined options",
+    "dataType": "long",
+    "minValue": 50,
+    "option_1": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "label": "Prefer not to answer",
+      "value": "-1"
+    },
+    "option_2": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "label": "Not a number",
+      "value": "N/A"
+    }
+  },
+  "question_7": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Long Question With Suggested Limits",
+    "description": "A long question with limits that are only suggested, not enforced",
+    "dataType": "long",
+    "minValue": 50,
+    "maxValue": 250,
+    "disableMinMaxValueEnforcement": true
+  },
+  "question_3": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Date Question",
+    "description": "A date question",
+    "dataType": "date",
+    "dateFormat": "yyyy-MM-dd",
+    "type": "interval",
+    "minAnswers": 1
+  }
+}
