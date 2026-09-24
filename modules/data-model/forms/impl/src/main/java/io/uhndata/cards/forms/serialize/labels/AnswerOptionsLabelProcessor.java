@@ -31,6 +31,7 @@ import javax.jcr.Value;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonValue;
 
+import org.jetbrains.annotations.NotNull;
 import org.osgi.service.component.annotations.Component;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
@@ -120,7 +121,7 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
         return null;
     }
 
-    protected void processOptions(final Node question, final Map<String, String> propsMap)
+    protected void processOptions(@NotNull final Node question, @NotNull final Map<String, String> propsMap)
     {
         try {
             NodeIterator childNodes = question.getNodes();

@@ -54,6 +54,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+    </dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>cards-data-model-forms-api</artifactId>
       <version>${project.version}</version>

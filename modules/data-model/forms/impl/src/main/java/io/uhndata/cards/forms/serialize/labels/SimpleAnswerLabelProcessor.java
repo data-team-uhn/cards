@@ -33,6 +33,8 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
@@ -86,7 +88,8 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      * @param serializeNode a function that can be invoked to serialize a new node, receiving a Node as input, and
      *            returning a JSON representation
      */
-    protected void addProperty(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
+    protected void addProperty(@NotNull Node node, @NotNull JsonObjectBuilder json,
+        @NotNull Function<Node, JsonValue> serializeNode)
     {
         try {
             if (node.hasProperty(PROP_VALUE)) {
@@ -107,7 +110,8 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      * @param node the node being serialized, may be other than the top resource
      * @return the question Node object associated with this answer or null
      */
-    protected Node getQuestionNode(final Node node)
+    @Nullable
+    protected Node getQuestionNode(@NotNull final Node node)
     {
         try {
             if (node.hasProperty(PROP_QUESTION)) {
@@ -123,10 +127,11 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      * Basic method to get the answer label associated with the question.
      *
      * @param node the node being serialized, may be other than the top resource
-     * @param question the question node that is an answer's child
-     * @return the question answer associated with this question
+     * @param question the question the answer belongs to, may be {@code null}
+     * @return the label for the answer, or {@code null} if it cannot be read
      */
-    protected JsonValue getAnswerLabel(final Node node, final Node question)
+    @Nullable
+    protected JsonValue getAnswerLabel(@NotNull final Node node, @Nullable final Node question)
     {
         try {
             Property property = node.getProperty(PROP_VALUE);
@@ -159,7 +164,8 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
      * @param list the list of items to convert
      * @return the JsonArray
      */
-    protected JsonArray createJsonArrayFromList(Collection<String> list)
+    @NotNull
+    protected JsonArray createJsonArrayFromList(@NotNull Collection<String> list)
     {
         JsonArrayBuilder jsonArray = Json.createArrayBuilder();
         for (String item : list) {
@@ -168,7 +174,8 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
         return jsonArray.build();
     }
 
-    protected JsonValue createJsonValue(final Collection<String> list, final boolean multivalued)
+    @NotNull
+    protected JsonValue createJsonValue(@NotNull final Collection<String> list, final boolean multivalued)
     {
         if (multivalued) {
             return createJsonArrayFromList(list);

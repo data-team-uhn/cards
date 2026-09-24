@@ -24,6 +24,8 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
@@ -45,7 +47,8 @@ public abstract class AbstractResourceLabelProcessor extends SimpleAnswerLabelPr
      * @return the property name as a string, or null if the question definition doesn't have the labelProperty
      *     defined or its value is blank
      */
-    protected String getLabelPropertyName(final Node question)
+    @Nullable
+    protected String getLabelPropertyName(@Nullable final Node question)
     {
         try {
             if (question != null
@@ -63,8 +66,9 @@ public abstract class AbstractResourceLabelProcessor extends SimpleAnswerLabelPr
      * Given a resource path as a String, extract the value indicated by labelPropertyName
      * from the resource node and return it as the label.
      */
-    protected String getLabelForResource(final String resourcePath, final ResourceResolver resolver,
-        final String labelPropertyName)
+    @NotNull
+    protected String getLabelForResource(@NotNull final String resourcePath, @NotNull final ResourceResolver resolver,
+        @Nullable final String labelPropertyName)
     {
         try {
             // Determine the resource which is the answer to this question
