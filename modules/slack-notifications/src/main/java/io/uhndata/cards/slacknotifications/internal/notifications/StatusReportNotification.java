@@ -100,7 +100,7 @@ public class StatusReportNotification implements SlackNotificationProducer
             }
             result.add(json.build());
         }
-        return result.isEmpty() ? null : result;
+        return result;
     }
 
     /*

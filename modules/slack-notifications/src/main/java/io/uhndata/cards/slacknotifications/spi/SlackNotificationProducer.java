@@ -24,6 +24,8 @@ import java.util.Map;
 
 import jakarta.json.JsonObject;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Service interface for producing messages to post to Slack. When it's time to send a status message, each
  * implementation's {@link #prepareMessages} will be invoked, and the results will be aggregated in a single Slack post.
@@ -59,15 +61,17 @@ public interface SlackNotificationProducer
      *
      * @return a simple string
      */
+    @NotNull
     String getName();
 
     /**
      * Prepare a message, as a valid Slack "attachment" object.
      *
-     * @param extraParameters optional extra parameters configured for the Slack notification, which may influence how
-     *            the message is prepared
+     * @param extraParameters extra parameters configured for the Slack notification, which may influence how the
+     *            message is prepared; may be empty
      * @return a list of JSON objects respecting the attachment API, that will be added to the attachments list of the
-     *         message
+     *         message; empty if there is nothing to say
      */
-    List<JsonObject> prepareMessages(Map<String, String> extraParameters);
+    @NotNull
+    List<JsonObject> prepareMessages(@NotNull Map<String, String> extraParameters);
 }
