@@ -25,6 +25,8 @@ import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -42,7 +44,7 @@ public abstract class AbstractNodeUtils
      * @param targetNodeType the required node type, a prefixed name like {@code cards:Form}
      * @return {@code true} if the node is not {@code null} and is of the required type, {@code false} otherwise
      */
-    protected boolean isNodeType(final Node node, final String targetNodeType)
+    protected boolean isNodeType(@Nullable final Node node, @NotNull final String targetNodeType)
     {
         if (node == null) {
             return false;
@@ -63,7 +65,8 @@ public abstract class AbstractNodeUtils
      * @return {@code true} if the node is not {@code null} and has the required primary node type, {@code false}
      *         otherwise
      */
-    protected boolean isNodeType(final NodeState node, final String targetNodeType, final Session session)
+    protected boolean isNodeType(@Nullable final NodeState node, @NotNull final String targetNodeType,
+        @Nullable final Session session)
     {
         if (node == null || session == null) {
             return false;
@@ -90,7 +93,8 @@ public abstract class AbstractNodeUtils
      * @param property the name of the property holding the reference to the target node
      * @return the target node, or {@code null} if the requested reference is not valid
      */
-    protected Node getReferencedNode(final Node node, final String property)
+    @Nullable
+    protected Node getReferencedNode(@NotNull final Node node, @NotNull final String property)
     {
         try {
             return node.getProperty(property).getNode();
@@ -109,8 +113,9 @@ public abstract class AbstractNodeUtils
      * @param typeProperty the name of the property of the related node referencing the type, e.g. {@code type}
      * @return the target node, or {@code null} if the requested reference is not valid or is inaccessible
      */
-    protected Node getReferencedNodeOfType(final Node node, final String relatingProperty, final String typePath,
-        final String typeProperty)
+    @Nullable
+    protected Node getReferencedNodeOfType(@NotNull final Node node, @NotNull final String relatingProperty,
+        @NotNull final String typePath, @NotNull final String typeProperty)
     {
         try {
             Value[] values = node.getProperty(relatingProperty).getValues();
@@ -137,7 +142,8 @@ public abstract class AbstractNodeUtils
      * @param property the name of the property to retrieve
      * @return the value stored in the property, or {@code null} if the requested property is not valid
      */
-    protected String getStringProperty(final Node node, final String property)
+    @Nullable
+    protected String getStringProperty(@NotNull final Node node, @NotNull final String property)
     {
         try {
             return node.getProperty(property).getString();
@@ -153,12 +159,15 @@ public abstract class AbstractNodeUtils
      * @param property the name of the property to retrieve
      * @return the value stored in the property, or {@code null} if the requested property is not valid
      */
-    protected String getStringProperty(final NodeState node, final String property)
+    @Nullable
+    protected String getStringProperty(@NotNull final NodeState node, @NotNull final String property)
     {
-        return node.getProperty(property).getValue(Type.STRING);
+        final PropertyState value = node.getProperty(property);
+        return value == null ? null : value.getValue(Type.STRING);
     }
 
-    protected Node getNodeByIdentifier(final String identifier, final Session session)
+    @Nullable
+    protected Node getNodeByIdentifier(@NotNull final String identifier, @Nullable final Session session)
     {
         try {
             if (session == null) {
@@ -176,7 +185,8 @@ public abstract class AbstractNodeUtils
      * @param rrp the resource resolver factory service, may be {@code null}
      * @return the current session, or {@code null} if a session may not be obtained
      */
-    protected Session getSession(final ThreadResourceResolverProvider rrp)
+    @Nullable
+    protected Session getSession(@Nullable final ThreadResourceResolverProvider rrp)
     {
         if (rrp == null) {
             return null;

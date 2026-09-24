@@ -56,6 +56,8 @@ import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingJakartaSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -256,8 +258,8 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
      * @return {@code true} if any mandatory special property has an "is empty" filter, {@code false} otherwise
      * @throws RepositoryException if accessing the repository fails
      */
-    protected boolean checkForSpecialEmptyFilter(final SlingJakartaHttpServletRequest request,
-        final Map<FilterType, List<Filter>> filters, final SlingJakartaHttpServletResponse response)
+    protected boolean checkForSpecialEmptyFilter(@NotNull final SlingJakartaHttpServletRequest request,
+        @NotNull final Map<FilterType, List<Filter>> filters, @NotNull final SlingJakartaHttpServletResponse response)
         throws RepositoryException
     {
         for (Filter filter : filters.getOrDefault(FilterType.EMPTY, new ArrayList<Filter>())) {
@@ -353,8 +355,9 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
      * @return a query that takes into account the requested filters
      * @throws RepositoryException if accessing the repository fails
      */
-    protected String createQuery(final SlingJakartaHttpServletRequest request, Session session,
-        final Map<FilterType, List<Filter>> filters) throws RepositoryException
+    @NotNull
+    protected String createQuery(@NotNull final SlingJakartaHttpServletRequest request, @NotNull Session session,
+        @NotNull final Map<FilterType, List<Filter>> filters) throws RepositoryException
     {
         // If we want this query to be fast, we need to use the exact nodetype requested.
         final String nodeType = getNodeType(request);
@@ -439,7 +442,8 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
      * @param request the current request
      * @return a map from field parameter name to array of field parameter values
      */
-    protected Map<String, String[]> getFieldParameters(final SlingJakartaHttpServletRequest request)
+    @NotNull
+    protected Map<String, String[]> getFieldParameters(@NotNull final SlingJakartaHttpServletRequest request)
     {
         final String[] names = request.getParameterValues(FIELDNAMES);
         final String[] values = request.getParameterValues(FIELDVALUES);
@@ -467,8 +471,8 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
         return fieldParameters;
     }
 
-    protected void addFieldConditionToQuery(final StringBuilder query, final String field, final String comparator,
-        final String value)
+    protected void addFieldConditionToQuery(@NotNull final StringBuilder query, @Nullable final String field,
+        @Nullable final String comparator, @Nullable final String value)
     {
         if (StringUtils.isNotBlank(field)) {
             if ("<>".equals(comparator)) {
@@ -496,7 +500,9 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
      *         only some types of filters, depending on which filters are specified in the request
      * @throws IllegalArgumentException when the number of request parameters are not equal
      */
-    protected Map<FilterType, List<Filter>> parseFiltersFromRequest(final SlingJakartaHttpServletRequest request)
+    @NotNull
+    protected Map<FilterType, List<Filter>> parseFiltersFromRequest(
+        @NotNull final SlingJakartaHttpServletRequest request)
         throws IllegalArgumentException
     {
         final Map<FilterType, List<Filter>> result = new EnumMap<>(FilterType.class);
@@ -983,7 +989,8 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
      * @param input the value to sanitize
      * @return a sanitized version of the input
      */
-    protected String sanitizeValue(String input)
+    @NotNull
+    protected String sanitizeValue(@Nullable String input)
     {
         return StringUtils.isEmpty(input) ? "" : input.replaceAll("['\\\\]", "\\\\$0");
     }
@@ -995,7 +1002,8 @@ public class PaginationServlet extends SlingJakartaSafeMethodsServlet
      * @param comparator the comparator to sanitize
      * @return an accepted comparator, may be {@code =} if the specified comparator is not supported
      */
-    protected String sanitizeComparator(String comparator)
+    @NotNull
+    protected String sanitizeComparator(@Nullable String comparator)
     {
         if (!COMPARATORS.contains(comparator)) {
             // Invalid comparator: return '='

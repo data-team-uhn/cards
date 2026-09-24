@@ -19,6 +19,7 @@
 package io.uhndata.cards.spi;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Factory for building {@link SearchParameters} instances.
@@ -101,6 +102,7 @@ public final class SearchParametersFactory
      *
      * @return a factory instance
      */
+    @NotNull
     public static SearchParametersFactory newSearchParameters()
     {
         return new SearchParametersFactory();
@@ -112,7 +114,8 @@ public final class SearchParametersFactory
      * @param type the query type to use
      * @return this builder, for chaining calls
      */
-    public SearchParametersFactory withType(final String type)
+    @NotNull
+    public SearchParametersFactory withType(@NotNull final String type)
     {
         this.type = type;
         return this;
@@ -124,7 +127,8 @@ public final class SearchParametersFactory
      * @param query the query to use
      * @return this builder, for chaining calls
      */
-    public SearchParametersFactory withQuery(final String query)
+    @NotNull
+    public SearchParametersFactory withQuery(@NotNull final String query)
     {
         this.query = query;
         return this;
@@ -138,6 +142,7 @@ public final class SearchParametersFactory
      * @return this builder, for chaining calls
      * @throws IllegalArgumentException if {@code maxResults} is less than or equal to {@code 0}
      */
+    @NotNull
     public SearchParametersFactory withMaxResults(final long maxResults) throws IllegalArgumentException
     {
         if (maxResults <= 0) {
@@ -154,6 +159,7 @@ public final class SearchParametersFactory
      * @param escape whether the query should be escaped or not
      * @return this builder, for chaining calls
      */
+    @NotNull
     public SearchParametersFactory withEscaped(final boolean escape)
     {
         this.escape = escape;
@@ -167,6 +173,7 @@ public final class SearchParametersFactory
      * @param showTotalResults whether the total number of matches must be computed and returned
      * @return this builder, for chaining calls
      */
+    @NotNull
     public SearchParametersFactory withShowTotalResults(final boolean showTotalResults)
     {
         this.showTotalResults = showTotalResults;
@@ -180,6 +187,7 @@ public final class SearchParametersFactory
      * @return a {@link SearchParameters} instance
      * @throws IllegalStateException if the query and query type have not been set yet
      */
+    @NotNull
     public SearchParameters build() throws IllegalStateException
     {
         if (StringUtils.isBlank(this.type)) {

@@ -18,6 +18,8 @@
  */
 package io.uhndata.cards.spi;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Service interface used by {@link io.uhndata.cards.QueryBuilder} to search for a specific type of resource.
  *
@@ -25,8 +27,10 @@ package io.uhndata.cards.spi;
  */
 public interface SearchParameters
 {
+    @NotNull
     String getType();
 
+    @NotNull
     String getQuery();
 
     long getMaxResults();

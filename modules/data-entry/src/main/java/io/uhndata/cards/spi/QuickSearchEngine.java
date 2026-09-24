@@ -19,10 +19,12 @@
 package io.uhndata.cards.spi;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import jakarta.json.JsonObject;
 
 import org.apache.sling.api.resource.ResourceResolver;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Service interface used by {@link io.uhndata.cards.QueryBuilder} to search for a specific type of resource.
@@ -37,8 +39,10 @@ public interface QuickSearchEngine
 
         void skip();
 
+        @NotNull
         JsonObject next();
 
+        @NotNull
         static Results emptyResults()
         {
             return new Results()
@@ -58,7 +62,7 @@ public interface QuickSearchEngine
                 @Override
                 public JsonObject next()
                 {
-                    return null;
+                    throw new NoSuchElementException();
                 }
             };
         }
@@ -69,6 +73,7 @@ public interface QuickSearchEngine
      *
      * @return a list of JCR node types, usually a singleton, in the format {@code "cards:Resource"}
      */
+    @NotNull
     List<String> getSupportedTypes();
 
     /**
@@ -77,7 +82,7 @@ public interface QuickSearchEngine
      * @param type the JCR node type to check, in the format {@code "cards:Resource"}
      * @return {@code true} if the node type is supported, {@code false} otherwise
      */
-    default boolean isTypeSupported(final String type)
+    default boolean isTypeSupported(@NotNull final String type)
     {
         return getSupportedTypes().contains(type);
     }
@@ -90,5 +95,6 @@ public interface QuickSearchEngine
      * @param resourceResolver the resource resolver for this session
      * @return a supplier of results
      */
-    Results quickSearch(SearchParameters query, ResourceResolver resourceResolver);
+    @NotNull
+    Results quickSearch(@NotNull SearchParameters query, @NotNull ResourceResolver resourceResolver);
 }

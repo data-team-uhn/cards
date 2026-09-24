@@ -25,6 +25,8 @@ import jakarta.json.JsonObjectBuilder;
 import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.spi.commons.conversion.IllegalNameException;
 import org.apache.jackrabbit.spi.commons.conversion.NameParser;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Service interface used by {@link io.uhndata.cards.QueryBuilder} to search for a specific type of resource.
@@ -64,7 +66,8 @@ public final class SearchUtils
      * @param input text to escape
      * @return an escaped version of the input
      */
-    public static String escapeLikeText(final String input)
+    @NotNull
+    public static String escapeLikeText(@NotNull final String input)
     {
         // A quote is not a pattern character, and a backslash isn't how it is escaped in a query either: doing it
         // here left every search for a value with an apostrophe in it running a query that doesn't parse
@@ -77,7 +80,8 @@ public final class SearchUtils
      * @param input text to escape
      * @return an escaped version of the input
      */
-    public static String escapeQueryArgument(final String input)
+    @NotNull
+    public static String escapeQueryArgument(@NotNull final String input)
     {
         return input.replace("'", "''");
     }
@@ -90,7 +94,8 @@ public final class SearchUtils
      * @param str the String to check if the value contains this substring
      * @return the (single) value, or the first value in a multivalue that contains the query substring
      */
-    public static String getMatch(Object value, String str)
+    @Nullable
+    public static String getMatch(@Nullable Object value, @NotNull String str)
     {
         if (value == null) {
             return null;
@@ -120,7 +125,8 @@ public final class SearchUtils
      * @param str the String to check if any array elements contain this substring
      * @return the first String in the list that contains the given substring
      */
-    public static String getMatchFromArray(String[] arr, String str)
+    @Nullable
+    public static String getMatchFromArray(@Nullable String[] arr, @NotNull String str)
     {
         if (arr == null) {
             return null;
@@ -145,8 +151,9 @@ public final class SearchUtils
      * @param path the matching answer question node path
      * @return The given JsonObject with metadata appended to it.
      */
-    public static JsonObject addMatchMetadata(String resourceValue, String query, String question, JsonObject parent,
-        boolean isNoteMatch, String path)
+    @NotNull
+    public static JsonObject addMatchMetadata(@NotNull String resourceValue, @NotNull String query,
+        @NotNull String question, @NotNull JsonObject parent, boolean isNoteMatch, @NotNull String path)
     {
         JsonObject metadata = getMatchMetadata(resourceValue, query, question, isNoteMatch, path);
         if (metadata == null) {
@@ -212,7 +219,7 @@ public final class SearchUtils
      * @param name Node name to check
      * @return True if the given name is a valid node name
      */
-    public static boolean isValidNodeName(String name)
+    public static boolean isValidNodeName(@NotNull String name)
     {
         try {
             NameParser.checkFormat(name);
