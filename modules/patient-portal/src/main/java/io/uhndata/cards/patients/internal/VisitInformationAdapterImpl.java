@@ -287,8 +287,11 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
         public QuestionnaireSet getExistingForms()
         {
             if (this.existingForms == null) {
+                final QuestionnaireSet template = getTemplateForms();
+                if (template == null) {
+                    return null;
+                }
                 try {
-                    final QuestionnaireSet template = getTemplateForms();
                     final QuestionnaireSet result =
                         VisitInformationAdapterImpl.this.questionnaireSetUtils.copy(template);
                     result.getQuestionnaires().stream().map(QuestionnaireRef::getQuestionnairePath)
@@ -320,37 +323,57 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
         public QuestionnaireSet getMissingForms()
         {
             if (this.missingForms == null) {
+                final QuestionnaireSet template = getTemplateForms();
+                final QuestionnaireSet existing = getExistingForms();
+                if (template == null || existing == null) {
+                    return null;
+                }
                 try {
                     final QuestionnaireSet result =
-                        VisitInformationAdapterImpl.this.questionnaireSetUtils.copy(this.getTemplateForms());
-                    for (QuestionnaireRef existing : this.getExistingForms().getQuestionnaires()) {
-                        result.removeQuestionnaire(existing.getQuestionnairePath());
+                        VisitInformationAdapterImpl.this.questionnaireSetUtils.copy(template);
+                    for (QuestionnaireRef ref : existing.getQuestionnaires()) {
+                        result.removeQuestionnaire(ref.getQuestionnairePath());
                     }
-                    final Node visitNode = this.visitInformationForm.getProperty("subject").getNode();
-                    final Node patientNode = visitNode.getParent();
-                    for (final NodeIterator visits = patientNode.getNodes(); visits.hasNext();) {
-                        final Node otherVisit = visits.nextNode();
-                        // If the visit is the triggering visit, ignore it as the triggering visit has already been
-                        // checked.
-                        if (!visitNode.isSame(otherVisit)
-                            && VisitInformationAdapterImpl.this.subjectUtils.isSubject(otherVisit)
-                            && "Visit".equals(VisitInformationAdapterImpl.this.subjectTypeUtils
-                                .getLabel(VisitInformationAdapterImpl.this.subjectUtils.getType(otherVisit)))) {
-                            final VisitInformation otherVI = toVisitInformation(otherVisit);
-                            if (otherVI != null) {
-                                result.pruneConflicts(otherVI.getExistingForms());
-                            }
-                        }
-                        if (result.isEmpty()) {
-                            break;
-                        }
+                    if (pruneConflictsWithOtherVisits(result)) {
+                        this.missingForms = result;
                     }
-                    this.missingForms = result;
                 } catch (final RepositoryException e) {
                     LOGGER.warn("Failed to compile list of needed forms: {}", e.getMessage(), e);
                 }
             }
             return this.missingForms;
+        }
+
+        /**
+         * Remove from the forms this visit needs any that conflict with the forms of the patient's other visits.
+         *
+         * @param missing the forms this visit needs, pruned in place
+         * @return {@code false} if the forms of another visit cannot be read, which leaves the missing forms unknown
+         * @throws RepositoryException if the visit or the patient cannot be read
+         */
+        private boolean pruneConflictsWithOtherVisits(final QuestionnaireSet missing) throws RepositoryException
+        {
+            final Node visitNode = this.visitInformationForm.getProperty("subject").getNode();
+            final Node patientNode = visitNode.getParent();
+            for (final NodeIterator visits = patientNode.getNodes(); visits.hasNext();) {
+                final Node otherVisit = visits.nextNode();
+                // If the visit is the triggering visit, ignore it as the triggering visit has already been
+                // checked.
+                if (!visitNode.isSame(otherVisit) && isVisitSubject(otherVisit)) {
+                    final VisitInformation otherVI = toVisitInformation(otherVisit);
+                    if (otherVI != null) {
+                        final QuestionnaireSet otherForms = otherVI.getExistingForms();
+                        if (otherForms == null) {
+                            return false;
+                        }
+                        missing.pruneConflicts(otherForms);
+                    }
+                }
+                if (missing.isEmpty()) {
+                    break;
+                }
+            }
+            return true;
         }
     }
 }

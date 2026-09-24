@@ -22,10 +22,17 @@ import java.util.Calendar;
 
 import javax.jcr.Node;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import io.uhndata.cards.qsets.api.QuestionnaireSet;
 
 /**
  * Represents information about a visit.
+ * <p>
+ * The three form sets are {@code null} when they cannot be read, never empty in their place. An empty set of
+ * existing forms would make every form look missing, and an empty template would make every visit look complete.
+ * </p>
  *
  * @version $Id$
  * @since 0.9.25
@@ -37,6 +44,7 @@ public interface VisitInformation
      *
      * @return a {@code cards:Form} JCR node
      */
+    @NotNull
     Node getVisitInformationForm();
 
     /**
@@ -73,13 +81,15 @@ public interface VisitInformation
      *
      * @return a date, may be {@code null}
      */
+    @Nullable
     Calendar getVisitDate();
 
     /**
      * Retrieve the short name of the associated questionnaire set.
      *
-     * @return a short name
+     * @return a short name, or {@code null} if the visit has no valid questionnaire set
      */
+    @Nullable
     String getQuestionnaireSetName();
 
     /**
@@ -87,15 +97,18 @@ public interface VisitInformation
      * exist or should exist for this visit, this is just the definition in the questionnaire set.
      *
      * @return a questionnaire set with all the questionnaires specified in the questionnaire set definition, may be
-     *         empty
+     *         empty, or {@code null} if the definition cannot be read
      */
+    @Nullable
     QuestionnaireSet getTemplateForms();
 
     /**
      * Retrieve the list of forms that actually exist for this visit.
      *
-     * @return a questionnaire set with all the existing forms for this visit, may be empty
+     * @return a questionnaire set with all the existing forms for this visit, may be empty, or {@code null} if they
+     *         cannot be read
      */
+    @Nullable
     QuestionnaireSet getExistingForms();
 
     /**
@@ -103,8 +116,10 @@ public interface VisitInformation
      * this doesn't include already existing forms and forms that don't need to be created because of their expected
      * frequency and other past forms in the system.
      *
-     * @return a questionnaire set with the questionnaires that must be instantiated for this visit, may be empty
+     * @return a questionnaire set with the questionnaires that must be instantiated for this visit, may be empty, or
+     *         {@code null} if they cannot be determined
      */
+    @Nullable
     QuestionnaireSet getMissingForms();
 
     /**
@@ -112,5 +127,6 @@ public interface VisitInformation
      *
      * @return a path to a JCR node of type {@code cards:ClinicMapping}, may be {@code null}
      */
+    @Nullable
     String getClinicPath();
 }

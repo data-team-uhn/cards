@@ -171,12 +171,17 @@ public class VisitChangeListener implements ResourceChangeListener
         final VisitInformation visitInformation = this.visitAdapter.toVisitInformation(visitForm);
 
         // Only continue with the surveys update if we have the requirements and it has a valid status
-        if (!visitInformation.hasRequiredInformation() || visitInformation.hasInactiveStatus()) {
+        if (visitInformation == null || !visitInformation.hasRequiredInformation()
+            || visitInformation.hasInactiveStatus()) {
             return;
         }
 
         final QuestionnaireSet existingForms = visitInformation.getExistingForms();
         final QuestionnaireSet missingForms = visitInformation.getMissingForms();
+        if (existingForms == null || missingForms == null) {
+            LOGGER.warn("Cannot tell which forms visit {} needs, so none were created", visitSubject.getPath());
+            return;
+        }
 
         if (missingForms.isEmpty()) {
             // Ideally, has_surveys would already be set to true so this should not be needed.
@@ -214,6 +219,11 @@ public class VisitChangeListener implements ResourceChangeListener
             return;
         }
         final QuestionnaireSet template = visitInformation.getTemplateForms();
+        if (template == null) {
+            LOGGER.warn("Cannot read the questionnaire set of visit {}, so its completion was not checked",
+                visitSubject.getPath());
+            return;
+        }
 
         // Get the visit information form for this subject and iterate through all other forms.
         // If any other forms are incomplete, terminate early without updating visit completion.

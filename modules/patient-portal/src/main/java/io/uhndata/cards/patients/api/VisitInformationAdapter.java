@@ -20,6 +20,9 @@ package io.uhndata.cards.patients.api;
 
 import javax.jcr.Node;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * A service that converts JCR nodes of type {@code cards:Form} of type {@code Visit Information} into a data model Java
  * object.
@@ -36,5 +39,6 @@ public interface VisitInformationAdapter
      * @return a {@link VisitInformation} object, or {@code null} if the provided node is not a Visit Information form,
      *         or a Visit subject, or it cannot be accessed
      */
-    VisitInformation toVisitInformation(Node form);
+    @Nullable
+    VisitInformation toVisitInformation(@NotNull Node form);
 }
