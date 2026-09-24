@@ -22,6 +22,8 @@ import java.io.IOException;
 
 import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A {@code VocabularyIndexer} can index a vocabulary into the repository. In general, based on specific request
@@ -42,10 +44,11 @@ public interface VocabularyIndexer
      * {@link VocabularyIndexException}, which will cause
      * {@link io.uhndata.cards.vocabularies.VocabularyIndexerServlet} to try the next available parser.
      *
-     * @param source the source parameter passed in the request, usually a URL or an identifier
+     * @param source the source parameter passed in the request, usually a URL or an identifier, or {@code null} if
+     *            the request has none
      * @return {@code true} if the source is known to be parsable by this vocabulary parser
      */
-    boolean canIndex(String source);
+    boolean canIndex(@Nullable String source);
 
     /**
      * Main method for handling vocabulary indexing.
@@ -59,6 +62,7 @@ public interface VocabularyIndexer
      * @throws IOException when writing the json response fails
      * @throws VocabularyIndexException when parsing the vocabulary or storing the parsed data fail
      */
-    void index(String source, SlingJakartaHttpServletRequest request, SlingJakartaHttpServletResponse response)
+    void index(@NotNull String source, @NotNull SlingJakartaHttpServletRequest request,
+        @NotNull SlingJakartaHttpServletResponse response)
         throws IOException, VocabularyIndexException;
 }

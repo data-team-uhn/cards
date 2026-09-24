@@ -21,6 +21,9 @@ package io.uhndata.cards.vocabularies.spi;
 import java.io.File;
 import java.io.IOException;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Interacts with a remote repository for vocabularies, such as the BioOntology RESTful service.
  *
@@ -33,6 +36,7 @@ public interface RepositoryHandler
      *
      * @return a short string, such as {@code BioOntology}
      */
+    @NotNull
     String getRepositoryName();
 
     /**
@@ -40,6 +44,7 @@ public interface RepositoryHandler
      *
      * @return a description
      */
+    @NotNull
     String getRepositoryDescription();
 
     /**
@@ -54,7 +59,8 @@ public interface RepositoryHandler
      *             repository
      * @throws IOException if accessing the repository failed
      */
-    VocabularyDescription getVocabularyDescription(String identifier, String version)
+    @NotNull
+    VocabularyDescription getVocabularyDescription(@NotNull String identifier, @Nullable String version)
         throws IllegalArgumentException, IOException;
 
     /**
@@ -69,5 +75,7 @@ public interface RepositoryHandler
      * @throws IOException if downloading the sources failed, either when fetching the file from its original location,
      *             or when storing it locally
      */
-    File downloadVocabularySource(VocabularyDescription vocabulary) throws IllegalArgumentException, IOException;
+    @NotNull
+    File downloadVocabularySource(@NotNull VocabularyDescription vocabulary)
+        throws IllegalArgumentException, IOException;
 }

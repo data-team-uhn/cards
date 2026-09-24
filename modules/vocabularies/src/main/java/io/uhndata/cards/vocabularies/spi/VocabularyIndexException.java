@@ -18,6 +18,8 @@
  */
 package io.uhndata.cards.vocabularies.spi;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Exception thrown by classes in the vocabularies module.
  *
@@ -40,7 +42,7 @@ public class VocabularyIndexException extends Exception
      *
      * @param message error message of the exception
      */
-    public VocabularyIndexException(String message)
+    public VocabularyIndexException(@Nullable String message)
     {
         super(message);
     }
@@ -51,7 +53,7 @@ public class VocabularyIndexException extends Exception
      * @param message error message for the exception
      * @param cause cause of the exception
      */
-    public VocabularyIndexException(String message, Throwable cause)
+    public VocabularyIndexException(@Nullable String message, @Nullable Throwable cause)
     {
         super(message, cause);
     }
@@ -61,7 +63,7 @@ public class VocabularyIndexException extends Exception
      *
      * @param cause cause of the exception
      */
-    public VocabularyIndexException(Throwable cause)
+    public VocabularyIndexException(@Nullable Throwable cause)
     {
         super(cause);
     }

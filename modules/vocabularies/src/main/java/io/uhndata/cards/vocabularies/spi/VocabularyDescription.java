@@ -18,6 +18,9 @@
  */
 package io.uhndata.cards.vocabularies.spi;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Contains information about a vocabulary.
  *
@@ -30,6 +33,7 @@ public interface VocabularyDescription
      *
      * @return a simple string, for example {@code NCIT}, {@code OMIM}, or {@code HGNC}
      */
+    @NotNull
     String getIdentifier();
 
     /**
@@ -37,6 +41,7 @@ public interface VocabularyDescription
      *
      * @return a string, for example {@code National Cancer Institute Thesaurus}, may be {@code null} or empty
      */
+    @Nullable
     String getName();
 
     /**
@@ -45,6 +50,7 @@ public interface VocabularyDescription
      *
      * @return a long string, may be {@code null} or empty if no description is provided
      */
+    @Nullable
     String getDescription();
 
     /**
@@ -53,6 +59,7 @@ public interface VocabularyDescription
      * @return a version identifier, or {@code null} if the version cannot be determined; the format of the version is
      *         not specified, since each vocabulary may have its own release naming scheme
      */
+    @Nullable
     String getVersion();
 
     /**
@@ -60,6 +67,7 @@ public interface VocabularyDescription
      *
      * @return the string containing the URL from which the vocabulary source was obtained
      */
+    @NotNull
     String getSource();
 
     /**
@@ -67,6 +75,7 @@ public interface VocabularyDescription
      *
      * @return a short string identifying the source format, usually {@code OWL} or {@code OBO}
      */
+    @NotNull
     String getSourceFormat();
 
     /**
@@ -74,6 +83,7 @@ public interface VocabularyDescription
      *
      * @return a String representation of the url for the vocabulary website, may be {@code null}
      */
+    @Nullable
     String getWebsite();
 
     /**
@@ -81,5 +91,6 @@ public interface VocabularyDescription
      *
      * @return a citation for the vocabulary, may be {@code null}
      */
+    @Nullable
     String getCitation();
 }

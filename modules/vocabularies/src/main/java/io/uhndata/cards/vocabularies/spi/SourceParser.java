@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Service that can do the actual parsing of a vocabulary source into vocabulary terms. Each implementation knows how to
  * handle a specific {@link VocabularyDescription#getSourceFormat() source format}. This service will be used by
@@ -40,7 +42,7 @@ public interface SourceParser
      * @return {@code true} if this parser can theoretically parse a source in the declared format, {@code false}
      *         otherwise
      */
-    boolean canParse(String format);
+    boolean canParse(@NotNull String format);
 
     /**
      * Does the actual parsing: extracts term data from the source file, builds {@code VocabularyTermSource}, and passes
@@ -53,6 +55,7 @@ public interface SourceParser
      * @throws VocabularyIndexException if parsing the source fails
      * @throws IOException if accessing the source file fails
      */
-    void parse(File source, VocabularyDescription vocabularyDescription, Consumer<VocabularyTermSource> consumer)
+    void parse(@NotNull File source, @NotNull VocabularyDescription vocabularyDescription,
+        @NotNull Consumer<VocabularyTermSource> consumer)
         throws VocabularyIndexException, IOException;
 }

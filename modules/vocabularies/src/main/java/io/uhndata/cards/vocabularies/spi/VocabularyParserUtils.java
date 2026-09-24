@@ -29,6 +29,8 @@ import jakarta.json.stream.JsonGenerator;
 
 import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.SlingJakartaHttpServletResponse;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -51,7 +53,8 @@ public class VocabularyParserUtils
      * @param overwrite signals whether a pre-existing vocabulary is to be overwritten by one with the same name
      * @throws VocabularyIndexException thrown when node cannot be removed
      */
-    public void clearVocabularyNode(final Node homepage, final String name, final String overwrite)
+    public void clearVocabularyNode(@NotNull final Node homepage, @NotNull final String name,
+        @Nullable final String overwrite)
         throws VocabularyIndexException
     {
         try {
@@ -86,9 +89,9 @@ public class VocabularyParserUtils
      * @param error the error message caught from the exception which is null if there is no error
      * @throws IOException thrown when json cannot be written
      */
-    public void writeStatusJson(final SlingJakartaHttpServletRequest request,
-        final SlingJakartaHttpServletResponse response,
-        final boolean isSuccessful, final String error) throws IOException
+    public void writeStatusJson(@NotNull final SlingJakartaHttpServletRequest request,
+        @NotNull final SlingJakartaHttpServletResponse response,
+        final boolean isSuccessful, @Nullable final String error) throws IOException
     {
         response.setStatus(isSuccessful
             ? SlingJakartaHttpServletResponse.SC_OK : SlingJakartaHttpServletResponse.SC_INTERNAL_SERVER_ERROR);

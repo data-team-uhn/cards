@@ -21,6 +21,8 @@ package io.uhndata.cards.vocabularies.spi;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Builder for {@link VocabularyDescription} objects.
@@ -105,7 +107,8 @@ public class VocabularyDescriptionBuilder
      * @return this object, for method call chaining
      * @see VocabularyDescription#getIdentifier
      */
-    public VocabularyDescriptionBuilder withIdentifier(final String identifier)
+    @NotNull
+    public VocabularyDescriptionBuilder withIdentifier(@NotNull final String identifier)
     {
         this.desc.identifier = identifier;
         return this;
@@ -118,7 +121,8 @@ public class VocabularyDescriptionBuilder
      * @return this object, for method call chaining
      * @see VocabularyDescription#getName
      */
-    public VocabularyDescriptionBuilder withName(final String name)
+    @NotNull
+    public VocabularyDescriptionBuilder withName(@Nullable final String name)
     {
         this.desc.name = name;
         return this;
@@ -132,7 +136,8 @@ public class VocabularyDescriptionBuilder
      * @return this object, for method call chaining
      * @see VocabularyDescription#getDescription
      */
-    public VocabularyDescriptionBuilder withDescription(final String description)
+    @NotNull
+    public VocabularyDescriptionBuilder withDescription(@Nullable final String description)
     {
         this.desc.description = description;
         return this;
@@ -145,7 +150,8 @@ public class VocabularyDescriptionBuilder
      * @return this object, for method call chaining
      * @see VocabularyDescription#getVersion
      */
-    public VocabularyDescriptionBuilder withVersion(final String version)
+    @NotNull
+    public VocabularyDescriptionBuilder withVersion(@Nullable final String version)
     {
         this.desc.version = version;
         return this;
@@ -158,7 +164,8 @@ public class VocabularyDescriptionBuilder
      * @return this object, for method call chaining
      * @see VocabularyDescription#getSource
      */
-    public VocabularyDescriptionBuilder withSource(final String source)
+    @NotNull
+    public VocabularyDescriptionBuilder withSource(@NotNull final String source)
     {
         this.desc.source = source;
         return this;
@@ -172,7 +179,8 @@ public class VocabularyDescriptionBuilder
      * @return this object, for method call chaining
      * @see VocabularyDescription#getSource
      */
-    public VocabularyDescriptionBuilder withSourceFormat(final String sourceFormat)
+    @NotNull
+    public VocabularyDescriptionBuilder withSourceFormat(@Nullable final String sourceFormat)
     {
         this.desc.sourceFormat = StringUtils.defaultString(sourceFormat).toUpperCase(Locale.ROOT);
         return this;
@@ -185,7 +193,8 @@ public class VocabularyDescriptionBuilder
      * @return this object, for method call chaining
      * @see VocabularyDescription#getWebsite
      */
-    public VocabularyDescriptionBuilder withWebsite(final String website)
+    @NotNull
+    public VocabularyDescriptionBuilder withWebsite(@Nullable final String website)
     {
         this.desc.website = website;
         return this;
@@ -198,7 +207,8 @@ public class VocabularyDescriptionBuilder
      * @return this object, for method call chaining
      * @see VocabularyDescription#getCitation
      */
-    public VocabularyDescriptionBuilder withCitation(final String citation)
+    @NotNull
+    public VocabularyDescriptionBuilder withCitation(@Nullable final String citation)
     {
         this.desc.citation = citation;
         return this;
@@ -210,6 +220,7 @@ public class VocabularyDescriptionBuilder
      *
      * @return a {@link VocabularyDescription} object
      */
+    @NotNull
     public VocabularyDescription build()
     {
         DefaultVocabularyDescription result = this.desc;
