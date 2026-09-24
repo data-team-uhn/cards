@@ -53,6 +53,8 @@ import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingJakartaAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
@@ -188,7 +190,9 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
      * @param request the POST request made to this servlet
      * @return map of arguments to their values
      */
-    protected Map<String, String> parseArguments(SlingJakartaHttpServletRequest request) throws IOException
+    @NotNull
+    protected Map<String, String> parseArguments(@NotNull SlingJakartaHttpServletRequest request)
+        throws IOException
     {
         JsonParser parser = Json.createParser(request.getInputStream());
         Map<String, String> retVal = new HashMap<>();
@@ -269,6 +273,9 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
         for (final Entry<Node, String> answer : data.entrySet()) {
             // get form node
             final Node formNode = getFormNode(answer.getKey());
+            if (formNode == null) {
+                continue;
+            }
             // get parent subject
             Node formSubject = formNode.getProperty("subject").getNode();
 
@@ -413,6 +420,9 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
         while (answers.hasNext()) {
             final Node answer = answers.nextNode();
             final Node answerParent = getFormNode(answer);
+            if (answerParent == null) {
+                continue;
+            }
             Node answerSubjectType = answerParent.getProperty("subject").getNode().getProperty("type").getNode();
 
             while (answerSubjectType.getDepth() > 0) {
@@ -564,12 +574,14 @@ public class StatisticQueryServlet extends SlingJakartaAllMethodsServlet
     }
 
     /**
-     * Get the parent node type of a given cards:Answer node.
+     * Find the form an answer belongs to.
      *
-     * @param answer A node corresponding to an cards:Answer
-     * @return A node corresponding to the parent subject type
+     * @param answer a {@code cards:Answer} node
+     * @return the enclosing {@code cards:Form} node, or {@code null} if the answer is outside any form or cannot be
+     *         read
      */
-    public Node getFormNode(Node answer)
+    @Nullable
+    public Node getFormNode(@NotNull Node answer)
     {
         try {
             // Recursively go through our parents until we find a cards:Form node
