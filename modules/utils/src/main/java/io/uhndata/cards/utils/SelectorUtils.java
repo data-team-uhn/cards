@@ -171,9 +171,10 @@ public final class SelectorUtils
      * Record selectors that the current request supplied outside its path, so that every parse during this request
      * includes them. The caller must {@link #clearRequestSelectors() clear} them when the request ends.
      *
-     * @param selectors the selectors, each one whole and unescaped; blank ones are ignored
+     * @param selectors the selectors, each one whole and unescaped; blank ones are ignored, and {@code null} records
+     *            none
      */
-    public static void setRequestSelectors(final List<String> selectors)
+    public static void setRequestSelectors(@Nullable final List<String> selectors)
     {
         REQUEST_SELECTORS.set(selectors == null ? List.of()
             : selectors.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList()));

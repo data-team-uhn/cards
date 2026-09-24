@@ -19,6 +19,7 @@
 package io.uhndata.cards.serialize.spi;
 
 import org.apache.sling.api.resource.Resource;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A service that can help serialize a node to Markdown text. Implementations of this interface will be invoked by
@@ -40,7 +41,7 @@ public interface ResourceMarkdownProcessor
      * @param resource the resource being serialized
      * @return {@code true} if this processor can be serialize this resource, {@code false} otherwise
      */
-    default boolean canProcess(final Resource resource)
+    default boolean canProcess(@NotNull final Resource resource)
     {
         return false;
     }
@@ -51,5 +52,6 @@ public interface ResourceMarkdownProcessor
      * @param resource the resource to serialize
      * @return the resource serialization as Markdown text, may be empty
      */
-    String serialize(Resource resource);
+    @NotNull
+    String serialize(@NotNull Resource resource);
 }

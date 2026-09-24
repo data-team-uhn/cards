@@ -21,6 +21,8 @@ package io.uhndata.cards.serialize.spi;
 import java.util.List;
 
 import org.apache.sling.api.resource.Resource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A service that can help serialize a node to CSV text. Implementations of this interface will be invoked by
@@ -42,7 +44,7 @@ public interface ResourceCSVProcessor
      * @param resource the resource being serialized
      * @return {@code true} if this processor can be serialize this resource, {@code false} otherwise
      */
-    default boolean canProcess(final Resource resource)
+    default boolean canProcess(@NotNull final Resource resource)
     {
         return false;
     }
@@ -55,13 +57,16 @@ public interface ResourceCSVProcessor
      *         May have just 1 entry if only one selector is handled by this processor
      *         or multiple entries if multiple different selectors are handled.
      */
+    @NotNull
     List<SelectorDetails> getDetails();
 
     /**
      * Called for serializing a resource to CSV.
      *
      * @param resource the resource to serialize
-     * @return the resource serialization as CSV text, may be empty
+     * @return the resource serialization as CSV text, may be empty, or {@code null} if the resource cannot be
+     *         serialized
      */
-    String serialize(Resource resource);
+    @Nullable
+    String serialize(@NotNull Resource resource);
 }

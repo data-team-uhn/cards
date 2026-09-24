@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base implementation for {@link DataFilterFactory} providing utility methods for parsing filters into a single value,
@@ -53,10 +55,11 @@ public abstract class BaseFilterFactory implements DataFilterFactory
      * @return a list containing one filter that could be parsed by this factory, using the first value encountered for
      *         the filter name, or an empty list if nothing matched
      */
-    protected List<DataFilter> parseSingletonFilter(final List<Pair<String, String>> filters,
-        final List<String> allSelectors,
-        final String filterName,
-        final Function<String, DataFilter> filterConstructor)
+    @NotNull
+    protected List<DataFilter> parseSingletonFilter(@NotNull final List<Pair<String, String>> filters,
+        @NotNull final List<String> allSelectors,
+        @Nullable final String filterName,
+        @NotNull final Function<String, DataFilter> filterConstructor)
     {
         String filterValue = StringUtils.isNotBlank(filterName) ? filters.stream()
             .filter(f -> filterName.equals(f.getKey()))
@@ -83,10 +86,11 @@ public abstract class BaseFilterFactory implements DataFilterFactory
      *            parameter, the filter value
      * @return a list containing as many filters as values for the filter name, or an empty list if nothing matched
      */
-    protected List<DataFilter> parseMultipleSingletonFilters(final List<Pair<String, String>> filters,
-        final List<String> allSelectors,
-        final String filterName,
-        final Function<String, DataFilter> filterConstructor)
+    @NotNull
+    protected List<DataFilter> parseMultipleSingletonFilters(@NotNull final List<Pair<String, String>> filters,
+        @NotNull final List<String> allSelectors,
+        @Nullable final String filterName,
+        @NotNull final Function<String, DataFilter> filterConstructor)
     {
         if (StringUtils.isNotBlank(filterName)) {
             return filters.stream()
@@ -113,10 +117,11 @@ public abstract class BaseFilterFactory implements DataFilterFactory
      * @return a list containing one filter that could be parsed by this factory, using all the values encountered for
      *         the filter name, or an empty list if nothing matched
      */
-    protected List<DataFilter> parseSetFilter(final List<Pair<String, String>> filters,
-        final List<String> allSelectors,
-        final String filterName,
-        final Function<Set<String>, DataFilter> filterConstructor)
+    @NotNull
+    protected List<DataFilter> parseSetFilter(@NotNull final List<Pair<String, String>> filters,
+        @NotNull final List<String> allSelectors,
+        @Nullable final String filterName,
+        @NotNull final Function<Set<String>, DataFilter> filterConstructor)
     {
         Set<String> filterValues = StringUtils.isNotBlank(filterName) ? filters.stream()
             .filter(f -> filterName.equals(f.getKey()))
@@ -149,10 +154,11 @@ public abstract class BaseFilterFactory implements DataFilterFactory
      * @return a list containing one or two filters that could be parsed by this factory, using all the values
      *         encountered for the two filter names, or an empty list if nothing matched
      */
-    protected List<DataFilter> parseDoubleSetFilters(final List<Pair<String, String>> filters,
-        final List<String> allSelectors,
-        final String positiveFilterName, final String negativeFilterName,
-        final BiFunction<Set<String>, Boolean, DataFilter> filterConstructor)
+    @NotNull
+    protected List<DataFilter> parseDoubleSetFilters(@NotNull final List<Pair<String, String>> filters,
+        @NotNull final List<String> allSelectors,
+        @Nullable final String positiveFilterName, @Nullable final String negativeFilterName,
+        @NotNull final BiFunction<Set<String>, Boolean, DataFilter> filterConstructor)
     {
         final List<DataFilter> result = new ArrayList<>();
         Set<String> positiveFilterValues = StringUtils.isNotBlank(positiveFilterName) ? filters.stream()
