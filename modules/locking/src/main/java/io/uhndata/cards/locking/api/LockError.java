@@ -18,6 +18,8 @@
  */
 package io.uhndata.cards.locking.api;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * An exception that is thrown if a lock or unlock request cannot be performed due to a locking error.
  *
@@ -32,7 +34,7 @@ public class LockError extends Exception
         // Nothing to do, but we need to declare a parameterless constructor to be able to use it
     }
 
-    public LockError(String message)
+    public LockError(@Nullable String message)
     {
         super(message);
     }

@@ -21,6 +21,8 @@ package io.uhndata.cards.locking.api;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Interface for locking and unlocking forms and subjects.
  *
@@ -54,7 +56,7 @@ public interface LockManager
      * @return {@code true} if the node is a locked form or subject
      * @throws LockException if the locked status of the node could not be determined
      */
-    boolean isLocked(Node node) throws LockException;
+    boolean isLocked(@NotNull Node node) throws LockException;
 
     /**
      * Check if a subject satisfies all conditions to be locked.
@@ -64,7 +66,7 @@ public interface LockManager
      * @throws LockWarning if the node cannot be locked with {@code tryLock}
      * @throws LockException if it can not be determined if the node can be locked
      */
-    boolean canLock(Node node) throws LockWarning, LockException;
+    boolean canLock(@NotNull Node node) throws LockWarning, LockException;
 
     /**
      * Try to lock a subject node.
@@ -75,7 +77,7 @@ public interface LockManager
      * @throws LockException if an internal error occurs
      * @throws AccessDeniedException if the user does not have permission to lock this node
      */
-    void tryLock(Node node) throws LockWarning, LockError, LockException, AccessDeniedException;
+    void tryLock(@NotNull Node node) throws LockWarning, LockError, LockException, AccessDeniedException;
 
     /**
      * Try to lock a subject node, ignoring all warning-only precondition.
@@ -85,7 +87,7 @@ public interface LockManager
      * @throws LockException if an internal error occurs
      * @throws AccessDeniedException if the user does not have permission to lock this node
      */
-    void forceLock(Node node) throws LockError, LockException, AccessDeniedException;
+    void forceLock(@NotNull Node node) throws LockError, LockException, AccessDeniedException;
 
     /**
      * Check if a subject node can be unlocked.
@@ -98,7 +100,7 @@ public interface LockManager
      * @throws LockWarning if the node cannot be unlocked but attempting to do so will silently no-op
      * @throws LockException if it can not be determined if the node can be unlocked
      */
-    boolean canUnlock(Node node) throws LockWarning, LockException;
+    boolean canUnlock(@NotNull Node node) throws LockWarning, LockException;
 
     /**
      * Try to unlock a subject node.
@@ -111,5 +113,5 @@ public interface LockManager
      * @throws LockException if an internal error occurs
      * @throws AccessDeniedException if the user does not have permission to unlock this node
      */
-    void unlock(Node node) throws LockError, LockException, AccessDeniedException;
+    void unlock(@NotNull Node node) throws LockError, LockException, AccessDeniedException;
 }

@@ -20,6 +20,8 @@ package io.uhndata.cards.locking.spi;
 
 import javax.jcr.Node;
 
+import org.jetbrains.annotations.NotNull;
+
 import io.uhndata.cards.locking.api.LockException;
 import io.uhndata.cards.locking.api.LockWarning;
 
@@ -41,12 +43,13 @@ public interface LockPrecondition
      * @throws LockWarning if this precondition should prevent non-forced locking
      * @throws LockException if this precondition could not be evaluated
      */
-    boolean canLock(Node node) throws LockWarning, LockException;
+    boolean canLock(@NotNull Node node) throws LockWarning, LockException;
 
     /**
      * The name of this precondition.
      *
      * @return the name of this precondition
      */
+    @NotNull
     String getName();
 }

@@ -18,6 +18,8 @@
  */
 package io.uhndata.cards.locking.api;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * An exception that is thrown if a lock or unlock request must be forced to proceed.
  *
@@ -32,7 +34,7 @@ public class LockWarning extends Exception
         // Nothing to do, but we need to declare a parameterless constructor to be able to use it
     }
 
-    public LockWarning(String message)
+    public LockWarning(@Nullable String message)
     {
         super(message);
     }

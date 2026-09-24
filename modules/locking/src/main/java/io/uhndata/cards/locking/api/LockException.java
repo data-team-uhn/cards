@@ -18,6 +18,8 @@
  */
 package io.uhndata.cards.locking.api;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * An exception that is thrown if a lock or unlock request cannot be performed due to an internal error.
  *
@@ -32,7 +34,7 @@ public class LockException extends Exception
         // Nothing to do, but we need to declare a parameterless constructor to be able to use it
     }
 
-    public LockException(String message)
+    public LockException(@Nullable String message)
     {
         super(message);
     }
