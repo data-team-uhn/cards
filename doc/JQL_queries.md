@@ -115,11 +115,8 @@ The is organized as outlined below in the **Data Hierarchy** subsection. The rep
 
 ### Data Hierarchy
 * **`/`: `jcr:root`**
-  - `/Metrics`: `sling:Folder`
-    - \* `/<metric name>`: `sling:Folder`
-      - `/name`: `nt:unstructured`
-      - `/prevTotal`: `nt:unstructured`
-      - `/total`: `nt:unstructured`
+  - `/Metrics`: `cards:MetricsHomepage` (see [metrics.md](metrics.md))
+    - \* `/<metric name>`: `cards:Metric`
   - `/SubjectTypes`: `cards:SubjectTypesHomepage`
     - \* `/<subject type name>`: `cards:SubjectType`
       - `/cards:links`: `cards:Links`
