@@ -81,7 +81,7 @@
 
     <!-- Sling bundles, one property each since Sling releases every module on its own; shared by the poms and
          the feature files, so the version compiled against is the version shipped -->
-    <sling.adapter.version>2.3.0</sling.adapter.version>
+    <sling.adapter.version>3.0.0</sling.adapter.version>
     <sling.api.version>3.0.2</sling.api.version>
     <sling.auth.core.version>2.0.2</sling.auth.core.version>
     <sling.auth.form.version>2.0.0</sling.auth.form.version>
