@@ -163,7 +163,7 @@
     <sling.scripting.sightly.js.provider.version>1.2.14</sling.scripting.sightly.js.provider.version>
     <sling.scripting.sightly.runtime.version>1.2.6-1.4.0</sling.scripting.sightly.runtime.version>
     <sling.scripting.spi.version>2.0.0</sling.scripting.spi.version>
-    <sling.serviceuser.webconsole.version>1.0.4</sling.serviceuser.webconsole.version>
+    <sling.serviceuser.webconsole.version>2.0.0</sling.serviceuser.webconsole.version>
     <sling.serviceusermapper.version>1.5.8</sling.serviceusermapper.version>
     <sling.servlets.get.version>3.0.0</sling.servlets.get.version>
     <sling.servlets.post.version>3.0.2</sling.servlets.post.version>
