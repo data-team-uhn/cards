@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Component(immediate = true)
@@ -53,6 +54,9 @@ public class ScheduledClarityImport
 
     @Reference
     private ThreadResourceResolverProvider rrp;
+
+    @Reference
+    private MetricsManager metricsManager;
 
     /** A list of all available data processors. */
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.UPDATE,
@@ -88,7 +92,8 @@ public class ScheduledClarityImport
         options.canRunConcurrently(true);
 
         final Runnable job =
-            new ClarityImportTask(config, config.dayToImport(), this.resolverFactory, this.rrp, this.processors);
+            new ClarityImportTask(config, config.dayToImport(), this.resolverFactory, this.rrp, this.processors,
+                this.metricsManager);
         try {
             this.scheduler.schedule(job, options);
             LOGGER.debug("Activated scheduled clarity import configuration {}", config.name());

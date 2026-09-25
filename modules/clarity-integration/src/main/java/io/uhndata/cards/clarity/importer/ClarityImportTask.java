@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.errortracking.ErrorLogger;
-import io.uhndata.cards.metrics.Metrics;
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.utils.DateUtils;
 
@@ -261,15 +261,19 @@ public class ClarityImportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
+    /** Counts what the import creates. */
+    private final MetricsManager metricsManager;
+
     ClarityImportTask(final ClarityImportConfigDefinition config, final int dayToQuery,
         final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
-        final List<ClarityDataProcessor> processors)
+        final List<ClarityDataProcessor> processors, final MetricsManager metricsManager)
     {
         this.config = config;
         this.dayToQuery = dayToQuery;
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
         this.processors = processors;
+        this.metricsManager = metricsManager;
     }
 
     // The entry point for running an import
@@ -376,7 +380,7 @@ public class ClarityImportTask implements Runnable
     private void updatePerformanceCounters()
     {
         for (Entry<String, Long> metricAdjustment : this.metricsAdjustments.get().entrySet()) {
-            Metrics.increment(this.resolverFactory, metricAdjustment.getKey(), metricAdjustment.getValue());
+            this.metricsManager.increment(metricAdjustment.getKey(), metricAdjustment.getValue());
         }
     }
 

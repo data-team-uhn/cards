@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.export.spi.DataFormatter;
 import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.export.spi.DataStore;
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
@@ -58,6 +59,9 @@ public class PeriodicExportManager
 
     @Reference
     private ThreadResourceResolverProvider rrp;
+
+    @Reference
+    private MetricsManager metricsManager;
 
     @Reference
     private Scheduler scheduler;
@@ -105,7 +109,8 @@ public class PeriodicExportManager
         options.name(SCHEDULER_JOB_PREFIX + configDef.name());
         options.canRunConcurrently(true);
 
-        final Runnable exportJob = new ExportTask(this.resolverFactory, this.rrp, configDef, pipeline, "scheduled");
+        final Runnable exportJob = new ExportTask(this.resolverFactory, this.rrp, this.metricsManager, configDef,
+            pipeline, "scheduled");
 
         try {
             this.scheduler.schedule(exportJob, options);

@@ -46,7 +46,7 @@ import io.uhndata.cards.export.spi.DataPipelineStep.ResourceIdentifier;
 import io.uhndata.cards.export.spi.DataPipelineStep.ResourceRepresentation;
 import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.export.spi.DataStore;
-import io.uhndata.cards.metrics.Metrics;
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
@@ -97,6 +97,9 @@ public class ExportTask implements Runnable
 
     private final ThreadResourceResolverProvider rrp;
 
+    /** Counts what the export does. */
+    private final MetricsManager metricsManager;
+
     private final ExportConfigDefinition config;
 
     private final DataRetriever retriever;
@@ -112,17 +115,20 @@ public class ExportTask implements Runnable
     private final LocalDate exportUpperBound;
 
     ExportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
-        final ExportConfigDefinition config, final DataPipeline pipeline, final String exportRunMode)
+        final MetricsManager metricsManager, final ExportConfigDefinition config, final DataPipeline pipeline,
+        final String exportRunMode)
     {
-        this(resolverFactory, rrp, config, pipeline, exportRunMode, null, null);
+        this(resolverFactory, rrp, metricsManager, config, pipeline, exportRunMode, null, null);
     }
 
+    @SuppressWarnings("checkstyle:ParameterNumber")
     ExportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
-        final ExportConfigDefinition config, final DataPipeline pipeline, final String exportRunMode,
-        final LocalDate exportLowerBound, final LocalDate exportUpperBound)
+        final MetricsManager metricsManager, final ExportConfigDefinition config, final DataPipeline pipeline,
+        final String exportRunMode, final LocalDate exportLowerBound, final LocalDate exportUpperBound)
     {
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
+        this.metricsManager = metricsManager;
         this.config = config;
         this.retriever = pipeline.getRetriever();
         this.formatter = pipeline.getFormatter();
@@ -150,7 +156,7 @@ public class ExportTask implements Runnable
             ErrorLogger.logError(e);
 
             // Increment the count of S3ExportFailures
-            Metrics.increment(this.resolverFactory, "S3ExportFailures", 1);
+            this.metricsManager.increment("S3ExportFailures", 1);
         }
     }
 
@@ -265,10 +271,10 @@ public class ExportTask implements Runnable
                 this.config);
             input.getDataContents().forEach(form -> {
                 LOGGER.info("Exported {}", form);
-                Metrics.increment(this.resolverFactory, "S3ExportedForms", 1);
+                this.metricsManager.increment("S3ExportedForms", 1);
             });
             LOGGER.info("Exported {} to {}", input.getIdentifier().getPath(), filename);
-            Metrics.increment(this.resolverFactory, "S3ExportedSubjects", 1);
+            this.metricsManager.increment("S3ExportedSubjects", 1);
             return null;
         } catch (Exception e) {
             LOGGER.error("Failed to export {}: {}", input.getIdentifier().getPath(), e.getMessage(), e);

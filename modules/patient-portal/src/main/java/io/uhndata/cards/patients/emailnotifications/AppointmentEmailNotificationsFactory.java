@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.metrics.Metrics;
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -76,6 +76,10 @@ public final class AppointmentEmailNotificationsFactory
     /** Grab details on patient authentication for token lifetime purposes. */
     @Reference
     private PatientAccessConfiguration patientAccessConfiguration;
+
+    /** Counts the emails sent. */
+    @Reference
+    private MetricsManager metricsManager;
 
     @ObjectClassDefinition(name = "Appointment email notification",
         description = "Send emails for past and future appointments")
@@ -126,8 +130,13 @@ public final class AppointmentEmailNotificationsFactory
         final String nightlyNotificationsSchedule = StringUtils.defaultIfEmpty(config.schedule(),
             StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *"));
 
-        // Create the performance metrics measurement node
-        Metrics.createStatistic(this.resolverFactory, config.name(), config.metricName());
+        // Define the metric counting the emails sent; failing to is no reason not to send them
+        try {
+            this.metricsManager.createMetric(config.name()).withNumberedLabel(config.metricName())
+                .withRolloverSchedule(MetricsManager.END_OF_DAY).create();
+        } catch (final RuntimeException e) {
+            LOGGER.error("Failed to define the metric of the {} notifications: {}", config.name(), e.getMessage(), e);
+        }
 
         ScheduleOptions notificationsOptions = this.scheduler.EXPR(nightlyNotificationsSchedule);
         notificationsOptions.name("NightlyNotifications-" + config.name());
@@ -136,8 +145,8 @@ public final class AppointmentEmailNotificationsFactory
         // Instantiate the Runnable
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.resolverProvider,
             this.eventAdmin, this.tokenManager, this.mailService, this.formUtils, this.patientAccessConfiguration,
-            config.name(), config.notificationType(), config.clinicId(), config.emailConfiguration(),
-            config.daysToVisit(), config.includePatientName());
+            this.metricsManager, config.name(), config.notificationType(), config.clinicId(),
+            config.emailConfiguration(), config.daysToVisit(), config.includePatientName());
 
         try {
             this.scheduler.schedule(notificationsJob, notificationsOptions);

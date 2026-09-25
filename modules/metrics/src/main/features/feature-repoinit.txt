@@ -17,16 +17,19 @@
 #  under the License.
 #
 
-# cards-metrics
-create path (sling:Folder) /Metrics
+# The node holding all the metrics
+create path (cards:MetricsHomepage) /Metrics
 
+# The service user performing all the metric reads and updates. Regular users don't get repository access to the
+# metrics: everything goes through the MetricsManager service, and the metrics endpoint enforces each metric's
+# access level.
 create service user cards-metrics with path system/cards
 
 set ACL for cards-metrics
-    allow    jcr:read,jcr:write,jcr:addChildNodes,jcr:nodeTypeManagement    on /Metrics/
-    allow    jcr:read    on /LoggedEvents/
+    allow    jcr:read,jcr:write,jcr:addChildNodes,jcr:nodeTypeManagement    on /Metrics
 end
 
-set principal ACL for sling-readall
-    allow    jcr:read,jcr:write,jcr:addChildNodes,jcr:nodeTypeManagement    on /Metrics/
+# Everyone may see the homepage node itself, so that the metrics endpoint can serve them, but not the metric nodes
+set ACL for everyone
+    allow    jcr:read    on /Metrics    restriction(rep:ntNames,cards:MetricsHomepage)
 end

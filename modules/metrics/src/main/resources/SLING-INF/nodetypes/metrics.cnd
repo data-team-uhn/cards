@@ -1,0 +1,101 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<cards = 'https://cards.uhndata.io/'>
+<oak = 'http://jackrabbit.apache.org/oak/ns/1.0'>
+
+//-----------------------------------------------------------------------------
+//
+// Metrics
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// The homepage for the metrics, /Metrics.
+[cards:MetricsHomepage] > sling:Folder, rep:AccessControllable
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/MetricsHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the MetricsHomepage is a resource homepage.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
+
+  // Contains the tracked metrics.
+  + * (cards:Metric) = cards:Metric
+
+  // Allow any other children for extensibility.
+  + * (nt:base) = nt:unstructured
+
+//-----------------------------------------------------------------------------
+// A single tracked metric.
+//
+// The current count is kept in the protected oak:counter property, maintained
+// by the repository itself: committing an oak:increment value on a node with
+// the mix:atomicCounter mixin atomically adds it to oak:counter, without
+// concurrent updates conflicting or getting lost.
+//
+// Do NOT add mix:atomicCounter to the supertypes below, tempting as it looks:
+// the editor maintaining the counter reads the jcr:mixinTypes *property* and
+// looks for the literal name in it, so a supertype declaration does not enable
+// it -- and it makes matters worse, because isNodeType() then already answers
+// true, which turns addMixin() into a no-op, so nothing can ever write the
+// property. The counter would silently never count. The mixin has to be listed
+// in jcr:mixinTypes when the node is created, which is what MetricsManager does.
+[cards:Metric] > sling:Folder
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/Metric" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each metric is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // Human-readable name for this metric.
+  - label (STRING) mandatory
+
+  // Optional description of what this metric counts.
+  - description (STRING)
+
+  // Optional category used to group related metrics in reports.
+  - category (STRING)
+
+  // The order this metric appears in, among the metrics of its own category.
+  - cards:defaultOrder (LONG) = "0" mandatory autocreated
+
+  // Who may see this metric: everyone, or only administrators.
+  - accessLevel (STRING) = 'public' mandatory autocreated < 'public', 'admin'
+
+  // Snapshot of the counter taken at the last roll-over, the base for delta computations.
+  - previousValue (LONG) = '0' mandatory autocreated
+
+  // The amount accumulated during the last closed period, frozen at the last roll-over.
+  - lastDelta (LONG)
+
+  // When the counter was last incremented.
+  - lastUpdated (DATE)
+
+  // When the last roll-over happened.
+  - lastRollover (DATE)
+
+  // Quartz cron expression for automatic periodic roll-overs, e.g. '0 59 23 * * ?' for the end of each day.
+  - rolloverSchedule (STRING)
+
+  // Transient increment request, consumed by the repository when committed.
+  - oak:increment (LONG)
+
+  // Allow any other children for extensibility.
+  + * (nt:base) = nt:unstructured

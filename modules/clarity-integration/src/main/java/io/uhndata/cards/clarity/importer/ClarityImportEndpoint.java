@@ -39,6 +39,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Component(service = { Servlet.class })
@@ -55,6 +56,9 @@ public class ClarityImportEndpoint extends SlingJakartaSafeMethodsServlet
 
     @Reference
     private ThreadResourceResolverProvider rrp;
+
+    @Reference
+    private volatile MetricsManager metricsManager;
 
     /** A list of all available data processors. */
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.REPLACE,
@@ -101,7 +105,8 @@ public class ClarityImportEndpoint extends SlingJakartaSafeMethodsServlet
 
         final int pastDayToQuery = getPastDayToQuery(request);
         final Runnable importJob =
-            new ClarityImportTask(config, pastDayToQuery, this.resolverFactory, this.rrp, this.processors);
+            new ClarityImportTask(config, pastDayToQuery, this.resolverFactory, this.rrp, this.processors,
+                this.metricsManager);
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);

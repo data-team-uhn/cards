@@ -41,6 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 import io.uhndata.cards.export.spi.DataFormatter;
 import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.export.spi.DataStore;
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.utils.DateUtils;
 
@@ -74,6 +75,9 @@ public class TriggeredExportEndpoint extends SlingJakartaSafeMethodsServlet
 
     @Reference
     private ThreadResourceResolverProvider rrp;
+
+    @Reference
+    private MetricsManager metricsManager;
 
     @Reference
     private volatile List<ExportConfig> configs;
@@ -126,8 +130,8 @@ public class TriggeredExportEndpoint extends SlingJakartaSafeMethodsServlet
             return;
         }
 
-        final Runnable exportJob = new ExportTask(this.resolverFactory, this.rrp, config, pipeline, exportRunMode,
-            dateLowerBound, dateUpperBound);
+        final Runnable exportJob = new ExportTask(this.resolverFactory, this.rrp, this.metricsManager, config, pipeline,
+            exportRunMode, dateLowerBound, dateUpperBound);
         final Thread thread = new Thread(exportJob);
         thread.start();
         writeSuccess("S3 export started", response);

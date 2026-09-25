@@ -49,8 +49,7 @@
       },
       "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~clarityIntegration":{
         "user.mapping":[
-          "io.uhndata.cards.clarity-integration=[clarity-import]",
-          "io.uhndata.cards.clarity-integration:MetricLogger=[cards-metrics]"
+          "io.uhndata.cards.clarity-integration=[clarity-import]"
         ]
       }
     }

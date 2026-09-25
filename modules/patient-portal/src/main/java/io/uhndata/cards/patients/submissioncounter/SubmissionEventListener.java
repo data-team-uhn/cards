@@ -27,12 +27,11 @@ import javax.jcr.observation.EventListener;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.metrics.Metrics;
+import io.uhndata.cards.metrics.api.MetricsManager;
 
 public final class SubmissionEventListener implements EventListener
 {
@@ -40,7 +39,7 @@ public final class SubmissionEventListener implements EventListener
 
     private static final String SINGLE_QUOTE = "'";
 
-    private final ResourceResolverFactory resolverFactory;
+    private final MetricsManager metricsManager;
 
     private final ResourceResolver resolver;
 
@@ -56,11 +55,11 @@ public final class SubmissionEventListener implements EventListener
 
     private String[] excludedQuestionnaireUUIDs;
 
-    public SubmissionEventListener(FormUtils formUtils, ResourceResolverFactory resolverFactory,
+    public SubmissionEventListener(FormUtils formUtils, MetricsManager metricsManager,
         ResourceResolver resolver, Map<String, Object> listenerParams)
     {
         this.formUtils = formUtils;
-        this.resolverFactory = resolverFactory;
+        this.metricsManager = metricsManager;
         this.resolver = resolver;
         this.submittedFlagPath = ((String) listenerParams.get("submittedFlagPath"));
         this.linkingSubjectType = ((String) listenerParams.get("linkingSubjectType"));
@@ -150,7 +149,7 @@ public final class SubmissionEventListener implements EventListener
                 }
 
                 // Increment the performance counter
-                Metrics.increment(this.resolverFactory, "AppointmentSurveysSubmitted", 1);
+                this.metricsManager.increment("AppointmentSurveysSubmitted", 1);
 
                 // Get the cards:Form node that this modified value property descends from
                 Node modifiedFormNode = this.formUtils.getForm(modifiedValueNode);
@@ -169,8 +168,7 @@ public final class SubmissionEventListener implements EventListener
                 long formsForAppointmentCount = countVisitForms(formRelatedSubjectUUID, modifiedFormNodeUUID);
 
                 // Increment the performance counter
-                Metrics.increment(this.resolverFactory,
-                    "TotalSurveysSubmitted", formsForAppointmentCount);
+                this.metricsManager.increment("TotalSurveysSubmitted", formsForAppointmentCount);
             }
         } catch (Exception e) {
             LOGGER.warn("Error happened in SubmissionEventListener: {}", e.getMessage());

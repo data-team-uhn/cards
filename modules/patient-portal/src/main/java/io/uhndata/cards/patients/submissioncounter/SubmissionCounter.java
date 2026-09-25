@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.metrics.api.MetricsManager;
 
 @Designate(ocd = SubmissionCounter.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
@@ -55,6 +56,10 @@ public final class SubmissionCounter
 
     @Reference
     private FormUtils formUtils;
+
+    /** Counts the submissions. */
+    @Reference
+    private MetricsManager metricsManager;
 
     private ResourceResolver resolver;
 
@@ -95,7 +100,7 @@ public final class SubmissionCounter
             listenerParams.put("submittedFlagPath", config.submittedFlagPath());
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
             listenerParams.put("excludedQuestionnairePaths", config.excludedQuestionnaires());
-            EventListener myEventListener = new SubmissionEventListener(this.formUtils, this.resolverFactory,
+            EventListener myEventListener = new SubmissionEventListener(this.formUtils, this.metricsManager,
                 this.resolver, listenerParams);
 
             this.session = this.resolver.adaptTo(Session.class);

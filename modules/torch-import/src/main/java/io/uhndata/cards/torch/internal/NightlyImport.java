@@ -32,6 +32,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Component(immediate = true)
@@ -48,6 +49,9 @@ public class NightlyImport
 
     @Reference
     private ThreadResourceResolverProvider rrp;
+
+    @Reference
+    private MetricsManager metricsManager;
 
     /** The scheduler for rescheduling jobs. */
     @Reference
@@ -73,7 +77,7 @@ public class NightlyImport
 
         final Runnable importJob;
         importJob =
-            new ImportTask(this.resolverFactory, this.rrp, newConfig.getConfig().auth_url(),
+            new ImportTask(this.resolverFactory, this.rrp, this.metricsManager, newConfig.getConfig().auth_url(),
                 newConfig.getConfig().endpoint_url(),
                 newConfig.getConfig().days_to_query(),
                 newConfig.getConfig().vault_token(),

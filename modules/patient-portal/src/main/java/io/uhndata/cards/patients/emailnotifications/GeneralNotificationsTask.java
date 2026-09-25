@@ -38,13 +38,15 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.EmailTemplate;
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.metrics.Metrics;
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 public class GeneralNotificationsTask extends AbstractEmailNotification implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneralNotificationsTask.class);
+
+    private final MetricsManager metricsManager;
 
     private final String taskName;
 
@@ -65,7 +67,8 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
      * authorization links in emails
      * @param mailService a MailService object that can be used for sending emails
      * @param formUtils form utilities service that can be used to interact with form nodes
-     * @param taskName the name associated with the performance metrics gathered from this task
+     * @param metricsManager counts the emails sent
+     * @param taskName the name of the metric counting the emails sent by this task
      * @param clinicId the clinic ID that identifies the clinic for which notifications should be sent about (or null
      * for all clinics)
      * @param emailTemplate the template for the email notifications
@@ -77,12 +80,13 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
         final ThreadResourceResolverProvider resolverProvider,
         final ServiceTracker<EventAdmin, EventAdmin> eventAdmin,
         final TokenManager tokenManager, final MailService mailService,
-        final FormUtils formUtils, final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
-        final String notificationType, final String clinicId, final String emailTemplatePath, final int daysToVisit,
-        final boolean includePatientName)
+        final FormUtils formUtils, final PatientAccessConfiguration patientAccessConfiguration,
+        final MetricsManager metricsManager, final String taskName, final String notificationType,
+        final String clinicId, final String emailTemplatePath, final int daysToVisit, final boolean includePatientName)
     {
         super(resolverFactory, resolverProvider, tokenManager, mailService, formUtils, patientAccessConfiguration,
             eventAdmin, includePatientName);
+        this.metricsManager = metricsManager;
         this.taskName = taskName;
         this.notificationType = notificationType;
         this.clinicId = clinicId;
@@ -97,7 +101,7 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
             this.emailTemplate = buildTemplate(this.emailTemplatePath);
         }
         long emailsSent = sendNotification(this.daysToVisit, this.emailTemplate, this.clinicId, this.notificationType);
-        Metrics.increment(this.resolverFactory, this.taskName, emailsSent);
+        this.metricsManager.increment(this.taskName, emailsSent);
     }
 
     @Override

@@ -47,7 +47,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.metrics.Metrics;
+import io.uhndata.cards.metrics.api.MetricsManager;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.utils.DateUtils;
 
@@ -99,10 +99,14 @@ public class ImportTask implements Runnable
 
     private final ThreadResourceResolverProvider rrp;
 
+    private final MetricsManager metricsManager;
+
     /**
      * Simple constructor.
      *
      * @param resolverFactory A reference to a ResourceResolverFactory to use
+     * @param rrp shares the resolver in use with other components
+     * @param metricsManager counts the imported appointments
      * @param authURL The URL for the Vault JWT authentication endpoint
      * @param endpointURL The URL for the Torch server endpoint
      * @param daysToQuery Number of days to query
@@ -113,12 +117,13 @@ public class ImportTask implements Runnable
      */
     @SuppressWarnings({ "checkstyle:ParameterNumber" })
     ImportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
-        final String authURL, final String endpointURL,
+        final MetricsManager metricsManager, final String authURL, final String endpointURL,
         final int daysToQuery, final String vaultToken, final String[] clinicNames, final String[] providerIDs,
         final String[] providerRoles, final String vaultRole, final String[] queryDates)
     {
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
+        this.metricsManager = metricsManager;
         this.authURL = authURL;
         this.endpointURL = endpointURL;
         this.daysToQuery = daysToQuery;
@@ -151,8 +156,7 @@ public class ImportTask implements Runnable
             importedAppointmentsCount += getUpcomingAppointments(token, this.daysToQuery, clinicName);
         }
         // Update the performance counter
-        Metrics.increment(this.resolverFactory,
-            "ImportedAppointments", importedAppointmentsCount);
+        this.metricsManager.increment("ImportedAppointments", importedAppointmentsCount);
     }
 
     /**

@@ -25,12 +25,5 @@
       "id":"${project.groupId}:cards-http-requests:${project.version}",
       "start-order":"25"
     }
-  ],
-  "configurations":{
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~slackNotifications":{
-      "user.mapping":[
-        "io.uhndata.cards.slack-notifications:SlackNotifications=[cards-metrics]"
-      ]
-    }
-  }
+  ]
 }
