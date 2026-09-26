@@ -36,6 +36,18 @@ const portalTheme = createTheme({
       fontSize: "1rem",
     },
   },
+  components: {
+    MuiStack: {
+      defaultProps: {
+        useFlexGap: true,
+      },
+      styleOverrides: {
+        root: {
+          flexWrap: "wrap",
+        },
+      },
+    },
+  },
   width: {
     compact: 500,
     intro: 540,
