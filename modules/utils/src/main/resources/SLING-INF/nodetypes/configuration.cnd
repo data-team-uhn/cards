@@ -1,0 +1,38 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<cards = 'https://cards.uhndata.io/'>
+
+//-----------------------------------------------------------------------------
+//
+// Configuration
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// A node under /libs/cards/conf holding public configuration: every property of every node of this
+// type is placed in the HTML head as a <meta> tag. Configuration that must not reach the browser,
+// such as an API key, is kept in a node of another type.
+[cards:Configuration] > sling:Folder
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "cards/Configuration" mandatory autocreated protected
+  // Hardcode the resource supertype: configuration is a resource
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected

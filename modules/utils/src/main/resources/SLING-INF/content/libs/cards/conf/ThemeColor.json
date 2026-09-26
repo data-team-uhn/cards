@@ -1,4 +1,4 @@
 {
-  "jcr:primaryType": "nt:unstructured",
+  "jcr:primaryType": "cards:Configuration",
   "themeColor": "blue"
 }
