@@ -92,7 +92,7 @@
     <sling.commons.classloader.version>1.4.4</sling.commons.classloader.version>
     <sling.commons.compiler.version>2.4.0</sling.commons.compiler.version>
     <sling.commons.crypto.version>1.2.0</sling.commons.crypto.version>
-    <sling.commons.fsclassloader.version>1.0.16</sling.commons.fsclassloader.version>
+    <sling.commons.fsclassloader.version>2.0.0</sling.commons.fsclassloader.version>
     <sling.commons.johnzon.version>2.0.0</sling.commons.johnzon.version>
     <sling.commons.log.version>6.2.0</sling.commons.log.version>
     <sling.commons.log.webconsole.version>2.0.0</sling.commons.log.webconsole.version>
