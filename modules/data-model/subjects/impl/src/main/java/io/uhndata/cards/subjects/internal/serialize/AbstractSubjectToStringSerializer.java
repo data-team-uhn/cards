@@ -42,8 +42,8 @@ public abstract class AbstractSubjectToStringSerializer
 
         // The proper serialization depends on "deep", "dereference" and "labels", but we may allow other JSON
         // processors to be enabled/disabled to further customize the data, so we also append the original selectors
-        final String subjectPath = originalResource.getPath()
-            + originalResource.getResourceMetadata().getResolutionPathInfo();
+        String resolutionPathInfo = originalResource.getResourceMetadata().getResolutionPathInfo();
+        final String subjectPath = originalResource.getPath() + (resolutionPathInfo != null ? resolutionPathInfo : "");
         final Resource resource = this.resolver.get().resolve(subjectPath + ".deep.dereference.labels");
 
         JsonObject result = resource.adaptTo(JsonObject.class);
