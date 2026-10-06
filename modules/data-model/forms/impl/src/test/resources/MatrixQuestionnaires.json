@@ -1,0 +1,68 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Question Matrix Questionnaire",
+  "description": "A test question matrix questionnaire",
+  "matrix": {
+    "jcr:primaryType": "cards:Section",
+    "maxAnswers": 2,
+    "label": "Matrix label",
+    "displayMode": "matrix",
+    "dataType": "long",
+    "o1": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "label": "Option 1",
+      "value": "O1"
+    },
+    "o2": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "label": "Option 2",
+      "value": "O2"
+    },
+    "o3": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "label": "Option 3",
+      "value": "O3"
+    },
+    "question_1": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Options question 1",
+      "displayMode": "list",
+      "dataType": "long",
+      "o1": {
+        "jcr:primaryType": "cards:AnswerOption",
+        "label": "Option 1",
+        "value": "O1"
+      },
+      "o2": {
+        "jcr:primaryType": "cards:AnswerOption",
+        "label": "Option 2",
+        "value": "O2"
+      },
+      "o4":{
+        "jcr:primaryType": "cards:AnswerOption",
+        "label": "Option 4",
+        "value": "O4"
+      }
+    },
+    "question_2": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Options question 1",
+      "displayMode": "list",
+      "dataType": "long",
+      "o1": {
+        "jcr:primaryType": "cards:AnswerOption",
+        "label": "Option 1",
+        "value": "O1"
+      },
+      "o2": {
+        "jcr:primaryType": "cards:AnswerOption",
+        "label": "Option 2",
+        "value": "O2"
+      }
+    },
+    "question_3": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Options question 3"
+    }
+  }
+}
