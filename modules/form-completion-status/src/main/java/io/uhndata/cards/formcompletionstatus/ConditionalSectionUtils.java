@@ -17,6 +17,7 @@
 package io.uhndata.cards.formcompletionstatus;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.BiPredicate;
@@ -131,6 +132,9 @@ public final class ConditionalSectionUtils
     {
         String key = sanitizeNodeName(operand.getProperty(PROP_VALUE).getValues()[0].getString());
         final Node questionnaire = getQuestionnaireForSection(sectionNode);
+        if (questionnaire == null) {
+            return null;
+        }
         final Node question = getQuestionWithName(questionnaire, key);
         if (question == null) {
             return null;
@@ -226,6 +230,12 @@ public final class ConditionalSectionUtils
             try {
                 return (Comparable<Object>) (Object) v.getDate();
             } catch (IllegalStateException | RepositoryException e) {
+                // The value is not in the strict format required by JCR, try the more lenient supported formats,
+                // otherwise comparing this string against actual dates would fail
+                final Calendar date = DateUtils.parseCalendar(v.toString());
+                if (date != null) {
+                    return (Comparable<Object>) (Object) date;
+                }
                 return (Comparable<Object>) (Object) v.toString();
             }
         }),
@@ -359,11 +369,6 @@ public final class ConditionalSectionUtils
             return this.values;
         }
 
-        @Override
-        public String toString()
-        {
-            return (this.reference ? "@" : "") + this.values.toString();
-        }
     }
 
     /**
@@ -542,11 +547,6 @@ public final class ConditionalSectionUtils
             return this.operator.evaluate(this.left, this.right);
         }
 
-        @Override
-        public String toString()
-        {
-            return this.left + " " + this.operator + " " + this.right;
-        }
     }
 
     /**
@@ -579,10 +579,5 @@ public final class ConditionalSectionUtils
                 : this.children.stream().anyMatch(Conditional::isSatisfied);
         }
 
-        @Override
-        public String toString()
-        {
-            return this.children.toString();
-        }
     }
 }

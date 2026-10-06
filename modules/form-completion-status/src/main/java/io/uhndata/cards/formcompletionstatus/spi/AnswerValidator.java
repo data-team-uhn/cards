@@ -67,12 +67,10 @@ public interface AnswerValidator extends Comparable<AnswerValidator>
      *
      * @param answer a cards:Answer node that was added/modified
      * @param question is the cards:Question node referenced by the answer
-     * @param initialAnswer specifies if this is the first time a value is set for the answer, to mark whether a form is
-     *            just still incomplete or was complete and also invalid
      * @param flags maps flag names to whether they were explicitly set or just copied from the previous form state, and
      *            is initially populated with the previously set flags mapped to false
      */
-    void validate(NodeBuilder answer, Node question, boolean initialAnswer, Map<String, Boolean> flags);
+    void validate(NodeBuilder answer, Node question, Map<String, Boolean> flags);
 
     /**
      * Helper method which removes a flag only if it wasn't explicitly added.
