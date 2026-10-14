@@ -30,7 +30,7 @@ set ACL for everyone
 end
 
 set properties on /libs/cards/conf/Media
-  default logoDark to "/libs/cards/resources/media/default/logo.png"
-  default logoLight to "/libs/cards/resources/media/default/logo_light_bg.png"
+  default logoDark to "/libs/cards/resources/media/default/cards_logo_dark.svg"
+  default logoLight to "/libs/cards/resources/media/default/cards_logo_light.svg"
   default sidebarBackground to "/libs/cards/resources/media/default/background.jpg"
 end

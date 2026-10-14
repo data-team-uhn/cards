@@ -94,13 +94,11 @@ const sidebarStyles = theme => ({
     display: "inline-block",
   },
   img: {
-    maxWidth: "70%",
+    maxWidth: "80%",
     maxHeight: "80px",
     top: "19px",
     display: "block",
     verticalAlign: "middle",
-    marginLeft: "auto",
-    marginRight: "auto",
     border: "0"
   },
   background: {
