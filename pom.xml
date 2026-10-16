@@ -69,8 +69,8 @@
     <cards.version>${project.version}</cards.version>
     <app.name>Clinical ARchive for Data Science</app.name>
     <platform.name>CARDS</platform.name>
-    <slf4j.version>2.0.19</slf4j.version>
-    <jackrabbit.version>2.22.4</jackrabbit.version>
+    <slf4j.version>2.0.20</slf4j.version>
+    <jackrabbit.version>2.22.5</jackrabbit.version>
     <oak.version>2.6.0</oak.version>
     <sling.saml.version>0.2.6.cards.2</sling.saml.version>
 
@@ -110,7 +110,7 @@
     <sling.discovery.commons.version>1.1.0</sling.discovery.commons.version>
     <sling.discovery.oak.version>1.2.48</sling.discovery.oak.version>
     <sling.discovery.support.version>1.0.8</sling.discovery.support.version>
-    <sling.engine.version>3.0.2</sling.engine.version>
+    <sling.engine.version>3.0.4</sling.engine.version>
     <sling.event.version>4.4.2</sling.event.version>
     <sling.event.api.version>1.0.4</sling.event.api.version>
     <sling.event.dea.version>1.1.6</sling.event.dea.version>
@@ -640,7 +640,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.20.0</version>
+        <version>3.21.0</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -828,7 +828,7 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>5.23.0</version>
+        <version>5.24.0</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -2262,13 +2262,13 @@
         <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>4.10.4.1</version>
+          <version>4.10.5.0</version>
           <dependencies>
             <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
             <dependency>
               <groupId>com.github.spotbugs</groupId>
               <artifactId>spotbugs</artifactId>
-              <version>4.10.4</version>
+              <version>4.10.5</version>
             </dependency>
           </dependencies>
           <configuration>
