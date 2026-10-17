@@ -85,7 +85,7 @@
     <sling.api.version>3.0.2</sling.api.version>
     <sling.auth.core.version>2.0.2</sling.auth.core.version>
     <sling.auth.form.version>2.0.0</sling.auth.form.version>
-    <sling.bundleresource.impl.version>2.4.0</sling.bundleresource.impl.version>
+    <sling.bundleresource.impl.version>3.0.0</sling.bundleresource.impl.version>
     <sling.caconfig.api.version>1.3.0</sling.caconfig.api.version>
     <sling.caconfig.impl.version>1.7.2</sling.caconfig.impl.version>
     <sling.caconfig.spi.version>1.4.0</sling.caconfig.spi.version>
