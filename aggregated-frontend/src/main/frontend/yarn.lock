@@ -105,19 +105,19 @@
     "@babel/runtime" "^7.0.0"
     "@compiled/react" "^1.0.2"
 
-"@atlaskit/pragmatic-drag-and-drop@3.1.0", "@atlaskit/pragmatic-drag-and-drop@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-3.1.0.tgz#dcfe6c552e1bf83f80095ad39acbee384d6d1dfd"
-  integrity sha512-VU+2Oh6OgvC6D1xiX3lfm1gZJsaSPD+ZKjAHodOQ9IO6RfOvAyReLlK5ut9gIUpPmbD8d09wlCs7y4A6/I8c5Q==
+"@atlaskit/pragmatic-drag-and-drop@4.0.0", "@atlaskit/pragmatic-drag-and-drop@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-4.0.0.tgz#70ca2ae1c3b9612c0808fb6be7a9b60bd3033922"
+  integrity sha512-pyDo2B5NiaExoKGmgeXKGNUL4aR4UzzSZm8QWWjYTEyBLVqSqKyKUwtVxMw2YEkakagOGFONUdHM32LAH2nPug==
   dependencies:
     "@babel/runtime" "^7.0.0"
     bind-event-listener "^3.0.0"
     raf-schd "^4.0.3"
 
-"@atlaskit/pragmatic-drag-and-drop@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-4.0.0.tgz#70ca2ae1c3b9612c0808fb6be7a9b60bd3033922"
-  integrity sha512-pyDo2B5NiaExoKGmgeXKGNUL4aR4UzzSZm8QWWjYTEyBLVqSqKyKUwtVxMw2YEkakagOGFONUdHM32LAH2nPug==
+"@atlaskit/pragmatic-drag-and-drop@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-3.1.0.tgz#dcfe6c552e1bf83f80095ad39acbee384d6d1dfd"
+  integrity sha512-VU+2Oh6OgvC6D1xiX3lfm1gZJsaSPD+ZKjAHodOQ9IO6RfOvAyReLlK5ut9gIUpPmbD8d09wlCs7y4A6/I8c5Q==
   dependencies:
     "@babel/runtime" "^7.0.0"
     bind-event-listener "^3.0.0"
