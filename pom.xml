@@ -116,7 +116,7 @@
     <sling.event.dea.version>1.1.6</sling.event.dea.version>
     <sling.extensions.threaddump.version>0.2.2</sling.extensions.threaddump.version>
     <sling.extensions.webconsolebranding.version>1.0.4</sling.extensions.webconsolebranding.version>
-    <sling.extensions.webconsolesecurityprovider.version>1.2.8</sling.extensions.webconsolesecurityprovider.version>
+    <sling.extensions.webconsolesecurityprovider.version>2.0.0</sling.extensions.webconsolesecurityprovider.version>
     <sling.fsresource.version>2.3.0</sling.fsresource.version>
     <sling.hc.api.version>1.0.4</sling.hc.api.version>
     <sling.hc.support.version>1.0.10</sling.hc.support.version>
