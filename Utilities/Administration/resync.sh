@@ -26,6 +26,8 @@
 # Credentials default to admin:admin and can be overridden with the SOURCE_AUTH and
 # DESTINATION_AUTH environment variables (user:password).
 #
+# Needs bash 4 or later, curl, and jq 1.6 or later.
+#
 # How it works:
 # - Changed nodes are detected with the .paginate endpoint filtering on jcr:lastModified, and
 #   serialized with the `importable` serializer, which strips instance-specific properties
@@ -43,6 +45,12 @@
 #   tokens reference.
 # - Forms are posted to their own path with :replace, which replaces same-named answers in place.
 #   The node a request is posted to is never removed, so an existing form keeps its jcr:uuid.
+# - When both instances have been importing data on their own, each holds its own form for the same
+#   visit, under a different name. A source form missing from the destination is then imported into
+#   the destination's form for the same subject and questionnaire, when that questionnaire allows only
+#   one form per subject, instead of being refused as one form too many. Its answers are renamed after
+#   the destination's answers to the same questions first, so they replace those answers rather than
+#   sitting beside them.
 # - Nodes that are new to the destination get their own new jcr:uuid values; this is unavoidable.
 #
 # Limitations: the destination must already have the same /Questionnaires and /SubjectTypes
@@ -141,6 +149,68 @@ export_modified() {
 # something a value could smuggle in, and it keeps a form's serialized subtree off the command line,
 # where a big enough one would run into the same argument-size limit as the export used to.
 
+# A repository path as a URL path: each segment percent-encoded, since questionnaire names hold spaces.
+url_path() {
+    jq -rn --arg path "$1" '$path | split("/") | map(@uri) | join("/")'
+}
+
+# How many forms each questionnaire allows per subject on the destination, 0 for no limit.
+declare -A MAX_PER_SUBJECT
+
+# Print the path of the form the destination already holds for the same subject and questionnaire as
+# the given source form, when the source form is not on the destination itself and its questionnaire
+# allows only one form per subject. Prints nothing when the form should be imported at its own path.
+#
+# /query resolves a path compared with a reference property into the uuid the property holds, so the
+# paths in the export serve as they are. It URL-decodes the query once more after the servlet has, so
+# the query is encoded once before curl encodes it again.
+destination_twin() {
+    local json="$1" nodepath="$2" subject questionnaire max query response
+    response=$(curl -s -I -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$nodepath.json")
+    [[ "$response" -eq 404 ]] || return 0
+    subject=$(jq -r '."jcr:reference:subject" // empty' <<< "$json")
+    questionnaire=$(jq -r '."jcr:reference:questionnaire" // empty' <<< "$json")
+    [[ -n "$subject" && -n "$questionnaire" ]] || return 0
+    if [[ -z "${MAX_PER_SUBJECT[$questionnaire]+set}" ]]; then
+        max=$(curl -sf -u "$DESTINATION_AUTH" "$DESTINATION$(url_path "$questionnaire").json" \
+            | jq -r '.maxPerSubject // 0') \
+            || { echo "  could not read $questionnaire on the destination" >&2; return 1; }
+        MAX_PER_SUBJECT[$questionnaire]="$max"
+    fi
+    [[ "${MAX_PER_SUBJECT[$questionnaire]}" -eq 1 ]] || return 0
+    # A single quote inside a JCR-SQL2 string literal is written twice
+    query="select * from [cards:Form] as f where f.subject = '${subject//\'/\'\'}'"
+    query+=" and f.questionnaire = '${questionnaire//\'/\'\'}'"
+    curl -sf -u "$DESTINATION_AUTH" --get "$DESTINATION/query" \
+        --data-urlencode "query=$(jq -rn --arg query "$query" '$query | @uri')" \
+        --data-urlencode "limit=1" \
+        | jq -r '.rows[0]."@path" // empty' \
+        || { echo "  could not look for the destination's own form for $nodepath" >&2; return 1; }
+}
+
+# Rename the answers and answer sections of the form on stdin after those of the destination form in
+# the file named by $1, matched by the question or section they belong to: the n-th of the source's
+# answers to a question takes the name of the n-th of the destination's. A source answer with no
+# counterpart keeps its name, and is added.
+align_answers() {
+    jq --slurpfile dst "$1" '
+        def ref: if type == "object" then (."jcr:reference:question" // ."jcr:reference:section") else null end;
+        def align($d):
+            if type != "object" then . else
+                [($d // {}) | to_entries[] | select(.value | ref != null) | {r: (.value | ref), k: .key}] as $names
+                | reduce to_entries[] as $e ({out: {}, seen: {}};
+                    ($e.value | ref) as $r
+                    | if $r == null then .out[$e.key] = $e.value
+                      else ((.seen[$r] // 0) as $i
+                          | ([$names[] | select(.r == $r) | .k][$i]) as $k
+                          | .seen[$r] = $i + 1
+                          | .out[$k // $e.key] = ($e.value | align(if $k then $d[$k] else null end)))
+                      end)
+                | .out
+            end;
+        align($dst[0])'
+}
+
 # Strip the @-prefixed serialization annotations, and the denormalized `form` property of answers
 # and answer sections, which holds the jcr:uuid of the form on the SOURCE instance — the destination
 # recomputes it from its own form.
@@ -196,12 +266,23 @@ import_subject() {
 # `+ * (cards:Form) = cards:Form`, but that is a property of the parent's node type rather than of
 # the import, and is not worth depending on.
 import_form() {
-    local json="$1" nodepath primarytype response contentfile
+    local json="$1" nodepath target twin existing primarytype response contentfile
     nodepath=$(jq -r '."@path"' <<< "$json")
     primarytype=$(jq -r '."jcr:primaryType"' <<< "$json")
+    twin=$(destination_twin "$json" "$nodepath") || { echo "  FAILED: $nodepath" >&2; return 1; }
+    target="${twin:-$nodepath}"
     contentfile=$(mktemp) || return 1
-    import_content "$json" > "$contentfile"
-    response=$(curl -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$nodepath" \
+    if [[ -n "$twin" ]]; then
+        existing=$(curl -sf -u "$DESTINATION_AUTH" "$DESTINATION$twin$FORM_SELECTORS.json") \
+            && import_content "$existing" > "$contentfile" \
+            && import_content "$json" | align_answers "$contentfile" > "$contentfile.aligned" \
+            && mv "$contentfile.aligned" "$contentfile" \
+            || { echo "  FAILED to match $nodepath to the destination's $twin" >&2
+                 rm -f "$contentfile" "$contentfile.aligned"; return 1; }
+    else
+        import_content "$json" > "$contentfile"
+    fi
+    response=$(curl -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$target" \
         --form-string "jcr:primaryType=$primarytype" \
         --form-string ":operation=import" \
         --form-string ":contentType=json" \
@@ -214,7 +295,11 @@ import_form() {
         echo "  FAILED ($response): $nodepath" >&2
         return 1
     fi
-    echo "  imported: $nodepath"
+    if [[ -n "$twin" ]]; then
+        echo "  imported into the destination's own form $twin: $nodepath"
+    else
+        echo "  imported: $nodepath"
+    fi
 }
 
 failures=0
