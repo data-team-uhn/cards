@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.patients.internal;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +57,10 @@ public class SubmissionListener implements ResourceChangeListener
     private static final Logger LOGGER = LoggerFactory.getLogger(SubmissionListener.class);
 
     private static final String STATUS_FLAGS = "statusFlags";
+
+    private static final String SUBMITTED_FLAG = "SUBMITTED";
+
+    private static final String LAST_MODIFIED = "jcr:lastModified";
 
     private static final String[] STRING_ARRAY = {};
 
@@ -161,17 +166,33 @@ public class SubmissionListener implements ResourceChangeListener
                 }
             });
         }
-        if (!isPatientSurvey.get()) {
+        if (!isPatientSurvey.get() || flags.contains(SUBMITTED_FLAG)) {
             return;
         }
-        flags.add("SUBMITTED");
-        form.setProperty("statusFlags", flags.toArray(STRING_ARRAY));
+        flags.add(SUBMITTED_FLAG);
+        boolean checkedOut = checkoutIfNeeded(form);
+        form.setProperty(STATUS_FLAGS, flags.toArray(STRING_ARRAY));
+        // Status flags are not versioned, so adding one does not update the modification date. Submitting must:
+        // exports select forms by the date they were last modified.
+        form.setProperty(LAST_MODIFIED, Calendar.getInstance());
         try {
             form.getSession().save();
         } catch (VersionException e) {
-            // Node was checked in in the background, try to checkout and save again
-            form.getSession().refresh(true);
+            // Checked in by the stale forms task between the check above and the save
+            checkedOut |= checkoutIfNeeded(form);
             form.getSession().save();
         }
+        if (checkedOut) {
+            form.getSession().getWorkspace().getVersionManager().checkin(form.getPath());
+        }
+    }
+
+    private boolean checkoutIfNeeded(final Node form) throws RepositoryException
+    {
+        if (!form.isCheckedOut()) {
+            form.getSession().getWorkspace().getVersionManager().checkout(form.getPath());
+            return true;
+        }
+        return false;
     }
 }
