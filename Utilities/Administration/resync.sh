@@ -92,7 +92,7 @@ FORM_SELECTORS=".importable.deep.-answerCopy.-labels"
 # labels on answers) which must not be imported as actual properties.
 fetch_page() {
     local homepage="$1" selectors="$2" offset="$3"
-    curl -sf -u "$SOURCE_AUTH" --get "$SOURCE/$homepage.paginate.json" \
+    curl -k -sf -u "$SOURCE_AUTH" --get "$SOURCE/$homepage.paginate.json" \
         --data-urlencode "resourceSelectors=$selectors" \
         --data-urlencode "includeallstatus=true" \
         --data-urlencode "offset=$offset" \
@@ -166,13 +166,13 @@ declare -A MAX_PER_SUBJECT
 # the query is encoded once before curl encodes it again.
 destination_twin() {
     local json="$1" nodepath="$2" subject questionnaire max query response
-    response=$(curl -s -I -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$nodepath.json")
+    response=$(curl -k -s -I -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$nodepath.json")
     [[ "$response" -eq 404 ]] || return 0
     subject=$(jq -r '."jcr:reference:subject" // empty' <<< "$json")
     questionnaire=$(jq -r '."jcr:reference:questionnaire" // empty' <<< "$json")
     [[ -n "$subject" && -n "$questionnaire" ]] || return 0
     if [[ -z "${MAX_PER_SUBJECT[$questionnaire]+set}" ]]; then
-        max=$(curl -sf -u "$DESTINATION_AUTH" "$DESTINATION$(url_path "$questionnaire").json" \
+        max=$(curl -k -sf -u "$DESTINATION_AUTH" "$DESTINATION$(url_path "$questionnaire").json" \
             | jq -r '.maxPerSubject // 0') \
             || { echo "  could not read $questionnaire on the destination" >&2; return 1; }
         MAX_PER_SUBJECT[$questionnaire]="$max"
@@ -181,7 +181,7 @@ destination_twin() {
     # A single quote inside a JCR-SQL2 string literal is written twice
     query="select * from [cards:Form] as f where f.subject = '${subject//\'/\'\'}'"
     query+=" and f.questionnaire = '${questionnaire//\'/\'\'}'"
-    curl -sf -u "$DESTINATION_AUTH" --get "$DESTINATION/query" \
+    curl -k -sf -u "$DESTINATION_AUTH" --get "$DESTINATION/query" \
         --data-urlencode "query=$(jq -rn --arg query "$query" '$query | @uri')" \
         --data-urlencode "limit=1" \
         | jq -r '.rows[0]."@path" // empty' \
@@ -235,7 +235,7 @@ import_subject() {
     name="${nodepath##*/}"
     contentfile=$(mktemp) || return 1
     import_content "$json" > "$contentfile"
-    response=$(curl -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$parent/" \
+    response=$(curl -k -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$parent/" \
         --form-string ":name=$name" \
         --form-string ":operation=import" \
         --form-string ":contentType=json" \
@@ -273,7 +273,7 @@ import_form() {
     target="${twin:-$nodepath}"
     contentfile=$(mktemp) || return 1
     if [[ -n "$twin" ]]; then
-        existing=$(curl -sf -u "$DESTINATION_AUTH" "$DESTINATION$twin$FORM_SELECTORS.json") \
+        existing=$(curl -k -sf -u "$DESTINATION_AUTH" "$DESTINATION$twin$FORM_SELECTORS.json") \
             && import_content "$existing" > "$contentfile" \
             && import_content "$json" | align_answers "$contentfile" > "$contentfile.aligned" \
             && mv "$contentfile.aligned" "$contentfile" \
@@ -282,7 +282,7 @@ import_form() {
     else
         import_content "$json" > "$contentfile"
     fi
-    response=$(curl -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$target" \
+    response=$(curl -k -s -o /dev/null -w "%{http_code}" -u "$DESTINATION_AUTH" "$DESTINATION$target" \
         --form-string "jcr:primaryType=$primarytype" \
         --form-string ":operation=import" \
         --form-string ":contentType=json" \
