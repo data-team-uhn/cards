@@ -1,0 +1,78 @@
+name: Update the Node.js version
+
+# Dependabot cannot see the Node.js version the frontend-maven-plugin installs: it is plain text in
+# the root pom, not a Maven artifact. This proposes the newest release of the pinned major version
+# the way Dependabot would; moving to a new major remains a manual decision.
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    strategy:
+      matrix:
+        tool: [node]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # Unlike the implicit default, an explicit bash also fails a step when a download in the
+        # middle of a pipe does, rather than carrying an empty version forward.
+        shell: bash
+    env:
+      # GitHub holds the checks of a pull request the default token opens until someone approves
+      # them; a token from this secret, if set, opens it as its owner instead.
+      GH_TOKEN: ${{ secrets.DEPS_UPDATE_TOKEN || github.token }}
+      # A release must be this many days old before it is proposed, so one withdrawn soon after
+      # publishing never reaches a pull request.
+      COOLDOWN_DAYS: 3
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v7
+        with:
+          token: ${{ env.GH_TOKEN }}
+      - name: Find The Newest Node.js Release Of The Pinned Major Version
+        if: matrix.tool == 'node'
+        # Security releases are exempt from the cooldown. The release index lists the newest first.
+        run: |
+          CURRENT=$(sed -n 's|.*<nodeVersion>v\(.*\)</nodeVersion>.*|\1|p' pom.xml)
+          LATEST=$(curl -fsSL https://nodejs.org/dist/index.json \
+            | jq -r --arg major "v${CURRENT%%.*}." --arg cutoff "$(date -u -d "$COOLDOWN_DAYS days ago" +%F)" \
+              'first(.[] | select((.version | startswith($major)) and (.security or .date <= $cutoff))) | .version | ltrimstr("v")')
+          echo "current=$CURRENT" >> "$GITHUB_ENV"
+          echo "latest=$LATEST" >> "$GITHUB_ENV"
+          echo "release_notes=https://github.com/nodejs/node/releases/tag/v$LATEST" >> "$GITHUB_ENV"
+      - name: Compare With The Pinned Version
+        # Only a strictly newer release is proposed: a pin moved by hand past what the cooldown
+        # admits must not be proposed back down, and a lookup that found nothing proposes nothing.
+        run: |
+          echo "Pinned: $current, newest eligible: ${latest:-none}"
+          NEWEST=$(printf '%s\n' "$current" "$latest" | sort -V | tail -n 1)
+          if [ -n "$latest" ] && [ "$latest" != "$current" ] && [ "$NEWEST" = "$latest" ]; then
+            echo "newer=true" >> "$GITHUB_ENV"
+          fi
+      - name: Update Node.js
+        if: matrix.tool == 'node' && env.newer == 'true'
+        run: sed -i "s|<nodeVersion>v$current</nodeVersion>|<nodeVersion>v$latest</nodeVersion>|" pom.xml
+      - name: Propose The Update
+        if: env.newer == 'true'
+        # A release already proposed is not proposed again, whether its pull request is still open or
+        # was declined. A branch left without one by an earlier failed run is simply replaced.
+        run: |
+          BRANCH="deps-update-${{ matrix.tool }}-$latest"
+          if [ -n "$(gh pr list --head "$BRANCH" --state all --json number --jq '.[].number')" ]; then
+            echo "Already proposed on $BRANCH"
+            exit 0
+          fi
+          TITLE="[deps] Update the ${{ matrix.tool }} version to $latest"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git commit -am "$TITLE"
+          git push --force origin "$BRANCH"
+          gh pr create --base "${{ github.ref_name }}" --head "$BRANCH" --title "$TITLE" \
+            --body "[$latest]($release_notes) is the newest release of the major version the frontend build pins."
