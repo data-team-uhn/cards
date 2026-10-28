@@ -31,6 +31,10 @@
   <name>CARDS - Patient Portal</name>
   <description>Support for patients to fill in their forms</description>
 
+  <properties>
+    <coverage.instructionRatio>0.02</coverage.instructionRatio>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -193,6 +197,74 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.service.metatype.annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <!-- Not used directly: the test repository registers the node types of every bundle on the classpath, and the
+           form node types extend these -->
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-data-model-resources-api</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-data-model-items-api</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.testing.sling-mock.core</artifactId>
+      <version>4.0.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.testing.sling-mock.junit4</artifactId>
+      <version>4.0.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.testing.sling-mock-oak</artifactId>
+      <version>4.1.0-1.86.0</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Not used directly, but sling-mock-oak pulls these at an older version, and mixing Oak versions breaks the
+         in-memory test repository; keep them aligned with the Oak the platform runs -->
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-jcr</artifactId>
+      <version>${oak.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-commons</artifactId>
+      <version>${oak.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-query-spi</artifactId>
+      <version>${oak.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-shaded-guava</artifactId>
+      <version>${oak.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
