@@ -1,0 +1,58 @@
+name: Update the Node.js version
+
+# Dependabot cannot see the Node.js version the frontend-maven-plugin installs: it is plain text in
+# the root pom, not a Maven artifact. This proposes the newest release of the pinned major version
+# the way Dependabot would; moving to a new major remains a manual decision.
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-node:
+    runs-on: ubuntu-latest
+    env:
+      # Pull requests opened with the default token start no workflows, so the build would not run
+      # on them; a token from this secret, if set, lets it run.
+      GH_TOKEN: ${{ secrets.DEPS_UPDATE_TOKEN || github.token }}
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v7
+        with:
+          token: ${{ env.GH_TOKEN }}
+      - name: Find The Newest Release Of The Pinned Major Version
+        run: |
+          CURRENT=$(sed -n 's|.*<nodeVersion>v\(.*\)</nodeVersion>.*|\1|p' pom.xml)
+          # A release must be three days old before it is proposed, so one withdrawn soon after
+          # publishing never reaches a pull request; security releases are exempt. The release index
+          # lists the newest release first.
+          COOLDOWN_START=$(date -u -d '3 days ago' +%F)
+          LATEST=$(curl -fsSL https://nodejs.org/dist/index.json \
+            | jq -r --arg major "v${CURRENT%%.*}." --arg cutoff "$COOLDOWN_START" \
+              'first(.[] | select((.version | startswith($major)) and (.security or .date <= $cutoff))) | .version | ltrimstr("v")')
+          echo "Pinned: $CURRENT, newest: $LATEST"
+          echo "current=$CURRENT" >> "$GITHUB_ENV"
+          echo "latest=$LATEST" >> "$GITHUB_ENV"
+          echo "branch=deps-update-node-$LATEST" >> "$GITHUB_ENV"
+      - name: Propose The Update
+        # A release already proposed is not proposed again, whether its pull request is still open or
+        # was declined. A branch left without one by an earlier failed run is simply replaced.
+        if: env.latest != env.current && env.latest != ''
+        run: |
+          if [ -n "$(gh pr list --head "$branch" --state all --json number --jq '.[].number')" ]; then
+            echo "Already proposed on $branch"
+            exit 0
+          fi
+          TITLE="[deps] Update the node version to $latest"
+          sed -i "s|<nodeVersion>v$current</nodeVersion>|<nodeVersion>v$latest</nodeVersion>|" pom.xml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -am "$TITLE"
+          git push --force origin "$branch"
+          gh pr create --base "${{ github.ref_name }}" --head "$branch" --title "$TITLE" \
+            --body "Node.js [$latest](https://github.com/nodejs/node/releases/tag/v$latest) is the newest release of the major version the frontend build pins."
