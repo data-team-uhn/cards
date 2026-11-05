@@ -1,0 +1,50 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Serializable Questionnaire",
+  "description": "A test serializable questionnaire",
+  "section_1": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section 1",
+    "question_1": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Date Question",
+      "dataType": "date",
+      "dateFormat": "yyyy-MM-dd"
+    },
+    "question_2": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Pedigree Question",
+      "description": "A pedigree question"
+    }
+  },
+  "section_2": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section 2",
+    "displayMode": "footer",
+    "question_3": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Long Question",
+      "dataType": "long"
+    }
+  },
+  "section_3": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section 3",
+    "displayMode": "header",
+    "question_4": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Boolean Question",
+      "dataType": "boolean"
+    },
+    "section_4": {
+      "jcr:primaryType": "cards:Section",
+      "label": "Section 4",
+      "recurrent": true,
+      "question_5": {
+        "jcr:primaryType": "cards:Question",
+        "text": "Text Question",
+        "dataType": "text"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Reference Questionnaire",
+  "description": "A test reference questionnaire",
+  "reference_section": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section Of Reference Question",
+    "reference_question": {
+      "jcr:primaryType": "cards:Question",
+      "question": "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question",
+      "text": "Reference Long Question",
+      "dataType": "long",
+      "entryMode": "reference"
+    }
+  }
+}
